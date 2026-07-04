@@ -1,0 +1,9 @@
+{
+  "hostname": "thaDuke",
+  "user": "loneal",
+  "kernel": "6.8.0-124-generic",
+  "os": "Ubuntu 22.04.5 LTS",
+  "cpu_cores": "12",
+  "memory": "15Gi",
+  "data_mounted": "true"
+}
