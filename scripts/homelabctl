@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 
 PROJECT_COMMAND="homelabctl"
-PROJECT_NAME="homelab"
+PROJECT_NAME="Homelab"
 PROJECT_DISPLAY_NAME="HOMELAB RESUME"
 PROJECT_ROOT="$HOME/Projects/homelab"
 PROJECT_STATE="$PROJECT_ROOT/docs/project/PROJ-0001-PROJECT_STATE.md"
