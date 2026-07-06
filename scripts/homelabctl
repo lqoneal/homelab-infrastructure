@@ -2,38 +2,12 @@
 
 set -Eeuo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PROJECT_STATE="$REPO_ROOT/docs/project/PROJ-0001-PROJECT_STATE.md"
+PROJECT_COMMAND="homelabctl"
+PROJECT_NAME="homelab"
+PROJECT_DISPLAY_NAME="HOMELAB RESUME"
+PROJECT_ROOT="$HOME/Projects/homelab"
+PROJECT_STATE="$PROJECT_ROOT/docs/project/PROJ-0001-PROJECT_STATE.md"
 
-case "${1:-}" in
-    resume)
-        echo "===================================="
-        echo "HOMELAB RESUME"
-        echo "===================================="
-        echo
-        echo "Repository Root:"
-        echo "$REPO_ROOT"
-        echo
-        echo "Current Branch:"
-        git -C "$REPO_ROOT" branch --show-current || true
-        echo
-        echo "Current Commit:"
-        git -C "$REPO_ROOT" log -1 --oneline 2>/dev/null || echo "No commits yet"
-        echo
-        echo "------------------------------------"
-        echo "PROJECT STATE"
-        echo "------------------------------------"
-        echo "$PROJECT_STATE"
-        echo
-        cat "$PROJECT_STATE"
-        echo
-        echo "------------------------------------"
-        echo "WORKING TREE"
-        echo "------------------------------------"
-        git -C "$REPO_ROOT" status --short || true
-        ;;
-    *)
-        echo "Usage: homelabctl resume"
-        exit 1
-        ;;
-esac
+source "$HOME/Projects/shared-libraries/shell/projectctl/projectctl.sh"
+
+projectctl_main "$@"
