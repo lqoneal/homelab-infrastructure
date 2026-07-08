@@ -1,0 +1,433 @@
+---
+document_id: HW-0001
+title: Master Hardware Register
+version: 1.0
+status: Active
+owner: Homelab Infrastructure
+created: 2026-07-06
+last_updated: 2026-07-06
+phase: Mission 0 / Phase 0.1
+domain: Hardware
+classification: Master Hardware Register
+source_of_truth: true
+related_documents:
+  - DOC-0001
+  - INF-0001
+  - FIN-0001
+  - FIN-0002
+  - PROJ-0001
+  - EDR-0001
+tags:
+  - hardware
+  - assets
+  - cmdb
+  - inventory
+  - engineering
+  - portfolio
+---
+
+# Master Hardware Register
+
+## Purpose
+
+The Master Hardware Register is the authoritative register for all managed physical engineering assets within the engineering portfolio.
+
+Its purpose is to maintain a portfolio-level view of engineering hardware while delegating detailed asset information to individual Asset Records (`AST-*`).
+
+This register summarizes the hardware domain and provides engineering reporting, ownership, assignment, lifecycle, and relationship information.
+
+---
+
+# Authority
+
+This document owns:
+
+- Hardware asset index
+- Asset identifier registry
+- Portfolio hardware reporting
+- Hardware ownership summary
+- Hardware assignment summary
+- Parent-child asset relationships
+- Hardware lifecycle summary
+
+Individual `AST-*` records remain the authoritative source for detailed asset information.
+
+---
+
+# Hardware Governance
+
+Engineering hardware shall comply with the following governance principles.
+
+## Evidence-Based Records
+
+Every managed hardware asset shall be supported by engineering evidence.
+
+Examples include:
+
+- Physical inspection
+- Manufacturer identification
+- Purchase documentation
+- Serial number verification
+- Operating system inventory
+- Engineering acceptance
+
+---
+
+## Permanent Asset Identifiers
+
+Every managed hardware asset receives one permanent identifier.
+
+Example:
+
+```text
+AST-000001
+```
+
+Identifiers are never reused.
+
+Retired assets remain permanently recorded.
+
+---
+
+## Immutable Asset Identity
+
+The engineering identity of an asset remains constant throughout its lifecycle.
+
+Examples:
+
+```
+Engineering Workstation
+Engineering Terminal 01
+Primary Internal NVMe SSD
+```
+
+Manufacturers or hardware revisions may change over time without changing the engineering identity.
+
+---
+
+## Ownership
+
+Every managed asset shall have exactly one engineering owner.
+
+Ownership represents long-term responsibility for the asset.
+
+Current owner:
+
+```
+Homelab Infrastructure
+```
+
+---
+
+## Assignment
+
+Assets may be assigned to projects independently of ownership.
+
+Example:
+
+```
+Owner
+
+Homelab Infrastructure
+
+Assignment
+
+SprinterOS
+```
+
+Assignments may change without changing ownership.
+
+---
+
+## Lifecycle Management
+
+Every asset shall maintain a lifecycle state.
+
+Current supported lifecycle states:
+
+- Planned
+- Procured
+- Operational
+- Retired
+- Disposed
+
+Lifecycle history belongs in the individual Asset Record.
+
+---
+
+## Parent-Child Relationships
+
+Hardware assets may contain or depend upon other managed assets.
+
+Example:
+
+```
+Engineering Workstation
+
+├── Primary NVMe SSD
+└── Secondary Intel RST Device
+```
+
+Relationships are summarized in this register and documented in detail within the associated Asset Records.
+
+---
+
+## Register Philosophy
+
+This register summarizes the Hardware Domain.
+
+Detailed engineering information shall remain within the corresponding `AST-*` records.
+
+The register shall never duplicate detailed engineering configuration that belongs within individual asset records.
+
+---
+
+# Asset Identifier Standard
+
+All managed hardware assets shall be assigned permanent engineering asset identifiers.
+
+| Prefix | Description |
+|---------|-------------|
+| AST | Engineering Hardware Asset |
+
+Identifiers are sequential, unique, and permanent.
+
+Example:
+
+| Identifier | Description |
+|------------|-------------|
+| AST-000001 | Engineering Workstation |
+| AST-000008 | Engineering Terminal 01 |
+
+Asset identifiers shall never be reused.
+
+---
+
+# Hardware Statistics
+
+## Portfolio Summary
+
+| Metric | Value |
+|--------|------:|
+| Total Managed Assets | 8 |
+| Operational Assets | 8 |
+| Planned Assets | 0 |
+| Procured (Pending Acceptance) | 0 |
+| Retired Assets | 0 |
+| Disposed Assets | 0 |
+
+---
+
+## Asset Categories
+
+| Category | Count |
+|----------|------:|
+| Compute | 3 |
+| Storage | 4 |
+| Recovery Media | 1 |
+
+---
+
+## Project Assignment Summary
+
+| Project | Assigned Assets |
+|---------|----------------:|
+| Homelab Infrastructure | 6 |
+| SprinterOS | 2 |
+| AI Assistant | 0 |
+
+---
+
+# Managed Asset Register
+
+| Asset ID | Engineering Name | Category | Status | Assigned To |
+|----------|------------------|----------|--------|-------------|
+| AST-000001 | Engineering Workstation | Compute | Operational | Homelab Infrastructure |
+| AST-000002 | Primary Internal NVMe SSD | Storage | Operational | AST-000001 |
+| AST-000003 | Secondary Intel RST Device | Storage | Operational | AST-000001 |
+| AST-000004 | WD My Passport Backup Drive | Storage | Operational | Homelab Infrastructure |
+| AST-000005 | BUP Ult Secure Drive | Storage | Operational | Homelab Infrastructure |
+| AST-000006 | SanDisk Recovery USB | Recovery Media | Operational | Homelab Infrastructure |
+| AST-000007 | Raspberry Pi 5 | Compute | Operational | SprinterOS |
+| AST-000008 | Engineering Terminal 01 | Compute | Operational | SprinterOS |
+
+---
+
+# Ownership Summary
+
+## Current Hardware Owner
+
+| Owner | Assets |
+|-------|-------:|
+| Homelab Infrastructure | 8 |
+
+Engineering ownership represents long-term responsibility for hardware lifecycle management.
+
+---
+
+# Assignment Summary
+
+| Assignment | Assets |
+|-----------|-------:|
+| Homelab Infrastructure | 6 |
+| SprinterOS | 2 |
+
+Assignments indicate which engineering project currently utilizes an asset.
+
+Ownership and assignment are intentionally maintained as independent engineering concepts.
+
+---
+
+# Relationship Summary
+
+## Parent-Child Relationships
+
+```text
+AST-000001 Engineering Workstation
+├── AST-000002 Primary Internal NVMe SSD
+└── AST-000003 Secondary Intel RST Device
+```
+
+---
+
+## Procurement Relationships
+
+```text
+PROC-000001
+└── AST-000008 Engineering Terminal 01
+```
+
+---
+
+## Project Relationships
+
+```text
+SprinterOS
+├── AST-000007 Raspberry Pi 5
+└── AST-000008 Engineering Terminal 01
+```
+
+---
+
+# Hardware Reporting
+
+## Current Engineering Hardware Inventory
+
+| Type | Count |
+|------|------:|
+| Engineering Workstations | 1 |
+| Engineering Terminals | 1 |
+| Single Board Computers | 1 |
+| Storage Devices | 4 |
+| Recovery Media | 1 |
+
+---
+
+## Engineering Portfolio Snapshot
+
+The engineering portfolio currently manages eight operational hardware assets.
+
+All managed hardware assets have individual engineering asset records.
+
+All managed assets are operational.
+
+No assets are currently planned, retired, or disposed.
+
+---
+
+# Related Controlled Documents
+
+## Portfolio Governance
+
+| Document | Purpose |
+|----------|---------|
+| DOC-0001 | Repository Document Index |
+| PROJ-0001 | Project State |
+| EDR-0001 | Hardware Asset Record Architecture |
+
+---
+
+## Infrastructure
+
+| Document | Purpose |
+|----------|---------|
+| INF-0001 | Engineering Infrastructure Baseline |
+
+---
+
+## Finance
+
+| Document | Purpose |
+|----------|---------|
+| FIN-0001 | Master Financial Ledger |
+| FIN-0002 | Master Procurement Register |
+| PROC-* | Procurement Records |
+| TRX-* | Financial Transaction Records |
+
+---
+
+## Hardware Records
+
+Individual hardware assets are documented in the following controlled records.
+
+| Asset Record | Description |
+|-------------|-------------|
+| AST-000001 | Engineering Workstation |
+| AST-000002 | Primary Internal NVMe SSD |
+| AST-000003 | Secondary Intel RST Device |
+| AST-000004 | WD My Passport Backup Drive |
+| AST-000005 | BUP Ult Secure Drive |
+| AST-000006 | SanDisk Recovery USB |
+| AST-000007 | Raspberry Pi 5 |
+| AST-000008 | Engineering Terminal 01 |
+
+---
+
+# Engineering Reporting Policy
+
+The Master Hardware Register provides a portfolio-level summary of managed engineering hardware.
+
+It is not intended to duplicate the detailed technical information contained within individual Asset Records.
+
+Engineering reports, dashboards, and future Engineering Management Platform services shall derive hardware portfolio information from this register and the associated `AST-*` records.
+
+---
+
+# Engineering Notes
+
+The Hardware Domain is the first completed engineering asset domain within the portfolio.
+
+It establishes the portfolio standards for:
+
+- Evidence-backed asset management
+- Permanent engineering identifiers
+- Ownership versus assignment
+- Parent-child asset relationships
+- Lifecycle management
+- Portfolio reporting
+- Cross-domain traceability
+
+Future engineering domains should follow this same register-and-record architecture.
+
+---
+
+# Future Engineering Direction
+
+Planned enhancements include:
+
+- Hardware Asset Classification Standard (`HW-0002`)
+- Automated hardware discovery
+- Relationship validation tooling
+- Asset lifecycle automation
+- Asset depreciation and valuation integration
+- Engineering Management Platform synchronization
+
+These enhancements shall build upon the governance established by this register without altering its fundamental architecture.
+
+---
+
+# Revision History
+
+| Version | Date | Description |
+|----------|------|-------------|
+| 1.0 | 2026-07-06 | Initial Master Hardware Register established and integrated with AST-000001 through AST-000008. |
