@@ -28,9 +28,11 @@ The objectives are:
 
 # Design Principles
 
-## Single Source of Truth
+## Source of Truth
 
-Git repositories are the authoritative source for:
+Authoritative Engineering Records are the source of engineering truth.
+
+Git repositories are controlled, versioned publications for:
 
 * Documentation
 * Configuration
@@ -59,10 +61,10 @@ The operating system should remain as clean as possible.
 
 ### Development Workspace
 
-Location:
+EOS repository workspace:
 
 ```
-~/Development/
+/data/engineering/repositories/
 ```
 
 Contains:
@@ -74,7 +76,9 @@ Contains:
 * Web Scrapers
 * Experimental Projects
 
-Only source code belongs here.
+Only source code and controlled repository publications belong here.
+
+Legacy `~/Development/` paths are not authoritative for EOS-managed repositories.
 
 ---
 
@@ -444,4 +448,3 @@ Prefer open standards.
 Protect privacy.
 
 Leave the platform in a better state after every change.
-

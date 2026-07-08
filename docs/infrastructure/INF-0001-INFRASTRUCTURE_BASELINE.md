@@ -2,11 +2,11 @@
 
 document_id: INF-0001
 title: Engineering Infrastructure Baseline
-version: 1.0
+version: 1.3
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-06
+last_updated: 2026-07-08
 phase: Mission 0 / Phase 0.1
 domain: Infrastructure
 classification: Global Infrastructure Baseline
@@ -61,6 +61,32 @@ This document shall be reviewed during the Work Initiation Ritual whenever engin
 
 ---
 
+# Engineering Terminal Privilege Model
+
+Standard non-elevated user terminals are the default execution environment for normal engineering workflows.
+
+Normal engineering workflows include:
+
+* SSH
+* Codex
+* Git
+* Editing
+* Documentation
+* Repository operations
+
+Elevated or administrative terminals shall be used only for tasks that explicitly require administrative privileges.
+
+Administrative tasks include:
+
+* System service changes
+* Driver configuration
+* Firewall administration
+* Operating system maintenance
+
+This principle preserves least privilege, reduces accidental system-level changes, improves reproducibility, and avoids clipboard or session isolation issues observed when running administrator terminal sessions.
+
+---
+
 # Current Engineering Workstation
 
 | Item             | Current Baseline                      |
@@ -96,10 +122,15 @@ This section represents the approved engineering target rather than the current 
 
 # Repository Locations
 
-| Repository | Location                           |
-| ---------- | ---------------------------------- |
-| Homelab    | `/home/loneal/Projects/homelab`    |
-| SprinterOS | `/home/loneal/Projects/SprinterOS` |
+| Repository | Location | Status |
+| ---------- | -------- | ------ |
+| Homelab | `/data/engineering/repositories/homelab` | Current |
+| Shared Libraries | `/data/engineering/repositories/shared-libraries` | Current |
+| SprinterOS | `/data/engineering/repositories/SprinterOS` | Planned / not currently present |
+
+The EOS repository workspace is `/data/engineering/repositories`.
+
+Legacy locations under `/home/loneal/Projects` are not authoritative.
 
 Additional repositories shall be registered as they are promoted into the engineering portfolio.
 
@@ -169,6 +200,10 @@ Additional repositories shall be registered as they are promoted into the engine
 | GNU Make | 4.3     |
 | Vim      | 8.2     |
 | jq       | 1.6     |
+| CUPS     | 2.4.1   |
+| Avahi    | 0.8     |
+| bwrap    | 0.6.1   |
+| UFW      | 0.36.1  |
 
 ---
 
@@ -179,10 +214,45 @@ The following services form part of the global engineering environment.
 * Docker
 * Containerd
 * SSH
-* UFW
 * SMART Monitoring
 * NetworkManager
 * systemd-resolved
+* CUPS
+* Avahi
+* UFW
+
+## Firewall Baseline
+
+| Item            | Current Baseline                                                       |
+| --------------- | ---------------------------------------------------------------------- |
+| Firewall Tool   | UFW                                                                    |
+| Status          | Active and enabled at startup                                          |
+| Incoming Policy | Deny                                                                   |
+| Outgoing Policy | Allow                                                                  |
+| Routed Policy   | Disabled                                                               |
+| SSH Access      | TCP/22 allowed from `10.0.0.0/24` only                                 |
+| CUPS Access     | TCP/631 allowed from `10.0.0.0/24` only                                |
+| mDNS Access     | UDP/5353 allowed from `10.0.0.0/24` only                               |
+| IPv6 Policy     | UFW IPv6 handling disabled; exposed services configured IPv4-only.     |
+
+System-wide IPv6 remains enabled. Public service exposure over IPv6 is intentionally disabled at the service configuration layer for SSH, CUPS, and Avahi.
+
+## Print Service Baseline
+
+| Item              | Current Baseline                        |
+| ----------------- | --------------------------------------- |
+| Print Scheduler   | CUPS                                    |
+| Discovery Service | Avahi / DNS-SD                          |
+| Web Interface     | Enabled                                 |
+| Listen Address    | IPv4 TCP/631                            |
+| Local Access      | `http://localhost:631`                  |
+| Network Access    | `http://10.0.0.35:631`                  |
+| Printer Queue     | Engineering_HP_OfficeJet_Pro_8020       |
+| Printer Device    | HP OfficeJet Pro 8020 series [9D4237]   |
+| Printer Address   | `10.0.0.239`                            |
+| Driver Model      | Driverless IPPS                         |
+| Firewall Status   | LAN-only via UFW                        |
+| Test Print        | Job `Engineering_HP_OfficeJet_Pro_8020-1` accepted and cleared from the CUPS queue. |
 
 No failed systemd services were present when this baseline was established.
 
@@ -240,4 +310,6 @@ These targets describe the intended engineering direction and shall be updated a
 | Version | Date       | Description                                                     |
 | ------- | ---------- | --------------------------------------------------------------- |
 | 1.0     | 2026-07-06 | Initial global engineering infrastructure baseline established. |
-
+| 1.1     | 2026-07-08 | Added engineering print service and LAN-only firewall baseline. |
+| 1.2     | 2026-07-08 | Added engineering terminal privilege model.                     |
+| 1.3     | 2026-07-08 | Reconciled repository locations with EOS workspace authority.   |

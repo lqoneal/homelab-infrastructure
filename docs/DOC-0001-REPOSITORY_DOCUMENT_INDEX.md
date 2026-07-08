@@ -1,44 +1,43 @@
 ---
-
 document_id: DOC-0001
 title: Repository Document Index
-version: 1.0
+version: 1.1
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-06
-phase: Mission 0 / Phase 0.1
+last_updated: 2026-07-08
+phase: Architecture Stabilization Sprint
 domain: Repository Governance
 classification: Repository Document Index
 source_of_truth: true
 related_documents:
-
-* PROJ-0001
-* INF-0001
-  tags:
-* repository
-* governance
-* documentation
-* index
-* source-of-truth
-
+  - PROJ-0001
+  - INF-0001
+  - EOS-0001
+  - EDR-0002
+tags:
+  - repository
+  - governance
+  - documentation
+  - index
+  - source-of-truth
 ---
 
 # Repository Document Index
 
 ## Purpose
 
-This document is the authoritative index for all controlled engineering documents contained within the Homelab repository.
+This document is the authoritative index for controlled engineering records contained within the Homelab repository.
 
 It serves as the primary navigation document for engineers, automation, and future Engineering Management Platform tooling.
 
-All controlled engineering documents shall be registered in this document.
+All controlled engineering documents shall be registered in this document or explicitly identified as legacy published documents pending migration or archival.
 
 ---
 
 # Repository Purpose
 
-The Homelab repository is the authoritative source for the engineering environment supporting the entire portfolio.
+The Homelab repository is the controlled publication for the engineering environment supporting the portfolio.
 
 It owns the global engineering infrastructure, including:
 
@@ -63,7 +62,7 @@ Every engineering session shall begin by reviewing the repository in the followi
 3. Review this document.
 4. Review applicable infrastructure baseline documents.
 5. Review the Project State document.
-6. Review the active Phase document.
+6. Review the active sprint or work order.
 7. Review task-specific controlled documents.
 8. Review Git branch, commit, and working tree.
 9. Resume implementation.
@@ -72,19 +71,25 @@ Every engineering session shall begin by reviewing the repository in the followi
 
 # Controlled Document Classification
 
-| Prefix  | Description                          |
-| ------- | ------------------------------------ |
-| DOC     | Repository governance and navigation |
-| PROJ    | Project state and execution          |
-| PHASE   | Mission and phase execution plans    |
-| INF     | Infrastructure documentation         |
-| HW      | Hardware documentation               |
-| FIN     | Financial documentation              |
-| SPEC    | Technical specifications             |
-| STD     | Engineering standards                |
-| ADR     | Architecture Decision Records        |
-| EDR     | Engineering Decision Records         |
-| JOURNAL | Engineering history and milestones   |
+| Prefix | Description |
+| ------ | ----------- |
+| DOC | Repository governance and navigation |
+| PROJ | Project state and execution |
+| PHASE | Mission and phase execution plans |
+| EOS | Engineering Operating System governance |
+| INF | Infrastructure documentation |
+| HW | Hardware documentation |
+| AST | Engineering hardware asset records |
+| FIN | Financial documentation |
+| PROC | Procurement records |
+| TRX | Financial transaction records |
+| SPEC | Technical specifications |
+| SERVICE | Engineering service catalogs |
+| STD | Engineering standards |
+| ADR | Architecture Decision Records |
+| EDR | Engineering Decision Records |
+| MILESTONE | Engineering milestone records |
+| JOURNAL | Engineering history and milestones |
 
 ---
 
@@ -121,31 +126,77 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 
 # Controlled Documents
 
-| Document ID | Title                     | Status  | Owner                  |
-| ----------- | ------------------------- | ------- | ---------------------- |
-| DOC-0001    | Repository Document Index | Active  | Homelab Infrastructure |
-| PROJ-0001   | Project State             | Active  | Homelab Infrastructure |
-| INF-0001    | Infrastructure Baseline   | Planned | Homelab Infrastructure |
-| HW-0001     | Master Hardware Register  | Planned | Homelab Infrastructure |
-| FIN-0001    | Financial Ledger          | Planned | Homelab Infrastructure |
-| FIN-0002    | Procurement Log           | Planned | Homelab Infrastructure |
+| Document ID | Title | Status | Owner | Path |
+| ----------- | ----- | ------ | ----- | ---- |
+| DOC-0001 | Repository Document Index | Active | Homelab Infrastructure | `docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md` |
+| PROJ-0001 | Project State | Active | Homelab Infrastructure | `docs/project/PROJ-0001-PROJECT_STATE.md` |
+| INF-0001 | Engineering Infrastructure Baseline | Active | Homelab Infrastructure | `docs/infrastructure/INF-0001-INFRASTRUCTURE_BASELINE.md` |
+| HW-0001 | Master Hardware Register | Active | Homelab Infrastructure | `docs/hardware/HW-0001-MASTER_HARDWARE_REGISTER.md` |
+| EDR-0001 | Hardware Asset Record Architecture | Approved | Homelab Infrastructure | `docs/edr/EDR-0001-HARDWARE_ASSET_RECORD_ARCHITECTURE.md` |
+| EDR-0002 | Engineering Authority Model | Draft | EOS Program | `docs/edr/EDR-0002-ENGINEERING_AUTHORITY_MODEL.md` |
+| EOS-0001 | Engineering Operating System Constitution | Draft | EOS Program | `docs/eos/EOS-0001-ENGINEERING_OPERATING_SYSTEM_CONSTITUTION.md` |
+| EOS-0002 | Engineering Operating System Master Plan | Draft | EOS Program | `docs/eos/EOS-0002-ENGINEERING_OPERATING_SYSTEM_MASTER_PLAN.md` |
+| SPEC-0001 | Controlled Document Model | Draft | EOS Program | `docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md` |
+| SPEC-0004 | Engineering Context Reconstruction Service | Draft | EOS Program | `docs/specifications/SPEC-0004-ENGINEERING_CONTEXT_RECONSTRUCTION_SERVICE.md` |
+| SPEC-0005 | Engineering Control Framework | Draft | EOS Program | `docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md` |
+| SERVICE-0001 | EOS Core Services Catalog | Draft | EOS Program | `docs/services/SERVICE-0001-EOS_CORE_SERVICES_CATALOG.md` |
+| FIN-0001 | Master Financial Ledger | Active | Homelab Infrastructure | `docs/finance/FIN-0001-MASTER_FINANCIAL_LEDGER.md` |
+| FIN-0002 | Master Procurement Register | Active | Homelab Infrastructure | `docs/finance/FIN-0002-MASTER_PROCUREMENT_REGISTER.md` |
+| PROC-000001 | Engineering Terminal 01 Procurement | Closed | Homelab Infrastructure | `docs/finance/procurements/PROC-000001.md` |
+| TRX-000001 | Procurement Transaction - Engineering Terminal 01 | Posted | Homelab Infrastructure | `docs/finance/transactions/TRX-000001.md` |
+| MILESTONE-0001 | Hardware Domain Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-06-hardware-domain-complete.md` |
 
 This table shall be updated whenever a controlled document is created, superseded, or archived.
 
 ---
 
+# Controlled Asset Records
+
+The following hardware asset records are controlled engineering records governed by `HW-0001`.
+
+They currently use `asset_id` metadata rather than `document_id` metadata and are classified as legacy-format controlled records pending migration or explicit exemption.
+
+| Asset ID | Title | Status | Owner | Path |
+| -------- | ----- | ------ | ----- | ---- |
+| AST-000001 | Engineering Workstation | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000001.md` |
+| AST-000002 | Primary Internal NVMe SSD | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000002.md` |
+| AST-000003 | Secondary Intel RST Device | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000003.md` |
+| AST-000004 | WD My Passport Backup Drive | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000004.md` |
+| AST-000005 | BUP Ult Secure Drive | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000005.md` |
+| AST-000006 | SanDisk Recovery USB | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000006.md` |
+| AST-000007 | Raspberry Pi 5 | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000007.md` |
+| AST-000008 | Engineering Terminal 01 | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000008.md` |
+
+---
+
+# Legacy Published Documents
+
+The following repository documents predate the current controlled document model.
+
+They remain useful published references but require migration, replacement, or archival during the Governance Codification Sprint.
+
+| Path | Current Role | Reconciliation Classification |
+| ---- | ------------ | ----------------------------- |
+| `docs/architecture.md` | Legacy architecture publication | Legacy Artifact |
+| `docs/roadmap.md` | Legacy roadmap publication | Legacy Artifact |
+
+---
+
 # Source of Truth
 
-Each engineering artifact shall have one authoritative owner.
+Engineering knowledge is governed by Authoritative Engineering Records.
+
+The repository is a controlled, versioned publication of those records and the supporting implementation artifacts.
 
 Examples:
 
-* Engineering workstation → Homelab
-* Repository governance → DOC documents
-* Project execution → PROJ documents
-* Mission planning → PHASE documents
-* Hardware inventory → HW documents
-* Financial records → FIN documents
+* Engineering workstation baseline -> INF documents
+* Repository governance -> DOC documents
+* Project execution -> PROJ documents
+* EOS governance -> EOS documents
+* Engineering authority -> EDR documents
+* Hardware inventory -> HW and AST records
+* Financial records -> FIN, PROC, and TRX records
 
 Duplication of controlled engineering information is prohibited.
 
@@ -153,20 +204,19 @@ Duplication of controlled engineering information is prohibited.
 
 # Engineering Principles
 
-The Homelab repository follows the Engineering Constitution approved for the portfolio.
+The Homelab repository follows the Engineering Operating System governance records approved for the portfolio.
 
 The governing principles include:
 
-* Single Source of Truth
-* Separation of Responsibilities
-* Standards Before Automation
-* Reproducibility
+* One authoritative source
+* Capture once, publish many
+* Views are not records
+* Inventory before design
+* Architecture before implementation
+* Validation before publication
+* Resumability by design
 * Traceability
-* Layered Architecture
-* Controlled Documentation
-* Automation as an Engineer
-* Human Authority
-* Foundation Before Features
+* Relationships are first-class
 
 ---
 
@@ -182,7 +232,7 @@ The future Engineering Management Platform will govern engineering standards whi
 
 # Revision History
 
-| Version | Date       | Description                              |
-| ------- | ---------- | ---------------------------------------- |
-| 1.0     | 2026-07-06 | Initial controlled document established. |
-
+| Version | Date | Description |
+| ------- | ---- | ----------- |
+| 1.0 | 2026-07-06 | Initial controlled document established. |
+| 1.1 | 2026-07-08 | Reconciled controlled document inventory for Architecture Baseline 2.1. |

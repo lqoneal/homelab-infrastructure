@@ -1,12 +1,12 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 2.0
+version: 2.1
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-07
-phase: Sprint 0.3 — Engineering Platform Bring-up
+last_updated: 2026-07-08
+phase: Architecture Stabilization Sprint
 source_of_truth: true
 tags:
   - project-state
@@ -22,25 +22,21 @@ tags:
 
 This document is the primary project resume point for Homelab Infrastructure.
 
-It summarizes the current project state and identifies the next task to perform.
+It summarizes the current project state and identifies the next approved engineering action.
 
 ---
 
 # Last Updated
 
-**Date:** 2026-07-07
+**Date:** 2026-07-08
 
 **Session Summary:**
 
-- Built Engineering Workstation Reference Implementation 001.
-- Completed first boot of the Engineering Operating System.
-- Established EOS workspace at `/data/engineering`.
-- Restored Homelab repository into EOS repository workspace.
-- Restored shared controller framework.
-- Restored Git identity and SSH access.
-- Switched Homelab remote to SSH.
-- Updated `homelabctl` to resolve EOS-native paths.
-- Created EOS checkpoint for Homelab GitHub restoration.
+- Reconciled Homelab repository records with Architecture Baseline 2.1.
+- Preserved the EOS workspace at `/data/engineering`.
+- Verified Homelab repository root at `/data/engineering/repositories/homelab`.
+- Reconciled documentation inventory, authority statements, repository locations, and hardware decision traceability.
+- Recorded governance findings for the next sprint without implementing new architecture.
 
 ---
 
@@ -54,7 +50,7 @@ Build the Engineering Operating System foundation for AI Assistant, SprinterOS, 
 
 **Current Overall Goal:**
 
-Bring EOS core services online on top of EWRI-001.
+Stabilize Architecture Baseline 2.1 and prepare the repository for commit.
 
 ---
 
@@ -62,11 +58,11 @@ Bring EOS core services online on top of EWRI-001.
 
 **Current Phase:**
 
-Sprint 0.3 — Engineering Platform Bring-up
+Architecture Stabilization Sprint
 
 **Phase Objective:**
 
-Restore the Homelab engineering ecosystem onto the new EOS workstation, reconnect control tooling, validate the platform, and prepare the documentation governance sprint.
+Eliminate documentation drift, reconcile engineering records, validate repository consistency, and determine whether Architecture Baseline 2.1 is ready for commit.
 
 ---
 
@@ -96,14 +92,6 @@ Restore the Homelab engineering ecosystem onto the new EOS workstation, reconnec
 
 `/data/engineering/repositories/homelab/scripts/homelabctl`
 
-**Backup Mount**
-
-`/mnt/passport`
-
-**Backup Source**
-
-`/mnt/passport/homelab-backups/2026-07-06`
-
 ---
 
 # 4. Current Status
@@ -117,20 +105,19 @@ Restore the Homelab engineering ecosystem onto the new EOS workstation, reconnec
 - Configured headless operating mode.
 - Restored Git identity.
 - Restored GitHub SSH access.
-- Restored Homelab repository.
+- Restored Homelab repository into the EOS workspace.
 - Restored shared controller framework.
 - Restored `homelabctl resume` functionality.
-- Updated `homelabctl` to use EOS-native paths.
-- Updated `doctor.sh`, `verify.sh`, `bootstrap.sh`, and `configs/directories.txt` to use EOS-native paths.
+- Updated controller tooling to use EOS-native paths.
+- Established Architecture Baseline 2.1 provisional records.
+- Reconciled Architecture Baseline 2.1 documentation drift.
 
 ## Active Issues
 
-- Documentation inventory is incomplete.
-- Several untracked controlled documents need review.
-- Documentation inventory is incomplete.
-- Documentation governance records still need to be written.
-- Architecture documentation still states that Git repositories are authoritative, which conflicts with the approved EOS authority model.
-- BUILD-0001, VALID-0001, EDR-0002, and documentation governance records still need to be written or updated.
+- Architecture Baseline 2.1 remains provisional until commit readiness is approved.
+- Governance Codification Sprint has not started.
+- Some legacy published documents remain outside the controlled document model and require future migration or formal archival.
+- Current working tree contains intentional reconciliation changes pending review.
 
 ---
 
@@ -138,57 +125,59 @@ Restore the Homelab engineering ecosystem onto the new EOS workstation, reconnec
 
 **Current Task:**
 
-Develop the fully operational EOS resume function.
+Complete Architecture Baseline 2.1 reconciliation and determine commit readiness.
 
 **Next Immediate Step:**
 
-Implement resume so it reports current project state, EOS checkpoint, working tree status, documentation impact queue, and next action from the most current local records.
+Review reconciliation changes, validate repository state, and commit only after human approval.
 
 ---
 
 # 6. Documentation Impact Queue
 
-The following documents require creation or update as a result of EWRI-001 and EOS bring-up:
+## Completed During Architecture Stabilization
 
-## New Documents Required
+- DOC-0001 — Repository Document Index reconciled with current controlled records.
+- INF-0001 — Repository locations and engineering workstation practice reconciled.
+- EDR-0001 — Hardware Asset Record Architecture restored as a controlled decision record.
+- EDR-0002 — Engineering Authority Model present as Draft 1.0.
+- `docs/architecture.md` — Authority and workspace statements reconciled with EOS authority model.
 
-- EDR-0002 — Engineering Operating System Authority
-- SPEC-0001 — Engineering Workstation Baseline
-- SPEC-0002 — EOS Workspace Specification
-- SPEC-0003 — Publishing Engine Specification
-- SPEC-0004 — Resume Framework Specification
-- VALID-0001 — Engineering Workstation Acceptance Validation
-- EIR-0001 — Engineering Impact Register
-- DIA-0001 — Documentation Impact Assessment for BUILD-0001
+## Deferred To Governance Codification Sprint
 
-## Existing Documents Requiring Review
-
-- DOC-0001 — Repository Document Index
-- INF-0001 — Engineering Infrastructure Baseline
-- HW-0001 — Master Hardware Register
-- EDR-0001 — Hardware Asset Record Architecture
-- `docs/architecture.md`
-- `docs/roadmap.md`
-- `scripts/doctor.sh`
-- `scripts/verify.sh`
-- `scripts/bootstrap.sh`
+- BUILD-0001 — Engineering Workstation Build Record.
+- VALID-0001 — Engineering Workstation Acceptance Validation.
+- EIR-0001 — Engineering Impact Register.
+- DIA-0001 — Documentation Impact Assessment.
+- Formal migration or archival of legacy published documents without `document_id`.
 
 ---
 
-# 7. Operating Rules
+# 7. Governance Findings Register
+
+| Identifier | Description | Evidence | Classification | Recommended Sprint | Requires Governance Approval |
+| ---------- | ----------- | -------- | -------------- | ------------------ | ---------------------------- |
+| GF-0001 | Legacy published documents exist without controlled document metadata. | `docs/architecture.md`, `docs/roadmap.md`, `docs/hardware/assets/AST-*.md` | Intentional Deferral | Governance Codification Sprint | Yes |
+| GF-0002 | Build, validation, impact, and DIA records remain deferred. | Documentation Impact Queue | Intentional Deferral | Governance Codification Sprint | Yes |
+| GF-0003 | Architecture Baseline 2.1 remains provisional until reconciliation changes are reviewed and committed. | Current sprint state | Documentation Drift | Architecture Stabilization Sprint | No |
+| GF-0004 | Runtime controller implementation is operational but not fully governed by validation records. | `scripts/engctl`, `scripts/homelabctl`, `scripts/lib/eos/context.sh` | Intentional Deferral | Governance Codification Sprint | Yes |
+
+---
+
+# 8. Operating Rules
 
 - Inventory before redesign.
 - Do not create a document until proving it does not already exist.
 - Do not create a feature until proving it does not already exist.
 - Controlled documents are replaced as complete documents, not partial edits.
-- EOS is the operational source of truth.
+- EOS authoritative records govern engineering truth.
 - Repositories are controlled, versioned publications of EOS records.
 - Engineering work should be captured once and published automatically.
 - Every long-running engineering activity must be resumable.
 
 ---
 
-# 8. Resume Procedure
+# 9. Resume Procedure
 
 1. Run:
 
@@ -197,11 +186,11 @@ The following documents require creation or update as a result of EWRI-001 and E
 2. Review this document.
 3. Confirm the working tree status.
 4. Continue with the current sprint objectives.
-5. Do not begin new feature work until repository and documentation inventory are complete.
+5. Do not begin the Governance Codification Sprint until Architecture Baseline 2.1 has been committed or formally rejected.
 
 ---
 
-# 9. Notes to ChatGPT
+# 10. Notes to ChatGPT
 
 When resuming this project:
 
@@ -209,5 +198,14 @@ When resuming this project:
 - Treat `/data/engineering/repositories/homelab` as the canonical Homelab repository.
 - Treat `/data/engineering/repositories/shared-libraries` as the canonical shared controller framework.
 - Do not use `/home/loneal/Projects` or `/home/loneal/Development` as authoritative locations.
-- Continue from Sprint 0.3 — Engineering Platform Bring-up.
-- Complete repository inventory before beginning new feature development.
+- Continue from the Architecture Stabilization Sprint until commit readiness has been resolved.
+- Do not begin Governance Codification Sprint work without explicit authorization.
+
+---
+
+# Revision History
+
+| Version | Date       | Description |
+| ------- | ---------- | ----------- |
+| 2.0     | 2026-07-07 | Recorded EOS workspace restoration state. |
+| 2.1     | 2026-07-08 | Reconciled project state for Architecture Baseline 2.1. |
