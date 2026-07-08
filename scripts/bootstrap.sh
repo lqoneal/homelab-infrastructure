@@ -27,11 +27,13 @@ install_ctl() {
     echo "OK: installed $name -> $target_path"
 }
 
+install_ctl "engctl" "$REPOSITORIES_DIR/homelab/scripts/engctl"
 install_ctl "homelabctl" "$REPOSITORIES_DIR/homelab/scripts/homelabctl"
 install_ctl "sprinterctl" "$REPOSITORIES_DIR/SprinterOS/scripts/sprinterctl"
 
 echo
 echo "Verifying..."
+command -v engctl || true
 command -v homelabctl || true
 command -v sprinterctl || true
 

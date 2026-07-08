@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+EOS_WORKSPACE="${EOS_WORKSPACE:-/data/engineering}"
+ECRS_PATH="${ECRS_PATH:-$EOS_WORKSPACE/repositories/homelab/scripts/lib/eos/context.sh}"
+
+if [[ ! -f "$ECRS_PATH" ]]; then
+    echo "ERROR: missing EOS context service:"
+    echo "$ECRS_PATH"
+    exit 1
+fi
+
+source "$ECRS_PATH"
+
+usage() {
+    echo "Usage: engctl {resume|status|doctor|version|help} [project]"
+}
+
+cmd="${1:-help}"
+project="${2:-homelab}"
+
+case "$cmd" in
+    resume)
+        eos_render_resume "$project"
+        ;;
+    status)
+        eos_git_summary "$project"
+        ;;
+    doctor)
+        bash "$EOS_WORKSPACE/repositories/homelab/scripts/doctor.sh"
+        ;;
+    version)
+        echo "engctl version 0.1.0"
+        ;;
+    help|-h|--help)
+        usage
+        ;;
+    *)
+        echo "Unknown command: $cmd"
+        usage
+        exit 1
+        ;;
+esac

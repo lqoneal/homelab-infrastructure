@@ -2,22 +2,13 @@
 
 set -Eeuo pipefail
 
-PROJECT_COMMAND="homelabctl"
-PROJECT_NAME="Homelab"
-PROJECT_DISPLAY_NAME="HOMELAB RESUME"
-
 EOS_WORKSPACE="${EOS_WORKSPACE:-/data/engineering}"
-PROJECT_ROOT="${HOMELAB_ROOT:-$EOS_WORKSPACE/repositories/homelab}"
-PROJECT_STATE="$PROJECT_ROOT/docs/project/PROJ-0001-PROJECT_STATE.md"
+ENGCTL_PATH="${ENGCTL_PATH:-$EOS_WORKSPACE/repositories/homelab/scripts/engctl}"
 
-PROJECTCTL_PATH="${PROJECTCTL_PATH:-$EOS_WORKSPACE/repositories/shared-libraries/shell/projectctl/projectctl.sh}"
-
-if [[ ! -f "$PROJECTCTL_PATH" ]]; then
-    echo "ERROR: missing projectctl framework:"
-    echo "$PROJECTCTL_PATH"
+if [[ ! -f "$ENGCTL_PATH" ]]; then
+    echo "ERROR: missing engctl:"
+    echo "$ENGCTL_PATH"
     exit 1
 fi
 
-source "$PROJECTCTL_PATH"
-
-projectctl_main "$@"
+exec "$ENGCTL_PATH" "${1:-resume}" homelab
