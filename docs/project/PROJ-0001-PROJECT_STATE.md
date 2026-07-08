@@ -1,46 +1,46 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 1.1
+version: 2.0
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-06
-phase: Mission 0 / Phase 0.1
+last_updated: 2026-07-07
+phase: Sprint 0.3 — Engineering Platform Bring-up
 source_of_truth: true
 tags:
   - project-state
   - checkpoint
   - resume
   - homelabctl
+  - eos
 ---
 
 # Project State
 
 ## Purpose
 
-This document is the primary project resume point for Homelab Infrastructure. It summarizes the current project state and identifies the next task to perform.
+This document is the primary project resume point for Homelab Infrastructure.
+
+It summarizes the current project state and identifies the next task to perform.
 
 ---
 
 # Last Updated
 
-**Date:** 2026-07-06
+**Date:** 2026-07-07
 
 **Session Summary:**
 
-- Moved Homelab repository to canonical project location:
-  - `/home/loneal/Projects/homelab`
-- Added `homelabctl` project controller.
-- Standardized `homelabctl` and `sprinterctl` through shared `projectctl` framework.
-- Added Homelab bootstrap script for controller installation.
-- Verified backup destination for Phase 0.1 Level 1:
-  - Device: `/dev/sdb1`
-  - Mount point: `/media/loneal/My Passport`
-  - Filesystem: NTFS via `ntfs3`
-  - Capacity: 3.7T
-  - Available: 3.4T
-  - SMART result: PASSED
+- Built Engineering Workstation Reference Implementation 001.
+- Completed first boot of the Engineering Operating System.
+- Established EOS workspace at `/data/engineering`.
+- Restored Homelab repository into EOS repository workspace.
+- Restored shared controller framework.
+- Restored Git identity and SSH access.
+- Switched Homelab remote to SSH.
+- Updated `homelabctl` to resolve EOS-native paths.
+- Created EOS checkpoint for Homelab GitHub restoration.
 
 ---
 
@@ -50,11 +50,11 @@ This document is the primary project resume point for Homelab Infrastructure. It
 
 **Project Vision:**
 
-Build a dedicated Linux engineering workstation and future homelab foundation for AI Assistant, SprinterOS, business automation, data storage, backups, and local services.
+Build the Engineering Operating System foundation for AI Assistant, SprinterOS, business automation, data storage, backups, local services, and future engineering platforms.
 
 **Current Overall Goal:**
 
-Complete Mission 0 — Hardware Foundation.
+Bring EOS core services online on top of EWRI-001.
 
 ---
 
@@ -62,100 +62,152 @@ Complete Mission 0 — Hardware Foundation.
 
 **Current Phase:**
 
-Mission 0 / Phase 0.1 — Recoverable Baseline
+Sprint 0.3 — Engineering Platform Bring-up
 
 **Phase Objective:**
 
-Create a verified recovery baseline before changing partitions, storage layout, memory configuration, or hardware-level settings.
-
-**Definition of Done:**
-
-Phase 0.1 is complete when current system information is captured, user data and system configuration are backed up, backup integrity is verified, and recovery instructions are created.
+Restore the Homelab engineering ecosystem onto the new EOS workstation, reconnect control tooling, validate the platform, and prepare the documentation governance sprint.
 
 ---
 
-# 3. Current Task
+# 3. Current Environment
+
+**Engineering Workstation**
+
+`EWRI-001`
+
+**Hostname**
+
+`thaDuke`
+
+**EOS Workspace**
+
+`/data/engineering`
+
+**Homelab Repository**
+
+`/data/engineering/repositories/homelab`
+
+**Shared Libraries**
+
+`/data/engineering/repositories/shared-libraries`
+
+**Controller**
+
+`/data/engineering/repositories/homelab/scripts/homelabctl`
+
+**Backup Mount**
+
+`/mnt/passport`
+
+**Backup Source**
+
+`/mnt/passport/homelab-backups/2026-07-06`
+
+---
+
+# 4. Current Status
+
+## Completed
+
+- Verified Phase 0.1 backup.
+- Built EOS manually using debootstrap.
+- Created GPT/LVM storage architecture.
+- Installed bootloader and completed first boot.
+- Configured headless operating mode.
+- Restored Git identity.
+- Restored GitHub SSH access.
+- Restored Homelab repository.
+- Restored shared controller framework.
+- Restored `homelabctl resume` functionality.
+- Updated `homelabctl` to use EOS-native paths.
+- Updated `doctor.sh`, `verify.sh`, `bootstrap.sh`, and `configs/directories.txt` to use EOS-native paths.
+
+## Active Issues
+
+- Documentation inventory is incomplete.
+- Several untracked controlled documents need review.
+- Documentation inventory is incomplete.
+- Documentation governance records still need to be written.
+- Architecture documentation still states that Git repositories are authoritative, which conflicts with the approved EOS authority model.
+- BUILD-0001, VALID-0001, EDR-0002, and documentation governance records still need to be written or updated.
+
+---
+
+# 5. Current Task
 
 **Current Task:**
 
-Task 0.1.2 — Capture System Information
-
-**Current Progress:**
-
-- Task 0.1.1 — Verify Backup Destination is complete.
-- Backup drive selected and verified:
-  - `/dev/sdb1`
-  - `/media/loneal/My Passport`
-  - 3.4T available
-  - write test passed
-  - SMART health passed
+Develop the fully operational EOS resume function.
 
 **Next Immediate Step:**
 
-Capture the current system state before backup and partition optimization.
+Implement resume so it reports current project state, EOS checkpoint, working tree status, documentation impact queue, and next action from the most current local records.
 
 ---
 
-# 4. Remaining Phase 0.1 Tasks
+# 6. Documentation Impact Queue
 
-- Capture System Information
-- Back Up User Data
-- Back Up System Configuration
-- Back Up Infrastructure Repository
-- Verify Backup Integrity
-- Create Recovery Instructions
-- Phase Closeout
+The following documents require creation or update as a result of EWRI-001 and EOS bring-up:
 
----
+## New Documents Required
 
-# 5. Current Environment
+- EDR-0002 — Engineering Operating System Authority
+- SPEC-0001 — Engineering Workstation Baseline
+- SPEC-0002 — EOS Workspace Specification
+- SPEC-0003 — Publishing Engine Specification
+- SPEC-0004 — Resume Framework Specification
+- VALID-0001 — Engineering Workstation Acceptance Validation
+- EIR-0001 — Engineering Impact Register
+- DIA-0001 — Documentation Impact Assessment for BUILD-0001
 
-**Repository Root**
+## Existing Documents Requiring Review
 
-`/home/loneal/Projects/homelab`
-
-**Shared Controller Framework**
-
-`/home/loneal/Projects/shared-libraries/shell/projectctl/projectctl.sh`
-
-**Backup Destination**
-
-`/media/loneal/My Passport`
-
-**Backup Device**
-
-`/dev/sdb1`
-
-**Current Data Partition**
-
-`/data`
+- DOC-0001 — Repository Document Index
+- INF-0001 — Engineering Infrastructure Baseline
+- HW-0001 — Master Hardware Register
+- EDR-0001 — Hardware Asset Record Architecture
+- `docs/architecture.md`
+- `docs/roadmap.md`
+- `scripts/doctor.sh`
+- `scripts/verify.sh`
+- `scripts/bootstrap.sh`
 
 ---
 
-# 6. Current Operating Rules
+# 7. Operating Rules
 
-- Stay focused on the active task.
-- No process changes during a phase unless explicitly approved.
-- Documentation updates, commits, ADRs, EDRs, and closeout notes normally happen only at the end of the phase.
-- The current controller/tooling stabilization was an approved deviation.
+- Inventory before redesign.
+- Do not create a document until proving it does not already exist.
+- Do not create a feature until proving it does not already exist.
+- Controlled documents are replaced as complete documents, not partial edits.
+- EOS is the operational source of truth.
+- Repositories are controlled, versioned publications of EOS records.
+- Engineering work should be captured once and published automatically.
+- Every long-running engineering activity must be resumable.
 
 ---
 
-# 7. Resume Procedure
+# 8. Resume Procedure
 
-1. Run `homelabctl resume`.
+1. Run:
+
+   `/data/engineering/repositories/homelab/scripts/homelabctl resume`
+
 2. Review this document.
-3. Confirm working tree status.
-4. Continue with Task 0.1.2 — Capture System Information.
+3. Confirm the working tree status.
+4. Continue with the current sprint objectives.
+5. Do not begin new feature work until repository and documentation inventory are complete.
 
 ---
 
-# 8. Notes to ChatGPT
+# 9. Notes to ChatGPT
 
 When resuming this project:
 
-- Begin with this document.
-- Treat `/home/loneal/Projects/homelab` as the canonical repository root.
-- Treat `/media/loneal/My Passport` as the verified Phase 0.1 backup destination.
-- Do not revisit Task 0.1.1 unless requested.
-- Continue from Task 0.1.2 — Capture System Information.
+- Treat `/data/engineering` as the Engineering Operating System (EOS) workspace.
+- Treat `/data/engineering/repositories/homelab` as the canonical Homelab repository.
+- Treat `/data/engineering/repositories/shared-libraries` as the canonical shared controller framework.
+- Do not use `/home/loneal/Projects` or `/home/loneal/Development` as authoritative locations.
+- Continue from Sprint 0.3 — Engineering Platform Bring-up.
+- Complete repository inventory before beginning new feature development.

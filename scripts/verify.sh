@@ -94,7 +94,12 @@ check_workspace() {
     while read -r dir; do
         [[ -z "$dir" || "$dir" =~ ^# ]] && continue
 
-        local full_path="$HOME/$dir"
+        local full_path
+        if [[ "$dir" = /* ]]; then
+            full_path="$dir"
+        else
+            full_path="$HOME/$dir"
+        fi
 
         if [[ -d "$full_path" ]]; then
             success "exists: $dir"

@@ -81,15 +81,24 @@ else
 fi
 
 ########################################
-# Workspace
+# EOS Workspace
 ########################################
 
-header "Workspace"
+header "EOS Workspace"
 
-check_directory "$HOME/Development"
-check_directory "$HOME/Development/ai-assistant"
-check_directory "$HOME/Development/sprinteros"
-check_directory "$HOME/Development/homelab-infrastructure"
+EOS_WORKSPACE="${EOS_WORKSPACE:-/data/engineering}"
+
+check_directory "$EOS_WORKSPACE"
+check_directory "$EOS_WORKSPACE/eos"
+check_directory "$EOS_WORKSPACE/eos/state"
+check_directory "$EOS_WORKSPACE/repositories"
+check_directory "$EOS_WORKSPACE/repositories/homelab"
+check_directory "$EOS_WORKSPACE/repositories/shared-libraries"
+check_directory "$EOS_WORKSPACE/shared"
+check_directory "$EOS_WORKSPACE/backups"
+check_directory "$EOS_WORKSPACE/staging"
+
+check_directory "$EOS_WORKSPACE/repositories/shared-libraries/shell/projectctl"
 
 ########################################
 # Future Platform

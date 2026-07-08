@@ -1,9 +1,16 @@
-Development
-Development/ai-assistant
-Development/sprinteros
-Development/homelab-infrastructure
-Development/business-tools
-Development/web-scrapers
-Development/shared-libraries
-Development/experiments
-Development/archive
+# EOS workspace directories
+/data/engineering
+/data/engineering/eos
+/data/engineering/eos/state
+/data/engineering/eos/checkpoints
+/data/engineering/eos/journal
+/data/engineering/repositories
+/data/engineering/repositories/homelab
+/data/engineering/repositories/shared-libraries
+/data/engineering/shared
+/data/engineering/shared/libraries
+/data/engineering/shared/schemas
+/data/engineering/shared/scripts
+/data/engineering/shared/assets
+/data/engineering/backups
+/data/engineering/staging

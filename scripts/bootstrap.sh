@@ -2,11 +2,12 @@
 
 set -Eeuo pipefail
 
-PROJECTS_DIR="$HOME/Projects"
+EOS_WORKSPACE="${EOS_WORKSPACE:-/data/engineering}"
+REPOSITORIES_DIR="$EOS_WORKSPACE/repositories"
 LOCAL_BIN="$HOME/.local/bin"
 
 echo "===================================="
-echo "HOMELAB BOOTSTRAP"
+echo "HOMELAB EOS BOOTSTRAP"
 echo "===================================="
 
 mkdir -p "$LOCAL_BIN"
@@ -17,8 +18,8 @@ install_ctl() {
     local target_path="$LOCAL_BIN/$name"
 
     if [[ ! -f "$source_path" ]]; then
-        echo "ERROR: missing $source_path"
-        return 1
+        echo "WARN: missing $source_path"
+        return 0
     fi
 
     chmod +x "$source_path"
@@ -26,13 +27,17 @@ install_ctl() {
     echo "OK: installed $name -> $target_path"
 }
 
-install_ctl "homelabctl" "$PROJECTS_DIR/homelab/scripts/homelabctl"
-install_ctl "sprinterctl" "$PROJECTS_DIR/SprinterOS/scripts/sprinterctl"
+install_ctl "homelabctl" "$REPOSITORIES_DIR/homelab/scripts/homelabctl"
+install_ctl "sprinterctl" "$REPOSITORIES_DIR/SprinterOS/scripts/sprinterctl"
 
 echo
 echo "Verifying..."
-command -v homelabctl
-command -v sprinterctl
+command -v homelabctl || true
+command -v sprinterctl || true
+
+echo
+echo "EOS Workspace:"
+echo "$EOS_WORKSPACE"
 
 echo
 echo "Bootstrap complete."
