@@ -2,11 +2,11 @@
 
 document_id: INF-0001
 title: Engineering Infrastructure Baseline
-version: 1.3
+version: 1.5
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-08
+last_updated: 2026-07-09
 phase: Mission 0 / Phase 0.1
 domain: Infrastructure
 classification: Global Infrastructure Baseline
@@ -218,6 +218,7 @@ The following services form part of the global engineering environment.
 * NetworkManager
 * systemd-resolved
 * CUPS
+* CUPS-PDF
 * Avahi
 * UFW
 
@@ -254,7 +255,49 @@ System-wide IPv6 remains enabled. Public service exposure over IPv6 is intention
 | Firewall Status   | LAN-only via UFW                        |
 | Test Print        | Job `Engineering_HP_OfficeJet_Pro_8020-1` accepted and cleared from the CUPS queue. |
 
-No failed systemd services were present when this baseline was established.
+## PDF Printing Service Baseline
+
+| Item              | Current Baseline                                   |
+| ----------------- | -------------------------------------------------- |
+| Service Type      | Managed virtual PDF printing                       |
+| Driver            | CUPS-PDF / `printer-driver-cups-pdf`               |
+| Queue             | `PDF`                                              |
+| Output Hierarchy  | `/data/engineering/shared/documents/generated/pdf` |
+| Current Status    | Operational                                        |
+| Validation Status | PASS; job `PDF-2` produced `EWO-0002-PDF-VALIDATION-job_2.pdf`. |
+
+## Engineering Scanner Workflow Baseline
+
+The scanner workflow establishes intake locations only. OCR, AI classification, and automated indexing remain out of scope.
+
+| Intake Class | Directory |
+| ------------ | --------- |
+| Engineering document intake | `/data/engineering/shared/documents/intake/scans/engineering-documents` |
+| Receipt intake | `/data/engineering/shared/documents/intake/scans/receipts` |
+| Drawing intake | `/data/engineering/shared/documents/intake/scans/drawings` |
+| Photograph intake | `/data/engineering/shared/documents/intake/scans/photographs` |
+| Reference document intake | `/data/engineering/shared/documents/intake/scans/reference-documents` |
+
+| Item              | Current Baseline                    |
+| ----------------- | ----------------------------------- |
+| Scanner Utilities | SANE command-line utilities present |
+| Workflow Status   | Directory workflow established      |
+| OCR               | Out of scope                        |
+| AI Classification | Out of scope                        |
+| Automated Indexes | Out of scope                        |
+
+## Engineering Workstation Shared Services Inventory
+
+| Service | Implementation | Operational Record |
+| ------- | -------------- | ------------------ |
+| SSH Service | OpenSSH service | Active baseline; LAN-scoped access via UFW |
+| Host Firewall | UFW | Active baseline; deny incoming / allow outgoing |
+| Print Service | CUPS | Active baseline; HP OfficeJet queue configured |
+| PDF Printing Service | CUPS-PDF | Operational baseline; managed PDF output validated |
+| Scanner Workflow | EOS document hierarchy + SANE tools | Workflow directories established |
+| Avahi Discovery | Avahi / DNS-SD | Active baseline; LAN-scoped mDNS |
+
+No failed systemd services were present when the secure SSH, firewall, network printing, and Avahi baseline was established.
 
 ---
 
@@ -313,3 +356,5 @@ These targets describe the intended engineering direction and shall be updated a
 | 1.1     | 2026-07-08 | Added engineering print service and LAN-only firewall baseline. |
 | 1.2     | 2026-07-08 | Added engineering terminal privilege model.                     |
 | 1.3     | 2026-07-08 | Reconciled repository locations with EOS workspace authority.   |
+| 1.4     | 2026-07-09 | Added PDF printing service baseline, scanner workflow hierarchy, and shared services inventory. |
+| 1.5     | 2026-07-09 | Recorded CUPS-PDF installation, queue validation, and managed PDF output validation. |

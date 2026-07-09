@@ -1,12 +1,12 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 1.1
+version: 1.2
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-08
-phase: Architecture Stabilization Sprint
+last_updated: 2026-07-09
+phase: Engineering Workstation Services Phase 2
 domain: Repository Governance
 classification: Repository Document Index
 source_of_truth: true
@@ -145,6 +145,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | PROC-000001 | Engineering Terminal 01 Procurement | Closed | Homelab Infrastructure | `docs/finance/procurements/PROC-000001.md` |
 | TRX-000001 | Procurement Transaction - Engineering Terminal 01 | Posted | Homelab Infrastructure | `docs/finance/transactions/TRX-000001.md` |
 | MILESTONE-0001 | Hardware Domain Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-06-hardware-domain-complete.md` |
+| MILESTONE-0002 | Engineering Workstation Shared Services Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-09-engineering-workstation-shared-services-complete.md` |
 
 This table shall be updated whenever a controlled document is created, superseded, or archived.
 
@@ -236,3 +237,4 @@ The future Engineering Management Platform will govern engineering standards whi
 | ------- | ---- | ----------- |
 | 1.0 | 2026-07-06 | Initial controlled document established. |
 | 1.1 | 2026-07-08 | Reconciled controlled document inventory for Architecture Baseline 2.1. |
+| 1.2 | 2026-07-09 | Registered Engineering Workstation shared services milestone. |

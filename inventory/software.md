@@ -10,3 +10,8 @@ Linux thaDuke 6.8.0-124-generic #124~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Tue May 
 [OK] gcc
 [OK] make
 [OK] docker
+[OK] cups
+[OK] avahi-daemon
+[OK] ufw
+[OK] sane-utils
+[OK] printer-driver-cups-pdf

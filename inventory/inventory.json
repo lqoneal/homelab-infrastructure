@@ -5,5 +5,17 @@
   "os": "Ubuntu 22.04.5 LTS",
   "cpu_cores": "12",
   "memory": "15Gi",
-  "data_mounted": "true"
+  "data_mounted": "true",
+  "services": {
+    "ssh": "baseline-recorded",
+    "host_firewall": "baseline-recorded",
+    "print_service": "baseline-recorded",
+    "pdf_printing_service": "operational-validated",
+    "scanner_workflow": "directory-workflow-established",
+    "avahi_discovery": "baseline-recorded"
+  },
+  "document_hierarchy": {
+    "pdf_output": "/data/engineering/shared/documents/generated/pdf",
+    "scanner_intake": "/data/engineering/shared/documents/intake/scans"
+  }
 }

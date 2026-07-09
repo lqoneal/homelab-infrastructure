@@ -1,12 +1,12 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 2.1
+version: 2.3
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-08
-phase: Architecture Stabilization Sprint
+last_updated: 2026-07-09
+phase: Engineering Workstation Services Phase 2
 source_of_truth: true
 tags:
   - project-state
@@ -28,15 +28,17 @@ It summarizes the current project state and identifies the next approved enginee
 
 # Last Updated
 
-**Date:** 2026-07-08
+**Date:** 2026-07-09
 
 **Session Summary:**
 
-- Reconciled Homelab repository records with Architecture Baseline 2.1.
-- Preserved the EOS workspace at `/data/engineering`.
-- Verified Homelab repository root at `/data/engineering/repositories/homelab`.
-- Reconciled documentation inventory, authority statements, repository locations, and hardware decision traceability.
-- Recorded governance findings for the next sprint without implementing new architecture.
+- Resumed EWO-0002 after administrator sudo authentication was completed.
+- Established the Engineering scanner workflow directory hierarchy under `/data/engineering/shared/documents/intake/scans`.
+- Established the managed PDF output hierarchy under `/data/engineering/shared/documents/generated/pdf`.
+- Updated infrastructure inventory for SSH, host firewall, print service, PDF printing service, scanner workflow, and Avahi discovery.
+- Extended `engctl resume` with a read-only operational status section for shared workstation services.
+- Installed and validated `printer-driver-cups-pdf`.
+- Recorded the Engineering Workstation shared services milestone.
 
 ---
 
@@ -58,11 +60,11 @@ Stabilize Architecture Baseline 2.1 and prepare the repository for commit.
 
 **Current Phase:**
 
-Architecture Stabilization Sprint
+Engineering Workstation Services Phase 2
 
 **Phase Objective:**
 
-Eliminate documentation drift, reconcile engineering records, validate repository consistency, and determine whether Architecture Baseline 2.1 is ready for commit.
+Complete the approved Engineering Workstation shared service capabilities and integrate operational status into the EOS resume flow.
 
 ---
 
@@ -111,13 +113,18 @@ Eliminate documentation drift, reconcile engineering records, validate repositor
 - Updated controller tooling to use EOS-native paths.
 - Established Architecture Baseline 2.1 provisional records.
 - Reconciled Architecture Baseline 2.1 documentation drift.
+- Established Engineering scanner workflow directories.
+- Established managed PDF output directory hierarchy.
+- Updated shared services infrastructure inventory.
+- Extended `engctl resume` to report SSH, host firewall, print service, PDF printing, scanner workflow, and Avahi status.
+- Installed and validated `printer-driver-cups-pdf`.
+- Recorded Engineering Workstation shared services milestone.
 
 ## Active Issues
 
 - Architecture Baseline 2.1 remains provisional until commit readiness is approved.
 - Governance Codification Sprint has not started.
 - Some legacy published documents remain outside the controlled document model and require future migration or formal archival.
-- Current working tree contains intentional reconciliation changes pending review.
 
 ---
 
@@ -125,11 +132,11 @@ Eliminate documentation drift, reconcile engineering records, validate repositor
 
 **Current Task:**
 
-Complete Architecture Baseline 2.1 reconciliation and determine commit readiness.
+Review EWO-0002 implementation evidence and determine commit readiness.
 
 **Next Immediate Step:**
 
-Review reconciliation changes, validate repository state, and commit only after human approval.
+Review repository changes, validate the resume output, and commit only after human approval.
 
 ---
 
@@ -142,6 +149,14 @@ Review reconciliation changes, validate repository state, and commit only after 
 - EDR-0001 — Hardware Asset Record Architecture restored as a controlled decision record.
 - EDR-0002 — Engineering Authority Model present as Draft 1.0.
 - `docs/architecture.md` — Authority and workspace statements reconciled with EOS authority model.
+
+## Completed During Engineering Workstation Services Phase 2
+
+- INF-0001 — Shared services inventory, PDF printing baseline, and scanner workflow hierarchy updated.
+- `inventory/inventory.json` — Shared services and document hierarchy fields added.
+- `inventory/software.md` — Shared service tooling inventory updated.
+- `scripts/lib/eos/context.sh` — `engctl resume` operational status reporting added.
+- MILESTONE-0002 — Engineering Workstation Shared Services Complete recorded.
 
 ## Deferred To Governance Codification Sprint
 
@@ -161,6 +176,7 @@ Review reconciliation changes, validate repository state, and commit only after 
 | GF-0002 | Build, validation, impact, and DIA records remain deferred. | Documentation Impact Queue | Intentional Deferral | Governance Codification Sprint | Yes |
 | GF-0003 | Architecture Baseline 2.1 remains provisional until reconciliation changes are reviewed and committed. | Current sprint state | Documentation Drift | Architecture Stabilization Sprint | No |
 | GF-0004 | Runtime controller implementation is operational but not fully governed by validation records. | `scripts/engctl`, `scripts/homelabctl`, `scripts/lib/eos/context.sh` | Intentional Deferral | Governance Codification Sprint | Yes |
+| GF-0005 | EWO-0002 virtual PDF printer installation required administrator credentials before completion. | `printer-driver-cups-pdf` installation attempt; resumed after `sudo -n true` succeeded | Resolved Execution Blocker | Engineering Workstation Services Phase 2 | No |
 
 ---
 
@@ -209,3 +225,5 @@ When resuming this project:
 | ------- | ---------- | ----------- |
 | 2.0     | 2026-07-07 | Recorded EOS workspace restoration state. |
 | 2.1     | 2026-07-08 | Reconciled project state for Architecture Baseline 2.1. |
+| 2.2     | 2026-07-09 | Recorded EWO-0002 partial execution, scanner workflow establishment, EOS status integration, and PDF printing blocker. |
+| 2.3     | 2026-07-09 | Recorded EWO-0002 PDF printing validation and Engineering Workstation shared services milestone. |
