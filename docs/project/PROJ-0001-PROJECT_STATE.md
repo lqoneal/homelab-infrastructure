@@ -177,6 +177,7 @@ Review repository changes, validate the resume output, and commit only after hum
 | GF-0003 | Architecture Baseline 2.1 remains provisional until reconciliation changes are reviewed and committed. | Current sprint state | Documentation Drift | Architecture Stabilization Sprint | No |
 | GF-0004 | Runtime controller implementation is operational but not fully governed by validation records. | `scripts/engctl`, `scripts/homelabctl`, `scripts/lib/eos/context.sh` | Intentional Deferral | Governance Codification Sprint | Yes |
 | GF-0005 | EWO-0002 virtual PDF printer installation required administrator credentials before completion. | `printer-driver-cups-pdf` installation attempt; resumed after `sudo -n true` succeeded | Resolved Execution Blocker | Engineering Workstation Services Phase 2 | No |
+| EGF-000011 | EWO-000006 execution context was supplied externally and no persisted controlled work-order record exists in the repository. | Repository and EOS workspace search found no EWO-000006 record; Engineering Governance accepted the externally supplied handoff. | Governance-Managed External Context | Mission 0 | Yes |
 
 ---
 

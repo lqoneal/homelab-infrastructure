@@ -1,12 +1,12 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 1.2
+version: 1.3
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-09
-phase: Engineering Workstation Services Phase 2
+phase: Governance Bootstrap
 domain: Repository Governance
 classification: Repository Document Index
 source_of_truth: true
@@ -15,6 +15,7 @@ related_documents:
   - INF-0001
   - EOS-0001
   - EDR-0002
+  - GEN-0001
 tags:
   - repository
   - governance
@@ -77,15 +78,18 @@ Every engineering session shall begin by reviewing the repository in the followi
 | PROJ | Project state and execution |
 | PHASE | Mission and phase execution plans |
 | EOS | Engineering Operating System governance |
+| GEN | Genesis governance records |
+| POL | Engineering governance policies |
 | INF | Infrastructure documentation |
 | HW | Hardware documentation |
 | AST | Engineering hardware asset records |
 | FIN | Financial documentation |
-| PROC | Procurement records |
+| PROC | Engineering procedures and procurement records |
 | TRX | Financial transaction records |
 | SPEC | Technical specifications |
 | SERVICE | Engineering service catalogs |
 | STD | Engineering standards |
+| TPL | Engineering document templates |
 | ADR | Architecture Decision Records |
 | EDR | Engineering Decision Records |
 | MILESTONE | Engineering milestone records |
@@ -140,6 +144,16 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | SPEC-0004 | Engineering Context Reconstruction Service | Draft | EOS Program | `docs/specifications/SPEC-0004-ENGINEERING_CONTEXT_RECONSTRUCTION_SERVICE.md` |
 | SPEC-0005 | Engineering Control Framework | Draft | EOS Program | `docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md` |
 | SERVICE-0001 | EOS Core Services Catalog | Draft | EOS Program | `docs/services/SERVICE-0001-EOS_CORE_SERVICES_CATALOG.md` |
+| GEN-0001 | Engineering Operating System Genesis Record | Active | Engineering Governance | `docs/genesis/GEN-0001-GENESIS_GOVERNANCE_RECORD.md` |
+| POL-0001 | Engineering Governance Policy | Active | Engineering Governance | `docs/policies/POL-0001-ENGINEERING_GOVERNANCE_POLICY.md` |
+| STD-0000 | Engineering Governance Documentation Architecture | Active | Engineering Governance | `docs/standards/STD-0000-ENGINEERING_GOVERNANCE_DOCUMENTATION_ARCHITECTURE.md` |
+| STD-0001 | Engineering Document Lifecycle Standard | Active | Engineering Governance | `docs/standards/STD-0001-ENGINEERING_DOCUMENT_LIFECYCLE_STANDARD.md` |
+| STD-0002 | Engineering Document Persistence Standard | Active | Engineering Governance | `docs/standards/STD-0002-ENGINEERING_DOCUMENT_PERSISTENCE_STANDARD.md` |
+| STD-0003 | Engineering Work Order Standard | Active | Engineering Governance | `docs/standards/STD-0003-ENGINEERING_WORK_ORDER_STANDARD.md` |
+| PROC-0001 | Engineering Work Order Execution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md` |
+| TPL-0001 | Engineering Work Order Template | Active | Engineering Governance | `docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md` |
+| TPL-0002 | Engineering Completion Report Template | Active | Engineering Governance | `docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md` |
+| TPL-0003 | Engineering Evidence Package Template | Active | Engineering Governance | `docs/templates/TPL-0003-ENGINEERING_EVIDENCE_PACKAGE_TEMPLATE.md` |
 | FIN-0001 | Master Financial Ledger | Active | Homelab Infrastructure | `docs/finance/FIN-0001-MASTER_FINANCIAL_LEDGER.md` |
 | FIN-0002 | Master Procurement Register | Active | Homelab Infrastructure | `docs/finance/FIN-0002-MASTER_PROCUREMENT_REGISTER.md` |
 | PROC-000001 | Engineering Terminal 01 Procurement | Closed | Homelab Infrastructure | `docs/finance/procurements/PROC-000001.md` |
@@ -238,3 +252,4 @@ The future Engineering Management Platform will govern engineering standards whi
 | 1.0 | 2026-07-06 | Initial controlled document established. |
 | 1.1 | 2026-07-08 | Reconciled controlled document inventory for Architecture Baseline 2.1. |
 | 1.2 | 2026-07-09 | Registered Engineering Workstation shared services milestone. |
+| 1.3 | 2026-07-09 | Published and registered Governance Baseline 1.0 genesis governance records. |
