@@ -1,0 +1,146 @@
+#!/usr/bin/env bash
+
+eos_platform_repository_inventory() {
+    local repositories entry name branch commit state
+    repositories="$(eos_workspace)/repositories"
+
+    [[ -d "$repositories" ]] || return 0
+
+    while IFS= read -r entry; do
+        name="$(basename "$entry")"
+        if git -C "$entry" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+            branch="$(git -C "$entry" branch --show-current 2>/dev/null || true)"
+            commit="$(git -C "$entry" rev-parse --short HEAD 2>/dev/null || true)"
+            state="$(git -C "$entry" status --porcelain 2>/dev/null | awk 'END { if (NR == 0) print "clean"; else print "modified" }')"
+            printf '%-22s git    branch=%-12s commit=%-12s state=%s\n' "$name" "${branch:-detached}" "${commit:-none}" "$state"
+        else
+            printf '%-22s directory (non-Git)\n' "$name"
+        fi
+    done < <(find "$repositories" -mindepth 1 -maxdepth 1 -type d -print | sort)
+}
+
+eos_render_platform() {
+    local project="${1:-homelab}"
+    local checkpoint sync_status
+    checkpoint="$(eos_checkpoint_latest || true)"
+    sync_status="$(eos_checkpoint_sync_status "$project" || true)"
+
+    echo "===================================="
+    echo "ENGINEERING PLATFORM"
+    echo "===================================="
+    echo
+    printf '%-20s %s\n' "Workspace:" "$(eos_workspace)"
+    printf '%-20s %s\n' "Project:" "$project"
+    printf '%-20s %s\n' "Branch:" "$(eos_repository_branch "$project")"
+    printf '%-20s %s\n' "Commit:" "$(eos_repository_commit "$project")"
+    printf '%-20s %s\n' "Repository State:" "$(eos_repository_state "$project")"
+    printf '%-20s %s\n' "EOS State:" "$(eos_state_path)"
+    printf '%-20s %s\n' "Latest Checkpoint:" "${checkpoint:-none}"
+    printf '%-20s %s\n' "Synchronization:" "${sync_status:-unavailable}"
+    echo
+    echo "Repository Inventory:"
+    eos_platform_repository_inventory
+    echo
+    echo "Controller Capabilities:"
+    echo "  resume status doctor checkpoint eos platform"
+}
+
+eos_platform_qualify() {
+    local project="${1:-homelab}"
+    local root marker marker_path active=0
+    root="$(eos_project_root "$project")"
+
+    echo "Engineering Work Initiation Qualification"
+    echo
+    echo "Repository Root:"
+    git -C "$root" rev-parse --show-toplevel
+    echo
+    echo "Remotes:"
+    git -C "$root" remote -v
+    echo
+    echo "Branch:"
+    git -C "$root" branch --show-current
+    echo
+    echo "Description:"
+    git -C "$root" describe --tags --always
+    echo
+    echo "Recent History:"
+    git -C "$root" log --oneline --decorate -5
+    echo
+    echo "Working Tree:"
+    git -C "$root" status --short
+    echo
+    echo "Unstaged Diff:"
+    git -C "$root" diff --stat
+    echo
+    echo "Staged Diff:"
+    git -C "$root" diff --cached --stat
+    echo
+    echo "Integrity:"
+    git -C "$root" fsck --no-dangling --no-reflogs
+    echo "PASS"
+
+    for marker in MERGE_HEAD CHERRY_PICK_HEAD REVERT_HEAD REBASE_HEAD rebase-merge rebase-apply sequencer; do
+        marker_path="$(git -C "$root" rev-parse --git-path "$marker")"
+        if [[ -e "$marker_path" ]]; then
+            echo "FAIL: active Git operation marker: $marker"
+            active=1
+        fi
+    done
+
+    if [[ "$active" -ne 0 ]]; then
+        return 1
+    fi
+
+    echo "Active Git Operation: none"
+}
+
+eos_platform_validate() {
+    local project="${1:-homelab}"
+    local root validator runtime_test failures=0
+    root="$(eos_project_root "$project")"
+    validator="$root/scripts/validate_controlled_documents.py"
+    runtime_test="$root/scripts/tests/test-eos-runtime.sh"
+
+    if eos_validate_state "$project"; then
+        echo "PASS: EOS operational state"
+    else
+        echo "FAIL: EOS operational state"
+        ((failures++)) || true
+    fi
+
+    if git -C "$root" fsck --no-dangling --no-reflogs >/dev/null 2>&1; then
+        echo "PASS: repository integrity"
+    else
+        echo "FAIL: repository integrity"
+        ((failures++)) || true
+    fi
+
+    if git -C "$root" rev-parse -q --verify 'refs/tags/governance-foundation-1.0^{}' >/dev/null 2>&1; then
+        echo "PASS: Governance Foundation tag"
+    else
+        echo "FAIL: Governance Foundation tag missing"
+        ((failures++)) || true
+    fi
+
+    if [[ -f "$validator" ]] && PYTHONDONTWRITEBYTECODE=1 python3 "$validator" >/dev/null; then
+        echo "PASS: controlled-document validation"
+    else
+        echo "FAIL: controlled-document validation"
+        ((failures++)) || true
+    fi
+
+    if [[ -f "$runtime_test" ]] && bash "$runtime_test" >/dev/null; then
+        echo "PASS: EOS runtime regression tests"
+    else
+        echo "FAIL: EOS runtime regression tests"
+        ((failures++)) || true
+    fi
+
+    if [[ "$failures" -ne 0 ]]; then
+        echo "Engineering Platform validation failed: $failures"
+        return 1
+    fi
+
+    echo "Engineering Platform validation passed."
+}

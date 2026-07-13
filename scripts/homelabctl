@@ -5,10 +5,16 @@ set -Eeuo pipefail
 EOS_WORKSPACE="${EOS_WORKSPACE:-/data/engineering}"
 ENGCTL_PATH="${ENGCTL_PATH:-$EOS_WORKSPACE/repositories/homelab/scripts/engctl}"
 
-if [[ ! -f "$ENGCTL_PATH" ]]; then
+if [[ ! -x "$ENGCTL_PATH" ]]; then
     echo "ERROR: missing engctl:"
     echo "$ENGCTL_PATH"
     exit 1
 fi
 
-exec "$ENGCTL_PATH" "${1:-resume}" homelab
+export EOS_PROJECT="homelab"
+
+if [[ "$#" -eq 0 ]]; then
+    set -- resume
+fi
+
+exec "$ENGCTL_PATH" "$@"

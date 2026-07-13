@@ -3,7 +3,9 @@
 set -Eeuo pipefail
 
 EOS_WORKSPACE="${EOS_WORKSPACE:-/data/engineering}"
-ECRS_PATH="${ECRS_PATH:-$EOS_WORKSPACE/repositories/homelab/scripts/lib/eos/context.sh}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ECRS_PATH="${ECRS_PATH:-$SCRIPT_DIR/lib/eos/context.sh}"
+EOS_PROJECT="${EOS_PROJECT:-homelab}"
 
 if [[ ! -f "$ECRS_PATH" ]]; then
     echo "ERROR: missing EOS context service:"
@@ -12,26 +14,63 @@ if [[ ! -f "$ECRS_PATH" ]]; then
 fi
 
 source "$ECRS_PATH"
+source "$SCRIPT_DIR/lib/eos/state.sh"
+source "$SCRIPT_DIR/lib/eos/checkpoint.sh"
+source "$SCRIPT_DIR/lib/eos/platform.sh"
 
 usage() {
-    echo "Usage: engctl {resume|status|doctor|version|help} [project]"
+    cat <<'EOF'
+Usage:
+  engctl resume [project]
+  engctl status [project]
+  engctl doctor
+  engctl checkpoint {latest|list|create <title>}
+  engctl eos {status|validate|sync-status} [project]
+  engctl platform {status|validate|qualify} [project]
+  engctl version
+EOF
 }
 
 cmd="${1:-help}"
-project="${2:-homelab}"
+shift || true
 
 case "$cmd" in
     resume)
+        project="${1:-$EOS_PROJECT}"
         eos_render_resume "$project"
         ;;
     status)
-        eos_git_summary "$project"
+        project="${1:-$EOS_PROJECT}"
+        eos_render_platform "$project"
         ;;
     doctor)
-        bash "$EOS_WORKSPACE/repositories/homelab/scripts/doctor.sh"
+        bash "$SCRIPT_DIR/doctor.sh"
+        ;;
+    checkpoint)
+        eos_render_checkpoint "${1:-latest}" "${@:2}"
+        ;;
+    eos)
+        action="${1:-status}"
+        project="${2:-$EOS_PROJECT}"
+        case "$action" in
+            status) eos_render_state ;;
+            validate) eos_validate_state "$project" ;;
+            sync-status) eos_checkpoint_sync_status "$project" ;;
+            *) echo "ERROR: unknown eos action: $action" >&2; usage; exit 1 ;;
+        esac
+        ;;
+    platform)
+        action="${1:-status}"
+        project="${2:-$EOS_PROJECT}"
+        case "$action" in
+            status) eos_render_platform "$project" ;;
+            validate) eos_platform_validate "$project" ;;
+            qualify) eos_platform_qualify "$project" ;;
+            *) echo "ERROR: unknown platform action: $action" >&2; usage; exit 1 ;;
+        esac
         ;;
     version)
-        echo "engctl version 0.1.0"
+        echo "engctl version 0.2.0"
         ;;
     help|-h|--help)
         usage

@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 2.5
+version: 2.6
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-13
-phase: Mission 0.1 - Engineering Platform Baseline Reconciliation
+phase: Mission 0.2 - Engineering Platform Continuation
 classification: Project State
-predecessor_revision: PROJ-0001@2.4
+predecessor_revision: PROJ-0001@2.5
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Mission 0.1 Engineering Platform Baseline Reconciliation
+approval_reference: Codex Handoff Procedure - Mission 0.2 Engineering Platform Continuation
 approval_date: 2026-07-13
 persistence_status: Pending
 source_of_truth: true
@@ -51,13 +51,14 @@ It summarizes the current project state and identifies the next approved enginee
 
 **Session Summary:**
 
-- Published Governance Foundation 1.0 at commit `4301edb` and annotated tag `governance-foundation-1.0`.
-- Reconciled the deferred Mission 0 engineering overlay against Governance Foundation 1.0 without changing governance authority.
-- Registered and preserved EWO-000016 without beginning firmware remediation.
-- Reconciled the read-only printer-health reporting already implemented in `scripts/lib/eos/context.sh`.
-- Corrected infrastructure inventory for SprinterOS and the shared-libraries directory.
-- Removed the obsolete zero-byte legacy EWO-000010 duplicate after confirming the authoritative controlled publication remained intact.
-- Advanced the primary resume point to Mission 0.2 — Engineering Platform Continuation.
+- Implemented EOS operational-state discovery and validation services.
+- Implemented checkpoint list, latest, create, and repository-synchronization status capabilities.
+- Implemented Engineering Platform status, repository inventory, and validation views.
+- Automated the read-only Engineering Work Initiation qualification through `engctl platform qualify`.
+- Extended `engctl` with `checkpoint`, `eos`, and `platform` command groups and advanced it to Version 0.2.0.
+- Updated `homelabctl` to delegate complete command lines through the global controller while preserving Homelab project context.
+- Added isolated EOS runtime regression tests covering state, checkpoints, synchronization, platform inventory, controller routing, and wrapper delegation.
+- Preserved Governance Foundation 1.0 and every explicitly deferred product, firmware, governance, and tooling boundary.
 
 ---
 
@@ -71,7 +72,7 @@ Build the Engineering Operating System foundation for AI Assistant, SprinterOS, 
 
 **Current Overall Goal:**
 
-Continue Mission 0 Engineering Platform implementation from the clean post-Governance-Foundation baseline.
+Operate and validate the initial Engineering Platform runtime, then continue its automation and service coverage through Mission 0.
 
 ---
 
@@ -79,11 +80,11 @@ Continue Mission 0 Engineering Platform implementation from the clean post-Gover
 
 **Current Phase:**
 
-Mission 0.1 — Engineering Platform Baseline Reconciliation
+Mission 0.2 — Engineering Platform Continuation
 
 **Phase Objective:**
 
-Publish one coherent engineering baseline containing only the work intentionally deferred during Governance Foundation 1.0 publication.
+Transform the documented EOS controller and service architecture into an operational Engineering Platform foundation.
 
 ---
 
@@ -143,13 +144,22 @@ Publish one coherent engineering baseline containing only the work intentionally
 - Reconciled Mission 0 project, EOS operational, and infrastructure state.
 - Reconciled read-only printer-health status reporting.
 - Removed the obsolete zero-byte legacy EWO-000010 duplicate without removing its authoritative publication.
+- Implemented EOS state-path, metadata, repository-state, and operational validation services.
+- Implemented append-only checkpoint capture, discovery, and checkpoint-to-repository synchronization reporting.
+- Implemented Engineering Platform status, repository inventory, and integrated validation.
+- Implemented read-only Engineering Work Initiation qualification automation.
+- Added `engctl checkpoint`, `engctl eos`, and `engctl platform` command groups.
+- Advanced `engctl` to Version 0.2.0 and made controller paths portable.
+- Added EOS runtime and controller regression coverage.
 
 ## Active Issues
 
 - Some legacy published documents remain outside the controlled document model and require separately authorized migration or archival.
 - BUILD-0001, VALID-0001, EIR-0001, and DIA-0001 remain to be dispositioned during continued Mission 0 work.
 - EWO-000016 firmware remediation remains authorized but unexecuted; backup evidence must be reverified before any destructive media operation.
-- `repair_yaml_header.py` remediation remains deferred and outside the Mission 0.1 publication.
+- `repair_yaml_header.py` remediation remains deferred and outside the Mission 0.2 publication.
+- Automated publication of authoritative EOS state remains future Mission 0 work; current synchronization reporting is read-only.
+- Checkpoint restoration and retention policy implementation remain future Mission 0 work.
 
 ## Authorized Bounded Side Mission
 
@@ -173,11 +183,11 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-Complete Mission 0.1 validation and publish the isolated Engineering Platform baseline reconciliation.
+Complete Mission 0.2 validation and publish the isolated Engineering Platform runtime implementation.
 
 **Next Immediate Step:**
 
-Begin Mission 0.2 — Engineering Platform Continuation from the published Mission 0.1 checkpoint.
+Begin Mission 0.3 — Engineering Platform Automation and Validation from the published Mission 0.2 checkpoint.
 
 EWO-000016 remains a separately selectable bounded side mission. If selected, execution begins with Stage A backup re-verification; no destructive USB operation may occur unless every preceding gate passes.
 
@@ -201,6 +211,15 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 - `scripts/lib/eos/context.sh` — `engctl resume` operational status reporting added.
 - MILESTONE-0002 — Engineering Workstation Shared Services Complete recorded.
 
+## Completed During Mission 0.2
+
+- EOS operational state management and validation foundation.
+- EOS checkpoint capture, discovery, and synchronization-status foundation.
+- Engineering Platform status, repository inventory, and validation foundation.
+- Engineering Work Initiation qualification automation.
+- `engctl` Version 0.2.0 command routing and Homelab wrapper integration.
+- EOS runtime regression-test foundation.
+
 ## Remaining Mission 0 Scope
 
 - BUILD-0001 — Engineering Workstation Build Record.
@@ -209,7 +228,7 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 - DIA-0001 — Documentation Impact Assessment.
 - Continue Engineering Platform implementation only through separately authorized Mission 0 work.
 
-## Deferred Outside Mission 0.1
+## Deferred Outside Mission 0.2
 
 - Formal migration or archival of legacy published documents without `document_id`.
 - Repository-wide controlled-document metadata and persistence remediation.
@@ -233,7 +252,7 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 | GF-0001 | Legacy published documents exist without controlled document metadata. | `docs/architecture.md`, `docs/roadmap.md`, `docs/hardware/assets/AST-*.md` | Intentional Deferral | Governance Codification Sprint | Yes |
 | GF-0002 | Build, validation, impact, and DIA records remain deferred. | Documentation Impact Queue | Intentional Deferral | Governance Codification Sprint | Yes |
 | GF-0003 | Architecture Baseline 2.1 commit-readiness drift was superseded by the published shared-services, Governance Baseline, and Governance Foundation commits. | `4bf8576`, `2bf9c7b`, `4301edb` | Resolved Documentation Drift | Mission 0.1 | No |
-| GF-0004 | Runtime controller implementation is operational but not fully governed by validation records. | `scripts/engctl`, `scripts/homelabctl`, `scripts/lib/eos/context.sh` | Intentional Deferral | Governance Codification Sprint | Yes |
+| GF-0004 | Runtime controller implementation is operational and now has Mission 0.2 regression coverage; formal controlled validation records remain deferred. | `scripts/engctl`, `scripts/homelabctl`, `scripts/lib/eos/*.sh`, `scripts/tests/test-eos-runtime.sh` | Partially Resolved Deferral | Mission 0 | Yes |
 | GF-0005 | EWO-0002 virtual PDF printer installation required administrator credentials before completion. | `printer-driver-cups-pdf` installation attempt; resumed after `sudo -n true` succeeded | Resolved Execution Blocker | Engineering Workstation Services Phase 2 | No |
 | EGF-000011 | EWO-000006 execution context was supplied externally and no persisted controlled work-order record exists in the repository. | Repository and EOS workspace search found no EWO-000006 record; Engineering Governance accepted the externally supplied handoff. | Governance-Managed External Context | Mission 0 | Yes |
 
@@ -261,7 +280,7 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 2. Review this document.
 3. Confirm the working tree status.
 4. Verify Governance Foundation 1.0 remains the governing baseline.
-5. Continue with Mission 0.2 — Engineering Platform Continuation.
+5. Continue with Mission 0.3 — Engineering Platform Automation and Validation.
 6. Do not begin EOS, `engctl`, Engineering Management Platform, SprinterOS, or AI Assistant implementation without its separately authorized mission.
 7. When EWO-000016 is selected for execution, begin at Stage A backup re-verification and honor every sequential gate.
 8. After EWO-000016 completes or stops, return to the current primary Mission 0 task.
@@ -276,7 +295,7 @@ When resuming this project:
 - Treat `/data/engineering/repositories/homelab` as the canonical Homelab repository.
 - Treat `/data/engineering/repositories/shared-libraries` as the canonical shared controller framework.
 - Do not use `/home/loneal/Projects` or `/home/loneal/Development` as authoritative locations.
-- Continue from the published Mission 0.1 Engineering Platform baseline.
+- Continue from the published Mission 0.2 Engineering Platform runtime checkpoint.
 - Treat EWO-000016 as an authorized bounded side mission that does not supersede the primary sprint or task.
 - Resume EWO-000016 only at its first incomplete gated stage and preserve unrelated working-tree content.
 - Do not infer authority for work outside the current Mission 0 authorization.
@@ -293,3 +312,4 @@ When resuming this project:
 | 2.3     | 2026-07-09 | Recorded EWO-0002 PDF printing validation and Engineering Workstation shared services milestone. |
 | 2.4     | 2026-07-11 | Recorded EWO-000016 as an authorized bounded firmware-remediation side mission while preserving the primary phase and task. |
 | 2.5     | 2026-07-13 | Reconciled the post-Governance-Foundation Mission 0 baseline and advanced the primary resume point to Mission 0.2. |
+| 2.6     | 2026-07-13 | Recorded the initial EOS runtime, checkpoint, synchronization, platform validation, and engctl controller implementation and advanced the resume point to Mission 0.3. |
