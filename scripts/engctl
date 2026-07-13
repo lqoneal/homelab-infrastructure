@@ -16,6 +16,7 @@ fi
 source "$ECRS_PATH"
 source "$SCRIPT_DIR/lib/eos/state.sh"
 source "$SCRIPT_DIR/lib/eos/checkpoint.sh"
+source "$SCRIPT_DIR/lib/eos/operations.sh"
 source "$SCRIPT_DIR/lib/eos/platform.sh"
 
 usage() {
@@ -24,8 +25,11 @@ Usage:
   engctl resume [project]
   engctl status [project]
   engctl doctor
-  engctl checkpoint {latest|list|create <title>}
-  engctl eos {status|validate|sync-status} [project]
+  engctl checkpoint {latest|active|list|create <title>|restore [checkpoint]|validate|retention [count]}
+  engctl eos {status|validate|sync-status|refresh|operational} [project]
+  engctl repository {discover|health|sync-status|readiness|refresh} [project]
+  engctl context [project]
+  engctl validate [project]
   engctl platform {status|validate|qualify} [project]
   engctl version
 EOF
@@ -56,8 +60,19 @@ case "$cmd" in
             status) eos_render_state ;;
             validate) eos_validate_state "$project" ;;
             sync-status) eos_checkpoint_sync_status "$project" ;;
+            refresh) eos_operational_refresh "$project" ;;
+            operational) cat "$(eos_operational_state_path)" ;;
             *) echo "ERROR: unknown eos action: $action" >&2; usage; exit 1 ;;
         esac
+        ;;
+    repository)
+        eos_render_repository_operation "${1:-health}" "${2:-$EOS_PROJECT}"
+        ;;
+    context)
+        eos_engineering_context "${1:-$EOS_PROJECT}"
+        ;;
+    validate)
+        eos_platform_validate "${1:-$EOS_PROJECT}"
         ;;
     platform)
         action="${1:-status}"
@@ -70,7 +85,7 @@ case "$cmd" in
         esac
         ;;
     version)
-        echo "engctl version 0.2.0"
+        echo "engctl version 0.3.0"
         ;;
     help|-h|--help)
         usage

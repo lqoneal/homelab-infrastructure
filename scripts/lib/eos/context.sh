@@ -28,7 +28,7 @@ eos_latest_checkpoint() {
     local workspace
     workspace="$(eos_workspace)"
 
-    find "$workspace/eos/checkpoints" -type f -name "*.md" 2>/dev/null | sort | tail -1
+    find "$workspace/eos/checkpoints" -maxdepth 1 -type f -name "*.md" 2>/dev/null | sort | tail -1
 }
 
 eos_git_summary() {
@@ -371,7 +371,11 @@ eos_render_resume() {
 
     root="$(eos_project_root "$project")"
     state="$(eos_project_state "$project")"
-    checkpoint="$(eos_latest_checkpoint || true)"
+    if declare -F eos_checkpoint_active >/dev/null 2>&1; then
+        checkpoint="$(eos_checkpoint_active || true)"
+    else
+        checkpoint="$(eos_latest_checkpoint || true)"
+    fi
 
     echo "===================================="
     echo "EOS ENGINEERING RESUME"
@@ -385,6 +389,14 @@ eos_render_resume() {
 
     echo
     eos_render_operational_status
+
+    if declare -F eos_render_operational_summary >/dev/null 2>&1; then
+        echo
+        echo "------------------------------------"
+        echo "ENGINEERING CONTEXT"
+        echo "------------------------------------"
+        eos_render_operational_summary "$project"
+    fi
 
     echo
     echo "------------------------------------"

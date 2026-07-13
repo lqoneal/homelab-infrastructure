@@ -22,7 +22,7 @@ eos_platform_repository_inventory() {
 eos_render_platform() {
     local project="${1:-homelab}"
     local checkpoint sync_status
-    checkpoint="$(eos_checkpoint_latest || true)"
+    checkpoint="$(eos_checkpoint_active || true)"
     sync_status="$(eos_checkpoint_sync_status "$project" || true)"
 
     echo "===================================="
@@ -42,7 +42,7 @@ eos_render_platform() {
     eos_platform_repository_inventory
     echo
     echo "Controller Capabilities:"
-    echo "  resume status doctor checkpoint eos platform"
+    echo "  resume status doctor checkpoint eos repository context validate platform"
 }
 
 eos_platform_qualify() {
@@ -97,7 +97,7 @@ eos_platform_qualify() {
 
 eos_platform_validate() {
     local project="${1:-homelab}"
-    local root validator runtime_test failures=0
+    local root validator runtime_test context failures=0
     root="$(eos_project_root "$project")"
     validator="$root/scripts/validate_controlled_documents.py"
     runtime_test="$root/scripts/tests/test-eos-runtime.sh"
@@ -134,6 +134,35 @@ eos_platform_validate() {
         echo "PASS: EOS runtime regression tests"
     else
         echo "FAIL: EOS runtime regression tests"
+        ((failures++)) || true
+    fi
+
+    if eos_checkpoint_validate "$project" >/dev/null; then
+        echo "PASS: checkpoint validation"
+    else
+        echo "FAIL: checkpoint validation"
+        ((failures++)) || true
+    fi
+
+    if eos_operational_validate "$project" >/dev/null; then
+        echo "PASS: synchronized operational state"
+    else
+        echo "FAIL: synchronized operational state"
+        ((failures++)) || true
+    fi
+
+    if eos_repository_health "$project" >/dev/null; then
+        echo "PASS: repository operational health"
+    else
+        echo "FAIL: repository operational health"
+        ((failures++)) || true
+    fi
+
+    context="$(eos_engineering_context "$project")"
+    if grep -Fq "project_status=Active" <<<"$context"; then
+        echo "PASS: engineering context generation"
+    else
+        echo "FAIL: engineering context generation"
         ((failures++)) || true
     fi
 
