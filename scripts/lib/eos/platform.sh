@@ -100,12 +100,18 @@ eos_platform_qualify() {
 
 eos_platform_validate() {
     local project="${1:-homelab}"
-    local root validator runtime_test registry_test management_test context failures=0
+    local root platform_root validator runtime_test registry_test management_test
+    local context management_project_id failures=0
     root="$(eos_project_root "$project")"
-    validator="$root/scripts/validate_controlled_documents.py"
-    runtime_test="$root/scripts/tests/test-eos-runtime.sh"
-    registry_test="$root/scripts/tests/test-emp-registry.py"
-    management_test="$root/scripts/tests/test-emp-management.py"
+    platform_root="$(eos_project_root homelab)"
+    if [[ "$project" == "homelab" ]]; then
+        validator="$root/scripts/validate_controlled_documents.py"
+    else
+        validator="$root/scripts/validate_repository.py"
+    fi
+    runtime_test="$platform_root/scripts/tests/test-eos-runtime.sh"
+    registry_test="$platform_root/scripts/tests/test-emp-registry.py"
+    management_test="$platform_root/scripts/tests/test-emp-management.py"
 
     if eos_validate_state "$project"; then
         echo "PASS: EOS operational state"
@@ -121,7 +127,7 @@ eos_platform_validate() {
         ((failures++)) || true
     fi
 
-    if git -C "$root" rev-parse -q --verify 'refs/tags/governance-foundation-1.0^{}' >/dev/null 2>&1; then
+    if git -C "$platform_root" rev-parse -q --verify 'refs/tags/governance-foundation-1.0^{}' >/dev/null 2>&1; then
         echo "PASS: Governance Foundation tag"
     else
         echo "FAIL: Governance Foundation tag missing"
@@ -163,21 +169,21 @@ eos_platform_validate() {
         ((failures++)) || true
     fi
 
-    if eos_checkpoint_validate "$project" >/dev/null; then
+    if eos_checkpoint_validate homelab >/dev/null; then
         echo "PASS: checkpoint validation"
     else
         echo "FAIL: checkpoint validation"
         ((failures++)) || true
     fi
 
-    if eos_operational_validate "$project" >/dev/null; then
+    if eos_operational_validate homelab >/dev/null; then
         echo "PASS: synchronized operational state"
     else
         echo "FAIL: synchronized operational state"
         ((failures++)) || true
     fi
 
-    if eos_persistence_validate "$project" >/dev/null; then
+    if eos_persistence_validate homelab >/dev/null; then
         echo "PASS: EOS persistence model"
     else
         echo "FAIL: EOS persistence model"
@@ -199,7 +205,8 @@ eos_platform_validate() {
         ((failures++)) || true
     fi
 
-    if grep -Fq "management_project_id=EMP-PROJECT-HOMELAB" <<<"$context"; then
+    management_project_id="$(sed -n 's/^management_project_id=//p' <<<"$context")"
+    if [[ -n "$management_project_id" && "$management_project_id" != "none" ]]; then
         echo "PASS: registry context contribution"
     else
         echo "FAIL: registry context contribution"

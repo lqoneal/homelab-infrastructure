@@ -27,14 +27,24 @@ def fresh_registry():
 
 registry = fresh_registry()
 assert registry.validate() == []
-assert len(registry.objects) == 22
+assert len(registry.objects) == 26
 assert registry.data["serialization"] == "yaml"
 assert registry.data["authority_boundary"]["registry"] == "operational-management-state-only"
 assert "management_project_id=EMP-PROJECT-HOMELAB" in registry.context("homelab")
 assert "management_project_state=active" in registry.context("sprinteros")
 assert "management_planned_work=EMP-WORK-SPRINTEROS-PRODUCT" in registry.context("sprinteros")
+assert "management_current_phases=EMP-PHASE-SPRINTEROS-1" in registry.context("sprinteros")
+assert "management_current_sprints=EMP-SPRINT-SPRINTEROS-1-1" in registry.context("sprinteros")
+assert (
+    "management_milestones=EMP-MILESTONE-SPRINTEROS-PHASE-1-QUALIFIED"
+    in registry.context("sprinteros")
+)
 assert "management_active_deferrals=none" in registry.context("sprinteros")
 assert "management_blocking_dependencies=none" in registry.context("sprinteros")
+assert (
+    registry.objects["EMP-DEPENDENCY-SPRINTEROS-PHASE-1-QUALIFICATION"]["management_state"]
+    == "satisfied"
+)
 assert any(
     line.startswith("management_completed_work=EMP-WORK-REGISTRY-FOUNDATION")
     for line in registry.context("homelab")

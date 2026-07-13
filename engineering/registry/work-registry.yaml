@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 6
+revision: 17
 updated_at: '2026-07-13'
 serialization: yaml
 mutation_history:
@@ -38,6 +38,73 @@ mutation_history:
   actor: EMP Foundation qualification agent
   action: transition EMP-MISSION-SPRINTEROS-PRODUCT to authorized
   reason: MILESTONE-0004 authorizes SprinterOS Product Development Initiation.
+- revision: 7
+  previous_revision: 6
+  at: '2026-07-13T22:07:52+00:00'
+  actor: SprinterOS reconciliation agent
+  action: create EMP-PHASE-SPRINTEROS-1
+  reason: Register the repository-qualified SprinterOS Phase 1 management representation.
+- revision: 8
+  previous_revision: 7
+  at: '2026-07-13T22:07:53+00:00'
+  actor: SprinterOS reconciliation agent
+  action: create EMP-SPRINT-SPRINTEROS-1-1
+  reason: Register the repository-qualified first SprinterOS sprint as ready, not
+    active.
+- revision: 9
+  previous_revision: 8
+  at: '2026-07-13T22:07:53+00:00'
+  actor: SprinterOS reconciliation agent
+  action: create EMP-MILESTONE-SPRINTEROS-PHASE-1-QUALIFIED
+  reason: Record the achieved management milestone represented by SprinterOS MILESTONE-0004.
+- revision: 10
+  previous_revision: 9
+  at: '2026-07-13T22:08:12+00:00'
+  actor: SprinterOS reconciliation agent
+  action: update EMP-WORK-SPRINTEROS-PRODUCT.title
+  reason: Align the current ready work item with controlled SPRINT-1.1.
+- revision: 11
+  previous_revision: 10
+  at: '2026-07-13T22:08:12+00:00'
+  actor: SprinterOS reconciliation agent
+  action: update EMP-WORK-SPRINTEROS-PRODUCT.scope
+  reason: Scope the ready work item to the qualified sprint.
+- revision: 12
+  previous_revision: 11
+  at: '2026-07-13T22:08:13+00:00'
+  actor: SprinterOS reconciliation agent
+  action: update EMP-WORK-SPRINTEROS-PRODUCT.phase_id
+  reason: Link the ready work item to controlled Phase 1.
+- revision: 13
+  previous_revision: 12
+  at: '2026-07-13T22:08:14+00:00'
+  actor: SprinterOS reconciliation agent
+  action: update EMP-WORK-SPRINTEROS-PRODUCT.sprint_id
+  reason: Link the ready work item to controlled SPRINT-1.1.
+- revision: 14
+  previous_revision: 13
+  at: '2026-07-13T22:08:14+00:00'
+  actor: SprinterOS reconciliation agent
+  action: update EMP-WORK-SPRINTEROS-PRODUCT.work_type
+  reason: Classify the first bounded product implementation work.
+- revision: 15
+  previous_revision: 14
+  at: '2026-07-13T22:08:15+00:00'
+  actor: SprinterOS reconciliation agent
+  action: update EMP-WORK-SPRINTEROS-PRODUCT.completion_criteria
+  reason: Align completion criteria with SPRINT-1.1.
+- revision: 16
+  previous_revision: 15
+  at: '2026-07-13T22:08:16+00:00'
+  actor: SprinterOS reconciliation agent
+  action: update EMP-WORK-SPRINTEROS-PRODUCT.source_records
+  reason: Use reconciled SprinterOS controlled records as management sources.
+- revision: 17
+  previous_revision: 16
+  at: '2026-07-13T22:08:34+00:00'
+  actor: SprinterOS reconciliation agent
+  action: create EMP-DEPENDENCY-SPRINTEROS-PHASE-1-QUALIFICATION
+  reason: Record the satisfied repository and Phase 1 qualification gate for SPRINT-1.1.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -408,6 +475,38 @@ entities:
     - SPEC-0006
     - SERVICE-0002
     - PROJ-0001
+  - registry_id: EMP-PHASE-SPRINTEROS-1
+    object_type: Phase
+    title: SprinterOS Platform Foundation
+    management_state: ready
+    owner: SprinterOS
+    scope: EMP-MISSION-SPRINTEROS-PRODUCT
+    authority_reference: SprinterOS:MILESTONE-0004
+    source_records:
+    - SprinterOS:PHASE-1
+    - SprinterOS:PROJ-0001
+    relationships:
+    - type: represented_by
+      target: SprinterOS:PHASE-1
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: ready
+      at: 2026-07-13 23:00:00+00:00
+      actor: SprinterOS reconciliation agent
+      reason: The controlled Phase 1 qualification satisfies repository readiness
+        while implementation remains inactive.
+      authority_reference: SprinterOS:MILESTONE-0004
+    mission_id: EMP-MISSION-SPRINTEROS-PRODUCT
+    order: 1
+    entry_criteria: Repository reconciliation and Phase 1 qualification pass; separate
+      sprint execution authority remains required.
+    exit_criteria: Controlled Phase 1 deliverables and validation complete without
+      introducing Phase 2 services.
+    validation_records:
+    - SprinterOS:MILESTONE-0004
   sprints:
   - registry_id: EMP-SPRINT-1-2-FOUNDATION
     object_type: Sprint
@@ -438,6 +537,39 @@ entities:
     start_constraint: Phase 1.1 architecture active.
     end_constraint: All Phase 1.2 validation passes.
     capacity_assumption: Single bounded implementation mission; no scheduling or capacity
+      automation.
+  - registry_id: EMP-SPRINT-SPRINTEROS-1-1
+    object_type: Sprint
+    title: Raspberry Pi Runtime Baseline
+    management_state: ready
+    owner: SprinterOS
+    scope: EMP-PHASE-SPRINTEROS-1
+    authority_reference: SprinterOS:MILESTONE-0004
+    source_records:
+    - SprinterOS:SPRINT-1.1
+    - SprinterOS:PHASE-1
+    relationships:
+    - type: represented_by
+      target: SprinterOS:SPRINT-1.1
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: ready
+      at: 2026-07-13 23:00:01+00:00
+      actor: SprinterOS reconciliation agent
+      reason: The sprint is qualified and ready but has not received execution activation.
+      authority_reference: SprinterOS:MILESTONE-0004
+    phase_id: EMP-PHASE-SPRINTEROS-1
+    order: 1
+    objective: Qualify the exact Raspberry Pi target and establish only its reproducible
+      base operating-system and administrative-access baseline.
+    start_constraint: Separate SPRINT-1.1 execution authority and evidence-based hardware
+      identification are required.
+    end_constraint: Base runtime and recovery validation pass without container or
+      product feature implementation.
+    capacity_assumption: One bounded implementation mission; no scheduling or capacity
       automation.
   work_items:
   - registry_id: EMP-WORK-REGISTRY-FOUNDATION
@@ -526,20 +658,22 @@ entities:
     queue_ids: []
   - registry_id: EMP-WORK-SPRINTEROS-PRODUCT
     object_type: WorkItem
-    title: SprinterOS Product Implementation
+    title: Raspberry Pi Runtime Baseline
     management_state: ready
     owner: SprinterOS
-    scope: EMP-MISSION-SPRINTEROS-PRODUCT
+    scope: EMP-SPRINT-SPRINTEROS-1-1
     authority_reference: MILESTONE-0004
     source_records:
-    - PROJ-0001
     - SprinterOS:PROJ-0001
+    - SprinterOS:PHASE-1
+    - SprinterOS:SPRINT-1.1
+    - SprinterOS:MILESTONE-0004
     relationships:
     - type: related_to
       target: EMP-MILESTONE-ROADMAP-COMPLETE
     created_at: 2026-07-13
-    updated_at: '2026-07-13T21:30:08+00:00'
-    revision: 2
+    updated_at: '2026-07-13T22:08:16+00:00'
+    revision: 9
     transition_history:
     - from: null
       to: deferred
@@ -558,11 +692,13 @@ entities:
     project_id: EMP-PROJECT-SPRINTEROS
     order: 1
     mission_id: EMP-MISSION-SPRINTEROS-PRODUCT
-    phase_id: null
-    sprint_id: null
-    work_type: product-implementation
+    phase_id: EMP-PHASE-SPRINTEROS-1
+    sprint_id: EMP-SPRINT-SPRINTEROS-1-1
+    work_type: product-runtime-foundation
     priority: 2
-    completion_criteria: Defined by future separately authorized SprinterOS work.
+    completion_criteria: Exact Raspberry Pi hardware is evidenced and the reproducible
+      base operating-system, administrative-access, and recovery baseline pass without
+      container or product feature implementation.
     queue_ids:
     - EMP-QUEUE-PORTFOLIO-ROADMAP
   - registry_id: EMP-WORK-PRIVATE-AI-PRODUCT
@@ -700,6 +836,37 @@ entities:
     - SPEC-0006
     - SERVICE-0002
     - PROJ-0001
+  - registry_id: EMP-MILESTONE-SPRINTEROS-PHASE-1-QUALIFIED
+    object_type: Milestone
+    title: SprinterOS Repository Reconciled and Phase 1 Qualified
+    management_state: achieved
+    owner: SprinterOS
+    scope: EMP-PHASE-SPRINTEROS-1
+    authority_reference: SprinterOS:MILESTONE-0004
+    source_records:
+    - SprinterOS:MILESTONE-0004
+    - SprinterOS:PHASE-1
+    - SprinterOS:PROJ-0001
+    relationships:
+    - type: evidenced_by
+      target: SprinterOS:MILESTONE-0004
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: achieved
+      at: 2026-07-13 23:00:02+00:00
+      actor: SprinterOS reconciliation agent
+      reason: Controlled repository reconciliation and Phase 1 qualification validation
+        passed.
+      authority_reference: SprinterOS:MILESTONE-0004
+    scope_id: EMP-PHASE-SPRINTEROS-1
+    success_criteria: SprinterOS controlled state, controller, EOS context, and EMP
+      representation agree without product implementation.
+    target_date: 2026-07-13
+    evidence_records:
+    - SprinterOS:MILESTONE-0004
   deferrals:
   - registry_id: EMP-DEFERRAL-SPRINTEROS-PRODUCT
     object_type: Deferral
@@ -825,3 +992,31 @@ entities:
     dependency_kind: roadmap-gate
     satisfaction_criteria: EMP-MILESTONE-ROADMAP-COMPLETE is achieved and separate
       product authority exists.
+  - registry_id: EMP-DEPENDENCY-SPRINTEROS-PHASE-1-QUALIFICATION
+    object_type: Dependency
+    title: SPRINT-1.1 Depends on Repository and Phase 1 Qualification
+    management_state: satisfied
+    owner: SprinterOS
+    scope: EMP-SPRINT-SPRINTEROS-1-1
+    authority_reference: SprinterOS:MILESTONE-0004
+    source_records:
+    - SprinterOS:MILESTONE-0004
+    - SprinterOS:PHASE-1
+    relationships:
+    - type: evidenced_by
+      target: SprinterOS:MILESTONE-0004
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: satisfied
+      at: 2026-07-13 23:00:03+00:00
+      actor: SprinterOS reconciliation agent
+      reason: Repository reconciliation and controlled Phase 1 qualification passed.
+      authority_reference: SprinterOS:MILESTONE-0004
+    prerequisite_id: EMP-MILESTONE-SPRINTEROS-PHASE-1-QUALIFIED
+    dependent_id: EMP-WORK-SPRINTEROS-PRODUCT
+    dependency_kind: qualification-gate
+    satisfaction_criteria: SprinterOS MILESTONE-0004 is approved and project, phase,
+      sprint, controller, EOS, and EMP state agree.
