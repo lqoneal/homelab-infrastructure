@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.2
+version: 2.3
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-13
-phase: Mission 0.1 - Engineering Platform Baseline Reconciliation
+phase: Mission 0.4 - Engineering Platform Persistence and Mission 0 Closeout
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.1
+predecessor_revision: DOC-0001@2.2
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Mission 0.1 Engineering Platform Baseline Reconciliation
+approval_reference: Codex Handoff Procedure - Mission 0.4 Engineering Platform Persistence and Mission 0 Closeout
 approval_date: 2026-07-13
 persistence_status: Pending
 source_of_truth: true
@@ -43,6 +43,10 @@ relationships:
     target: INF-0001
   - type: related_to
     target: EOS-0001
+  - type: indexes
+    target: EOS-0003
+  - type: indexes
+    target: MILESTONE-0003
   - type: related_to
     target: EDR-0002
   - type: related_to
@@ -183,6 +187,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EDR-0002 | Engineering Authority Model | Draft | EOS Program | `docs/edr/EDR-0002-ENGINEERING_AUTHORITY_MODEL.md` |
 | EOS-0001 | Engineering Operating System Constitution | Draft | EOS Program | `docs/eos/EOS-0001-ENGINEERING_OPERATING_SYSTEM_CONSTITUTION.md` |
 | EOS-0002 | Engineering Operating System Master Plan | Draft | EOS Program | `docs/eos/EOS-0002-ENGINEERING_OPERATING_SYSTEM_MASTER_PLAN.md` |
+| EOS-0003 | EOS Operational Persistence Profile | Active | Homelab Infrastructure | `docs/eos/EOS-0003-OPERATIONAL_PERSISTENCE_PROFILE.md` |
 | SPEC-0001 | Controlled Document Model | Active | EOS Program | `docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md` |
 | SPEC-0004 | Engineering Context Reconstruction Service | Draft | EOS Program | `docs/specifications/SPEC-0004-ENGINEERING_CONTEXT_RECONSTRUCTION_SERVICE.md` |
 | SPEC-0005 | Engineering Control Framework | Draft | EOS Program | `docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md` |
@@ -222,6 +227,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | TRX-000001 | Procurement Transaction - Engineering Terminal 01 | Posted | Homelab Infrastructure | `docs/finance/transactions/TRX-000001.md` |
 | MILESTONE-0001 | Hardware Domain Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-06-hardware-domain-complete.md` |
 | MILESTONE-0002 | Engineering Workstation Shared Services Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-09-engineering-workstation-shared-services-complete.md` |
+| MILESTONE-0003 | Engineering Platform Mission 0 Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-13-engineering-platform-mission-0-complete.md` |
 
 This table shall be updated whenever a controlled document is created, superseded, or archived.
 
@@ -395,3 +401,4 @@ The future Engineering Management Platform will govern engineering standards whi
 | 2.0 | 2026-07-13 | Registered the EGR controlled document class, PROC-0002, TPL-0004, canonical EGR identifier and placement rules, and deterministic EGR discovery without issuing an EGR instance. |
 | 2.1 | 2026-07-13 | Registered EGR-000001 as the first Engineering Governance Resolution and completed Governance Foundation discovery integration. |
 | 2.2 | 2026-07-13 | Registered and preserved Active EWO-000016 under Mission 0.1 reconciliation authority and recorded removal of the obsolete zero-byte legacy EWO-000010 duplicate. |
+| 2.3 | 2026-07-13 | Registered EOS-0003 operational persistence treatment and MILESTONE-0003 Mission 0 Engineering Platform closeout under Mission 0.4 authority. |

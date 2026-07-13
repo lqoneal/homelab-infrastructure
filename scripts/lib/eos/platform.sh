@@ -151,6 +151,13 @@ eos_platform_validate() {
         ((failures++)) || true
     fi
 
+    if eos_persistence_validate "$project" >/dev/null; then
+        echo "PASS: EOS persistence model"
+    else
+        echo "FAIL: EOS persistence model"
+        ((failures++)) || true
+    fi
+
     if eos_repository_health "$project" >/dev/null; then
         echo "PASS: repository operational health"
     else

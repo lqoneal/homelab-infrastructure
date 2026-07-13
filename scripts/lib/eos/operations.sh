@@ -266,6 +266,61 @@ eos_operational_validate() {
     echo "Operational state validation passed."
 }
 
+eos_persistence_validate() {
+    local project="${1:-homelab}"
+    local inventory pointer retention failures=0
+    inventory="$(eos_repository_inventory_path)"
+    pointer="$(eos_checkpoint_active_path)"
+    retention="$(eos_checkpoint_retention_path)"
+
+    if eos_operational_validate "$project" >/dev/null; then
+        echo "PASS: regenerable operational state"
+    else
+        echo "FAIL: regenerable operational state"
+        ((failures++)) || true
+    fi
+
+    if [[ -s "$inventory" ]] \
+        && [[ "$(sed -n '1p' "$inventory")" == $'name\tpath\ttype\tbranch\tcommit\tstate\tupstream\tahead\tbehind\tremote' ]]; then
+        echo "PASS: regenerable repository inventory"
+    else
+        echo "FAIL: repository inventory schema"
+        ((failures++)) || true
+    fi
+
+    if [[ -s "$pointer" ]] && [[ "$(awk 'END { print NR + 0 }' "$pointer")" -eq 1 ]] \
+        && eos_checkpoint_resolve "$(sed -n '1p' "$pointer")" >/dev/null 2>&1; then
+        echo "PASS: authoritative active-checkpoint pointer"
+    else
+        echo "FAIL: active-checkpoint pointer persistence"
+        ((failures++)) || true
+    fi
+
+    if [[ -s "$retention" ]] \
+        && [[ "$(awk 'END { print NR + 0 }' "$retention")" -eq 1 ]] \
+        && [[ "$(sed -n '1p' "$retention")" =~ ^[1-9][0-9]*$ ]] \
+        && [[ "$(sed -n '1p' "$retention")" -le 1000 ]]; then
+        echo "PASS: authoritative checkpoint-retention setting"
+    else
+        echo "FAIL: checkpoint-retention setting persistence"
+        ((failures++)) || true
+    fi
+
+    if eos_checkpoint_validate "$project" >/dev/null; then
+        echo "PASS: append-only checkpoint metadata"
+    else
+        echo "FAIL: append-only checkpoint metadata"
+        ((failures++)) || true
+    fi
+
+    if [[ "$failures" -ne 0 ]]; then
+        echo "EOS persistence validation failed: $failures"
+        return 1
+    fi
+
+    echo "EOS persistence validation passed."
+}
+
 eos_render_operational_summary() {
     local project="${1:-homelab}"
     printf '%-22s %s\n' "Active Checkpoint:" "$(eos_checkpoint_active || echo none)"

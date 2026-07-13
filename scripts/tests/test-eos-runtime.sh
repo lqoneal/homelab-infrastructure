@@ -70,6 +70,13 @@ operational_state="$(eos_operational_refresh homelab)"
 [[ -s "$operational_state" ]]
 [[ -s "$(eos_repository_inventory_path)" ]]
 eos_operational_validate homelab >/dev/null
+eos_persistence_validate homelab >/dev/null
+printf '%s\n' "invalid" > "$(eos_checkpoint_retention_path)"
+if eos_persistence_validate homelab >/dev/null; then
+    echo "malformed persisted retention setting was accepted" >&2
+    exit 1
+fi
+eos_checkpoint_retention_set 3
 discovery_output="$(eos_repository_discover)"
 grep -Fq $'shared-libraries\t' <<<"$discovery_output"
 eos_repository_health homelab >/dev/null
@@ -91,9 +98,10 @@ grep -Fq "homelab" <<<"$inventory_output"
 qualification_output="$(eos_platform_qualify homelab)"
 grep -Fq "Active Git Operation: none" <<<"$qualification_output"
 
-[[ "$("$REPOSITORY_ROOT/scripts/engctl" version)" == "engctl version 0.3.0" ]]
+[[ "$("$REPOSITORY_ROOT/scripts/engctl" version)" == "engctl version 0.4.0" ]]
 "$REPOSITORY_ROOT/scripts/engctl" eos validate >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" eos refresh >/dev/null
+"$REPOSITORY_ROOT/scripts/engctl" eos persistence >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" checkpoint create "CLI Test Checkpoint" >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" checkpoint restore latest >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" checkpoint validate >/dev/null

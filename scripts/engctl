@@ -26,7 +26,7 @@ Usage:
   engctl status [project]
   engctl doctor
   engctl checkpoint {latest|active|list|create <title>|restore [checkpoint]|validate|retention [count]}
-  engctl eos {status|validate|sync-status|refresh|operational} [project]
+  engctl eos {status|validate|sync-status|refresh|operational|persistence} [project]
   engctl repository {discover|health|sync-status|readiness|refresh} [project]
   engctl context [project]
   engctl validate [project]
@@ -62,6 +62,7 @@ case "$cmd" in
             sync-status) eos_checkpoint_sync_status "$project" ;;
             refresh) eos_operational_refresh "$project" ;;
             operational) cat "$(eos_operational_state_path)" ;;
+            persistence) eos_persistence_validate "$project" ;;
             *) echo "ERROR: unknown eos action: $action" >&2; usage; exit 1 ;;
         esac
         ;;
@@ -85,7 +86,7 @@ case "$cmd" in
         esac
         ;;
     version)
-        echo "engctl version 0.3.0"
+        echo "engctl version 0.4.0"
         ;;
     help|-h|--help)
         usage
