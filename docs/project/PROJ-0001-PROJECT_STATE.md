@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 2.8
+version: 3.2
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-13
-phase: Mission 0 Complete - Engineering Platform Operational
+phase: EMP Foundation 1.0 Operational
 classification: Project State
-predecessor_revision: PROJ-0001@2.7
+predecessor_revision: PROJ-0001@3.1
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Mission 0.4 Engineering Platform Persistence and Mission 0 Closeout
+approval_reference: Codex Handoff Procedure - EMP Foundation 1.0 Operational Qualification
 approval_date: 2026-07-13
 persistence_status: Pending
 source_of_truth: true
@@ -31,11 +31,19 @@ relationships:
     target: EOS-0003
   - type: related_to
     target: MILESTONE-0003
+  - type: related_to
+    target: MILESTONE-0004
+  - type: related_to
+    target: EMP-0001
+  - type: related_to
+    target: SPEC-0006
+  - type: related_to
+    target: SERVICE-0002
 tags:
   - project-state
   - checkpoint
   - resume
-  - mission-0-closeout
+  - emp-phase-1.3
   - eos
 ---
 
@@ -55,12 +63,11 @@ It summarizes the current project state and identifies the next approved enginee
 
 **Session Summary:**
 
-- Qualified EOS runtime views, operational pointers, retention configuration, and append-only checkpoint evidence against an explicit persistence profile.
-- Integrated persistence qualification into `engctl` and the aggregate Engineering Platform validator and advanced the controller to Version 0.4.0.
-- Dispositioned the reserved BUILD-0001, VALID-0001, EIR-0001, and DIA-0001 identifiers without fabricating historical records or duplicating qualification evidence.
-- Completed production-readiness validation and recorded MILESTONE-0003.
-- Closed Mission 0 with the Engineering Platform operational and Engineering Management Platform Phase 1 identified as the next separately authorized mission.
-- Preserved Governance Foundation 1.0 and all deferred firmware, repair-tool, legacy-migration, product, and governance boundaries.
+- Qualified the canonical repository, Governance Foundation publication, Mission 0 publication, EMP Phase 1.1 through 1.3 implementation, repository integrity, and complete working-tree boundary.
+- Verified the Work Registry, operational management services, `engctl` routing, Engineering Context Reconstruction, controlled-document validation, EOS runtime, and aggregate Engineering Platform validation.
+- Published MILESTONE-0004 as the EMP Foundation 1.0 operational qualification and baseline record.
+- Preserved Governance Foundation 1.0, Mission 0 runtime ownership, controlled-document authority, EWO-000016, and the deferred `repair_yaml_header.py` boundary.
+- Authorized controlled portfolio transition to SprinterOS product development while retaining Private AI Assistant and EMP enhancements as deferred work.
 
 ---
 
@@ -74,7 +81,7 @@ Build the Engineering Operating System foundation for AI Assistant, SprinterOS, 
 
 **Current Overall Goal:**
 
-Operate the qualified Engineering Platform foundation and prepare the separately authorized Engineering Management Platform Phase 1 mission.
+Operate the qualified Engineering Platform and EMP Foundation 1.0 while transitioning portfolio control to the first approved product mission.
 
 ---
 
@@ -82,11 +89,11 @@ Operate the qualified Engineering Platform foundation and prepare the separately
 
 **Current Phase:**
 
-Mission 0 Complete — Engineering Platform Operational
+EMP Foundation 1.0 Operational — Portfolio Transition
 
 **Phase Objective:**
 
-Maintain the qualified Engineering Platform baseline without beginning the Engineering Management Platform until separately authorized.
+Preserve the Engineering Platform and EMP Foundation baselines while initiating the separately controlled SprinterOS product mission.
 
 ---
 
@@ -165,6 +172,30 @@ Maintain the qualified Engineering Platform baseline without beginning the Engin
 - Dispositioned BUILD-0001, VALID-0001, EIR-0001, and DIA-0001 without creating retrospective or duplicative records.
 - Qualified the Engineering Platform for operational use.
 - Recorded MILESTONE-0003 and completed Mission 0.
+- Inventoried Mission 0 services and confirmed the Engineering Platform remains the operational foundation.
+- Defined the EMP management layer and portfolio information-ownership model.
+- Defined the Engineering Work Registry entity, state, provenance, relationship, dependency, deferral, milestone, and metric model.
+- Defined logical EMP management services and their EOS integration boundaries.
+- Registered and validated EMP-0001, SPEC-0006, and SERVICE-0002 without adding runtime functionality.
+- Established the canonical repository-controlled YAML Work Registry and declarative schema.
+- Implemented registry loading, validation, deterministic discovery, lookup, and management-context rendering.
+- Integrated registry validation with the existing Engineering Platform validator.
+- Integrated authoritative management context with Engineering Context Reconstruction and resume output.
+- Added read-only `engctl registry` routing and advanced `engctl` to Version 0.5.0.
+- Registered the Engineering Portfolio, Homelab, SprinterOS, and Private AI Assistant.
+- Registered current EMP roadmap state, product deferrals, and dependencies without authorizing product execution.
+- Implemented controlled Work Registry create, update, archive, lookup, and state transitions with atomic validation and attributable mutation history.
+- Implemented portfolio and project summaries, registration, lifecycle projection, and deterministic ordering.
+- Implemented queue enqueue, dequeue, reprioritize, reorder, and integrity validation.
+- Implemented dependency discovery, validation, prerequisite qualification, satisfaction, and blocked-work reporting.
+- Implemented milestone lookup, evidence qualification, and completion projection without replacing controlled milestones.
+- Implemented attributable deferral, history preservation, dependency-gated resume, and re-entry validation.
+- Implemented deterministic registry-derived portfolio status and expanded Engineering Context Reconstruction contribution.
+- Added `engctl portfolio`, `project`, `queue`, `milestone`, `dependency`, and `defer` routing and advanced `engctl` to Version 0.6.0.
+- Qualified the EMP core as operationally complete while preserving all Governance, controlled-document, EOS, and Mission 0 authority boundaries.
+- Qualified and published EMP Foundation 1.0 through MILESTONE-0004.
+- Established the `emp-foundation-1.0` publication baseline.
+- Advanced SprinterOS to the first authorized product mission without beginning product implementation in this repository.
 
 ## Active Issues
 
@@ -172,7 +203,8 @@ Maintain the qualified Engineering Platform baseline without beginning the Engin
 - EWO-000016 firmware remediation remains authorized but unexecuted; backup evidence must be reverified before any destructive media operation.
 - `repair_yaml_header.py` remediation remains deferred and unchanged.
 - Legacy controlled-document migration and repository-wide persistence remediation remain separately governed technical debt.
-- Multi-host operation, dashboards, autonomous publication, and Engineering Management Platform services remain future roadmap work.
+- Multi-host operation, dashboards, notifications, analytics, metric calculation, scheduling, AI planning, optimization, and autonomous management remain separately authorized EMP enhancements.
+- Private AI Assistant implementation remains deferred behind SprinterOS in portfolio order.
 
 ## Authorized Bounded Side Mission
 
@@ -196,11 +228,11 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-Preserve the published Mission 0 Engineering Platform baseline and await separate authorization for Engineering Management Platform Phase 1 implementation.
+Preserve the Mission 0 Engineering Platform and EMP Foundation baselines; initiate the authorized SprinterOS product mission through its own controlled repository records.
 
 **Next Immediate Step:**
 
-Begin **Engineering Management Platform — Phase 1** only under its separately authorized implementation mission.
+Begin **SprinterOS Product Development Initiation** by reconstructing and reconciling its current controlled project state and defining the next bounded product phase before implementation. Private AI Assistant remains later in portfolio order.
 
 EWO-000016 remains a separately selectable bounded side mission. If selected, execution begins with Stage A backup re-verification; no destructive USB operation may occur unless every preceding gate passes.
 
@@ -251,6 +283,39 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 - Engineering Platform production-readiness qualification.
 - MILESTONE-0003 and Mission 0 closeout.
 
+## Completed During Engineering Management Platform Phase 1.1
+
+- EMP management-layer and portfolio architecture.
+- Work Registry model and management-state boundaries.
+- EMP management-service responsibilities and EOS integration contracts.
+- Repository and information-ownership relationships.
+- Controlled-document registration and architecture validation.
+
+## Completed During Engineering Management Platform Phase 1.2
+
+- Canonical YAML Work Registry and declarative schema.
+- Stable registry identifiers, hierarchy, states, ordering, queue membership, milestones, deferrals, and dependencies.
+- Registry loader, validation, discovery, lookup, and regression coverage.
+- Initial portfolio and roadmap registration.
+- `engctl` and Engineering Context Reconstruction integration.
+- Aggregate Engineering Platform validation integration.
+
+## Completed During Engineering Management Platform Phase 1.3
+
+- Atomic, validated, attributable Work Registry mutation and archive operations.
+- Portfolio and project operational services and deterministic ordering.
+- Queue, dependency, milestone, and deferral operational services.
+- Registry-derived portfolio status and expanded Engineering Context Reconstruction.
+- `engctl` Version 0.6.0 management routing and operational regression coverage.
+- EMP core completion qualification without downstream product activation.
+
+## Completed During EMP Foundation 1.0 Qualification
+
+- Final repository, architecture, registry, service, controller, context, relationship, lifecycle, and integrity qualification.
+- MILESTONE-0004 EMP Foundation operational publication.
+- Single-commit and annotated-tag publication baseline.
+- Controlled portfolio transition to SprinterOS product development.
+
 ## Remaining Mission 0 Scope
 
 None. Mission 0 is complete.
@@ -260,7 +325,9 @@ None. Mission 0 is complete.
 - Formal migration or archival of legacy published documents without `document_id`.
 - Repository-wide controlled-document metadata and persistence remediation.
 - `repair_yaml_header.py` tooling remediation.
-- Engineering Management Platform, SprinterOS, and Private AI Assistant implementation.
+- Private AI Assistant implementation pending later portfolio authority.
+- SprinterOS implementation beyond the authorized product-initiation mission and its future bounded phase authority.
+- EMP enhancements including scheduling, automation, dashboards, metrics execution, analytics, notifications, autonomous task management, and portfolio optimization.
 
 ## Deferred From EWO-000016 Creation
 
@@ -307,10 +374,12 @@ None. Mission 0 is complete.
 2. Review this document.
 3. Confirm the working tree status.
 4. Verify Governance Foundation 1.0 remains the governing baseline.
-5. Treat Mission 0 and MILESTONE-0003 as the completed Engineering Platform foundation baseline.
-6. Begin Engineering Management Platform Phase 1 only under its separately authorized mission; do not begin SprinterOS or Private AI Assistant implementation.
-7. When EWO-000016 is selected for execution, begin at Stage A backup re-verification and honor every sequential gate.
-8. After EWO-000016 completes or stops, return to the current primary project task recorded above.
+5. Treat Mission 0 and MILESTONE-0003 as the completed Engineering Platform operational foundation.
+6. Treat EMP-0001, SPEC-0006, SERVICE-0002, and MILESTONE-0004 as the active EMP Foundation 1.0 baseline.
+7. Validate and inspect the operational registry through `engctl registry validate` and `engctl registry list`.
+8. Continue with SprinterOS Product Development Initiation; reconcile its controlled state before defining or executing a product phase.
+9. When EWO-000016 is selected for execution, begin at Stage A backup re-verification and honor every sequential gate.
+10. After EWO-000016 completes or stops, return to the current primary project task recorded above.
 
 ---
 
@@ -323,9 +392,10 @@ When resuming this project:
 - Treat `/data/engineering/repositories/shared-libraries` as the canonical shared controller framework.
 - Do not use `/home/loneal/Projects` or `/home/loneal/Development` as authoritative locations.
 - Continue from the published Mission 0 Engineering Platform closeout checkpoint.
+- Preserve the EMP Foundation 1.0 baseline; registry readiness does not replace SprinterOS project-controlled authority.
 - Treat EWO-000016 as an authorized bounded side mission that does not supersede the primary sprint or task.
 - Resume EWO-000016 only at its first incomplete gated stage and preserve unrelated working-tree content.
-- Do not infer authority for work outside the current Mission 0 authorization.
+- Do not infer authority for work outside the current recorded mission and phase authorization.
 
 ---
 
@@ -342,3 +412,7 @@ When resuming this project:
 | 2.6     | 2026-07-13 | Recorded the initial EOS runtime, checkpoint, synchronization, platform validation, and engctl controller implementation and advanced the resume point to Mission 0.3. |
 | 2.7     | 2026-07-13 | Recorded Engineering Platform operational services, synchronization, checkpoint lifecycle, repository automation, context generation, and integrated validation and advanced the resume point to Mission 0.4 closeout. |
 | 2.8     | 2026-07-13 | Qualified EOS persistence, dispositioned the reserved Mission 0 records, recorded production readiness and MILESTONE-0003, closed Mission 0, and identified Engineering Management Platform Phase 1 as the next mission. |
+| 2.9     | 2026-07-13 | Established the EMP Phase 1.1 management architecture, work-registry model, management-service boundaries, EOS integrations, repository relationships, and Phase 1.2 resume point without modifying Mission 0 runtime responsibilities. |
+| 3.0     | 2026-07-13 | Implemented the Phase 1.2 operational YAML Work Registry, initial portfolio registration, validation, discovery, controller routing, ECRS contribution, and Phase 1.3 resume point while preserving Governance, EOS, and controlled-document authority. |
+| 3.1     | 2026-07-13 | Completed Phase 1.3 registry mutation, portfolio, queue, dependency, milestone, deferral, status, controller, context, and validation services and advanced the resume point to separately authorized product development. |
+| 3.2     | 2026-07-13 | Qualified and published EMP Foundation 1.0 through MILESTONE-0004 and authorized controlled portfolio transition to SprinterOS Product Development Initiation. |

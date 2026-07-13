@@ -14,21 +14,33 @@ eos_repositories_root() {
 
 eos_project_root() {
     local project="${1:-}"
+    local repositories candidate resolved
 
     if [[ -z "$project" ]]; then
         echo "ERROR: project name required" >&2
         return 1
     fi
 
-    case "$project" in
-        homelab)
-            echo "$(eos_repositories_root)/homelab"
-            ;;
-        *)
-            echo "ERROR: unknown project: $project" >&2
-            return 1
-            ;;
-    esac
+    if [[ ! "$project" =~ ^[A-Za-z0-9._-]+$ ]]; then
+        echo "ERROR: invalid project name: $project" >&2
+        return 1
+    fi
+
+    repositories="$(eos_repositories_root)"
+    candidate="$repositories/$project"
+    if [[ -d "$candidate" ]]; then
+        echo "$candidate"
+        return 0
+    fi
+
+    resolved="$(find "$repositories" -mindepth 1 -maxdepth 1 -type d -iname "$project" -print 2>/dev/null | sort | head -2)"
+    if [[ "$(wc -l <<<"$resolved")" -eq 1 && -n "$resolved" ]]; then
+        echo "$resolved"
+        return 0
+    fi
+
+    echo "ERROR: unknown project: $project" >&2
+    return 1
 }
 
 eos_registry_initialize() {

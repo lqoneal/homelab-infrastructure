@@ -9,8 +9,9 @@ trap 'rm -rf "$TEST_ROOT"' EXIT
 
 export EOS_WORKSPACE="$TEST_ROOT/engineering"
 PROJECT_ROOT="$EOS_WORKSPACE/repositories/homelab"
+SPRINTER_ROOT="$EOS_WORKSPACE/repositories/SprinterOS"
 mkdir -p "$PROJECT_ROOT/docs/project" "$EOS_WORKSPACE/eos/state" "$EOS_WORKSPACE/eos/checkpoints" \
-    "$EOS_WORKSPACE/repositories/shared-libraries"
+    "$EOS_WORKSPACE/repositories/shared-libraries" "$SPRINTER_ROOT/docs/project"
 
 git -C "$PROJECT_ROOT" init -q
 git -C "$PROJECT_ROOT" config user.name "EOS Runtime Test"
@@ -44,13 +45,22 @@ EOF
 git -C "$PROJECT_ROOT" add README.md docs/project/PROJ-0001-PROJECT_STATE.md
 git -C "$PROJECT_ROOT" commit -q -m "test baseline"
 
+git -C "$SPRINTER_ROOT" init -q
+git -C "$SPRINTER_ROOT" config user.name "EOS Runtime Test"
+git -C "$SPRINTER_ROOT" config user.email "eos-runtime@example.invalid"
+cp "$PROJECT_ROOT/docs/project/PROJ-0001-PROJECT_STATE.md" "$SPRINTER_ROOT/docs/project/PROJ-0001-PROJECT_STATE.md"
+git -C "$SPRINTER_ROOT" add docs/project/PROJ-0001-PROJECT_STATE.md
+git -C "$SPRINTER_ROOT" commit -q -m "test SprinterOS baseline"
+
 source "$REPOSITORY_ROOT/scripts/lib/eos/context.sh"
+source "$REPOSITORY_ROOT/scripts/lib/emp/registry.sh"
 source "$REPOSITORY_ROOT/scripts/lib/eos/state.sh"
 source "$REPOSITORY_ROOT/scripts/lib/eos/checkpoint.sh"
 source "$REPOSITORY_ROOT/scripts/lib/eos/operations.sh"
 source "$REPOSITORY_ROOT/scripts/lib/eos/platform.sh"
 
 [[ "$(eos_repository_state homelab)" == "clean" ]]
+[[ "$(eos_project_root sprinteros)" == "$SPRINTER_ROOT" ]]
 [[ "$(eos_frontmatter_value "$(eos_state_path)" status)" == "Active" ]]
 
 checkpoint="$(eos_checkpoint_create homelab "Runtime Test Checkpoint")"
@@ -82,6 +92,7 @@ grep -Fq $'shared-libraries\t' <<<"$discovery_output"
 eos_repository_health homelab >/dev/null
 context_output="$(eos_engineering_context homelab)"
 grep -Fq "checkpoint_sync=aligned" <<<"$context_output"
+grep -Fq "management_project_id=EMP-PROJECT-HOMELAB" <<<"$context_output"
 
 printf '%s\n' "drift" >> "$PROJECT_ROOT/README.md"
 [[ "$(eos_repository_state homelab)" == "modified (1 path(s))" ]]
@@ -98,7 +109,7 @@ grep -Fq "homelab" <<<"$inventory_output"
 qualification_output="$(eos_platform_qualify homelab)"
 grep -Fq "Active Git Operation: none" <<<"$qualification_output"
 
-[[ "$("$REPOSITORY_ROOT/scripts/engctl" version)" == "engctl version 0.4.0" ]]
+[[ "$("$REPOSITORY_ROOT/scripts/engctl" version)" == "engctl version 0.6.0" ]]
 "$REPOSITORY_ROOT/scripts/engctl" eos validate >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" eos refresh >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" eos persistence >/dev/null
@@ -110,6 +121,17 @@ grep -Fq "Active Git Operation: none" <<<"$qualification_output"
 "$REPOSITORY_ROOT/scripts/engctl" repository health >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" repository sync-status >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" repository refresh >/dev/null
+"$REPOSITORY_ROOT/scripts/engctl" registry path >/dev/null
+"$REPOSITORY_ROOT/scripts/engctl" registry validate >/dev/null
+"$REPOSITORY_ROOT/scripts/engctl" registry list projects >/dev/null
+"$REPOSITORY_ROOT/scripts/engctl" registry get EMP-PROJECT-HOMELAB >/dev/null
+"$REPOSITORY_ROOT/scripts/engctl" registry context homelab >/dev/null
+"$REPOSITORY_ROOT/scripts/engctl" portfolio summary >/dev/null
+"$REPOSITORY_ROOT/scripts/engctl" project list >/dev/null
+"$REPOSITORY_ROOT/scripts/engctl" queue validate >/dev/null
+"$REPOSITORY_ROOT/scripts/engctl" dependency check >/dev/null
+"$REPOSITORY_ROOT/scripts/engctl" milestone qualify EMP-MILESTONE-ROADMAP-COMPLETE >/dev/null
+"$REPOSITORY_ROOT/scripts/engctl" defer history EMP-WORK-SPRINTEROS-PRODUCT >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" context >/dev/null
 wrapper_output="$(ENGCTL_PATH="$REPOSITORY_ROOT/scripts/engctl" \
     "$REPOSITORY_ROOT/scripts/homelabctl" status)"

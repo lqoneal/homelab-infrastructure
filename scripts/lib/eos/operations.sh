@@ -201,6 +201,9 @@ eos_engineering_context() {
     echo "eos_status=$(eos_frontmatter_value "$eos_state" status 2>/dev/null || echo unknown)"
     echo "active_checkpoint=${checkpoint:-none}"
     echo "checkpoint_sync=$(eos_checkpoint_sync_status "$project" || true)"
+    if declare -F emp_registry_context >/dev/null 2>&1; then
+        emp_registry_context "$project"
+    fi
 }
 
 eos_operational_refresh() {

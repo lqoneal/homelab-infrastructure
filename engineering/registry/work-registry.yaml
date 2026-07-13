@@ -1,0 +1,827 @@
+schema_version: 1
+registry_id: EMP-WORK-REGISTRY-0001
+title: Engineering Portfolio Work Registry
+revision: 6
+updated_at: '2026-07-13'
+serialization: yaml
+mutation_history:
+- revision: 2
+  previous_revision: 1
+  at: '2026-07-13T19:45:00+00:00'
+  actor: Phase 1.3 implementation agent
+  action: Complete EMP Phase 1.3 operational management services
+  reason: Phase 1.3 implementation and validation qualify the EMP core as operationally
+    complete.
+- revision: 3
+  previous_revision: 2
+  at: '2026-07-13T21:30:07+00:00'
+  actor: EMP Foundation qualification agent
+  action: transition EMP-DEPENDENCY-SPRINTEROS-ON-EMP to satisfied
+  reason: EMP Foundation 1.0 satisfies the platform prerequisite for SprinterOS product
+    initiation.
+- revision: 4
+  previous_revision: 3
+  at: '2026-07-13T21:30:08+00:00'
+  actor: EMP Foundation qualification agent
+  action: registry mutation
+  reason: registry mutation
+- revision: 5
+  previous_revision: 4
+  at: '2026-07-13T21:30:08+00:00'
+  actor: EMP Foundation qualification agent
+  action: transition EMP-PROJECT-SPRINTEROS to active
+  reason: SprinterOS becomes the active product portfolio entry after EMP Foundation
+    qualification.
+- revision: 6
+  previous_revision: 5
+  at: '2026-07-13T21:30:09+00:00'
+  actor: EMP Foundation qualification agent
+  action: transition EMP-MISSION-SPRINTEROS-PRODUCT to authorized
+  reason: MILESTONE-0004 authorizes SprinterOS Product Development Initiation.
+authority_boundary:
+  governance: external-controlled-records
+  controlled_documents: external-authoritative-records
+  eos_runtime: operational-services
+  registry: operational-management-state-only
+entities:
+  portfolios:
+  - registry_id: EMP-PORTFOLIO-0001
+    object_type: Portfolio
+    title: Engineering Portfolio
+    management_state: active
+    owner: Engineering Management Platform
+    scope: EMP-PORTFOLIO-0001
+    authority_reference: null
+    source_records:
+    - EOS-0002
+    - EMP-0001
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: EOS-0002
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Initial portfolio registration from the approved portfolio roadmap.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    purpose: Coordinate engineering work across Homelab, SprinterOS, and Private AI
+      Assistant without replacing project records.
+    status_derivation_policy: Derive portfolio status from registry management state
+      and referenced authoritative records; never overwrite source state.
+  projects:
+  - registry_id: EMP-PROJECT-HOMELAB
+    object_type: Project
+    title: Homelab Infrastructure
+    management_state: active
+    owner: Homelab Infrastructure
+    scope: EMP-PORTFOLIO-0001
+    authority_reference: null
+    source_records:
+    - PROJ-0001
+    - INF-0001
+    relationships:
+    - type: represented_by
+      target: PROJ-0001
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Homelab is the active Engineering Platform and EMP foundation project.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    slug: homelab
+    portfolio_id: EMP-PORTFOLIO-0001
+    order: 1
+    repository:
+      name: homelab
+      path: /data/engineering/repositories/homelab
+      presence: present
+  - registry_id: EMP-PROJECT-SPRINTEROS
+    object_type: Project
+    title: SprinterOS
+    management_state: active
+    owner: SprinterOS
+    scope: EMP-PORTFOLIO-0001
+    authority_reference: MILESTONE-0004
+    source_records:
+    - INF-0001
+    - SprinterOS:PROJ-0001
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: SprinterOS:PROJ-0001
+    created_at: 2026-07-13
+    updated_at: '2026-07-13T21:30:08+00:00'
+    revision: 2
+    transition_history:
+    - from: null
+      to: on_hold
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Repository exists, while product implementation remains deferred by
+        the portfolio roadmap.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    - from: on_hold
+      to: active
+      at: '2026-07-13T21:30:08+00:00'
+      actor: EMP Foundation qualification agent
+      reason: SprinterOS becomes the active product portfolio entry after EMP Foundation
+        qualification.
+      authority_reference: MILESTONE-0004
+    slug: sprinteros
+    portfolio_id: EMP-PORTFOLIO-0001
+    order: 2
+    repository:
+      name: SprinterOS
+      path: /data/engineering/repositories/SprinterOS
+      presence: present
+  - registry_id: EMP-PROJECT-PRIVATE-AI-ASSISTANT
+    object_type: Project
+    title: Private AI Assistant
+    management_state: planned
+    owner: Private AI Assistant
+    scope: EMP-PORTFOLIO-0001
+    authority_reference: null
+    source_records:
+    - EOS-0002
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: EOS-0002
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: planned
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Registered from the AI Assistant portfolio roadmap entry; no canonical
+        repository is currently registered.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    slug: private-ai-assistant
+    roadmap_name: AI Assistant
+    portfolio_id: EMP-PORTFOLIO-0001
+    order: 3
+    repository:
+      name: null
+      path: null
+      presence: planned
+  missions:
+  - registry_id: EMP-MISSION-PLATFORM-ROADMAP
+    object_type: Mission
+    title: Engineering Management Platform Roadmap
+    management_state: completed
+    owner: Engineering Management Platform
+    scope: EMP-PROJECT-HOMELAB
+    authority_reference: Codex Handoff Procedure - EMP Phase 1.3
+    source_records:
+    - EMP-0001
+    - SPEC-0006
+    - SERVICE-0002
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: EMP-0001
+    created_at: 2026-07-13
+    updated_at: '2026-07-13T19:45:00+00:00'
+    revision: 2
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: EMP roadmap remains an active management scope; later phase execution
+        requires separate authority.
+      authority_reference: PROJ-0001
+    - from: active
+      to: completed
+      at: '2026-07-13T19:45:00+00:00'
+      actor: Phase 1.3 implementation agent
+      reason: Phases 1.1, 1.2, and 1.3 completed and the EMP core passed operational
+        qualification.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.3
+    project_id: EMP-PROJECT-HOMELAB
+    order: 1
+    objective: Establish the Engineering Management Platform before downstream product
+      implementation.
+    entry_criteria: Mission 0 Engineering Platform operational and Phase 1.1 architecture
+      active.
+    completion_criteria: EMP roadmap completion is recorded by authoritative project
+      and governance records.
+  - registry_id: EMP-MISSION-SPRINTEROS-PRODUCT
+    object_type: Mission
+    title: SprinterOS Product Implementation
+    management_state: authorized
+    owner: SprinterOS
+    scope: EMP-PROJECT-SPRINTEROS
+    authority_reference: MILESTONE-0004
+    source_records:
+    - PROJ-0001
+    - SprinterOS:PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-MILESTONE-ROADMAP-COMPLETE
+    created_at: 2026-07-13
+    updated_at: '2026-07-13T21:30:09+00:00'
+    revision: 2
+    transition_history:
+    - from: null
+      to: proposed
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Portfolio registration only; product implementation remains deferred.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    - from: proposed
+      to: authorized
+      at: '2026-07-13T21:30:09+00:00'
+      actor: EMP Foundation qualification agent
+      reason: MILESTONE-0004 authorizes SprinterOS Product Development Initiation.
+      authority_reference: MILESTONE-0004
+    project_id: EMP-PROJECT-SPRINTEROS
+    order: 1
+    objective: Implement SprinterOS only after the EMP roadmap and separate authorization
+      are complete.
+    entry_criteria: EMP roadmap complete and separate SprinterOS execution authority
+      active.
+    completion_criteria: Defined by future separately authorized SprinterOS work.
+  - registry_id: EMP-MISSION-PRIVATE-AI-PRODUCT
+    object_type: Mission
+    title: Private AI Assistant Product Implementation
+    management_state: proposed
+    owner: Private AI Assistant
+    scope: EMP-PROJECT-PRIVATE-AI-ASSISTANT
+    authority_reference: null
+    source_records:
+    - PROJ-0001
+    - EOS-0002
+    relationships:
+    - type: related_to
+      target: EMP-MILESTONE-ROADMAP-COMPLETE
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: proposed
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Portfolio registration only; product implementation remains deferred.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    project_id: EMP-PROJECT-PRIVATE-AI-ASSISTANT
+    order: 1
+    objective: Implement the Private AI Assistant only after the EMP roadmap and separate
+      authorization are complete.
+    entry_criteria: EMP roadmap complete and separate Private AI Assistant execution
+      authority active.
+    completion_criteria: Defined by future separately authorized Private AI Assistant
+      work.
+  phases:
+  - registry_id: EMP-PHASE-1-1
+    object_type: Phase
+    title: Core Architecture and Work Registry Foundation
+    management_state: completed
+    owner: Engineering Management Platform
+    scope: EMP-MISSION-PLATFORM-ROADMAP
+    authority_reference: Codex Handoff Procedure - EMP Phase 1.1
+    source_records:
+    - EMP-0001
+    - SPEC-0006
+    - SERVICE-0002
+    - PROJ-0001
+    relationships:
+    - type: evidenced_by
+      target: PROJ-0001
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: completed
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Phase 1.1 architecture is complete in the current working-tree publication
+        set.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.1
+    mission_id: EMP-MISSION-PLATFORM-ROADMAP
+    order: 1
+    entry_criteria: Mission 0 complete.
+    exit_criteria: EMP architecture, Work Registry model, and management-service boundaries
+      established.
+    validation_records:
+    - PROJ-0001
+  - registry_id: EMP-PHASE-1-2
+    object_type: Phase
+    title: Operational Work Registry Foundation
+    management_state: completed
+    owner: Engineering Management Platform
+    scope: EMP-MISSION-PLATFORM-ROADMAP
+    authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    source_records:
+    - EMP-0001
+    - SPEC-0006
+    - SERVICE-0002
+    - PROJ-0001
+    relationships:
+    - type: evidenced_by
+      target: PROJ-0001
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: completed
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Operational registry, validation, discovery, context, and controller
+        foundation implemented.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    mission_id: EMP-MISSION-PLATFORM-ROADMAP
+    order: 2
+    entry_criteria: Phase 1.1 architecture active.
+    exit_criteria: Registry storage, schema, loader, validation, discovery, context,
+      and engctl routing pass qualification.
+    validation_records:
+    - PROJ-0001
+  - registry_id: EMP-PHASE-1-3
+    object_type: Phase
+    title: Operational Management Services
+    management_state: completed
+    owner: Engineering Management Platform
+    scope: EMP-MISSION-PLATFORM-ROADMAP
+    authority_reference: Codex Handoff Procedure - EMP Phase 1.3
+    source_records:
+    - EMP-0001
+    - SPEC-0006
+    - SERVICE-0002
+    - PROJ-0001
+    relationships:
+    - type: evidenced_by
+      target: PROJ-0001
+    created_at: 2026-07-13
+    updated_at: '2026-07-13T19:45:00+00:00'
+    revision: 2
+    transition_history:
+    - from: null
+      to: planned
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Registered as the next EMP phase placeholder without inferring its execution
+        scope or authority.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    - from: planned
+      to: ready
+      at: '2026-07-13T19:45:00+00:00'
+      actor: Phase 1.3 implementation agent
+      reason: Phase 1.2 qualification and Phase 1.3 authority satisfied the entry
+        criteria.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.3
+    - from: ready
+      to: active
+      at: '2026-07-13T19:45:01+00:00'
+      actor: Phase 1.3 implementation agent
+      reason: Authorized operational management implementation entered execution.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.3
+    - from: active
+      to: completed
+      at: '2026-07-13T19:45:02+00:00'
+      actor: Phase 1.3 implementation agent
+      reason: Operational registry, portfolio, queue, dependency, milestone, deferral,
+        status, controller, and context services completed validation.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.3
+    mission_id: EMP-MISSION-PLATFORM-ROADMAP
+    order: 3
+    entry_criteria: Phase 1.2 registry foundation qualified and separate Phase 1.3
+      authority active.
+    exit_criteria: Operational management services manipulate and consume the Work
+      Registry without duplicating EOS or governance authority.
+    validation_records:
+    - EMP-0001
+    - SPEC-0006
+    - SERVICE-0002
+    - PROJ-0001
+  sprints:
+  - registry_id: EMP-SPRINT-1-2-FOUNDATION
+    object_type: Sprint
+    title: Work Registry Foundation Implementation
+    management_state: completed
+    owner: Engineering Management Platform
+    scope: EMP-PHASE-1-2
+    authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    source_records:
+    - PROJ-0001
+    relationships:
+    - type: evidenced_by
+      target: PROJ-0001
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: completed
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Phase 1.2 implementation and validation completed as one bounded objective
+        sprint.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    phase_id: EMP-PHASE-1-2
+    order: 1
+    objective: Establish the first operational Engineering Work Registry.
+    start_constraint: Phase 1.1 architecture active.
+    end_constraint: All Phase 1.2 validation passes.
+    capacity_assumption: Single bounded implementation mission; no scheduling or capacity
+      automation.
+  work_items:
+  - registry_id: EMP-WORK-REGISTRY-FOUNDATION
+    object_type: WorkItem
+    title: Implement Operational Work Registry Foundation
+    management_state: completed
+    owner: Engineering Management Platform
+    scope: EMP-PHASE-1-2
+    authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    source_records:
+    - EMP-0001
+    - SPEC-0006
+    - SERVICE-0002
+    - PROJ-0001
+    relationships:
+    - type: evidenced_by
+      target: PROJ-0001
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: completed
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Registry foundation implementation completed and validated.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    project_id: EMP-PROJECT-HOMELAB
+    order: 1
+    mission_id: EMP-MISSION-PLATFORM-ROADMAP
+    phase_id: EMP-PHASE-1-2
+    sprint_id: EMP-SPRINT-1-2-FOUNDATION
+    work_type: platform-foundation
+    priority: 1
+    completion_criteria: Registry serialization, schema, loader, validator, discovery,
+      context, and controller integration pass.
+    queue_ids: []
+  - registry_id: EMP-WORK-PHASE-1-3
+    object_type: WorkItem
+    title: Implement EMP Operational Management Services
+    management_state: completed
+    owner: Engineering Management Platform
+    scope: EMP-PHASE-1-3
+    authority_reference: Codex Handoff Procedure - EMP Phase 1.3
+    source_records:
+    - EMP-0001
+    - SPEC-0006
+    - SERVICE-0002
+    - PROJ-0001
+    relationships:
+    - type: evidenced_by
+      target: PROJ-0001
+    created_at: 2026-07-13
+    updated_at: '2026-07-13T19:45:00+00:00'
+    revision: 2
+    transition_history:
+    - from: null
+      to: proposed
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Next EMP work is discoverable without inferring Phase 1.3 scope or execution
+        authority.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    - from: proposed
+      to: active
+      at: '2026-07-13T19:45:00+00:00'
+      actor: Phase 1.3 implementation agent
+      reason: Phase 1.3 authority activated the bounded operational management work.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.3
+    - from: active
+      to: completed
+      at: '2026-07-13T19:45:01+00:00'
+      actor: Phase 1.3 implementation agent
+      reason: All authorized operational management services and integrations passed
+        validation.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.3
+    project_id: EMP-PROJECT-HOMELAB
+    order: 2
+    mission_id: EMP-MISSION-PLATFORM-ROADMAP
+    phase_id: EMP-PHASE-1-3
+    sprint_id: null
+    work_type: platform-roadmap
+    priority: 1
+    completion_criteria: Registry mutation, portfolio, queue, dependency, milestone,
+      deferral, status, controller, context, and aggregate validation pass.
+    queue_ids: []
+  - registry_id: EMP-WORK-SPRINTEROS-PRODUCT
+    object_type: WorkItem
+    title: SprinterOS Product Implementation
+    management_state: ready
+    owner: SprinterOS
+    scope: EMP-MISSION-SPRINTEROS-PRODUCT
+    authority_reference: MILESTONE-0004
+    source_records:
+    - PROJ-0001
+    - SprinterOS:PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-MILESTONE-ROADMAP-COMPLETE
+    created_at: 2026-07-13
+    updated_at: '2026-07-13T21:30:08+00:00'
+    revision: 2
+    transition_history:
+    - from: null
+      to: deferred
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Product implementation remains deferred until completion of the EMP
+        roadmap.
+      authority_reference: PROJ-0001
+    - from: deferred
+      to: ready
+      at: '2026-07-13T21:30:08+00:00'
+      actor: EMP Foundation qualification agent
+      reason: EMP Foundation 1.0 publication authorizes controlled re-entry into SprinterOS
+        product initiation.
+      authority_reference: MILESTONE-0004
+    project_id: EMP-PROJECT-SPRINTEROS
+    order: 1
+    mission_id: EMP-MISSION-SPRINTEROS-PRODUCT
+    phase_id: null
+    sprint_id: null
+    work_type: product-implementation
+    priority: 2
+    completion_criteria: Defined by future separately authorized SprinterOS work.
+    queue_ids:
+    - EMP-QUEUE-PORTFOLIO-ROADMAP
+  - registry_id: EMP-WORK-PRIVATE-AI-PRODUCT
+    object_type: WorkItem
+    title: Private AI Assistant Product Implementation
+    management_state: deferred
+    owner: Private AI Assistant
+    scope: EMP-MISSION-PRIVATE-AI-PRODUCT
+    authority_reference: PROJ-0001
+    source_records:
+    - PROJ-0001
+    - EOS-0002
+    relationships:
+    - type: related_to
+      target: EMP-MILESTONE-ROADMAP-COMPLETE
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: deferred
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Product implementation remains deferred until completion of the EMP
+        roadmap.
+      authority_reference: PROJ-0001
+    project_id: EMP-PROJECT-PRIVATE-AI-ASSISTANT
+    order: 1
+    mission_id: EMP-MISSION-PRIVATE-AI-PRODUCT
+    phase_id: null
+    sprint_id: null
+    work_type: product-implementation
+    priority: 3
+    completion_criteria: Defined by future separately authorized Private AI Assistant
+      work.
+    queue_ids:
+    - EMP-QUEUE-PORTFOLIO-ROADMAP
+  queues:
+  - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP
+    object_type: Queue
+    title: Portfolio Roadmap Queue
+    management_state: active
+    owner: Engineering Management Platform
+    scope: EMP-PORTFOLIO-0001
+    authority_reference: null
+    source_records:
+    - PROJ-0001
+    relationships: []
+    created_at: 2026-07-13
+    updated_at: '2026-07-13T19:45:00+00:00'
+    revision: 2
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Initial ordered roadmap queue registered without scheduling or execution
+        semantics.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    scope_id: EMP-PORTFOLIO-0001
+    selection_policy: Preserve approved roadmap precedence; ordering does not authorize
+      or schedule execution.
+    entries:
+    - position: 1
+      work_item_id: EMP-WORK-SPRINTEROS-PRODUCT
+    - position: 2
+      work_item_id: EMP-WORK-PRIVATE-AI-PRODUCT
+  milestones:
+  - registry_id: EMP-MILESTONE-REGISTRY-OPERATIONAL
+    object_type: Milestone
+    title: Operational Work Registry Foundation Complete
+    management_state: achieved
+    owner: Engineering Management Platform
+    scope: EMP-PHASE-1-2
+    authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    source_records:
+    - PROJ-0001
+    relationships:
+    - type: evidenced_by
+      target: PROJ-0001
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: achieved
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Registry foundation implementation and validation completed.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    scope_id: EMP-PHASE-1-2
+    success_criteria: Registry is repository-controlled, valid, discoverable, routed
+      by engctl, and contributes management context.
+    target_date: 2026-07-13
+    evidence_records:
+    - PROJ-0001
+  - registry_id: EMP-MILESTONE-ROADMAP-COMPLETE
+    object_type: Milestone
+    title: Engineering Management Platform Roadmap Complete
+    management_state: achieved
+    owner: Engineering Management Platform
+    scope: EMP-MISSION-PLATFORM-ROADMAP
+    authority_reference: Codex Handoff Procedure - EMP Phase 1.3
+    source_records:
+    - PROJ-0001
+    - EMP-0001
+    - SPEC-0006
+    - SERVICE-0002
+    relationships:
+    - type: evidenced_by
+      target: PROJ-0001
+    created_at: 2026-07-13
+    updated_at: '2026-07-13T19:45:00+00:00'
+    revision: 2
+    transition_history:
+    - from: null
+      to: planned
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Product implementation remains dependent on completion of the EMP roadmap.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.2
+    - from: planned
+      to: achieved
+      at: '2026-07-13T19:45:00+00:00'
+      actor: Phase 1.3 implementation agent
+      reason: EMP architecture, Work Registry, operational management services, controller,
+        context, and validation are complete.
+      authority_reference: Codex Handoff Procedure - EMP Phase 1.3
+    scope_id: EMP-MISSION-PLATFORM-ROADMAP
+    success_criteria: EMP Phases 1.1 through 1.3 are complete and operational validation
+      passes without changing Governance, controlled-document, EOS, or Mission 0 authority.
+    target_date: 2026-07-13
+    evidence_records:
+    - EMP-0001
+    - SPEC-0006
+    - SERVICE-0002
+    - PROJ-0001
+  deferrals:
+  - registry_id: EMP-DEFERRAL-SPRINTEROS-PRODUCT
+    object_type: Deferral
+    title: Defer SprinterOS Product Implementation
+    management_state: resolved
+    owner: Engineering Management Platform
+    scope: EMP-PROJECT-SPRINTEROS
+    authority_reference: MILESTONE-0004
+    source_records:
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-MILESTONE-ROADMAP-COMPLETE
+    created_at: 2026-07-13
+    updated_at: '2026-07-13T21:30:08+00:00'
+    revision: 2
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Preserve the approved product implementation deferral.
+      authority_reference: PROJ-0001
+    - from: active
+      to: resolved
+      at: '2026-07-13T21:30:08+00:00'
+      actor: EMP Foundation qualification agent
+      reason: EMP Foundation 1.0 publication authorizes controlled re-entry into SprinterOS
+        product initiation.
+      authority_reference: MILESTONE-0004
+    work_item_id: EMP-WORK-SPRINTEROS-PRODUCT
+    reason: Product implementation is outside the EMP roadmap missions.
+    reentry_conditions: EMP roadmap complete and separate SprinterOS authority active.
+    target_horizon: after-emp-roadmap
+    resolution_reference: MILESTONE-0004
+  - registry_id: EMP-DEFERRAL-PRIVATE-AI-PRODUCT
+    object_type: Deferral
+    title: Defer Private AI Assistant Product Implementation
+    management_state: active
+    owner: Engineering Management Platform
+    scope: EMP-PROJECT-PRIVATE-AI-ASSISTANT
+    authority_reference: PROJ-0001
+    source_records:
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-MILESTONE-ROADMAP-COMPLETE
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Preserve the approved product implementation deferral.
+      authority_reference: PROJ-0001
+    work_item_id: EMP-WORK-PRIVATE-AI-PRODUCT
+    reason: Product implementation is outside the EMP roadmap missions.
+    reentry_conditions: EMP roadmap complete and separate Private AI Assistant authority
+      active.
+    target_horizon: after-emp-roadmap
+    resolution_reference: null
+  dependencies:
+  - registry_id: EMP-DEPENDENCY-SPRINTEROS-ON-EMP
+    object_type: Dependency
+    title: SprinterOS Depends on EMP Roadmap Completion
+    management_state: satisfied
+    owner: Engineering Management Platform
+    scope: EMP-PROJECT-SPRINTEROS
+    authority_reference: MILESTONE-0004
+    source_records:
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-MILESTONE-ROADMAP-COMPLETE
+    created_at: 2026-07-13
+    updated_at: '2026-07-13T21:30:07+00:00'
+    revision: 2
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Product implementation remains deferred until EMP roadmap completion.
+      authority_reference: PROJ-0001
+    - from: active
+      to: satisfied
+      at: '2026-07-13T21:30:07+00:00'
+      actor: EMP Foundation qualification agent
+      reason: EMP Foundation 1.0 satisfies the platform prerequisite for SprinterOS
+        product initiation.
+      authority_reference: MILESTONE-0004
+    prerequisite_id: EMP-MILESTONE-ROADMAP-COMPLETE
+    dependent_id: EMP-WORK-SPRINTEROS-PRODUCT
+    dependency_kind: roadmap-gate
+    satisfaction_criteria: EMP-MILESTONE-ROADMAP-COMPLETE is achieved and separate
+      product authority exists.
+  - registry_id: EMP-DEPENDENCY-PRIVATE-AI-ON-EMP
+    object_type: Dependency
+    title: Private AI Assistant Depends on EMP Roadmap Completion
+    management_state: active
+    owner: Engineering Management Platform
+    scope: EMP-PROJECT-PRIVATE-AI-ASSISTANT
+    authority_reference: PROJ-0001
+    source_records:
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-MILESTONE-ROADMAP-COMPLETE
+    created_at: 2026-07-13
+    updated_at: 2026-07-13
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-13
+      actor: Phase 1.2 implementation agent
+      reason: Product implementation remains deferred until EMP roadmap completion.
+      authority_reference: PROJ-0001
+    prerequisite_id: EMP-MILESTONE-ROADMAP-COMPLETE
+    dependent_id: EMP-WORK-PRIVATE-AI-PRODUCT
+    dependency_kind: roadmap-gate
+    satisfaction_criteria: EMP-MILESTONE-ROADMAP-COMPLETE is achieved and separate
+      product authority exists.

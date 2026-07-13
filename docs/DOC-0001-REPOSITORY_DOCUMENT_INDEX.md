@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.3
+version: 2.7
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-13
-phase: Mission 0.4 - Engineering Platform Persistence and Mission 0 Closeout
+phase: EMP Foundation 1.0 Operational Qualification
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.2
+predecessor_revision: DOC-0001@2.6
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Mission 0.4 Engineering Platform Persistence and Mission 0 Closeout
+approval_reference: Codex Handoff Procedure - EMP Foundation 1.0 Operational Qualification
 approval_date: 2026-07-13
 persistence_status: Pending
 source_of_truth: true
@@ -47,6 +47,14 @@ relationships:
     target: EOS-0003
   - type: indexes
     target: MILESTONE-0003
+  - type: indexes
+    target: MILESTONE-0004
+  - type: indexes
+    target: EMP-0001
+  - type: indexes
+    target: SPEC-0006
+  - type: indexes
+    target: SERVICE-0002
   - type: related_to
     target: EDR-0002
   - type: related_to
@@ -123,6 +131,7 @@ Every engineering session shall begin by reviewing the repository in the followi
 | PROJ | Project state and execution |
 | PHASE | Mission and phase execution plans |
 | EOS | Engineering Operating System governance |
+| EMP | Engineering Management Platform architecture |
 | GEN | Genesis governance records |
 | POL | Engineering governance policies |
 | INF | Infrastructure documentation |
@@ -188,10 +197,13 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EOS-0001 | Engineering Operating System Constitution | Draft | EOS Program | `docs/eos/EOS-0001-ENGINEERING_OPERATING_SYSTEM_CONSTITUTION.md` |
 | EOS-0002 | Engineering Operating System Master Plan | Draft | EOS Program | `docs/eos/EOS-0002-ENGINEERING_OPERATING_SYSTEM_MASTER_PLAN.md` |
 | EOS-0003 | EOS Operational Persistence Profile | Active | Homelab Infrastructure | `docs/eos/EOS-0003-OPERATIONAL_PERSISTENCE_PROFILE.md` |
+| EMP-0001 | Engineering Management Platform Architecture | Active | Engineering Management Platform | `docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md` |
 | SPEC-0001 | Controlled Document Model | Active | EOS Program | `docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md` |
 | SPEC-0004 | Engineering Context Reconstruction Service | Draft | EOS Program | `docs/specifications/SPEC-0004-ENGINEERING_CONTEXT_RECONSTRUCTION_SERVICE.md` |
 | SPEC-0005 | Engineering Control Framework | Draft | EOS Program | `docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md` |
+| SPEC-0006 | Engineering Work Registry Model | Active | Engineering Management Platform | `docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md` |
 | SERVICE-0001 | EOS Core Services Catalog | Draft | EOS Program | `docs/services/SERVICE-0001-EOS_CORE_SERVICES_CATALOG.md` |
+| SERVICE-0002 | EMP Management Services Catalog | Active | Engineering Management Platform | `docs/services/SERVICE-0002-EMP_MANAGEMENT_SERVICES_CATALOG.md` |
 | GEN-0001 | Engineering Operating System Genesis Record | Active | Engineering Governance | `docs/genesis/GEN-0001-GENESIS_GOVERNANCE_RECORD.md` |
 | POL-0001 | Engineering Governance Policy | Active | Engineering Governance | `docs/policies/POL-0001-ENGINEERING_GOVERNANCE_POLICY.md` |
 | STD-0000 | Engineering Governance Documentation Architecture | Active | Engineering Governance | `docs/standards/STD-0000-ENGINEERING_GOVERNANCE_DOCUMENTATION_ARCHITECTURE.md` |
@@ -228,8 +240,43 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | MILESTONE-0001 | Hardware Domain Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-06-hardware-domain-complete.md` |
 | MILESTONE-0002 | Engineering Workstation Shared Services Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-09-engineering-workstation-shared-services-complete.md` |
 | MILESTONE-0003 | Engineering Platform Mission 0 Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-13-engineering-platform-mission-0-complete.md` |
+| MILESTONE-0004 | Engineering Management Platform Foundation 1.0 Operational | Approved | Engineering Management Platform | `docs/project/milestones/2026-07-13-engineering-management-platform-foundation-1.0-operational.md` |
 
 This table shall be updated whenever a controlled document is created, superseded, or archived.
+
+---
+
+# Operational Work Registry Discovery
+
+The canonical Engineering Management Platform Work Registry is:
+
+```text
+engineering/registry/work-registry.yaml
+```
+
+Its canonical declarative schema is:
+
+```text
+engineering/registry/work-registry.schema.yaml
+```
+
+The registry uses YAML serialization and owns operational management state only. It is not a controlled document, Governance Authority, execution authority, or replacement for project-controlled engineering truth.
+
+Deterministic discovery and validation are available through:
+
+```text
+engctl registry path
+engctl registry list [entity]
+engctl registry get <registry-id>
+engctl registry context [project]
+engctl registry validate
+engctl registry create <entity> <record> <reason>
+engctl registry update <registry-id> <field> <yaml-value> <reason>
+engctl registry archive <registry-id> <reason>
+engctl registry transition <registry-id> <state> <reason>
+```
+
+Operational management discovery is routed through `engctl portfolio`, `engctl project`, `engctl queue`, `engctl dependency`, `engctl milestone`, `engctl defer`, and `engctl status`. Registry-derived context and categorized management status are merged into Engineering Context Reconstruction while retaining explicit source-record references and the registry authority boundary.
 
 ---
 
@@ -380,7 +427,7 @@ Homelab provides the engineering environment for the portfolio.
 
 It supplies the global infrastructure baseline consumed by product repositories.
 
-The future Engineering Management Platform will govern engineering standards while Homelab remains the authoritative source for the engineering environment.
+The Engineering Management Platform manages portfolio coordination and engineering work within existing Engineering Governance. It consumes EOS services and project-controlled records without governing engineering standards, replacing the Engineering Platform, or changing Homelab's authority for the engineering environment.
 
 ---
 
@@ -402,3 +449,7 @@ The future Engineering Management Platform will govern engineering standards whi
 | 2.1 | 2026-07-13 | Registered EGR-000001 as the first Engineering Governance Resolution and completed Governance Foundation discovery integration. |
 | 2.2 | 2026-07-13 | Registered and preserved Active EWO-000016 under Mission 0.1 reconciliation authority and recorded removal of the obsolete zero-byte legacy EWO-000010 duplicate. |
 | 2.3 | 2026-07-13 | Registered EOS-0003 operational persistence treatment and MILESTONE-0003 Mission 0 Engineering Platform closeout under Mission 0.4 authority. |
+| 2.4 | 2026-07-13 | Registered the EMP Phase 1.1 platform architecture, work-registry model, and management-services catalog and clarified the EMP relationship to Governance, EOS, and Homelab. |
+| 2.5 | 2026-07-13 | Registered deterministic discovery for the Phase 1.2 operational YAML Work Registry, schema, validation, controller routing, and authority boundary. |
+| 2.6 | 2026-07-13 | Registered the Phase 1.3 controlled mutation interfaces, operational management command groups, deterministic status, and Engineering Context contribution. |
+| 2.7 | 2026-07-13 | Registered MILESTONE-0004, EMP Foundation 1.0 operational qualification, the publication baseline, and controlled portfolio transition to SprinterOS product development. |

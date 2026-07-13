@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate repository-controlled document discovery and the EGR framework."""
+"""Validate repository-controlled discovery, EGR, and EMP architecture records."""
 
 from __future__ import annotations
 
@@ -15,6 +15,8 @@ import yaml
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
 INDEX_PATH = DOCS / "DOC-0001-REPOSITORY_DOCUMENT_INDEX.md"
+REGISTRY_PATH = ROOT / "engineering/registry/work-registry.yaml"
+REGISTRY_SCHEMA_PATH = ROOT / "engineering/registry/work-registry.schema.yaml"
 
 FRAMEWORK_PATHS = {
     "DOC-0001": INDEX_PATH,
@@ -24,6 +26,12 @@ FRAMEWORK_PATHS = {
     / "procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md",
     "TPL-0004": DOCS
     / "templates/TPL-0004-ENGINEERING_GOVERNANCE_RESOLUTION_TEMPLATE.md",
+    "EMP-0001": DOCS
+    / "emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md",
+    "SPEC-0006": DOCS
+    / "specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md",
+    "SERVICE-0002": DOCS
+    / "services/SERVICE-0002-EMP_MANAGEMENT_SERVICES_CATALOG.md",
 }
 
 INDEX_REGISTRATIONS = {
@@ -38,6 +46,24 @@ INDEX_REGISTRATIONS = {
         "status": "Active",
         "owner": "Engineering Governance",
         "path": "docs/templates/TPL-0004-ENGINEERING_GOVERNANCE_RESOLUTION_TEMPLATE.md",
+    },
+    "EMP-0001": {
+        "title": "Engineering Management Platform Architecture",
+        "status": "Active",
+        "owner": "Engineering Management Platform",
+        "path": "docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md",
+    },
+    "SPEC-0006": {
+        "title": "Engineering Work Registry Model",
+        "status": "Active",
+        "owner": "Engineering Management Platform",
+        "path": "docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md",
+    },
+    "SERVICE-0002": {
+        "title": "EMP Management Services Catalog",
+        "status": "Active",
+        "owner": "Engineering Management Platform",
+        "path": "docs/services/SERVICE-0002-EMP_MANAGEMENT_SERVICES_CATALOG.md",
     },
 }
 
@@ -122,7 +148,7 @@ class Validation:
         print(f"Controlled-document checks failed: {len(self.errors)}")
         if self.errors:
             return 1
-        print("EGR framework and repository discovery are valid.")
+        print("EGR framework, EMP architecture, and repository discovery are valid.")
         return 0
 
 
@@ -313,6 +339,20 @@ def main() -> int:
         return validation.finish()
 
     rows = controlled_document_rows(index_text)
+    validation.check(REGISTRY_PATH.is_file(), "canonical EMP Work Registry exists")
+    validation.check(REGISTRY_SCHEMA_PATH.is_file(), "canonical EMP Work Registry schema exists")
+    validation.check(
+        "engineering/registry/work-registry.yaml" in index_text,
+        "DOC-0001 registers Work Registry discovery",
+    )
+    validation.check(
+        "engineering/registry/work-registry.schema.yaml" in index_text,
+        "DOC-0001 registers Work Registry schema discovery",
+    )
+    validation.check(
+        "engctl registry validate" in index_text,
+        "DOC-0001 registers Work Registry validation discovery",
+    )
     validation.check(
         "| EGR | Engineering Governance Resolutions recording governance decisions |" in index_text,
         "DOC-0001 registers the EGR class",
@@ -342,6 +382,90 @@ def main() -> int:
     for document_id in ("PROC-0002", "TPL-0004"):
         pairs = relationship_pairs(metadata_by_id.get(document_id, {}))
         validation.check(("indexed_by", "DOC-0001") in pairs, f"{document_id} is indexed by DOC-0001")
+
+    for document_id in ("EMP-0001", "SPEC-0006", "SERVICE-0002"):
+        pairs = relationship_pairs(metadata_by_id.get(document_id, {}))
+        validation.check(
+            ("indexed_by", "DOC-0001") in pairs,
+            f"{document_id} is indexed by DOC-0001",
+        )
+        validation.check(
+            ("indexes", document_id) in index_relationships,
+            f"DOC-0001 indexes {document_id}",
+        )
+
+    emp_relationships = relationship_pairs(metadata_by_id.get("EMP-0001", {}))
+    spec_relationships = relationship_pairs(metadata_by_id.get("SPEC-0006", {}))
+    service_relationships = relationship_pairs(metadata_by_id.get("SERVICE-0002", {}))
+    validation.check(
+        ("implemented_by", "SPEC-0006") in emp_relationships
+        and ("implements", "EMP-0001") in spec_relationships,
+        "EMP architecture and Work Registry model are bidirectionally related",
+    )
+    validation.check(
+        ("implemented_by", "SERVICE-0002") in emp_relationships
+        and ("implements", "EMP-0001") in service_relationships,
+        "EMP architecture and management-service catalog are bidirectionally related",
+    )
+    validation.check(
+        ("implemented_by", "SERVICE-0002") in spec_relationships
+        and ("implements", "SPEC-0006") in service_relationships,
+        "Work Registry model and management-service catalog are bidirectionally related",
+    )
+
+    emp_text = FRAMEWORK_PATHS["EMP-0001"].read_text(encoding="utf-8")
+    spec_text = FRAMEWORK_PATHS["SPEC-0006"].read_text(encoding="utf-8")
+    service_text = FRAMEWORK_PATHS["SERVICE-0002"].read_text(encoding="utf-8")
+    for required_scope in (
+        "projects",
+        "missions",
+        "phases",
+        "sprints",
+        "work queues",
+        "milestones",
+        "deferred-work",
+        "dependencies",
+        "engineering metrics",
+        "portfolio status",
+    ):
+        validation.check(
+            required_scope.lower() in emp_text.lower(),
+            f"EMP-0001 defines management scope for {required_scope}",
+        )
+    for entity in (
+        "Portfolio",
+        "Project",
+        "Mission",
+        "Phase",
+        "Sprint",
+        "Work Item",
+        "Work Queue",
+        "Milestone",
+        "Deferral",
+        "Dependency",
+        "Metric Definition",
+    ):
+        validation.check(
+            f"## 3." in spec_text and entity in spec_text,
+            f"SPEC-0006 defines the {entity} entity",
+        )
+    for service in (
+        "Work Registry Service",
+        "Portfolio Service",
+        "Work Queue Service",
+        "Dependency Service",
+        "Milestone Service",
+        "Engineering Metrics Service",
+    ):
+        validation.check(service in service_text, f"SERVICE-0002 defines {service}")
+    validation.check(
+        "shall not create a second global controller" in emp_text,
+        "EMP-0001 preserves the existing global controller boundary",
+    )
+    validation.check(
+        "shall not create a competing validation framework" in emp_text,
+        "EMP-0001 preserves the EOS validation-service boundary",
+    )
 
     egr_records: list[tuple[str, Path]] = sorted(
         (document_id, path)

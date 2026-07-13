@@ -2,22 +2,7 @@
 
 set -Eeuo pipefail
 
-eos_workspace() {
-    echo "${EOS_WORKSPACE:-/data/engineering}"
-}
-
-eos_project_root() {
-    local project="${1:-homelab}"
-    case "$project" in
-        homelab)
-            echo "$(eos_workspace)/repositories/homelab"
-            ;;
-        *)
-            echo "ERROR: unknown project: $project" >&2
-            return 1
-            ;;
-    esac
-}
+source "$(dirname "${BASH_SOURCE[0]}")/repository.sh"
 
 eos_project_state() {
     local project="${1:-homelab}"
@@ -396,6 +381,14 @@ eos_render_resume() {
         echo "ENGINEERING CONTEXT"
         echo "------------------------------------"
         eos_render_operational_summary "$project"
+    fi
+
+    if declare -F emp_registry_context >/dev/null 2>&1; then
+        echo
+        echo "------------------------------------"
+        echo "ENGINEERING WORK REGISTRY"
+        echo "------------------------------------"
+        emp_registry_context "$project"
     fi
 
     echo

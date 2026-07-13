@@ -14,6 +14,8 @@ if [[ ! -f "$ECRS_PATH" ]]; then
 fi
 
 source "$ECRS_PATH"
+source "$SCRIPT_DIR/lib/emp/registry.sh"
+source "$SCRIPT_DIR/lib/emp/management.sh"
 source "$SCRIPT_DIR/lib/eos/state.sh"
 source "$SCRIPT_DIR/lib/eos/checkpoint.sh"
 source "$SCRIPT_DIR/lib/eos/operations.sh"
@@ -28,6 +30,13 @@ Usage:
   engctl checkpoint {latest|active|list|create <title>|restore [checkpoint]|validate|retention [count]}
   engctl eos {status|validate|sync-status|refresh|operational|persistence} [project]
   engctl repository {discover|health|sync-status|readiness|refresh} [project]
+  engctl registry {path|validate|show|list|get|context|create|update|archive|transition}
+  engctl portfolio {summary|status|order}
+  engctl project {list|register|activate|suspend}
+  engctl queue {list|show|validate|enqueue|dequeue|reprioritize|reorder}
+  engctl milestone {list|get|status|qualify|complete}
+  engctl dependency {list|validate|check|blocked|satisfy}
+  engctl defer {list|validate|apply|resume|history}
   engctl context [project]
   engctl validate [project]
   engctl platform {status|validate|qualify} [project]
@@ -46,6 +55,10 @@ case "$cmd" in
     status)
         project="${1:-$EOS_PROJECT}"
         eos_render_platform "$project"
+        echo
+        echo "Engineering Management Portfolio Status"
+        project_id="$(python3 "$(emp_registry_script)" context "$project" | sed -n 's/^management_project_id=//p')"
+        emp_render_management status "$project_id"
         ;;
     doctor)
         bash "$SCRIPT_DIR/doctor.sh"
@@ -69,6 +82,12 @@ case "$cmd" in
     repository)
         eos_render_repository_operation "${1:-health}" "${2:-$EOS_PROJECT}"
         ;;
+    registry)
+        emp_render_registry "${1:-list}" "${@:2}"
+        ;;
+    portfolio|project|queue|milestone|dependency|defer)
+        emp_render_management "$cmd" "$@"
+        ;;
     context)
         eos_engineering_context "${1:-$EOS_PROJECT}"
         ;;
@@ -86,7 +105,7 @@ case "$cmd" in
         esac
         ;;
     version)
-        echo "engctl version 0.4.0"
+        echo "engctl version 0.6.0"
         ;;
     help|-h|--help)
         usage

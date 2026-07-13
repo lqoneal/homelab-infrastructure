@@ -1,0 +1,173 @@
+schema_version: 1
+registry_schema_version: 1
+serialization: yaml
+root:
+  required:
+    - schema_version
+    - registry_id
+    - title
+    - revision
+    - updated_at
+    - mutation_history
+    - serialization
+    - authority_boundary
+    - entities
+authority_boundary:
+  governance: external-controlled-records
+  controlled_documents: external-authoritative-records
+  eos_runtime: operational-services
+  registry: operational-management-state-only
+common_required:
+  - registry_id
+  - object_type
+  - title
+  - management_state
+  - owner
+  - scope
+  - authority_reference
+  - source_records
+  - relationships
+  - created_at
+  - updated_at
+  - revision
+  - transition_history
+common_optional:
+  - archived
+  - archived_at
+  - archived_by
+  - archive_reason
+relationship_types:
+  - represented_by
+  - evidenced_by
+  - related_to
+transition_rules:
+  portfolios:
+    planned: [active, on_hold, retired]
+    active: [on_hold, completed, retired]
+    on_hold: [active, retired]
+    completed: [retired]
+    retired: []
+  projects:
+    planned: [active, on_hold, retired]
+    active: [on_hold, completed, retired]
+    on_hold: [active, retired]
+    completed: [retired]
+    retired: []
+  missions:
+    proposed: [authorized, cancelled]
+    authorized: [active, blocked, cancelled]
+    active: [blocked, completed, cancelled]
+    blocked: [active, cancelled]
+    completed: []
+    cancelled: []
+  phases:
+    planned: [ready, cancelled]
+    ready: [active, blocked, cancelled]
+    active: [blocked, completed, cancelled]
+    blocked: [ready, active, cancelled]
+    completed: []
+    cancelled: []
+  sprints:
+    planned: [ready, cancelled]
+    ready: [active, blocked, cancelled]
+    active: [blocked, completed, cancelled]
+    blocked: [ready, active, cancelled]
+    completed: []
+    cancelled: []
+  work_items:
+    proposed: [ready, active, blocked, cancelled, deferred]
+    ready: [active, blocked, cancelled, deferred]
+    active: [blocked, completed, cancelled, deferred]
+    blocked: [ready, active, cancelled, deferred]
+    completed: []
+    cancelled: []
+    deferred: [proposed, ready, cancelled]
+  queues:
+    active: [frozen, closed]
+    frozen: [active, closed]
+    closed: []
+  milestones:
+    planned: [achieved, withdrawn]
+    achieved: []
+    withdrawn: []
+  deferrals:
+    active: [resolved, cancelled]
+    resolved: []
+    cancelled: []
+  dependencies:
+    proposed: [active, cancelled]
+    active: [satisfied, waived, cancelled]
+    satisfied: []
+    waived: []
+    cancelled: []
+entity_types:
+  portfolios:
+    object_type: Portfolio
+    id_prefix: EMP-PORTFOLIO-
+    management_states: [planned, active, on_hold, completed, retired]
+    required: [purpose, status_derivation_policy]
+    parent_field: null
+    parent_collection: null
+  projects:
+    object_type: Project
+    id_prefix: EMP-PROJECT-
+    management_states: [planned, active, on_hold, completed, retired]
+    required: [slug, portfolio_id, order, repository]
+    parent_field: portfolio_id
+    parent_collection: portfolios
+  missions:
+    object_type: Mission
+    id_prefix: EMP-MISSION-
+    management_states: [proposed, authorized, active, blocked, completed, cancelled]
+    required: [project_id, order, objective, entry_criteria, completion_criteria]
+    parent_field: project_id
+    parent_collection: projects
+  phases:
+    object_type: Phase
+    id_prefix: EMP-PHASE-
+    management_states: [planned, ready, active, blocked, completed, cancelled]
+    required: [mission_id, order, entry_criteria, exit_criteria, validation_records]
+    parent_field: mission_id
+    parent_collection: missions
+  sprints:
+    object_type: Sprint
+    id_prefix: EMP-SPRINT-
+    management_states: [planned, ready, active, blocked, completed, cancelled]
+    required: [phase_id, order, objective, start_constraint, end_constraint, capacity_assumption]
+    parent_field: phase_id
+    parent_collection: phases
+  work_items:
+    object_type: WorkItem
+    id_prefix: EMP-WORK-
+    management_states: [proposed, ready, active, blocked, completed, cancelled, deferred]
+    required: [project_id, order, mission_id, phase_id, sprint_id, work_type, priority, completion_criteria, queue_ids]
+    parent_field: project_id
+    parent_collection: projects
+  queues:
+    object_type: Queue
+    id_prefix: EMP-QUEUE-
+    management_states: [active, frozen, closed]
+    required: [scope_id, selection_policy, entries]
+    parent_field: null
+    parent_collection: null
+  milestones:
+    object_type: Milestone
+    id_prefix: EMP-MILESTONE-
+    management_states: [planned, achieved, withdrawn]
+    required: [scope_id, success_criteria, target_date, evidence_records]
+    parent_field: null
+    parent_collection: null
+  deferrals:
+    object_type: Deferral
+    id_prefix: EMP-DEFERRAL-
+    management_states: [active, resolved, cancelled]
+    required: [work_item_id, reason, reentry_conditions, target_horizon, resolution_reference]
+    parent_field: work_item_id
+    parent_collection: work_items
+  dependencies:
+    object_type: Dependency
+    id_prefix: EMP-DEPENDENCY-
+    management_states: [proposed, active, satisfied, waived, cancelled]
+    required: [prerequisite_id, dependent_id, dependency_kind, satisfaction_criteria]
+    parent_field: null
+    parent_collection: null

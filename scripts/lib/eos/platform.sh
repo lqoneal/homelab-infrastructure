@@ -37,12 +37,15 @@ eos_render_platform() {
     printf '%-20s %s\n' "EOS State:" "$(eos_state_path)"
     printf '%-20s %s\n' "Latest Checkpoint:" "${checkpoint:-none}"
     printf '%-20s %s\n' "Synchronization:" "${sync_status:-unavailable}"
+    if declare -F emp_registry_path >/dev/null 2>&1; then
+        printf '%-20s %s\n' "Work Registry:" "$(emp_registry_path)"
+    fi
     echo
     echo "Repository Inventory:"
     eos_platform_repository_inventory
     echo
     echo "Controller Capabilities:"
-    echo "  resume status doctor checkpoint eos repository context validate platform"
+    echo "  resume status doctor checkpoint eos repository registry portfolio project queue milestone dependency defer context validate platform"
 }
 
 eos_platform_qualify() {
@@ -97,10 +100,12 @@ eos_platform_qualify() {
 
 eos_platform_validate() {
     local project="${1:-homelab}"
-    local root validator runtime_test context failures=0
+    local root validator runtime_test registry_test management_test context failures=0
     root="$(eos_project_root "$project")"
     validator="$root/scripts/validate_controlled_documents.py"
     runtime_test="$root/scripts/tests/test-eos-runtime.sh"
+    registry_test="$root/scripts/tests/test-emp-registry.py"
+    management_test="$root/scripts/tests/test-emp-management.py"
 
     if eos_validate_state "$project"; then
         echo "PASS: EOS operational state"
@@ -137,6 +142,27 @@ eos_platform_validate() {
         ((failures++)) || true
     fi
 
+    if declare -F emp_registry_validate >/dev/null 2>&1 && emp_registry_validate >/dev/null; then
+        echo "PASS: Engineering Work Registry validation"
+    else
+        echo "FAIL: Engineering Work Registry validation"
+        ((failures++)) || true
+    fi
+
+    if [[ -f "$registry_test" ]] && PYTHONDONTWRITEBYTECODE=1 python3 "$registry_test" >/dev/null; then
+        echo "PASS: Engineering Work Registry regression tests"
+    else
+        echo "FAIL: Engineering Work Registry regression tests"
+        ((failures++)) || true
+    fi
+
+    if [[ -f "$management_test" ]] && PYTHONDONTWRITEBYTECODE=1 python3 "$management_test" >/dev/null; then
+        echo "PASS: EMP operational management regression tests"
+    else
+        echo "FAIL: EMP operational management regression tests"
+        ((failures++)) || true
+    fi
+
     if eos_checkpoint_validate "$project" >/dev/null; then
         echo "PASS: checkpoint validation"
     else
@@ -170,6 +196,20 @@ eos_platform_validate() {
         echo "PASS: engineering context generation"
     else
         echo "FAIL: engineering context generation"
+        ((failures++)) || true
+    fi
+
+    if grep -Fq "management_project_id=EMP-PROJECT-HOMELAB" <<<"$context"; then
+        echo "PASS: registry context contribution"
+    else
+        echo "FAIL: registry context contribution"
+        ((failures++)) || true
+    fi
+
+    if grep -Fq "management_completed_work=" <<<"$context"; then
+        echo "PASS: management status context contribution"
+    else
+        echo "FAIL: management status context contribution"
         ((failures++)) || true
     fi
 
