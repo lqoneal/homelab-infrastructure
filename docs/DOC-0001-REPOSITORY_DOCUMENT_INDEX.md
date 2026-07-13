@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.1
+version: 2.2
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-13
-phase: EGR Framework Implementation
+phase: Mission 0.1 - Engineering Platform Baseline Reconciliation
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.0
+predecessor_revision: DOC-0001@2.1
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000001
+approval_reference: Codex Handoff Procedure - Mission 0.1 Engineering Platform Baseline Reconciliation
 approval_date: 2026-07-13
 persistence_status: Pending
 source_of_truth: true
@@ -55,6 +55,8 @@ relationships:
     target: EWO-000013
   - type: related_to
     target: EWO-000014
+  - type: related_to
+    target: EWO-000016
 tags:
   - repository
   - governance
@@ -213,6 +215,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EWO-000014 | SPEC-0001 Lifecycle Promotion | Active | Engineering Governance | `docs/work-orders/EWO-000014-SPEC-0001-LIFECYCLE-PROMOTION.md` |
 | EWO-000014-EVIDENCE | EWO-000014 Engineering Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000014-ENGINEERING-EVIDENCE-PACKAGE.md` |
 | EWO-000014-COMPLETION | EWO-000014 Engineering Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000014-ENGINEERING-COMPLETION-REPORT.md` |
+| EWO-000016 | thaDuke Firmware Remediation | Active | Engineering Governance | `docs/work-orders/EWO-000016-THADUKE-FIRMWARE-REMEDIATION.md` |
 | FIN-0001 | Master Financial Ledger | Active | Homelab Infrastructure | `docs/finance/FIN-0001-MASTER_FINANCIAL_LEDGER.md` |
 | FIN-0002 | Master Procurement Register | Active | Homelab Infrastructure | `docs/finance/FIN-0002-MASTER_PROCUREMENT_REGISTER.md` |
 | PROC-000001 | Engineering Terminal 01 Procurement | Closed | Homelab Infrastructure | `docs/finance/procurements/PROC-000001.md` |
@@ -290,6 +293,8 @@ These three records constitute the authoritative execution record and shall supp
 Historical Work Orders and earlier repository placements remain controlled records. They shall remain discoverable and shall not be moved or rewritten solely to conform to the current placement convention.
 
 The existing `engineering/work-orders/` location is a legacy Work Order location pending separately authorized reconciliation. Records in that location retain their existing meaning and history but do not replace the indexed authoritative Work Order under `docs/work-orders/` when both exist for the same identifier.
+
+Mission 0.1 confirmed that `engineering/work-orders/EWO-000010.md` was an untracked, zero-byte duplicate with no controlled content. It was removed under the Mission 0.1 reconciliation authority. The authoritative EWO-000010 publication remains `docs/work-orders/EWO-000010-GOVERNANCE_BASELINE_1.0_QUALIFICATION.md`; no authoritative record or history was removed.
 
 ---
 
@@ -389,3 +394,4 @@ The future Engineering Management Platform will govern engineering standards whi
 | 1.9 | 2026-07-10 | Synchronized the indexed SPEC-0001 Version 1.3 lifecycle state to Active following the EWO-000014 controlled promotion. |
 | 2.0 | 2026-07-13 | Registered the EGR controlled document class, PROC-0002, TPL-0004, canonical EGR identifier and placement rules, and deterministic EGR discovery without issuing an EGR instance. |
 | 2.1 | 2026-07-13 | Registered EGR-000001 as the first Engineering Governance Resolution and completed Governance Foundation discovery integration. |
+| 2.2 | 2026-07-13 | Registered and preserved Active EWO-000016 under Mission 0.1 reconciliation authority and recorded removal of the obsolete zero-byte legacy EWO-000010 duplicate. |

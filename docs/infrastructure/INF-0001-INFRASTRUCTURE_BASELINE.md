@@ -2,28 +2,38 @@
 
 document_id: INF-0001
 title: Engineering Infrastructure Baseline
-version: 1.5
+version: 1.6
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-09
-phase: Mission 0 / Phase 0.1
+last_updated: 2026-07-13
+phase: Mission 0.1 - Engineering Platform Baseline Reconciliation
 domain: Infrastructure
 classification: Global Infrastructure Baseline
+predecessor_revision: INF-0001@1.5
+successor_revision: null
+approval_status: Approved
+approval_authority: Engineering Governance
+approval_reference: Codex Handoff Procedure - Mission 0.1 Engineering Platform Baseline Reconciliation
+approval_date: 2026-07-13
+persistence_status: Pending
 source_of_truth: true
-related_documents:
-
-* DOC-0001
-* PROJ-0001
-* HW-0001
-  tags:
-* infrastructure
-* engineering
-* workstation
-* storage
-* network
-* software
-* baseline
+declared_deferrals: []
+relationships:
+  - type: indexed_by
+    target: DOC-0001
+  - type: related_to
+    target: PROJ-0001
+  - type: related_to
+    target: HW-0001
+tags:
+  - infrastructure
+  - engineering
+  - workstation
+  - storage
+  - network
+  - software
+  - baseline
 
 ---
 
@@ -124,9 +134,9 @@ This section represents the approved engineering target rather than the current 
 
 | Repository | Location | Status |
 | ---------- | -------- | ------ |
-| Homelab | `/data/engineering/repositories/homelab` | Current |
-| Shared Libraries | `/data/engineering/repositories/shared-libraries` | Current |
-| SprinterOS | `/data/engineering/repositories/SprinterOS` | Planned / not currently present |
+| Homelab | `/data/engineering/repositories/homelab` | Current Git repository; canonical Engineering Platform baseline |
+| Shared Libraries | `/data/engineering/repositories/shared-libraries` | Present shared controller-library directory; not an independent Git repository |
+| SprinterOS | `/data/engineering/repositories/SprinterOS` | Present Git repository; implementation remains deferred by the portfolio roadmap |
 
 The EOS repository workspace is `/data/engineering/repositories`.
 
@@ -358,3 +368,4 @@ These targets describe the intended engineering direction and shall be updated a
 | 1.3     | 2026-07-08 | Reconciled repository locations with EOS workspace authority.   |
 | 1.4     | 2026-07-09 | Added PDF printing service baseline, scanner workflow hierarchy, and shared services inventory. |
 | 1.5     | 2026-07-09 | Recorded CUPS-PDF installation, queue validation, and managed PDF output validation. |
+| 1.6     | 2026-07-13 | Corrected repository inventory for the present SprinterOS repository and the non-Git shared-libraries directory during Mission 0.1 reconciliation. |
