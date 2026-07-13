@@ -1,12 +1,12 @@
 ---
 document_id: STD-0003
 title: Engineering Work Order Standard
-version: 1.0
+version: 1.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-09
-phase: Governance Bootstrap
+last_updated: 2026-07-10
+phase: Governance Stabilization
 domain: Engineering Governance
 classification: Engineering Standard
 source_of_truth: true
@@ -17,6 +17,7 @@ related_documents:
   - STD-0002
   - POL-0001
   - PROC-0001
+  - EWO-000012
 tags:
   - governance
   - work-order
@@ -29,7 +30,7 @@ tags:
 
 ## Purpose
 
-This standard defines the mandatory requirements for all Engineering Work Orders issued under the Engineering Operating System.
+This standard defines the mandatory requirements for all Engineering Work Orders activated under the Engineering Operating System.
 
 It establishes what every Engineering Work Order shall contain, what authority it conveys, and the minimum requirements for engineering execution.
 
@@ -49,7 +50,7 @@ This standard applies to every Engineering Work Order executed within the Engine
 
 ### Principle 1 — Explicit Authorization
 
-Engineering work shall be performed only under an approved Engineering Work Order.
+Engineering work shall be performed only under an Active Engineering Work Order.
 
 ---
 
@@ -202,7 +203,7 @@ Engineering Work Orders shall comply with:
 * Engineering Document Lifecycle Standard;
 * Engineering Document Persistence Standard.
 
-Implementation agents verify the issued Engineering Work Order before execution.
+Implementation agents verify that the Engineering Work Order is Active before execution. Only an Active Engineering Work Order conveys execution authority.
 
 Lifecycle state transitions remain the responsibility of Engineering Governance.
 
@@ -234,7 +235,7 @@ This standard references:
 
 ## Success Criteria
 
-This standard is complete when every Engineering Work Order issued under the Engineering Operating System:
+This standard is complete when every Engineering Work Order activated under the Engineering Operating System:
 
 * conveys explicit authority;
 * defines mission scope;
@@ -245,3 +246,11 @@ This standard is complete when every Engineering Work Order issued under the Eng
 * defines explicit stop conditions;
 * complies with the Engineering Governance framework.
 
+---
+
+## Revision History
+
+| Version | Date | Description |
+| ------- | ---- | ----------- |
+| 1.0 | 2026-07-09 | Initial Engineering Work Order Standard established. |
+| 1.1 | 2026-07-10 | Established Active as the Engineering Work Order execution-authority lifecycle state under EWO-000012. |

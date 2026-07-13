@@ -1,12 +1,12 @@
 ---
 document_id: PROC-0001
 title: Engineering Work Order Execution Procedure
-version: 1.0
+version: 1.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-09
-phase: Governance Bootstrap
+last_updated: 2026-07-10
+phase: Governance Stabilization
 domain: Engineering Governance
 classification: Engineering Procedure
 source_of_truth: true
@@ -17,6 +17,7 @@ related_documents:
   - STD-0002
   - STD-0003
   - POL-0001
+  - EWO-000012
 tags:
   - governance
   - procedure
@@ -33,7 +34,7 @@ This procedure defines the approved method for executing an Engineering Work Ord
 
 It translates the requirements established by the Engineering Governance Policy and Engineering Work Order Standard into a repeatable operational workflow.
 
-This procedure defines how an implementation agent executes an approved Engineering Work Order.
+This procedure defines how an implementation agent executes an Active Engineering Work Order.
 
 ---
 
@@ -103,8 +104,8 @@ Verify:
 * Engineering Work Order identifier;
 * revision;
 * approval status;
-* issued revision;
-* no newer issued revision supersedes the current revision.
+* Active lifecycle state;
+* no newer Active revision supersedes the current revision.
 
 If verification fails:
 
@@ -242,7 +243,7 @@ Engineering Governance Notes remain blank.
 
 Upon resumption:
 
-1. Verify the issued Engineering Work Order.
+1. Verify the Active Engineering Work Order.
 
 2. Perform Operational Inventory.
 
@@ -323,5 +324,13 @@ Authority not explicitly granted remains prohibited.
 
 ## Success Criteria
 
-This procedure is complete when every implementation agent can execute an approved Engineering Work Order deterministically, consistently, and within the approved governance framework from document verification through completion reporting.
+This procedure is complete when every implementation agent can execute an Active Engineering Work Order deterministically, consistently, and within the approved governance framework from document verification through completion reporting.
 
+---
+
+## Revision History
+
+| Version | Date | Description |
+| ------- | ---- | ----------- |
+| 1.0 | 2026-07-09 | Initial Engineering Work Order Execution Procedure established. |
+| 1.1 | 2026-07-10 | Replaced Issued verification with Active execution-authority verification under EWO-000012. |

@@ -1,12 +1,12 @@
 ---
 document_id: TPL-0001
 title: Engineering Work Order Template
-version: 1.0
+version: 1.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-09
-phase: Governance Bootstrap
+last_updated: 2026-07-10
+phase: Governance Stabilization
 domain: Engineering Governance
 classification: Engineering Template
 source_of_truth: true
@@ -15,6 +15,7 @@ related_documents:
   - STD-0000
   - STD-0003
   - PROC-0001
+  - EWO-000012
 tags:
   - governance
   - template
@@ -65,7 +66,7 @@ Classification:
 
 Status:
 
-`<Draft | Review | Approved | Issued | Active | Completed | Archived | Superseded>`
+`<Draft | Review | Approved | Active | Superseded | Archived>`
 
 Execution Mode:
 
@@ -206,7 +207,7 @@ Repeat for each authorized engineering phase.
 
 Upon interruption, the Implementation Agent shall:
 
-1. Verify the issued Engineering Work Order.
+1. Verify the Active Engineering Work Order.
 2. Perform Operational Inventory.
 3. Perform Operational Preparation.
 4. Perform Baseline Verification.
@@ -309,3 +310,11 @@ Applicable engineering records:
 
 `<References>`
 
+---
+
+## Revision History
+
+| Version | Date | Description |
+| ------- | ---- | ----------- |
+| 1.0 | 2026-07-09 | Initial Engineering Work Order Template established. |
+| 1.1 | 2026-07-10 | Removed Issued and established Active as the Engineering Work Order execution-authority lifecycle state under EWO-000012. |

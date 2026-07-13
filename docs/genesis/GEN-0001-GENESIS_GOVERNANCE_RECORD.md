@@ -11,6 +11,7 @@ domain: Engineering Governance
 classification: Genesis Governance Record
 source_of_truth: true
 related_documents:
+  - CHAR-0001
   - EOS-0001
   - DOC-0001
   - SPEC-0001
@@ -26,23 +27,21 @@ tags:
 
 ## Purpose
 
-This document records the constitutional establishment of the Engineering Operating System (EOS).
+This document is the authoritative historical governance record of the constitutional establishment of the Engineering Operating System (EOS).
 
-It defines the one-time Governance Bootstrap that transformed the Engineering Governance–approved governance framework into the first authoritative controlled engineering records.
+It documents the one-time Governance Bootstrap through which Engineering Governance, acting under authority delegated by the Engineering Organization, transformed the approved governance framework into the first authoritative controlled engineering records.
 
 This document establishes the historical and constitutional origin of Governance Baseline 1.0.
+
+CHAR-0001 formalizes the governing authority chain from the Engineering Organization through Engineering Governance and the Engineering Charter to subordinate repository-controlled records. This Genesis Record is subordinate to that Charter and documents the historical bootstrap event without claiming that the Charter existed before the event.
 
 ---
 
 ## Scope
 
-This Genesis Record applies only to the initial establishment of Governance Baseline 1.0.
+This Genesis Record applies only to the initial establishment of Governance Baseline 1.0 and is authoritative as a historical governance record of that event.
 
-It is not an Engineering Work Order.
-
-It is not an Engineering Standard.
-
-It is not an Engineering Procedure.
+It is not the Engineering Charter, a Policy, a Standard, a Specification, a Procedure, an Engineering Work Order, or a Project State record.
 
 It is not a recurring operational document.
 
@@ -63,17 +62,17 @@ Subsequent Engineering Qualification activities demonstrated that implementation
 
 Those execution stops demonstrated that the Engineering Operating System correctly required authoritative controlled engineering records before engineering execution could proceed.
 
-Engineering Governance therefore established the Governance Bootstrap as the one-time constitutional mechanism required to create the initial governance records.
+Engineering Governance therefore exercised delegated bootstrap authority as the one-time constitutional mechanism required to create the initial governance records.
 
 ---
 
 ## Governance Bootstrap
 
-The Governance Bootstrap is the one-time constitutional activity through which Engineering Governance establishes the first controlled governance documents of the Engineering Operating System.
+The Governance Bootstrap is the one-time constitutional activity through which Engineering Governance exercised delegated bootstrap authority to establish the first controlled governance documents of the Engineering Operating System.
 
 During the Governance Bootstrap:
 
-* Engineering Governance acts directly.
+* Engineering Governance acts directly under authority delegated by the Engineering Organization.
 * Repository source documents are authored from Engineering Governance–approved content.
 * No implementation agent exercises governance authority.
 * No Engineering Work Order governs the bootstrap because an operational governance baseline does not yet exist.
@@ -82,13 +81,16 @@ The Governance Bootstrap shall never be repeated.
 
 ---
 
-## Transition of Authority
+## Transition to Controlled Operational Governance
 
-Prior to completion of the Governance Bootstrap, Engineering Governance approval constitutes the authoritative source of governance content.
+Prior to completion of the Governance Bootstrap, Engineering Governance approval, exercised under authority delegated by the Engineering Organization, constitutes the authoritative source of governance content.
 
 Immediately upon successful completion of the Governance Bootstrap:
 
-* repository-controlled governance documents become the sole authoritative source of operational governance;
+* the Engineering Organization remains the origin of engineering authority;
+* Engineering Governance retains governance responsibility;
+* CHAR-0001 formalizes the authority chain and is the highest foundational governing record;
+* repository-controlled governance documents become authoritative sources of operational governance only within their delegated scope;
 * conversation history becomes historical design context only;
 * all future governance modifications become subject to the Engineering Document Lifecycle;
 * implementation agents shall rely exclusively upon controlled engineering records.
@@ -99,11 +101,11 @@ Immediately upon successful completion of the Governance Bootstrap:
 
 The Governance Bootstrap establishes the following Genesis Governance Records:
 
-1. Engineering Governance Documentation Architecture
+1. STD-0000 — Engineering Governance Documentation Architecture
 
-2. Engineering Document Lifecycle Standard
+2. STD-0001 — Engineering Document Lifecycle Standard
 
-3. Engineering Document Persistence Standard
+3. STD-0002 — Engineering Document Persistence Standard
 
 4. POL-0001 — Engineering Governance Policy
 
@@ -142,9 +144,8 @@ Its purpose is to explain:
 * why the Governance Bootstrap was necessary;
 * why it occurred outside the normal Engineering Work Order lifecycle;
 * how Governance Baseline 1.0 was established; and
-* how governance authority transferred from Engineering Governance to the Engineering Operating System.
+* how operational governance became embodied in controlled repository records while the origin of engineering authority remained with the Engineering Organization and governance responsibility remained with Engineering Governance.
 
 Future engineers shall use this document to understand the constitutional origin of the Engineering Operating System.
 
 Operational governance shall always be determined from the current approved controlled engineering records rather than from this historical record.
-

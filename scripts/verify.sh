@@ -153,6 +153,16 @@ check_tools() {
     done
 }
 
+check_controlled_documents() {
+    header "Controlled Documents"
+
+    if python3 "$SCRIPT_DIR/validate_controlled_documents.py"; then
+        pass "controlled-document discovery and EGR framework valid"
+    else
+        fail "controlled-document discovery or EGR framework invalid"
+    fi
+}
+
 ########################################
 # Summary
 ########################################
@@ -195,6 +205,7 @@ main() {
     check_workspace
     check_storage
     check_tools
+    check_controlled_documents
 
     summary
 }

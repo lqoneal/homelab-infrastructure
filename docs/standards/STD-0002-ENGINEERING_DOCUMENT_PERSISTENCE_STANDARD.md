@@ -1,20 +1,24 @@
 ---
 document_id: STD-0002
 title: Engineering Document Persistence Standard
-version: 1.0
+version: 1.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-09
-phase: Governance Bootstrap
+last_updated: 2026-07-10
+phase: Governance Stabilization
 domain: Engineering Governance
 classification: Engineering Standard
 source_of_truth: true
+predecessor_revision: STD-0002@1.0
+successor_revision: null
 related_documents:
   - GEN-0001
   - STD-0000
   - STD-0001
   - POL-0001
+  - SPEC-0001
+  - EWO-000011
 tags:
   - governance
   - persistence
@@ -31,7 +35,7 @@ This standard defines how controlled engineering documents become authoritative 
 
 It establishes the requirements for persistence, organization, indexing, traceability, discovery, and integrity of engineering information.
 
-This standard defines how engineering records are preserved and discovered.
+This standard defines the operational controls by which engineering records are preserved and discovered. The revision identity, lineage, supersedence, historical persistence, and reconstruction architecture is defined by SPEC-0001.
 
 It does not define document lifecycle states, governance authority, execution procedures, or document templates.
 
@@ -77,19 +81,13 @@ Engineering records shall maintain traceable relationships throughout their oper
 
 ### Principle 4 — Historical Preservation
 
-Engineering history shall be preserved.
-
-Superseded records remain engineering records.
-
-Historical engineering evidence shall not be destroyed solely because a newer revision exists.
+Engineering history shall be preserved in conformance with SPEC-0001. Superseded records remain engineering records, and historical engineering evidence shall not be destroyed solely because a newer revision exists.
 
 ---
 
 ### Principle 5 — Immutable Engineering History
 
-Once persisted, an engineering record shall not be altered.
-
-Subsequent changes shall be recorded as new revisions in accordance with the Engineering Document Lifecycle Standard.
+Once persisted, an engineering revision shall not be altered. Subsequent changes shall be recorded through the Controlled Document Model in SPEC-0001 and the lifecycle controls in STD-0001.
 
 ---
 
@@ -150,22 +148,13 @@ Indexes shall not replace authoritative engineering records.
 
 ## Revision Persistence
 
-Each approved revision shall be persisted independently.
-
-A newer revision does not overwrite an earlier persisted revision.
-
-Engineering history shall remain intact.
+Revision persistence shall conform to SPEC-0001. Repository operations shall preserve the immutable commit and blob objects used by each recorded historical locator and shall verify those objects before declaring persistence complete.
 
 ---
 
 ## Supersedence
 
-When a revision is superseded:
-
-* the previous revision remains persisted;
-* the newer revision becomes authoritative;
-* supersedence shall be explicitly recorded;
-* historical traceability shall be preserved.
+Supersedence semantics and required records are defined exclusively by SPEC-0001. This standard requires persistence and index operations to retain those records and their referenced Git objects without altering their engineering meaning.
 
 ---
 
@@ -229,6 +218,8 @@ Given any current engineering activity, an engineer or implementation agent shal
 
 without requiring undocumented knowledge.
 
+For a historical revision, discovery and reconstruction shall follow SPEC-0001 and shall resolve to one full commit object identifier, repository path, and verified blob object identifier.
+
 ---
 
 ## Persistence Integrity Rules
@@ -257,6 +248,7 @@ This standard references:
 * STD-0000 — Engineering Governance Documentation Architecture
 * STD-0001 — Engineering Document Lifecycle Standard
 * POL-0001 — Engineering Governance Policy
+* SPEC-0001 — Controlled Document Model
 
 ---
 
@@ -271,3 +263,11 @@ This standard is complete when every controlled engineering document within the 
 * relationship aware;
 * recoverable during a cold-start engineering resume.
 
+---
+
+## Revision History
+
+| Version | Date | Description |
+| ------- | ---- | ----------- |
+| 1.0 | 2026-07-09 | Initial Engineering Document Persistence Standard established. |
+| 1.1 | 2026-07-10 | Referenced the revision persistence, supersedence, Git locator, and deterministic reconstruction architecture in SPEC-0001 and retained operational persistence controls under EWO-000011 Revision 2. |

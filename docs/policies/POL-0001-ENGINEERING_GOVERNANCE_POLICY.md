@@ -11,6 +11,7 @@ domain: Engineering Governance
 classification: Engineering Governance Policy
 source_of_truth: true
 related_documents:
+  - CHAR-0001
   - GEN-0001
   - STD-0000
   - STD-0001
@@ -27,13 +28,13 @@ tags:
 
 ## Purpose
 
-This policy establishes the governance principles, authority model, and decision framework for the Engineering Operating System (EOS).
+This policy establishes the governance principles, delegated authority model, and decision framework for the Engineering Operating System (EOS). It derives its authority through CHAR-0001 — Engineering Charter.
 
-It defines who governs engineering, how governance decisions are made, and how the Engineering Operating System maintains disciplined, repeatable, and auditable engineering execution.
+The Engineering Organization remains the origin of engineering authority. Engineering Governance exercises governance authority delegated by the Engineering Organization through CHAR-0001. This policy defines how that delegated authority guides governance decisions and disciplined, repeatable, and auditable engineering execution.
 
-This policy is the highest-level normative document within the Engineering Governance hierarchy.
+This policy is the highest policy-level normative record within the Engineering Governance hierarchy. It is subordinate to CHAR-0001 and is not the highest foundational governing record.
 
-All subordinate standards, procedures, templates, and Engineering Work Orders shall conform to this policy.
+All subordinate standards, specifications, procedures, templates, and Engineering Work Orders shall conform to this policy and CHAR-0001.
 
 ---
 
@@ -51,13 +52,15 @@ This policy governs:
 
 It applies to all engineering missions, projects, repositories, assets, and implementation agents operating under EOS governance.
 
+As a Policy, this document defines governance objectives, constraints, and intent. It is not a Charter, Standard, Specification, Procedure, Engineering Work Order, or Project State record. Standards define mandatory rules, Specifications define architectures and models, Procedures define repeatable workflows, and Engineering Work Orders authorize bounded execution.
+
 ---
 
 ## Governance Objectives
 
 Engineering Governance exists to:
 
-* establish engineering authority;
+* establish governance direction and controlled authorization within authority delegated by the Engineering Organization through CHAR-0001;
 * protect engineering integrity;
 * ensure deterministic execution;
 * preserve engineering history;
@@ -97,7 +100,7 @@ Conflicting authority shall not exist.
 
 ### Principle 4 — Separation of Responsibilities
 
-Engineering Governance establishes authority.
+Engineering Governance establishes governance direction and controlled authorization within its delegated authority.
 
 Implementation agents execute authorized work.
 
@@ -139,19 +142,22 @@ Validated improvements shall be recorded as Engineering Governance Findings and 
 
 ## Governance Authority
 
-Engineering Governance has sole authority to:
+Within the authority delegated by the Engineering Organization through CHAR-0001, Engineering Governance has sole governance authority to:
 
 * approve policies;
 * approve standards;
+* approve specifications;
 * approve procedures;
 * approve templates;
-* approve Engineering Work Orders;
-* approve Governance Baselines;
+* approve and activate Engineering Work Orders that authorize bounded engineering execution;
+* establish Governance Baselines;
+* qualify Governance Baselines;
+* designate operational Governance Baselines;
 * approve governance changes;
 * accept completed engineering work;
 * authorize governance revisions.
 
-Implementation agents possess only the authority explicitly granted by an approved Engineering Work Order.
+Implementation agents possess only the bounded execution authority explicitly granted by an approved and active Engineering Work Order.
 
 ---
 
@@ -187,13 +193,15 @@ Implementation agents shall not exceed granted authority.
 
 Every engineering phase shall operate against an approved Governance Baseline.
 
-The Governance Baseline consists of the approved:
+The Governance Baseline consists of the applicable approved governance records, including:
 
 * policies;
 * standards;
+* specifications;
 * procedures;
-* templates;
-* Engineering Work Orders.
+* templates.
+
+Engineering Work Orders authorize bounded execution against the designated operational Governance Baseline.
 
 The Governance Baseline remains frozen throughout phase execution unless Engineering Governance approves a corrective revision to resolve an execution-blocking defect.
 
@@ -202,6 +210,8 @@ The Governance Baseline remains frozen throughout phase execution unless Enginee
 ## Governance Operating Modes
 
 The Engineering Operating System operates in two governance modes.
+
+Standards, Specifications, and Procedures define the mandatory rules, models, architectures, and repeatable workflows that implement these operating modes.
 
 ### Mission Execution
 
@@ -224,6 +234,7 @@ Activities include:
 * governance review;
 * policy revision;
 * standards revision;
+* specifications revision;
 * procedure revision;
 * template revision;
 * Governance Baseline publication.
@@ -234,7 +245,7 @@ Future engineering phases inherit the updated Governance Baseline.
 
 ## Governance Change Control
 
-Governance changes shall occur only through approved Governance Stabilization activities.
+Ordinary EOS governance changes shall occur only through approved Governance Stabilization activities. Amendments to CHAR-0001 remain governed by the Charter's amendment authority and requirements.
 
 During Mission Execution:
 
@@ -275,17 +286,19 @@ All Engineering Operating System participants shall comply with:
 
 * approved governance policies;
 * approved standards;
+* approved specifications;
 * approved procedures;
 * approved Engineering Work Orders.
 
-Non-compliance shall require explicit Engineering Governance authorization.
+Any deviation shall be explicit, traceable, approved by Engineering Governance before execution, and recorded through the appropriate controlled mechanism.
 
 ---
 
 ## References
 
-This policy references:
+CHAR-0001 is the governing record for this policy. GEN-0001 is a related historical governance record, and the Standards listed below are subordinate implementation records. Specifications and Procedures are likewise subordinate implementation records within their delegated roles.
 
+* CHAR-0001 — Engineering Charter
 * GEN-0001 — Engineering Operating System Genesis Record
 * STD-0000 — Engineering Governance Documentation Architecture
 * STD-0001 — Engineering Document Lifecycle Standard
@@ -304,5 +317,4 @@ This policy is complete when it establishes:
 * Governance Baseline management;
 * governance change control;
 
-and provides the governing foundation for all Engineering Operating System standards, procedures, templates, and Engineering Work Orders.
-
+and provides the policy-level governing foundation for all Engineering Operating System standards, specifications, procedures, templates, and Engineering Work Orders.

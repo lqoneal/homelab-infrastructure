@@ -1,21 +1,60 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 1.3
+version: 2.1
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-09
-phase: Governance Bootstrap
+last_updated: 2026-07-13
+phase: EGR Framework Implementation
 domain: Repository Governance
 classification: Repository Document Index
+predecessor_revision: DOC-0001@2.0
+successor_revision: null
+approval_status: Approved
+approval_authority: Engineering Governance
+approval_reference: EGR-000001
+approval_date: 2026-07-13
+persistence_status: Pending
 source_of_truth: true
-related_documents:
-  - PROJ-0001
-  - INF-0001
-  - EOS-0001
-  - EDR-0002
-  - GEN-0001
+declared_deferrals: []
+relationships:
+  - type: governed_by
+    target: CHAR-0001
+  - type: conforms_to
+    target: POL-0001
+  - type: conforms_to
+    target: STD-0000
+  - type: conforms_to
+    target: STD-0001
+  - type: conforms_to
+    target: STD-0002
+  - type: conforms_to
+    target: SPEC-0001
+  - type: indexes
+    target: PROC-0002
+  - type: indexes
+    target: TPL-0004
+  - type: indexes
+    target: EGR-000001
+  - type: related_to
+    target: PROJ-0001
+  - type: related_to
+    target: INF-0001
+  - type: related_to
+    target: EOS-0001
+  - type: related_to
+    target: EDR-0002
+  - type: related_to
+    target: GEN-0001
+  - type: related_to
+    target: EWO-000011
+  - type: related_to
+    target: EWO-000012
+  - type: related_to
+    target: EWO-000013
+  - type: related_to
+    target: EWO-000014
 tags:
   - repository
   - governance
@@ -90,6 +129,8 @@ Every engineering session shall begin by reviewing the repository in the followi
 | SERVICE | Engineering service catalogs |
 | STD | Engineering standards |
 | TPL | Engineering document templates |
+| EWO | Engineering Work Orders authorizing mission-specific execution |
+| EGR | Engineering Governance Resolutions recording governance decisions |
 | ADR | Architecture Decision Records |
 | EDR | Engineering Decision Records |
 | MILESTONE | Engineering milestone records |
@@ -140,7 +181,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EDR-0002 | Engineering Authority Model | Draft | EOS Program | `docs/edr/EDR-0002-ENGINEERING_AUTHORITY_MODEL.md` |
 | EOS-0001 | Engineering Operating System Constitution | Draft | EOS Program | `docs/eos/EOS-0001-ENGINEERING_OPERATING_SYSTEM_CONSTITUTION.md` |
 | EOS-0002 | Engineering Operating System Master Plan | Draft | EOS Program | `docs/eos/EOS-0002-ENGINEERING_OPERATING_SYSTEM_MASTER_PLAN.md` |
-| SPEC-0001 | Controlled Document Model | Draft | EOS Program | `docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md` |
+| SPEC-0001 | Controlled Document Model | Active | EOS Program | `docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md` |
 | SPEC-0004 | Engineering Context Reconstruction Service | Draft | EOS Program | `docs/specifications/SPEC-0004-ENGINEERING_CONTEXT_RECONSTRUCTION_SERVICE.md` |
 | SPEC-0005 | Engineering Control Framework | Draft | EOS Program | `docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md` |
 | SERVICE-0001 | EOS Core Services Catalog | Draft | EOS Program | `docs/services/SERVICE-0001-EOS_CORE_SERVICES_CATALOG.md` |
@@ -151,9 +192,27 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | STD-0002 | Engineering Document Persistence Standard | Active | Engineering Governance | `docs/standards/STD-0002-ENGINEERING_DOCUMENT_PERSISTENCE_STANDARD.md` |
 | STD-0003 | Engineering Work Order Standard | Active | Engineering Governance | `docs/standards/STD-0003-ENGINEERING_WORK_ORDER_STANDARD.md` |
 | PROC-0001 | Engineering Work Order Execution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md` |
+| PROC-0002 | Engineering Governance Resolution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md` |
 | TPL-0001 | Engineering Work Order Template | Active | Engineering Governance | `docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md` |
 | TPL-0002 | Engineering Completion Report Template | Active | Engineering Governance | `docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md` |
 | TPL-0003 | Engineering Evidence Package Template | Active | Engineering Governance | `docs/templates/TPL-0003-ENGINEERING_EVIDENCE_PACKAGE_TEMPLATE.md` |
+| TPL-0004 | Engineering Governance Resolution Template | Active | Engineering Governance | `docs/templates/TPL-0004-ENGINEERING_GOVERNANCE_RESOLUTION_TEMPLATE.md` |
+| EGR-000001 | Governance Foundation Qualification and Publication | Active | Engineering Governance | `docs/resolutions/EGR-000001-GOVERNANCE_FOUNDATION_QUALIFICATION_AND_PUBLICATION.md` |
+| EWO-000010 | Governance Baseline 1.0 Qualification | Active | Engineering Governance | `docs/work-orders/EWO-000010-GOVERNANCE_BASELINE_1.0_QUALIFICATION.md` |
+| EWO-000010-EVIDENCE | EWO-000010 Qualification Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000010-QUALIFICATION-EVIDENCE-PACKAGE.md` |
+| EWO-000010-COMPLETION | EWO-000010 Qualification Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000010-QUALIFICATION-COMPLETION-REPORT.md` |
+| EWO-000011 | Controlled Document Model Revision 1.1 | Active | Engineering Governance | `docs/work-orders/EWO-000011-CONTROLLED_DOCUMENT_MODEL_REVISION_1.1.md` |
+| EWO-000011-EVIDENCE | EWO-000011 Engineering Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000011-ENGINEERING-EVIDENCE-PACKAGE.md` |
+| EWO-000011-COMPLETION | EWO-000011 Engineering Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000011-ENGINEERING-COMPLETION-REPORT.md` |
+| EWO-000012 | Lifecycle Authority Reconciliation | Active | Engineering Governance | `docs/work-orders/EWO-000012-LIFECYCLE_AUTHORITY_RECONCILIATION.md` |
+| EWO-000012-EVIDENCE | EWO-000012 Engineering Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000012-ENGINEERING-EVIDENCE-PACKAGE.md` |
+| EWO-000012-COMPLETION | EWO-000012 Engineering Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000012-ENGINEERING-COMPLETION-REPORT.md` |
+| EWO-000013 | Execution Record Traceability Conformance | Active | Engineering Governance | `docs/work-orders/EWO-000013-EXECUTION_RECORD_TRACEABILITY_CONFORMANCE.md` |
+| EWO-000013-EVIDENCE | EWO-000013 Engineering Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000013-ENGINEERING-EVIDENCE-PACKAGE.md` |
+| EWO-000013-COMPLETION | EWO-000013 Engineering Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000013-ENGINEERING-COMPLETION-REPORT.md` |
+| EWO-000014 | SPEC-0001 Lifecycle Promotion | Active | Engineering Governance | `docs/work-orders/EWO-000014-SPEC-0001-LIFECYCLE-PROMOTION.md` |
+| EWO-000014-EVIDENCE | EWO-000014 Engineering Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000014-ENGINEERING-EVIDENCE-PACKAGE.md` |
+| EWO-000014-COMPLETION | EWO-000014 Engineering Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000014-ENGINEERING-COMPLETION-REPORT.md` |
 | FIN-0001 | Master Financial Ledger | Active | Homelab Infrastructure | `docs/finance/FIN-0001-MASTER_FINANCIAL_LEDGER.md` |
 | FIN-0002 | Master Procurement Register | Active | Homelab Infrastructure | `docs/finance/FIN-0002-MASTER_PROCUREMENT_REGISTER.md` |
 | PROC-000001 | Engineering Terminal 01 Procurement | Closed | Homelab Infrastructure | `docs/finance/procurements/PROC-000001.md` |
@@ -162,6 +221,75 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | MILESTONE-0002 | Engineering Workstation Shared Services Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-09-engineering-workstation-shared-services-complete.md` |
 
 This table shall be updated whenever a controlled document is created, superseded, or archived.
+
+---
+
+# Engineering Governance Resolution Discovery
+
+Engineering Governance Resolutions are first-class controlled governance-decision records.
+
+The authoritative repository placement for current and future Homelab EGR records is:
+
+```text
+docs/resolutions/
+```
+
+Permanent EGR identifiers shall use `EGR-` followed by a six-digit decimal sequence. Assignment begins with `EGR-000001`, proceeds monotonically within this repository, and shall account for current, historical, staged, unstaged, untracked, and reserved identifiers. An identifier shall not be reused.
+
+Each authoritative EGR filename shall begin with its permanent identifier followed by a descriptive title. Its current revision shall be registered in the Controlled Documents table after the record is created. The absence of an EGR instance is valid before operational issuance and shall not cause framework validation to fail.
+
+To discover an EGR or determine approval-reference readiness:
+
+1. begin with this index;
+2. locate the EGR entry in the Controlled Documents table;
+3. verify that its identifier, filename, metadata, and canonical path agree;
+4. verify the exact revision, lifecycle state, approval metadata, disposition, decision scope, persistence state, and relationships in the EGR;
+5. follow its references to the governing authority, Finding or proposal, applicable EWO, Completion Report, Evidence Package, and affected controlled revisions; and
+6. verify that required validation and registration evidence exists before treating the EGR as an operational approval reference.
+
+The EGR framework is implemented by:
+
+* STD-0000 — Engineering Documentation Standard;
+* PROC-0002 — Engineering Governance Resolution Procedure; and
+* TPL-0004 — Engineering Governance Resolution Template.
+
+DOC-0001 provides EGR discovery and identifier coordination. It does not select a governance disposition, approve a Resolution, activate a lifecycle transition, or replace the authoritative EGR record.
+
+EGR-000001 is the first registered Engineering Governance Resolution and records Governance Foundation qualification and publication.
+
+---
+
+# Engineering Work Order Discovery
+
+Engineering Work Orders are first-class controlled engineering records.
+
+The authoritative repository placement for current and future Homelab Engineering Work Orders is:
+
+```text
+docs/work-orders/
+```
+
+Each authoritative Work Order filename shall begin with its permanent `EWO-` identifier, and its current revision shall be registered in the Controlled Documents table.
+
+To discover the governing Work Order for repository activity:
+
+1. begin with this index;
+2. locate the applicable `EWO` entry in the Controlled Documents table;
+3. verify the identifier, controlled revision, Active lifecycle state, mission, and phase in the Work Order;
+4. follow its references to the governing baseline;
+5. follow its record relationships to the associated Evidence Package and Completion Report when produced.
+
+For every Engineering Work Order that enters execution, the Repository Document Index shall register:
+
+- the governing Engineering Work Order;
+- its Engineering Evidence Package;
+- its Engineering Completion Report.
+
+These three records constitute the authoritative execution record and shall support deterministic repository reconstruction.
+
+Historical Work Orders and earlier repository placements remain controlled records. They shall remain discoverable and shall not be moved or rewritten solely to conform to the current placement convention.
+
+The existing `engineering/work-orders/` location is a legacy Work Order location pending separately authorized reconciliation. Records in that location retain their existing meaning and history but do not replace the indexed authoritative Work Order under `docs/work-orders/` when both exist for the same identifier.
 
 ---
 
@@ -253,3 +381,11 @@ The future Engineering Management Platform will govern engineering standards whi
 | 1.1 | 2026-07-08 | Reconciled controlled document inventory for Architecture Baseline 2.1. |
 | 1.2 | 2026-07-09 | Registered Engineering Workstation shared services milestone. |
 | 1.3 | 2026-07-09 | Published and registered Governance Baseline 1.0 genesis governance records. |
+| 1.4 | 2026-07-09 | Registered Engineering Work Orders as first-class controlled records, indexed EWO-000010 and EWO-000011, and defined deterministic Work Order placement, discovery, precedence, and legacy compatibility under EWO-000011. |
+| 1.5 | 2026-07-10 | Registered EWO-000012 and its execution records and established Active lifecycle verification for Engineering Work Order discovery. |
+| 1.6 | 2026-07-10 | Registered EWO-000010 Qualification Evidence Package and Completion Report and completed deterministic execution-record registration for Governance Baseline qualification. |
+| 1.7 | 2026-07-10 | Registered EWO-000013 and its Evidence Package and Completion Report and completed EWO-000010 bidirectional execution-record conformance under EWO-000013. |
+| 1.8 | 2026-07-10 | Published and registered EWO-000014 and its execution records to authorize SPEC-0001 Version 1.3 lifecycle promotion. |
+| 1.9 | 2026-07-10 | Synchronized the indexed SPEC-0001 Version 1.3 lifecycle state to Active following the EWO-000014 controlled promotion. |
+| 2.0 | 2026-07-13 | Registered the EGR controlled document class, PROC-0002, TPL-0004, canonical EGR identifier and placement rules, and deterministic EGR discovery without issuing an EGR instance. |
+| 2.1 | 2026-07-13 | Registered EGR-000001 as the first Engineering Governance Resolution and completed Governance Foundation discovery integration. |
