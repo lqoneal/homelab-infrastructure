@@ -1,11 +1,11 @@
 ---
 document_id: FIN-0001
 title: Master Financial Ledger
-version: 1.0
+version: 1.1
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-06
+last_updated: 2026-07-15
 phase: Mission 0 / Phase 0.1
 domain: Finance
 classification: Master Financial Ledger
@@ -64,9 +64,9 @@ The Finance Domain follows five governing principles:
 
 | Category | Amount |
 |----------|-------:|
-| Total Procurements | $0.00 |
-| Total Transactions | $0.00 |
-| Capital Equipment | $0.00 |
+| Total Procurements | $34.99 reconciled; PROC-000001 pending final monetary reconciliation |
+| Total Transactions | $34.99 reconciled; TRX-000001 pending final monetary reconciliation |
+| Capital Equipment | $34.99 |
 | Operating Expenses | $0.00 |
 | Outstanding Commitments | $0.00 |
 
@@ -78,7 +78,7 @@ Values will be updated as procurement and transaction records are approved.
 
 | Project | Budget | Actual | Variance |
 |---------|-------:|-------:|---------:|
-| Homelab Infrastructure | TBD | $0.00 | TBD |
+| Homelab Infrastructure | TBD | $34.99 | TBD |
 | SprinterOS | TBD | $0.00 | TBD |
 | AI Assistant | TBD | $0.00 | TBD |
 
@@ -88,7 +88,8 @@ Values will be updated as procurement and transaction records are approved.
 
 | Procurement ID | Description | Status |
 |---------------|-------------|--------|
-| None | No procurement records recorded. | N/A |
+| PROC-000001 | Engineering Terminal 01 | Closed; final monetary reconciliation pending |
+| PROC-000002 | Engineering Spare microSD Card 01 | Closed |
 
 ---
 
@@ -96,7 +97,8 @@ Values will be updated as procurement and transaction records are approved.
 
 | Transaction ID | Description | Status |
 |---------------|-------------|--------|
-| None | No transaction records recorded. | N/A |
+| TRX-000001 | Procurement Transaction - Engineering Terminal 01 | Posted; final monetary reconciliation pending |
+| TRX-000002 | Procurement Transaction - Engineering Spare microSD Card 01 | Posted — $34.99 |
 
 ---
 
@@ -132,3 +134,4 @@ Historical financial events remain in immutable procurement and transaction reco
 | Version | Date | Description |
 |----------|------|-------------|
 | 1.0 | 2026-07-06 | Initial Master Financial Ledger established. |
+| 1.1 | 2026-07-15 | Reconciled existing finance records and posted the $34.99 removable-storage acquisition; separately attributable tax remains unrecorded because the verified mission evidence provides no tax amount. |

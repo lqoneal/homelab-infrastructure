@@ -1,7 +1,7 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.12
+version: 2.13
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -271,7 +271,10 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | FIN-0001 | Master Financial Ledger | Active | Homelab Infrastructure | `docs/finance/FIN-0001-MASTER_FINANCIAL_LEDGER.md` |
 | FIN-0002 | Master Procurement Register | Active | Homelab Infrastructure | `docs/finance/FIN-0002-MASTER_PROCUREMENT_REGISTER.md` |
 | PROC-000001 | Engineering Terminal 01 Procurement | Closed | Homelab Infrastructure | `docs/finance/procurements/PROC-000001.md` |
+| PROC-000002 | Engineering Spare microSD Card 01 Procurement | Closed | Homelab Infrastructure | `docs/finance/procurements/PROC-000002.md` |
 | TRX-000001 | Procurement Transaction - Engineering Terminal 01 | Posted | Homelab Infrastructure | `docs/finance/transactions/TRX-000001.md` |
+| TRX-000002 | Procurement Transaction - Engineering Spare microSD Card 01 | Posted | Homelab Infrastructure | `docs/finance/transactions/TRX-000002.md` |
+| AST-000009 | Engineering Spare microSD Card 01 | Available | Homelab Infrastructure | `docs/hardware/assets/AST-000009.md` |
 | MILESTONE-0001 | Hardware Domain Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-06-hardware-domain-complete.md` |
 | MILESTONE-0002 | Engineering Workstation Shared Services Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-09-engineering-workstation-shared-services-complete.md` |
 | MILESTONE-0003 | Engineering Platform Mission 0 Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-13-engineering-platform-mission-0-complete.md` |
@@ -494,3 +497,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.10 | 2026-07-15 | Registered PROC-0001 as the authoritative repository Commit Classification workflow and linked it to the reconciled STD-0004 operational lifecycle. |
 | 2.11 | 2026-07-15 | Registered Commit Reconstruction Planning and proportional persistent planning-artifact governance within the PROC-0001 repository workflow. |
 | 2.12 | 2026-07-15 | Registered MILESTONE-0005 as the Engineering Platform Foundation 1.0 operational-transition boundary. |
+| 2.13 | 2026-07-15 | Registered AST-000009, PROC-000002, and TRX-000002 for the engineering spare microSD acquisition. |

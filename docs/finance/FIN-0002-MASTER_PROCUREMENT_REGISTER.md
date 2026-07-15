@@ -1,11 +1,11 @@
 ---
 document_id: FIN-0002
 title: Master Procurement Register
-version: 1.0
+version: 1.1
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-06
+last_updated: 2026-07-15
 phase: Mission 0 / Phase 0.1
 domain: Finance
 classification: Master Procurement Register
@@ -69,7 +69,7 @@ Corrections shall be recorded by creating additional procurement records rather 
 | Approved | 0 |
 | Ordered | 0 |
 | Received | 0 |
-| Closed | 0 |
+| Closed | 2 |
 
 ---
 
@@ -77,7 +77,8 @@ Corrections shall be recorded by creating additional procurement records rather 
 
 | Procurement ID | Project | Description | Status | Asset | Transaction |
 |----------------|---------|-------------|--------|-------|-------------|
-| None | — | No procurement records currently registered. | — | — | — |
+| PROC-000001 | SprinterOS | Engineering Terminal 01 | Closed | AST-000008 | TRX-000001 |
+| PROC-000002 | Engineering portfolio | SanDisk Ultra PLUS 64 GB microSDXC UHS-I | Closed | AST-000009 | TRX-000002 |
 
 ---
 
@@ -117,3 +118,4 @@ The Master Procurement Register summarizes procurement activity while delegating
 | Version | Date | Description |
 |----------|------|-------------|
 | 1.0 | 2026-07-06 | Initial Master Procurement Register established. |
+| 1.1 | 2026-07-15 | Reconciled existing PROC-000001 and registered PROC-000002 for engineering spare removable storage. |

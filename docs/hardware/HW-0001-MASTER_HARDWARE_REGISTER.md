@@ -1,11 +1,11 @@
 ---
 document_id: HW-0001
 title: Master Hardware Register
-version: 1.0
+version: 1.1
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-06
+last_updated: 2026-07-15
 phase: Mission 0 / Phase 0.1
 domain: Hardware
 classification: Master Hardware Register
@@ -209,8 +209,9 @@ Asset identifiers shall never be reused.
 
 | Metric | Value |
 |--------|------:|
-| Total Managed Assets | 8 |
+| Total Managed Assets | 9 |
 | Operational Assets | 8 |
+| Available Assets | 1 |
 | Planned Assets | 0 |
 | Procured (Pending Acceptance) | 0 |
 | Retired Assets | 0 |
@@ -225,6 +226,7 @@ Asset identifiers shall never be reused.
 | Compute | 3 |
 | Storage | 4 |
 | Recovery Media | 1 |
+| Removable Storage | 1 |
 
 ---
 
@@ -235,6 +237,7 @@ Asset identifiers shall never be reused.
 | Homelab Infrastructure | 6 |
 | SprinterOS | 2 |
 | AI Assistant | 0 |
+| Unassigned | 1 |
 
 ---
 
@@ -250,6 +253,7 @@ Asset identifiers shall never be reused.
 | AST-000006 | SanDisk Recovery USB | Recovery Media | Operational | Homelab Infrastructure |
 | AST-000007 | Raspberry Pi 5 | Compute | Operational | SprinterOS |
 | AST-000008 | Engineering Terminal 01 | Compute | Operational | SprinterOS |
+| AST-000009 | Engineering Spare microSD Card 01 | Removable Storage | Available | Unassigned |
 
 ---
 
@@ -259,7 +263,7 @@ Asset identifiers shall never be reused.
 
 | Owner | Assets |
 |-------|-------:|
-| Homelab Infrastructure | 8 |
+| Homelab Infrastructure | 9 |
 
 Engineering ownership represents long-term responsibility for hardware lifecycle management.
 
@@ -271,6 +275,7 @@ Engineering ownership represents long-term responsibility for hardware lifecycle
 |-----------|-------:|
 | Homelab Infrastructure | 6 |
 | SprinterOS | 2 |
+| Unassigned | 1 |
 
 Assignments indicate which engineering project currently utilizes an asset.
 
@@ -295,6 +300,9 @@ AST-000001 Engineering Workstation
 ```text
 PROC-000001
 └── AST-000008 Engineering Terminal 01
+
+PROC-000002
+└── AST-000009 Engineering Spare microSD Card 01
 ```
 
 ---
@@ -320,16 +328,18 @@ SprinterOS
 | Single Board Computers | 1 |
 | Storage Devices | 4 |
 | Recovery Media | 1 |
+| Removable Storage | 1 |
 
 ---
 
 ## Engineering Portfolio Snapshot
 
-The engineering portfolio currently manages eight operational hardware assets.
+The engineering portfolio currently manages nine hardware assets: eight are
+operational and one engineering spare is available and unassigned.
 
 All managed hardware assets have individual engineering asset records.
 
-All managed assets are operational.
+All managed assets are operational or available for controlled engineering use.
 
 No assets are currently planned, retired, or disposed.
 
@@ -380,6 +390,7 @@ Individual hardware assets are documented in the following controlled records.
 | AST-000006 | SanDisk Recovery USB |
 | AST-000007 | Raspberry Pi 5 |
 | AST-000008 | Engineering Terminal 01 |
+| AST-000009 | Engineering Spare microSD Card 01 |
 
 ---
 
@@ -431,3 +442,4 @@ These enhancements shall build upon the governance established by this register 
 | Version | Date | Description |
 |----------|------|-------------|
 | 1.0 | 2026-07-06 | Initial Master Hardware Register established and integrated with AST-000001 through AST-000008. |
+| 1.1 | 2026-07-15 | Registered AST-000009 as available, unassigned engineering spare removable storage. |
