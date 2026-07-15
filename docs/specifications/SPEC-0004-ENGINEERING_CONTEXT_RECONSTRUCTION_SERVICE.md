@@ -1,7 +1,7 @@
 ---
 document_id: SPEC-0004
 title: Engineering Context Reconstruction Service
-version: 1.1
+version: 1.2
 status: Draft
 owner: EOS Program
 created: 2026-07-08
@@ -72,6 +72,17 @@ accepted milestone evidence take precedence over older checkpoint content.
 A checkpoint is operational evidence and shall not override a newer supported
 authoritative state record.
 
+For checkpoint applicability, the service shall treat the recorded project
+identifier, canonical repository root, and commit as one checkpoint identity.
+The identity applies to a selected resume target only when the recorded project
+resolves to the recorded canonical root and that root is the selected project
+repository. A valid checkpoint for another repository is `not applicable`; it
+is not aligned, drifted, or invalid for the selected target. An applicable
+checkpoint is aligned or drifted only after strict verification proves that
+its recorded commit exists as a commit object in that repository. Missing,
+malformed, unresolved, or internally inconsistent applicable identity is
+invalid.
+
 ---
 
 # 5. Outputs
@@ -131,6 +142,8 @@ The service SHALL:
 - preserve engineering traceability;
 - evaluate Engineering State freshness under STD-0004;
 - expose source records and the freshness result in resume output;
+- expose the active checkpoint project, repository, applicability, and
+  repository-scoped synchronization result;
 - report checkpoint and authoritative-state conflicts; and
 - refuse to present a known completed or superseded objective as current.
 
@@ -152,3 +165,12 @@ The service is compliant when it reconstructs engineering context using only Aut
 All Resume functionality within EOS SHALL conform to this specification.
 All Resume functionality shall also consume the freshness threshold,
 reconciliation triggers, and source precedence established by STD-0004.
+
+---
+
+# Revision History
+
+| Version | Date | Description |
+| --- | --- | --- |
+| 1.1 | 2026-07-15 | Integrated STD-0004 freshness, source precedence, and stale-objective rejection. |
+| 1.2 | 2026-07-15 | Defined repository-aware checkpoint identity, applicability, strict commit verification, and not-applicable resume semantics. |

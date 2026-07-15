@@ -1,7 +1,7 @@
 ---
 document_id: EOS-0003
 title: EOS Operational Persistence Profile
-version: 1.1
+version: 1.2
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-13
@@ -54,7 +54,7 @@ It applies the existing EOS architecture and Engineering Document Persistence St
 | `repositories.tsv` | Registered infrastructure facts plus observed directories and Git repositories | Atomic derived inventory view under `/data/engineering/eos/runtime` | Fully regenerable with `engctl repository refresh` or `engctl eos refresh` | Refresh when repository presence or Git state changes | Not published; factual repository inventory remains controlled by `INF-0001` |
 | `ACTIVE-CHECKPOINT` | The operator-selected current resume checkpoint | Single-line mutable operational pointer under `/data/engineering/eos/state` | May fall back to the latest checkpoint, but a deliberate historical selection cannot be inferred after loss | Update atomically through `engctl checkpoint restore`; the target must resolve inside the checkpoint store | Not published; the selected closeout checkpoint is summarized in project and EOS state |
 | `CHECKPOINT-RETENTION` | The configured recent-set size | Single-line mutable operational configuration under `/data/engineering/eos/state`; valid range is 1 through 1000 | Defaults to 10 when absent, but the previously selected value cannot be inferred after loss | Update atomically through `engctl checkpoint retention`; validation rejects malformed persisted values | Not published; the append-only preservation rule is documented here |
-| Checkpoint metadata | The checkpoint file captured at the time of the engineering event | Append-only operational evidence under `/data/engineering/eos/checkpoints`; overwrite and deletion are prohibited | Historical working-tree context is not fully regenerable and shall be backed up | Each recorded commit must resolve; the active pointer and operational view shall agree | Checkpoint files remain in EOS; material publication checkpoints are summarized in `PROJ-0001` and milestone records |
+| Checkpoint metadata | The checkpoint file captured at the time of the engineering event; canonical identity is the recorded project, repository root, and commit tuple | Append-only operational evidence under `/data/engineering/eos/checkpoints`; overwrite and deletion are prohibited | Historical working-tree context is not fully regenerable and shall be backed up | Applicable commits must resolve through strict commit-object verification in their recorded repository; a valid checkpoint for another selected repository is `not applicable` | Checkpoint files remain in EOS; material publication checkpoints are summarized in `PROJ-0001` and milestone records |
 
 ---
 
@@ -87,6 +87,16 @@ implementation resume remains blocked until reconciliation and validation
 complete. A new checkpoint shall identify the reconciled boundary and source
 Project State.
 
+The checkpoint pointer remains global. Resume and synchronization views shall
+evaluate its checkpoint identity against the selected project repository. When
+the recorded project and canonical repository root consistently identify a
+different repository, the checkpoint is `not applicable` to the selected
+project and shall not be compared with that project's HEAD. When applicable,
+the recorded commit shall be verified as an existing commit object before an
+aligned or drifted result is produced. Project State, Sprint State, accepted
+milestone evidence, and live repository facts retain their established
+precedence regardless of checkpoint applicability.
+
 ---
 
 # Qualification Control
@@ -109,3 +119,4 @@ The aggregate Engineering Platform validator invokes this control.
 | ------- | ---- | ----------- |
 | 1.0 | 2026-07-13 | Established the Mission 0 closeout persistence treatment for EOS runtime and checkpoint records. |
 | 1.1 | 2026-07-15 | Applied STD-0004 freshness, authoritative-state precedence, reconciliation-before-checkpoint, and resume-conflict requirements. |
+| 1.2 | 2026-07-15 | Defined checkpoint identity, selected-repository applicability, strict commit verification, and not-applicable multi-repository resume behavior. |
