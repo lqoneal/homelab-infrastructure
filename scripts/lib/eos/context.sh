@@ -65,6 +65,64 @@ eos_command_state() {
     fi
 }
 
+eos_ssh_agent_socket() {
+    printf '%s/openssh_agent\n' "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+}
+
+eos_ssh_agent_state() {
+    local socket identities
+    socket="$(eos_ssh_agent_socket)"
+
+    if [[ ! -S "$socket" ]]; then
+        echo "unavailable (systemd user agent socket missing; run: systemctl --user start ssh-agent.service)"
+        return 0
+    fi
+
+    identities="$(SSH_AUTH_SOCK="$socket" ssh-add -l 2>&1 || true)"
+    if grep -Fq "The agent has no identities." <<<"$identities"; then
+        echo "running; no identities loaded (run: engctl ssh load)"
+    elif grep -Fq "Could not open a connection" <<<"$identities"; then
+        echo "unavailable (agent connection failed)"
+    else
+        echo "running; identities loaded"
+    fi
+}
+
+eos_ssh_agent_environment() {
+    export SSH_AUTH_SOCK="$(eos_ssh_agent_socket)"
+    printf 'export SSH_AUTH_SOCK=%q\n' "$SSH_AUTH_SOCK"
+}
+
+eos_ssh_agent_load() {
+    local socket key loaded=0
+    local keys=("$@")
+    socket="$(eos_ssh_agent_socket)"
+
+    if [[ "${#keys[@]}" -eq 0 ]]; then
+        keys=("$HOME/.ssh/id_ed25519")
+    fi
+
+    if [[ ! -S "$socket" ]]; then
+        echo "ERROR: Engineering Platform SSH agent is unavailable." >&2
+        echo "Start it with: systemctl --user start ssh-agent.service" >&2
+        return 1
+    fi
+
+    for key in "${keys[@]}"; do
+        if [[ ! -f "$key" ]]; then
+            echo "ERROR: configured engineering key not found: $key" >&2
+            return 1
+        fi
+        SSH_AUTH_SOCK="$socket" ssh-add "$key"
+        loaded=1
+    done
+
+    if [[ "$loaded" -eq 0 ]]; then
+        echo "ERROR: no configured engineering private keys were found." >&2
+        return 1
+    fi
+}
+
 eos_pdf_printing_state() {
     if ! command -v lpstat >/dev/null 2>&1; then
         echo "unknown (lpstat unavailable)"
@@ -341,6 +399,7 @@ eos_render_operational_status() {
     echo "OPERATIONAL STATUS"
     echo "------------------------------------"
     printf "%-18s %s\n" "SSH:" "$(eos_service_state ssh)"
+    printf "%-18s %s\n" "SSH Agent:" "$(eos_ssh_agent_state)"
     printf "%-18s %s\n" "Host Firewall:" "$(eos_service_state ufw)"
     printf "%-18s %s\n" "Print Services:" "$(eos_service_state cups)"
     printf "%-18s %s\n" "PDF Printing:" "$(eos_pdf_printing_state)"

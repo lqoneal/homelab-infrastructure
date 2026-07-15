@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 
 EOS_WORKSPACE="${EOS_WORKSPACE:-/data/engineering}"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 ECRS_PATH="${ECRS_PATH:-$SCRIPT_DIR/lib/eos/context.sh}"
 EOS_PROJECT="${EOS_PROJECT:-homelab}"
 
@@ -27,6 +27,7 @@ Usage:
   engctl resume [project]
   engctl status [project]
   engctl doctor
+  engctl ssh {status|environment|load [key ...]}
   engctl checkpoint {latest|active|list|create <title>|restore [checkpoint]|validate|retention [count]}
   engctl eos {status|validate|sync-status|refresh|operational|persistence} [project]
   engctl repository {discover|health|sync-status|readiness|refresh} [project]
@@ -62,6 +63,16 @@ case "$cmd" in
         ;;
     doctor)
         bash "$SCRIPT_DIR/doctor.sh"
+        ;;
+    ssh)
+        action="${1:-status}"
+        shift || true
+        case "$action" in
+            status) eos_ssh_agent_state ;;
+            environment) eos_ssh_agent_environment ;;
+            load) eos_ssh_agent_load "$@" ;;
+            *) echo "ERROR: unknown ssh action: $action" >&2; usage; exit 1 ;;
+        esac
         ;;
     checkpoint)
         eos_render_checkpoint "${1:-latest}" "${@:2}"
@@ -105,7 +116,7 @@ case "$cmd" in
         esac
         ;;
     version)
-        echo "engctl version 0.6.0"
+        echo "engctl version 0.7.0"
         ;;
     help|-h|--help)
         usage

@@ -2,20 +2,20 @@
 
 document_id: INF-0001
 title: Engineering Infrastructure Baseline
-version: 1.6
+version: 1.7
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-13
+last_updated: 2026-07-15
 phase: Mission 0.1 - Engineering Platform Baseline Reconciliation
 domain: Infrastructure
 classification: Global Infrastructure Baseline
-predecessor_revision: INF-0001@1.5
+predecessor_revision: INF-0001@1.6
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Mission 0.1 Engineering Platform Baseline Reconciliation
-approval_date: 2026-07-13
+approval_reference: Codex Handoff Procedure - Permanent SSH Agent Integration
+approval_date: 2026-07-15
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -301,6 +301,7 @@ The scanner workflow establishes intake locations only. OCR, AI classification, 
 | Service | Implementation | Operational Record |
 | ------- | -------------- | ------------------ |
 | SSH Service | OpenSSH service | Active baseline; LAN-scoped access via UFW |
+| SSH Agent | Ubuntu OpenSSH systemd user service | Active per-login agent; shared protected-key cache and Engineering Platform diagnostics |
 | Host Firewall | UFW | Active baseline; deny incoming / allow outgoing |
 | Print Service | CUPS | Active baseline; HP OfficeJet queue configured |
 | PDF Printing Service | CUPS-PDF | Operational baseline; managed PDF output validated |
@@ -308,6 +309,42 @@ The scanner workflow establishes intake locations only. OCR, AI classification, 
 | Avahi Discovery | Avahi / DNS-SD | Active baseline; LAN-scoped mDNS |
 
 No failed systemd services were present when the secure SSH, firewall, network printing, and Avahi baseline was established.
+
+## Engineering SSH Agent Architecture
+
+The Engineering Platform uses Ubuntu's native `ssh-agent.service` in the
+operator's systemd user manager. `default.target` starts exactly one agent at
+login, and all terminals reuse the stable owner-only socket at
+`$XDG_RUNTIME_DIR/openssh_agent`. The unused GnuPG SSH-emulation socket is
+masked so that the platform has one authentication mechanism and one identity
+cache.
+
+Interactive Bash startup exports the stable socket. When the shared agent has
+no identities, the first interactive terminal requests the passphrase for the
+protected `~/.ssh/id_ed25519` engineering key. Subsequent interactive and
+noninteractive sessions reuse the loaded identity without prompting. Additional
+protected identities may be loaded with `engctl ssh load <key>...`.
+
+The agent persists across terminal closure for the lifetime of the systemd user
+session. It intentionally does not retain decrypted identities across a full
+logout or reboot because user lingering is disabled. The first interactive
+login after either event must unlock the engineering key once. No passphrase,
+decrypted key, private-key copy, or agent environment file is persisted.
+
+Operational commands are:
+
+```text
+engctl ssh status
+engctl ssh environment
+engctl ssh load [key ...]
+```
+
+`engctl resume` and Engineering Work Initiation report whether the agent socket
+is available and whether identities are loaded. If authentication is
+unavailable, run `systemctl --user start ssh-agent.service`, then `engctl ssh
+load`. Host authorization remains governed by `~/.ssh/config`, each remote
+host's `authorized_keys`, and normal known-host verification. Agent forwarding
+is not enabled by this architecture.
 
 ---
 
@@ -369,3 +406,4 @@ These targets describe the intended engineering direction and shall be updated a
 | 1.4     | 2026-07-09 | Added PDF printing service baseline, scanner workflow hierarchy, and shared services inventory. |
 | 1.5     | 2026-07-09 | Recorded CUPS-PDF installation, queue validation, and managed PDF output validation. |
 | 1.6     | 2026-07-13 | Corrected repository inventory for the present SprinterOS repository and the non-Git shared-libraries directory during Mission 0.1 reconciliation. |
+| 1.7     | 2026-07-15 | Established the native systemd user SSH-agent lifecycle, shared socket, protected identity-loading behavior, diagnostics, and security boundary. |

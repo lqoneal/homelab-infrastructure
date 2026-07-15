@@ -108,11 +108,17 @@ inventory_output="$(eos_platform_repository_inventory)"
 grep -Fq "homelab" <<<"$inventory_output"
 qualification_output="$(eos_platform_qualify homelab)"
 grep -Fq "Active Git Operation: none" <<<"$qualification_output"
+grep -Fq "SSH Agent:" <<<"$qualification_output"
 
-[[ "$("$REPOSITORY_ROOT/scripts/engctl" version)" == "engctl version 0.6.0" ]]
+agent_output="$(eos_ssh_agent_state)"
+[[ -n "$agent_output" ]]
+
+[[ "$("$REPOSITORY_ROOT/scripts/engctl" version)" == "engctl version 0.7.0" ]]
 "$REPOSITORY_ROOT/scripts/engctl" eos validate >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" eos refresh >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" eos persistence >/dev/null
+"$REPOSITORY_ROOT/scripts/engctl" ssh status >/dev/null
+"$REPOSITORY_ROOT/scripts/engctl" ssh environment >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" checkpoint create "CLI Test Checkpoint" >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" checkpoint restore latest >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" checkpoint validate >/dev/null

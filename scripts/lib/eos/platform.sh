@@ -45,7 +45,7 @@ eos_render_platform() {
     eos_platform_repository_inventory
     echo
     echo "Controller Capabilities:"
-    echo "  resume status doctor checkpoint eos repository registry portfolio project queue milestone dependency defer context validate platform"
+    echo "  resume status doctor ssh checkpoint eos repository registry portfolio project queue milestone dependency defer context validate platform"
 }
 
 eos_platform_qualify() {
@@ -82,6 +82,7 @@ eos_platform_qualify() {
     echo "Integrity:"
     git -C "$root" fsck --no-dangling --no-reflogs
     echo "PASS"
+    echo "SSH Agent: $(eos_ssh_agent_state)"
 
     for marker in MERGE_HEAD CHERRY_PICK_HEAD REVERT_HEAD REBASE_HEAD rebase-merge rebase-apply sequencer; do
         marker_path="$(git -C "$root" rev-parse --git-path "$marker")"

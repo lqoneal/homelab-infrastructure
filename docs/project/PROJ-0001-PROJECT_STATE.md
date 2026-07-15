@@ -1,19 +1,19 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 3.2
+version: 3.3
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-13
+last_updated: 2026-07-15
 phase: EMP Foundation 1.0 Operational
 classification: Project State
-predecessor_revision: PROJ-0001@3.1
+predecessor_revision: PROJ-0001@3.2
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - EMP Foundation 1.0 Operational Qualification
-approval_date: 2026-07-13
+approval_reference: Codex Handoff Procedure - Permanent SSH Agent Integration
+approval_date: 2026-07-15
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals:
@@ -59,9 +59,13 @@ It summarizes the current project state and identifies the next approved enginee
 
 # Last Updated
 
-**Date:** 2026-07-13
+**Date:** 2026-07-15
 
 **Session Summary:**
+
+- Established permanent per-login Engineering Platform SSH-agent management
+  through Ubuntu's native systemd user service, stable socket reuse, protected
+  identity loading, and explicit controller diagnostics.
 
 - Qualified the canonical repository, Governance Foundation publication, Mission 0 publication, EMP Phase 1.1 through 1.3 implementation, repository integrity, and complete working-tree boundary.
 - Verified the Work Registry, operational management services, `engctl` routing, Engineering Context Reconstruction, controlled-document validation, EOS runtime, and aggregate Engineering Platform validation.
@@ -196,6 +200,8 @@ Preserve the Engineering Platform and EMP Foundation baselines while initiating 
 - Qualified and published EMP Foundation 1.0 through MILESTONE-0004.
 - Established the `emp-foundation-1.0` publication baseline.
 - Advanced SprinterOS to the first authorized product mission without beginning product implementation in this repository.
+- Integrated SSH-agent status and identity diagnostics into `engctl`, EOS
+  resume, and Engineering Work Initiation without persisting key passphrases.
 
 ## Active Issues
 
@@ -416,3 +422,4 @@ When resuming this project:
 | 3.0     | 2026-07-13 | Implemented the Phase 1.2 operational YAML Work Registry, initial portfolio registration, validation, discovery, controller routing, ECRS contribution, and Phase 1.3 resume point while preserving Governance, EOS, and controlled-document authority. |
 | 3.1     | 2026-07-13 | Completed Phase 1.3 registry mutation, portfolio, queue, dependency, milestone, deferral, status, controller, context, and validation services and advanced the resume point to separately authorized product development. |
 | 3.2     | 2026-07-13 | Qualified and published EMP Foundation 1.0 through MILESTONE-0004 and authorized controlled portfolio transition to SprinterOS Product Development Initiation. |
+| 3.3     | 2026-07-15 | Established permanent per-login SSH-agent infrastructure and integrated identity diagnostics with Engineering Platform startup and qualification. |
