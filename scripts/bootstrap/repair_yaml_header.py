@@ -3,119 +3,67 @@ from pathlib import Path
 import sys
 import yaml
 
-HEADERS = {
-    "TPL-0001": {
-        "path": "docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md",
-        "heading": "# Engineering Work Order Template",
-        "header": """---
-document_id: TPL-0001
-title: Engineering Work Order Template
-version: 1.0
-status: Active
-owner: Engineering Governance
-created: 2026-07-09
-last_updated: 2026-07-09
-phase: Governance Bootstrap
-domain: Engineering Governance
-classification: Engineering Template
-source_of_truth: true
-related_documents:
-  - GEN-0001
-  - STD-0000
-  - STD-0003
-  - PROC-0001
-tags:
-  - governance
-  - template
-  - work-order
-  - execution
-  - engineering-operating-system
----
+if len(sys.argv) != 2:
+    raise SystemExit("Usage: repair_yaml_header.py <markdown-file>")
 
-"""
-    },
-    "TPL-0002": {
-        "path": "docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md",
-        "heading": "# Engineering Completion Report Template",
-        "header": """---
-document_id: TPL-0002
-title: Engineering Completion Report Template
-version: 1.0
-status: Active
-owner: Engineering Governance
-created: 2026-07-09
-last_updated: 2026-07-09
-phase: Governance Bootstrap
-domain: Engineering Governance
-classification: Engineering Template
-source_of_truth: true
-related_documents:
-  - GEN-0001
-  - STD-0000
-  - STD-0003
-  - PROC-0001
-  - TPL-0001
-tags:
-  - governance
-  - template
-  - completion-report
-  - evidence
-  - engineering-operating-system
----
+p = Path(sys.argv[1])
 
-"""
-    },
-    "TPL-0003": {
-        "path": "docs/templates/TPL-0003-ENGINEERING_EVIDENCE_PACKAGE_TEMPLATE.md",
-        "heading": "# Engineering Evidence Package Template",
-        "header": """---
-document_id: TPL-0003
-title: Engineering Evidence Package Template
-version: 1.0
-status: Active
-owner: Engineering Governance
-created: 2026-07-09
-last_updated: 2026-07-09
-phase: Governance Bootstrap
-domain: Engineering Governance
-classification: Engineering Template
-source_of_truth: true
-related_documents:
-  - GEN-0001
-  - STD-0000
-  - STD-0003
-  - PROC-0001
-  - TPL-0001
-  - TPL-0002
-tags:
-  - governance
-  - template
-  - evidence-package
-  - traceability
-  - engineering-operating-system
----
+if not p.exists():
+    raise SystemExit(f"FAIL: file not found: {p}")
 
-"""
-    },
-}
-
-if len(sys.argv) != 2 or sys.argv[1] not in HEADERS:
-    valid = ", ".join(sorted(HEADERS))
-    raise SystemExit(f"Usage: repair_yaml_header.py <document_id>\nValid: {valid}")
-
-doc = HEADERS[sys.argv[1]]
-p = Path(doc["path"])
 text = p.read_text()
 
-start = text.find(doc["heading"])
-if start == -1:
-    raise SystemExit(f"Could not find body heading: {doc['heading']}")
+if not text.startswith("---"):
+    raise SystemExit("FAIL: missing YAML front matter")
 
-body = text[start:]
-p.write_text(doc["header"] + body)
+parts = text.split("---", 2)
 
-# Validate repaired YAML.
-parts = p.read_text().split("---", 2)
-yaml.safe_load(parts[1])
+if len(parts) < 3:
+    raise SystemExit("FAIL: missing closing YAML delimiter")
 
-print(f"REPAIRED: {sys.argv[1]} YAML header")
+raw_header = parts[1]
+body = parts[2].lstrip("\n")
+
+lines = raw_header.splitlines()
+fixed = []
+current_key = None
+
+list_keys = {"related_documents", "tags", "implements", "governed_by"}
+
+for line in lines:
+    stripped = line.strip()
+
+    if not stripped:
+        fixed.append(line)
+        continue
+
+    if stripped.endswith(":"):
+        current_key = stripped[:-1]
+        fixed.append(stripped)
+        continue
+
+    if stripped.startswith("* "):
+        if current_key in list_keys:
+            fixed.append(f"  - {stripped[2:]}")
+        else:
+            fixed.append(line)
+        continue
+
+    if stripped.startswith("- "):
+        if current_key in list_keys and not line.startswith("  - "):
+            fixed.append(f"  - {stripped[2:]}")
+        else:
+            fixed.append(line)
+        continue
+
+    current_key = None
+    fixed.append(line)
+
+new_header = "\n".join(fixed).strip() + "\n"
+
+# Validate before writing.
+yaml.safe_load(new_header)
+
+p.write_text("---\n" + new_header + "---\n\n" + body)
+
+print(f"REPAIRED: {p}")
