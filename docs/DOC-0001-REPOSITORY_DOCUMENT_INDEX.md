@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.9
+version: 2.10
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-13
+last_updated: 2026-07-15
 phase: EMP Foundation 1.0 Operational Qualification
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.8
+predecessor_revision: DOC-0001@2.9
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Engineering State Freshness Standard Implementation
+approval_reference: Codex Handoff Procedure - Commit Classification Procedure Reconciliation
 approval_date: 2026-07-15
 persistence_status: Pending
 source_of_truth: true
@@ -128,6 +128,21 @@ Every engineering session shall begin by reviewing the repository in the followi
    and resume accuracy.
 10. If reconciliation is required, complete it before implementation.
 11. Resume implementation only from reconciled authoritative state.
+
+---
+
+# Repository Commit Workflow
+
+STD-0004 governs the operational lifecycle and requires Engineering State
+Reconciliation before Commit Classification. PROC-0001 is the single
+authoritative Commit Classification procedure. Before any repository commit,
+inventory and classify every outstanding change, establish one-objective
+logical commit boundaries, validate dependency order and repository integrity,
+and obtain review of the proposed commit plan.
+
+Commit execution, milestone publication, tagging, and pushing each require
+their applicable authority. Milestone publication shall remain separate from
+its prerequisite commits and shall never serve as a catch-all change set.
 
 ---
 
@@ -465,3 +480,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.7 | 2026-07-13 | Registered MILESTONE-0004, EMP Foundation 1.0 operational qualification, the publication baseline, and controlled portfolio transition to SprinterOS product development. |
 | 2.8 | 2026-07-15 | Published and registered PROC-0003 as the authoritative Engineering Recovery Runbook and reconciled its governing references. |
 | 2.9 | 2026-07-15 | Published and registered STD-0004 and integrated Engineering State freshness qualification into repository Work Initiation. |
+| 2.10 | 2026-07-15 | Registered PROC-0001 as the authoritative repository Commit Classification workflow and linked it to the reconciled STD-0004 operational lifecycle. |
