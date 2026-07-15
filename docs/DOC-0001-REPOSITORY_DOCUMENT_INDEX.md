@@ -1,7 +1,7 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.10
+version: 2.11
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,11 +9,11 @@ last_updated: 2026-07-15
 phase: EMP Foundation 1.0 Operational Qualification
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.9
+predecessor_revision: DOC-0001@2.10
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Commit Classification Procedure Reconciliation
+approval_reference: Codex Handoff Procedure - Commit Classification and Commit Reconstruction Procedure Reconciliation
 approval_date: 2026-07-15
 persistence_status: Pending
 source_of_truth: true
@@ -135,10 +135,18 @@ Every engineering session shall begin by reviewing the repository in the followi
 
 STD-0004 governs the operational lifecycle and requires Engineering State
 Reconciliation before Commit Classification. PROC-0001 is the single
-authoritative Commit Classification procedure. Before any repository commit,
-inventory and classify every outstanding change, establish one-objective
-logical commit boundaries, validate dependency order and repository integrity,
-and obtain review of the proposed commit plan.
+authoritative procedure for Commit Classification and Commit Reconstruction
+Planning. Before any repository commit, inventory and classify every
+outstanding change, establish one-objective logical commit boundaries, validate
+dependency order and repository integrity, and approve the reconstruction
+method, validation, commit message, and expected state for every commit.
+
+Persistent Commit Classification Reports and Commit Reconstruction Plans are
+required for milestone, multi-objective, multi-repository, governance,
+standards, procedure, Engineering Platform, repository-wide, or complex
+reconstruction work. Their designated repository location is
+`engineering/planning/`. Routine unambiguous single-objective work may use
+ephemeral planning under PROC-0001.
 
 Commit execution, milestone publication, tagging, and pushing each require
 their applicable authority. Milestone publication shall remain separate from
@@ -481,3 +489,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.8 | 2026-07-15 | Published and registered PROC-0003 as the authoritative Engineering Recovery Runbook and reconciled its governing references. |
 | 2.9 | 2026-07-15 | Published and registered STD-0004 and integrated Engineering State freshness qualification into repository Work Initiation. |
 | 2.10 | 2026-07-15 | Registered PROC-0001 as the authoritative repository Commit Classification workflow and linked it to the reconciled STD-0004 operational lifecycle. |
+| 2.11 | 2026-07-15 | Registered Commit Reconstruction Planning and proportional persistent planning-artifact governance within the PROC-0001 repository workflow. |

@@ -1,7 +1,7 @@
 ---
 document_id: PROC-0001
 title: Engineering Work Order Execution Procedure
-version: 1.4
+version: 1.5
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
@@ -370,7 +370,7 @@ evidence records.
 
 ### Pre-Execution Validation
 
-Commit execution is not qualified until all of the following pass:
+Classification is not complete until all of the following pass:
 
 - every outstanding path and separable change is classified;
 - commit boundaries are complete and unambiguous;
@@ -381,9 +381,134 @@ Commit execution is not qualified until all of the following pass:
   conflict; and
 - any milestone prerequisites are explicitly identified and satisfied.
 
-Failure or indeterminate evidence blocks commit execution. Classification
-approval authorizes only the reviewed plan unless separate authority explicitly
-authorizes commit execution.
+Failure or indeterminate evidence blocks reconstruction planning and commit
+execution. Classification approval authorizes only the reviewed classification
+unless separate authority explicitly authorizes later lifecycle stages.
+
+### Commit Classification Report
+
+When persistent planning is required, classification shall produce a Commit
+Classification Report identifying:
+
+- engineering objectives;
+- affected repositories and files or separable hunks;
+- engineering classifications;
+- dependency relationships;
+- proposed commit boundaries; and
+- the proposed commit sequence.
+
+The Commit Classification Report answers: **What Engineering History should
+exist?**
+
+---
+
+## Commit Reconstruction Planning
+
+### Purpose and Requirement
+
+Commit Reconstruction Planning is a distinct governed engineering activity
+between Commit Classification and Commit Execution. It determines the safest
+method for faithfully transforming the approved logical change sets into
+repository history without losing work, combining objectives, falsifying
+revision sequence, or violating dependencies.
+
+Every proposed commit shall have an approved reconstruction plan before Commit
+Execution. Planning shall preserve the approved classification; it shall not
+silently change objectives, boundaries, order, or scope.
+
+### Required Plan Content
+
+For every proposed commit, determine and document:
+
+- engineering objective;
+- repository;
+- affected files or hunks;
+- dependency ordering;
+- selected reconstruction method and its safety rationale;
+- validation requirements before and after creation;
+- proposed commit title;
+- proposed commit message; and
+- expected repository, index, working-tree, and validation state after the
+  commit.
+
+The Commit Reconstruction Plan answers: **How will the approved Engineering
+History be safely created?** Commit Execution shall implement the approved plan
+and stop when observed state differs materially from its expected state.
+
+### Acceptable Reconstruction Methods
+
+Acceptable methods include:
+
+- whole-file staging when every selected file belongs entirely to one change
+  set;
+- interactive hunk staging for independently selectable changes within files;
+- temporary index reconstruction when an exact intermediate tree must be built
+  without altering the primary working tree;
+- a temporary worktree when isolation and full-tree validation are safer than
+  index-only reconstruction;
+- branch sequencing when dependency boundaries require independently
+  reviewable repository history; and
+- cherry-pick workflow when already isolated commits must be assembled in an
+  approved dependency sequence.
+
+This list is not a mandated preference order. The responsible engineer shall
+select the safest method that preserves all existing work, exact logical
+boundaries, dependency ordering, validation capability, and traceability.
+Destructive reset, loss of untracked work, fabricated historical state, or
+unreviewed boundary changes are not acceptable reconstruction techniques.
+
+### Execution Gate
+
+Commit Execution may begin only after successful completion of Engineering
+State Reconciliation, Commit Classification, and Commit Reconstruction
+Planning. Verify immediately before execution that:
+
+- every modified, deleted, renamed, copied, added, and untracked file is
+  classified;
+- every proposed commit has an approved reconstruction plan;
+- dependency ordering is approved and acyclic;
+- applicable repository validation passes;
+- Engineering State remains reconciled under STD-0004;
+- milestone prerequisites are satisfied or explicitly assigned to earlier
+  planned commits; and
+- the repository and working tree still match the planning baseline.
+
+Any mismatch, new unclassified change, failed validation, or obsolete
+Engineering State blocks execution and returns the workflow to the applicable
+prior stage.
+
+### Engineering Planning Artifact Governance
+
+Routine work containing one logical objective in one repository may use
+ephemeral classification and reconstruction planning when its boundaries,
+dependencies, validation, and expected state are unambiguous. The rigor and
+execution gates of this procedure still apply.
+
+Persistent Commit Classification Reports and Commit Reconstruction Plans are
+mandatory for work involving any of the following:
+
+- multiple engineering objectives;
+- multiple repositories;
+- milestone publication;
+- repository-wide reconciliation;
+- governance, standards, or procedure reconciliation;
+- Engineering Platform modification;
+- complex dependency ordering; or
+- commit reconstruction planning beyond an unambiguous whole-file commit.
+
+For milestone, governance, standards, procedure, Engineering Platform,
+repository-wide, and complex multi-objective work, both artifacts shall be
+retained as controlled engineering planning records or within the designated
+engineering planning location at `engineering/planning/` in the governing
+repository. Their storage authority, identifier, review,
+approval, revision, retention, and relationships shall follow the existing
+documentation architecture of that repository. They shall reference one
+another and the applicable Project State, Engineering State, Work Order,
+milestone, and validation evidence when those records exist.
+
+Persistent planning records support review and reconstruction; they do not
+become a second Project State, authorize commits, or replace repository history.
+Engineering rigor shall remain proportional to complexity.
 
 ### Milestone Rule
 
@@ -391,12 +516,13 @@ A milestone commit shall never be a catch-all commit. Before milestone
 publication, engineering work shall proceed in this order:
 
 1. classify all outstanding work;
-2. review and approve the commit plan;
-3. execute prerequisite commits in dependency order under commit authority;
-4. validate the resulting repository state;
-5. qualify the milestone against its authoritative prerequisites;
-6. publish the milestone in its own logical commit; and
-7. create the milestone tag only under explicit tag authority after the
+2. prepare and approve Commit Reconstruction Plans;
+3. review and approve both planning artifacts;
+4. execute prerequisite commits in dependency order under commit authority;
+5. validate the resulting repository state;
+6. qualify the milestone against its authoritative prerequisites;
+7. publish the milestone in its own logical commit; and
+8. create the milestone tag only under explicit tag authority after the
    milestone commit succeeds.
 
 Unrelated cleanup, implementation, evidence, governance, or documentation
@@ -484,3 +610,4 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.2 | 2026-07-15 | Required recovery work initiated under this procedure to consume PROC-0003 without expanding mission authority. |
 | 1.3 | 2026-07-15 | Integrated STD-0004 freshness qualification and reconciliation gating into Work Initiation and resume after interruption. |
 | 1.4 | 2026-07-15 | Established mandatory Commit Classification, traceability, validation, dependency ordering, commit boundaries, and milestone publication controls after Engineering State Reconciliation. |
+| 1.5 | 2026-07-15 | Established Commit Reconstruction Planning, approved reconstruction methods, execution gates, persistent planning artifacts, and proportional planning governance. |

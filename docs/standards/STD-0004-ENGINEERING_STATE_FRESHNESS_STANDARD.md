@@ -1,7 +1,7 @@
 ---
 document_id: STD-0004
 title: Engineering State Freshness Standard
-version: 1.1
+version: 1.2
 status: Active
 owner: Engineering Governance
 created: 2026-07-15
@@ -9,11 +9,11 @@ last_updated: 2026-07-15
 phase: Engineering State Freshness Standard Implementation
 domain: Engineering Governance
 classification: Engineering Standard
-predecessor_revision: STD-0004@1.0
+predecessor_revision: STD-0004@1.1
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Commit Classification Procedure Reconciliation
+approval_reference: Codex Handoff Procedure - Commit Classification and Commit Reconstruction Procedure Reconciliation
 approval_date: 2026-07-15
 persistence_status: Pending
 source_of_truth: true
@@ -220,6 +220,8 @@ Engineering State Reconciliation
   ↓
 Commit Classification
   ↓
+Commit Reconstruction Planning
+  ↓
 Commit Execution
   ↓
 Milestone Qualification
@@ -245,21 +247,26 @@ The stages serve these purposes:
 7. **Commit Classification** inventories every outstanding repository change,
    assigns each change to one engineering objective, establishes logical
    commit boundaries, and orders dependencies under PROC-0001.
-8. **Commit Execution** creates only the reviewed, authorized, classified
-   commits in dependency order and performs no implicit milestone publication.
-9. **Milestone Qualification** verifies that prerequisite commits and
+8. **Commit Reconstruction Planning** selects and documents the safest method
+   for transforming each approved logical change set into repository history,
+   including validation and expected-state controls under PROC-0001.
+9. **Commit Execution** implements only the approved reconstruction plans in
+   dependency order and performs no implicit milestone publication.
+10. **Milestone Qualification** verifies that prerequisite commits and
    validation are complete before a milestone publication and tag are
    separately authorized.
-10. **Checkpoint** captures the reconciled, committed, and qualified resume
+11. **Checkpoint** captures the reconciled, committed, and qualified resume
     boundary.
-11. **Resume Ready** confirms that authoritative records and derived resume
+12. **Resume Ready** confirms that authoritative records and derived resume
     mechanisms identify the same current engineering state.
 
 Engineering State Reconciliation precedes Commit Classification so commit
-planning operates on current authoritative state. This standard governs when
-reconciliation occurs and what state it synchronizes. PROC-0001 governs how
-outstanding changes are classified and organized into engineering history.
-Neither activity transfers authority to the other.
+planning operates on current authoritative state. Commit Classification defines
+what engineering history should exist; Commit Reconstruction Planning defines
+how that approved history will be created safely. This standard governs when
+reconciliation occurs and what state it synchronizes. PROC-0001 governs both
+classification and reconstruction planning. None of these activities transfers
+authority to another or independently authorizes commit execution.
 
 Engineering State Reconciliation may be omitted at an intermediate lifecycle
 pass only when Engineering State remains within the two-milestone threshold,
@@ -399,3 +406,4 @@ completed engineering milestones behind actual implementation.
 | ------- | ---- | ----------- |
 | 1.0 | 2026-07-15 | Established the Engineering State freshness threshold, reconciliation triggers and scope, operational lifecycle integration, and resume-accuracy requirements. |
 | 1.1 | 2026-07-15 | Reconciled the operational lifecycle to place Commit Classification, Commit Execution, and Milestone Qualification after Engineering State Reconciliation and defined their authority boundaries. |
+| 1.2 | 2026-07-15 | Added Commit Reconstruction Planning between classification and execution and distinguished the governed what, how, and execution authority boundaries. |
