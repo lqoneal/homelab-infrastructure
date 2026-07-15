@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 3.3
+version: 3.4
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-15
 phase: EMP Foundation 1.0 Operational
 classification: Project State
-predecessor_revision: PROJ-0001@3.2
+predecessor_revision: PROJ-0001@3.3
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Permanent SSH Agent Integration
+approval_reference: Codex Handoff Procedure - Engineering State Reconciliation
 approval_date: 2026-07-15
 persistence_status: Pending
 source_of_truth: true
@@ -39,6 +39,10 @@ relationships:
     target: SPEC-0006
   - type: related_to
     target: SERVICE-0002
+  - type: governed_by
+    target: STD-0004
+  - type: related_to
+    target: PROC-0003
 tags:
   - project-state
   - checkpoint
@@ -63,6 +67,14 @@ It summarizes the current project state and identifies the next approved enginee
 
 **Session Summary:**
 
+- Completed the first STD-0004 Engineering State Reconciliation across
+  Homelab Project State, SprinterOS Project and Sprint State, EOS operational
+  state, checkpoints, and resume context.
+- Published PROC-0003 and STD-0004, reconciled lifecycle, Work Initiation, and
+  resume architecture, and migrated shared recovery authority to Homelab.
+- Reconciled the qualified recovery capability, protected evidence, completed
+  Raspberry Pi platform update, and active persistent MMC storage investigation.
+
 - Established permanent per-login Engineering Platform SSH-agent management
   through Ubuntu's native systemd user service, stable socket reuse, protected
   identity loading, and explicit controller diagnostics.
@@ -85,7 +97,8 @@ Build the Engineering Operating System foundation for AI Assistant, SprinterOS, 
 
 **Current Overall Goal:**
 
-Operate the qualified Engineering Platform and EMP Foundation 1.0 while transitioning portfolio control to the first approved product mission.
+Operate the qualified Engineering Platform and recovery capability while
+coordinating the active SprinterOS platform recovery assessment.
 
 ---
 
@@ -93,11 +106,13 @@ Operate the qualified Engineering Platform and EMP Foundation 1.0 while transiti
 
 **Current Phase:**
 
-EMP Foundation 1.0 Operational — Portfolio Transition
+Engineering State Reconciled — SprinterOS Recovery Assessment
 
 **Phase Objective:**
 
-Preserve the Engineering Platform and EMP Foundation baselines while initiating the separately controlled SprinterOS product mission.
+Preserve the qualified Engineering Platform and recovery baselines while
+SprinterOS isolates persistent MMC storage I/O errors after its successful
+platform update.
 
 ---
 
@@ -202,6 +217,18 @@ Preserve the Engineering Platform and EMP Foundation baselines while initiating 
 - Advanced SprinterOS to the first authorized product mission without beginning product implementation in this repository.
 - Integrated SSH-agent status and identity diagnostics into `engctl`, EOS
   resume, and Engineering Work Initiation without persisting key passphrases.
+- Published PROC-0003 as the authoritative Engineering Recovery Runbook and
+  migrated duplicated project recovery procedure content to that authority.
+- Published STD-0004 as the Engineering State Freshness Standard and integrated
+  reconciliation into lifecycle, Work Initiation, EOS, EMP, and resume
+  architecture.
+- Qualified recovery acquisition, exact byte count, two independent SHA-256
+  passes, evidence preservation, NTFS reconciliation, cleanup, and recovery
+  capability while retaining the restoration prohibition.
+- Reconciled the completed SprinterOS Raspberry Pi OS, firmware, EEPROM, and
+  kernel update and successful boot, HDMI, keyboard, and login results.
+- Reconciled Engineering State through the 2026-07-15 post-update boundary;
+  zero completed milestones remain unreconciled.
 
 ## Active Issues
 
@@ -211,6 +238,9 @@ Preserve the Engineering Platform and EMP Foundation baselines while initiating 
 - Legacy controlled-document migration and repository-wide persistence remediation remain separately governed technical debt.
 - Multi-host operation, dashboards, notifications, analytics, metric calculation, scheduling, AI planning, optimization, and autonomous management remain separately authorized EMP enhancements.
 - Private AI Assistant implementation remains deferred behind SprinterOS in portfolio order.
+- SprinterOS reports persistent microSD/MMC storage I/O errors after the
+  platform update. Media, filesystem, controller/interface, and
+  kernel/firmware causes remain under investigation.
 
 ## Authorized Bounded Side Mission
 
@@ -234,13 +264,36 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-Preserve the Mission 0 Engineering Platform and EMP Foundation baselines; initiate the authorized SprinterOS product mission through its own controlled repository records.
+SprinterOS Platform Recovery Assessment — Persistent MMC Storage I/O
+Investigation.
 
 **Next Immediate Step:**
 
-Begin **SprinterOS Product Development Initiation** by reconstructing and reconciling its current controlled project state and defining the next bounded product phase before implementation. Private AI Assistant remains later in portfolio order.
+Resume the separately authorized SprinterOS MMC investigation from reconciled
+Project State. Determine whether the persistent errors result from storage
+media degradation, filesystem inconsistency, controller/interface issues, or
+kernel/firmware interaction. Do not perform restoration or corrective action
+without separate authority.
 
 EWO-000016 remains a separately selectable bounded side mission. If selected, execution begins with Stage A backup re-verification; no destructive USB operation may occur unless every preceding gate passes.
+
+---
+
+# 5A. Authoritative Engineering Baseline
+
+| Domain | Reconciled state |
+| --- | --- |
+| Engineering Platform | Operational; aggregate validation qualified |
+| Engineering Management Platform | Operational; validation qualified |
+| Recovery capability | Qualified; image and engineering evidence preserved |
+| Recovery verification | Exact byte count and two independent matching SHA-256 passes accepted |
+| Recovery storage | NTFS reconciled and authorized cleanup completed |
+| Restoration | Not authorized; recovery image is not restoration-qualified |
+| Raspberry Pi platform | OS, firmware, and EEPROM updated; kernel `6.12.93+rpt-rpi-2712` installed |
+| Raspberry Pi boot | Successful; HDMI, keyboard, and login operational |
+| Active investigation | Persistent microSD/MMC storage I/O errors |
+| Current mission | SprinterOS Platform Recovery Assessment — Persistent MMC Storage I/O Investigation |
+| Freshness | Reconciled through 2026-07-15 post-update qualification; zero unreconciled completed milestones |
 
 ---
 
@@ -383,7 +436,9 @@ None. Mission 0 is complete.
 5. Treat Mission 0 and MILESTONE-0003 as the completed Engineering Platform operational foundation.
 6. Treat EMP-0001, SPEC-0006, SERVICE-0002, and MILESTONE-0004 as the active EMP Foundation 1.0 baseline.
 7. Validate and inspect the operational registry through `engctl registry validate` and `engctl registry list`.
-8. Continue with SprinterOS Product Development Initiation; reconcile its controlled state before defining or executing a product phase.
+8. Resume SprinterOS Platform Recovery Assessment at the persistent MMC storage
+   I/O investigation; do not repeat the completed product-initiation or update
+   objectives.
 9. When EWO-000016 is selected for execution, begin at Stage A backup re-verification and honor every sequential gate.
 10. After EWO-000016 completes or stops, return to the current primary project task recorded above.
 
@@ -397,8 +452,13 @@ When resuming this project:
 - Treat `/data/engineering/repositories/homelab` as the canonical Homelab repository.
 - Treat `/data/engineering/repositories/shared-libraries` as the canonical shared controller framework.
 - Do not use `/home/loneal/Projects` or `/home/loneal/Development` as authoritative locations.
-- Continue from the published Mission 0 Engineering Platform closeout checkpoint.
-- Preserve the EMP Foundation 1.0 baseline; registry readiness does not replace SprinterOS project-controlled authority.
+- Continue from the 2026-07-15 Engineering State Reconciliation checkpoint and
+  authoritative Project State, not the historical Mission 0.4 checkpoint.
+- Preserve the EMP Foundation, Engineering Platform, and verified recovery
+  baselines; registry readiness does not replace SprinterOS project-controlled
+  authority.
+- Resume only the SprinterOS persistent MMC storage I/O investigation as the
+  primary mission. Restoration and corrective action remain unauthorized.
 - Treat EWO-000016 as an authorized bounded side mission that does not supersede the primary sprint or task.
 - Resume EWO-000016 only at its first incomplete gated stage and preserve unrelated working-tree content.
 - Do not infer authority for work outside the current recorded mission and phase authorization.
@@ -423,3 +483,4 @@ When resuming this project:
 | 3.1     | 2026-07-13 | Completed Phase 1.3 registry mutation, portfolio, queue, dependency, milestone, deferral, status, controller, context, and validation services and advanced the resume point to separately authorized product development. |
 | 3.2     | 2026-07-13 | Qualified and published EMP Foundation 1.0 through MILESTONE-0004 and authorized controlled portfolio transition to SprinterOS Product Development Initiation. |
 | 3.3     | 2026-07-15 | Established permanent per-login SSH-agent infrastructure and integrated identity diagnostics with Engineering Platform startup and qualification. |
+| 3.4     | 2026-07-15 | Reconciled governance, recovery, platform, and SprinterOS post-update state; established the persistent MMC investigation as the current mission; and recorded zero unreconciled milestones under STD-0004. |
