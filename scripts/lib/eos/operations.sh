@@ -326,7 +326,21 @@ eos_persistence_validate() {
 
 eos_render_operational_summary() {
     local project="${1:-homelab}"
-    printf '%-22s %s\n' "Active Checkpoint:" "$(eos_checkpoint_active || echo none)"
+    local checkpoint checkpoint_project checkpoint_root applicability
+    checkpoint="$(eos_checkpoint_active || true)"
+    checkpoint_project="$(eos_checkpoint_recorded_project "$checkpoint" 2>/dev/null || echo unavailable)"
+    checkpoint_root="$(eos_checkpoint_recorded_root "$checkpoint" 2>/dev/null || echo unavailable)"
+    applicability="$(eos_checkpoint_identity_status "$checkpoint" "$project" || true)"
+    printf '%-22s %s\n' "Active Checkpoint:" "${checkpoint:-none}"
+    printf '%-22s %s\n' "Checkpoint Project:" "${checkpoint_project:-unavailable}"
+    printf '%-22s %s\n' "Checkpoint Repository:" "${checkpoint_root:-unavailable}"
+    if [[ "$applicability" == "applicable" ]]; then
+        printf '%-22s %s\n' "Checkpoint Applicability:" "applicable to $project"
+    elif [[ "$applicability" == "not applicable" ]]; then
+        printf '%-22s %s\n' "Checkpoint Applicability:" "not applicable to $project"
+    else
+        printf '%-22s %s\n' "Checkpoint Applicability:" "${applicability:-invalid}"
+    fi
     printf '%-22s %s\n' "Checkpoint Sync:" "$(eos_checkpoint_sync_status "$project" || true)"
     printf '%-22s %s\n' "Repository Upstream:" "$(eos_repository_sync_status "$project")"
     printf '%-22s %s\n' "Operational State:" "$(eos_operational_state_path)"

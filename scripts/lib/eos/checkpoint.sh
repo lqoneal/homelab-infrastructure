@@ -223,15 +223,83 @@ eos_checkpoint_recorded_commit() {
     sed -n 's/^Commit: `\([^`]*\)`.*/\1/p' "$checkpoint" | head -1
 }
 
+eos_checkpoint_recorded_project() {
+    local checkpoint="${1:-}"
+    [[ -f "$checkpoint" ]] || return 1
+
+    awk '
+        $0 == "## Project" { section = 1; next }
+        section && /^## / { exit }
+        section && NF { print; exit }
+    ' "$checkpoint"
+}
+
+eos_checkpoint_recorded_root() {
+    local checkpoint="${1:-}"
+    [[ -f "$checkpoint" ]] || return 1
+
+    sed -n 's/^Root: `\([^`]*\)`.*/\1/p' "$checkpoint" | head -1
+}
+
+eos_checkpoint_identity_status() {
+    local checkpoint="${1:-}"
+    local project="${2:-homelab}"
+    local recorded_project recorded_root recorded_commit recorded_project_root selected_root
+
+    recorded_project="$(eos_checkpoint_recorded_project "$checkpoint" || true)"
+    recorded_root="$(eos_checkpoint_recorded_root "$checkpoint" || true)"
+    recorded_commit="$(eos_checkpoint_recorded_commit "$checkpoint" || true)"
+    if [[ -z "$recorded_project" || -z "$recorded_root" || -z "$recorded_commit" ]]; then
+        echo "invalid (checkpoint identity incomplete)"
+        return 1
+    fi
+
+    recorded_project_root="$(eos_project_root "$recorded_project" 2>/dev/null || true)"
+    selected_root="$(eos_project_root "$project" 2>/dev/null || true)"
+    if [[ -z "$recorded_project_root" || -z "$selected_root" || ! -d "$recorded_root" ]]; then
+        echo "invalid (checkpoint repository identity unresolved)"
+        return 1
+    fi
+
+    recorded_project_root="$(readlink -f "$recorded_project_root")"
+    recorded_root="$(readlink -f "$recorded_root")"
+    selected_root="$(readlink -f "$selected_root")"
+    if [[ "$recorded_project_root" != "$recorded_root" ]]; then
+        echo "invalid (checkpoint project and repository root disagree)"
+        return 1
+    fi
+
+    if [[ "$recorded_root" != "$selected_root" ]]; then
+        echo "not applicable"
+        return 0
+    fi
+
+    echo "applicable"
+}
+
 eos_checkpoint_sync_status() {
     local project="${1:-homelab}"
-    local checkpoint recorded current resolved
+    local checkpoint applicability recorded current resolved root
 
     checkpoint="$(eos_checkpoint_active)"
     if [[ -z "$checkpoint" ]]; then
         echo "unavailable (no checkpoint)"
         return 1
     fi
+
+    applicability="$(eos_checkpoint_identity_status "$checkpoint" "$project" || true)"
+    case "$applicability" in
+        "not applicable")
+            echo "not applicable"
+            return 0
+            ;;
+        applicable)
+            ;;
+        *)
+            echo "${applicability:-invalid (checkpoint applicability indeterminate)}"
+            return 1
+            ;;
+    esac
 
     recorded="$(eos_checkpoint_recorded_commit "$checkpoint" || true)"
     current="$(eos_repository_commit "$project")"
@@ -240,7 +308,8 @@ eos_checkpoint_sync_status() {
         return 1
     fi
 
-    resolved="$(git -C "$(eos_project_root "$project")" rev-parse "$recorded^{commit}" 2>/dev/null || true)"
+    root="$(eos_project_root "$project")"
+    resolved="$(git -C "$root" rev-parse --verify "$recorded^{commit}" 2>/dev/null || true)"
     if [[ -z "$resolved" ]]; then
         echo "invalid (checkpoint commit does not resolve)"
         return 1
@@ -255,8 +324,7 @@ eos_checkpoint_sync_status() {
 
 eos_checkpoint_validate() {
     local project="${1:-homelab}"
-    local checkpoint active recorded root failures=0 count=0
-    root="$(eos_project_root "$project")"
+    local checkpoint active recorded recorded_project recorded_root canonical_root legacy_root failures=0 count=0
     active="$(eos_checkpoint_active || true)"
 
     while IFS= read -r checkpoint; do
@@ -277,11 +345,27 @@ eos_checkpoint_validate() {
 
         recorded="$(eos_checkpoint_recorded_commit "$checkpoint" || true)"
         if [[ -n "$recorded" ]]; then
-            if git -C "$root" rev-parse "$recorded^{commit}" >/dev/null 2>&1; then
-                echo "PASS: $(basename "$checkpoint")"
+            recorded_project="$(eos_checkpoint_recorded_project "$checkpoint" || true)"
+            recorded_root="$(eos_checkpoint_recorded_root "$checkpoint" || true)"
+            if [[ -z "$recorded_project" ]]; then
+                legacy_root="$recorded_root"
+                [[ -n "$legacy_root" && -d "$legacy_root" ]] || legacy_root="$(eos_project_root "$project")"
+                if git -C "$legacy_root" rev-parse --verify "$recorded^{commit}" >/dev/null 2>&1; then
+                    echo "PASS: $(basename "$checkpoint") (legacy checkpoint without canonical project identity)"
+                else
+                    echo "FAIL: legacy checkpoint commit does not resolve: $checkpoint"
+                    ((failures++)) || true
+                fi
             else
-                echo "FAIL: checkpoint commit does not resolve: $checkpoint"
-                ((failures++)) || true
+                canonical_root="$(eos_project_root "$recorded_project" 2>/dev/null || true)"
+                if [[ -n "$canonical_root" && -d "$recorded_root" \
+                    && "$(readlink -f "$canonical_root")" == "$(readlink -f "$recorded_root")" \
+                    ]] && git -C "$canonical_root" rev-parse --verify "$recorded^{commit}" >/dev/null 2>&1; then
+                echo "PASS: $(basename "$checkpoint")"
+                else
+                    echo "FAIL: checkpoint identity or commit does not resolve: $checkpoint"
+                    ((failures++)) || true
+                fi
             fi
         else
             echo "PASS: $(basename "$checkpoint") (legacy checkpoint without canonical Commit field)"
