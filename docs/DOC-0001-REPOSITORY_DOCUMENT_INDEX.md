@@ -1,7 +1,7 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.8
+version: 2.9
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,11 +9,11 @@ last_updated: 2026-07-13
 phase: EMP Foundation 1.0 Operational Qualification
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.7
+predecessor_revision: DOC-0001@2.8
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Engineering Recovery Runbook Publication
+approval_reference: Codex Handoff Procedure - Engineering State Freshness Standard Implementation
 approval_date: 2026-07-15
 persistence_status: Pending
 source_of_truth: true
@@ -35,6 +35,8 @@ relationships:
     target: PROC-0002
   - type: indexes
     target: PROC-0003
+  - type: indexes
+    target: STD-0004
   - type: indexes
     target: TPL-0004
   - type: indexes
@@ -121,7 +123,11 @@ Every engineering session shall begin by reviewing the repository in the followi
 6. Review the active sprint or work order.
 7. Review task-specific controlled documents.
 8. Review Git branch, commit, and working tree.
-9. Resume implementation.
+9. Qualify Engineering State freshness under STD-0004, including the latest
+   completed milestone, last reconciled boundary, EOS state, active checkpoint,
+   and resume accuracy.
+10. If reconciliation is required, complete it before implementation.
+11. Resume implementation only from reconciled authoritative state.
 
 ---
 
@@ -212,6 +218,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | STD-0001 | Engineering Document Lifecycle Standard | Active | Engineering Governance | `docs/standards/STD-0001-ENGINEERING_DOCUMENT_LIFECYCLE_STANDARD.md` |
 | STD-0002 | Engineering Document Persistence Standard | Active | Engineering Governance | `docs/standards/STD-0002-ENGINEERING_DOCUMENT_PERSISTENCE_STANDARD.md` |
 | STD-0003 | Engineering Work Order Standard | Active | Engineering Governance | `docs/standards/STD-0003-ENGINEERING_WORK_ORDER_STANDARD.md` |
+| STD-0004 | Engineering State Freshness Standard | Active | Engineering Governance | `docs/standards/STD-0004-ENGINEERING_STATE_FRESHNESS_STANDARD.md` |
 | PROC-0001 | Engineering Work Order Execution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md` |
 | PROC-0002 | Engineering Governance Resolution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md` |
 | PROC-0003 | Engineering Recovery Runbook | Active | Engineering Governance | `docs/procedures/PROC-0003-ENGINEERING_RECOVERY_RUNBOOK.md` |
@@ -457,3 +464,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.6 | 2026-07-13 | Registered the Phase 1.3 controlled mutation interfaces, operational management command groups, deterministic status, and Engineering Context contribution. |
 | 2.7 | 2026-07-13 | Registered MILESTONE-0004, EMP Foundation 1.0 operational qualification, the publication baseline, and controlled portfolio transition to SprinterOS product development. |
 | 2.8 | 2026-07-15 | Published and registered PROC-0003 as the authoritative Engineering Recovery Runbook and reconciled its governing references. |
+| 2.9 | 2026-07-15 | Published and registered STD-0004 and integrated Engineering State freshness qualification into repository Work Initiation. |

@@ -1,16 +1,18 @@
 ---
 document_id: SPEC-0004
 title: Engineering Context Reconstruction Service
-version: 1.0
+version: 1.1
 status: Draft
 owner: EOS Program
 created: 2026-07-08
-last_updated: 2026-07-08
+last_updated: 2026-07-15
 governed_by: EOS-0001
 implements:
   - EDR-0002
 depends_on:
   - SPEC-0001
+conforms_to:
+  - STD-0004
 ---
 
 # Engineering Context Reconstruction Service
@@ -63,6 +65,12 @@ The service consumes Authoritative Engineering Records, including:
 - Engineering checkpoints
 
 The service SHALL NOT depend upon derived views.
+
+When inputs disagree, the service SHALL resolve each fact to its authoritative
+owner. Reconciled Project State, Sprint State, current mission records, and
+accepted milestone evidence take precedence over older checkpoint content.
+A checkpoint is operational evidence and shall not override a newer supported
+authoritative state record.
 
 ---
 
@@ -120,7 +128,16 @@ The service SHALL:
 - produce identical output for identical inputs;
 - remain implementation independent;
 - support future automation;
-- preserve engineering traceability.
+- preserve engineering traceability;
+- evaluate Engineering State freshness under STD-0004;
+- expose source records and the freshness result in resume output;
+- report checkpoint and authoritative-state conflicts; and
+- refuse to present a known completed or superseded objective as current.
+
+Resume generation is qualified for implementation only when required
+authoritative state resolves, no execution-significant conflict remains, and
+freshness is `CURRENT` or validly `WITHIN THRESHOLD`. An indeterminate or
+`RECONCILIATION REQUIRED` result blocks implementation resume.
 
 ---
 
@@ -133,3 +150,5 @@ The service is compliant when it reconstructs engineering context using only Aut
 # Compliance
 
 All Resume functionality within EOS SHALL conform to this specification.
+All Resume functionality shall also consume the freshness threshold,
+reconciliation triggers, and source precedence established by STD-0004.

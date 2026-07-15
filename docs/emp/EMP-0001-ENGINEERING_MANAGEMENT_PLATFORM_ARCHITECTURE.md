@@ -1,20 +1,20 @@
 ---
 document_id: EMP-0001
 title: Engineering Management Platform Architecture
-version: 1.2
+version: 1.3
 status: Active
 owner: Engineering Management Platform
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-15
 phase: Engineering Management Platform Phase 1.3 Complete
 domain: Engineering Management
 classification: Platform Architecture
-predecessor_revision: EMP-0001@1.1
+predecessor_revision: EMP-0001@1.2
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Engineering Management Platform Phase 1.3 Operational Management Services
-approval_date: 2026-07-13
+approval_reference: Codex Handoff Procedure - Engineering State Freshness Standard Implementation
+approval_date: 2026-07-15
 persistence_status: Pending
 source_of_truth: true
 information_scope: EMP responsibilities, layers, portfolio model, service boundaries, EOS integrations, and repository ownership
@@ -34,6 +34,8 @@ relationships:
     target: POL-0001
   - type: conforms_to
     target: STD-0000
+  - type: conforms_to
+    target: STD-0004
   - type: conforms_to
     target: SPEC-0001
   - type: implemented_by
@@ -220,6 +222,12 @@ EMP consumes existing EOS responsibilities as follows:
 | Journal Service | EMP may link chronological activity to work items. | Journal chronology does not replace management state or execution evidence. |
 | EOS persistence profile | EMP runtime views, if later implemented, shall follow the source/derived separation. | Phase 1.1 changes no EOS runtime, pointer, checkpoint, or retention behavior. |
 
+STD-0004 governs freshness across these integrations. EMP shall provide its
+current owned management facts for reconciliation but shall not treat registry
+state as a replacement for Project State, current mission authority, or EOS
+context. Resume and status views shall consume reconciled owners and shall not
+promote stale registry objectives merely because they remain registered.
+
 ---
 
 # 7. Repository Relationships
@@ -314,6 +322,8 @@ An EMP implementation conforms to this architecture only when it:
 - treats all generated status and metrics as derived views;
 - preserves project-repository ownership;
 - routes shared control, context, validation, repository, and checkpoint needs through existing Engineering Platform services; and
+- consumes STD-0004 reconciliation and freshness results without creating a
+  competing Engineering State owner; and
 - remains within an Active, bounded implementation authority.
 
 ---
@@ -325,3 +335,4 @@ An EMP implementation conforms to this architecture only when it:
 | 1.0 | 2026-07-13 | Established the Phase 1.1 EMP management layer, portfolio model, service boundaries, EOS integrations, and repository ownership architecture. |
 | 1.1 | 2026-07-13 | Recorded the Phase 1.2 operational YAML Work Registry, canonical repository location, ECRS contribution, controller routing, and preserved authority boundaries. |
 | 1.2 | 2026-07-13 | Recorded the Phase 1.3 transactional management services, deterministic status, controller expansion, context contribution, and EMP core completion boundary. |
+| 1.3 | 2026-07-15 | Integrated STD-0004 freshness and reconciliation boundaries into EMP-to-EOS context and resume responsibilities. |

@@ -1,19 +1,19 @@
 ---
 document_id: EOS-0003
 title: EOS Operational Persistence Profile
-version: 1.0
+version: 1.1
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-13
-last_updated: 2026-07-13
+last_updated: 2026-07-15
 phase: Mission 0.4 - Engineering Platform Persistence and Mission 0 Closeout
 classification: EOS Operational Record
-predecessor_revision: null
+predecessor_revision: EOS-0003@1.0
 successor_revision: null
 approval_status: Approved
-approval_authority: Mission 0 Engineering Authority
-approval_reference: Codex Handoff Procedure - Mission 0.4 Engineering Platform Persistence and Mission 0 Closeout
-approval_date: 2026-07-13
+approval_authority: Engineering Governance
+approval_reference: Codex Handoff Procedure - Engineering State Freshness Standard Implementation
+approval_date: 2026-07-15
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -22,6 +22,8 @@ relationships:
     target: EOS-0001
   - type: conforms_to
     target: STD-0002
+  - type: conforms_to
+    target: STD-0004
   - type: related_to
     target: PROJ-0001
   - type: indexed_by
@@ -70,6 +72,21 @@ Recovery order is:
 
 No derived runtime view may override a controlled record, observed repository fact, or checkpoint record.
 
+# Engineering State Freshness
+
+STD-0004 governs freshness. Before checkpoint creation, session termination,
+handoff, sprint or phase completion, and any resume that would otherwise use
+obsolete state, the authoritative Engineering State shall be reconciled. EOS
+runtime views shall be refreshed only after their authoritative sources are
+current.
+
+The active checkpoint is a resume aid and historical operational record, not
+the owner of current project truth. When it conflicts with a newer reconciled
+Project State, the Project State prevails, EOS shall report the conflict, and
+implementation resume remains blocked until reconciliation and validation
+complete. A new checkpoint shall identify the reconciled boundary and source
+Project State.
+
 ---
 
 # Qualification Control
@@ -91,3 +108,4 @@ The aggregate Engineering Platform validator invokes this control.
 | Version | Date | Description |
 | ------- | ---- | ----------- |
 | 1.0 | 2026-07-13 | Established the Mission 0 closeout persistence treatment for EOS runtime and checkpoint records. |
+| 1.1 | 2026-07-15 | Applied STD-0004 freshness, authoritative-state precedence, reconciliation-before-checkpoint, and resume-conflict requirements. |

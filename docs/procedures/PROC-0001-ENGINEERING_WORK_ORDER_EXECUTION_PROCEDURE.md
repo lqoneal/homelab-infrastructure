@@ -1,7 +1,7 @@
 ---
 document_id: PROC-0001
 title: Engineering Work Order Execution Procedure
-version: 1.2
+version: 1.3
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
@@ -16,6 +16,7 @@ related_documents:
   - STD-0001
   - STD-0002
   - STD-0003
+  - STD-0004
   - POL-0001
   - EWO-000012
   - PROC-0003
@@ -143,6 +144,19 @@ Compare observed state with expected state.
 
 Report differences.
 
+Qualify Engineering State freshness under STD-0004 before implementation:
+
+1. locate authoritative Project State and Sprint State;
+2. identify the latest completed milestone and last reconciled boundary;
+3. determine the unreconciled milestone count;
+4. compare current mission, baseline, investigations, next action, EOS state,
+   active checkpoint, and resume output; and
+5. report `CURRENT`, `WITHIN THRESHOLD`, or `RECONCILIATION REQUIRED`.
+
+If state cannot be proven current enough, a mandatory trigger remains, or
+resume would present obsolete work, perform the separately authorized
+Engineering State Reconciliation before additional implementation.
+
 Do not modify the environment.
 
 ---
@@ -259,6 +273,11 @@ Upon resumption:
 
 5. Resume at the first incomplete engineering phase.
 
+Before Step 5, repeat the STD-0004 freshness qualification. Authoritative
+reconciled Project State and current mission records take precedence over an
+older checkpoint. A checkpoint conflict or obsolete resume objective blocks
+implementation pending reconciliation.
+
 Completed phases remain complete unless Engineering Governance authorizes repetition.
 
 ---
@@ -341,3 +360,4 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.0 | 2026-07-09 | Initial Engineering Work Order Execution Procedure established. |
 | 1.1 | 2026-07-10 | Replaced Issued verification with Active execution-authority verification under EWO-000012. |
 | 1.2 | 2026-07-15 | Required recovery work initiated under this procedure to consume PROC-0003 without expanding mission authority. |
+| 1.3 | 2026-07-15 | Integrated STD-0004 freshness qualification and reconciliation gating into Work Initiation and resume after interruption. |
