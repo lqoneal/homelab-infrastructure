@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 3.4
+version: 3.5
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-15
-phase: EMP Foundation 1.0 Operational
+phase: Engineering Platform Foundation 1.0 Operational
 classification: Project State
-predecessor_revision: PROJ-0001@3.3
+predecessor_revision: PROJ-0001@3.4
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Engineering State Reconciliation
+approval_reference: Codex Handoff Procedure - Engineering Platform Foundation 1.0 Milestone Publication
 approval_date: 2026-07-15
 persistence_status: Pending
 source_of_truth: true
@@ -33,6 +33,8 @@ relationships:
     target: MILESTONE-0003
   - type: related_to
     target: MILESTONE-0004
+  - type: related_to
+    target: MILESTONE-0005
   - type: related_to
     target: EMP-0001
   - type: related_to
@@ -67,6 +69,10 @@ It summarizes the current project state and identifies the next approved enginee
 
 **Session Summary:**
 
+- Published MILESTONE-0005 as the qualified Engineering Platform Foundation
+  1.0 boundary and transitioned the platform from construction to operation.
+- Preserved the SprinterOS persistent MMC storage I/O investigation as the
+  current active mission; the milestone creates no corrective-action authority.
 - Completed the first STD-0004 Engineering State Reconciliation across
   Homelab Project State, SprinterOS Project and Sprint State, EOS operational
   state, checkpoints, and resume context.
@@ -106,7 +112,7 @@ coordinating the active SprinterOS platform recovery assessment.
 
 **Current Phase:**
 
-Engineering State Reconciled — SprinterOS Recovery Assessment
+Engineering Platform Foundation 1.0 Operational — SprinterOS Recovery Assessment
 
 **Phase Objective:**
 
@@ -435,12 +441,14 @@ None. Mission 0 is complete.
 4. Verify Governance Foundation 1.0 remains the governing baseline.
 5. Treat Mission 0 and MILESTONE-0003 as the completed Engineering Platform operational foundation.
 6. Treat EMP-0001, SPEC-0006, SERVICE-0002, and MILESTONE-0004 as the active EMP Foundation 1.0 baseline.
-7. Validate and inspect the operational registry through `engctl registry validate` and `engctl registry list`.
-8. Resume SprinterOS Platform Recovery Assessment at the persistent MMC storage
+7. Treat MILESTONE-0005 and tag `engineering-platform-foundation-1.0`, once
+   created, as the Engineering Platform Foundation 1.0 operational baseline.
+8. Validate and inspect the operational registry through `engctl registry validate` and `engctl registry list`.
+9. Resume SprinterOS Platform Recovery Assessment at the persistent MMC storage
    I/O investigation; do not repeat the completed product-initiation or update
    objectives.
-9. When EWO-000016 is selected for execution, begin at Stage A backup re-verification and honor every sequential gate.
-10. After EWO-000016 completes or stops, return to the current primary project task recorded above.
+10. When EWO-000016 is selected for execution, begin at Stage A backup re-verification and honor every sequential gate.
+11. After EWO-000016 completes or stops, return to the current primary project task recorded above.
 
 ---
 
@@ -484,3 +492,4 @@ When resuming this project:
 | 3.2     | 2026-07-13 | Qualified and published EMP Foundation 1.0 through MILESTONE-0004 and authorized controlled portfolio transition to SprinterOS Product Development Initiation. |
 | 3.3     | 2026-07-15 | Established permanent per-login SSH-agent infrastructure and integrated identity diagnostics with Engineering Platform startup and qualification. |
 | 3.4     | 2026-07-15 | Reconciled governance, recovery, platform, and SprinterOS post-update state; established the persistent MMC investigation as the current mission; and recorded zero unreconciled milestones under STD-0004. |
+| 3.5     | 2026-07-15 | Published MILESTONE-0005, established Engineering Platform Foundation 1.0 as the operational baseline, and preserved the persistent SprinterOS MMC investigation as the current mission. |

@@ -1,7 +1,7 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.11
+version: 2.12
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,11 +9,11 @@ last_updated: 2026-07-15
 phase: EMP Foundation 1.0 Operational Qualification
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.10
+predecessor_revision: DOC-0001@2.11
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Commit Classification and Commit Reconstruction Procedure Reconciliation
+approval_reference: Codex Handoff Procedure - Engineering Platform Foundation 1.0 Milestone Publication
 approval_date: 2026-07-15
 persistence_status: Pending
 source_of_truth: true
@@ -53,6 +53,8 @@ relationships:
     target: MILESTONE-0003
   - type: indexes
     target: MILESTONE-0004
+  - type: indexes
+    target: MILESTONE-0005
   - type: indexes
     target: EMP-0001
   - type: indexes
@@ -274,6 +276,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | MILESTONE-0002 | Engineering Workstation Shared Services Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-09-engineering-workstation-shared-services-complete.md` |
 | MILESTONE-0003 | Engineering Platform Mission 0 Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-13-engineering-platform-mission-0-complete.md` |
 | MILESTONE-0004 | Engineering Management Platform Foundation 1.0 Operational | Approved | Engineering Management Platform | `docs/project/milestones/2026-07-13-engineering-management-platform-foundation-1.0-operational.md` |
+| MILESTONE-0005 | Engineering Platform Foundation 1.0 — Foundation Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-15-engineering-platform-foundation-1.0-foundation-complete.md` |
 
 This table shall be updated whenever a controlled document is created, superseded, or archived.
 
@@ -490,3 +493,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.9 | 2026-07-15 | Published and registered STD-0004 and integrated Engineering State freshness qualification into repository Work Initiation. |
 | 2.10 | 2026-07-15 | Registered PROC-0001 as the authoritative repository Commit Classification workflow and linked it to the reconciled STD-0004 operational lifecycle. |
 | 2.11 | 2026-07-15 | Registered Commit Reconstruction Planning and proportional persistent planning-artifact governance within the PROC-0001 repository workflow. |
+| 2.12 | 2026-07-15 | Registered MILESTONE-0005 as the Engineering Platform Foundation 1.0 operational-transition boundary. |
