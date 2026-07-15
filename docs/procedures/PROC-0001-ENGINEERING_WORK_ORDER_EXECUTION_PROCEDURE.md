@@ -1,11 +1,11 @@
 ---
 document_id: PROC-0001
 title: Engineering Work Order Execution Procedure
-version: 1.1
+version: 1.2
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-10
+last_updated: 2026-07-15
 phase: Governance Stabilization
 domain: Engineering Governance
 classification: Engineering Procedure
@@ -18,6 +18,7 @@ related_documents:
   - STD-0003
   - POL-0001
   - EWO-000012
+  - PROC-0003
 tags:
   - governance
   - procedure
@@ -132,6 +133,11 @@ Inventory, as applicable:
 * required services;
 * runtime environment;
 * project state.
+
+When the mission includes recovery acquisition, verification, cleanup,
+restoration, or recovery evidence, also review and execute PROC-0003 —
+Engineering Recovery Runbook. Work initiation and baseline verification do not
+authorize a recovery action that the Work Order does not explicitly permit.
 
 Compare observed state with expected state.
 
@@ -334,3 +340,4 @@ This procedure is complete when every implementation agent can execute an Active
 | ------- | ---- | ----------- |
 | 1.0 | 2026-07-09 | Initial Engineering Work Order Execution Procedure established. |
 | 1.1 | 2026-07-10 | Replaced Issued verification with Active execution-authority verification under EWO-000012. |
+| 1.2 | 2026-07-15 | Required recovery work initiated under this procedure to consume PROC-0003 without expanding mission authority. |

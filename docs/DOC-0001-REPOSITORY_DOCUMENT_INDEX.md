@@ -1,7 +1,7 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.7
+version: 2.8
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,12 +9,12 @@ last_updated: 2026-07-13
 phase: EMP Foundation 1.0 Operational Qualification
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.6
+predecessor_revision: DOC-0001@2.7
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - EMP Foundation 1.0 Operational Qualification
-approval_date: 2026-07-13
+approval_reference: Codex Handoff Procedure - Engineering Recovery Runbook Publication
+approval_date: 2026-07-15
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -33,6 +33,8 @@ relationships:
     target: SPEC-0001
   - type: indexes
     target: PROC-0002
+  - type: indexes
+    target: PROC-0003
   - type: indexes
     target: TPL-0004
   - type: indexes
@@ -212,6 +214,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | STD-0003 | Engineering Work Order Standard | Active | Engineering Governance | `docs/standards/STD-0003-ENGINEERING_WORK_ORDER_STANDARD.md` |
 | PROC-0001 | Engineering Work Order Execution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md` |
 | PROC-0002 | Engineering Governance Resolution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md` |
+| PROC-0003 | Engineering Recovery Runbook | Active | Engineering Governance | `docs/procedures/PROC-0003-ENGINEERING_RECOVERY_RUNBOOK.md` |
 | TPL-0001 | Engineering Work Order Template | Active | Engineering Governance | `docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md` |
 | TPL-0002 | Engineering Completion Report Template | Active | Engineering Governance | `docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md` |
 | TPL-0003 | Engineering Evidence Package Template | Active | Engineering Governance | `docs/templates/TPL-0003-ENGINEERING_EVIDENCE_PACKAGE_TEMPLATE.md` |
@@ -453,3 +456,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.5 | 2026-07-13 | Registered deterministic discovery for the Phase 1.2 operational YAML Work Registry, schema, validation, controller routing, and authority boundary. |
 | 2.6 | 2026-07-13 | Registered the Phase 1.3 controlled mutation interfaces, operational management command groups, deterministic status, and Engineering Context contribution. |
 | 2.7 | 2026-07-13 | Registered MILESTONE-0004, EMP Foundation 1.0 operational qualification, the publication baseline, and controlled portfolio transition to SprinterOS product development. |
+| 2.8 | 2026-07-15 | Published and registered PROC-0003 as the authoritative Engineering Recovery Runbook and reconciled its governing references. |

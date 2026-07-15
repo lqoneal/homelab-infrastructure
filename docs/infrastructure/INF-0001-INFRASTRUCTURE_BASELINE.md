@@ -2,7 +2,7 @@
 
 document_id: INF-0001
 title: Engineering Infrastructure Baseline
-version: 1.7
+version: 1.8
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -10,11 +10,11 @@ last_updated: 2026-07-15
 phase: Mission 0.1 - Engineering Platform Baseline Reconciliation
 domain: Infrastructure
 classification: Global Infrastructure Baseline
-predecessor_revision: INF-0001@1.6
+predecessor_revision: INF-0001@1.7
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Permanent SSH Agent Integration
+approval_reference: Codex Handoff Procedure - Engineering Recovery Runbook Publication
 approval_date: 2026-07-15
 persistence_status: Pending
 source_of_truth: true
@@ -26,6 +26,8 @@ relationships:
     target: PROJ-0001
   - type: related_to
     target: HW-0001
+  - type: governed_by
+    target: PROC-0003
 tags:
   - infrastructure
   - engineering
@@ -161,6 +163,18 @@ Additional repositories shall be registered as they are promoted into the engine
 ---
 
 # Storage Baseline
+
+## Recovery Procedure Authority
+
+PROC-0003 — Engineering Recovery Runbook is the authoritative procedure for
+recovery-image acquisition, verification, preservation, NTFS reconciliation,
+cleanup, restoration qualification, and evidence collection on shared Homelab
+infrastructure. Project repositories own project-specific recovery facts and
+constraints and shall reference PROC-0003 rather than duplicate its workflow.
+
+Recovery shall be qualified before major platform modification, and a verified
+rollback artifact is a prerequisite to system update. Recovery qualification
+does not imply restoration qualification or authorize corrective action.
 
 ## Internal Storage
 
@@ -407,3 +421,4 @@ These targets describe the intended engineering direction and shall be updated a
 | 1.5     | 2026-07-09 | Recorded CUPS-PDF installation, queue validation, and managed PDF output validation. |
 | 1.6     | 2026-07-13 | Corrected repository inventory for the present SprinterOS repository and the non-Git shared-libraries directory during Mission 0.1 reconciliation. |
 | 1.7     | 2026-07-15 | Established the native systemd user SSH-agent lifecycle, shared socket, protected identity-loading behavior, diagnostics, and security boundary. |
+| 1.8     | 2026-07-15 | Registered PROC-0003 as the shared recovery procedure authority while preserving project-specific recovery ownership. |
