@@ -2,7 +2,7 @@
 
 document_id: INF-0001
 title: Engineering Infrastructure Baseline
-version: 2.0
+version: 2.1
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -10,11 +10,11 @@ last_updated: 2026-07-16
 phase: Engineering Storage Qualification Capability
 domain: Infrastructure
 classification: Global Infrastructure Baseline
-predecessor_revision: INF-0001@1.9
+predecessor_revision: INF-0001@2.0
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: thaDuke Internal Storage Allocation Verification and Capacity Reconciliation
+approval_reference: Engineering Platform Expansion and Temporary Backup Infrastructure
 approval_date: 2026-07-16
 persistence_status: Pending
 source_of_truth: true
@@ -192,6 +192,16 @@ free storage.
 | LV | `lv_root` | 128,849,018,880 | `/` ext4 |
 | LV | `lv_home` | 107,374,182,400 | `/home` ext4 |
 | LV | `lv_data` | 268,435,456,000 | `/data` ext4 |
+| LV | `lv_backup_temp` | 429,496,729,600 | `/data/engineering/backup-temp` ext4; temporary backup consolidation workspace |
+
+`lv_backup_temp` uses filesystem label `ENG_BACKUP_TEMP`, UUID
+`96331d76-8a8f-4839-bb53-134e09b8e689`, and persistent
+`defaults,nosuid,nodev` mount policy. Its root and governed workspace
+directories are owned by `loneal:loneal` with mode `0750`. It is temporary
+infrastructure and has no permanent backup-storage role. Removal requires
+verified migration completion, independent-copy and restore qualification,
+retention/dependency closure, an empty-filesystem verification, and separately
+authorized unmount, fstab removal, and LV destruction.
 
 `/var` and `/tmp` are directories in the root filesystem, not separate
 filesystems. Detailed point-in-time utilization and capacity arithmetic are
@@ -303,6 +313,7 @@ System-wide IPv6 remains enabled. Public service exposure over IPv6 is intention
 | ------- | ---- | ----------- |
 | 1.9 | 2026-07-16 | Established the qualified `thaDuke` storage-discovery, SMART, read-only filesystem inspection, stable-identification, and safe mount-control tool baseline. |
 | 2.0 | 2026-07-16 | Reconciled the rebuilt thaDuke GPT, LVM, filesystem, H10 NAND/Optane namespace, and available-capacity baseline. |
+| 2.1 | 2026-07-16 | Established the dedicated 400 GiB temporary Engineering backup LV and governed empty workspace while retaining 80.87 GiB VG expansion capacity. |
 
 ## Print Service Baseline
 
