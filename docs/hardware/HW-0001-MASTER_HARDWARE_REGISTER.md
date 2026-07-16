@@ -1,12 +1,12 @@
 ---
 document_id: HW-0001
 title: Master Hardware Register
-version: 1.4
+version: 1.5
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-16
-phase: AST-000005 Failure Isolation
+phase: Engineering Storage Role Assignment
 domain: Hardware
 classification: Master Hardware Register
 source_of_truth: true
@@ -241,10 +241,10 @@ Asset identifiers shall never be reused.
 
 | Project | Assigned Assets |
 |---------|----------------:|
-| Homelab Infrastructure | 6 |
+| Homelab Infrastructure | 7 |
 | SprinterOS | 2 |
 | AI Assistant | 0 |
-| Unassigned | 2 |
+| Unassigned | 1 |
 
 ---
 
@@ -255,13 +255,13 @@ Asset identifiers shall never be reused.
 | AST-000001 | Engineering Workstation | Compute | Operational | Homelab Infrastructure |
 | AST-000002 | Primary Internal NVMe SSD | Storage | Operational | AST-000001 |
 | AST-000003 | Secondary Intel RST Device | Storage | Operational | AST-000001 |
-| AST-000004 | WD My Passport Backup Drive | Storage | Operational | Homelab Infrastructure |
+| AST-000004 | WD My Passport Backup Drive | Storage | Operational — qualification limitation | Homelab Infrastructure |
 | AST-000005 | Seagate Backup Plus Ultra Touch | Storage | Operational — qualification hold | Homelab Infrastructure |
 | AST-000006 | SanDisk Recovery USB | Recovery Media | Operational | Homelab Infrastructure |
 | AST-000007 | Raspberry Pi 5 | Compute | Operational | SprinterOS |
 | AST-000008 | Engineering Terminal 01 | Compute | Operational | SprinterOS |
 | AST-000009 | Engineering Spare microSD Card 01 | Removable Storage | Available | Unassigned |
-| AST-000010 | WD 500 GB External HDD | Storage | Available — preservation hold | Unassigned |
+| AST-000010 | WD 500 GB External HDD | Storage | Available — preservation hold | Homelab Infrastructure — Engineering preservation storage |
 
 ---
 
@@ -281,9 +281,9 @@ Engineering ownership represents long-term responsibility for hardware lifecycle
 
 | Assignment | Assets |
 |-----------|-------:|
-| Homelab Infrastructure | 6 |
+| Homelab Infrastructure | 7 |
 | SprinterOS | 2 |
-| Unassigned | 2 |
+| Unassigned | 1 |
 
 Assignments indicate which engineering project currently utilizes an asset.
 
@@ -456,3 +456,5 @@ These enhancements shall build upon the governance established by this register 
 | 1.1 | 2026-07-15 | Registered AST-000009 as available, unassigned engineering spare removable storage. |
 | 1.2 | 2026-07-16 | Registered AST-000010 as qualified hardware, available and unassigned under preservation hold with an explicit exFAT label limitation. |
 | 1.3 | 2026-07-16 | Integrated STD-0005 as the single governing hardware-lifecycle authority while preserving this register's identifier and portfolio-reporting ownership. |
+| 1.4 | 2026-07-16 | Recorded AST-000005 qualification hold after enclosure-boundary failure isolation. |
+| 1.5 | 2026-07-16 | Assigned AST-000010 to Engineering preservation storage and recorded AST-000004 qualification limitations without approving either proposed operational role. |
