@@ -1,12 +1,12 @@
 ---
 document_id: HW-0001
 title: Master Hardware Register
-version: 1.1
+version: 1.2
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-15
-phase: Mission 0 / Phase 0.1
+last_updated: 2026-07-16
+phase: WD 500 GB Qualification and Inventory
 domain: Hardware
 classification: Master Hardware Register
 source_of_truth: true
@@ -209,9 +209,9 @@ Asset identifiers shall never be reused.
 
 | Metric | Value |
 |--------|------:|
-| Total Managed Assets | 9 |
+| Total Managed Assets | 10 |
 | Operational Assets | 8 |
-| Available Assets | 1 |
+| Available Assets | 2 |
 | Planned Assets | 0 |
 | Procured (Pending Acceptance) | 0 |
 | Retired Assets | 0 |
@@ -224,7 +224,7 @@ Asset identifiers shall never be reused.
 | Category | Count |
 |----------|------:|
 | Compute | 3 |
-| Storage | 4 |
+| Storage | 5 |
 | Recovery Media | 1 |
 | Removable Storage | 1 |
 
@@ -237,7 +237,7 @@ Asset identifiers shall never be reused.
 | Homelab Infrastructure | 6 |
 | SprinterOS | 2 |
 | AI Assistant | 0 |
-| Unassigned | 1 |
+| Unassigned | 2 |
 
 ---
 
@@ -254,6 +254,7 @@ Asset identifiers shall never be reused.
 | AST-000007 | Raspberry Pi 5 | Compute | Operational | SprinterOS |
 | AST-000008 | Engineering Terminal 01 | Compute | Operational | SprinterOS |
 | AST-000009 | Engineering Spare microSD Card 01 | Removable Storage | Available | Unassigned |
+| AST-000010 | WD 500 GB External HDD | Storage | Available — preservation hold | Unassigned |
 
 ---
 
@@ -263,7 +264,7 @@ Asset identifiers shall never be reused.
 
 | Owner | Assets |
 |-------|-------:|
-| Homelab Infrastructure | 9 |
+| Homelab Infrastructure | 10 |
 
 Engineering ownership represents long-term responsibility for hardware lifecycle management.
 
@@ -275,7 +276,7 @@ Engineering ownership represents long-term responsibility for hardware lifecycle
 |-----------|-------:|
 | Homelab Infrastructure | 6 |
 | SprinterOS | 2 |
-| Unassigned | 1 |
+| Unassigned | 2 |
 
 Assignments indicate which engineering project currently utilizes an asset.
 
@@ -326,7 +327,7 @@ SprinterOS
 | Engineering Workstations | 1 |
 | Engineering Terminals | 1 |
 | Single Board Computers | 1 |
-| Storage Devices | 4 |
+| Storage Devices | 5 |
 | Recovery Media | 1 |
 | Removable Storage | 1 |
 
@@ -334,8 +335,9 @@ SprinterOS
 
 ## Engineering Portfolio Snapshot
 
-The engineering portfolio currently manages nine hardware assets: eight are
-operational and one engineering spare is available and unassigned.
+The engineering portfolio currently manages ten hardware assets: eight are
+operational and two are available and unassigned. AST-000010 remains under a
+preservation hold pending backup review and filesystem-limitation disposition.
 
 All managed hardware assets have individual engineering asset records.
 
@@ -391,6 +393,7 @@ Individual hardware assets are documented in the following controlled records.
 | AST-000007 | Raspberry Pi 5 |
 | AST-000008 | Engineering Terminal 01 |
 | AST-000009 | Engineering Spare microSD Card 01 |
+| AST-000010 | WD 500 GB External HDD |
 
 ---
 
@@ -443,3 +446,4 @@ These enhancements shall build upon the governance established by this register 
 |----------|------|-------------|
 | 1.0 | 2026-07-06 | Initial Master Hardware Register established and integrated with AST-000001 through AST-000008. |
 | 1.1 | 2026-07-15 | Registered AST-000009 as available, unassigned engineering spare removable storage. |
+| 1.2 | 2026-07-16 | Registered AST-000010 as qualified hardware, available and unassigned under preservation hold with an explicit exFAT label limitation. |
