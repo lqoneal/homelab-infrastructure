@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 3.7
+version: 3.8
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-16
-phase: Engineering Hardware Lifecycle Operational
+phase: AST-000005 Engineering Disposition Reconciliation
 classification: Project State
-predecessor_revision: PROJ-0001@3.6
+predecessor_revision: PROJ-0001@3.7
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - WD 500 GB Inventory and Engineering Hardware Lifecycle Standard
+approval_reference: AST-000005 Engineering Disposition Reconciliation Mission
 approval_date: 2026-07-16
 persistence_status: Pending
 source_of_truth: true
@@ -284,14 +284,16 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-Resume the next separately authorized external-HDD qualification and
-Engineering Storage Role Assessment using PROC-0003 and STD-0005.
+Prepare the separately authorized AST-000005 Secure Reprovisioning and
+Engineering Qualification successor mission.
 
 **Next Immediate Step:**
 
-Begin only after selecting its bounded mission authority. Preserve AST-000010's
-home-directory backup and exFAT label limitation; do not repurpose it until
-migration and filesystem disposition are separately authorized.
+Begin only under its bounded mission authority. Remove remaining security
+metadata, destroy previous partition structures, create GPT and ext4, validate
+read/write behavior, capture SMART, and qualify engineering readiness. Assign
+no operational role and do not advance beyond Pending Requalification until
+qualification completes.
 
 EWO-000016 remains a separately selectable bounded side mission. If selected, execution begins with Stage A backup re-verification; no destructive USB operation may occur unless every preceding gate passes.
 
@@ -508,3 +510,4 @@ When resuming this project:
 | 3.5     | 2026-07-15 | Published MILESTONE-0005, established Engineering Platform Foundation 1.0 as the operational baseline, and preserved the persistent SprinterOS MMC investigation as the current mission. |
 | 3.6     | 2026-07-16 | Established the Engineering Storage Qualification Capability and advanced resume to the previously blocked external-HDD mission sequence without qualifying or modifying storage assets. |
 | 3.7     | 2026-07-16 | Qualified and registered AST-000010, published STD-0005, and advanced resume to the next separately authorized storage qualification and role-assessment mission. |
+| 3.8     | 2026-07-16 | Reconciled owner disposition for AST-000005, superseded direct-SATA investigation, authorized future secure reprovisioning, and established Pending Requalification without assigning an operational role. |

@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.17
+version: 2.18
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-16
-phase: AST-000005 Failure Isolation
+phase: AST-000005 Engineering Disposition Reconciliation
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.16
+predecessor_revision: DOC-0001@2.17
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - AST-000005 Failure Isolation and Engineering Disposition
+approval_reference: AST-000005 Engineering Disposition Reconciliation Mission
 approval_date: 2026-07-16
 persistence_status: Pending
 source_of_truth: true
@@ -411,7 +411,7 @@ They currently use `asset_id` metadata rather than `document_id` metadata and ar
 | AST-000002 | Primary Internal NVMe SSD | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000002.md` |
 | AST-000003 | Secondary Intel RST Device | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000003.md` |
 | AST-000004 | WD My Passport Backup Drive | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000004.md` |
-| AST-000005 | Seagate Backup Plus Ultra Touch | Operational — qualification hold | Homelab Infrastructure | `docs/hardware/assets/AST-000005.md` |
+| AST-000005 | Seagate Backup Plus Ultra Touch | Engineering Reprovisioning Authorized — pending requalification | Homelab Infrastructure | `docs/hardware/assets/AST-000005.md` |
 | AST-000006 | SanDisk Recovery USB | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000006.md` |
 | AST-000007 | Raspberry Pi 5 | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000007.md` |
 | AST-000008 | Engineering Terminal 01 | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000008.md` |
