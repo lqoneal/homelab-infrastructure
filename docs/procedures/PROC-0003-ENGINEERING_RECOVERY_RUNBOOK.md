@@ -1,20 +1,20 @@
 ---
 document_id: PROC-0003
 title: Engineering Recovery Runbook
-version: 1.0
+version: 1.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-15
-last_updated: 2026-07-15
-phase: Engineering Recovery Runbook Publication
+last_updated: 2026-07-16
+phase: Engineering Storage Qualification Capability
 domain: Engineering Recovery
 classification: Engineering Procedure
-predecessor_revision: null
+predecessor_revision: PROC-0003@1.0
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Engineering Recovery Runbook Publication
-approval_date: 2026-07-15
+approval_reference: Codex Handoff Procedure - Engineering Storage Qualification Capability Implementation
+approval_date: 2026-07-16
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals:
@@ -309,6 +309,46 @@ Do not accept an update while new MMC or filesystem errors remain unexplained.
 
 ## Storage Diagnostics
 
+### Non-Destructive Removable-Media Qualification
+
+The qualified Engineering Platform toolchain is `lsblk`, `blkid`, `blockdev`,
+`findmnt`, `udevadm`, `smartctl`, and the applicable filesystem checker in an
+explicit non-repair mode. Apply this sequence to a separately authorized
+storage-qualification mission:
+
+1. capture UTC time, authority, host, operator, package versions, repository
+   state, and the complete pre-attachment block-device inventory;
+2. attach one candidate device, compare inventories, and establish identity
+   from transport, model, serial, WWN when available, exact byte size,
+   partition UUID, filesystem UUID, and udev properties rather than a device
+   path alone;
+3. confirm every candidate partition is unmounted and record the kernel
+   read-only flag with `blockdev --getro` before inspection;
+4. inspect the partition table and filesystem signatures read-only with
+   `lsblk`, `blkid`, and non-modifying filesystem-specific tooling; for exFAT,
+   use `fsck.exfat -n`, never a repair option;
+5. inspect SMART identity, capability, attributes, health, and error logs with
+   `smartctl`; if a USB bridge requires an explicit device type, record the
+   detected or selected bridge mode and treat unavailable pass-through as a
+   qualification limitation rather than a healthy result;
+6. when the mission authorizes content inspection, mount the identified
+   partition at a dedicated empty mount point using
+   `ro,nosuid,nodev,noexec`, verify those effective options with `findmnt`,
+   and perform only the authorized read operations;
+7. unmount with `umount`, verify with `findmnt` that no mount remains, check
+   for open users when needed, and use the operating-system power-off/eject
+   mechanism before disconnection; and
+8. preserve commands, stdout, stderr, exit statuses, stable identities,
+   versions, SMART limitations, filesystem observations, mount options,
+   qualification decisions, and hashes or inventories produced by the
+   authorized evidence workflow.
+
+Do not run SMART self-tests, destructive read tests, repair modes, writable
+mounts, label or UUID changes, registration, or asset assignment unless a
+separate mission explicitly authorizes that action. A successful read-only
+mount validates access for that media; tool availability alone validates the
+platform capability but makes no claim about a storage asset.
+
 ### MMC I/O Classification
 
 Classify each storage symptom by layer and preserve its exact timestamp and
@@ -463,3 +503,4 @@ The Engineering Recovery completion report shall contain:
 | Version | Date | Description |
 | ------- | ---- | ----------- |
 | 1.0 | 2026-07-15 | Published the authoritative recovery workflow and lessons qualified during SprinterOS Sprint 1.1. |
+| 1.1 | 2026-07-16 | Added the qualified non-destructive removable-media discovery, SMART, read-only filesystem and mount, safe-unmount, stable-identification, and evidence-preservation workflow. |

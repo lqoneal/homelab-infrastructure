@@ -1,19 +1,19 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 3.5
+version: 3.6
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-15
-phase: Engineering Platform Foundation 1.0 Operational
+last_updated: 2026-07-16
+phase: Engineering Storage Qualification Capability Operational
 classification: Project State
-predecessor_revision: PROJ-0001@3.4
+predecessor_revision: PROJ-0001@3.5
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Engineering Platform Foundation 1.0 Milestone Publication
-approval_date: 2026-07-15
+approval_reference: Codex Handoff Procedure - Engineering Storage Qualification Capability Implementation
+approval_date: 2026-07-16
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals:
@@ -68,6 +68,13 @@ It summarizes the current project state and identifies the next approved enginee
 **Date:** 2026-07-15
 
 **Session Summary:**
+
+- Established and validated the administrator-authenticated Engineering
+  Storage Qualification Capability on `thaDuke` with `smartmontools`,
+  `exfatprogs`, and the existing `util-linux` and udev toolchain.
+- Reconciled INF-0001 and PROC-0003 as the existing authorities for platform
+  capability and non-destructive storage qualification; capability validation
+  made no qualification or registration claim about any attached asset.
 
 - Published MILESTONE-0005 as the qualified Engineering Platform Foundation
   1.0 boundary and transitioned the platform from construction to operation.
@@ -231,6 +238,9 @@ platform update.
 - Qualified recovery acquisition, exact byte count, two independent SHA-256
   passes, evidence preservation, NTFS reconciliation, cleanup, and recovery
   capability while retaining the restoration prohibition.
+- Installed and validated `smartmontools` 7.2-1ubuntu0.1 and `exfatprogs`
+  1.1.3-1ubuntu0.1 for governed SMART, exFAT non-repair inspection, and
+  read-only removable-media qualification workflows.
 - Reconciled the completed SprinterOS Raspberry Pi OS, firmware, EEPROM, and
   kernel update and successful boot, HDMI, keyboard, and login results.
 - Reconciled Engineering State through the 2026-07-15 post-update boundary;
@@ -270,16 +280,16 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-SprinterOS Platform Recovery Assessment — Persistent MMC Storage I/O
-Investigation.
+Resume External HDD Qualification and Registration, followed by External HDD
+Read-Only Content Inventory, second External HDD qualification, and Engineering
+Storage Role Assessment under their existing mission authorities.
 
 **Next Immediate Step:**
 
-Resume the separately authorized SprinterOS MMC investigation from reconciled
-Project State. Determine whether the persistent errors result from storage
-media degradation, filesystem inconsistency, controller/interface issues, or
-kernel/firmware interaction. Do not perform restoration or corrective action
-without separate authority.
+Begin the first blocked HDD mission from its Engineering Work Initiation and
+stable-device-identification gate. Use PROC-0003's non-destructive workflow;
+do not infer filesystem repair, destructive testing, registration, assignment,
+or writable-mount authority beyond the selected mission.
 
 EWO-000016 remains a separately selectable bounded side mission. If selected, execution begins with Stage A backup re-verification; no destructive USB operation may occur unless every preceding gate passes.
 
@@ -290,6 +300,7 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 | Domain | Reconciled state |
 | --- | --- |
 | Engineering Platform | Operational; aggregate validation qualified |
+| Storage qualification capability | Operational; SMART, stable identification, read-only filesystem inspection and mount control qualified |
 | Engineering Management Platform | Operational; validation qualified |
 | Recovery capability | Qualified; image and engineering evidence preserved |
 | Recovery verification | Exact byte count and two independent matching SHA-256 passes accepted |
@@ -493,3 +504,4 @@ When resuming this project:
 | 3.3     | 2026-07-15 | Established permanent per-login SSH-agent infrastructure and integrated identity diagnostics with Engineering Platform startup and qualification. |
 | 3.4     | 2026-07-15 | Reconciled governance, recovery, platform, and SprinterOS post-update state; established the persistent MMC investigation as the current mission; and recorded zero unreconciled milestones under STD-0004. |
 | 3.5     | 2026-07-15 | Published MILESTONE-0005, established Engineering Platform Foundation 1.0 as the operational baseline, and preserved the persistent SprinterOS MMC investigation as the current mission. |
+| 3.6     | 2026-07-16 | Established the Engineering Storage Qualification Capability and advanced resume to the previously blocked external-HDD mission sequence without qualifying or modifying storage assets. |

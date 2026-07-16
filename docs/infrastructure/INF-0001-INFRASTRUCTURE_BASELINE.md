@@ -2,20 +2,20 @@
 
 document_id: INF-0001
 title: Engineering Infrastructure Baseline
-version: 1.8
+version: 1.9
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-15
-phase: Mission 0.1 - Engineering Platform Baseline Reconciliation
+last_updated: 2026-07-16
+phase: Engineering Storage Qualification Capability
 domain: Infrastructure
 classification: Global Infrastructure Baseline
-predecessor_revision: INF-0001@1.7
+predecessor_revision: INF-0001@1.8
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Engineering Recovery Runbook Publication
-approval_date: 2026-07-15
+approval_reference: Codex Handoff Procedure - Engineering Storage Qualification Capability Implementation
+approval_date: 2026-07-16
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -197,6 +197,28 @@ does not imply restoration qualification or authorize corrective action.
 | Ubuntu Installation USB | 16 GB    | Recovery media           |
 | Kali Live USB           | 16 GB    | Diagnostics and recovery |
 
+## Engineering Storage Qualification Capability
+
+`thaDuke` provides the administrator-authenticated, non-destructive storage
+qualification environment for the engineering portfolio. The qualified tool
+baseline is:
+
+| Capability | Tool | Qualified version |
+| ---------- | ---- | ----------------- |
+| SMART discovery and inspection | `smartctl` (`smartmontools`) | 7.2-1ubuntu0.1 |
+| exFAT read-only inspection | `fsck.exfat -n` (`exfatprogs`) | 1.1.3-1ubuntu0.1 |
+| Block and partition discovery | `lsblk`, `blkid`, `blockdev` (`util-linux`) | 2.37.2-4ubuntu3.5 |
+| Mount-state inspection and control | `mount`, `umount`, `findmnt` (`util-linux`) | 2.37.2-4ubuntu3.5 |
+| Stable device-property discovery | `udevadm` | systemd 249 |
+
+PROC-0003 governs use of this capability. Qualification begins with stable
+identity, exact capacity, transport, read-only state, partition, filesystem,
+and mount-state discovery. Media assessment uses SMART data when the device
+and bridge expose it, filesystem checks use non-repair modes, and assessment
+mounts use `ro,nosuid,nodev,noexec`. A capability installation or validation
+does not qualify, register, assign, repair, or authorize writes to any storage
+asset.
+
 ---
 
 # Network Baseline
@@ -228,6 +250,9 @@ does not imply restoration qualification or authorize corrective action.
 | Avahi    | 0.8     |
 | bwrap    | 0.6.1   |
 | UFW      | 0.36.1  |
+| smartmontools | 7.2-1ubuntu0.1 |
+| exfatprogs | 1.1.3-1ubuntu0.1 |
+| util-linux | 2.37.2-4ubuntu3.5 |
 
 ---
 
@@ -239,6 +264,7 @@ The following services form part of the global engineering environment.
 * Containerd
 * SSH
 * SMART Monitoring
+* Non-destructive storage qualification
 * NetworkManager
 * systemd-resolved
 * CUPS
@@ -261,6 +287,12 @@ The following services form part of the global engineering environment.
 | IPv6 Policy     | UFW IPv6 handling disabled; exposed services configured IPv4-only.     |
 
 System-wide IPv6 remains enabled. Public service exposure over IPv6 is intentionally disabled at the service configuration layer for SSH, CUPS, and Avahi.
+
+## Revision History
+
+| Version | Date | Description |
+| ------- | ---- | ----------- |
+| 1.9 | 2026-07-16 | Established the qualified `thaDuke` storage-discovery, SMART, read-only filesystem inspection, stable-identification, and safe mount-control tool baseline. |
 
 ## Print Service Baseline
 

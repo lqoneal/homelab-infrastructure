@@ -15,3 +15,6 @@ Linux thaDuke 6.8.0-124-generic #124~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Tue May 
 [OK] ufw
 [OK] sane-utils
 [OK] printer-driver-cups-pdf
+[OK] smartmontools 7.2-1ubuntu0.1
+[OK] exfatprogs 1.1.3-1ubuntu0.1
+[OK] util-linux 2.37.2-4ubuntu3.5

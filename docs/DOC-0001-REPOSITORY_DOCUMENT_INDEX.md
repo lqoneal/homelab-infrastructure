@@ -1,20 +1,20 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.13
+version: 2.14
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-15
-phase: EMP Foundation 1.0 Operational Qualification
+last_updated: 2026-07-16
+phase: Engineering Storage Qualification Capability
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.11
+predecessor_revision: DOC-0001@2.13
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Engineering Platform Foundation 1.0 Milestone Publication
-approval_date: 2026-07-15
+approval_reference: Codex Handoff Procedure - Engineering Storage Qualification Capability Implementation
+approval_date: 2026-07-16
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -110,6 +110,11 @@ It owns the global engineering infrastructure, including:
 * Shared engineering services
 
 Project-specific repositories reference Homelab where appropriate instead of duplicating global infrastructure documentation.
+
+The implemented Engineering Storage Qualification Capability is owned by
+INF-0001 and operationally governed by PROC-0003. Package presence is recorded
+in `inventory/software.md`; no duplicate storage-qualification authority is
+created by that inventory view.
 
 ---
 
@@ -498,3 +503,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.11 | 2026-07-15 | Registered Commit Reconstruction Planning and proportional persistent planning-artifact governance within the PROC-0001 repository workflow. |
 | 2.12 | 2026-07-15 | Registered MILESTONE-0005 as the Engineering Platform Foundation 1.0 operational-transition boundary. |
 | 2.13 | 2026-07-15 | Registered AST-000009, PROC-000002, and TRX-000002 for the engineering spare microSD acquisition. |
+| 2.14 | 2026-07-16 | Registered the implemented Engineering Storage Qualification Capability under existing INF-0001 infrastructure authority and PROC-0003 operational procedure authority. |
