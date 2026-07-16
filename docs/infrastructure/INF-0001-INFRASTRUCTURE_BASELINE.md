@@ -2,7 +2,7 @@
 
 document_id: INF-0001
 title: Engineering Infrastructure Baseline
-version: 1.9
+version: 2.0
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -10,11 +10,11 @@ last_updated: 2026-07-16
 phase: Engineering Storage Qualification Capability
 domain: Infrastructure
 classification: Global Infrastructure Baseline
-predecessor_revision: INF-0001@1.8
+predecessor_revision: INF-0001@1.9
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Engineering Storage Qualification Capability Implementation
+approval_reference: thaDuke Internal Storage Allocation Verification and Capacity Reconciliation
 approval_date: 2026-07-16
 persistence_status: Pending
 source_of_truth: true
@@ -178,15 +178,24 @@ does not imply restoration qualification or authorize corrective action.
 
 ## Internal Storage
 
-| Mount     | Size     | Current Usage |
-| --------- | -------- | ------------- |
-| /         | 55.9 GB  | 23%           |
-| /home     | 232.8 GB | 35%           |
-| /var      | 18.6 GB  | 62%           |
-| /tmp      | 18.6 GB  | 1%            |
-| /data     | 27.9 GB  | 1%            |
-| /boot     | 429 MB   | 88%           |
-| /boot/efi | 47 MB    | 14%           |
+The Intel Optane Memory H10 module exposes a 1,024,209,543,168-byte NAND
+namespace and a separate 29,260,513,280-byte Optane namespace. The Optane
+namespace retains Intel `isw_raid_member` metadata and is not qualified as
+free storage.
+
+| Layer | Component | Provisioned bytes | Allocation or role |
+| --- | --- | ---: | --- |
+| GPT | EFI | 1,073,741,824 | `/boot/efi` |
+| GPT | Boot | 2,147,483,648 | `/boot` |
+| GPT | Engineering LVM partition | 1,020,987,252,224 | LVM PV |
+| LVM | `vg_engineering` | 1,020,985,868,288 | 504,658,657,280 allocated; 516,327,211,008 free |
+| LV | `lv_root` | 128,849,018,880 | `/` ext4 |
+| LV | `lv_home` | 107,374,182,400 | `/home` ext4 |
+| LV | `lv_data` | 268,435,456,000 | `/data` ext4 |
+
+`/var` and `/tmp` are directories in the root filesystem, not separate
+filesystems. Detailed point-in-time utilization and capacity arithmetic are
+published in the 2026-07-16 thaDuke storage-allocation qualification record.
 
 ## External Storage
 
@@ -293,6 +302,7 @@ System-wide IPv6 remains enabled. Public service exposure over IPv6 is intention
 | Version | Date | Description |
 | ------- | ---- | ----------- |
 | 1.9 | 2026-07-16 | Established the qualified `thaDuke` storage-discovery, SMART, read-only filesystem inspection, stable-identification, and safe mount-control tool baseline. |
+| 2.0 | 2026-07-16 | Reconciled the rebuilt thaDuke GPT, LVM, filesystem, H10 NAND/Optane namespace, and available-capacity baseline. |
 
 ## Print Service Baseline
 
