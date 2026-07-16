@@ -1,12 +1,12 @@
 ---
 document_id: HW-0001
 title: Master Hardware Register
-version: 1.3
+version: 1.4
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-16
-phase: WD 500 GB Qualification and Inventory
+phase: AST-000005 Failure Isolation
 domain: Hardware
 classification: Master Hardware Register
 source_of_truth: true
@@ -256,7 +256,7 @@ Asset identifiers shall never be reused.
 | AST-000002 | Primary Internal NVMe SSD | Storage | Operational | AST-000001 |
 | AST-000003 | Secondary Intel RST Device | Storage | Operational | AST-000001 |
 | AST-000004 | WD My Passport Backup Drive | Storage | Operational | Homelab Infrastructure |
-| AST-000005 | BUP Ult Secure Drive | Storage | Operational | Homelab Infrastructure |
+| AST-000005 | Seagate Backup Plus Ultra Touch | Storage | Operational — qualification hold | Homelab Infrastructure |
 | AST-000006 | SanDisk Recovery USB | Recovery Media | Operational | Homelab Infrastructure |
 | AST-000007 | Raspberry Pi 5 | Compute | Operational | SprinterOS |
 | AST-000008 | Engineering Terminal 01 | Compute | Operational | SprinterOS |
@@ -396,7 +396,7 @@ Individual hardware assets are documented in the following controlled records.
 | AST-000002 | Primary Internal NVMe SSD |
 | AST-000003 | Secondary Intel RST Device |
 | AST-000004 | WD My Passport Backup Drive |
-| AST-000005 | BUP Ult Secure Drive |
+| AST-000005 | Seagate Backup Plus Ultra Touch |
 | AST-000006 | SanDisk Recovery USB |
 | AST-000007 | Raspberry Pi 5 |
 | AST-000008 | Engineering Terminal 01 |
