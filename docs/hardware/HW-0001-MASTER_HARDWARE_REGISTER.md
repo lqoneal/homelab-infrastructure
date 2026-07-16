@@ -1,7 +1,7 @@
 ---
 document_id: HW-0001
 title: Master Hardware Register
-version: 1.2
+version: 1.3
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -17,6 +17,7 @@ related_documents:
   - FIN-0002
   - PROJ-0001
   - EDR-0001
+  - STD-0005
 tags:
   - hardware
   - assets
@@ -57,6 +58,12 @@ Individual `AST-*` records remain the authoritative source for detailed asset in
 # Hardware Governance
 
 Engineering hardware shall comply with the following governance principles.
+
+STD-0005 — Engineering Hardware Lifecycle Standard is the single governing
+authority for discovery, identity, qualification, content and preservation
+assessment, registration, financial reconciliation, role assignment,
+integration, lifecycle management, retirement, and disposal. This register
+owns identifier and portfolio state; it does not duplicate that procedure.
 
 ## Evidence-Based Records
 
@@ -356,6 +363,7 @@ No assets are currently planned, retired, or disposed.
 | DOC-0001 | Repository Document Index |
 | PROJ-0001 | Project State |
 | EDR-0001 | Hardware Asset Record Architecture |
+| STD-0005 | Engineering Hardware Lifecycle Standard |
 
 ---
 
@@ -447,3 +455,4 @@ These enhancements shall build upon the governance established by this register 
 | 1.0 | 2026-07-06 | Initial Master Hardware Register established and integrated with AST-000001 through AST-000008. |
 | 1.1 | 2026-07-15 | Registered AST-000009 as available, unassigned engineering spare removable storage. |
 | 1.2 | 2026-07-16 | Registered AST-000010 as qualified hardware, available and unassigned under preservation hold with an explicit exFAT label limitation. |
+| 1.3 | 2026-07-16 | Integrated STD-0005 as the single governing hardware-lifecycle authority while preserving this register's identifier and portfolio-reporting ownership. |

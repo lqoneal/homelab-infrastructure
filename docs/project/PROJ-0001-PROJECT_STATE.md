@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 3.6
+version: 3.7
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-16
-phase: Engineering Storage Qualification Capability Operational
+phase: Engineering Hardware Lifecycle Operational
 classification: Project State
-predecessor_revision: PROJ-0001@3.5
+predecessor_revision: PROJ-0001@3.6
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Engineering Storage Qualification Capability Implementation
+approval_reference: Codex Handoff Procedure - WD 500 GB Inventory and Engineering Hardware Lifecycle Standard
 approval_date: 2026-07-16
 persistence_status: Pending
 source_of_truth: true
@@ -69,6 +69,10 @@ It summarizes the current project state and identifies the next approved enginee
 
 **Session Summary:**
 
+- Qualified, inventoried, and registered AST-000010 without storage writes,
+  repair, data movement, destructive testing, or unsupported financial facts.
+- Published STD-0005 as the single preservation-first and evidence-first
+  Engineering Hardware Lifecycle authority.
 - Established and validated the administrator-authenticated Engineering
   Storage Qualification Capability on `thaDuke` with `smartmontools`,
   `exfatprogs`, and the existing `util-linux` and udev toolchain.
@@ -280,16 +284,14 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-Resume External HDD Qualification and Registration, followed by External HDD
-Read-Only Content Inventory, second External HDD qualification, and Engineering
-Storage Role Assessment under their existing mission authorities.
+Resume the next separately authorized external-HDD qualification and
+Engineering Storage Role Assessment using PROC-0003 and STD-0005.
 
 **Next Immediate Step:**
 
-Begin the first blocked HDD mission from its Engineering Work Initiation and
-stable-device-identification gate. Use PROC-0003's non-destructive workflow;
-do not infer filesystem repair, destructive testing, registration, assignment,
-or writable-mount authority beyond the selected mission.
+Begin only after selecting its bounded mission authority. Preserve AST-000010's
+home-directory backup and exFAT label limitation; do not repurpose it until
+migration and filesystem disposition are separately authorized.
 
 EWO-000016 remains a separately selectable bounded side mission. If selected, execution begins with Stage A backup re-verification; no destructive USB operation may occur unless every preceding gate passes.
 
@@ -505,3 +507,4 @@ When resuming this project:
 | 3.4     | 2026-07-15 | Reconciled governance, recovery, platform, and SprinterOS post-update state; established the persistent MMC investigation as the current mission; and recorded zero unreconciled milestones under STD-0004. |
 | 3.5     | 2026-07-15 | Published MILESTONE-0005, established Engineering Platform Foundation 1.0 as the operational baseline, and preserved the persistent SprinterOS MMC investigation as the current mission. |
 | 3.6     | 2026-07-16 | Established the Engineering Storage Qualification Capability and advanced resume to the previously blocked external-HDD mission sequence without qualifying or modifying storage assets. |
+| 3.7     | 2026-07-16 | Qualified and registered AST-000010, published STD-0005, and advanced resume to the next separately authorized storage qualification and role-assessment mission. |

@@ -1,15 +1,15 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.15
+version: 2.16
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-16
-phase: WD 500 GB Qualification and Inventory
+phase: Engineering Hardware Lifecycle Standard Publication
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.14
+predecessor_revision: DOC-0001@2.15
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -37,6 +37,8 @@ relationships:
     target: PROC-0003
   - type: indexes
     target: STD-0004
+  - type: indexes
+    target: STD-0005
   - type: indexes
     target: TPL-0004
   - type: indexes
@@ -249,6 +251,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | STD-0002 | Engineering Document Persistence Standard | Active | Engineering Governance | `docs/standards/STD-0002-ENGINEERING_DOCUMENT_PERSISTENCE_STANDARD.md` |
 | STD-0003 | Engineering Work Order Standard | Active | Engineering Governance | `docs/standards/STD-0003-ENGINEERING_WORK_ORDER_STANDARD.md` |
 | STD-0004 | Engineering State Freshness Standard | Active | Engineering Governance | `docs/standards/STD-0004-ENGINEERING_STATE_FRESHNESS_STANDARD.md` |
+| STD-0005 | Engineering Hardware Lifecycle Standard | Active | Engineering Governance | `docs/standards/STD-0005-ENGINEERING_HARDWARE_LIFECYCLE_STANDARD.md` |
 | PROC-0001 | Engineering Work Order Execution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md` |
 | PROC-0002 | Engineering Governance Resolution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md` |
 | PROC-0003 | Engineering Recovery Runbook | Active | Engineering Governance | `docs/procedures/PROC-0003-ENGINEERING_RECOVERY_RUNBOOK.md` |
@@ -506,3 +509,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.13 | 2026-07-15 | Registered AST-000009, PROC-000002, and TRX-000002 for the engineering spare microSD acquisition. |
 | 2.14 | 2026-07-16 | Registered the implemented Engineering Storage Qualification Capability under existing INF-0001 infrastructure authority and PROC-0003 operational procedure authority. |
 | 2.15 | 2026-07-16 | Registered AST-000010 as the qualified WD 500 GB External HDD under preservation hold without creating unsupported financial facts. |
+| 2.16 | 2026-07-16 | Published and registered STD-0005 as the single Engineering Hardware Lifecycle authority and integrated deterministic discovery. |
