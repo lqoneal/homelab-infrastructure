@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 28
+revision: 30
 updated_at: '2026-07-17'
 serialization: yaml
 mutation_history:
@@ -179,6 +179,18 @@ mutation_history:
   actor: Codex
   action: transition EMP-WORK-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION to completed
   reason: EWO-000021 publication, reconciliation, milestone recording, and qualification completed.
+- revision: 29
+  previous_revision: 28
+  at: '2026-07-17T19:48:47+00:00'
+  actor: Engineering Governance authorization agent
+  action: create and activate EMP-MISSION-SPEC-0007-REVISION-15-PUBLICATION
+  reason: Register the approved Revision 15 controlled-publication mission under EWO-000022.
+- revision: 30
+  previous_revision: 29
+  at: '2026-07-17T19:48:47+00:00'
+  actor: Engineering Governance authorization agent
+  action: create and activate EMP-WORK-SPEC-0007-REVISION-15-PUBLICATION
+  reason: Register EWO-000022 as the active bounded execution authority for SPEC-0007 Revision 15 controlled publication.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -425,6 +437,37 @@ entities:
       authority active.
     completion_criteria: Defined by future separately authorized Private AI Assistant
       work.
+  - registry_id: EMP-MISSION-SPEC-0007-REVISION-15-PUBLICATION
+    object_type: Mission
+    title: SPEC-0007 Revision 15 Controlled Publication
+    management_state: active
+    owner: Engineering Governance
+    scope: EMP-PROJECT-HOMELAB
+    authority_reference: EWO-000022
+    source_records:
+    - EWO-000022
+    - SPEC-0007
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: EWO-000022
+    - type: related_to
+      target: SPEC-0007
+    created_at: '2026-07-17T19:48:47+00:00'
+    updated_at: '2026-07-17T19:48:47+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-17T19:48:47+00:00'
+      actor: Engineering Governance authorization agent
+      reason: The Engineering Mission Handoff approves and activates the bounded Revision 15 controlled-publication mission.
+      authority_reference: EWO-000022
+    project_id: EMP-PROJECT-HOMELAB
+    order: 2
+    objective: Persist Engineering Platform Construction Specification Revision 15 as a new controlled SPEC-0007 revision.
+    entry_criteria: EWO-000022 is Approved and Active; Category A Work Initiation passes; the Revision 15 source and trust boundary are verified.
+    completion_criteria: Revision 15 is acquired, reconciled, approved, published, evidenced, validated, and committed within EWO-000022 authority.
   phases:
   - registry_id: EMP-PHASE-1-1
     object_type: Phase
@@ -1098,6 +1141,41 @@ entities:
     completion_criteria: Repository governance, Work Registry, EOS, Project State,
       DOC-0001, infrastructure references, lifecycle, dependencies, evidence, and
       publication state reconcile and pass EWO-000021 validation.
+    queue_ids: []
+  - registry_id: EMP-WORK-SPEC-0007-REVISION-15-PUBLICATION
+    object_type: WorkItem
+    title: SPEC-0007 Revision 15 Controlled Publication
+    management_state: active
+    owner: Engineering Governance
+    scope: EWO-000022
+    authority_reference: EWO-000022
+    source_records:
+    - EWO-000022
+    - SPEC-0007
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: EWO-000022
+    - type: related_to
+      target: SPEC-0007
+    created_at: '2026-07-17T19:48:47+00:00'
+    updated_at: '2026-07-17T19:48:47+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-17T19:48:47+00:00'
+      actor: Engineering Governance authorization agent
+      reason: EWO-000022 authorizes the bounded Revision 15 controlled-publication mission.
+      authority_reference: EWO-000022
+    project_id: EMP-PROJECT-HOMELAB
+    order: 10
+    mission_id: EMP-MISSION-SPEC-0007-REVISION-15-PUBLICATION
+    phase_id: null
+    sprint_id: null
+    work_type: controlled-document-publication
+    priority: 1
+    completion_criteria: Revision 15 source acquisition, reconciliation, controlled publication, evidence, validation, state reconciliation, and bounded repository commit pass under EWO-000022.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP

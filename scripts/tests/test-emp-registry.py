@@ -27,7 +27,7 @@ def fresh_registry():
 
 registry = fresh_registry()
 assert registry.validate() == []
-assert len(registry.objects) == 36
+assert len(registry.objects) == 38
 assert {
     "EMP-WORK-CODEX-NTFY-STAGE-1",
     "EMP-WORK-CODEX-NTFY-STAGE-2",
@@ -37,6 +37,8 @@ assert {
     "EMP-WORK-GOVERNANCE-FRAMEWORK-MODERNIZATION",
     "EMP-WORK-CODEX-WRAPPER-ENFORCEMENT",
     "EMP-WORK-ENGINEERING-NOTIFICATION-SERVICE",
+    "EMP-MISSION-SPEC-0007-REVISION-15-PUBLICATION",
+    "EMP-WORK-SPEC-0007-REVISION-15-PUBLICATION",
 }.issubset(registry.objects)
 assert registry.data["serialization"] == "yaml"
 assert registry.data["authority_boundary"]["registry"] == "operational-management-state-only"

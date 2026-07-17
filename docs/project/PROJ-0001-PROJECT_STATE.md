@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 4.9
+version: 5.0
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-17
-phase: Engineering Platform Repository Reconciliation Complete
+phase: SPEC-0007 Revision 15 Controlled Publication Authorized
 classification: Project State
-predecessor_revision: PROJ-0001@4.8
+predecessor_revision: PROJ-0001@4.9
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000004
+approval_reference: Engineering Mission Handoff - Authorize Revision 15 Controlled Publication Mission
 approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
@@ -43,6 +43,8 @@ relationships:
     target: EGR-000004
   - type: related_to
     target: EWO-000021
+  - type: related_to
+    target: EWO-000022
   - type: related_to
     target: EOS-0003
   - type: related_to
@@ -135,8 +137,8 @@ Build the Engineering Operating System foundation for AI Assistant, SprinterOS, 
 
 **Current Overall Goal:**
 
-Begin separately authorized Engineering Platform Core Services implementation
-under SPEC-0007 while preserving unrelated platform and product boundaries.
+Execute the separately authorized SPEC-0007 Revision 15 controlled-publication
+mission while preserving unrelated platform and product boundaries.
 
 ---
 
@@ -144,12 +146,12 @@ under SPEC-0007 while preserving unrelated platform and product boundaries.
 
 **Current Phase:**
 
-Engineering Platform Repository Reconciliation Complete
+SPEC-0007 Revision 15 Controlled Publication Authorized
 
 **Phase Objective:**
 
-Use SPEC-0007 as the governing technical baseline for the next separately
-authorized EGAS Foundation mission. EWO-000021 reconciliation is complete.
+Use EWO-000022 to discover, acquire, reconcile, publish, evidence, validate,
+and commit Revision 15 as a new controlled SPEC-0007 successor revision.
 
 ---
 
@@ -305,18 +307,19 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-EWO-000019 Codex wrapper enforcement remains accepted and complete. EWO-000020
-was superseded before implementation. EWO-000021 Engineering Platform
-Repository Reconciliation Mission (Handoff 1) has completed reconciliation and
-qualification; its controlled publication awaits the final repository commit
-and checkpoint.
+EWO-000022 SPEC-0007 Revision 15 Controlled Publication is the Active bounded
+Homelab work authority. EWO-000021 reconciliation is recorded complete in the
+Work Registry. SPEC-0007 Version 1.0 remains the approved Revision 14-derived
+baseline until the Revision 15 successor completes its controlled lifecycle.
 
 **Next Immediate Step:**
 
-After EWO-000021 publication is persisted, authorize EGAS Foundation through a
-new Engineering Governance Resolution and Active Engineering Work Order before
-implementation. Notification-service implementation, SprinterOS diagnostics,
-and notification Stage 2/3 remain outside the active objective.
+Launch the publication mission through `engctl codex --ewo EWO-000022 -- ...`,
+repeat Category A Engineering Work Initiation, resolve the authorized Revision
+15 SCP source, and begin controlled discovery and acquisition. Notification
+implementation, Raspberry Pi qualification, architecture development,
+SprinterOS diagnostics, and notification Stage 2/3 remain outside the active
+objective.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -554,3 +557,4 @@ When resuming this project:
 | 4.7     | 2026-07-17 | Recorded EGR-000003 bootstrap-deadlock correction, approved and activated EWO-000020 as the sole active Homelab work item, and recorded that notification-service implementation has not begun. |
 | 4.8     | 2026-07-17 | Recorded EGR-000004, superseded unstarted EWO-000020, and approved and activated EWO-000021 as the sole Active Homelab work authority without beginning reconciliation. |
 | 4.9     | 2026-07-17 | Published SPEC-0007 Engineering Baseline 1.0, completed repository reconciliation, and recorded MILESTONE-0006 transition to governed self-implementation. |
+| 5.0     | 2026-07-17 | Registered and activated EWO-000022 and its mission as the bounded authority for SPEC-0007 Revision 15 discovery, SCP acquisition, reconciliation, controlled publication, evidence, validation, and repository commit. |
