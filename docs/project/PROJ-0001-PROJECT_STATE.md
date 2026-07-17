@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 4.3
+version: 4.4
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-17
-phase: Codex Stage 1 Notification Integration Complete
+phase: SprinterOS Execution Authority Reconciled
 classification: Project State
-predecessor_revision: PROJ-0001@4.2
+predecessor_revision: PROJ-0001@4.3
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EWO-000017
+approval_reference: SprinterOS Execution Authority Reconciliation Mission
 approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
@@ -89,14 +89,15 @@ It summarizes the current project state and identifies the next approved enginee
 - Published MILESTONE-0005 as the qualified Engineering Platform Foundation
   1.0 boundary and transitioned the platform from construction to operation.
 - Preserved the SprinterOS persistent MMC storage I/O investigation as the
-  current active mission; the milestone creates no corrective-action authority.
+  then-current mission candidate; the milestone created no execution or
+  corrective-action authority.
 - Completed the first STD-0004 Engineering State Reconciliation across
   Homelab Project State, SprinterOS Project and Sprint State, EOS operational
   state, checkpoints, and resume context.
 - Published PROC-0003 and STD-0004, reconciled lifecycle, Work Initiation, and
   resume architecture, and migrated shared recovery authority to Homelab.
 - Reconciled the qualified recovery capability, protected evidence, completed
-  Raspberry Pi platform update, and active persistent MMC storage investigation.
+  Raspberry Pi platform update, and observed persistent MMC storage condition.
 
 - Established permanent per-login Engineering Platform SSH-agent management
   through Ubuntu's native systemd user service, stable socket reuse, protected
@@ -121,7 +122,7 @@ Build the Engineering Operating System foundation for AI Assistant, SprinterOS, 
 **Current Overall Goal:**
 
 Operate the qualified Engineering Platform and recovery capability while
-coordinating the active SprinterOS platform recovery assessment.
+preserving SprinterOS readiness pending an approved Active execution EWO.
 
 ---
 
@@ -134,8 +135,8 @@ Engineering Platform Foundation 1.0 Operational — SprinterOS Recovery Assessme
 **Phase Objective:**
 
 Preserve the qualified Engineering Platform and recovery baselines while
-SprinterOS isolates persistent MMC storage I/O errors after its successful
-platform update.
+SprinterOS remains qualified and ready and persistent MMC storage I/O errors
+await separately approved fault-isolation execution authority.
 
 ---
 
@@ -266,7 +267,8 @@ platform update.
 - Private AI Assistant implementation remains deferred behind SprinterOS in portfolio order.
 - SprinterOS reports persistent microSD/MMC storage I/O errors after the
   platform update. Media, filesystem, controller/interface, and
-  kernel/firmware causes remain under investigation.
+  kernel/firmware causes remain unresolved; no current Active EWO authorizes
+  additional SprinterOS fault-isolation execution.
 
 ## Authorized Bounded Side Mission
 
@@ -290,15 +292,17 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-EWO-000017 Codex Stage 1 completion notification integration is accepted and
-closed.
+SprinterOS execution authority is reconciled: Phase 1 and SPRINT-1.1 are
+qualified and ready, but no SprinterOS implementation or fault-isolation work
+is active without an approved Active EWO.
 
 **Next Immediate Step:**
 
-Select the next separately authorized engineering objective. EWO-000016 remains
-available as the bounded firmware-remediation side mission; Stage 2/3
-notification enhancements and a possible standalone `engctl notify` interface
-remain deferred pending separate authority.
+Select an already authorized objective or authorize the next SprinterOS
+diagnostic mission. EWO-000016 remains available as the bounded
+firmware-remediation side mission; SprinterOS fault isolation, Stage 2/3
+notification enhancements, and a possible standalone `engctl notify` interface
+require separate authority.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -326,8 +330,8 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 | Restoration | Not authorized; recovery image is not restoration-qualified |
 | Raspberry Pi platform | OS, firmware, and EEPROM updated; kernel `6.12.93+rpt-rpi-2712` installed |
 | Raspberry Pi boot | Successful; HDMI, keyboard, and login operational |
-| Active investigation | Persistent microSD/MMC storage I/O errors |
-| Current mission | SprinterOS Platform Recovery Assessment — Persistent MMC Storage I/O Investigation |
+| Unresolved SprinterOS condition | Persistent microSD/MMC storage I/O errors; fault isolation not active |
+| Current SprinterOS mission | None active; next qualified candidate requires an approved Active EWO |
 | Freshness | Reconciled through 2026-07-15 post-update qualification; zero unreconciled completed milestones |
 
 ---
@@ -473,9 +477,8 @@ None. Mission 0 is complete.
 7. Treat MILESTONE-0005 and tag `engineering-platform-foundation-1.0`, once
    created, as the Engineering Platform Foundation 1.0 operational baseline.
 8. Validate and inspect the operational registry through `engctl registry validate` and `engctl registry list`.
-9. Resume SprinterOS Platform Recovery Assessment at the persistent MMC storage
-   I/O investigation; do not repeat the completed product-initiation or update
-   objectives.
+9. Do not resume the persistent MMC storage I/O investigation until an approved
+   Active EWO establishes its diagnostic scope and execution controls.
 10. When EWO-000016 is selected for execution, begin at Stage A backup re-verification and honor every sequential gate.
 11. After EWO-000016 completes or stops, return to the current primary project task recorded above.
 
@@ -494,8 +497,9 @@ When resuming this project:
 - Preserve the EMP Foundation, Engineering Platform, and verified recovery
   baselines; registry readiness does not replace SprinterOS project-controlled
   authority.
-- Resume only the SprinterOS persistent MMC storage I/O investigation as the
-  primary mission. Restoration and corrective action remain unauthorized.
+- Treat the SprinterOS persistent MMC storage I/O investigation as the next
+  qualified candidate, not active execution. Restoration, diagnostics, and
+  corrective action remain unauthorized until an approved Active EWO applies.
 - Treat EWO-000016 as an authorized bounded side mission that does not supersede the primary sprint or task.
 - Resume EWO-000016 only at its first incomplete gated stage and preserve unrelated working-tree content.
 - Do not infer authority for work outside the current recorded mission and phase authorization.
@@ -530,3 +534,4 @@ When resuming this project:
 | 4.1     | 2026-07-17 | Recorded EGR-000002 governance authorization, activated EWO-000018 as the successor modernization mission, and preserved EWO-000017 under a bounded dirty-tree exception. |
 | 4.2     | 2026-07-17 | Completed EWO-000018 governance-framework modernization and returned the primary resume point to EWO-000017 controlled acceptance under repository-governed Category B initiation. |
 | 4.3     | 2026-07-17 | Accepted and closed EWO-000017 Stage 1 notifications after loader correction, regression qualification, value-blind configuration checks, and controlled live delivery. |
+| 4.4     | 2026-07-17 | Reconciled SprinterOS execution authority: Phase 1 and SPRINT-1.1 remain qualified and ready, while fault isolation awaits an approved Active EWO. |
