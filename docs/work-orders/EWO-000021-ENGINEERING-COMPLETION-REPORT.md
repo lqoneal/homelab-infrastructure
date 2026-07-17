@@ -95,7 +95,21 @@ conversation-governed.
 
 ## Repository Qualification Summary
 
-Final qualification results are populated after reconciliation validation.
+Qualification passed on 2026-07-17:
+
+- controlled-document validation: 719 checks passed, 0 failed;
+- Work Registry validation: 36 objects valid;
+- Work Registry and EMP management regression suites: passed;
+- EOS runtime regression suite: passed under the mandatory wrapper context;
+- checkpoint validation: 30 append-only checkpoints valid;
+- synchronized operational state and EOS persistence model: passed after the
+  publication commit, checkpoint selection, and derivative-state refresh;
+- repository health, context generation, registry context, and management
+  context: passed; and
+- aggregate `engctl validate` and `engctl platform validate`: passed.
+
+The repository working tree is clean at publication commit `a622d23`; no
+upstream is configured, so no push or remote publication was performed.
 
 ## Recommendations
 
