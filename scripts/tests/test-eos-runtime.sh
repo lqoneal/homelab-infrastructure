@@ -197,7 +197,7 @@ grep -Fq "SSH Agent:" <<<"$qualification_output"
 agent_output="$(eos_ssh_agent_state)"
 [[ -n "$agent_output" ]]
 
-[[ "$("$REPOSITORY_ROOT/scripts/engctl" version)" == "engctl version 0.7.0" ]]
+[[ "$("$REPOSITORY_ROOT/scripts/engctl" version)" == "engctl version 0.8.0" ]]
 "$REPOSITORY_ROOT/scripts/engctl" eos validate >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" eos refresh >/dev/null
 "$REPOSITORY_ROOT/scripts/engctl" eos persistence >/dev/null

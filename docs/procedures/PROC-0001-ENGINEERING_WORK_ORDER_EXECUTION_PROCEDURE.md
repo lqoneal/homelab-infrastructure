@@ -1,12 +1,12 @@
 ---
 document_id: PROC-0001
 title: Engineering Work Order Execution Procedure
-version: 1.6
+version: 1.7
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
 last_updated: 2026-07-17
-phase: Governance Framework Modernization
+phase: Codex Wrapper Enforcement
 domain: Engineering Governance
 classification: Engineering Procedure
 source_of_truth: true
@@ -22,6 +22,7 @@ related_documents:
   - PROC-0003
   - EGR-000002
   - EWO-000018
+  - EWO-000019
 tags:
   - governance
   - procedure
@@ -96,6 +97,33 @@ Completion Report
         ↓
 Engineering Governance Review
 ```
+
+---
+
+## Codex Launch Enforcement
+
+Every repository-governed Codex engineering mission SHALL launch through:
+
+```bash
+engctl codex --ewo EWO-XXXXXX -- [codex arguments ...]
+```
+
+The wrapper establishes the notification lifecycle and an inherited execution
+marker. `homelabctl resume`, `engctl resume`, and Engineering Work Initiation
+qualification detect a Codex context without that marker, report a wrapper
+bypass engineering condition, attempt a value-free bypass notification, and
+stop with exit status 78. A bypass is not converted into authority by setting
+environment variables manually.
+
+An exception must be explicit in an approved Active EWO, identify why wrapper
+launch is technically impossible, define equivalent notification and evidence
+controls, and be reported in the Completion Report. EWO-000019 itself is the
+one-time bootstrap exception needed to establish this enforcement.
+
+Wrapper start, completion, failure, timeout, and interruption events are
+operational metadata only. Prompts, output, diffs, repository content, private
+configuration, topics, endpoints, tokens, and credentials shall not enter the
+notification body.
 
 ---
 
@@ -703,3 +731,4 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.4 | 2026-07-15 | Established mandatory Commit Classification, traceability, validation, dependency ordering, commit boundaries, and milestone publication controls after Engineering State Reconciliation. |
 | 1.5 | 2026-07-15 | Established Commit Reconstruction Planning, approved reconstruction methods, execution gates, persistent planning artifacts, and proportional planning governance. |
 | 1.6 | 2026-07-17 | Added the Mission Classification Gate, risk-proportional Category A/B/C initiation, exact Completion Report standard, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
+| 1.7 | 2026-07-17 | Required repository-governed Codex missions to launch through `engctl codex`, added initiation-time bypass detection and exception controls, and defined the mandatory notification lifecycle under EWO-000019. |

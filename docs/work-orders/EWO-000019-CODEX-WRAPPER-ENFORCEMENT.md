@@ -1,20 +1,20 @@
 ---
 document_id: EWO-000019
 title: Codex Wrapper Enforcement and Notification Lifecycle Verification
-version: 1.0
-revision: 1
-status: Active
+version: 1.1
+revision: 2
+status: Completed
 owner: Engineering Governance
 created: 2026-07-17
 last_updated: 2026-07-17
 classification: Engineering Work Order
-predecessor_revision: null
+predecessor_revision: EWO-000019@1.0
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
 approval_reference: Codex Wrapper Enforcement and Notification Lifecycle Verification Mission
 approval_date: 2026-07-17
-persistence_status: Pending
+persistence_status: Complete
 phase: Engineering Operations Notification Enforcement
 domain: Homelab Infrastructure
 source_of_truth: true
@@ -52,7 +52,7 @@ Engineering Work Order: EWO-000019
 
 Revision: 1
 
-Status: Active
+Status: Completed
 
 Execution Mode: Sequential investigation, bounded correction, and controlled acceptance
 
@@ -119,8 +119,17 @@ bypass detection at repository initiation, passing regression and platform
 validation, two accepted live missions, clean repositories, and no secret
 disclosure.
 
+## Completion Record
+
+Accepted on 2026-07-17. Root cause was direct Codex launch with no wrapper
+lifecycle boundary. Marker inheritance, initiation-time bypass rejection,
+value-free bypass reporting, mission timeout notification, complete lifecycle
+regression, two independent live wrapped missions, documentation, EOS, and
+registry reconciliation passed. See `EWO-000019-COMPLETION`.
+
 ## Revision History
 
 | Version | Date | Description |
 | --- | --- | --- |
 | 1.0 | 2026-07-17 | Created and activated wrapper-enforcement investigation and bounded correction authority. |
+| 1.1 | 2026-07-17 | Accepted wrapper enforcement, lifecycle validation, documentation reconciliation, and controlled live qualification. |

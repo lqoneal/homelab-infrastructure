@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.24
+version: 2.26
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-17
-phase: Governance Framework Modernization
+phase: Codex Wrapper Enforcement
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.22
+predecessor_revision: DOC-0001@2.25
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000002
+approval_reference: EWO-000019
 approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
@@ -85,6 +85,8 @@ relationships:
     target: EWO-000017-COMPLETION
   - type: indexes
     target: EWO-000019
+  - type: indexes
+    target: EWO-000019-COMPLETION
   - type: related_to
     target: EGR-000002
   - type: related_to
@@ -139,6 +141,11 @@ PROC-0001. Apply the category-specific gates before using this repository
 ritual. Category A performs the complete ritual. Category B or C performs the
 repository-specific steps only when the mission consumes or affects repository
 state; otherwise repository cleanliness is recorded as informational.
+
+Every repository-governed Codex mission shall first be launched through
+`engctl codex --ewo EWO-XXXXXX`. Resume and qualification shall stop and report
+the condition when a Codex session lacks the wrapper marker, unless an approved
+Active EWO records a bounded exception.
 
 For Category A, review the repository in the following order.
 
@@ -309,7 +316,8 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EWO-000017 | Codex Stage 1 Completion Notification Integration | Completed | Engineering Governance | `docs/work-orders/EWO-000017-CODEX-STAGE-1-COMPLETION-NOTIFICATION-INTEGRATION.md` |
 | EWO-000017-COMPLETION | EWO-000017 Engineering Completion Report | Approved | Engineering Governance | `docs/work-orders/EWO-000017-ENGINEERING-COMPLETION-REPORT.md` |
 | EWO-000018 | Governance Framework Modernization | Active | Engineering Governance | `docs/work-orders/EWO-000018-GOVERNANCE-FRAMEWORK-MODERNIZATION.md` |
-| EWO-000019 | Codex Wrapper Enforcement and Notification Lifecycle Verification | Active | Engineering Governance | `docs/work-orders/EWO-000019-CODEX-WRAPPER-ENFORCEMENT.md` |
+| EWO-000019 | Codex Wrapper Enforcement and Notification Lifecycle Verification | Completed | Engineering Governance | `docs/work-orders/EWO-000019-CODEX-WRAPPER-ENFORCEMENT.md` |
+| EWO-000019-COMPLETION | EWO-000019 Engineering Completion Report | Approved | Engineering Governance | `docs/work-orders/EWO-000019-ENGINEERING-COMPLETION-REPORT.md` |
 | FIN-0001 | Master Financial Ledger | Active | Homelab Infrastructure | `docs/finance/FIN-0001-MASTER_FINANCIAL_LEDGER.md` |
 | FIN-0002 | Master Procurement Register | Active | Homelab Infrastructure | `docs/finance/FIN-0002-MASTER_PROCUREMENT_REGISTER.md` |
 | PROC-000001 | Engineering Terminal 01 Procurement | Closed | Homelab Infrastructure | `docs/finance/procurements/PROC-000001.md` |
@@ -554,3 +562,5 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.22 | 2026-07-17 | Reconciled repository Work Initiation with Category A/B/C gates and registered repository-governed Completion Report and Governance Conformance Review behavior under EWO-000018. |
 | 2.23 | 2026-07-17 | Registered EWO-000017 completion, its Completion Report, and accepted Stage 1 notification capability. |
 | 2.24 | 2026-07-17 | Registered and activated EWO-000019 for Codex wrapper enforcement and notification lifecycle verification. |
+| 2.25 | 2026-07-17 | Integrated mandatory `engctl codex` launch and wrapper-bypass detection into repository Work Initiation under EWO-000019. |
+| 2.26 | 2026-07-17 | Registered EWO-000019 completion, lifecycle acceptance, and its Engineering Completion Report. |

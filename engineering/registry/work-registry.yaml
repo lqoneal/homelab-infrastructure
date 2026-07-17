@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 22
+revision: 23
 updated_at: '2026-07-17'
 serialization: yaml
 mutation_history:
@@ -135,6 +135,12 @@ mutation_history:
   actor: Codex
   action: create EMP-WORK-CODEX-WRAPPER-ENFORCEMENT
   reason: Register and activate EWO-000019 wrapper-enforcement investigation and corrective implementation.
+- revision: 23
+  previous_revision: 22
+  at: '2026-07-17T15:00:00+00:00'
+  actor: Codex
+  action: transition EMP-WORK-CODEX-WRAPPER-ENFORCEMENT to completed
+  reason: Wrapper enforcement, lifecycle regression, and two live acceptance missions passed.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -915,7 +921,7 @@ entities:
   - registry_id: EMP-WORK-CODEX-WRAPPER-ENFORCEMENT
     object_type: WorkItem
     title: Codex Wrapper Enforcement and Notification Lifecycle Verification
-    management_state: active
+    management_state: completed
     owner: Homelab Infrastructure
     scope: EWO-000019
     authority_reference: EWO-000019
@@ -930,13 +936,19 @@ entities:
       target: EMP-WORK-CODEX-NTFY-STAGE-1
     created_at: 2026-07-17
     updated_at: 2026-07-17
-    revision: 1
+    revision: 2
     transition_history:
     - from: null
       to: active
       at: 2026-07-17
       actor: Codex
       reason: EWO-000019 activated wrapper-enforcement investigation and bounded correction.
+      authority_reference: EWO-000019
+    - from: active
+      to: completed
+      at: 2026-07-17
+      actor: Codex
+      reason: Mandatory wrapper governance, bypass detection, lifecycle regressions, and live acceptance passed.
       authority_reference: EWO-000019
     project_id: EMP-PROJECT-HOMELAB
     order: 7

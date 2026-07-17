@@ -11,6 +11,7 @@ CONFIG="$TEST_ROOT/notifications.env"
 MOCK_CURL="$TEST_ROOT/mock-curl"
 ARGS_BIN="$TEST_ROOT/args-bin"
 LONG_BIN="$TEST_ROOT/long-bin"
+MARKER_BIN="$TEST_ROOT/marker-bin"
 
 PRIVATE_TEST_TOPIC="qualification-$PPID-$$-$RANDOM"
 cat > "$CONFIG" <<EOF
@@ -42,6 +43,13 @@ cat > "$LONG_BIN" <<'EOF'
 exec /bin/sleep "$@"
 EOF
 chmod 700 "$LONG_BIN"
+
+cat > "$MARKER_BIN" <<'EOF'
+#!/usr/bin/env bash
+[[ "${ENGINEERING_CODEX_WRAPPER:-}" == "engctl-codex-v1" ]]
+[[ "${ENGINEERING_CODEX_EWO:-}" == "EWO-000019" ]]
+EOF
+chmod 700 "$MARKER_BIN"
 
 export NTFY_CONFIG_FILE="$CONFIG"
 export CURL_BIN="$MOCK_CURL"
@@ -86,6 +94,20 @@ false_status=$?
 set -e
 [[ $false_status -eq 1 ]]
 
+CODEX_BIN="$MARKER_BIN" "$ENGCTL" codex --ewo EWO-000019 --
+
+# A Codex-context initiation outside the wrapper is rejected and reports a
+# value-free bypass condition. The accepted marker permits the same operation.
+set +e
+CODEX_THREAD_ID=controlled-bypass-test ENGINEERING_CODEX_WRAPPER= \
+    "$ENGCTL" resume >/dev/null 2>"$TEST_ROOT/bypass.error"
+bypass_status=$?
+set -e
+[[ $bypass_status -eq 78 ]]
+rg -q 'Codex wrapper bypass detected' "$TEST_ROOT/bypass.error"
+CODEX_THREAD_ID=controlled-wrapper-test ENGINEERING_CODEX_WRAPPER=engctl-codex-v1 \
+    "$ENGCTL" resume >/dev/null
+
 export CODEX_TEST_ARGS="$TEST_ROOT/codex.args"
 CODEX_BIN="$ARGS_BIN" "$ENGCTL" codex --ewo EWO-000017 -- \
     --flag value "argument with spaces" "quoted value"
@@ -120,6 +142,12 @@ notification_failure_status=$?
 set -e
 [[ $notification_failure_status -eq 0 ]]
 
+set +e
+CODEX_BIN="$LONG_BIN" "$ENGCTL" codex --ewo EWO-000019 --timeout 1 -- 300
+timeout_status=$?
+set -e
+[[ $timeout_status -eq 143 ]]
+
 if rg -n "$PRIVATE_TEST_TOPIC|test-token" "$MOCK_CURL_ARGS" >/dev/null; then
     printf 'secret material appeared in curl arguments\n' >&2
     exit 1
@@ -131,5 +159,7 @@ rg -q 'Title: Codex Started' "$MOCK_CURL_CONFIG"
 rg -q 'Title: Codex Complete' "$MOCK_CURL_CONFIG"
 rg -q 'Title: Codex Failed' "$MOCK_CURL_CONFIG"
 rg -q 'Title: Codex Interrupted' "$MOCK_CURL_CONFIG"
+rg -q 'Title: Codex Timed Out' "$MOCK_CURL_CONFIG"
+rg -q 'Title: Codex Wrapper Bypass' "$MOCK_CURL_CONFIG"
 
 printf 'PASS: Codex lifecycle notification controlled tests\n'

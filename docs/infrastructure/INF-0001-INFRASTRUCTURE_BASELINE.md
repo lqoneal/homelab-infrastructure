@@ -2,19 +2,19 @@
 
 document_id: INF-0001
 title: Engineering Infrastructure Baseline
-version: 2.4
+version: 2.5
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-17
-phase: Codex Stage 1 Completion Notification Integration
+phase: Codex Wrapper Enforcement
 domain: Infrastructure
 classification: Global Infrastructure Baseline
-predecessor_revision: INF-0001@2.3
+predecessor_revision: INF-0001@2.4
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EWO-000017
+approval_reference: EWO-000019
 approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
@@ -251,7 +251,7 @@ EWO-000017 establishes Codex lifecycle notifications as shared Engineering
 Operations infrastructure owned by Homelab. The global entry point is:
 
 ```bash
-engctl codex [--ewo EWO-XXXXXX] [--] [codex arguments ...]
+engctl codex [--ewo EWO-XXXXXX] [--timeout SECONDS] [--] [codex arguments ...]
 ```
 
 The controller records start time, repository, host, optional Work Order, and
@@ -266,6 +266,19 @@ after `--` unchanged, returns the underlying Codex exit status, and sends:
 Notification delivery failure prints a warning but never replaces the Codex
 result. Signal handling forwards the signal, waits for the child, and prevents
 an orphaned Codex process.
+
+Repository-governed Codex missions are required to use this entry point. The
+wrapper exports an inherited marker and Work Order identity. Resume and
+Engineering Work Initiation qualification reject a detected Codex session that
+lacks the marker with exit status 78, emit a value-free engineering condition,
+and attempt a non-fatal bypass notification. This detects procedural bypass at
+the first governed initiation gate; it is not cryptographic process attestation
+and cannot force an already-running external Codex host to relaunch itself.
+
+`--timeout` or `CODEX_TIMEOUT` applies an optional mission runtime bound. A
+timed-out child receives `SIGTERM`, retains the resulting status, and produces
+`Codex Timed Out`. The existing `Codex Started`, `Codex Complete`, `Codex
+Failed`, and `Codex Interrupted` events remain unchanged.
 
 ### Secure local configuration
 
@@ -551,3 +564,4 @@ These targets describe the intended engineering direction and shall be updated a
 | 2.2     | 2026-07-17 | Replaced the obsolete secure-drive baseline with the qualified AST-000005 ext4 configuration and intentional manual-mount strategy. |
 | 2.3     | 2026-07-17 | Established shared Codex lifecycle notifications, secure ntfy configuration, controller usage, failure behavior, troubleshooting, and future self-hosted migration. |
 | 2.4     | 2026-07-17 | Recorded value-free example rejection and completed controlled live acceptance of the Stage 1 notification workflow. |
+| 2.5     | 2026-07-17 | Required wrapper use for repository-governed Codex missions, added initiation-time bypass detection, and added bounded mission-timeout notification behavior. |

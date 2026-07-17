@@ -1,14 +1,14 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 4.5
+version: 4.6
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-17
-phase: Codex Wrapper Enforcement Active
+phase: Codex Wrapper Enforcement Complete
 classification: Project State
-predecessor_revision: PROJ-0001@4.4
+predecessor_revision: PROJ-0001@4.5
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -295,14 +295,13 @@ The side mission does not replace the current phase or primary task. It shall no
 **Current Task:**
 
 EWO-000019 Codex wrapper enforcement and notification lifecycle verification is
-active. No unrelated implementation is authorized.
+accepted and complete.
 
 **Next Immediate Step:**
 
-Reconstruct the two post-EWO-000017 missed-notification missions, establish the
-wrapper bypass root cause, and implement only the bounded enforcement,
-detection, lifecycle validation, documentation, registry, and EOS corrections
-authorized by EWO-000019.
+Launch every future repository-governed Codex mission through `engctl codex`.
+Select the next separately authorized objective; SprinterOS diagnostics and
+notification Stage 2/3 remain unauthorized without successor authority.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -536,3 +535,4 @@ When resuming this project:
 | 4.3     | 2026-07-17 | Accepted and closed EWO-000017 Stage 1 notifications after loader correction, regression qualification, value-blind configuration checks, and controlled live delivery. |
 | 4.4     | 2026-07-17 | Reconciled SprinterOS execution authority: Phase 1 and SPRINT-1.1 remain qualified and ready, while fault isolation awaits an approved Active EWO. |
 | 4.5     | 2026-07-17 | Activated EWO-000019 for Codex wrapper enforcement and notification lifecycle verification after two post-acceptance missions bypassed notifications. |
+| 4.6     | 2026-07-17 | Accepted EWO-000019 wrapper marking, initiation-time bypass detection, timeout lifecycle notification, regression coverage, and two live wrapped missions. |

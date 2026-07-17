@@ -40,18 +40,40 @@ Work Order: $work_order"
 
 eos_codex_usage() {
     cat <<'EOF'
-Usage: engctl codex [--ewo EWO-XXXXXX] [--] [codex arguments ...]
+Usage: engctl codex [--ewo EWO-XXXXXX] [--timeout SECONDS] [--] [codex arguments ...]
 
 Environment:
   CODEX_EWO       Default Work Order when --ewo is omitted.
   CODEX_BIN       Underlying Codex executable; intended for controlled tests.
+  CODEX_TIMEOUT   Optional positive mission timeout in seconds; zero disables.
   NTFY_CONFIG_FILE  Explicit local notification configuration.
 EOF
+}
+
+eos_codex_wrapper_gate() {
+    local operation="${1:-repository-governed engineering initiation}"
+
+    # Non-Codex operators and automation are outside the Codex launch contract.
+    [[ -n "${CODEX_THREAD_ID:-}" ]] || return 0
+    if [[ "${ENGINEERING_CODEX_WRAPPER:-}" == "engctl-codex-v1" ]]; then
+        return 0
+    fi
+    if [[ "${ENGINEERING_CODEX_WRAPPER_EXCEPTION:-}" == "EWO-000019-bootstrap" ]]; then
+        printf 'WARNING: documented EWO-000019 wrapper-enforcement bootstrap exception active.\n' >&2
+        return 0
+    fi
+
+    printf 'ERROR: Codex wrapper bypass detected during %s; repository-governed Codex missions SHALL launch through engctl codex.\n' "$operation" >&2
+    eos_codex_notification \
+        "Codex Wrapper Bypass" "Wrapper bypass detected" \
+        "$(eos_codex_repository_name)" "${CODEX_EWO:-Not specified}" "$(hostname)" || true
+    return 78
 }
 
 eos_codex_run() {
     local work_order="${CODEX_EWO:-Not specified}"
     local codex_bin="${CODEX_BIN:-codex}"
+    local mission_timeout="${CODEX_TIMEOUT:-0}"
     local repository host start_epoch end_epoch elapsed duration
     local child_pid="" final_sent=0 codex_exit=0
     local -a codex_args=()
@@ -64,6 +86,14 @@ eos_codex_run() {
                     return 64
                 fi
                 work_order="$2"
+                shift 2
+                ;;
+            --timeout)
+                if (($# < 2)) || [[ ! "$2" =~ ^[1-9][0-9]*$ ]]; then
+                    printf 'ERROR: --timeout requires a positive number of seconds.\n' >&2
+                    return 64
+                fi
+                mission_timeout="$2"
                 shift 2
                 ;;
             --help|-h)
@@ -84,6 +114,10 @@ eos_codex_run() {
 
     if [[ "$work_order" != "Not specified" && ! "$work_order" =~ ^EWO-[0-9]{6}$ ]]; then
         printf 'ERROR: Work Order must match EWO-XXXXXX.\n' >&2
+        return 64
+    fi
+    if [[ ! "$mission_timeout" =~ ^[0-9]+$ ]]; then
+        printf 'ERROR: CODEX_TIMEOUT must be zero or a positive number of seconds.\n' >&2
         return 64
     fi
     if ! command -v "$codex_bin" >/dev/null 2>&1; then
@@ -117,7 +151,14 @@ eos_codex_run() {
     trap 'eos_codex_interrupted TERM 15; return $?' TERM
     trap 'eos_codex_interrupted HUP 1; return $?' HUP
 
-    "$codex_bin" "${codex_args[@]}" <&0 &
+    export ENGINEERING_CODEX_WRAPPER="engctl-codex-v1"
+    export ENGINEERING_CODEX_EWO="$work_order"
+    if ((mission_timeout > 0)); then
+        timeout --preserve-status --signal=TERM --kill-after=5 \
+            "$mission_timeout" "$codex_bin" "${codex_args[@]}" <&0 &
+    else
+        "$codex_bin" "${codex_args[@]}" <&0 &
+    fi
     child_pid=$!
     wait "$child_pid" || codex_exit=$?
     child_pid=""
@@ -130,7 +171,9 @@ eos_codex_run() {
     end_epoch="$(date +%s)"
     elapsed=$((end_epoch - start_epoch))
     duration="$(eos_codex_duration "$elapsed")"
-    if ((codex_exit == 0)); then
+    if ((mission_timeout > 0 && codex_exit == 143)); then
+        eos_codex_notification "Codex Timed Out" "Timed out after ${mission_timeout}s" "$repository" "$work_order" "$host" "$duration" || true
+    elif ((codex_exit == 0)); then
         eos_codex_notification "Codex Complete" "Success" "$repository" "$work_order" "$host" "$duration" || true
     else
         eos_codex_notification "Codex Failed" "Exit code $codex_exit" "$repository" "$work_order" "$host" "$duration" || true

@@ -43,7 +43,7 @@ Usage:
   engctl context [project]
   engctl validate [project]
   engctl platform {status|validate|qualify} [project]
-  engctl codex [--ewo EWO-XXXXXX] [--] [codex arguments ...]
+  engctl codex [--ewo EWO-XXXXXX] [--timeout SECONDS] [--] [codex arguments ...]
   engctl version
 EOF
 }
@@ -53,6 +53,7 @@ shift || true
 
 case "$cmd" in
     resume)
+        eos_codex_wrapper_gate "Engineering Work Initiation resume" || exit $?
         project="${1:-$EOS_PROJECT}"
         eos_render_resume "$project"
         ;;
@@ -114,7 +115,7 @@ case "$cmd" in
         case "$action" in
             status) eos_render_platform "$project" ;;
             validate) eos_platform_validate "$project" ;;
-            qualify) eos_platform_qualify "$project" ;;
+            qualify) eos_codex_wrapper_gate "Engineering Work Initiation qualification" || exit $?; eos_platform_qualify "$project" ;;
             *) echo "ERROR: unknown platform action: $action" >&2; usage; exit 1 ;;
         esac
         ;;
@@ -123,7 +124,7 @@ case "$cmd" in
         eos_codex_run "$@"
         ;;
     version)
-        echo "engctl version 0.7.0"
+        echo "engctl version 0.8.0"
         ;;
     help|-h|--help)
         usage
