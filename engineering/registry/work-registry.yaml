@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 23
+revision: 24
 updated_at: '2026-07-17'
 serialization: yaml
 mutation_history:
@@ -141,6 +141,12 @@ mutation_history:
   actor: Codex
   action: transition EMP-WORK-CODEX-WRAPPER-ENFORCEMENT to completed
   reason: Wrapper enforcement, lifecycle regression, and two live acceptance missions passed.
+- revision: 24
+  previous_revision: 23
+  at: '2026-07-17T16:00:00+00:00'
+  actor: Engineering Governance authorization agent
+  action: create and activate EMP-WORK-ENGINEERING-NOTIFICATION-SERVICE
+  reason: EGR-000003 approved and activated EWO-000020 as the single successor Homelab implementation authority.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -958,6 +964,43 @@ entities:
     work_type: engineering-operations
     priority: 1
     completion_criteria: Mandatory wrapper governance, bypass detection, lifecycle regressions, two live acceptance missions, and platform reconciliation pass.
+    queue_ids: []
+  - registry_id: EMP-WORK-ENGINEERING-NOTIFICATION-SERVICE
+    object_type: WorkItem
+    title: Engineering Notification Service Implementation
+    management_state: active
+    owner: Homelab Infrastructure
+    scope: EWO-000020
+    authority_reference: EGR-000003
+    source_records:
+    - EGR-000003
+    - EWO-000020
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: EWO-000020
+    - type: related_to
+      target: EGR-000003
+    - type: related_to
+      target: EMP-WORK-CODEX-NTFY-STAGE-1
+    created_at: 2026-07-17
+    updated_at: 2026-07-17
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-17
+      actor: Engineering Governance authorization agent
+      reason: EGR-000003 approved and activated EWO-000020 without beginning implementation.
+      authority_reference: EGR-000003
+    project_id: EMP-PROJECT-HOMELAB
+    order: 8
+    mission_id: null
+    phase_id: null
+    sprint_id: null
+    work_type: engineering-platform-service
+    priority: 1
+    completion_criteria: Independent handoff-based notification lifecycles, persistence, retries, delivery evidence, validation, operator acceptance, documentation, EOS reconciliation, and closeout pass under EWO-000020.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP

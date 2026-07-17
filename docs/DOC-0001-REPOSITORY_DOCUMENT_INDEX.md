@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.26
+version: 2.27
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-17
-phase: Codex Wrapper Enforcement
+phase: Engineering Notification Service Authorization
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.25
+predecessor_revision: DOC-0001@2.26
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EWO-000019
+approval_reference: EGR-000003
 approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
@@ -89,6 +89,10 @@ relationships:
     target: EWO-000019-COMPLETION
   - type: related_to
     target: EGR-000002
+  - type: indexes
+    target: EGR-000003
+  - type: indexes
+    target: EWO-000020
   - type: related_to
     target: EWO-000018
 tags:
@@ -296,6 +300,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | TPL-0004 | Engineering Governance Resolution Template | Active | Engineering Governance | `docs/templates/TPL-0004-ENGINEERING_GOVERNANCE_RESOLUTION_TEMPLATE.md` |
 | EGR-000001 | Governance Foundation Qualification and Publication | Active | Engineering Governance | `docs/resolutions/EGR-000001-GOVERNANCE_FOUNDATION_QUALIFICATION_AND_PUBLICATION.md` |
 | EGR-000002 | Governance Framework Modernization Authorization | Active | Engineering Governance | `docs/resolutions/EGR-000002-GOVERNANCE-FRAMEWORK-MODERNIZATION-AUTHORIZATION.md` |
+| EGR-000003 | EWO-000020 Notification Service Authorization | Active | Engineering Governance | `docs/resolutions/EGR-000003-EWO-000020-NOTIFICATION-SERVICE-AUTHORIZATION.md` |
 | EWO-000010 | Governance Baseline 1.0 Qualification | Active | Engineering Governance | `docs/work-orders/EWO-000010-GOVERNANCE_BASELINE_1.0_QUALIFICATION.md` |
 | EWO-000010-EVIDENCE | EWO-000010 Qualification Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000010-QUALIFICATION-EVIDENCE-PACKAGE.md` |
 | EWO-000010-COMPLETION | EWO-000010 Qualification Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000010-QUALIFICATION-COMPLETION-REPORT.md` |
@@ -318,6 +323,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EWO-000018 | Governance Framework Modernization | Active | Engineering Governance | `docs/work-orders/EWO-000018-GOVERNANCE-FRAMEWORK-MODERNIZATION.md` |
 | EWO-000019 | Codex Wrapper Enforcement and Notification Lifecycle Verification | Completed | Engineering Governance | `docs/work-orders/EWO-000019-CODEX-WRAPPER-ENFORCEMENT.md` |
 | EWO-000019-COMPLETION | EWO-000019 Engineering Completion Report | Approved | Engineering Governance | `docs/work-orders/EWO-000019-ENGINEERING-COMPLETION-REPORT.md` |
+| EWO-000020 | Engineering Notification Service Implementation | Active | Engineering Governance | `docs/work-orders/EWO-000020-ENGINEERING-NOTIFICATION-SERVICE-IMPLEMENTATION.md` |
 | FIN-0001 | Master Financial Ledger | Active | Homelab Infrastructure | `docs/finance/FIN-0001-MASTER_FINANCIAL_LEDGER.md` |
 | FIN-0002 | Master Procurement Register | Active | Homelab Infrastructure | `docs/finance/FIN-0002-MASTER_PROCUREMENT_REGISTER.md` |
 | PROC-000001 | Engineering Terminal 01 Procurement | Closed | Homelab Infrastructure | `docs/finance/procurements/PROC-000001.md` |
@@ -564,3 +570,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.24 | 2026-07-17 | Registered and activated EWO-000019 for Codex wrapper enforcement and notification lifecycle verification. |
 | 2.25 | 2026-07-17 | Integrated mandatory `engctl codex` launch and wrapper-bypass detection into repository Work Initiation under EWO-000019. |
 | 2.26 | 2026-07-17 | Registered EWO-000019 completion, lifecycle acceptance, and its Engineering Completion Report. |
+| 2.27 | 2026-07-17 | Registered EGR-000003 and approved Active EWO-000020 as the bounded Engineering Notification Service implementation authority. |
