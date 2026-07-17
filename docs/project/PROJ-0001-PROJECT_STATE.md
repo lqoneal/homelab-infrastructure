@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 5.0
+version: 5.1
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-17
-phase: SPEC-0007 Revision 15 Controlled Publication Authorized
+phase: SPEC-0007 Revision 15 Controlled Publication Complete
 classification: Project State
-predecessor_revision: PROJ-0001@4.9
+predecessor_revision: PROJ-0001@5.0
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Mission Handoff - Authorize Revision 15 Controlled Publication Mission
+approval_reference: EWO-000022
 approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
@@ -137,8 +137,9 @@ Build the Engineering Operating System foundation for AI Assistant, SprinterOS, 
 
 **Current Overall Goal:**
 
-Execute the separately authorized SPEC-0007 Revision 15 controlled-publication
-mission while preserving unrelated platform and product boundaries.
+Preserve the published SPEC-0007 Version 1.1 Engineering Baseline and await
+Engineering Governance lifecycle disposition for EWO-000022 before beginning
+any separately authorized successor mission.
 
 ---
 
@@ -146,12 +147,13 @@ mission while preserving unrelated platform and product boundaries.
 
 **Current Phase:**
 
-SPEC-0007 Revision 15 Controlled Publication Authorized
+SPEC-0007 Revision 15 Controlled Publication Complete
 
 **Phase Objective:**
 
-Use EWO-000022 to discover, acquire, reconcile, publish, evidence, validate,
-and commit Revision 15 as a new controlled SPEC-0007 successor revision.
+SPEC-0007 Version 1.1 publishes Revision 15 as a controlled Engineering
+Baseline. Planning and Developing areas remain explicit deferrals and provide
+no implementation authority.
 
 ---
 
@@ -307,19 +309,19 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-EWO-000022 SPEC-0007 Revision 15 Controlled Publication is the Active bounded
-Homelab work authority. EWO-000021 reconciliation is recorded complete in the
-Work Registry. SPEC-0007 Version 1.0 remains the approved Revision 14-derived
-baseline until the Revision 15 successor completes its controlled lifecycle.
+EWO-000022 remains the Active bounded Homelab work authority pending
+Engineering Governance lifecycle disposition. Its execution deliverables are
+complete: the selected Revision 15 manuscript was acquired with matching
+SHA-256, reconciled, and published as SPEC-0007 Version 1.1. Version 1.0 is
+preserved in Git history.
 
 **Next Immediate Step:**
 
-Launch the publication mission through `engctl codex --ewo EWO-000022 -- ...`,
-repeat Category A Engineering Work Initiation, resolve the authorized Revision
-15 SCP source, and begin controlled discovery and acquisition. Notification
-implementation, Raspberry Pi qualification, architecture development,
-SprinterOS diagnostics, and notification Stage 2/3 remain outside the active
-objective.
+Engineering Governance reviews EWO-000022 evidence and determines lifecycle
+closure. Notification implementation, Raspberry Pi qualification,
+architecture development, SprinterOS diagnostics, and notification Stage 2/3
+remain outside this completed execution objective and require separate Active
+authority.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -558,3 +560,4 @@ When resuming this project:
 | 4.8     | 2026-07-17 | Recorded EGR-000004, superseded unstarted EWO-000020, and approved and activated EWO-000021 as the sole Active Homelab work authority without beginning reconciliation. |
 | 4.9     | 2026-07-17 | Published SPEC-0007 Engineering Baseline 1.0, completed repository reconciliation, and recorded MILESTONE-0006 transition to governed self-implementation. |
 | 5.0     | 2026-07-17 | Registered and activated EWO-000022 and its mission as the bounded authority for SPEC-0007 Revision 15 discovery, SCP acquisition, reconciliation, controlled publication, evidence, validation, and repository commit. |
+| 5.1     | 2026-07-17 | Published SPEC-0007 Version 1.1 from the verified Revision 15 source, recorded acquisition and publication evidence, and advanced EWO-000022 to governance review without claiming lifecycle closure. |

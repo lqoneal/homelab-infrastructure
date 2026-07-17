@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 30
+revision: 31
 updated_at: '2026-07-17'
 serialization: yaml
 mutation_history:
@@ -191,6 +191,12 @@ mutation_history:
   actor: Engineering Governance authorization agent
   action: create and activate EMP-WORK-SPEC-0007-REVISION-15-PUBLICATION
   reason: Register EWO-000022 as the active bounded execution authority for SPEC-0007 Revision 15 controlled publication.
+- revision: 31
+  previous_revision: 30
+  at: '2026-07-17T21:15:00+00:00'
+  actor: Codex publication agent
+  action: record SPEC-0007 Revision 15 publication readiness
+  reason: Record verified acquisition, SPEC-0007 Version 1.1 controlled publication, evidence, and governance-review readiness while preserving EWO-000022 lifecycle authority as Active.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -454,8 +460,8 @@ entities:
     - type: related_to
       target: SPEC-0007
     created_at: '2026-07-17T19:48:47+00:00'
-    updated_at: '2026-07-17T19:48:47+00:00'
-    revision: 1
+    updated_at: '2026-07-17T21:15:00+00:00'
+    revision: 2
     transition_history:
     - from: null
       to: active
@@ -1159,8 +1165,8 @@ entities:
     - type: related_to
       target: SPEC-0007
     created_at: '2026-07-17T19:48:47+00:00'
-    updated_at: '2026-07-17T19:48:47+00:00'
-    revision: 1
+    updated_at: '2026-07-17T21:15:00+00:00'
+    revision: 2
     transition_history:
     - from: null
       to: active
