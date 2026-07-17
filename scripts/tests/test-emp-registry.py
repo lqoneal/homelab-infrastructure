@@ -27,7 +27,7 @@ def fresh_registry():
 
 registry = fresh_registry()
 assert registry.validate() == []
-assert len(registry.objects) == 34
+assert len(registry.objects) == 36
 assert {
     "EMP-WORK-CODEX-NTFY-STAGE-1",
     "EMP-WORK-CODEX-NTFY-STAGE-2",

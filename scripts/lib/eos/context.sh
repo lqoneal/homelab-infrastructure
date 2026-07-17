@@ -406,7 +406,10 @@ eos_render_operational_status() {
     printf "%-18s %s\n" "Scanner Workflow:" "$(eos_scanner_workflow_state)"
     printf "%-18s %s\n" "Avahi:" "$(eos_service_state avahi-daemon)"
     printf "%-18s %s\n" "Scanner Tools:" "$(eos_command_state scanimage)"
-    eos_render_printer_health
+    # Resume is a context-reconstruction surface. Optional device telemetry may
+    # be unavailable, but that must not turn a successfully rendered context
+    # into a failed command or abort the runtime regression suite.
+    eos_render_printer_health || true
 }
 
 eos_render_resume() {

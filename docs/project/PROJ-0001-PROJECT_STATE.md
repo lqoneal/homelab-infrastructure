@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 4.7
+version: 4.9
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-17
-phase: Engineering Notification Service Authorized
+phase: Engineering Platform Repository Reconciliation Complete
 classification: Project State
-predecessor_revision: PROJ-0001@4.6
+predecessor_revision: PROJ-0001@4.8
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000003
+approval_reference: EGR-000004
 approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
@@ -40,6 +40,10 @@ relationships:
   - type: related_to
     target: EWO-000020
   - type: related_to
+    target: EGR-000004
+  - type: related_to
+    target: EWO-000021
+  - type: related_to
     target: EOS-0003
   - type: related_to
     target: MILESTONE-0003
@@ -48,9 +52,13 @@ relationships:
   - type: related_to
     target: MILESTONE-0005
   - type: related_to
+    target: MILESTONE-0006
+  - type: related_to
     target: EMP-0001
   - type: related_to
     target: SPEC-0006
+  - type: related_to
+    target: SPEC-0007
   - type: related_to
     target: SERVICE-0002
   - type: governed_by
@@ -127,8 +135,8 @@ Build the Engineering Operating System foundation for AI Assistant, SprinterOS, 
 
 **Current Overall Goal:**
 
-Operate the qualified Engineering Platform and recovery capability while
-preserving SprinterOS readiness pending an approved Active execution EWO.
+Begin separately authorized Engineering Platform Core Services implementation
+under SPEC-0007 while preserving unrelated platform and product boundaries.
 
 ---
 
@@ -136,13 +144,12 @@ preserving SprinterOS readiness pending an approved Active execution EWO.
 
 **Current Phase:**
 
-Engineering Platform Foundation 1.0 Operational — SprinterOS Recovery Assessment
+Engineering Platform Repository Reconciliation Complete
 
 **Phase Objective:**
 
-Preserve the qualified Engineering Platform and recovery baselines while
-SprinterOS remains qualified and ready and persistent MMC storage I/O errors
-await separately approved fault-isolation execution authority.
+Use SPEC-0007 as the governing technical baseline for the next separately
+authorized EGAS Foundation mission. EWO-000021 reconciliation is complete.
 
 ---
 
@@ -298,16 +305,18 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-EWO-000019 Codex wrapper enforcement and notification lifecycle verification
-remains accepted and complete. EWO-000020 Engineering Notification Service
-Implementation is Approved Active. Its implementation has not begun.
+EWO-000019 Codex wrapper enforcement remains accepted and complete. EWO-000020
+was superseded before implementation. EWO-000021 Engineering Platform
+Repository Reconciliation Mission (Handoff 1) has completed reconciliation and
+qualification; its controlled publication awaits the final repository commit
+and checkpoint.
 
 **Next Immediate Step:**
 
-Launch a separate repository-governed Codex mission through `engctl codex --ewo
-EWO-000020 --` to implement the Engineering Notification Service. Do not treat
-this authorization transaction as implementation evidence. SprinterOS
-diagnostics and notification Stage 2/3 remain outside the active objective.
+After EWO-000021 publication is persisted, authorize EGAS Foundation through a
+new Engineering Governance Resolution and Active Engineering Work Order before
+implementation. Notification-service implementation, SprinterOS diagnostics,
+and notification Stage 2/3 remain outside the active objective.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -543,3 +552,5 @@ When resuming this project:
 | 4.5     | 2026-07-17 | Activated EWO-000019 for Codex wrapper enforcement and notification lifecycle verification after two post-acceptance missions bypassed notifications. |
 | 4.6     | 2026-07-17 | Accepted EWO-000019 wrapper marking, initiation-time bypass detection, timeout lifecycle notification, regression coverage, and two live wrapped missions. |
 | 4.7     | 2026-07-17 | Recorded EGR-000003 bootstrap-deadlock correction, approved and activated EWO-000020 as the sole active Homelab work item, and recorded that notification-service implementation has not begun. |
+| 4.8     | 2026-07-17 | Recorded EGR-000004, superseded unstarted EWO-000020, and approved and activated EWO-000021 as the sole Active Homelab work authority without beginning reconciliation. |
+| 4.9     | 2026-07-17 | Published SPEC-0007 Engineering Baseline 1.0, completed repository reconciliation, and recorded MILESTONE-0006 transition to governed self-implementation. |

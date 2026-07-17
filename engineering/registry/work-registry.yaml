@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 24
+revision: 28
 updated_at: '2026-07-17'
 serialization: yaml
 mutation_history:
@@ -116,37 +116,69 @@ mutation_history:
   at: '2026-07-17T04:04:00+00:00'
   actor: Codex
   action: register deferred Codex notification stages
-  reason: Record Stage 2 heartbeat notifications and Stage 3 structured progress integration as explicit EWO-000017 deferrals.
+  reason: Record Stage 2 heartbeat notifications and Stage 3 structured progress integration
+    as explicit EWO-000017 deferrals.
 - revision: 20
   previous_revision: 19
   at: '2026-07-17T12:00:00+00:00'
   actor: Codex
   action: create EMP-WORK-GOVERNANCE-FRAMEWORK-MODERNIZATION
-  reason: Register EGR-000002 authorization and EWO-000018 as the ready successor governance implementation mission.
+  reason: Register EGR-000002 authorization and EWO-000018 as the ready successor
+    governance implementation mission.
 - revision: 21
   previous_revision: 20
   at: '2026-07-17T13:00:00+00:00'
   actor: Codex
   action: transition EMP-WORK-GOVERNANCE-FRAMEWORK-MODERNIZATION to completed
-  reason: Record holistic repository-governed workflow reconciliation and validated publication under EWO-000018.
+  reason: Record holistic repository-governed workflow reconciliation and validated
+    publication under EWO-000018.
 - revision: 22
   previous_revision: 21
   at: '2026-07-17T14:00:00+00:00'
   actor: Codex
   action: create EMP-WORK-CODEX-WRAPPER-ENFORCEMENT
-  reason: Register and activate EWO-000019 wrapper-enforcement investigation and corrective implementation.
+  reason: Register and activate EWO-000019 wrapper-enforcement investigation and corrective
+    implementation.
 - revision: 23
   previous_revision: 22
   at: '2026-07-17T15:00:00+00:00'
   actor: Codex
   action: transition EMP-WORK-CODEX-WRAPPER-ENFORCEMENT to completed
-  reason: Wrapper enforcement, lifecycle regression, and two live acceptance missions passed.
+  reason: Wrapper enforcement, lifecycle regression, and two live acceptance missions
+    passed.
 - revision: 24
   previous_revision: 23
   at: '2026-07-17T16:00:00+00:00'
   actor: Engineering Governance authorization agent
   action: create and activate EMP-WORK-ENGINEERING-NOTIFICATION-SERVICE
-  reason: EGR-000003 approved and activated EWO-000020 as the single successor Homelab implementation authority.
+  reason: EGR-000003 approved and activated EWO-000020 as the single successor Homelab
+    implementation authority.
+- revision: 25
+  previous_revision: 24
+  at: '2026-07-17T17:00:00+00:00'
+  actor: Engineering Governance authorization agent
+  action: transition EMP-WORK-ENGINEERING-NOTIFICATION-SERVICE to cancelled
+  reason: EGR-000004 supersedes unstarted EWO-000020 so EWO-000021 can become the
+    sole Active Homelab authority.
+- revision: 26
+  previous_revision: 25
+  at: '2026-07-17T17:00:01+00:00'
+  actor: Engineering Governance authorization agent
+  action: create EMP-WORK-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION
+  reason: Register and activate EWO-000021 as the sole Engineering Platform Repository
+    Reconciliation authority.
+- revision: 27
+  previous_revision: 26
+  at: '2026-07-17T17:50:00+00:00'
+  actor: Codex
+  action: create EMP-MILESTONE-ENGINEERING-PLATFORM-SELF-IMPLEMENTATION
+  reason: Record MILESTONE-0006 and the transition to SPEC-0007-governed implementation.
+- revision: 28
+  previous_revision: 27
+  at: '2026-07-17T17:50:01+00:00'
+  actor: Codex
+  action: transition EMP-WORK-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION to completed
+  reason: EWO-000021 publication, reconciliation, milestone recording, and qualification completed.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -805,7 +837,8 @@ entities:
       to: completed
       at: 2026-07-17
       actor: Codex
-      reason: Stage 1 implementation, regression qualification, and controlled live acceptance completed.
+      reason: Stage 1 implementation, regression qualification, and controlled live
+        acceptance completed.
       authority_reference: EWO-000017
     project_id: EMP-PROJECT-HOMELAB
     order: 3
@@ -824,13 +857,15 @@ entities:
     owner: Homelab Infrastructure
     scope: Engineering Operations
     authority_reference: EWO-000017
-    source_records: [EWO-000017, PROJ-0001]
+    source_records:
+    - EWO-000017
+    - PROJ-0001
     relationships:
     - type: related_to
       target: EMP-WORK-CODEX-NTFY-STAGE-1
     created_at: 2026-07-17
-    updated_at: 2026-07-17
-    revision: 1
+    updated_at: '2026-07-17T17:50:01+00:00'
+    revision: 2
     transition_history:
     - from: null
       to: deferred
@@ -854,7 +889,9 @@ entities:
     owner: Homelab Infrastructure
     scope: Engineering Operations
     authority_reference: EWO-000017
-    source_records: [EWO-000017, PROJ-0001]
+    source_records:
+    - EWO-000017
+    - PROJ-0001
     relationships:
     - type: related_to
       target: EMP-WORK-CODEX-NTFY-STAGE-1
@@ -901,7 +938,8 @@ entities:
       to: ready
       at: 2026-07-17
       actor: Codex
-      reason: EGR-000002 approved and activated EWO-000018 for the successor implementation mission.
+      reason: EGR-000002 approved and activated EWO-000018 for the successor implementation
+        mission.
       authority_reference: EGR-000002
     - from: ready
       to: active
@@ -913,7 +951,8 @@ entities:
       to: completed
       at: 2026-07-17
       actor: Codex
-      reason: EWO-000018 reconciled and validated the complete affected governance subsystem for controlled publication.
+      reason: EWO-000018 reconciled and validated the complete affected governance
+        subsystem for controlled publication.
       authority_reference: EWO-000018
     project_id: EMP-PROJECT-HOMELAB
     order: 6
@@ -922,7 +961,9 @@ entities:
     sprint_id: null
     work_type: governance-modernization
     priority: 1
-    completion_criteria: The complete affected governance subsystem is reconciled, validated, committed as an isolated documentation-only publication, and inherited by future Codex missions.
+    completion_criteria: The complete affected governance subsystem is reconciled,
+      validated, committed as an isolated documentation-only publication, and inherited
+      by future Codex missions.
     queue_ids: []
   - registry_id: EMP-WORK-CODEX-WRAPPER-ENFORCEMENT
     object_type: WorkItem
@@ -954,7 +995,8 @@ entities:
       to: completed
       at: 2026-07-17
       actor: Codex
-      reason: Mandatory wrapper governance, bypass detection, lifecycle regressions, and live acceptance passed.
+      reason: Mandatory wrapper governance, bypass detection, lifecycle regressions,
+        and live acceptance passed.
       authority_reference: EWO-000019
     project_id: EMP-PROJECT-HOMELAB
     order: 7
@@ -963,15 +1005,16 @@ entities:
     sprint_id: null
     work_type: engineering-operations
     priority: 1
-    completion_criteria: Mandatory wrapper governance, bypass detection, lifecycle regressions, two live acceptance missions, and platform reconciliation pass.
+    completion_criteria: Mandatory wrapper governance, bypass detection, lifecycle
+      regressions, two live acceptance missions, and platform reconciliation pass.
     queue_ids: []
   - registry_id: EMP-WORK-ENGINEERING-NOTIFICATION-SERVICE
     object_type: WorkItem
     title: Engineering Notification Service Implementation
-    management_state: active
+    management_state: cancelled
     owner: Homelab Infrastructure
     scope: EWO-000020
-    authority_reference: EGR-000003
+    authority_reference: EGR-000004
     source_records:
     - EGR-000003
     - EWO-000020
@@ -984,8 +1027,8 @@ entities:
     - type: related_to
       target: EMP-WORK-CODEX-NTFY-STAGE-1
     created_at: 2026-07-17
-    updated_at: 2026-07-17
-    revision: 1
+    updated_at: '2026-07-17T17:00:00+00:00'
+    revision: 2
     transition_history:
     - from: null
       to: active
@@ -993,6 +1036,13 @@ entities:
       actor: Engineering Governance authorization agent
       reason: EGR-000003 approved and activated EWO-000020 without beginning implementation.
       authority_reference: EGR-000003
+    - from: active
+      to: cancelled
+      at: '2026-07-17T17:00:00+00:00'
+      actor: Engineering Governance authorization agent
+      reason: EGR-000004 supersedes unstarted EWO-000020 so EWO-000021 can become
+        the sole Active Homelab authority.
+      authority_reference: EGR-000004
     project_id: EMP-PROJECT-HOMELAB
     order: 8
     mission_id: null
@@ -1000,7 +1050,54 @@ entities:
     sprint_id: null
     work_type: engineering-platform-service
     priority: 1
-    completion_criteria: Independent handoff-based notification lifecycles, persistence, retries, delivery evidence, validation, operator acceptance, documentation, EOS reconciliation, and closeout pass under EWO-000020.
+    completion_criteria: Independent handoff-based notification lifecycles, persistence,
+      retries, delivery evidence, validation, operator acceptance, documentation,
+      EOS reconciliation, and closeout pass under EWO-000020.
+    queue_ids: []
+  - registry_id: EMP-WORK-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION
+    object_type: WorkItem
+    title: Engineering Platform Repository Reconciliation Mission (Handoff 1)
+    management_state: completed
+    owner: Homelab Infrastructure
+    scope: EWO-000021
+    authority_reference: EGR-000004
+    source_records:
+    - EGR-000004
+    - EWO-000021
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: EWO-000021
+    - type: related_to
+      target: EGR-000004
+    created_at: 2026-07-17
+    updated_at: '2026-07-17T10:30:01+00:00'
+    revision: 2
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-17
+      actor: Engineering Governance authorization agent
+      reason: EGR-000004 approved and activated EWO-000021 without beginning reconciliation
+        implementation.
+      authority_reference: EGR-000004
+    - from: active
+      to: completed
+      at: '2026-07-17T10:30:01+00:00'
+      actor: Codex
+      reason: SPEC-0007 publication, repository reconciliation, milestone recording,
+        and platform qualification completed.
+      authority_reference: EWO-000021
+    project_id: EMP-PROJECT-HOMELAB
+    order: 9
+    mission_id: null
+    phase_id: null
+    sprint_id: null
+    work_type: engineering-governance-reconciliation
+    priority: 1
+    completion_criteria: Repository governance, Work Registry, EOS, Project State,
+      DOC-0001, infrastructure references, lifecycle, dependencies, evidence, and
+      publication state reconcile and pass EWO-000021 validation.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP
@@ -1133,6 +1230,39 @@ entities:
     target_date: 2026-07-13
     evidence_records:
     - SprinterOS:MILESTONE-0004
+  - registry_id: EMP-MILESTONE-ENGINEERING-PLATFORM-SELF-IMPLEMENTATION
+    object_type: Milestone
+    title: Engineering Platform Transition to Self-Implementation
+    management_state: achieved
+    owner: Engineering Platform
+    scope: EMP-WORK-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION
+    authority_reference: EWO-000021
+    source_records:
+    - MILESTONE-0006
+    - SPEC-0007
+    - EWO-000021
+    relationships:
+    - type: evidenced_by
+      target: MILESTONE-0006
+    - type: related_to
+      target: SPEC-0007
+    created_at: 2026-07-17
+    updated_at: 2026-07-17
+    revision: 1
+    transition_history:
+    - from: null
+      to: achieved
+      at: '2026-07-17T10:30:00+00:00'
+      actor: Codex
+      reason: SPEC-0007 replaced conversational design as the governing implementation baseline.
+      authority_reference: EWO-000021
+    scope_id: EMP-WORK-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION
+    success_criteria: SPEC-0007 is controlled and governs future separately authorized implementation.
+    target_date: 2026-07-17
+    evidence_records:
+    - MILESTONE-0006
+    - SPEC-0007
+    - EWO-000021-EVIDENCE
   deferrals:
   - registry_id: EMP-DEFERRAL-SPRINTEROS-PRODUCT
     object_type: Deferral
@@ -1203,7 +1333,8 @@ entities:
     owner: Homelab Infrastructure
     scope: EMP-WORK-CODEX-NTFY-STAGE-2
     authority_reference: EWO-000017
-    source_records: [EWO-000017]
+    source_records:
+    - EWO-000017
     relationships:
     - type: related_to
       target: EMP-WORK-CODEX-NTFY-STAGE-2
@@ -1219,7 +1350,8 @@ entities:
       authority_reference: EWO-000017
     work_item_id: EMP-WORK-CODEX-NTFY-STAGE-2
     reason: Heartbeat and still-running notifications are explicit Stage 1 non-goals.
-    reentry_conditions: Separate Stage 2 authority, interval and rate-limit design, and validation plan.
+    reentry_conditions: Separate Stage 2 authority, interval and rate-limit design,
+      and validation plan.
     target_horizon: Future Engineering Operations enhancement
     resolution_reference: null
   - registry_id: EMP-DEFERRAL-CODEX-NTFY-STAGE-3
@@ -1229,7 +1361,8 @@ entities:
     owner: Homelab Infrastructure
     scope: EMP-WORK-CODEX-NTFY-STAGE-3
     authority_reference: EWO-000017
-    source_records: [EWO-000017]
+    source_records:
+    - EWO-000017
     relationships:
     - type: related_to
       target: EMP-WORK-CODEX-NTFY-STAGE-3
@@ -1244,8 +1377,10 @@ entities:
       reason: Stage 3 is outside EWO-000017 implementation scope.
       authority_reference: EWO-000017
     work_item_id: EMP-WORK-CODEX-NTFY-STAGE-3
-    reason: Structured progress and lifecycle-event integration are explicit Stage 1 non-goals.
-    reentry_conditions: Separate Stage 3 authority and an approved structured event contract that does not parse private Codex output.
+    reason: Structured progress and lifecycle-event integration are explicit Stage
+      1 non-goals.
+    reentry_conditions: Separate Stage 3 authority and an approved structured event
+      contract that does not parse private Codex output.
     target_horizon: Future Engineering Operations enhancement
     resolution_reference: null
   dependencies:

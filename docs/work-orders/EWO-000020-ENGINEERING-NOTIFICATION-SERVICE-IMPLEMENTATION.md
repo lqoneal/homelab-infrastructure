@@ -3,13 +3,13 @@ document_id: EWO-000020
 title: Engineering Notification Service Implementation
 version: 1.0
 revision: 1
-status: Active
+status: Superseded
 owner: Engineering Governance
 created: 2026-07-17
 last_updated: 2026-07-17
 classification: Engineering Work Order
 predecessor_revision: null
-successor_revision: null
+successor_revision: EWO-000021
 approval_status: Approved
 approval_authority: Engineering Governance
 approval_reference: EGR-000003
@@ -54,7 +54,7 @@ Engineering Work Order: EWO-000020
 
 Revision: 1
 
-Status: Active
+Status: Superseded
 
 Execution Mode: Separate wrapped Category A engineering mission
 
@@ -176,3 +176,4 @@ Work Order completed until Engineering Governance accepts the qualified result.
 | Version | Date | Description |
 | --- | --- | --- |
 | 1.0 | 2026-07-17 | Created, approved, and activated Engineering Notification Service implementation authority under EGR-000003. |
+| 1.1 | 2026-07-17 | Superseded before implementation by EGR-000004 and EWO-000021; no scope transferred or executed. |

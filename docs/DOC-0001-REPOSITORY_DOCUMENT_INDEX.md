@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.27
+version: 2.29
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-17
-phase: Engineering Notification Service Authorization
+phase: Engineering Platform Repository Reconciliation
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.26
+predecessor_revision: DOC-0001@2.28
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000003
+approval_reference: EGR-000004
 approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
@@ -93,6 +93,22 @@ relationships:
     target: EGR-000003
   - type: indexes
     target: EWO-000020
+  - type: indexes
+    target: EGR-000004
+  - type: indexes
+    target: EWO-000021
+  - type: indexes
+    target: EWO-000021-AUTHORIZATION-EVIDENCE
+  - type: indexes
+    target: EWO-000021-AUTHORIZATION-COMPLETION
+  - type: indexes
+    target: SPEC-0007
+  - type: indexes
+    target: MILESTONE-0006
+  - type: indexes
+    target: EWO-000021-EVIDENCE
+  - type: indexes
+    target: EWO-000021-COMPLETION
   - type: related_to
     target: EWO-000018
 tags:
@@ -281,6 +297,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | SPEC-0004 | Engineering Context Reconstruction Service | Draft | EOS Program | `docs/specifications/SPEC-0004-ENGINEERING_CONTEXT_RECONSTRUCTION_SERVICE.md` |
 | SPEC-0005 | Engineering Control Framework | Draft | EOS Program | `docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md` |
 | SPEC-0006 | Engineering Work Registry Model | Active | Engineering Management Platform | `docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md` |
+| SPEC-0007 | Engineering Platform Construction Specification | Active | Engineering Platform | `docs/specifications/SPEC-0007-ENGINEERING-PLATFORM-CONSTRUCTION-SPECIFICATION.md` |
 | SERVICE-0001 | EOS Core Services Catalog | Draft | EOS Program | `docs/services/SERVICE-0001-EOS_CORE_SERVICES_CATALOG.md` |
 | SERVICE-0002 | EMP Management Services Catalog | Active | Engineering Management Platform | `docs/services/SERVICE-0002-EMP_MANAGEMENT_SERVICES_CATALOG.md` |
 | GEN-0001 | Engineering Operating System Genesis Record | Active | Engineering Governance | `docs/genesis/GEN-0001-GENESIS_GOVERNANCE_RECORD.md` |
@@ -301,6 +318,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EGR-000001 | Governance Foundation Qualification and Publication | Active | Engineering Governance | `docs/resolutions/EGR-000001-GOVERNANCE_FOUNDATION_QUALIFICATION_AND_PUBLICATION.md` |
 | EGR-000002 | Governance Framework Modernization Authorization | Active | Engineering Governance | `docs/resolutions/EGR-000002-GOVERNANCE-FRAMEWORK-MODERNIZATION-AUTHORIZATION.md` |
 | EGR-000003 | EWO-000020 Notification Service Authorization | Active | Engineering Governance | `docs/resolutions/EGR-000003-EWO-000020-NOTIFICATION-SERVICE-AUTHORIZATION.md` |
+| EGR-000004 | Engineering Platform Repository Reconciliation Authorization | Active | Engineering Governance | `docs/resolutions/EGR-000004-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION-AUTHORIZATION.md` |
 | EWO-000010 | Governance Baseline 1.0 Qualification | Active | Engineering Governance | `docs/work-orders/EWO-000010-GOVERNANCE_BASELINE_1.0_QUALIFICATION.md` |
 | EWO-000010-EVIDENCE | EWO-000010 Qualification Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000010-QUALIFICATION-EVIDENCE-PACKAGE.md` |
 | EWO-000010-COMPLETION | EWO-000010 Qualification Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000010-QUALIFICATION-COMPLETION-REPORT.md` |
@@ -323,7 +341,12 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EWO-000018 | Governance Framework Modernization | Active | Engineering Governance | `docs/work-orders/EWO-000018-GOVERNANCE-FRAMEWORK-MODERNIZATION.md` |
 | EWO-000019 | Codex Wrapper Enforcement and Notification Lifecycle Verification | Completed | Engineering Governance | `docs/work-orders/EWO-000019-CODEX-WRAPPER-ENFORCEMENT.md` |
 | EWO-000019-COMPLETION | EWO-000019 Engineering Completion Report | Approved | Engineering Governance | `docs/work-orders/EWO-000019-ENGINEERING-COMPLETION-REPORT.md` |
-| EWO-000020 | Engineering Notification Service Implementation | Active | Engineering Governance | `docs/work-orders/EWO-000020-ENGINEERING-NOTIFICATION-SERVICE-IMPLEMENTATION.md` |
+| EWO-000020 | Engineering Notification Service Implementation | Superseded | Engineering Governance | `docs/work-orders/EWO-000020-ENGINEERING-NOTIFICATION-SERVICE-IMPLEMENTATION.md` |
+| EWO-000021 | Engineering Platform Repository Reconciliation Mission (Handoff 1) | Active | Engineering Governance | `docs/work-orders/EWO-000021-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION.md` |
+| EWO-000021-AUTHORIZATION-EVIDENCE | EWO-000021 Authorization Evidence Package | Approved | Engineering Governance | `docs/work-orders/EWO-000021-AUTHORIZATION-EVIDENCE-PACKAGE.md` |
+| EWO-000021-AUTHORIZATION-COMPLETION | EWO-000021 Authorization Completion Report | Approved | Engineering Governance | `docs/work-orders/EWO-000021-AUTHORIZATION-COMPLETION-REPORT.md` |
+| EWO-000021-EVIDENCE | EWO-000021 Engineering Evidence Package | Approved | Engineering Governance | `docs/work-orders/EWO-000021-ENGINEERING-EVIDENCE-PACKAGE.md` |
+| EWO-000021-COMPLETION | EWO-000021 Engineering Completion Report | Approved | Engineering Governance | `docs/work-orders/EWO-000021-ENGINEERING-COMPLETION-REPORT.md` |
 | FIN-0001 | Master Financial Ledger | Active | Homelab Infrastructure | `docs/finance/FIN-0001-MASTER_FINANCIAL_LEDGER.md` |
 | FIN-0002 | Master Procurement Register | Active | Homelab Infrastructure | `docs/finance/FIN-0002-MASTER_PROCUREMENT_REGISTER.md` |
 | PROC-000001 | Engineering Terminal 01 Procurement | Closed | Homelab Infrastructure | `docs/finance/procurements/PROC-000001.md` |
@@ -337,6 +360,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | MILESTONE-0003 | Engineering Platform Mission 0 Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-13-engineering-platform-mission-0-complete.md` |
 | MILESTONE-0004 | Engineering Management Platform Foundation 1.0 Operational | Approved | Engineering Management Platform | `docs/project/milestones/2026-07-13-engineering-management-platform-foundation-1.0-operational.md` |
 | MILESTONE-0005 | Engineering Platform Foundation 1.0 — Foundation Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-15-engineering-platform-foundation-1.0-foundation-complete.md` |
+| MILESTONE-0006 | Engineering Platform Transition to Self-Implementation | Approved | Engineering Platform | `docs/project/milestones/2026-07-17-engineering-platform-transition-to-self-implementation.md` |
 
 This table shall be updated whenever a controlled document is created, superseded, or archived.
 
@@ -571,3 +595,5 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.25 | 2026-07-17 | Integrated mandatory `engctl codex` launch and wrapper-bypass detection into repository Work Initiation under EWO-000019. |
 | 2.26 | 2026-07-17 | Registered EWO-000019 completion, lifecycle acceptance, and its Engineering Completion Report. |
 | 2.27 | 2026-07-17 | Registered EGR-000003 and approved Active EWO-000020 as the bounded Engineering Notification Service implementation authority. |
+| 2.28 | 2026-07-17 | Registered EGR-000004, superseded unstarted EWO-000020, and registered Approved Active EWO-000021 plus authorization evidence and closeout records. |
+| 2.29 | 2026-07-17 | Published SPEC-0007 Engineering Baseline 1.0, MILESTONE-0006, EWO-000021 execution evidence, and the Completion Report. |
