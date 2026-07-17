@@ -2,19 +2,19 @@
 
 document_id: INF-0001
 title: Engineering Infrastructure Baseline
-version: 2.2
+version: 2.4
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-17
-phase: AST-000005 Engineering Qualification
+phase: Codex Stage 1 Completion Notification Integration
 domain: Infrastructure
 classification: Global Infrastructure Baseline
-predecessor_revision: INF-0001@2.1
+predecessor_revision: INF-0001@2.3
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: AST-000005 Engineering Qualification Resume Mission
+approval_reference: EWO-000017
 approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
@@ -244,6 +244,74 @@ does not qualify, register, assign, repair, or authorize writes to any storage
 asset.
 
 ---
+
+## Codex Lifecycle Notification Capability
+
+EWO-000017 establishes Codex lifecycle notifications as shared Engineering
+Operations infrastructure owned by Homelab. The global entry point is:
+
+```bash
+engctl codex [--ewo EWO-XXXXXX] [--] [codex arguments ...]
+```
+
+The controller records start time, repository, host, optional Work Order, and
+elapsed runtime. It preserves the interactive terminal, forwards arguments
+after `--` unchanged, returns the underlying Codex exit status, and sends:
+
+- `Codex Started` when the child begins;
+- `Codex Complete` when Codex exits zero;
+- `Codex Failed` when Codex exits nonzero; and
+- `Codex Interrupted` for `SIGINT`, `SIGTERM`, or `SIGHUP`.
+
+Notification delivery failure prints a warning but never replaces the Codex
+result. Signal handling forwards the signal, waits for the child, and prevents
+an orphaned Codex process.
+
+### Secure local configuration
+
+The preferred per-user file is
+`~/.config/engineering/notifications.env`. An ignored repository-local
+`configs/notifications.env` is supported as a fallback. Copy
+`configs/notifications.env.example`, set mode `0600`, and configure:
+
+```bash
+NTFY_BASE_URL="https://ntfy.sh"
+NTFY_TOPIC="<private-topic>"
+NTFY_TOKEN=""
+NTFY_PRIORITY="default"
+```
+
+`NTFY_TOPIC` and `NTFY_TOKEN` are local secrets and shall never be committed.
+The helper requires HTTPS, enforces bounded five-second connect and 15-second
+total timeouts, does not disable TLS verification, and supplies the topic and
+optional authorization header through curl configuration input so they do not
+appear in curl command-line arguments. Messages contain operational metadata
+only; prompts, output, diffs, repository content, and credentials are excluded.
+The loader rejects published example topics and known placeholder topics before
+invoking curl and reports only a value-free engineering diagnostic.
+
+### Operation and troubleshooting
+
+Use `--ewo` or `CODEX_EWO`; absent either, notifications report `Work Order:
+Not specified`. Use `CODEX_BIN` only for controlled validation. Missing config,
+mode other than `0600`, non-HTTPS base URL, missing `curl`, timeout, HTTP
+failure, or rejected credentials produce bounded diagnostics without exposing
+the topic.
+
+To migrate to a self-hosted ntfy service, change only `NTFY_BASE_URL` in the
+local configuration to its HTTPS endpoint and add `NTFY_TOKEN` if required.
+No wrapper or repository change is necessary.
+
+Stage 1 has no heartbeat, progress estimation, output parsing, dashboard,
+background daemon, remote control, or alternate transport. Stage 2 heartbeat
+notifications and Stage 3 structured progress/lifecycle-event integration are
+authoritatively deferred in the Engineering Work Registry.
+
+Stage 1 notification delivery, lifecycle titles and bodies, default priority,
+authentication behavior, bounded latency, exit preservation, signal handling,
+timeout behavior, and graceful notification-failure degradation were accepted
+under EWO-000017 on 2026-07-17. A possible standalone `engctl notify` diagnostic
+interface remains future engineering work and is not part of this baseline.
 
 # Network Baseline
 
@@ -481,3 +549,5 @@ These targets describe the intended engineering direction and shall be updated a
 | 1.7     | 2026-07-15 | Established the native systemd user SSH-agent lifecycle, shared socket, protected identity-loading behavior, diagnostics, and security boundary. |
 | 1.8     | 2026-07-15 | Registered PROC-0003 as the shared recovery procedure authority while preserving project-specific recovery ownership. |
 | 2.2     | 2026-07-17 | Replaced the obsolete secure-drive baseline with the qualified AST-000005 ext4 configuration and intentional manual-mount strategy. |
+| 2.3     | 2026-07-17 | Established shared Codex lifecycle notifications, secure ntfy configuration, controller usage, failure behavior, troubleshooting, and future self-hosted migration. |
+| 2.4     | 2026-07-17 | Recorded value-free example rejection and completed controlled live acceptance of the Stage 1 notification workflow. |

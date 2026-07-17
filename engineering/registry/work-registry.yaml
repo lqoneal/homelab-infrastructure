@@ -763,7 +763,7 @@ entities:
   - registry_id: EMP-WORK-CODEX-NTFY-STAGE-1
     object_type: WorkItem
     title: Codex Stage 1 Completion Notifications
-    management_state: active
+    management_state: completed
     owner: Homelab Infrastructure
     scope: EWO-000017
     authority_reference: EWO-000017
@@ -775,13 +775,19 @@ entities:
       target: EWO-000017
     created_at: 2026-07-17
     updated_at: 2026-07-17
-    revision: 1
+    revision: 2
     transition_history:
     - from: null
       to: active
       at: 2026-07-17
       actor: Codex
       reason: EWO-000017 activated Stage 1 implementation.
+      authority_reference: EWO-000017
+    - from: active
+      to: completed
+      at: 2026-07-17
+      actor: Codex
+      reason: Stage 1 implementation, regression qualification, and controlled live acceptance completed.
       authority_reference: EWO-000017
     project_id: EMP-PROJECT-HOMELAB
     order: 3

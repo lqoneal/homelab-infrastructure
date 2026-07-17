@@ -1,20 +1,20 @@
 ---
 document_id: EWO-000017
 title: Codex Stage 1 Completion Notification Integration
-version: 1.0
-revision: 1
-status: Active
+version: 1.1
+revision: 2
+status: Completed
 owner: Engineering Governance
 created: 2026-07-17
 last_updated: 2026-07-17
 classification: Engineering Work Order
-predecessor_revision: null
+predecessor_revision: EWO-000017@1.0
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
 approval_reference: CODEX ENGINEERING HANDOFF — Stage 1 Codex Completion Notifications via ntfy
 approval_date: 2026-07-17
-persistence_status: Pending
+persistence_status: Complete
 phase: Shared Engineering Operations Notification Integration
 domain: Homelab Infrastructure
 source_of_truth: true
@@ -61,7 +61,7 @@ Title: Codex Stage 1 Completion Notification Integration
 
 Classification: Engineering Work Order
 
-Status: Active
+Status: Completed
 
 Execution Mode: Sequential implementation and controlled validation
 
@@ -168,8 +168,29 @@ files changed, runtime changes, notification-delivery evidence, unresolved
 dependencies, repository status, and recommended follow-on work. Do not report
 the private topic.
 
+## Completion and Acceptance Record
+
+Stage 1 was accepted on 2026-07-17 after the loader was corrected to reject
+all published example topics and known placeholder topics before network
+activity. Automated notification and Engineering Platform regressions passed.
+Value-blind local configuration qualification confirmed correct ownership,
+mode `0600`, required assignments, non-example values, and loader acceptance.
+Controlled live transport and `engctl codex` completion delivery succeeded
+within the configured latency bound without disclosing private configuration.
+
+The associated Completion Report is `EWO-000017-COMPLETION`.
+
+## Future Architecture Recommendation
+
+A standalone `engctl notify` command would improve bounded operator testing,
+transport diagnostics, and future non-Codex Engineering Operations reuse. It
+is not required for Stage 1 and was not implemented. Any implementation
+requires a successor Work Order with an explicit message-content trust
+boundary, validation contract, and acceptance plan.
+
 ## Revision History
 
 | Version | Date | Description |
 | --- | --- | --- |
 | 1.0 | 2026-07-17 | Created and activated Stage 1 shared Codex lifecycle notification integration. |
+| 1.1 | 2026-07-17 | Accepted the qualified implementation, closed Stage 1, and recorded standalone notification control as future work. |

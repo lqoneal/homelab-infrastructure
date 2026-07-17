@@ -20,6 +20,8 @@ source "$SCRIPT_DIR/lib/eos/state.sh"
 source "$SCRIPT_DIR/lib/eos/checkpoint.sh"
 source "$SCRIPT_DIR/lib/eos/operations.sh"
 source "$SCRIPT_DIR/lib/eos/platform.sh"
+source "$SCRIPT_DIR/lib/notifications/ntfy.sh"
+source "$SCRIPT_DIR/lib/eos/codex.sh"
 
 usage() {
     cat <<'EOF'
@@ -41,6 +43,7 @@ Usage:
   engctl context [project]
   engctl validate [project]
   engctl platform {status|validate|qualify} [project]
+  engctl codex [--ewo EWO-XXXXXX] [--] [codex arguments ...]
   engctl version
 EOF
 }
@@ -114,6 +117,10 @@ case "$cmd" in
             qualify) eos_platform_qualify "$project" ;;
             *) echo "ERROR: unknown platform action: $action" >&2; usage; exit 1 ;;
         esac
+        ;;
+    codex)
+        export NOTIFY_REPOSITORY_ROOT="$(eos_project_root homelab)"
+        eos_codex_run "$@"
         ;;
     version)
         echo "engctl version 0.7.0"

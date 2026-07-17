@@ -1,7 +1,7 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.22
+version: 2.23
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,7 +9,7 @@ last_updated: 2026-07-17
 phase: Governance Framework Modernization
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.21
+predecessor_revision: DOC-0001@2.22
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -81,6 +81,8 @@ relationships:
     target: EWO-000016
   - type: related_to
     target: EWO-000017
+  - type: indexes
+    target: EWO-000017-COMPLETION
   - type: related_to
     target: EGR-000002
   - type: related_to
@@ -302,7 +304,8 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EWO-000014-COMPLETION | EWO-000014 Engineering Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000014-ENGINEERING-COMPLETION-REPORT.md` |
 | EWO-000015 | Governance Architecture Reconciliation | Active | Engineering Governance | `docs/work-orders/EWO-000015-GOVERNANCE-ARCHITECTURE-RECONCILIATION.md` |
 | EWO-000016 | thaDuke Firmware Remediation | Active | Engineering Governance | `docs/work-orders/EWO-000016-THADUKE-FIRMWARE-REMEDIATION.md` |
-| EWO-000017 | Codex Stage 1 Completion Notification Integration | Active | Engineering Governance | `docs/work-orders/EWO-000017-CODEX-STAGE-1-COMPLETION-NOTIFICATION-INTEGRATION.md` |
+| EWO-000017 | Codex Stage 1 Completion Notification Integration | Completed | Engineering Governance | `docs/work-orders/EWO-000017-CODEX-STAGE-1-COMPLETION-NOTIFICATION-INTEGRATION.md` |
+| EWO-000017-COMPLETION | EWO-000017 Engineering Completion Report | Approved | Engineering Governance | `docs/work-orders/EWO-000017-ENGINEERING-COMPLETION-REPORT.md` |
 | EWO-000018 | Governance Framework Modernization | Active | Engineering Governance | `docs/work-orders/EWO-000018-GOVERNANCE-FRAMEWORK-MODERNIZATION.md` |
 | FIN-0001 | Master Financial Ledger | Active | Homelab Infrastructure | `docs/finance/FIN-0001-MASTER_FINANCIAL_LEDGER.md` |
 | FIN-0002 | Master Procurement Register | Active | Homelab Infrastructure | `docs/finance/FIN-0002-MASTER_PROCUREMENT_REGISTER.md` |
@@ -546,3 +549,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.20 | 2026-07-17 | Registered EWO-000017 and reconciled the previously approved EWO-000015 registration while integrating shared Codex lifecycle notifications. |
 | 2.21 | 2026-07-17 | Registered EGR-000002 and EWO-000018 as the authorization and bounded successor implementation contract for holistic governance-framework modernization. |
 | 2.22 | 2026-07-17 | Reconciled repository Work Initiation with Category A/B/C gates and registered repository-governed Completion Report and Governance Conformance Review behavior under EWO-000018. |
+| 2.23 | 2026-07-17 | Registered EWO-000017 completion, its Completion Report, and accepted Stage 1 notification capability. |

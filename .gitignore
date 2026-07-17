@@ -9,3 +9,6 @@ tmp/
 __pycache__/
 
 *.pyc
+
+# Local Engineering Operations secrets
+/configs/notifications.env

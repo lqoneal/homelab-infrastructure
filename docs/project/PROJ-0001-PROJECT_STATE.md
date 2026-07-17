@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 4.2
+version: 4.3
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-17
-phase: Governance Framework Modernization Complete
+phase: Codex Stage 1 Notification Integration Complete
 classification: Project State
-predecessor_revision: PROJ-0001@4.1
+predecessor_revision: PROJ-0001@4.2
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000002
+approval_reference: EWO-000017
 approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
@@ -290,18 +290,19 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-Resume EWO-000017 Codex Stage 1 completion notification acceptance under its
-existing authority after the EWO-000018 governance publication boundary.
+EWO-000017 Codex Stage 1 completion notification integration is accepted and
+closed.
 
 **Next Immediate Step:**
 
-Perform the separately authorized private local configuration and controlled
-live acceptance steps required by EWO-000017. Apply the repository-governed
-Category B initiation gates when the mission is limited to local configuration.
+Select the next separately authorized engineering objective. EWO-000016 remains
+available as the bounded firmware-remediation side mission; Stage 2/3
+notification enhancements and a possible standalone `engctl notify` interface
+remain deferred pending separate authority.
 
-EWO-000017 remains Active at the incomplete controlled-acceptance boundary.
-Its runtime implementation remains preserved outside the EWO-000018 governance
-publication commit.
+EWO-000017 completed value-blind local configuration qualification, controlled
+live delivery, end-to-end `engctl codex` qualification, regression validation,
+documentation reconciliation, and implementation publication preparation.
 
 EWO-000018 implemented the Mission Classification Gate, Category A/B/C
 risk-proportional initiation, the exact Completion Report standard, mandatory
@@ -528,3 +529,4 @@ When resuming this project:
 | 4.0     | 2026-07-17 | Activated EWO-000017, integrated shared Codex lifecycle notifications through engctl, and recorded Stage 2 and Stage 3 as authoritative deferred work. |
 | 4.1     | 2026-07-17 | Recorded EGR-000002 governance authorization, activated EWO-000018 as the successor modernization mission, and preserved EWO-000017 under a bounded dirty-tree exception. |
 | 4.2     | 2026-07-17 | Completed EWO-000018 governance-framework modernization and returned the primary resume point to EWO-000017 controlled acceptance under repository-governed Category B initiation. |
+| 4.3     | 2026-07-17 | Accepted and closed EWO-000017 Stage 1 notifications after loader correction, regression qualification, value-blind configuration checks, and controlled live delivery. |
