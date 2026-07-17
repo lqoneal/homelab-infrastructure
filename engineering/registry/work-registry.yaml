@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 21
+revision: 22
 updated_at: '2026-07-17'
 serialization: yaml
 mutation_history:
@@ -129,6 +129,12 @@ mutation_history:
   actor: Codex
   action: transition EMP-WORK-GOVERNANCE-FRAMEWORK-MODERNIZATION to completed
   reason: Record holistic repository-governed workflow reconciliation and validated publication under EWO-000018.
+- revision: 22
+  previous_revision: 21
+  at: '2026-07-17T14:00:00+00:00'
+  actor: Codex
+  action: create EMP-WORK-CODEX-WRAPPER-ENFORCEMENT
+  reason: Register and activate EWO-000019 wrapper-enforcement investigation and corrective implementation.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -905,6 +911,41 @@ entities:
     work_type: governance-modernization
     priority: 1
     completion_criteria: The complete affected governance subsystem is reconciled, validated, committed as an isolated documentation-only publication, and inherited by future Codex missions.
+    queue_ids: []
+  - registry_id: EMP-WORK-CODEX-WRAPPER-ENFORCEMENT
+    object_type: WorkItem
+    title: Codex Wrapper Enforcement and Notification Lifecycle Verification
+    management_state: active
+    owner: Homelab Infrastructure
+    scope: EWO-000019
+    authority_reference: EWO-000019
+    source_records:
+    - EWO-000019
+    - EWO-000017
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: EWO-000019
+    - type: related_to
+      target: EMP-WORK-CODEX-NTFY-STAGE-1
+    created_at: 2026-07-17
+    updated_at: 2026-07-17
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-17
+      actor: Codex
+      reason: EWO-000019 activated wrapper-enforcement investigation and bounded correction.
+      authority_reference: EWO-000019
+    project_id: EMP-PROJECT-HOMELAB
+    order: 7
+    mission_id: null
+    phase_id: null
+    sprint_id: null
+    work_type: engineering-operations
+    priority: 1
+    completion_criteria: Mandatory wrapper governance, bypass detection, lifecycle regressions, two live acceptance missions, and platform reconciliation pass.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP

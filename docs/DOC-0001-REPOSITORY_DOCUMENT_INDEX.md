@@ -1,7 +1,7 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.23
+version: 2.24
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -83,6 +83,8 @@ relationships:
     target: EWO-000017
   - type: indexes
     target: EWO-000017-COMPLETION
+  - type: indexes
+    target: EWO-000019
   - type: related_to
     target: EGR-000002
   - type: related_to
@@ -307,6 +309,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EWO-000017 | Codex Stage 1 Completion Notification Integration | Completed | Engineering Governance | `docs/work-orders/EWO-000017-CODEX-STAGE-1-COMPLETION-NOTIFICATION-INTEGRATION.md` |
 | EWO-000017-COMPLETION | EWO-000017 Engineering Completion Report | Approved | Engineering Governance | `docs/work-orders/EWO-000017-ENGINEERING-COMPLETION-REPORT.md` |
 | EWO-000018 | Governance Framework Modernization | Active | Engineering Governance | `docs/work-orders/EWO-000018-GOVERNANCE-FRAMEWORK-MODERNIZATION.md` |
+| EWO-000019 | Codex Wrapper Enforcement and Notification Lifecycle Verification | Active | Engineering Governance | `docs/work-orders/EWO-000019-CODEX-WRAPPER-ENFORCEMENT.md` |
 | FIN-0001 | Master Financial Ledger | Active | Homelab Infrastructure | `docs/finance/FIN-0001-MASTER_FINANCIAL_LEDGER.md` |
 | FIN-0002 | Master Procurement Register | Active | Homelab Infrastructure | `docs/finance/FIN-0002-MASTER_PROCUREMENT_REGISTER.md` |
 | PROC-000001 | Engineering Terminal 01 Procurement | Closed | Homelab Infrastructure | `docs/finance/procurements/PROC-000001.md` |
@@ -550,3 +553,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.21 | 2026-07-17 | Registered EGR-000002 and EWO-000018 as the authorization and bounded successor implementation contract for holistic governance-framework modernization. |
 | 2.22 | 2026-07-17 | Reconciled repository Work Initiation with Category A/B/C gates and registered repository-governed Completion Report and Governance Conformance Review behavior under EWO-000018. |
 | 2.23 | 2026-07-17 | Registered EWO-000017 completion, its Completion Report, and accepted Stage 1 notification capability. |
+| 2.24 | 2026-07-17 | Registered and activated EWO-000019 for Codex wrapper enforcement and notification lifecycle verification. |

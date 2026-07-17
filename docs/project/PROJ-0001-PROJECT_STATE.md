@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 4.4
+version: 4.5
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-17
-phase: SprinterOS Execution Authority Reconciled
+phase: Codex Wrapper Enforcement Active
 classification: Project State
-predecessor_revision: PROJ-0001@4.3
+predecessor_revision: PROJ-0001@4.4
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: SprinterOS Execution Authority Reconciliation Mission
+approval_reference: EWO-000019
 approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
@@ -33,6 +33,8 @@ relationships:
     target: EWO-000017
   - type: related_to
     target: EWO-000018
+  - type: related_to
+    target: EWO-000019
   - type: related_to
     target: EOS-0003
   - type: related_to
@@ -292,17 +294,15 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-SprinterOS execution authority is reconciled: Phase 1 and SPRINT-1.1 are
-qualified and ready, but no SprinterOS implementation or fault-isolation work
-is active without an approved Active EWO.
+EWO-000019 Codex wrapper enforcement and notification lifecycle verification is
+active. No unrelated implementation is authorized.
 
 **Next Immediate Step:**
 
-Select an already authorized objective or authorize the next SprinterOS
-diagnostic mission. EWO-000016 remains available as the bounded
-firmware-remediation side mission; SprinterOS fault isolation, Stage 2/3
-notification enhancements, and a possible standalone `engctl notify` interface
-require separate authority.
+Reconstruct the two post-EWO-000017 missed-notification missions, establish the
+wrapper bypass root cause, and implement only the bounded enforcement,
+detection, lifecycle validation, documentation, registry, and EOS corrections
+authorized by EWO-000019.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -535,3 +535,4 @@ When resuming this project:
 | 4.2     | 2026-07-17 | Completed EWO-000018 governance-framework modernization and returned the primary resume point to EWO-000017 controlled acceptance under repository-governed Category B initiation. |
 | 4.3     | 2026-07-17 | Accepted and closed EWO-000017 Stage 1 notifications after loader correction, regression qualification, value-blind configuration checks, and controlled live delivery. |
 | 4.4     | 2026-07-17 | Reconciled SprinterOS execution authority: Phase 1 and SPRINT-1.1 remain qualified and ready, while fault isolation awaits an approved Active EWO. |
+| 4.5     | 2026-07-17 | Activated EWO-000019 for Codex wrapper enforcement and notification lifecycle verification after two post-acceptance missions bypassed notifications. |
