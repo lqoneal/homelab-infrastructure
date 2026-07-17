@@ -1,19 +1,19 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 3.8
+version: 3.9
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-16
-phase: AST-000005 Engineering Disposition Reconciliation
+last_updated: 2026-07-17
+phase: AST-000005 Engineering Qualification Complete
 classification: Project State
-predecessor_revision: PROJ-0001@3.7
+predecessor_revision: PROJ-0001@3.8
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: AST-000005 Engineering Disposition Reconciliation Mission
-approval_date: 2026-07-16
+approval_reference: AST-000005 Engineering Qualification Resume Mission
+approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals:
@@ -284,16 +284,16 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-Prepare the separately authorized AST-000005 Secure Reprovisioning and
-Engineering Qualification successor mission.
+AST-000005 Linux reprovisioning and engineering qualification are complete.
+The asset is Available with an enclosure SMART telemetry limitation and no
+assigned operational role.
 
 **Next Immediate Step:**
 
-Begin only under its bounded mission authority. Remove remaining security
-metadata, destroy previous partition structures, create GPT and ext4, validate
-read/write behavior, capture SMART, and qualify engineering readiness. Assign
-no operational role and do not advance beyond Pending Requalification until
-qualification completes.
+Select the next separately authorized storage assignment or migration mission.
+Mount AST-000005 manually by UUID until an assigned role defines a persistent
+mount. Preserve its qualification artifacts unless separately authorized for
+cleanup.
 
 EWO-000016 remains a separately selectable bounded side mission. If selected, execution begins with Stage A backup re-verification; no destructive USB operation may occur unless every preceding gate passes.
 
@@ -511,3 +511,4 @@ When resuming this project:
 | 3.6     | 2026-07-16 | Established the Engineering Storage Qualification Capability and advanced resume to the previously blocked external-HDD mission sequence without qualifying or modifying storage assets. |
 | 3.7     | 2026-07-16 | Qualified and registered AST-000010, published STD-0005, and advanced resume to the next separately authorized storage qualification and role-assessment mission. |
 | 3.8     | 2026-07-16 | Reconciled owner disposition for AST-000005, superseded direct-SATA investigation, authorized future secure reprovisioning, and established Pending Requalification without assigning an operational role. |
+| 3.9     | 2026-07-17 | Completed AST-000005 Linux engineering qualification, preserved SHA-256 and metadata evidence, recorded enclosure-limited SMART telemetry, and advanced the asset to Available without assigning an operational role. |

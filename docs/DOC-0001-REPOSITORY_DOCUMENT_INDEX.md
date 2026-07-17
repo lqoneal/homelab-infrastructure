@@ -1,20 +1,20 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.18
+version: 2.19
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-16
-phase: AST-000005 Engineering Disposition Reconciliation
+last_updated: 2026-07-17
+phase: AST-000005 Engineering Qualification Complete
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.17
+predecessor_revision: DOC-0001@2.18
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: AST-000005 Engineering Disposition Reconciliation Mission
-approval_date: 2026-07-16
+approval_reference: AST-000005 Engineering Qualification Resume Mission
+approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -411,7 +411,7 @@ They currently use `asset_id` metadata rather than `document_id` metadata and ar
 | AST-000002 | Primary Internal NVMe SSD | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000002.md` |
 | AST-000003 | Secondary Intel RST Device | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000003.md` |
 | AST-000004 | WD My Passport Backup Drive | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000004.md` |
-| AST-000005 | Seagate Backup Plus Ultra Touch | Engineering Reprovisioning Authorized — pending requalification | Homelab Infrastructure | `docs/hardware/assets/AST-000005.md` |
+| AST-000005 | Seagate Backup Plus Ultra Touch | Available — enclosure SMART telemetry limitation | Homelab Infrastructure | `docs/hardware/assets/AST-000005.md` |
 | AST-000006 | SanDisk Recovery USB | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000006.md` |
 | AST-000007 | Raspberry Pi 5 | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000007.md` |
 | AST-000008 | Engineering Terminal 01 | Operational | Homelab Infrastructure | `docs/hardware/assets/AST-000008.md` |
@@ -510,3 +510,6 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.14 | 2026-07-16 | Registered the implemented Engineering Storage Qualification Capability under existing INF-0001 infrastructure authority and PROC-0003 operational procedure authority. |
 | 2.15 | 2026-07-16 | Registered AST-000010 as the qualified WD 500 GB External HDD under preservation hold without creating unsupported financial facts. |
 | 2.16 | 2026-07-16 | Published and registered STD-0005 as the single Engineering Hardware Lifecycle authority and integrated deterministic discovery. |
+| 2.17 | 2026-07-16 | Recorded AST-000005 enclosure-boundary failure isolation and qualification hold. |
+| 2.18 | 2026-07-16 | Recorded owner-authorized AST-000005 secure reprovisioning disposition and pending-requalification lifecycle. |
+| 2.19 | 2026-07-17 | Synchronized AST-000005 qualified Linux configuration and Available lifecycle state with its authoritative asset and hardware records. |

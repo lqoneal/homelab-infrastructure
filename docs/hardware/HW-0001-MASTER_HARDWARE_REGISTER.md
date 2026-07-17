@@ -1,12 +1,12 @@
 ---
 document_id: HW-0001
 title: Master Hardware Register
-version: 1.6
+version: 1.7
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-16
-phase: AST-000005 Engineering Disposition Reconciliation
+last_updated: 2026-07-17
+phase: AST-000005 Engineering Qualification
 domain: Hardware
 classification: Master Hardware Register
 source_of_truth: true
@@ -256,7 +256,7 @@ Asset identifiers shall never be reused.
 | AST-000002 | Primary Internal NVMe SSD | Storage | Operational | AST-000001 |
 | AST-000003 | Secondary Intel RST Device | Storage | Operational | AST-000001 |
 | AST-000004 | WD My Passport Backup Drive | Storage | Operational — qualification limitation | Homelab Infrastructure |
-| AST-000005 | Seagate Backup Plus Ultra Touch | Storage | Engineering Reprovisioning Authorized — pending requalification | Homelab Infrastructure |
+| AST-000005 | Seagate Backup Plus Ultra Touch | Storage | Available — enclosure SMART telemetry limitation | Homelab Infrastructure |
 | AST-000006 | SanDisk Recovery USB | Recovery Media | Operational | Homelab Infrastructure |
 | AST-000007 | Raspberry Pi 5 | Compute | Operational | SprinterOS |
 | AST-000008 | Engineering Terminal 01 | Compute | Operational | SprinterOS |
@@ -459,3 +459,4 @@ These enhancements shall build upon the governance established by this register 
 | 1.4 | 2026-07-16 | Recorded AST-000005 qualification hold after enclosure-boundary failure isolation. |
 | 1.5 | 2026-07-16 | Assigned AST-000010 to Engineering preservation storage and recorded AST-000004 qualification limitations without approving either proposed operational role. |
 | 1.6 | 2026-07-16 | Recorded owner-authorized AST-000005 secure reprovisioning disposition and pending-requalification lifecycle without assigning an operational role. |
+| 1.7 | 2026-07-17 | Recorded AST-000005 Linux engineering qualification and Available lifecycle state with enclosure-limited SMART telemetry and no assigned operational role. |

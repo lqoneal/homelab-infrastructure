@@ -2,20 +2,20 @@
 
 document_id: INF-0001
 title: Engineering Infrastructure Baseline
-version: 2.1
+version: 2.2
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-16
-phase: Engineering Storage Qualification Capability
+last_updated: 2026-07-17
+phase: AST-000005 Engineering Qualification
 domain: Infrastructure
 classification: Global Infrastructure Baseline
-predecessor_revision: INF-0001@2.0
+predecessor_revision: INF-0001@2.1
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Platform Expansion and Temporary Backup Infrastructure
-approval_date: 2026-07-16
+approval_reference: AST-000005 Engineering Qualification Resume Mission
+approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -212,9 +212,14 @@ published in the 2026-07-16 thaDuke storage-allocation qualification record.
 | Device                  | Capacity | Purpose                  |
 | ----------------------- | -------- | ------------------------ |
 | WD My Passport          | 4 TB     | Engineering backup       |
-| Secure Drive            | 2 TB     | Encrypted storage        |
+| Seagate BUP Ultra Touch | 2 TB     | Available ext4 engineering storage; no operational role assigned |
 | Ubuntu Installation USB | 16 GB    | Recovery media           |
 | Kali Live USB           | 16 GB    | Diagnostics and recovery |
+
+AST-000005 uses ext4 label `AST-000005` and UUID
+`9869447e-2c5c-4633-956f-e2dabb7699b4`. It intentionally has no persistent
+mount while unassigned. Authorized work mounts it manually by UUID; a future
+role assignment shall define any permanent mount point and boot-time policy.
 
 ## Engineering Storage Qualification Capability
 
@@ -475,3 +480,4 @@ These targets describe the intended engineering direction and shall be updated a
 | 1.6     | 2026-07-13 | Corrected repository inventory for the present SprinterOS repository and the non-Git shared-libraries directory during Mission 0.1 reconciliation. |
 | 1.7     | 2026-07-15 | Established the native systemd user SSH-agent lifecycle, shared socket, protected identity-loading behavior, diagnostics, and security boundary. |
 | 1.8     | 2026-07-15 | Registered PROC-0003 as the shared recovery procedure authority while preserving project-specific recovery ownership. |
+| 2.2     | 2026-07-17 | Replaced the obsolete secure-drive baseline with the qualified AST-000005 ext4 configuration and intentional manual-mount strategy. |
