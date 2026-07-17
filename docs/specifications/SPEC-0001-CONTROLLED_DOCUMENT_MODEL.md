@@ -1,20 +1,20 @@
 ---
 document_id: SPEC-0001
 title: Controlled Document Representation Specification
-version: 1.4
+version: 1.5
 status: Active
 owner: EOS Program
 created: 2026-07-08
-last_updated: 2026-07-11
-phase: Governance Architecture Reconciliation
+last_updated: 2026-07-17
+phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Specification
 source_of_truth: true
-predecessor_revision: SPEC-0001@1.3
+predecessor_revision: SPEC-0001@1.4
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000001
+approval_reference: EGR-000002
 approval_date: 2026-07-13
 persistence_status: Pending
 relationships:
@@ -647,15 +647,31 @@ This specification is complete when repository-controlled documents can be repre
 
 ---
 
+## Workflow Governance Representation
+
+Repository-governed workflow requirements shall be represented by the active
+records assigned Information Authority for their class. Mission classification
+is an EWO and Completion Report attribute governed by STD-0003 and PROC-0001.
+The current report class and visible title are `Completion Report`; legacy
+filenames or historical metadata remain locators and do not define a competing
+current class.
+
+Every current or future Completion Report shall represent its Governance
+Conformance Review as a required section before mission completion. Derived
+views, prompts, and handoffs may reference these records but cannot originate
+or override the represented behavior.
+
 ## Revision History
 
 | Version | Date | Description |
 | ------- | ---- | ----------- |
+
 | 1.0 | 2026-07-08 | Initial Controlled Document Model established. |
 | 1.1 | 2026-07-09 | Established Engineering Work Orders as first-class controlled records and defined their classification, lifecycle, placement, discovery, traceability, and backward compatibility under EWO-000011 Revision 1. |
 | 1.2 | 2026-07-10 | Removed the separate Engineering Work Order lifecycle and established Active as the common execution-authority state under EWO-000012. |
 | 1.3 | 2026-07-10 | Defined revision identity, linear lineage, deterministic supersedence, historical persistence, immutable Git locators, and deterministic reconstruction under EWO-000011 Revision 2. |
 | 1.4 | 2026-07-11 | Renamed the document from Controlled Document Model to Controlled Document Representation Specification to distinguish representation responsibility from STD-0000 architecture; reconciled Charter, Governance Authority, Information Authority, AER, approval, relationship, lifecycle, persistence-state, title, validation, and self-conformance semantics. |
+| 1.5 | 2026-07-17 | Defined repository representation for mission classification, Completion Reports, Governance Conformance Reviews, and non-authoritative handoff references under EGR-000002 and EWO-000018. |
 
 ---
 
@@ -669,3 +685,6 @@ This specification is complete when repository-controlled documents can be repre
 | SPEC-0001@1.4 | 2026-07-11 | Draft | Review | EGR-000001 — current ratification of the completed transitional revision |
 | SPEC-0001@1.4 | 2026-07-13 | Review | Approved | EGR-000001 |
 | SPEC-0001@1.4 | 2026-07-13 | Approved | Active | EGR-000001 |
+| SPEC-0001@1.5 | 2026-07-17 | Draft | Review | EWO-000018 |
+| SPEC-0001@1.5 | 2026-07-17 | Review | Approved | EGR-000002 |
+| SPEC-0001@1.5 | 2026-07-17 | Approved | Active | EGR-000002 |

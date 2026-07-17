@@ -1,20 +1,20 @@
 ---
 document_id: STD-0001
 title: Engineering Document Lifecycle Standard
-version: 1.4
+version: 1.5
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-15
-phase: Governance Architecture Reconciliation
+last_updated: 2026-07-17
+phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Standard
 source_of_truth: true
-predecessor_revision: STD-0001@1.3
+predecessor_revision: STD-0001@1.4
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Engineering State Freshness Standard Implementation
+approval_reference: EGR-000002
 approval_date: 2026-07-15
 persistence_status: Pending
 relationships:
@@ -534,6 +534,19 @@ Version 1.3 is operationally Active but not historically persisted. Persistence 
 
 ---
 
+## Governance-Subsystem Revision Completion
+
+A governance-improvement mission shall not transition its affected revisions
+to complete publication until the complete directly affected subsystem is
+reconciled and the mandatory Governance Conformance Review is complete.
+Whole-document revision is required: every revised publication shall remain a
+coherent current record with updated identity, lineage, relationships,
+authority, revision history, and publication traceability.
+
+An authorized deferral shall identify the exact record, dependency, reason,
+impact, and follow-up authority. Silence, conversation history, or a partial
+edit cannot serve as a lifecycle disposition.
+
 ## Revision History
 
 | Version | Date | Description |
@@ -543,6 +556,7 @@ Version 1.3 is operationally Active but not historically persisted. Persistence 
 | 1.2 | 2026-07-10 | Referenced the revision-lineage, supersedence, and historical-persistence representation in SPEC-0001 instead of duplicating architectural definitions under EWO-000011 Revision 2. |
 | 1.3 | 2026-07-11 | Reconciled delegated authority, class-scoped Active authority, EWO execution authority, lifecycle/approval/persistence separation, transition evidence, compliance, current governing titles, and SPEC-0001 representation consumption. |
 | 1.4 | 2026-07-15 | Distinguished the controlled-document lifecycle from the STD-0004 operational Engineering Lifecycle and required reconciliation revisions to retain normal lifecycle controls. |
+| 1.5 | 2026-07-17 | Required whole-subsystem governance revision, mandatory conformance review before mission completion, and repository-governed future workflow inheritance under EGR-000002 and EWO-000018. |
 
 ---
 
@@ -556,3 +570,6 @@ Version 1.3 is operationally Active but not historically persisted. Persistence 
 | STD-0001@1.4 | 2026-07-15 | Draft | Review | Codex Handoff Procedure - Engineering State Freshness Standard Implementation |
 | STD-0001@1.4 | 2026-07-15 | Review | Approved | Codex Handoff Procedure - Engineering State Freshness Standard Implementation |
 | STD-0001@1.4 | 2026-07-15 | Approved | Active | Codex Handoff Procedure - Engineering State Freshness Standard Implementation |
+| STD-0001@1.5 | 2026-07-17 | Draft | Review | EWO-000018 |
+| STD-0001@1.5 | 2026-07-17 | Review | Approved | EGR-000002 |
+| STD-0001@1.5 | 2026-07-17 | Approved | Active | EGR-000002 |

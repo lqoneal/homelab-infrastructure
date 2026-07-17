@@ -1,12 +1,12 @@
 ---
 document_id: TPL-0002
-title: Engineering Completion Report Template
-version: 1.0
+title: Completion Report Template
+version: 1.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-09
-phase: Governance Bootstrap
+last_updated: 2026-07-17
+phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Template
 source_of_truth: true
@@ -16,6 +16,8 @@ related_documents:
   - STD-0003
   - PROC-0001
   - TPL-0001
+  - EGR-000002
+  - EWO-000018
 tags:
   - governance
   - template
@@ -24,9 +26,20 @@ tags:
   - engineering-operating-system
 ---
 
-# Engineering Completion Report Template
+# Completion Report Template
 
-## Engineering Completion Report Header
+## Required Report Title
+
+Every instantiated report shall begin with exactly:
+
+```text
+# Completion Report
+```
+
+No alternate report title is permitted for a current or future engineering
+mission.
+
+## Completion Report Header
 
 Engineering Operating System:
 
@@ -310,6 +323,49 @@ Recommendation:
 
 ---
 
+## Governance Conformance Review
+
+### Authority Verification
+
+`<PASS, FAIL, or BLOCKED with governing authority evidence>`
+
+### Mission Scope Compliance
+
+`<Assessment against authorized scope and prohibitions>`
+
+### Trust Boundary Verification
+
+`<Assessment of local, repository, secret, network, host, and external-system boundaries as applicable>`
+
+### Controlled Document Compliance
+
+`<Assessment of whole-document revision, lifecycle, ownership, relationships, and traceability>`
+
+### Authority Circumvention Assessment
+
+`<No circumvention detected | Potential circumvention identified | Confirmed authority violation>`
+
+For potential or confirmed circumvention, identify the affected authority or
+control, condition or action, whether it pre-existed the mission, impact,
+corrective recommendation, and required follow-up authority.
+
+### Governance Gap Assessment
+
+`<Identified gaps, exceptions, ambiguities, or None>`
+
+### Documentation Requirement
+
+`<Required | Not required, with disposition evidence>`
+
+### Overall Governance Status
+
+`<CONFORMANT | CONFORMANT WITH FOLLOW-UP REQUIRED | NONCONFORMANT | BLOCKED>`
+
+Mission completion shall not be reported until every item in this section is
+complete.
+
+---
+
 ## Engineering Governance Notes
 
 To be completed by Engineering Governance.
@@ -342,3 +398,11 @@ Applicable Engineering Records:
 
 `<Reference>`
 
+---
+
+## Revision History
+
+| Version | Date | Description |
+| --- | --- | --- |
+| 1.0 | 2026-07-09 | Initial Engineering Completion Report Template established. |
+| 1.1 | 2026-07-17 | Standardized the exact Completion Report title and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |

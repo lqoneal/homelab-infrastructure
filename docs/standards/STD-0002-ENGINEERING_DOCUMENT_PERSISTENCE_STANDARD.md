@@ -1,12 +1,12 @@
 ---
 document_id: STD-0002
 title: Engineering Document Persistence Standard
-version: 1.1
+version: 1.2
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-10
-phase: Governance Stabilization
+last_updated: 2026-07-17
+phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Standard
 source_of_truth: true
@@ -19,6 +19,8 @@ related_documents:
   - POL-0001
   - SPEC-0001
   - EWO-000011
+  - EGR-000002
+  - EWO-000018
 tags:
   - governance
   - persistence
@@ -263,6 +265,13 @@ This standard is complete when every controlled engineering document within the 
 * relationship aware;
 * recoverable during a cold-start engineering resume.
 
+Repository-controlled governance revisions, mission classifications,
+Completion Report requirements, and Governance Conformance Review requirements
+shall be persisted before they are treated as operational behavior. Conversation
+history and handoffs are not persistence substitutes. A governance improvement
+is incomplete when any approved requirement exists only outside the controlled
+publication and its registered planning relationships.
+
 ---
 
 ## Revision History
@@ -271,3 +280,4 @@ This standard is complete when every controlled engineering document within the 
 | ------- | ---- | ----------- |
 | 1.0 | 2026-07-09 | Initial Engineering Document Persistence Standard established. |
 | 1.1 | 2026-07-10 | Referenced the revision persistence, supersedence, Git locator, and deterministic reconstruction architecture in SPEC-0001 and retained operational persistence controls under EWO-000011 Revision 2. |
+| 1.2 | 2026-07-17 | Required persistence of repository-governed workflow behavior and prohibited conversation or handoff history as a substitute under EGR-000002 and EWO-000018. |

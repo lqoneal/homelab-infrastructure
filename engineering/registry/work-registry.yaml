@@ -1,8 +1,8 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 17
-updated_at: '2026-07-13'
+revision: 21
+updated_at: '2026-07-17'
 serialization: yaml
 mutation_history:
 - revision: 2
@@ -105,6 +105,30 @@ mutation_history:
   actor: SprinterOS reconciliation agent
   action: create EMP-DEPENDENCY-SPRINTEROS-PHASE-1-QUALIFICATION
   reason: Record the satisfied repository and Phase 1 qualification gate for SPRINT-1.1.
+- revision: 18
+  previous_revision: 17
+  at: '2026-07-17T04:03:42+00:00'
+  actor: Codex
+  action: create EMP-WORK-CODEX-NTFY-STAGE-1
+  reason: Register authorized EWO-000017 Stage 1 implementation
+- revision: 19
+  previous_revision: 18
+  at: '2026-07-17T04:04:00+00:00'
+  actor: Codex
+  action: register deferred Codex notification stages
+  reason: Record Stage 2 heartbeat notifications and Stage 3 structured progress integration as explicit EWO-000017 deferrals.
+- revision: 20
+  previous_revision: 19
+  at: '2026-07-17T12:00:00+00:00'
+  actor: Codex
+  action: create EMP-WORK-GOVERNANCE-FRAMEWORK-MODERNIZATION
+  reason: Register EGR-000002 authorization and EWO-000018 as the ready successor governance implementation mission.
+- revision: 21
+  previous_revision: 20
+  at: '2026-07-17T13:00:00+00:00'
+  actor: Codex
+  action: transition EMP-WORK-GOVERNANCE-FRAMEWORK-MODERNIZATION to completed
+  reason: Record holistic repository-governed workflow reconciliation and validated publication under EWO-000018.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -736,6 +760,146 @@ entities:
       work.
     queue_ids:
     - EMP-QUEUE-PORTFOLIO-ROADMAP
+  - registry_id: EMP-WORK-CODEX-NTFY-STAGE-1
+    object_type: WorkItem
+    title: Codex Stage 1 Completion Notifications
+    management_state: active
+    owner: Homelab Infrastructure
+    scope: EWO-000017
+    authority_reference: EWO-000017
+    source_records:
+    - EWO-000017
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: EWO-000017
+    created_at: 2026-07-17
+    updated_at: 2026-07-17
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-17
+      actor: Codex
+      reason: EWO-000017 activated Stage 1 implementation.
+      authority_reference: EWO-000017
+    project_id: EMP-PROJECT-HOMELAB
+    order: 3
+    mission_id: null
+    phase_id: null
+    sprint_id: null
+    work_type: engineering-operations
+    priority: 1
+    completion_criteria: Lifecycle notifications, secure configuration, exit preservation,
+      signal handling, documentation, and validation pass.
+    queue_ids: []
+  - registry_id: EMP-WORK-CODEX-NTFY-STAGE-2
+    object_type: WorkItem
+    title: Codex Stage 2 Heartbeat and Still-Running Notifications
+    management_state: deferred
+    owner: Homelab Infrastructure
+    scope: Engineering Operations
+    authority_reference: EWO-000017
+    source_records: [EWO-000017, PROJ-0001]
+    relationships:
+    - type: related_to
+      target: EMP-WORK-CODEX-NTFY-STAGE-1
+    created_at: 2026-07-17
+    updated_at: 2026-07-17
+    revision: 1
+    transition_history:
+    - from: null
+      to: deferred
+      at: 2026-07-17
+      actor: Codex
+      reason: Explicit Stage 1 non-goal requiring separate future authority.
+      authority_reference: EWO-000017
+    project_id: EMP-PROJECT-HOMELAB
+    order: 4
+    mission_id: null
+    phase_id: null
+    sprint_id: null
+    work_type: engineering-operations-enhancement
+    priority: 3
+    completion_criteria: Defined by a separately authorized Stage 2 work order.
+    queue_ids: []
+  - registry_id: EMP-WORK-CODEX-NTFY-STAGE-3
+    object_type: WorkItem
+    title: Codex Stage 3 Structured Progress and Lifecycle-Event Integration
+    management_state: deferred
+    owner: Homelab Infrastructure
+    scope: Engineering Operations
+    authority_reference: EWO-000017
+    source_records: [EWO-000017, PROJ-0001]
+    relationships:
+    - type: related_to
+      target: EMP-WORK-CODEX-NTFY-STAGE-1
+    created_at: 2026-07-17
+    updated_at: 2026-07-17
+    revision: 1
+    transition_history:
+    - from: null
+      to: deferred
+      at: 2026-07-17
+      actor: Codex
+      reason: Explicit Stage 1 non-goal requiring separate future authority.
+      authority_reference: EWO-000017
+    project_id: EMP-PROJECT-HOMELAB
+    order: 5
+    mission_id: null
+    phase_id: null
+    sprint_id: null
+    work_type: engineering-operations-enhancement
+    priority: 3
+    completion_criteria: Defined by a separately authorized Stage 3 work order.
+    queue_ids: []
+  - registry_id: EMP-WORK-GOVERNANCE-FRAMEWORK-MODERNIZATION
+    object_type: WorkItem
+    title: Governance Framework Modernization
+    management_state: completed
+    owner: Engineering Governance
+    scope: EWO-000018
+    authority_reference: EGR-000002
+    source_records:
+    - EGR-000002
+    - EWO-000018
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: EWO-000018
+    - type: related_to
+      target: EGR-000002
+    created_at: 2026-07-17
+    updated_at: 2026-07-17
+    revision: 2
+    transition_history:
+    - from: null
+      to: ready
+      at: 2026-07-17
+      actor: Codex
+      reason: EGR-000002 approved and activated EWO-000018 for the successor implementation mission.
+      authority_reference: EGR-000002
+    - from: ready
+      to: active
+      at: 2026-07-17
+      actor: Codex
+      reason: EWO-000018 entered authorized holistic governance implementation.
+      authority_reference: EWO-000018
+    - from: active
+      to: completed
+      at: 2026-07-17
+      actor: Codex
+      reason: EWO-000018 reconciled and validated the complete affected governance subsystem for controlled publication.
+      authority_reference: EWO-000018
+    project_id: EMP-PROJECT-HOMELAB
+    order: 6
+    mission_id: null
+    phase_id: null
+    sprint_id: null
+    work_type: governance-modernization
+    priority: 1
+    completion_criteria: The complete affected governance subsystem is reconciled, validated, committed as an isolated documentation-only publication, and inherited by future Codex missions.
+    queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP
     object_type: Queue
@@ -929,6 +1093,58 @@ entities:
     reentry_conditions: EMP roadmap complete and separate Private AI Assistant authority
       active.
     target_horizon: after-emp-roadmap
+    resolution_reference: null
+  - registry_id: EMP-DEFERRAL-CODEX-NTFY-STAGE-2
+    object_type: Deferral
+    title: Defer Codex Stage 2 Heartbeat Notifications
+    management_state: active
+    owner: Homelab Infrastructure
+    scope: EMP-WORK-CODEX-NTFY-STAGE-2
+    authority_reference: EWO-000017
+    source_records: [EWO-000017]
+    relationships:
+    - type: related_to
+      target: EMP-WORK-CODEX-NTFY-STAGE-2
+    created_at: 2026-07-17
+    updated_at: 2026-07-17
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-17
+      actor: Codex
+      reason: Stage 2 is outside EWO-000017 implementation scope.
+      authority_reference: EWO-000017
+    work_item_id: EMP-WORK-CODEX-NTFY-STAGE-2
+    reason: Heartbeat and still-running notifications are explicit Stage 1 non-goals.
+    reentry_conditions: Separate Stage 2 authority, interval and rate-limit design, and validation plan.
+    target_horizon: Future Engineering Operations enhancement
+    resolution_reference: null
+  - registry_id: EMP-DEFERRAL-CODEX-NTFY-STAGE-3
+    object_type: Deferral
+    title: Defer Codex Stage 3 Structured Progress Integration
+    management_state: active
+    owner: Homelab Infrastructure
+    scope: EMP-WORK-CODEX-NTFY-STAGE-3
+    authority_reference: EWO-000017
+    source_records: [EWO-000017]
+    relationships:
+    - type: related_to
+      target: EMP-WORK-CODEX-NTFY-STAGE-3
+    created_at: 2026-07-17
+    updated_at: 2026-07-17
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-17
+      actor: Codex
+      reason: Stage 3 is outside EWO-000017 implementation scope.
+      authority_reference: EWO-000017
+    work_item_id: EMP-WORK-CODEX-NTFY-STAGE-3
+    reason: Structured progress and lifecycle-event integration are explicit Stage 1 non-goals.
+    reentry_conditions: Separate Stage 3 authority and an approved structured event contract that does not parse private Codex output.
+    target_horizon: Future Engineering Operations enhancement
     resolution_reference: null
   dependencies:
   - registry_id: EMP-DEPENDENCY-SPRINTEROS-ON-EMP

@@ -1,19 +1,19 @@
 ---
 document_id: STD-0000
 title: Engineering Documentation Standard
-version: 1.4
+version: 1.5
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-13
-phase: EGR Framework Implementation
+last_updated: 2026-07-17
+phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Standard
-predecessor_revision: STD-0000@1.3
+predecessor_revision: STD-0000@1.4
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000001
+approval_reference: EGR-000002
 approval_date: 2026-07-13
 persistence_status: Pending
 source_of_truth: true
@@ -586,6 +586,25 @@ This standard is complete when it provides a coherent documentation architecture
 
 Future controlled documents shall conform to this standard or record an explicit Engineering Governance-approved exception.
 
+## Repository-Governed Workflow Publications
+
+The active repository publications assigned Information Authority for Work
+Initiation, mission classification, mission lifecycle, Completion Reports, and
+Governance Conformance Reviews are the sole operational source for those
+behaviors. Handoffs and conversation history may reference these publications
+but shall not redefine them.
+
+The standard report class is `Completion Report`, and the visible title of each
+current or future report shall be exactly `Completion Report`. Historical
+filenames and superseded metadata remain preserved as locators and historical
+evidence; they do not establish an alternate current report class or title.
+
+Governance-framework revisions shall reconcile the complete directly affected
+documentation subsystem, including standards, specifications, procedures,
+templates, indexes, lifecycle relationships, planning, and derived operational
+views. Partial publication is prohibited unless Engineering Governance records
+an explicit bounded deferral and follow-up authority.
+
 ---
 
 ## Revision History
@@ -597,3 +616,4 @@ Future controlled documents shall conform to this standard or record an explicit
 | 1.2 | 2026-07-10 | Removed Issued lifecycle authority and established Active as the execution-authority state for Engineering Work Orders and all controlled engineering documents under EWO-000012. |
 | 1.3 | 2026-07-11 | Reconciled the complete standard with CHAR-0001, GEN-0001, POL-0001, and EDR-0002; established delegated authority, Charter precedence, document-class responsibilities, repository authority, Information Authority, AER, derived-view, and traceability semantics. |
 | 1.4 | 2026-07-13 | Established the minimum normative Engineering Governance Resolution record architecture, including authority, identity, required content, disposition, scope, lifecycle, relationships, execution boundaries, discovery, and historical-preservation requirements. |
+| 1.5 | 2026-07-17 | Established repository-governed workflow publications, the Completion Report class and exact title, and holistic governance-subsystem reconciliation under EGR-000002 and EWO-000018. |

@@ -1,12 +1,12 @@
 ---
 document_id: STD-0003
 title: Engineering Work Order Standard
-version: 1.1
+version: 1.2
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-10
-phase: Governance Stabilization
+last_updated: 2026-07-17
+phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Standard
 source_of_truth: true
@@ -18,6 +18,8 @@ related_documents:
   - POL-0001
   - PROC-0001
   - EWO-000012
+  - EGR-000002
+  - EWO-000018
 tags:
   - governance
   - work-order
@@ -83,6 +85,8 @@ Engineering Work Orders are completed through engineering evidence, not assumpti
 ## Required Engineering Work Order Elements
 
 Every Engineering Work Order shall include, at minimum:
+
+* mission classification under PROC-0001;
 
 * identifier;
 * revision;
@@ -178,7 +182,46 @@ Every Engineering Work Order shall require a Completion Report containing, at mi
 * Engineering Findings;
 * Operational Observations;
 * Recommended Next Engineering Work Order;
+* Governance Conformance Review; and
 * Engineering Governance Notes.
+
+The report title shall be exactly `Completion Report`. An Engineering Work
+Order shall not define an alternate report title or omit the repository-standard
+report structure in TPL-0002.
+
+The Governance Conformance Review is mandatory for every Codex engineering
+mission and shall contain:
+
+* Authority Verification;
+* Mission Scope Compliance;
+* Trust Boundary Verification;
+* Controlled Document Compliance;
+* Authority Circumvention Assessment;
+* Governance Gap Assessment;
+* Documentation Requirement; and
+* Overall Governance Status.
+
+Authority Circumvention Assessment shall use exactly one of:
+
+* `No circumvention detected`;
+* `Potential circumvention identified`; or
+* `Confirmed authority violation`.
+
+Mission completion shall not be reported until this review is complete.
+
+## Mission Classification Requirements
+
+Every Engineering Work Order shall identify exactly one primary mission
+classification defined by PROC-0001:
+
+* Category A — Repository Engineering Work;
+* Category B — Local Engineering Environment Work; or
+* Category C — Operational / Diagnostic Work.
+
+The classification determines risk-proportional initiation gates but never
+creates or expands authority. Mixed-scope work uses the most restrictive
+applicable category unless the Work Order explicitly separates independently
+gated phases.
 
 ---
 
@@ -254,3 +297,4 @@ This standard is complete when every Engineering Work Order activated under the 
 | ------- | ---- | ----------- |
 | 1.0 | 2026-07-09 | Initial Engineering Work Order Standard established. |
 | 1.1 | 2026-07-10 | Established Active as the Engineering Work Order execution-authority lifecycle state under EWO-000012. |
+| 1.2 | 2026-07-17 | Required repository-governed mission classification, the exact Completion Report title, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |

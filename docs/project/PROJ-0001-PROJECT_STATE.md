@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 3.9
+version: 4.2
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-17
-phase: AST-000005 Engineering Qualification Complete
+phase: Governance Framework Modernization Complete
 classification: Project State
-predecessor_revision: PROJ-0001@3.8
+predecessor_revision: PROJ-0001@4.1
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: AST-000005 Engineering Qualification Resume Mission
+approval_reference: EGR-000002
 approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
@@ -26,7 +26,13 @@ relationships:
   - type: related_to
     target: EGR-000001
   - type: related_to
+    target: EGR-000002
+  - type: related_to
     target: EWO-000016
+  - type: related_to
+    target: EWO-000017
+  - type: related_to
+    target: EWO-000018
   - type: related_to
     target: EOS-0003
   - type: related_to
@@ -284,16 +290,23 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-AST-000005 Linux reprovisioning and engineering qualification are complete.
-The asset is Available with an enclosure SMART telemetry limitation and no
-assigned operational role.
+Resume EWO-000017 Codex Stage 1 completion notification acceptance under its
+existing authority after the EWO-000018 governance publication boundary.
 
 **Next Immediate Step:**
 
-Select the next separately authorized storage assignment or migration mission.
-Mount AST-000005 manually by UUID until an assigned role defines a persistent
-mount. Preserve its qualification artifacts unless separately authorized for
-cleanup.
+Perform the separately authorized private local configuration and controlled
+live acceptance steps required by EWO-000017. Apply the repository-governed
+Category B initiation gates when the mission is limited to local configuration.
+
+EWO-000017 remains Active at the incomplete controlled-acceptance boundary.
+Its runtime implementation remains preserved outside the EWO-000018 governance
+publication commit.
+
+EWO-000018 implemented the Mission Classification Gate, Category A/B/C
+risk-proportional initiation, the exact Completion Report standard, mandatory
+Governance Conformance Review, holistic governance reconciliation, architecture
+validation, and repository-governed future-mission behavior.
 
 EWO-000016 remains a separately selectable bounded side mission. If selected, execution begins with Stage A backup re-verification; no destructive USB operation may occur unless every preceding gate passes.
 
@@ -512,3 +525,6 @@ When resuming this project:
 | 3.7     | 2026-07-16 | Qualified and registered AST-000010, published STD-0005, and advanced resume to the next separately authorized storage qualification and role-assessment mission. |
 | 3.8     | 2026-07-16 | Reconciled owner disposition for AST-000005, superseded direct-SATA investigation, authorized future secure reprovisioning, and established Pending Requalification without assigning an operational role. |
 | 3.9     | 2026-07-17 | Completed AST-000005 Linux engineering qualification, preserved SHA-256 and metadata evidence, recorded enclosure-limited SMART telemetry, and advanced the asset to Available without assigning an operational role. |
+| 4.0     | 2026-07-17 | Activated EWO-000017, integrated shared Codex lifecycle notifications through engctl, and recorded Stage 2 and Stage 3 as authoritative deferred work. |
+| 4.1     | 2026-07-17 | Recorded EGR-000002 governance authorization, activated EWO-000018 as the successor modernization mission, and preserved EWO-000017 under a bounded dirty-tree exception. |
+| 4.2     | 2026-07-17 | Completed EWO-000018 governance-framework modernization and returned the primary resume point to EWO-000017 controlled acceptance under repository-governed Category B initiation. |

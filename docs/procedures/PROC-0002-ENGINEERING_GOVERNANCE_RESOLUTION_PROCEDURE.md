@@ -1,19 +1,19 @@
 ---
 document_id: PROC-0002
 title: Engineering Governance Resolution Procedure
-version: 1.0
+version: 1.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-13
-last_updated: 2026-07-13
-phase: EGR Framework Implementation
+last_updated: 2026-07-17
+phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: null
+predecessor_revision: PROC-0002@1.0
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000001
+approval_reference: EGR-000002
 approval_date: 2026-07-13
 persistence_status: Pending
 source_of_truth: true
@@ -383,8 +383,23 @@ This procedure is complete when an authorized preparer can create and advance an
 
 ---
 
+## Holistic Governance Reconciliation Review
+
+When an EGR approves a governance improvement, the Resolution shall identify
+the complete affected governance subsystem and state whether the authority is
+explicitly limited. Unless limited, follow-up implementation shall reconcile
+every directly affected standard, specification, procedure, template, index,
+lifecycle relationship, planning record, and derived operational view.
+
+Engineering Governance review shall reject silent corrections, intentionally
+inconsistent partial updates, and completion claims made before governance
+architecture validation and the mandatory Governance Conformance Review.
+Any deferral shall identify the exact record, dependency, reason, impact, and
+required follow-up EWO.
+
 ## Revision History
 
 | Version | Date | Description |
 | ------- | ---- | ----------- |
 | 1.0 | 2026-07-13 | Established the Engineering Governance Resolution creation, review, approval, activation, traceability, supersedence, archival, and execution-boundary procedure. |
+| 1.1 | 2026-07-17 | Required holistic affected-subsystem reconciliation, explicit deferrals, architecture validation, and Governance Conformance Review under EGR-000002 and EWO-000018. |

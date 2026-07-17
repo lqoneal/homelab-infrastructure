@@ -1,12 +1,12 @@
 ---
 document_id: PROC-0001
 title: Engineering Work Order Execution Procedure
-version: 1.5
+version: 1.6
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-15
-phase: Governance Stabilization
+last_updated: 2026-07-17
+phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Procedure
 source_of_truth: true
@@ -20,6 +20,8 @@ related_documents:
   - POL-0001
   - EWO-000012
   - PROC-0003
+  - EGR-000002
+  - EWO-000018
 tags:
   - governance
   - procedure
@@ -76,6 +78,8 @@ Engineering Work Orders shall be executed:
 Every Engineering Work Order shall execute according to the following workflow:
 
 ```text
+Mission Classification Gate
+        ↓
 Engineering Document Verification
         ↓
 Operational Inventory
@@ -95,7 +99,73 @@ Engineering Governance Review
 
 ---
 
-## Step 1 — Engineering Document Verification
+## Step 1 — Mission Classification Gate
+
+Classify the mission before applying initiation gates. Classification selects
+risk-proportional controls; it does not grant authority, waive an EWO, or
+override a mission-specific stop condition.
+
+### Category A — Repository Engineering Work
+
+Examples include repository changes, controlled documents, EOS publications,
+and version-controlled engineering artifacts.
+
+Required gates:
+
+* full Engineering Platform qualification;
+* authority and governance verification;
+* repository identity and integrity;
+* current Engineering State and EOS synchronization;
+* active checkpoint and repository inventory;
+* infrastructure, Project State, DOC-0001, and applicable controlled records;
+* clean working tree unless an explicit controlled exception identifies the
+  pre-existing paths, isolation method, and permitted overlap; and
+* no active conflicting Git or lifecycle operation.
+
+### Category B — Local Engineering Environment Work
+
+Examples include `~/.config`, SSH configuration, notification configuration,
+workstation-local engineering settings, and local secrets.
+
+Required gates:
+
+* execution environment qualification;
+* explicit authority verification;
+* applicable governance verification;
+* trust-boundary validation;
+* secret-handling validation; and
+* mission-specific local ownership, permission, and destination controls.
+
+Repository cleanliness shall be recorded but shall not automatically block the
+mission unless the mission reads, writes, validates, derives configuration
+from, or otherwise interacts with the repository.
+
+### Category C — Operational / Diagnostic Work
+
+Examples include inventory, read-only qualification, diagnostics, monitoring,
+hardware inspection, and health assessment.
+
+Required gates:
+
+* execution environment qualification;
+* authority and scope verification;
+* operational trust-boundary and external-effect verification; and
+* mission-specific safety controls.
+
+Repository cleanliness is informational unless repository interaction is
+required. Diagnostics do not authorize remediation.
+
+### Mixed or Ambiguous Missions
+
+Use the most restrictive applicable category unless the Active EWO separates
+the work into independently authorized and gated phases. If classification is
+ambiguous or would materially change the applicable controls, stop and obtain
+Engineering Governance disposition. Record classification and gate results in
+the Completion Report.
+
+---
+
+## Step 2 — Engineering Document Verification
 
 Purpose:
 
@@ -117,7 +187,7 @@ Engineering Governance authorization is required.
 
 ---
 
-## Step 2 — Operational Inventory
+## Step 3 — Operational Inventory
 
 Purpose:
 
@@ -161,7 +231,7 @@ Do not modify the environment.
 
 ---
 
-## Step 3 — Operational Preparation
+## Step 4 — Operational Preparation
 
 Purpose:
 
@@ -185,13 +255,13 @@ Report evidence.
 
 ---
 
-## Step 4 — Baseline Verification
+## Step 5 — Baseline Verification
 
 Purpose:
 
 Verify engineering integrity before work begins.
 
-Examples include:
+For Category A, examples include:
 
 * repository integrity;
 * repository identity;
@@ -202,7 +272,12 @@ Examples include:
 
 Verify all mission-specific baseline requirements defined by the Engineering Work Order.
 
-If baseline verification fails:
+For Categories B and C, apply the classification-specific gates above and all
+mission-specific baseline requirements. Repository cleanliness is not promoted
+from informational evidence to a blocker unless repository interaction or an
+explicit Work Order condition requires it.
+
+If an applicable baseline verification fails:
 
 STOP.
 
@@ -210,7 +285,7 @@ Engineering Governance authorization is required.
 
 ---
 
-## Step 5 — Engineering Phase Execution
+## Step 6 — Engineering Phase Execution
 
 Execute only the engineering activities authorized by the Engineering Work Order.
 
@@ -225,7 +300,7 @@ Execute phases sequentially unless the Engineering Work Order explicitly authori
 
 ---
 
-## Step 6 — Engineering Evidence Collection
+## Step 7 — Engineering Evidence Collection
 
 Collect sufficient engineering evidence to support Engineering Governance review.
 
@@ -240,7 +315,7 @@ Evidence shall correspond to the Engineering Work Order objectives.
 
 ---
 
-## Step 7 — Completion Report
+## Step 8 — Completion Report
 
 Produce the Completion Report required by the Engineering Work Order.
 
@@ -255,6 +330,22 @@ The report shall summarize:
 * operational observations;
 * recommended next Engineering Work Order.
 
+The report title shall be exactly `Completion Report` and shall conform to
+TPL-0002. Every Codex engineering mission shall include a completed Governance
+Conformance Review containing Authority Verification, Mission Scope
+Compliance, Trust Boundary Verification, Controlled Document Compliance,
+Authority Circumvention Assessment, Governance Gap Assessment, Documentation
+Requirement, and Overall Governance Status.
+
+Authority Circumvention Assessment shall return exactly one allowed value from
+STD-0003. A governance gap, exception, ambiguity, or circumvention condition
+shall not be silently corrected or omitted. Record the affected authority,
+impact, whether it pre-existed the mission, corrective recommendation, and
+required follow-up authority.
+
+Mission completion shall not be reported until the Governance Conformance
+Review is complete.
+
 Engineering Governance Notes remain blank.
 
 ---
@@ -263,13 +354,13 @@ Engineering Governance Notes remain blank.
 
 Upon resumption:
 
-1. Verify the Active Engineering Work Order.
+1. Repeat the Mission Classification Gate and verify the Active Engineering Work Order.
 
-2. Perform Operational Inventory.
+2. Reapply the classification-specific initiation gates.
 
-3. Perform Operational Preparation.
+3. Perform Operational Inventory and Operational Preparation.
 
-4. Perform Baseline Verification.
+4. Perform the applicable Baseline Verification.
 
 5. Resume at the first incomplete engineering phase.
 
@@ -611,3 +702,4 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.3 | 2026-07-15 | Integrated STD-0004 freshness qualification and reconciliation gating into Work Initiation and resume after interruption. |
 | 1.4 | 2026-07-15 | Established mandatory Commit Classification, traceability, validation, dependency ordering, commit boundaries, and milestone publication controls after Engineering State Reconciliation. |
 | 1.5 | 2026-07-15 | Established Commit Reconstruction Planning, approved reconstruction methods, execution gates, persistent planning artifacts, and proportional planning governance. |
+| 1.6 | 2026-07-17 | Added the Mission Classification Gate, risk-proportional Category A/B/C initiation, exact Completion Report standard, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |

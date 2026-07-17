@@ -1,19 +1,19 @@
 ---
 document_id: STD-0004
 title: Engineering State Freshness Standard
-version: 1.2
+version: 1.3
 status: Active
 owner: Engineering Governance
 created: 2026-07-15
-last_updated: 2026-07-15
-phase: Engineering State Freshness Standard Implementation
+last_updated: 2026-07-17
+phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Standard
-predecessor_revision: STD-0004@1.1
+predecessor_revision: STD-0004@1.2
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Commit Classification and Commit Reconstruction Procedure Reconciliation
+approval_reference: EGR-000002
 approval_date: 2026-07-15
 persistence_status: Pending
 source_of_truth: true
@@ -400,6 +400,13 @@ implementation shall not.
 Authoritative Engineering State shall never intentionally drift beyond two
 completed engineering milestones behind actual implementation.
 
+Work Initiation shall apply freshness as a risk-proportional gate after mission
+classification under PROC-0001. Category A requires full repository and EOS
+freshness qualification. Categories B and C require freshness only for the
+authoritative state they consume or affect; unrelated repository dirtiness is
+informational. No classification waives explicit authority, trust-boundary, or
+mission-specific freshness requirements.
+
 ## Revision History
 
 | Version | Date | Description |
@@ -407,3 +414,4 @@ completed engineering milestones behind actual implementation.
 | 1.0 | 2026-07-15 | Established the Engineering State freshness threshold, reconciliation triggers and scope, operational lifecycle integration, and resume-accuracy requirements. |
 | 1.1 | 2026-07-15 | Reconciled the operational lifecycle to place Commit Classification, Commit Execution, and Milestone Qualification after Engineering State Reconciliation and defined their authority boundaries. |
 | 1.2 | 2026-07-15 | Added Commit Reconstruction Planning between classification and execution and distinguished the governed what, how, and execution authority boundaries. |
+| 1.3 | 2026-07-17 | Integrated mission-classification-driven freshness gates and preserved authority and trust-boundary controls under EGR-000002 and EWO-000018. |

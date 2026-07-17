@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.19
+version: 2.22
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-17
-phase: AST-000005 Engineering Qualification Complete
+phase: Governance Framework Modernization
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.18
+predecessor_revision: DOC-0001@2.21
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: AST-000005 Engineering Qualification Resume Mission
+approval_reference: EGR-000002
 approval_date: 2026-07-17
 persistence_status: Pending
 source_of_truth: true
@@ -76,7 +76,15 @@ relationships:
   - type: related_to
     target: EWO-000014
   - type: related_to
+    target: EWO-000015
+  - type: related_to
     target: EWO-000016
+  - type: related_to
+    target: EWO-000017
+  - type: related_to
+    target: EGR-000002
+  - type: related_to
+    target: EWO-000018
 tags:
   - repository
   - governance
@@ -122,7 +130,13 @@ created by that inventory view.
 
 # Repository Work Initiation Ritual
 
-Every engineering session shall begin by reviewing the repository in the following order.
+Every engineering mission shall begin with the Mission Classification Gate in
+PROC-0001. Apply the category-specific gates before using this repository
+ritual. Category A performs the complete ritual. Category B or C performs the
+repository-specific steps only when the mission consumes or affects repository
+state; otherwise repository cleanliness is recorded as informational.
+
+For Category A, review the repository in the following order.
 
 1. Verify repository root.
 2. Inventory repository structure.
@@ -137,6 +151,16 @@ Every engineering session shall begin by reviewing the repository in the followi
    and resume accuracy.
 10. If reconciliation is required, complete it before implementation.
 11. Resume implementation only from reconciled authoritative state.
+
+An approved dirty-tree exception shall identify the governing authority,
+pre-existing paths, isolation method, permitted shared-record overlap, and
+validation required before commit. No mission classification or exception
+creates engineering authority.
+
+The active repository publications are the sole operational source for Work
+Initiation, mission classification, mission lifecycle, Completion Report, and
+Governance Conformance Review behavior. Handoffs shall reference these records
+and shall not restate competing rules.
 
 ---
 
@@ -256,10 +280,11 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | PROC-0002 | Engineering Governance Resolution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md` |
 | PROC-0003 | Engineering Recovery Runbook | Active | Engineering Governance | `docs/procedures/PROC-0003-ENGINEERING_RECOVERY_RUNBOOK.md` |
 | TPL-0001 | Engineering Work Order Template | Active | Engineering Governance | `docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md` |
-| TPL-0002 | Engineering Completion Report Template | Active | Engineering Governance | `docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md` |
+| TPL-0002 | Completion Report Template | Active | Engineering Governance | `docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md` |
 | TPL-0003 | Engineering Evidence Package Template | Active | Engineering Governance | `docs/templates/TPL-0003-ENGINEERING_EVIDENCE_PACKAGE_TEMPLATE.md` |
 | TPL-0004 | Engineering Governance Resolution Template | Active | Engineering Governance | `docs/templates/TPL-0004-ENGINEERING_GOVERNANCE_RESOLUTION_TEMPLATE.md` |
 | EGR-000001 | Governance Foundation Qualification and Publication | Active | Engineering Governance | `docs/resolutions/EGR-000001-GOVERNANCE_FOUNDATION_QUALIFICATION_AND_PUBLICATION.md` |
+| EGR-000002 | Governance Framework Modernization Authorization | Active | Engineering Governance | `docs/resolutions/EGR-000002-GOVERNANCE-FRAMEWORK-MODERNIZATION-AUTHORIZATION.md` |
 | EWO-000010 | Governance Baseline 1.0 Qualification | Active | Engineering Governance | `docs/work-orders/EWO-000010-GOVERNANCE_BASELINE_1.0_QUALIFICATION.md` |
 | EWO-000010-EVIDENCE | EWO-000010 Qualification Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000010-QUALIFICATION-EVIDENCE-PACKAGE.md` |
 | EWO-000010-COMPLETION | EWO-000010 Qualification Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000010-QUALIFICATION-COMPLETION-REPORT.md` |
@@ -275,7 +300,10 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EWO-000014 | SPEC-0001 Lifecycle Promotion | Active | Engineering Governance | `docs/work-orders/EWO-000014-SPEC-0001-LIFECYCLE-PROMOTION.md` |
 | EWO-000014-EVIDENCE | EWO-000014 Engineering Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000014-ENGINEERING-EVIDENCE-PACKAGE.md` |
 | EWO-000014-COMPLETION | EWO-000014 Engineering Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000014-ENGINEERING-COMPLETION-REPORT.md` |
+| EWO-000015 | Governance Architecture Reconciliation | Active | Engineering Governance | `docs/work-orders/EWO-000015-GOVERNANCE-ARCHITECTURE-RECONCILIATION.md` |
 | EWO-000016 | thaDuke Firmware Remediation | Active | Engineering Governance | `docs/work-orders/EWO-000016-THADUKE-FIRMWARE-REMEDIATION.md` |
+| EWO-000017 | Codex Stage 1 Completion Notification Integration | Active | Engineering Governance | `docs/work-orders/EWO-000017-CODEX-STAGE-1-COMPLETION-NOTIFICATION-INTEGRATION.md` |
+| EWO-000018 | Governance Framework Modernization | Active | Engineering Governance | `docs/work-orders/EWO-000018-GOVERNANCE-FRAMEWORK-MODERNIZATION.md` |
 | FIN-0001 | Master Financial Ledger | Active | Homelab Infrastructure | `docs/finance/FIN-0001-MASTER_FINANCIAL_LEDGER.md` |
 | FIN-0002 | Master Procurement Register | Active | Homelab Infrastructure | `docs/finance/FIN-0002-MASTER_PROCUREMENT_REGISTER.md` |
 | PROC-000001 | Engineering Terminal 01 Procurement | Closed | Homelab Infrastructure | `docs/finance/procurements/PROC-000001.md` |
@@ -359,7 +387,9 @@ The EGR framework is implemented by:
 
 DOC-0001 provides EGR discovery and identifier coordination. It does not select a governance disposition, approve a Resolution, activate a lifecycle transition, or replace the authoritative EGR record.
 
-EGR-000001 is the first registered Engineering Governance Resolution and records Governance Foundation qualification and publication.
+EGR-000001 records Governance Foundation qualification and publication.
+EGR-000002 authorizes Governance Framework Modernization and activates
+EWO-000018 as the bounded implementation contract.
 
 ---
 
@@ -513,3 +543,6 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.17 | 2026-07-16 | Recorded AST-000005 enclosure-boundary failure isolation and qualification hold. |
 | 2.18 | 2026-07-16 | Recorded owner-authorized AST-000005 secure reprovisioning disposition and pending-requalification lifecycle. |
 | 2.19 | 2026-07-17 | Synchronized AST-000005 qualified Linux configuration and Available lifecycle state with its authoritative asset and hardware records. |
+| 2.20 | 2026-07-17 | Registered EWO-000017 and reconciled the previously approved EWO-000015 registration while integrating shared Codex lifecycle notifications. |
+| 2.21 | 2026-07-17 | Registered EGR-000002 and EWO-000018 as the authorization and bounded successor implementation contract for holistic governance-framework modernization. |
+| 2.22 | 2026-07-17 | Reconciled repository Work Initiation with Category A/B/C gates and registered repository-governed Completion Report and Governance Conformance Review behavior under EWO-000018. |

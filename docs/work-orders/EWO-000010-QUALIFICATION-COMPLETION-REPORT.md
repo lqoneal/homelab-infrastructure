@@ -25,9 +25,9 @@ tags:
   - baseline-1.0
 ---
 
-# Engineering Completion Report
+# Completion Report
 
-## Engineering Completion Report Header
+## Completion Report Header
 
 Engineering Operating System: Engineering Operating System (EOS)
 Engineering Work Order: EWO-000010

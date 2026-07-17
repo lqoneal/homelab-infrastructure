@@ -1,12 +1,12 @@
 ---
 document_id: TPL-0001
 title: Engineering Work Order Template
-version: 1.1
+version: 1.2
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-10
-phase: Governance Stabilization
+last_updated: 2026-07-17
+phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Template
 source_of_truth: true
@@ -16,6 +16,8 @@ related_documents:
   - STD-0003
   - PROC-0001
   - EWO-000012
+  - EGR-000002
+  - EWO-000018
 tags:
   - governance
   - template
@@ -88,6 +90,13 @@ This Engineering Work Order shall comply with:
 ---
 
 ## Engineering Governance Intent
+
+### Mission Classification
+
+`<Category A — Repository Engineering Work | Category B — Local Engineering Environment Work | Category C — Operational / Diagnostic Work>`
+
+State the classification rationale, applicable risk-proportional initiation
+gates, repository-interaction status, and any explicitly approved exception.
 
 ### Purpose
 
@@ -252,6 +261,8 @@ The Implementation Agent shall produce a Completion Report prior to stopping whe
 
 The Completion Report shall include:
 
+* the exact title `Completion Report`;
+
 * Work Order Summary;
 * Mission Status;
 * Execution Status;
@@ -264,7 +275,13 @@ The Completion Report shall include:
 * Engineering Findings;
 * Operational Observations;
 * Recommended Next Engineering Work Order;
-* Engineering Governance Notes.
+* Engineering Governance Notes; and
+* a completed Governance Conformance Review containing Authority Verification,
+  Mission Scope Compliance, Trust Boundary Verification, Controlled Document
+  Compliance, Authority Circumvention Assessment, Governance Gap Assessment,
+  Documentation Requirement, and Overall Governance Status.
+
+Mission completion shall not be reported until this review is complete.
 
 ---
 
@@ -318,3 +335,4 @@ Applicable engineering records:
 | ------- | ---- | ----------- |
 | 1.0 | 2026-07-09 | Initial Engineering Work Order Template established. |
 | 1.1 | 2026-07-10 | Removed Issued and established Active as the Engineering Work Order execution-authority lifecycle state under EWO-000012. |
+| 1.2 | 2026-07-17 | Added repository-governed mission classification, exact Completion Report title, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |

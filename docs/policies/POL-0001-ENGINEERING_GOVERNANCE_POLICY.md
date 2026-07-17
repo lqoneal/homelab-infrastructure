@@ -1,12 +1,12 @@
 ---
 document_id: POL-0001
 title: Engineering Governance Policy
-version: 1.0
+version: 1.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-09
-phase: Governance Bootstrap
+last_updated: 2026-07-17
+phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Governance Policy
 source_of_truth: true
@@ -16,6 +16,8 @@ related_documents:
   - STD-0000
   - STD-0001
   - STD-0002
+  - EGR-000002
+  - EWO-000018
 tags:
   - governance
   - policy
@@ -247,12 +249,50 @@ Future engineering phases inherit the updated Governance Baseline.
 
 Ordinary EOS governance changes shall occur only through approved Governance Stabilization activities. Amendments to CHAR-0001 remain governed by the Charter's amendment authority and requirements.
 
+Governance-improvement work affects governance systems, not isolated
+documents. Unless Engineering Governance explicitly limits the approving
+authority, an authorized governance-improvement mission shall reconcile the
+complete directly affected governance subsystem. It shall not knowingly leave
+conflicting authority, terminology, procedures, templates, lifecycle rules, or
+derived operational behavior.
+
+Silent governance correction is prohibited. A discovered governance gap,
+exception, ambiguity, or circumvention condition shall be reported, assessed,
+and either corrected under explicit authority or persisted as governed
+follow-up work.
+
 During Mission Execution:
 
 * improvements are recorded;
 * improvements are not implemented.
 
 Execution-blocking defects may be corrected only through explicit Engineering Governance approval.
+
+## Repository-Governed Engineering Behavior
+
+After an approved governance revision is incorporated into the controlled
+repository publication, that publication is the sole operational source for
+Engineering Work Initiation, mission classification, mission lifecycle,
+Completion Report structure, and Governance Conformance Review requirements.
+
+Conversation history, prompts, and handoffs are historical or mission-input
+artifacts. They may identify an approval or reference repository authority, but
+they shall not redefine, weaken, replace, or silently extend repository-governed
+behavior. This operational-source rule remains subordinate to the authority
+origin and hierarchy established by CHAR-0001.
+
+## Governance Architecture Validation
+
+Every governance-improvement mission shall validate the authority hierarchy,
+governance hierarchy, controlled-document hierarchy, dependency integrity,
+publication traceability, initiation lifecycle, mission lifecycle, Completion
+Report architecture, templates, and governance workflow for its complete
+affected subsystem.
+
+Future-mission verification shall demonstrate that an implementation agent can
+derive the applicable initiation, classification, lifecycle, reporting, and
+conformance-review behavior from repository-controlled governance without
+custom handoff instructions.
 
 ---
 
@@ -318,3 +358,12 @@ This policy is complete when it establishes:
 * governance change control;
 
 and provides the policy-level governing foundation for all Engineering Operating System standards, specifications, procedures, templates, and Engineering Work Orders.
+
+---
+
+## Revision History
+
+| Version | Date | Description |
+| --- | --- | --- |
+| 1.0 | 2026-07-09 | Initial Engineering Governance Policy established. |
+| 1.1 | 2026-07-17 | Established holistic governance reconciliation, repository-governed workflow behavior, no silent correction, architecture validation, and future-mission verification under EGR-000002 and EWO-000018. |
