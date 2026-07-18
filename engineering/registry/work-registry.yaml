@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 40
+revision: 41
 updated_at: '2026-07-18'
 serialization: yaml
 mutation_history:
@@ -251,6 +251,12 @@ mutation_history:
   actor: Engineering Governance handoff-template implementation agent
   action: institutionalize next-generation Engineering Handoff template
   reason: Record the completed Workstream 2 refinement of TPL-0001 into a concise authorization contract without secondary controlled-document revision or governance redesign.
+- revision: 41
+  previous_revision: 40
+  at: '2026-07-18T11:00:00+00:00'
+  actor: Engineering Governance handoff-construction procedure implementation agent
+  action: institutionalize Engineering Handoff Construction Procedure
+  reason: Publish PROC-0004 as the single construction owner and synchronize TPL-0001 structural ownership without altering Governance authority, execution workflow, or platform architecture.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -1607,6 +1613,40 @@ entities:
     work_type: governance-institutionalization
     priority: 1
     completion_criteria: TPL-0001 contains the proven authorization-contract sections, references single authoritative owners for reusable behavior, preserves historical Engineering Work Orders, and passes controlled-document and aggregate platform validation without architectural redesign.
+    queue_ids: []
+  - registry_id: EMP-WORK-ENGINEERING-HANDOFF-CONSTRUCTION-PROCEDURE
+    object_type: WorkItem
+    title: Engineering Handoff Construction Procedure Institutionalization
+    management_state: completed
+    owner: Engineering Governance
+    scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    authority_reference: Engineering Governance Authorization - Engineering Handoff Construction Procedure Implementation
+    source_records:
+    - PROC-0004
+    - TPL-0001
+    - STD-0003
+    - PROC-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ENGINEERING-HANDOFF-TEMPLATE
+    created_at: '2026-07-18T11:00:00+00:00'
+    updated_at: '2026-07-18T11:00:00+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: completed
+      at: '2026-07-18T11:00:00+00:00'
+      actor: Engineering Governance handoff-construction procedure implementation agent
+      reason: PROC-0004 was established as the construction owner and TPL-0001 was restricted to reusable structural ownership under the qualified architecture.
+      authority_reference: Engineering Governance Authorization - Engineering Handoff Construction Procedure Implementation
+    project_id: EMP-PROJECT-HOMELAB
+    order: 18
+    mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    phase_id: null
+    sprint_id: null
+    work_type: governance-institutionalization
+    priority: 1
+    completion_criteria: PROC-0004 owns construction and Authority Preservation Validation; TPL-0001 owns structure; STD-0003 owns normative semantics; PROC-0001 owns post-activation execution; validation and atomic publication preserve Governance authority and platform architecture.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP

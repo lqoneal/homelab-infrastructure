@@ -1,12 +1,12 @@
 ---
 document_id: TPL-0001
 title: Engineering Work Order Template
-version: 1.4
+version: 1.5
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
 last_updated: 2026-07-18
-phase: Engineering Handoff Template Institutionalization
+phase: Engineering Handoff Construction Procedure Institutionalization
 domain: Engineering Governance
 classification: Engineering Template
 source_of_truth: true
@@ -18,6 +18,7 @@ related_documents:
   - STD-0003
   - STD-0004
   - PROC-0001
+  - PROC-0004
   - TPL-0002
   - EWO-000012
   - EGR-000002
@@ -32,10 +33,11 @@ tags:
 
 # Engineering Work Order Template
 
-Use this template as a concise, transaction-specific authorization contract.
-Reusable lifecycle, persistence, execution, validation, publication, state, and
-reporting behavior remains authoritative in the referenced controlled documents
-and shall not be restated here.
+This template owns only the reusable structure of a concise,
+transaction-specific authorization contract. Construct Engineering Handoffs
+under PROC-0004. Reusable lifecycle, persistence, execution, validation,
+publication, state, and reporting behavior remains authoritative in the
+referenced controlled documents and shall not be restated here.
 
 ## Transaction Identification
 
@@ -100,6 +102,7 @@ This Work Order conforms to the applicable controlled authorities, including:
 - STD-0003 — Engineering Work Order Standard
 - STD-0004 — Engineering State Standard
 - PROC-0001 — Engineering Work Order Execution Procedure
+- PROC-0004 — Engineering Handoff Construction Procedure
 - TPL-0002 — Engineering Completion Report Template
 
 Transaction-Specific Governing References: `<Identifiers and revisions or None>`
@@ -237,3 +240,4 @@ Approval Date: `<Date>`
 | --- | --- | --- |
 | 1.3 | 2026-07-17 | Referenced the repository-standard Completion Report authorities and preserved transaction-specific certification fields. |
 | 1.4 | 2026-07-18 | Refined the template into a concise authorization contract with single-owner references for reusable lifecycle, execution, validation, publication, state, and reporting behavior. |
+| 1.5 | 2026-07-18 | Assigned construction behavior to PROC-0004 and retained TPL-0001 as the sole reusable structural owner. |

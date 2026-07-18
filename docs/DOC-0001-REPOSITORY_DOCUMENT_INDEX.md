@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.36
+version: 2.37
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: Engineering Handoff Template Institutionalized
+phase: Engineering Handoff Construction Procedure Institutionalized
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.35
+predecessor_revision: DOC-0001@2.36
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Governance Authorization - Next-Generation Engineering Handoff Template Implementation
+approval_reference: Engineering Governance Authorization - Engineering Handoff Construction Procedure Implementation
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -35,6 +35,8 @@ relationships:
     target: PROC-0002
   - type: indexes
     target: PROC-0003
+  - type: indexes
+    target: PROC-0004
   - type: indexes
     target: STD-0004
   - type: indexes
@@ -330,6 +332,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | PROC-0001 | Engineering Work Order Execution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md` |
 | PROC-0002 | Engineering Governance Resolution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md` |
 | PROC-0003 | Engineering Recovery Runbook | Active | Engineering Governance | `docs/procedures/PROC-0003-ENGINEERING_RECOVERY_RUNBOOK.md` |
+| PROC-0004 | Engineering Handoff Construction Procedure | Active | Engineering Governance | `docs/procedures/PROC-0004-ENGINEERING_HANDOFF_CONSTRUCTION_PROCEDURE.md` |
 | TPL-0001 | Engineering Work Order Template | Active | Engineering Governance | `docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md` |
 | TPL-0002 | Completion Report Template | Active | Engineering Governance | `docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md` |
 | TPL-0003 | Engineering Evidence Package Template | Active | Engineering Governance | `docs/templates/TPL-0003-ENGINEERING_EVIDENCE_PACKAGE_TEMPLATE.md` |
@@ -643,3 +646,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.34 | 2026-07-18 | Published and registered MILESTONE-0007 as the historical summary of the immutable EWO-000023 qualification boundary and registered its publication verification without advancing EDR-0003 or authorizing implementation. |
 | 2.35 | 2026-07-18 | Synchronized STD-0003 Version 1.3, PROC-0001 Version 1.8, TPL-0001 Version 1.3, and TPL-0002 Version 1.2 as the atomic Engineering Reporting Standard implementation without creating a new reporting class. |
 | 2.36 | 2026-07-18 | Synchronized TPL-0001 Version 1.4 as the next-generation Engineering Handoff authorization-contract template without revising secondary controlled documents or the qualified governance architecture. |
+| 2.37 | 2026-07-18 | Published and indexed PROC-0004 Version 1.0 as the authoritative Engineering Handoff construction procedure and synchronized TPL-0001 Version 1.5 as its structural template. |
