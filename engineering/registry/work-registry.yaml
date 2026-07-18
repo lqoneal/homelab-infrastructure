@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 39
+revision: 40
 updated_at: '2026-07-18'
 serialization: yaml
 mutation_history:
@@ -245,6 +245,12 @@ mutation_history:
   actor: Engineering Governance reporting-standard implementation agent
   action: institutionalize Engineering Reporting Standard
   reason: Record the completed Workstream 1 controlled-document refinement of STD-0003, PROC-0001, TPL-0001, and TPL-0002 without redesigning governance or creating a new reporting class.
+- revision: 40
+  previous_revision: 39
+  at: '2026-07-18T10:00:00+00:00'
+  actor: Engineering Governance handoff-template implementation agent
+  action: institutionalize next-generation Engineering Handoff template
+  reason: Record the completed Workstream 2 refinement of TPL-0001 into a concise authorization contract without secondary controlled-document revision or governance redesign.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -1564,6 +1570,43 @@ entities:
     work_type: governance-institutionalization
     priority: 1
     completion_criteria: STD-0003 owns normative reporting requirements, PROC-0001 owns report production workflow, TPL-0002 owns reusable structure, and TPL-0001 owns transaction-specific authorization fields; validation and atomic publication pass without architectural redesign.
+    queue_ids: []
+  - registry_id: EMP-WORK-ENGINEERING-HANDOFF-TEMPLATE
+    object_type: WorkItem
+    title: Next-Generation Engineering Handoff Template Institutionalization
+    management_state: completed
+    owner: Engineering Governance
+    scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    authority_reference: Engineering Governance Authorization - Next-Generation Engineering Handoff Template Implementation
+    source_records:
+    - TPL-0001
+    - STD-0003
+    - PROC-0001
+    - STD-0001
+    - STD-0002
+    - STD-0004
+    - TPL-0002
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ENGINEERING-REPORTING-STANDARD
+    created_at: '2026-07-18T10:00:00+00:00'
+    updated_at: '2026-07-18T10:00:00+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: completed
+      at: '2026-07-18T10:00:00+00:00'
+      actor: Engineering Governance handoff-template implementation agent
+      reason: TPL-0001 was refined into a concise authorization contract after semantic coverage verification established that no secondary controlled-document revision was required.
+      authority_reference: Engineering Governance Authorization - Next-Generation Engineering Handoff Template Implementation
+    project_id: EMP-PROJECT-HOMELAB
+    order: 17
+    mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    phase_id: null
+    sprint_id: null
+    work_type: governance-institutionalization
+    priority: 1
+    completion_criteria: TPL-0001 contains the proven authorization-contract sections, references single authoritative owners for reusable behavior, preserves historical Engineering Work Orders, and passes controlled-document and aggregate platform validation without architectural redesign.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP

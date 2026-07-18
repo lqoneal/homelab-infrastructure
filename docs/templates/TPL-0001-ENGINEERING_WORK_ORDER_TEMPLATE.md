@@ -1,20 +1,24 @@
 ---
 document_id: TPL-0001
 title: Engineering Work Order Template
-version: 1.3
+version: 1.4
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-17
-phase: Engineering Reporting Standard Institutionalization
+last_updated: 2026-07-18
+phase: Engineering Handoff Template Institutionalization
 domain: Engineering Governance
 classification: Engineering Template
 source_of_truth: true
 related_documents:
   - GEN-0001
   - STD-0000
+  - STD-0001
+  - STD-0002
   - STD-0003
+  - STD-0004
   - PROC-0001
+  - TPL-0002
   - EWO-000012
   - EGR-000002
   - EWO-000018
@@ -22,310 +26,214 @@ tags:
   - governance
   - template
   - work-order
-  - execution
+  - authorization-contract
   - engineering-operating-system
 ---
 
 # Engineering Work Order Template
 
-## Engineering Governance Header
+Use this template as a concise, transaction-specific authorization contract.
+Reusable lifecycle, persistence, execution, validation, publication, state, and
+reporting behavior remains authoritative in the referenced controlled documents
+and shall not be restated here.
 
-Engineering Operating System:
+## Transaction Identification
 
-`<Engineering Operating System>`
+Engineering Operating System: `<Engineering Operating System>`
 
-Engineering Governance:
+Engineering Governance Authority: `<Engineering Governance Authority>`
 
-`<Engineering Governance Authority>`
+Implementation Agent: `<Implementation Agent>`
 
-Implementation Agent:
+Mission: `<Mission Identifier>`
 
-`<Implementation Agent>`
+Phase: `<Phase Identifier>`
 
-Mission:
+Engineering Work Order: `<EWO Identifier>`
 
-`<Mission Identifier>`
+Revision: `<Revision Number>`
 
-Phase:
+Title: `<Engineering Work Order Title>`
 
-`<Phase Identifier>`
+Status: `<Draft | Review | Approved | Active | Superseded | Archived>`
 
-Engineering Work Order:
+Execution Mode: `<Execution Mode>`
 
-`<EWO Identifier>`
+## Authorization
 
-Revision:
+Approval Authority: `<Engineering Governance Authority>`
 
-`<Revision Number>`
+Approval Reference: `<Controlled authorization reference>`
 
-Title:
+Approval Date: `<Date>`
 
-`<Engineering Work Order Title>`
+Authorized Lifecycle State: `<Approved | Active>`
 
-Classification:
+Authorization Statement: `<Exact bounded authorization granted by this Work Order>`
 
-`<Classification>`
+This Work Order grants no authority beyond its explicit scope and does not
+self-authorize lifecycle promotion, publication, or additional work.
 
-Status:
+## Purpose and Expected Outcome
 
-`<Draft | Review | Approved | Active | Superseded | Archived>`
+Purpose: `<Transaction-specific engineering objective>`
 
-Execution Mode:
+Expected Outcome: `<Observable result expected from the authorized transaction>`
 
-`<Execution Mode>`
+## Mission Classification
 
----
+Classification: `<Category A | Category B | Category C>`
+
+Classification Rationale: `<Transaction-specific rationale>`
+
+Approved Gate Exceptions: `<Explicit exceptions or None>`
+
+Apply the classification and initiation gates defined by PROC-0001.
 
 ## Governing References
 
-This Engineering Work Order shall comply with:
+This Work Order conforms to the applicable controlled authorities, including:
 
-* POL-0001 — Engineering Governance Policy
-* STD-0000 — Engineering Governance Documentation Architecture
-* STD-0001 — Engineering Document Lifecycle Standard
-* STD-0002 — Engineering Document Persistence Standard
-* STD-0003 — Engineering Work Order Standard
-* PROC-0001 — Engineering Work Order Execution Procedure
+- STD-0000 — Engineering Governance Documentation Architecture
+- STD-0001 — Engineering Document Lifecycle Standard
+- STD-0002 — Engineering Document Persistence Standard
+- STD-0003 — Engineering Work Order Standard
+- STD-0004 — Engineering State Standard
+- PROC-0001 — Engineering Work Order Execution Procedure
+- TPL-0002 — Engineering Completion Report Template
 
----
+Transaction-Specific Governing References: `<Identifiers and revisions or None>`
 
-## Engineering Governance Intent
+## Scope
 
-### Mission Classification
+In Scope: `<Authorized transaction boundary>`
 
-`<Category A — Repository Engineering Work | Category B — Local Engineering Environment Work | Category C — Operational / Diagnostic Work>`
+Out of Scope: `<Explicit exclusions>`
 
-State the classification rationale, applicable risk-proportional initiation
-gates, repository-interaction status, and any explicitly approved exception.
+Affected Repositories: `<Repository identifiers or None>`
 
-### Purpose
+Affected Records or Systems: `<Identifiers or None>`
 
-`<Mission-specific engineering objective>`
+## Explicit Authority
 
-### Engineering Governance Objectives
+Authorized Operational Activities: `<Transaction-specific activities or None>`
 
-`<Objectives>`
+Authorized Repository Changes: `<Exact files, document classes, or None>`
 
-### Mission Scope
+Authorized External Effects: `<Exact effects or None>`
 
-`<Authorized scope>`
+Authorized Exceptions: `<Explicit exceptions, authority reference, or None>`
 
-### Mission Constraints
+## Prohibited Activities and Scope Restrictions
 
-`<Constraints>`
+Prohibited Activities: `<Transaction-specific prohibitions>`
 
----
+Scope Restrictions: `<Transaction-specific limits>`
 
-## Authority Model
+Authority Expansion Conditions: `<Conditions requiring new authorization or None>`
 
-### Operational Authority
+## Dependencies and Entry Criteria
 
-`<Explicitly authorized operational activities>`
+Dependencies: `<Authoritative prerequisites and locators or None>`
 
-### Engineering Authority
+Entry Criteria: `<Conditions that must be true before execution>`
 
-`<Explicitly authorized engineering actions>`
+Blocking Conditions: `<Known blockers or None>`
 
-### Prohibited Activities
+## Deliverables
 
-`<Activities not authorized>`
+1. `<Transaction-specific deliverable>`
+2. `<Transaction-specific deliverable or remove>`
 
-### Escalation Requirements
+Required Repository Locators: `<Locator requirements or Not Applicable>`
 
-`<Conditions requiring Engineering Governance authorization>`
+## Transaction-Specific Execution Sequence
 
----
+Execute the standard workflow in PROC-0001. Record only transaction-specific
+ordering, gates, dependencies, or authorized deviations below.
 
-## Execution Overview
+1. `<Transaction-specific step or Not Applicable>`
+2. `<Transaction-specific step or remove>`
 
-Engineering phases authorized by this Engineering Work Order:
+Authorized Workflow Deviations: `<Deviation and authority reference or None>`
 
-### Phase 0
+## Success and Acceptance Criteria
 
-`<Description>`
+Success Criteria: `<Objective, observable criteria>`
 
-### Phase 1
+Acceptance Criteria: `<Governance acceptance conditions>`
 
-`<Description>`
+Definition of Done: `<Transaction-specific completion boundary>`
 
-### Phase 2
+## Validation Profile Reference
 
-`<Description>`
+Standard Validation Profile: `<Controlled validation profile or PROC-0001 default>`
 
-### Final Phase
+Transaction-Specific Validation Additions: `<Additional checks or None>`
 
-`<Description>`
+Required Fixtures or Evidence: `<Identifiers or None>`
 
----
+Validation Exceptions: `<Approved exceptions and authority reference or None>`
 
-## Success Criteria
+Validator completion, complete output, and terminal exit status shall be handled
+through PROC-0001 rather than redefined by this Work Order.
 
-### Mission Success
+## Publication and Synchronization Requirements
 
-`<Mission success definition>`
+Publication Requirement: `<Atomic publication boundary, separate publication, or None>`
 
-### Definition of Done
+Synchronization Targets: `<DOC-0001, Project State, Work Registry, EOS, checkpoint, or None>`
 
-`<Definition of Done>`
+Required Repository History Action: `<Commit, tag, push, or None>`
 
-### Acceptance Criteria
+Publication Exceptions: `<Approved exceptions and authority reference or None>`
 
-`<Acceptance criteria>`
+Apply lifecycle and persistence requirements from STD-0001 and STD-0002 and the
+publication workflow from PROC-0001.
 
----
+## Final Certification Question
 
-## Phase Execution
+Question: `<Exact transaction-specific certification question or Not Applicable>`
 
-For each engineering phase provide:
+Allowed Answer Set: `<Exact allowed answers or Not Applicable>`
 
-### Phase `<Identifier>`
+Required Supporting Evidence: `<Evidence requirement or Not Applicable>`
 
-Purpose:
+## Transaction-Specific Stop, Resume, and Escalation Additions
 
-`<Purpose>`
+Common stop, resume, escalation, checkpoint, and freshness behavior is owned by
+STD-0003, PROC-0001, and STD-0004. State only transaction-specific additions.
 
-Inputs:
+Additional Stop Conditions: `<Conditions or None>`
 
-`<Required inputs>`
+Additional Resume Requirements: `<Requirements or None>`
 
-Activities:
+Additional Escalation Triggers: `<Triggers or None>`
 
-`<Authorized activities>`
-
-Expected Outputs:
-
-`<Expected outputs>`
-
-Evidence Required:
-
-`<Evidence requirements>`
-
-Phase Completion Criteria:
-
-`<Completion criteria>`
-
-Stop Conditions:
-
-`<Phase-specific stop conditions>`
-
-Repeat for each authorized engineering phase.
-
----
-
-## Resume Policy
-
-Upon interruption, the Implementation Agent shall:
-
-1. Verify the Active Engineering Work Order.
-2. Perform Operational Inventory.
-3. Perform Operational Preparation.
-4. Perform Baseline Verification.
-5. Resume at the first incomplete engineering phase.
-
-Completed phases remain complete unless Engineering Governance authorizes repetition.
-
----
-
-## Communication Contract
-
-The Implementation Agent shall report:
-
-* observations;
-* supporting evidence;
-* mission impact;
-* recommendations.
-
-The Implementation Agent shall not:
-
-* infer Engineering Governance intent;
-* exceed granted authority;
-* continue beyond approved stop conditions.
-
----
-
-## Stop Conditions
-
-Execution shall stop when:
-
-* authority is exceeded;
-* governance authorization is required;
-* baseline integrity is compromised;
-* deterministic execution cannot be maintained;
-* Engineering Work Order-defined stop conditions are encountered.
-
-The Implementation Agent shall produce a Completion Report prior to stopping whenever practical.
-
----
-
-## Completion Report Requirements
+## Completion Report Requirement
 
 Produce the repository-standard Completion Report required by STD-0003 through
-the workflow in PROC-0001 and the authoritative structure in TPL-0002. Do not
-duplicate or redefine their reusable reporting requirements in this Work Order.
+the workflow in PROC-0001 and the authoritative structure in TPL-0002.
 
-Transaction-Specific Final Certification Question:
+Transaction-Specific Reporting Additions: `<Additions or None>`
 
-`<Exact question or Not Applicable>`
-
-Allowed Final Certification Answer Set:
-
-`<Exact allowed answers or Not Applicable>`
-
-Transaction-Specific Reporting Additions:
-
-`<Only additions required by this mission or None>`
-
----
+Transaction-Specific Evidence Attachments: `<Attachments or None>`
 
 ## Engineering Governance Review
 
-### Engineering Governance Disposition
+Engineering Governance Disposition: `<To be completed during governance review>`
 
-`<To be completed during governance review>`
+Engineering Governance Acceptance: `<Approved | Rejected | Requires Revision>`
 
-### Engineering Governance Acceptance
+Authorized Revision: `<Revision>`
 
-`<Approved | Rejected | Requires Revision>`
+Approved By: `<Engineering Governance Authority>`
 
-### Authorized Revision
-
-`<Revision>`
-
-### Approved By
-
-`<Engineering Governance Authority>`
-
-### Approval Date
-
-`<Date>`
-
----
-
-## References
-
-Mission-specific references:
-
-`<References>`
-
-Applicable engineering standards:
-
-`<References>`
-
-Applicable engineering procedures:
-
-`<References>`
-
-Applicable engineering records:
-
-`<References>`
-
----
+Approval Date: `<Date>`
 
 ## Revision History
 
 | Version | Date | Description |
-| ------- | ---- | ----------- |
-| 1.0 | 2026-07-09 | Initial Engineering Work Order Template established. |
-| 1.1 | 2026-07-10 | Removed Issued and established Active as the Engineering Work Order execution-authority lifecycle state under EWO-000012. |
-| 1.2 | 2026-07-17 | Added repository-governed mission classification, exact Completion Report title, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
-| 1.3 | 2026-07-18 | Replaced duplicated Completion Report structure with authoritative references and limited Work Orders to transaction-specific certification and reporting additions. |
+| --- | --- | --- |
+| 1.3 | 2026-07-17 | Referenced the repository-standard Completion Report authorities and preserved transaction-specific certification fields. |
+| 1.4 | 2026-07-18 | Refined the template into a concise authorization contract with single-owner references for reusable lifecycle, execution, validation, publication, state, and reporting behavior. |
