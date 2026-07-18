@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.33
+version: 2.34
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: EWO-000023 Historical Evidence Boundary Established
+phase: MILESTONE-0007 Published
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.32
+predecessor_revision: DOC-0001@2.33
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Governance Authorization - Historical Evidence Persistence Transaction for EWO-000023
+approval_reference: Engineering Governance Authorization - Controlled MILESTONE-0007 Publication
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -123,6 +123,10 @@ relationships:
     target: EWO-000023-COMPLETION
   - type: indexes
     target: EWO-000023-HISTORICAL-EVIDENCE-PERSISTENCE
+  - type: indexes
+    target: MILESTONE-0007
+  - type: indexes
+    target: MILESTONE-0007-PUBLICATION-VERIFICATION
   - type: related_to
     target: EWO-000018
 tags:
@@ -394,6 +398,8 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | MILESTONE-0004 | Engineering Management Platform Foundation 1.0 Operational | Approved | Engineering Management Platform | `docs/project/milestones/2026-07-13-engineering-management-platform-foundation-1.0-operational.md` |
 | MILESTONE-0005 | Engineering Platform Foundation 1.0 — Foundation Complete | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-15-engineering-platform-foundation-1.0-foundation-complete.md` |
 | MILESTONE-0006 | Engineering Platform Transition to Self-Implementation | Approved | Engineering Platform | `docs/project/milestones/2026-07-17-engineering-platform-transition-to-self-implementation.md` |
+| MILESTONE-0007 | Governance Authority Transaction Architecture Qualified | Approved | Engineering Governance | `docs/project/milestones/2026-07-18-governance-authority-transaction-architecture-qualified.md` |
+| MILESTONE-0007-PUBLICATION-VERIFICATION | MILESTONE-0007 Publication Verification Report | Active | Engineering Governance | `docs/project/milestones/MILESTONE-0007-PUBLICATION-VERIFICATION-REPORT.md` |
 
 This table shall be updated whenever a controlled document is created, superseded, or archived.
 
@@ -634,3 +640,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.31 | 2026-07-17 | Published SPEC-0007 Version 1.1 from the authoritative Revision 15 manuscript and registered EWO-000022 publication evidence and Completion Report. |
 | 2.32 | 2026-07-18 | Superseded completed EWO-000022 and registered approved Active EWO-000023 as the bounded governance-authority architecture investigation. |
 | 2.33 | 2026-07-18 | Registered Approved EDR-0003 Version 0.3, the complete EWO-000023 historical evidence set, the Archived lifecycle transition, and the immutable-boundary verification record without publishing MILESTONE-0007. |
+| 2.34 | 2026-07-18 | Published and registered MILESTONE-0007 as the historical summary of the immutable EWO-000023 qualification boundary and registered its publication verification without advancing EDR-0003 or authorizing implementation. |

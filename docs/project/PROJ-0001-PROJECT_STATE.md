@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 5.3
+version: 5.4
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: EWO-000023 Historical Evidence Boundary Established
+phase: MILESTONE-0007 Published
 classification: Project State
-predecessor_revision: PROJ-0001@5.2
+predecessor_revision: PROJ-0001@5.3
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Governance Authorization - Historical Evidence Persistence Transaction for EWO-000023
+approval_reference: Engineering Governance Authorization - Controlled MILESTONE-0007 Publication
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -57,6 +57,8 @@ relationships:
     target: MILESTONE-0005
   - type: related_to
     target: MILESTONE-0006
+  - type: related_to
+    target: MILESTONE-0007
   - type: related_to
     target: EMP-0001
   - type: related_to
@@ -139,11 +141,11 @@ Build the Engineering Operating System foundation for AI Assistant, SprinterOS, 
 
 **Current Overall Goal:**
 
-Preserve the published SPEC-0007 Version 1.1 Engineering Baseline and the
-immutable EWO-000023 historical evidence boundary. EWO-000023 is Archived,
-EDR-0003 Version 0.3 is Approved, and MILESTONE-0007 is ready for a later
-separately authorized historical-summary publication. No implementation,
-operational adoption, or SPEC-0007 Revision 16 work is authorized.
+Preserve the published SPEC-0007 Version 1.1 Engineering Baseline, immutable
+EWO-000023 historical evidence boundary, and published MILESTONE-0007
+historical summary. EWO-000023 remains Archived and EDR-0003 remains in its
+authorized evidence state. No implementation, operational adoption,
+institutionalization, or SPEC-0007 Revision 16 work is authorized.
 
 ---
 
@@ -151,14 +153,14 @@ operational adoption, or SPEC-0007 Revision 16 work is authorized.
 
 **Current Phase:**
 
-EWO-000023 Historical Evidence Boundary Established
+MILESTONE-0007 Published
 
 **Phase Objective:**
 
-EWO-000023 completed its documentation-only investigation and transitioned
-exceptionally from Active to Archived. Engineering authority is closed;
-approved future obligations are transferred to the proposed Governance Review
-Pattern Institutionalization mission as deferred planning only.
+MILESTONE-0007 now provides the authoritative historical summary of the
+Governance Authority Transaction architecture qualification demonstrated
+through EWO-000023. Its evidence remains fixed at `edeb6fb`; Engineering
+authority is closed and future institutionalization remains deferred planning.
 
 ---
 
@@ -321,10 +323,10 @@ planning without evaluation or implementation authority.
 
 **Next Immediate Step:**
 
-Await separately authorized publication of MILESTONE-0007 as a historical
-summary of the immutable boundary. Do not relaunch EWO-000023. Governance
-architecture implementation, operational adoption, SPEC-0007 Revision 16
-work, SprinterOS diagnostics, and notification Stage 2/3 remain unauthorized.
+Await separately authorized work. Do not relaunch EWO-000023 or infer authority
+from MILESTONE-0007. Governance architecture implementation, operational
+adoption, institutionalization, SPEC-0007 Revision 16 work, SprinterOS
+diagnostics, and notification Stage 2/3 remain unauthorized.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -357,8 +359,8 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 | Engineering Platform specification | SPEC-0007 Version 1.1 is the active Revision 15 Engineering Baseline |
 | Primary Homelab authority | No active EWO-000023 authority; separately approved work required |
 | EWO-000023 evidence | Immutable, indexed, and reconstructable from controlled repository history |
-| Milestone readiness | MILESTONE-0007 ready for later historical-summary publication; not published |
-| Freshness | Reconciled through the 2026-07-18 EWO-000023 historical evidence persistence transaction |
+| Milestone state | MILESTONE-0007 published as a historical summary; no new evidence or authority established |
+| Freshness | Reconciled through the 2026-07-18 controlled MILESTONE-0007 publication transaction |
 
 ---
 
@@ -570,3 +572,4 @@ When resuming this project:
 | 5.1     | 2026-07-17 | Published SPEC-0007 Version 1.1 from the verified Revision 15 source, recorded acquisition and publication evidence, and advanced EWO-000022 to governance review without claiming lifecycle closure. |
 | 5.2     | 2026-07-18 | Accepted and superseded completed EWO-000022, activated EWO-000023 for a bounded governance-authority architecture investigation, and prohibited implementation. |
 | 5.3     | 2026-07-18 | Approved EDR-0003 Version 0.3, archived completed EWO-000023, persisted and indexed its complete historical evidence boundary, transferred future obligations to deferred Governance planning, and established MILESTONE-0007 publication readiness without publishing it. |
+| 5.4     | 2026-07-18 | Published MILESTONE-0007 as the authoritative historical summary of EWO-000023 Governance Authority Transaction architecture qualification while preserving the immutable evidence boundary and all implementation, adoption, and institutionalization limitations. |
