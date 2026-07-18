@@ -1,15 +1,15 @@
 ---
 document_id: PROC-0006
 title: Governance Qualification Procedure
-version: 0.1
+version: 0.2
 status: Draft
 owner: Engineering Governance
 created: 2026-07-18
 last_updated: 2026-07-18
-phase: Procedure Development
+phase: Governance Review Remediation
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: null
+predecessor_revision: PROC-0006@0.1
 successor_revision: null
 approval_status: Pending
 approval_authority: null
@@ -207,15 +207,16 @@ INVOKED
   -> INTAKE
   -> REVIEW
   -> FINDINGS_CLASSIFIED
-  -> REMEDIATION
+  -> REMEDIATION or REMEDIATION_NOT_APPLICABLE
   -> REQUALIFICATION
   -> RECOMMENDATION_READY
   -> DECISION_PENDING
   -> CLOSED
 ```
 
-Permitted terminal alternatives are `BLOCKED` and `WITHDRAWN`. Remediation may
-loop only through an attributable iteration under valid authority.
+`BLOCKED` and `WITHDRAWN` are non-advancing states that route to Stage 9 for
+truthful closeout or authorized resume instructions. Remediation may loop only
+through an attributable iteration under valid authority.
 
 ### Qualification Result
 
@@ -257,6 +258,15 @@ No stage may be removed. Proportionality may combine assigned reviewers or
 scale evidence depth only when the invocation records the tailoring and all
 stage criteria and evidence remain distinct.
 
+Every stage shall have one recorded stage result: `COMPLETE`, `NOT_APPLICABLE`,
+`BLOCKED`, or `NOT_REACHED_DUE_TO_TERMINATION`. Stage 5 is conditionally
+executed but never omitted: when no correctable blocking finding exists, record
+Stage 5 as `NOT_APPLICABLE` and continue in order to Stage 6. Stage 9 is
+mandatory for every terminal PASS, PASS_WITH_FINDINGS, FAIL, BLOCKED,
+WITHDRAWN, rejected, or deferred outcome. When an earlier stage cannot advance,
+record intervening stages as `NOT_REACHED_DUE_TO_TERMINATION` rather than
+claiming they executed.
+
 ### Stage 1 — Invocation and Contract Freeze
 
 #### Purpose
@@ -276,7 +286,8 @@ criteria, for which external decision.
 
 Produce the frozen contract, subject locator, authority evidence, applicability
 record, actor matrix, and initial state. Exit to Stage 2 only when the contract
-is complete. Otherwise report `BLOCKED`.
+is complete. Otherwise report `BLOCKED` and route to Stage 9 unless the
+invocation remains open under an authorized resume condition.
 
 ### Stage 2 — Evidence Intake and Sufficiency
 
@@ -295,7 +306,8 @@ and distinguish observed facts from assertions or recommendations.
 Record every evidence identifier, source, timestamp, locator, integrity method,
 and criterion mapping using TPL-0003. Exit to Stage 3 when evidence is
 sufficient. Missing evidence that can be supplied remains in Stage 2; missing
-authority, subject identity, or determinism returns `BLOCKED`.
+authority, subject identity, or determinism returns `BLOCKED` and routes to
+Stage 9 unless an authorized resume condition is recorded.
 
 ### Stage 3 — Independent Review
 
@@ -315,7 +327,8 @@ record evidence, not inferred authority.
 
 Produce a criterion-by-criterion review record with observations and evidence.
 Exit when every applicable criterion is evaluated or report `BLOCKED` when a
-deterministic evaluation cannot be completed.
+deterministic evaluation cannot be completed. A terminal BLOCKED result routes
+to Stage 9.
 
 ### Stage 4 — Finding Classification
 
@@ -334,7 +347,8 @@ be consolidated without losing provenance.
 
 Produce the frozen finding catalog and preliminary qualification assessment.
 No blocking finding may be silently downgraded. Route correctable blocking
-findings to Stage 5; otherwise proceed to Stage 6.
+findings to Stage 5. When Stage 5 is not required, record it as
+`NOT_APPLICABLE` and proceed in order to Stage 6.
 
 ### Stage 5 — Bounded Remediation
 
@@ -380,7 +394,8 @@ results.
 Produce the exact qualified subject fingerprint, complete validation record,
 remaining-finding inventory, and one qualification result from section 7.
 `PASS` or `PASS_WITH_FINDINGS` proceeds to Stage 7. `FAIL` proceeds to Stage 7
-with a failure recommendation. `BLOCKED` stops pending resolution.
+with a failure recommendation. `BLOCKED` routes to Stage 9 for terminal
+closeout or recorded authorized resume instructions.
 
 ### Stage 7 — Recommendation Package
 
@@ -441,6 +456,12 @@ Produce the TPL-0002 Completion Report and complete TPL-0003 evidence package.
 Closeout is complete only when every state domain is truthful and follow-on
 work is explicitly unauthorized unless supported by separate authority.
 
+An external `REMEDIATION_AUTHORIZED` decision may create a new attributable
+remediation iteration within the same invocation only when subject, criteria,
+scope, and authority remain unchanged. Otherwise it requires a new or amended
+invocation beginning at Stage 1. Stage 9 records the route before control
+returns to Stage 5.
+
 ## 9. Decision and Routing Matrix
 
 | Qualification result | Permitted qualification action | External route |
@@ -453,6 +474,21 @@ work is explicitly unauthorized unless supported by separate authority.
 
 An external decision contrary to the recommendation does not alter the
 qualification result. The decision and its rationale are recorded separately.
+
+### Qualification Scenario Routing
+
+| Scenario | Required result and route |
+| --- | --- |
+| Successful qualification | Stage 5 is `NOT_APPLICABLE` when unused; Stage 6 `PASS`; route Stages 7, 8, and 9 in order |
+| Qualification with findings | Stage 6 `PASS_WITH_FINDINGS`; preserve residual findings through recommendation, decision routing, and closeout |
+| Failed qualification | Stage 6 `FAIL`; prepare a failure recommendation; Engineering Governance decides remediation, rejection, or deferral |
+| Blocked qualification | Record `BLOCKED`, mark unperformed stages truthfully, and execute Stage 9 closeout or authorized resume routing |
+| Bounded remediation | Stage 5 records authority, iteration, corrections, and regression; return material changes to Stage 3 and bounded changes to Stage 6 |
+| Requalification | Evaluate the complete current fingerprint at Stage 6; never reuse an invalidated result |
+| Governance rejection | Preserve the qualification result; record external `REJECTED`; prohibit publication and implementation routing |
+| Governance deferral | Preserve subject and evidence; record external `DEFERRED`; prohibit publication unless separately authorized |
+| Recommendation and decision divergence | Preserve both values, actors, authority, rationale, and impact without overwriting either state domain |
+| Withdrawal | Only the authorized sponsor or Engineering Governance may withdraw; record `WITHDRAWN`, preserve evidence, and execute Stage 9 |
 
 ## 10. Evidence Requirements
 
@@ -531,3 +567,4 @@ The following remain Deferred Execution and require separate authorization:
 | Version | Date | Description |
 | --- | --- | --- |
 | 0.1 | 2026-07-18 | Developed the Draft reusable Governance Qualification Procedure from the qualified nine-stage capability and integrated authority contract without approving, activating, publishing, or automating it. |
+| 0.2 | 2026-07-18 | Resolved review findings by making every stage explicitly accountable, routing blocked and withdrawn outcomes through closeout, and adding deterministic scenario routing without changing the qualified architecture or authority model. |

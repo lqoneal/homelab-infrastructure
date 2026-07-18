@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.43
+version: 2.44
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: Governance Qualification Procedure Draft Registered
+phase: Governance Qualification Procedure Qualified Draft Registered
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.42
+predecessor_revision: DOC-0001@2.43
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Governance Qualification Procedure Development
+approval_reference: Engineering Governance Qualification Procedure Review and Qualification
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -673,3 +673,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.41 | 2026-07-18 | Integrated PROC-0005 across the documentation architecture, lifecycle and persistence standards, Work Order execution, EGR processing, Handoff construction, and Work Initiation while preserving normative and specialized ownership. |
 | 2.42 | 2026-07-18 | Corrected TPL-0001 to resolve PROC-0005 for common controlled publication while preserving PROC-0001 as the Engineering Work Order execution owner. |
 | 2.43 | 2026-07-18 | Registered PROC-0006 Version 0.1 as the Draft Governance Qualification Procedure implementing the qualified nine-stage capability without granting operational authority or publishing it as Active. |
+| 2.44 | 2026-07-18 | Registered qualified Draft PROC-0006 Version 0.2 after bounded stage-accounting and terminal-routing remediation; approval, activation, and controlled publication remain pending. |
