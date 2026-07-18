@@ -1,19 +1,19 @@
 ---
 document_id: PROC-0006
 title: Governance Qualification Procedure
-version: 1.0
+version: 1.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-18
 last_updated: 2026-07-18
-phase: Initial Controlled Publication
+phase: Governance Stabilization Procedure Integration
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: PROC-0006@0.2
+predecessor_revision: PROC-0006@1.0
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000005
+approval_reference: EGR-000006
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -47,6 +47,8 @@ relationships:
     target: PROC-0004
   - type: related_to
     target: PROC-0005
+  - type: related_to
+    target: PROC-0007
   - type: uses
     target: TPL-0002
   - type: uses
@@ -96,8 +98,14 @@ This procedure does not replace:
 - PROC-0001 for bounded Engineering Work Order execution;
 - PROC-0002 for recording an Engineering Governance decision in an EGR;
 - PROC-0003 for specialized recovery execution and technical evidence;
-- PROC-0004 for governed handoff construction; or
-- PROC-0005 for controlled publication.
+- PROC-0004 for governed handoff construction;
+- PROC-0005 for controlled publication; or
+- PROC-0007 for Governance stabilization orchestration.
+
+When PROC-0007 invokes this procedure, PROC-0006 independently evaluates the
+frozen subject and returns its result and recommendation to the caller.
+PROC-0006 does not absorb stabilization orchestration or autonomously invoke
+PROC-0007, and PROC-0007 does not select or alter the qualification result.
 
 ## 3. Governing References
 
@@ -113,6 +121,7 @@ This procedure does not replace:
 - PROC-0003 — Engineering Recovery Runbook, when specialized evidence applies
 - PROC-0004 — Engineering Handoff Construction Procedure
 - PROC-0005 — Controlled Document Publication Procedure
+- PROC-0007 — Governance Stabilization Procedure
 - TPL-0002 — Completion Report Template
 - TPL-0003 — Engineering Evidence Package Template
 
@@ -573,3 +582,4 @@ The following remain Deferred Execution and require separate authorization:
 | 0.1 | 2026-07-18 | Developed the Draft reusable Governance Qualification Procedure from the qualified nine-stage capability and integrated authority contract without approving, activating, publishing, or automating it. |
 | 0.2 | 2026-07-18 | Resolved review findings by making every stage explicitly accountable, routing blocked and withdrawn outcomes through closeout, and adding deterministic scenario routing without changing the qualified architecture or authority model. |
 | 1.0 | 2026-07-18 | Approved, activated, and published the qualified reusable Governance Qualification Procedure under EGR-000005 without changing its architecture, authority model, or interaction contracts. |
+| 1.1 | 2026-07-18 | Integrated Active PROC-0007 as an external orchestration caller while preserving PROC-0006 independent qualification ownership and caller-return behavior. |

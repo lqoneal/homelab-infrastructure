@@ -1,20 +1,20 @@
 ---
 document_id: PROC-0001
 title: Engineering Work Order Execution Procedure
-version: 1.10
+version: 1.11
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
 last_updated: 2026-07-18
-phase: Governance Qualification Procedure Integration
+phase: Governance Stabilization Procedure Integration
 domain: Engineering Governance
 classification: Engineering Procedure
 source_of_truth: true
-predecessor_revision: PROC-0001@1.9
+predecessor_revision: PROC-0001@1.10
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000005
+approval_reference: EGR-000006
 approval_date: 2026-07-18
 persistence_status: Persisted
 declared_deferrals: []
@@ -39,6 +39,8 @@ relationships:
     target: PROC-0005
   - type: related_to
     target: PROC-0006
+  - type: related_to
+    target: PROC-0007
   - type: related_to
     target: EGR-000002
   - type: related_to
@@ -84,7 +86,8 @@ Execution shall conform to:
 * STD-0003 — Engineering Work Order Standard;
 * STD-0004 — Engineering State Freshness Standard;
 * PROC-0005 — Controlled Document Publication Procedure, when the Work Order includes controlled publication; and
-* PROC-0006 — Governance Qualification Procedure, when the Work Order includes Governance qualification.
+* PROC-0006 — Governance Qualification Procedure, when the Work Order includes Governance qualification; and
+* PROC-0007 — Governance Stabilization Procedure, when the Work Order includes Governance subsystem reconciliation.
 
 ---
 
@@ -464,6 +467,16 @@ and returns its result and routing recommendation to the caller; it supplies no
 Governance decision, lifecycle, publication, baseline, or implementation
 authority.
 
+## Governance Stabilization Integration
+
+When an Active Engineering Work Order includes Governance subsystem
+reconciliation, execution shall consume PROC-0007 in addition to this
+procedure. PROC-0001 remains the owner of bounded Work Order execution,
+evidence collection, and Completion Report production. PROC-0007 coordinates
+the authorized reconciliation and returns routing packages to its caller; it
+does not execute changes, qualify results, decide Governance dispositions,
+publish, designate baselines, or authorize implementation.
+
 ## Engineering Commit Classification
 
 ### Purpose and Requirement
@@ -798,3 +811,4 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.8 | 2026-07-18 | Established the execution-first report production workflow, repository start/end capture, safe activity summaries, terminal validator-status requirements, partial-output handling, applicability treatment, and ordered results reporting. |
 | 1.9 | 2026-07-18 | Integrated PROC-0005 for controlled publication missions while preserving PROC-0001 ownership of Work Order execution, evidence, Completion Reports, Commit Classification, Commit Reconstruction Planning, and milestone sequencing. |
 | 1.10 | 2026-07-18 | Integrated Active PROC-0006 for Governance qualification missions while preserving PROC-0001 ownership of bounded Engineering Work Order execution, evidence, and Completion Reports. |
+| 1.11 | 2026-07-18 | Integrated Active PROC-0007 for Governance stabilization missions while preserving PROC-0001 bounded-execution ownership and PROC-0007 orchestration-only responsibility. |

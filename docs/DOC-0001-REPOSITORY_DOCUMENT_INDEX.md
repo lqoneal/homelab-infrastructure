@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.46
+version: 2.47
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: Governance Stabilization Procedure Draft Registered
+phase: Governance Stabilization Procedure Published and Integrated
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.45
+predecessor_revision: DOC-0001@2.46
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Governance Stabilization Procedure Development
+approval_reference: EGR-000006
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -105,6 +105,8 @@ relationships:
     target: EGR-000004
   - type: indexes
     target: EGR-000005
+  - type: indexes
+    target: EGR-000006
   - type: indexes
     target: EWO-000021
   - type: indexes
@@ -357,7 +359,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | PROC-0004 | Engineering Handoff Construction Procedure | Active | Engineering Governance | `docs/procedures/PROC-0004-ENGINEERING_HANDOFF_CONSTRUCTION_PROCEDURE.md` |
 | PROC-0005 | Controlled Document Publication Procedure | Active | Engineering Governance | `docs/procedures/PROC-0005-CONTROLLED_DOCUMENT_PUBLICATION_PROCEDURE.md` |
 | PROC-0006 | Governance Qualification Procedure | Active | Engineering Governance | `docs/procedures/PROC-0006-GOVERNANCE-QUALIFICATION-PROCEDURE.md` |
-| PROC-0007 | Governance Stabilization Procedure | Draft | Engineering Governance | `docs/procedures/PROC-0007-GOVERNANCE-STABILIZATION-PROCEDURE.md` |
+| PROC-0007 | Governance Stabilization Procedure | Active | Engineering Governance | `docs/procedures/PROC-0007-GOVERNANCE-STABILIZATION-PROCEDURE.md` |
 | TPL-0001 | Engineering Work Order Template | Active | Engineering Governance | `docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md` |
 | TPL-0002 | Completion Report Template | Active | Engineering Governance | `docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md` |
 | TPL-0003 | Engineering Evidence Package Template | Active | Engineering Governance | `docs/templates/TPL-0003-ENGINEERING_EVIDENCE_PACKAGE_TEMPLATE.md` |
@@ -367,6 +369,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EGR-000003 | EWO-000020 Notification Service Authorization | Active | Engineering Governance | `docs/resolutions/EGR-000003-EWO-000020-NOTIFICATION-SERVICE-AUTHORIZATION.md` |
 | EGR-000004 | Engineering Platform Repository Reconciliation Authorization | Active | Engineering Governance | `docs/resolutions/EGR-000004-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION-AUTHORIZATION.md` |
 | EGR-000005 | PROC-0006 Approval and Activation | Active | Engineering Governance | `docs/resolutions/EGR-000005-PROC-0006-APPROVAL-AND-ACTIVATION.md` |
+| EGR-000006 | PROC-0007 Approval and Activation | Active | Engineering Governance | `docs/resolutions/EGR-000006-PROC-0007-APPROVAL-AND-ACTIVATION.md` |
 | EWO-000010 | Governance Baseline 1.0 Qualification | Active | Engineering Governance | `docs/work-orders/EWO-000010-GOVERNANCE_BASELINE_1.0_QUALIFICATION.md` |
 | EWO-000010-EVIDENCE | EWO-000010 Qualification Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000010-QUALIFICATION-EVIDENCE-PACKAGE.md` |
 | EWO-000010-COMPLETION | EWO-000010 Qualification Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000010-QUALIFICATION-COMPLETION-REPORT.md` |
@@ -682,3 +685,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.44 | 2026-07-18 | Registered qualified Draft PROC-0006 Version 0.2 after bounded stage-accounting and terminal-routing remediation; approval, activation, and controlled publication remain pending. |
 | 2.45 | 2026-07-18 | Approved, activated, published, and integrated PROC-0006 Version 1.0 under EGR-000005, with reference-only revisions to PROC-0001, PROC-0002, PROC-0004, and PROC-0005. |
 | 2.46 | 2026-07-18 | Registered PROC-0007 Version 0.1 as the Draft Governance Stabilization Procedure implementing the qualified twelve-stage orchestration model with Active PROC-0006 as its external qualification dependency. |
+| 2.47 | 2026-07-18 | Approved, activated, published, and integrated PROC-0007 Version 1.0 under EGR-000006, with reference-only revisions to PROC-0001, PROC-0002, PROC-0004, PROC-0005, and PROC-0006. |

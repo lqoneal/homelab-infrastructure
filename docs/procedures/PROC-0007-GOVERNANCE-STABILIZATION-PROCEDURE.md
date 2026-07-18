@@ -1,20 +1,20 @@
 ---
 document_id: PROC-0007
 title: Governance Stabilization Procedure
-version: 0.1
-status: Draft
+version: 1.0
+status: Active
 owner: Engineering Governance
 created: 2026-07-18
 last_updated: 2026-07-18
-phase: Procedure Development
+phase: Initial Controlled Publication
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: null
+predecessor_revision: PROC-0007@0.1
 successor_revision: null
-approval_status: Pending
-approval_authority: null
-approval_reference: null
-approval_date: null
+approval_status: Approved
+approval_authority: Engineering Governance
+approval_reference: EGR-000006
+approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
 information_scope: Governance stabilization orchestration, baseline reconstruction, affected-subsystem inventory, dependency analysis, reconciliation planning, execution coordination, validation coordination, external qualification, remediation coordination, decision and publication routing, and baseline-effect closeout
@@ -53,6 +53,10 @@ relationships:
     target: TPL-0003
   - type: indexed_by
     target: DOC-0001
+  - type: authorized_by
+    target: EGR-000006
+  - type: validated_by
+    target: EGR-000006
 tags:
   - governance
   - stabilization
@@ -603,3 +607,4 @@ The following require separate authority:
 | Version | Date | Description |
 | --- | --- | --- |
 | 0.1 | 2026-07-18 | Developed the Draft Governance Stabilization Procedure from the qualified twelve-stage orchestration capability using Active PROC-0006 as its external qualification dependency, without approval, activation, publication, automation, or authority transfer. |
+| 1.0 | 2026-07-18 | Approved, activated, and published the qualified Governance Stabilization Procedure under EGR-000006 without changing its architecture, workflow, authority model, or interaction contracts. |

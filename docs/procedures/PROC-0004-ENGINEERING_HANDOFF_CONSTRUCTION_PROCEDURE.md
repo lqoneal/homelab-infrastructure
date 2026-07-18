@@ -1,19 +1,19 @@
 ---
 document_id: PROC-0004
 title: Engineering Handoff Construction Procedure
-version: 1.3
+version: 1.4
 status: Active
 owner: Engineering Governance
 created: 2026-07-18
 last_updated: 2026-07-18
-phase: Governance Qualification Procedure Integration
+phase: Governance Stabilization Procedure Integration
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: PROC-0004@1.2
+predecessor_revision: PROC-0004@1.3
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000005
+approval_reference: EGR-000006
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -41,6 +41,8 @@ relationships:
     target: PROC-0005
   - type: related_to
     target: PROC-0006
+  - type: related_to
+    target: PROC-0007
   - type: uses
     target: TPL-0001
   - type: related_to
@@ -104,6 +106,7 @@ implementation.
 | Engineering Work Order execution | PROC-0001 | Begins only after Active lifecycle verification |
 | Controlled document publication workflow | PROC-0005 | Resolve and insert when the Kernel authorizes controlled publication; do not treat as publication authority |
 | Governance qualification workflow | PROC-0006 | Resolve and insert when the Kernel requires Governance qualification; preserve external decision authority |
+| Governance stabilization orchestration | PROC-0007 | Resolve and insert when the Kernel requires Governance subsystem reconciliation; preserve all external owners |
 | Lifecycle and persistence | STD-0001 and STD-0002 | Resolve and apply |
 | Engineering State, checkpoint, and resume freshness | STD-0004 | Resolve and apply |
 | Completion Report structure | TPL-0002 | Reference for the execution deliverable |
@@ -215,6 +218,12 @@ When the Kernel requires Governance qualification, resolve PROC-0006 and
 include its invocation, evidence, stage, result, and caller-return obligations.
 PROC-0006 supplies no Governance decision, lifecycle, publication, baseline,
 or implementation authority.
+
+When the Kernel requires Governance stabilization, resolve PROC-0007 and
+include its authorization, baseline, inventory, dependency, coordination,
+external-qualification, routing, state-separation, and closeout obligations.
+PROC-0007 supplies no execution, qualification, Governance decision,
+publication, baseline-designation, or implementation authority.
 
 ### Step 6 — TPL-0001 Structural Assembly
 
@@ -436,6 +445,7 @@ lifecycle state under STD-0001 and STD-0003.
 - PROC-0001 — Engineering Work Order Execution Procedure
 - PROC-0005 — Controlled Document Publication Procedure
 - PROC-0006 — Governance Qualification Procedure
+- PROC-0007 — Governance Stabilization Procedure
 - TPL-0001 — Engineering Work Order Template
 - TPL-0002 — Completion Report Template
 - EDR-0002 — Engineering Authority Model
@@ -450,3 +460,4 @@ lifecycle state under STD-0001 and STD-0003.
 | 1.1 | 2026-07-18 | Integrated explicit ETP consumption, deterministic fail-closed resolution, compatibility validation, and frozen resolved-manifest evidence while preserving construction and Governance authority boundaries. |
 | 1.2 | 2026-07-18 | Integrated conditional PROC-0005 resolution for publication-capable handoffs while preserving Authorization Kernel, PROC-0001 execution, ETP, lifecycle, and Governance authority ownership. |
 | 1.3 | 2026-07-18 | Integrated conditional Active PROC-0006 resolution for Governance qualification handoffs while preserving Authorization Kernel and external Governance decision authority. |
+| 1.4 | 2026-07-18 | Integrated conditional Active PROC-0007 resolution for Governance stabilization handoffs while preserving Authorization Kernel and all external operational and decision owners. |

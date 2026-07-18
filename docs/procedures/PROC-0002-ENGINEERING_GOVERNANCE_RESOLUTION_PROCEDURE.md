@@ -1,19 +1,19 @@
 ---
 document_id: PROC-0002
 title: Engineering Governance Resolution Procedure
-version: 1.3
+version: 1.4
 status: Active
 owner: Engineering Governance
 created: 2026-07-13
 last_updated: 2026-07-18
-phase: Governance Qualification Procedure Integration
+phase: Governance Stabilization Procedure Integration
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: PROC-0002@1.2
+predecessor_revision: PROC-0002@1.3
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000005
+approval_reference: EGR-000006
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -39,6 +39,8 @@ relationships:
     target: PROC-0005
   - type: related_to
     target: PROC-0006
+  - type: related_to
+    target: PROC-0007
   - type: indexed_by
     target: DOC-0001
 tags:
@@ -80,7 +82,8 @@ EGR preparation and lifecycle operations shall conform to:
 * SPEC-0001 — Controlled Document Representation Specification;
 * TPL-0004 — Engineering Governance Resolution Template;
 * PROC-0005 — Controlled Document Publication Procedure; and
-* PROC-0006 — Governance Qualification Procedure, when qualification evidence supports the decision subject.
+* PROC-0006 — Governance Qualification Procedure, when qualification evidence supports the decision subject; and
+* PROC-0007 — Governance Stabilization Procedure, when reconciliation evidence supports the decision subject.
 
 ---
 
@@ -178,6 +181,12 @@ qualification result independently from the Governance disposition. PROC-0006
 returns evidence and a recommendation; Engineering Governance determines the
 decision, and this procedure records it without overwriting the qualification
 state.
+
+When a Governance decision consumes a PROC-0007 routing package, preserve the
+stabilization workflow, qualification result, publication outcome, and
+baseline-effect state independently from the Governance disposition. PROC-0007
+coordinates and returns the decision package; this procedure remains the EGR
+preparation and decision-recording owner.
 
 ---
 
@@ -431,3 +440,4 @@ required follow-up EWO.
 | 1.1 | 2026-07-17 | Required holistic affected-subsystem reconciliation, explicit deferrals, architecture validation, and Governance Conformance Review under EGR-000002 and EWO-000018. |
 | 1.2 | 2026-07-18 | Integrated PROC-0005 as the common operational publication procedure while preserving PROC-0002 ownership of EGR preparation, disposition, approval, activation, traceability, supersedence, and archival. |
 | 1.3 | 2026-07-18 | Integrated Active PROC-0006 as an external qualification-evidence source while preserving Engineering Governance decision authority and PROC-0002 decision-recording ownership. |
+| 1.4 | 2026-07-18 | Integrated Active PROC-0007 as a reconciliation and routing evidence source while preserving Engineering Governance decision authority and PROC-0002 EGR ownership. |
