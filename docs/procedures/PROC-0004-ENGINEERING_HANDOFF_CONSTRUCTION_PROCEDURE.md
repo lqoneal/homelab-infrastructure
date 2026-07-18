@@ -1,19 +1,19 @@
 ---
 document_id: PROC-0004
 title: Engineering Handoff Construction Procedure
-version: 1.1
+version: 1.2
 status: Active
 owner: Engineering Governance
 created: 2026-07-18
 last_updated: 2026-07-18
-phase: Engineering Handoff Construction Procedure Institutionalization
+phase: Publication Framework Integration
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: PROC-0004@1.0
+predecessor_revision: PROC-0004@1.1
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Governance Authorization - Engineering Handoff Construction Procedure Implementation
+approval_reference: Handoff - Engineering Governance Publication Framework Integration
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -37,6 +37,8 @@ relationships:
     target: STD-0004
   - type: related_to
     target: PROC-0001
+  - type: related_to
+    target: PROC-0005
   - type: uses
     target: TPL-0001
   - type: related_to
@@ -98,6 +100,7 @@ implementation.
 | Handoff construction workflow | PROC-0004 | Apply this procedure |
 | Reusable handoff structure | TPL-0001 | Instantiate; do not treat as procedural authority |
 | Engineering Work Order execution | PROC-0001 | Begins only after Active lifecycle verification |
+| Controlled document publication workflow | PROC-0005 | Resolve and insert when the Kernel authorizes controlled publication; do not treat as publication authority |
 | Lifecycle and persistence | STD-0001 and STD-0002 | Resolve and apply |
 | Engineering State, checkpoint, and resume freshness | STD-0004 | Resolve and apply |
 | Completion Report structure | TPL-0002 | Reference for the execution deliverable |
@@ -198,6 +201,12 @@ profile, resolve every component owner and revision, and fail closed for no
 match, multiple matches, inactive state, missing references, incompatibility,
 or a prohibited override. PROC-0004 consumes and validates profiles; SPEC-0008
 owns their model and compatibility semantics.
+
+When the Kernel authorizes controlled document publication, resolve PROC-0005
+and include its common publication workflow, evidence, boundary, and
+verification obligations in the constructed handoff. Preserve PROC-0001 as the
+execution owner and the applicable standards and specifications as requirement
+owners. PROC-0005 supplies no publication or lifecycle authority.
 
 ### Step 6 — TPL-0001 Structural Assembly
 
@@ -417,6 +426,7 @@ lifecycle state under STD-0001 and STD-0003.
 - STD-0003 — Engineering Work Order Standard
 - STD-0004 — Engineering State Freshness Standard
 - PROC-0001 — Engineering Work Order Execution Procedure
+- PROC-0005 — Controlled Document Publication Procedure
 - TPL-0001 — Engineering Work Order Template
 - TPL-0002 — Completion Report Template
 - EDR-0002 — Engineering Authority Model
@@ -429,3 +439,4 @@ lifecycle state under STD-0001 and STD-0003.
 | --- | --- | --- |
 | 1.0 | 2026-07-18 | Established the authoritative Engineering Handoff construction procedure, Authorization Kernel, resolution and inheritance model, Authority Preservation Validation, responsibility boundary, and bounded automation interface. |
 | 1.1 | 2026-07-18 | Integrated explicit ETP consumption, deterministic fail-closed resolution, compatibility validation, and frozen resolved-manifest evidence while preserving construction and Governance authority boundaries. |
+| 1.2 | 2026-07-18 | Integrated conditional PROC-0005 resolution for publication-capable handoffs while preserving Authorization Kernel, PROC-0001 execution, ETP, lifecycle, and Governance authority ownership. |

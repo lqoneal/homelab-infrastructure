@@ -1,28 +1,50 @@
 ---
 document_id: PROC-0001
 title: Engineering Work Order Execution Procedure
-version: 1.8
+version: 1.9
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-17
-phase: Engineering Reporting Standard Institutionalization
+last_updated: 2026-07-18
+phase: Publication Framework Integration
 domain: Engineering Governance
 classification: Engineering Procedure
 source_of_truth: true
-related_documents:
-  - GEN-0001
-  - STD-0000
-  - STD-0001
-  - STD-0002
-  - STD-0003
-  - STD-0004
-  - POL-0001
-  - EWO-000012
-  - PROC-0003
-  - EGR-000002
-  - EWO-000018
-  - EWO-000019
+predecessor_revision: PROC-0001@1.8
+successor_revision: null
+approval_status: Approved
+approval_authority: Engineering Governance
+approval_reference: Handoff - Engineering Governance Publication Framework Integration
+approval_date: 2026-07-18
+persistence_status: Persisted
+declared_deferrals: []
+relationships:
+  - type: governed_by
+    target: CHAR-0001
+  - type: conforms_to
+    target: POL-0001
+  - type: conforms_to
+    target: STD-0000
+  - type: conforms_to
+    target: STD-0001
+  - type: conforms_to
+    target: STD-0002
+  - type: conforms_to
+    target: STD-0003
+  - type: conforms_to
+    target: STD-0004
+  - type: related_to
+    target: PROC-0003
+  - type: related_to
+    target: PROC-0005
+  - type: related_to
+    target: EGR-000002
+  - type: related_to
+    target: EWO-000018
+  - type: related_to
+    target: EWO-000019
+  - type: indexed_by
+    target: DOC-0001
 tags:
   - governance
   - procedure
@@ -57,7 +79,9 @@ Execution shall conform to:
 * STD-0000 — Engineering Governance Documentation Architecture;
 * STD-0001 — Engineering Document Lifecycle Standard;
 * STD-0002 — Engineering Document Persistence Standard;
-* STD-0003 — Engineering Work Order Standard.
+* STD-0003 — Engineering Work Order Standard;
+* STD-0004 — Engineering State Freshness Standard; and
+* PROC-0005 — Controlled Document Publication Procedure, when the Work Order includes controlled publication.
 
 ---
 
@@ -410,6 +434,23 @@ Completed phases remain complete unless Engineering Governance authorizes repeti
 
 ---
 
+## Controlled Document Publication Integration
+
+When an Active Engineering Work Order includes controlled document publication,
+execution shall consume PROC-0005 in addition to this procedure.
+
+PROC-0001 remains the owner of Work Order execution, mission classification,
+Engineering State verification, evidence collection, Completion Reports,
+Commit Classification, and Commit Reconstruction Planning. PROC-0005 owns the
+common publication gates, frozen publication content, exact publication
+boundary, controlled publication transaction, and post-publication verification.
+
+The publication transaction may begin only after the applicable PROC-0005
+authorization gate passes. Neither procedure supplies Governance approval,
+lifecycle-transition authority, repository authority, or implementation
+authority absent the governing Work Order or superior authorization. Milestone
+publication retains the specialized dependency order defined below.
+
 ## Engineering Commit Classification
 
 ### Purpose and Requirement
@@ -740,5 +781,6 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.4 | 2026-07-15 | Established mandatory Commit Classification, traceability, validation, dependency ordering, commit boundaries, and milestone publication controls after Engineering State Reconciliation. |
 | 1.5 | 2026-07-15 | Established Commit Reconstruction Planning, approved reconstruction methods, execution gates, persistent planning artifacts, and proportional planning governance. |
 | 1.6 | 2026-07-17 | Added the Mission Classification Gate, risk-proportional Category A/B/C initiation, exact Completion Report standard, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
-| 1.8 | 2026-07-18 | Established the execution-first report production workflow, repository start/end capture, safe activity summaries, terminal validator-status requirements, partial-output handling, applicability treatment, and ordered results reporting. |
 | 1.7 | 2026-07-17 | Required repository-governed Codex missions to launch through `engctl codex`, added initiation-time bypass detection and exception controls, and defined the mandatory notification lifecycle under EWO-000019. |
+| 1.8 | 2026-07-18 | Established the execution-first report production workflow, repository start/end capture, safe activity summaries, terminal validator-status requirements, partial-output handling, applicability treatment, and ordered results reporting. |
+| 1.9 | 2026-07-18 | Integrated PROC-0005 for controlled publication missions while preserving PROC-0001 ownership of Work Order execution, evidence, Completion Reports, Commit Classification, Commit Reconstruction Planning, and milestone sequencing. |

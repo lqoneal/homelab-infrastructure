@@ -1,22 +1,22 @@
 ---
 document_id: STD-0001
 title: Engineering Document Lifecycle Standard
-version: 1.5
+version: 1.6
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-17
-phase: Governance Framework Modernization
+last_updated: 2026-07-18
+phase: Publication Framework Integration
 domain: Engineering Governance
 classification: Engineering Standard
 source_of_truth: true
-predecessor_revision: STD-0001@1.4
+predecessor_revision: STD-0001@1.5
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000002
-approval_date: 2026-07-15
-persistence_status: Pending
+approval_reference: Handoff - Engineering Governance Publication Framework Integration
+approval_date: 2026-07-18
+persistence_status: Persisted
 relationships:
   - type: governed_by
     target: CHAR-0001
@@ -38,6 +38,8 @@ relationships:
     target: STD-0004
   - type: related_to
     target: PROC-0001
+  - type: implemented_by
+    target: PROC-0005
   - type: indexed_by
     target: DOC-0001
   - type: authorized_by
@@ -477,6 +479,7 @@ The responsible agent shall report the observation, evidence, lifecycle impact, 
 * STD-0002 — Engineering Document Persistence Standard defines operational persistence, indexing, discovery, and integrity controls.
 * STD-0003 — Engineering Work Order Standard defines mandatory EWO content.
 * PROC-0001 — Engineering Work Order Execution Procedure defines execution of Active Engineering Work Orders.
+* PROC-0005 — Controlled Document Publication Procedure defines the operational method for applying already-authorized lifecycle publication effects, publication boundaries, evidence, and verification. It does not approve lifecycle transitions or replace this Standard.
 
 ---
 
@@ -557,6 +560,7 @@ edit cannot serve as a lifecycle disposition.
 | 1.3 | 2026-07-11 | Reconciled delegated authority, class-scoped Active authority, EWO execution authority, lifecycle/approval/persistence separation, transition evidence, compliance, current governing titles, and SPEC-0001 representation consumption. |
 | 1.4 | 2026-07-15 | Distinguished the controlled-document lifecycle from the STD-0004 operational Engineering Lifecycle and required reconciliation revisions to retain normal lifecycle controls. |
 | 1.5 | 2026-07-17 | Required whole-subsystem governance revision, mandatory conformance review before mission completion, and repository-governed future workflow inheritance under EGR-000002 and EWO-000018. |
+| 1.6 | 2026-07-18 | Integrated PROC-0005 as the operational execution procedure for already-authorized controlled publication while preserving this Standard as the sole owner of lifecycle states, transitions, authority, and evidence requirements. |
 
 ---
 
@@ -573,3 +577,6 @@ edit cannot serve as a lifecycle disposition.
 | STD-0001@1.5 | 2026-07-17 | Draft | Review | EWO-000018 |
 | STD-0001@1.5 | 2026-07-17 | Review | Approved | EGR-000002 |
 | STD-0001@1.5 | 2026-07-17 | Approved | Active | EGR-000002 |
+| STD-0001@1.6 | 2026-07-18 | Draft | Review | Handoff - Engineering Governance Publication Framework Integration |
+| STD-0001@1.6 | 2026-07-18 | Review | Approved | Handoff - Engineering Governance Publication Framework Integration |
+| STD-0001@1.6 | 2026-07-18 | Approved | Active | Handoff - Engineering Governance Publication Framework Integration |

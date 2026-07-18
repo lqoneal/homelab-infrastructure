@@ -1,21 +1,21 @@
 ---
 document_id: PROC-0002
 title: Engineering Governance Resolution Procedure
-version: 1.1
+version: 1.2
 status: Active
 owner: Engineering Governance
 created: 2026-07-13
-last_updated: 2026-07-17
-phase: Governance Framework Modernization
+last_updated: 2026-07-18
+phase: Publication Framework Integration
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: PROC-0002@1.0
+predecessor_revision: PROC-0002@1.1
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000002
-approval_date: 2026-07-13
-persistence_status: Pending
+approval_reference: Handoff - Engineering Governance Publication Framework Integration
+approval_date: 2026-07-18
+persistence_status: Persisted
 source_of_truth: true
 declared_deferrals: []
 relationships:
@@ -35,6 +35,8 @@ relationships:
     target: SPEC-0001
   - type: constrains
     target: TPL-0004
+  - type: depends_on
+    target: PROC-0005
   - type: indexed_by
     target: DOC-0001
 tags:
@@ -74,7 +76,8 @@ EGR preparation and lifecycle operations shall conform to:
 * STD-0001 — Engineering Document Lifecycle Standard;
 * STD-0002 — Engineering Document Persistence Standard;
 * SPEC-0001 — Controlled Document Representation Specification; and
-* TPL-0004 — Engineering Governance Resolution Template.
+* TPL-0004 — Engineering Governance Resolution Template; and
+* PROC-0005 — Controlled Document Publication Procedure.
 
 ---
 
@@ -153,6 +156,19 @@ Authorized Follow-up Work
 ```
 
 Approval and activation are separate governance actions. Follow-up work begins only when separately authorized.
+
+### Common Publication Procedure Integration
+
+This procedure remains the authoritative owner of EGR preparation, decision
+subject, disposition, approval, activation, supersedence, archival, and
+class-specific traceability. PROC-0005 supplements it as the common operational
+workflow for publication readiness, publication boundaries, atomic persistence,
+and post-publication verification.
+
+An EGR publication shall satisfy both procedures. Where this procedure imposes
+an EGR-specific requirement, that requirement remains controlling. PROC-0005
+does not select an EGR disposition, approve content, authorize activation, or
+replace TPL-0004.
 
 ---
 
@@ -283,7 +299,8 @@ Only the Active EGR exercises the governance effect assigned to its class and ex
 
 ## Step 9 — Synchronize Traceability and Discovery
 
-Synchronize or explicitly defer:
+Execute common publication mechanics under PROC-0005 and synchronize or
+explicitly defer the following EGR-specific traceability:
 
 * authoritative index registration;
 * affected-record approval references;
@@ -403,3 +420,4 @@ required follow-up EWO.
 | ------- | ---- | ----------- |
 | 1.0 | 2026-07-13 | Established the Engineering Governance Resolution creation, review, approval, activation, traceability, supersedence, archival, and execution-boundary procedure. |
 | 1.1 | 2026-07-17 | Required holistic affected-subsystem reconciliation, explicit deferrals, architecture validation, and Governance Conformance Review under EGR-000002 and EWO-000018. |
+| 1.2 | 2026-07-18 | Integrated PROC-0005 as the common operational publication procedure while preserving PROC-0002 ownership of EGR preparation, disposition, approval, activation, traceability, supersedence, and archival. |

@@ -1,21 +1,21 @@
 ---
 document_id: STD-0000
 title: Engineering Documentation Standard
-version: 1.5
+version: 1.6
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-17
-phase: Governance Framework Modernization
+last_updated: 2026-07-18
+phase: Publication Framework Integration
 domain: Engineering Governance
 classification: Engineering Standard
-predecessor_revision: STD-0000@1.4
+predecessor_revision: STD-0000@1.5
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000002
-approval_date: 2026-07-13
-persistence_status: Pending
+approval_reference: Handoff - Engineering Governance Publication Framework Integration
+approval_date: 2026-07-18
+persistence_status: Persisted
 source_of_truth: true
 declared_deferrals: []
 relationships:
@@ -39,6 +39,8 @@ relationships:
     target: PROC-0001
   - type: governs
     target: PROC-0002
+  - type: implemented_by
+    target: PROC-0005
   - type: governs
     target: TPL-0004
   - type: indexed_by
@@ -599,6 +601,13 @@ current or future report shall be exactly `Completion Report`. Historical
 filenames and superseded metadata remain preserved as locators and historical
 evidence; they do not establish an alternate current report class or title.
 
+PROC-0005 is the single reusable operational procedure for controlled document
+publication. It executes applicable requirements owned by STD-0001, STD-0002,
+and SPEC-0001 without acquiring their normative or representation authority.
+Class-specific procedures supplement PROC-0005 and retain their specialized
+responsibilities. Publication authority and successful repository execution do
+not originate Governance Authority or implementation authority.
+
 Governance-framework revisions shall reconcile the complete directly affected
 documentation subsystem, including standards, specifications, procedures,
 templates, indexes, lifecycle relationships, planning, and derived operational
@@ -617,3 +626,4 @@ an explicit bounded deferral and follow-up authority.
 | 1.3 | 2026-07-11 | Reconciled the complete standard with CHAR-0001, GEN-0001, POL-0001, and EDR-0002; established delegated authority, Charter precedence, document-class responsibilities, repository authority, Information Authority, AER, derived-view, and traceability semantics. |
 | 1.4 | 2026-07-13 | Established the minimum normative Engineering Governance Resolution record architecture, including authority, identity, required content, disposition, scope, lifecycle, relationships, execution boundaries, discovery, and historical-preservation requirements. |
 | 1.5 | 2026-07-17 | Established repository-governed workflow publications, the Completion Report class and exact title, and holistic governance-subsystem reconciliation under EGR-000002 and EWO-000018. |
+| 1.6 | 2026-07-18 | Integrated PROC-0005 as the single reusable operational controlled-document publication procedure while preserving normative standards, representation ownership, specialized procedures, and Governance authority. |

@@ -1,26 +1,40 @@
 ---
 document_id: STD-0002
 title: Engineering Document Persistence Standard
-version: 1.2
+version: 1.3
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-17
-phase: Governance Framework Modernization
+last_updated: 2026-07-18
+phase: Publication Framework Integration
 domain: Engineering Governance
 classification: Engineering Standard
 source_of_truth: true
-predecessor_revision: STD-0002@1.0
+predecessor_revision: STD-0002@1.2
 successor_revision: null
-related_documents:
-  - GEN-0001
-  - STD-0000
-  - STD-0001
-  - POL-0001
-  - SPEC-0001
-  - EWO-000011
-  - EGR-000002
-  - EWO-000018
+approval_status: Approved
+approval_authority: Engineering Governance
+approval_reference: Handoff - Engineering Governance Publication Framework Integration
+approval_date: 2026-07-18
+persistence_status: Persisted
+declared_deferrals: []
+relationships:
+  - type: governed_by
+    target: CHAR-0001
+  - type: conforms_to
+    target: POL-0001
+  - type: conforms_to
+    target: STD-0000
+  - type: related_to
+    target: STD-0001
+  - type: conforms_to
+    target: SPEC-0001
+  - type: implemented_by
+    target: PROC-0005
+  - type: related_to
+    target: GEN-0001
+  - type: indexed_by
+    target: DOC-0001
 tags:
   - governance
   - persistence
@@ -251,6 +265,20 @@ This standard references:
 * STD-0001 — Engineering Document Lifecycle Standard
 * POL-0001 — Engineering Governance Policy
 * SPEC-0001 — Controlled Document Model
+* PROC-0005 — Controlled Document Publication Procedure
+
+---
+
+## Operational Publication Procedure
+
+PROC-0005 defines the common operational method for establishing an exact
+publication boundary, applying an authorized atomic publication transaction,
+recording immutable locators, and performing post-publication verification.
+
+This Standard remains the authoritative owner of persistence, indexing,
+discovery, historical preservation, reconstruction, and integrity requirements.
+PROC-0005 executes those requirements and creates no persistence, lifecycle,
+Governance, or implementation authority.
 
 ---
 
@@ -281,3 +309,4 @@ publication and its registered planning relationships.
 | 1.0 | 2026-07-09 | Initial Engineering Document Persistence Standard established. |
 | 1.1 | 2026-07-10 | Referenced the revision persistence, supersedence, Git locator, and deterministic reconstruction architecture in SPEC-0001 and retained operational persistence controls under EWO-000011 Revision 2. |
 | 1.2 | 2026-07-17 | Required persistence of repository-governed workflow behavior and prohibited conversation or handoff history as a substitute under EGR-000002 and EWO-000018. |
+| 1.3 | 2026-07-18 | Integrated PROC-0005 as the operational method for exact publication boundaries, atomic persistence, immutable locator capture, and post-publication verification while preserving this Standard's persistence authority. |
