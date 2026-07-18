@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.45
+version: 2.46
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: Governance Qualification Procedure Published and Integrated
+phase: Governance Stabilization Procedure Draft Registered
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.44
+predecessor_revision: DOC-0001@2.45
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000005
+approval_reference: Engineering Governance Stabilization Procedure Development
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -41,6 +41,8 @@ relationships:
     target: PROC-0005
   - type: indexes
     target: PROC-0006
+  - type: indexes
+    target: PROC-0007
   - type: indexes
     target: STD-0004
   - type: indexes
@@ -355,6 +357,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | PROC-0004 | Engineering Handoff Construction Procedure | Active | Engineering Governance | `docs/procedures/PROC-0004-ENGINEERING_HANDOFF_CONSTRUCTION_PROCEDURE.md` |
 | PROC-0005 | Controlled Document Publication Procedure | Active | Engineering Governance | `docs/procedures/PROC-0005-CONTROLLED_DOCUMENT_PUBLICATION_PROCEDURE.md` |
 | PROC-0006 | Governance Qualification Procedure | Active | Engineering Governance | `docs/procedures/PROC-0006-GOVERNANCE-QUALIFICATION-PROCEDURE.md` |
+| PROC-0007 | Governance Stabilization Procedure | Draft | Engineering Governance | `docs/procedures/PROC-0007-GOVERNANCE-STABILIZATION-PROCEDURE.md` |
 | TPL-0001 | Engineering Work Order Template | Active | Engineering Governance | `docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md` |
 | TPL-0002 | Completion Report Template | Active | Engineering Governance | `docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md` |
 | TPL-0003 | Engineering Evidence Package Template | Active | Engineering Governance | `docs/templates/TPL-0003-ENGINEERING_EVIDENCE_PACKAGE_TEMPLATE.md` |
@@ -678,3 +681,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.43 | 2026-07-18 | Registered PROC-0006 Version 0.1 as the Draft Governance Qualification Procedure implementing the qualified nine-stage capability without granting operational authority or publishing it as Active. |
 | 2.44 | 2026-07-18 | Registered qualified Draft PROC-0006 Version 0.2 after bounded stage-accounting and terminal-routing remediation; approval, activation, and controlled publication remain pending. |
 | 2.45 | 2026-07-18 | Approved, activated, published, and integrated PROC-0006 Version 1.0 under EGR-000005, with reference-only revisions to PROC-0001, PROC-0002, PROC-0004, and PROC-0005. |
+| 2.46 | 2026-07-18 | Registered PROC-0007 Version 0.1 as the Draft Governance Stabilization Procedure implementing the qualified twelve-stage orchestration model with Active PROC-0006 as its external qualification dependency. |
