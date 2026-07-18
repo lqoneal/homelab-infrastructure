@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 5.7
+version: 5.8
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: Engineering Handoff Construction Procedure Institutionalized
+phase: Engineering Transaction Profile Institutionalized
 classification: Project State
-predecessor_revision: PROJ-0001@5.6
+predecessor_revision: PROJ-0001@5.7
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Governance Authorization - Engineering Handoff Construction Procedure Implementation
+approval_reference: Engineering Governance Authorization - Engineering Transaction Profile Implementation
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -144,7 +144,8 @@ Build the Engineering Operating System foundation for AI Assistant, SprinterOS, 
 Preserve the published SPEC-0007 Version 1.1 Engineering Baseline, immutable
 EWO-000023 evidence boundary, MILESTONE-0007 historical summary, and qualified
 Engineering Reporting Standard, Engineering Handoff template, and authoritative
-Engineering Handoff Construction Procedure.
+Engineering Handoff Construction Procedure, and conservative Engineering
+Transaction Profile baseline.
 EWO-000023 remains Archived and EDR-0003 remains in its authorized evidence
 state. No operational adoption, unrelated institutionalization, or SPEC-0007
 Revision 16 work is authorized.
@@ -155,15 +156,15 @@ Revision 16 work is authorized.
 
 **Current Phase:**
 
-Engineering Handoff Construction Procedure Institutionalized
+Engineering Transaction Profile Institutionalized
 
 **Phase Objective:**
 
-PROC-0004 Version 1.0 owns Engineering Handoff construction, Authorization
-Kernel intake, controlled-document resolution, Authority Preservation
-Validation, and submission for Governance approval. TPL-0001 Version 1.5 owns
-structure, STD-0003 owns normative semantics, and PROC-0001 continues to own
-execution after activation. Governance and platform architecture are unchanged.
+SPEC-0008 Version 1.0 owns the ETP model and one conservative baseline profile.
+PROC-0004 Version 1.1 consumes and validates explicit profile selection, and
+TPL-0001 Version 1.6 records the frozen resolved manifest. Existing semantic
+owners, Governance authority, and platform architecture remain unchanged;
+runtime resolution, additional profiles, registries, and automation are deferred.
 
 ---
 
@@ -364,7 +365,7 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 | EWO-000023 evidence | Immutable, indexed, and reconstructable from controlled repository history |
 | Milestone state | MILESTONE-0007 published as a historical summary; no new evidence or authority established |
 | Reporting standard | Execution-first Completion Reports institutionalized through STD-0003, PROC-0001, TPL-0001, and TPL-0002 |
-| Freshness | Reconciled through the 2026-07-18 Engineering Handoff Construction Procedure implementation transaction |
+| Freshness | Reconciled through the 2026-07-18 Engineering Transaction Profile implementation transaction |
 
 ---
 
@@ -580,3 +581,4 @@ When resuming this project:
 | 5.5     | 2026-07-18 | Institutionalized the execution-first Engineering Reporting Standard through four coordinated controlled revisions, preserved historical reports, and retained the qualified governance architecture without creating a new document class. |
 | 5.6     | 2026-07-18 | Institutionalized TPL-0001 Version 1.4 as a concise Engineering Handoff authorization contract, preserved single-owner semantic responsibility, and left historical Engineering Work Orders unchanged. |
 | 5.7     | 2026-07-18 | Published PROC-0004 Version 1.0 as the single Engineering Handoff construction owner, synchronized TPL-0001 Version 1.5 as structural owner, and preserved Governance authorization and PROC-0001 execution boundaries. |
+| 5.8     | 2026-07-18 | Published SPEC-0008 Version 1.0, one conservative baseline ETP, PROC-0004 Version 1.1 consumption, TPL-0001 Version 1.6 manifest structure, and deterministic fail-closed validation without runtime services or ownership redistribution. |

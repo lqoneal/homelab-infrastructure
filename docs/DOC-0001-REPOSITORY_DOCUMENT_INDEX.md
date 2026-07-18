@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.37
+version: 2.38
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: Engineering Handoff Construction Procedure Institutionalized
+phase: Engineering Transaction Profile Institutionalized
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.36
+predecessor_revision: DOC-0001@2.37
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Governance Authorization - Engineering Handoff Construction Procedure Implementation
+approval_reference: Engineering Governance Authorization - Engineering Transaction Profile Implementation
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -105,6 +105,8 @@ relationships:
     target: EWO-000021-AUTHORIZATION-COMPLETION
   - type: indexes
     target: SPEC-0007
+  - type: indexes
+    target: SPEC-0008
   - type: indexes
     target: MILESTONE-0006
   - type: indexes
@@ -319,6 +321,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | SPEC-0005 | Engineering Control Framework | Draft | EOS Program | `docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md` |
 | SPEC-0006 | Engineering Work Registry Model | Active | Engineering Management Platform | `docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md` |
 | SPEC-0007 | Engineering Platform Construction Specification | Active | Engineering Platform | `docs/specifications/SPEC-0007-ENGINEERING-PLATFORM-CONSTRUCTION-SPECIFICATION.md` |
+| SPEC-0008 | Engineering Transaction Profile Specification | Active | Engineering Governance | `docs/specifications/SPEC-0008-ENGINEERING_TRANSACTION_PROFILE_SPECIFICATION.md` |
 | SERVICE-0001 | EOS Core Services Catalog | Draft | EOS Program | `docs/services/SERVICE-0001-EOS_CORE_SERVICES_CATALOG.md` |
 | SERVICE-0002 | EMP Management Services Catalog | Active | Engineering Management Platform | `docs/services/SERVICE-0002-EMP_MANAGEMENT_SERVICES_CATALOG.md` |
 | GEN-0001 | Engineering Operating System Genesis Record | Active | Engineering Governance | `docs/genesis/GEN-0001-GENESIS_GOVERNANCE_RECORD.md` |
@@ -647,3 +650,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.35 | 2026-07-18 | Synchronized STD-0003 Version 1.3, PROC-0001 Version 1.8, TPL-0001 Version 1.3, and TPL-0002 Version 1.2 as the atomic Engineering Reporting Standard implementation without creating a new reporting class. |
 | 2.36 | 2026-07-18 | Synchronized TPL-0001 Version 1.4 as the next-generation Engineering Handoff authorization-contract template without revising secondary controlled documents or the qualified governance architecture. |
 | 2.37 | 2026-07-18 | Published and indexed PROC-0004 Version 1.0 as the authoritative Engineering Handoff construction procedure and synchronized TPL-0001 Version 1.5 as its structural template. |
+| 2.38 | 2026-07-18 | Published and indexed SPEC-0008 Version 1.0 with one conservative baseline ETP, synchronized PROC-0004 Version 1.1 and TPL-0001 Version 1.6, and integrated fail-closed validation without creating a new document class or runtime service. |

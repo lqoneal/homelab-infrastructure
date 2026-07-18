@@ -1,7 +1,7 @@
 ---
 document_id: TPL-0001
 title: Engineering Work Order Template
-version: 1.5
+version: 1.6
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
@@ -20,6 +20,7 @@ related_documents:
   - PROC-0001
   - PROC-0004
   - TPL-0002
+  - SPEC-0008
   - EWO-000012
   - EGR-000002
   - EWO-000018
@@ -106,6 +107,26 @@ This Work Order conforms to the applicable controlled authorities, including:
 - TPL-0002 — Engineering Completion Report Template
 
 Transaction-Specific Governing References: `<Identifiers and revisions or None>`
+
+## Engineering Transaction Profile
+
+Selected Profile: `<ETP identity and revision or Not Applicable>`
+
+Selection Authority: `<Authorization Kernel locator or Not Applicable>`
+
+Resolved Components: `<Component identities and revisions or Not Applicable>`
+
+Permitted Transaction Additions: `<Additions or None>`
+
+Compatibility Result: `<COMPATIBLE | NOT COMPATIBLE | Not Applicable>`
+
+Authority Preservation Result: `<PRESERVED | NOT PRESERVED | Not Applicable>`
+
+Resolved Manifest Fingerprint or Locator: `<Fingerprint, locator, or Not Applicable>`
+
+Resolve and validate ETPs under SPEC-0008 through PROC-0004. This template
+records the frozen result; it does not define profile semantics or selection
+authority. Historical Engineering Work Orders require no retrospective ETP.
 
 ## Scope
 
@@ -241,3 +262,4 @@ Approval Date: `<Date>`
 | 1.3 | 2026-07-17 | Referenced the repository-standard Completion Report authorities and preserved transaction-specific certification fields. |
 | 1.4 | 2026-07-18 | Refined the template into a concise authorization contract with single-owner references for reusable lifecycle, execution, validation, publication, state, and reporting behavior. |
 | 1.5 | 2026-07-18 | Assigned construction behavior to PROC-0004 and retained TPL-0001 as the sole reusable structural owner. |
+| 1.6 | 2026-07-18 | Added structural fields for an explicitly selected ETP and frozen resolved manifest while assigning model and resolution semantics to SPEC-0008 and PROC-0004. |

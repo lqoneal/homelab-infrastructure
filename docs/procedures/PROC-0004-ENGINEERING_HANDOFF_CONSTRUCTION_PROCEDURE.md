@@ -1,7 +1,7 @@
 ---
 document_id: PROC-0004
 title: Engineering Handoff Construction Procedure
-version: 1.0
+version: 1.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-18
@@ -9,7 +9,7 @@ last_updated: 2026-07-18
 phase: Engineering Handoff Construction Procedure Institutionalization
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: null
+predecessor_revision: PROC-0004@1.0
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -45,6 +45,8 @@ relationships:
     target: EDR-0002
   - type: related_to
     target: SPEC-0007
+  - type: depends_on
+    target: SPEC-0008
   - type: indexed_by
     target: DOC-0001
 tags:
@@ -160,6 +162,10 @@ Record the Kernel locator and verify its Governance source, completeness, and
 internal consistency. Do not begin assembly from conversation history,
 unpublished notes, or an unattributable summary.
 
+Resolve the Kernel's explicit Engineering Transaction Profile selection when
+present. During the initial baseline pilot, selection shall be explicit; a
+profile creates no default and conveys no authority.
+
 ### Step 2 — Repository Context Reconstruction
 
 Resolve the canonical repository, current branch and commit, DOC-0001, Project
@@ -187,6 +193,12 @@ certification into TPL-0001 fields. Inherit reusable behavior only through its
 authoritative owner. Do not inherit authority from context, precedent, a prior
 Work Order, Project State, the Work Registry, EOS, or automation output.
 
+When an ETP is selected, apply SPEC-0008. Require exactly one Active compatible
+profile, resolve every component owner and revision, and fail closed for no
+match, multiple matches, inactive state, missing references, incompatibility,
+or a prohibited override. PROC-0004 consumes and validates profiles; SPEC-0008
+owns their model and compatibility semantics.
+
 ### Step 6 — TPL-0001 Structural Assembly
 
 Instantiate the current Active TPL-0001 revision. Preserve its section order
@@ -199,6 +211,11 @@ Populate mechanically resolvable content, including identifiers, approved
 revisions, repository locators, standard references, current state facts,
 section ordering, dependencies, and an existing validation or publication
 profile selected by unambiguous controlled rules.
+
+For ETP-driven construction, populate the selected identity and revision,
+selection-authority locator, resolved component versions, permitted additions,
+compatibility result, and deterministic manifest fingerprint or locator. The
+frozen manifest becomes part of the submitted EWO revision.
 
 ### Step 8 — Engineering Judgment Additions
 
@@ -223,6 +240,10 @@ Verify that each requirement has one authoritative owner, all references
 resolve to applicable controlled records, constructed instructions are
 consistent, reusable procedures have not been duplicated, and the handoff is
 sufficient for deterministic execution and resume.
+
+For ETP-driven construction, also verify lifecycle, unique selection,
+component compatibility, permitted additions, prohibited overrides, and
+resolved-manifest completeness. Failure or ambiguity blocks submission.
 
 ### Step 11 — Authority Preservation Validation
 
@@ -319,6 +340,10 @@ The validation record shall identify:
 Only `PRESERVED` is eligible for Governance approval. This result does not
 approve or activate the Engineering Work Order.
 
+When an ETP is used, compare both the handoff and its frozen manifest with the
+Kernel. Neither selection nor component resolution may change Governance-owned
+content or enlarge transaction effects.
+
 ## Operational Engineer Responsibilities
 
 The Operational Engineer shall:
@@ -396,9 +421,11 @@ lifecycle state under STD-0001 and STD-0003.
 - TPL-0002 — Completion Report Template
 - EDR-0002 — Engineering Authority Model
 - SPEC-0007 — Engineering Platform Construction Specification
+- SPEC-0008 — Engineering Transaction Profile Specification
 
 ## Revision History
 
 | Version | Date | Description |
 | --- | --- | --- |
 | 1.0 | 2026-07-18 | Established the authoritative Engineering Handoff construction procedure, Authorization Kernel, resolution and inheritance model, Authority Preservation Validation, responsibility boundary, and bounded automation interface. |
+| 1.1 | 2026-07-18 | Integrated explicit ETP consumption, deterministic fail-closed resolution, compatibility validation, and frozen resolved-manifest evidence while preserving construction and Governance authority boundaries. |

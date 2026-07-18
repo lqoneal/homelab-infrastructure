@@ -101,7 +101,7 @@ eos_platform_qualify() {
 
 eos_platform_validate() {
     local project="${1:-homelab}"
-    local root platform_root validator runtime_test registry_test management_test
+    local root platform_root validator runtime_test registry_test management_test etp_test
     local context management_project_id failures=0
     root="$(eos_project_root "$project")"
     platform_root="$(eos_project_root homelab)"
@@ -113,6 +113,7 @@ eos_platform_validate() {
     runtime_test="$platform_root/scripts/tests/test-eos-runtime.sh"
     registry_test="$platform_root/scripts/tests/test-emp-registry.py"
     management_test="$platform_root/scripts/tests/test-emp-management.py"
+    etp_test="$platform_root/scripts/tests/test-etp-profiles.py"
 
     if eos_validate_state "$project"; then
         echo "PASS: EOS operational state"
@@ -146,6 +147,13 @@ eos_platform_validate() {
         echo "PASS: EOS runtime regression tests"
     else
         echo "FAIL: EOS runtime regression tests"
+        ((failures++)) || true
+    fi
+
+    if [[ -f "$etp_test" ]] && PYTHONDONTWRITEBYTECODE=1 python3 "$etp_test" >/dev/null; then
+        echo "PASS: Engineering Transaction Profile validation fixtures"
+    else
+        echo "FAIL: Engineering Transaction Profile validation fixtures"
         ((failures++)) || true
     fi
 

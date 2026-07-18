@@ -30,6 +30,8 @@ FRAMEWORK_PATHS = {
     / "emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md",
     "SPEC-0006": DOCS
     / "specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md",
+    "SPEC-0008": DOCS
+    / "specifications/SPEC-0008-ENGINEERING_TRANSACTION_PROFILE_SPECIFICATION.md",
     "SERVICE-0002": DOCS
     / "services/SERVICE-0002-EMP_MANAGEMENT_SERVICES_CATALOG.md",
 }
@@ -58,6 +60,12 @@ INDEX_REGISTRATIONS = {
         "status": "Active",
         "owner": "Engineering Management Platform",
         "path": "docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md",
+    },
+    "SPEC-0008": {
+        "title": "Engineering Transaction Profile Specification",
+        "status": "Active",
+        "owner": "Engineering Governance",
+        "path": "docs/specifications/SPEC-0008-ENGINEERING_TRANSACTION_PROFILE_SPECIFICATION.md",
     },
     "SERVICE-0002": {
         "title": "EMP Management Services Catalog",
@@ -383,7 +391,7 @@ def main() -> int:
         pairs = relationship_pairs(metadata_by_id.get(document_id, {}))
         validation.check(("indexed_by", "DOC-0001") in pairs, f"{document_id} is indexed by DOC-0001")
 
-    for document_id in ("EMP-0001", "SPEC-0006", "SERVICE-0002"):
+    for document_id in ("EMP-0001", "SPEC-0006", "SPEC-0008", "SERVICE-0002"):
         pairs = relationship_pairs(metadata_by_id.get(document_id, {}))
         validation.check(
             ("indexed_by", "DOC-0001") in pairs,
@@ -416,6 +424,38 @@ def main() -> int:
     emp_text = FRAMEWORK_PATHS["EMP-0001"].read_text(encoding="utf-8")
     spec_text = FRAMEWORK_PATHS["SPEC-0006"].read_text(encoding="utf-8")
     service_text = FRAMEWORK_PATHS["SERVICE-0002"].read_text(encoding="utf-8")
+    etp_text = FRAMEWORK_PATHS["SPEC-0008"].read_text(encoding="utf-8")
+    etp_match = re.search(r"```yaml etp-profile\n(.*?)\n```", etp_text, re.DOTALL)
+    validation.check(bool(etp_match), "SPEC-0008 contains the authoritative ETP YAML block")
+    if etp_match:
+        try:
+            etp_profile = yaml.safe_load(etp_match.group(1))
+        except yaml.YAMLError as error:
+            validation.check(False, f"SPEC-0008 ETP YAML parses ({error})")
+        else:
+            validation.check(isinstance(etp_profile, dict), "SPEC-0008 ETP profile is a mapping")
+            if isinstance(etp_profile, dict):
+                validation.check(
+                    etp_profile.get("profile_id") == "ETP-BASELINE-CONTROLLED-PUBLICATION",
+                    "SPEC-0008 defines exactly the approved baseline profile identity",
+                )
+                validation.check(etp_profile.get("status") == "Active", "baseline ETP is Active")
+                validation.check(
+                    etp_profile.get("components", {}).get("construction") == "PROC-0004@1.1",
+                    "baseline ETP resolves construction to PROC-0004 1.1",
+                )
+                validation.check(
+                    etp_profile.get("components", {}).get("execution") == "PROC-0001@1.8",
+                    "baseline ETP preserves PROC-0001 execution ownership",
+                )
+                validation.check(
+                    etp_profile.get("components", {}).get("automation") == "deferred",
+                    "baseline ETP defers automation",
+                )
+                validation.check(
+                    etp_profile.get("compatibility", {}).get("requires_authority_preservation") is True,
+                    "baseline ETP requires Authority Preservation",
+                )
     for required_scope in (
         "projects",
         "missions",
