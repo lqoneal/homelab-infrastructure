@@ -1,21 +1,21 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.31
+version: 2.32
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-17
-phase: SPEC-0007 Revision 15 Controlled Publication
+last_updated: 2026-07-18
+phase: Governance Authority Architecture Investigation Authorized
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.30
+predecessor_revision: DOC-0001@2.31
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EWO-000022
-approval_date: 2026-07-17
-persistence_status: Pending
+approval_reference: Engineering Governance Authorization - Authorization-Publication Transaction for EWO-000023
+approval_date: 2026-07-18
+persistence_status: Persisted
 source_of_truth: true
 declared_deferrals: []
 relationships:
@@ -115,6 +115,8 @@ relationships:
     target: EWO-000022-EVIDENCE
   - type: indexes
     target: EWO-000022-COMPLETION
+  - type: indexes
+    target: EWO-000023
   - type: related_to
     target: EWO-000018
 tags:
@@ -353,9 +355,10 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EWO-000021-AUTHORIZATION-COMPLETION | EWO-000021 Authorization Completion Report | Approved | Engineering Governance | `docs/work-orders/EWO-000021-AUTHORIZATION-COMPLETION-REPORT.md` |
 | EWO-000021-EVIDENCE | EWO-000021 Engineering Evidence Package | Approved | Engineering Governance | `docs/work-orders/EWO-000021-ENGINEERING-EVIDENCE-PACKAGE.md` |
 | EWO-000021-COMPLETION | EWO-000021 Engineering Completion Report | Approved | Engineering Governance | `docs/work-orders/EWO-000021-ENGINEERING-COMPLETION-REPORT.md` |
-| EWO-000022 | SPEC-0007 Revision 15 Controlled Publication | Active | Engineering Governance | `docs/work-orders/EWO-000022-SPEC-0007-REVISION-15-CONTROLLED-PUBLICATION.md` |
+| EWO-000022 | SPEC-0007 Revision 15 Controlled Publication | Superseded | Engineering Governance | `docs/work-orders/EWO-000022-SPEC-0007-REVISION-15-CONTROLLED-PUBLICATION.md` |
 | EWO-000022-EVIDENCE | EWO-000022 Engineering Evidence Package | Approved | Engineering Governance | `docs/work-orders/EWO-000022-ENGINEERING-EVIDENCE-PACKAGE.md` |
 | EWO-000022-COMPLETION | EWO-000022 Engineering Completion Report | Approved | Engineering Governance | `docs/work-orders/EWO-000022-ENGINEERING-COMPLETION-REPORT.md` |
+| EWO-000023 | Governance Authority Architecture Investigation | Active | Engineering Governance | `docs/work-orders/EWO-000023-GOVERNANCE-AUTHORITY-ARCHITECTURE-INVESTIGATION.md` |
 | FIN-0001 | Master Financial Ledger | Active | Homelab Infrastructure | `docs/finance/FIN-0001-MASTER_FINANCIAL_LEDGER.md` |
 | FIN-0002 | Master Procurement Register | Active | Homelab Infrastructure | `docs/finance/FIN-0002-MASTER_PROCUREMENT_REGISTER.md` |
 | PROC-000001 | Engineering Terminal 01 Procurement | Closed | Homelab Infrastructure | `docs/finance/procurements/PROC-000001.md` |
@@ -608,3 +611,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.29 | 2026-07-17 | Published SPEC-0007 Engineering Baseline 1.0, MILESTONE-0006, EWO-000021 execution evidence, and the Completion Report. |
 | 2.30 | 2026-07-17 | Registered Approved Active EWO-000022 as the bounded authority for SPEC-0007 Revision 15 controlled publication. |
 | 2.31 | 2026-07-17 | Published SPEC-0007 Version 1.1 from the authoritative Revision 15 manuscript and registered EWO-000022 publication evidence and Completion Report. |
+| 2.32 | 2026-07-18 | Superseded completed EWO-000022 and registered approved Active EWO-000023 as the bounded governance-authority architecture investigation. |

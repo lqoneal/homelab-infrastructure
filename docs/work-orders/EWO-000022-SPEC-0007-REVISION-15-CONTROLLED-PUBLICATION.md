@@ -1,20 +1,20 @@
 ---
 document_id: EWO-000022
 title: SPEC-0007 Revision 15 Controlled Publication
-version: 1.0
-revision: 1
-status: Active
+version: 1.1
+revision: 2
+status: Superseded
 owner: Engineering Governance
 created: 2026-07-17
-last_updated: 2026-07-17
+last_updated: 2026-07-18
 classification: Engineering Work Order
-predecessor_revision: null
-successor_revision: null
+predecessor_revision: EWO-000022@1.0
+successor_revision: EWO-000023@1
 approval_status: Approved
 approval_authority: Engineering Governance
 approval_reference: Engineering Mission Handoff - Authorize Revision 15 Controlled Publication Mission
 approval_date: 2026-07-17
-persistence_status: Pending
+persistence_status: Persisted
 phase: SPEC-0007 Revision 15 Controlled Publication
 domain: Engineering Platform
 source_of_truth: true
@@ -34,6 +34,7 @@ related_documents:
   - DOC-0001
   - SPEC-0007
   - EWO-000021
+  - EWO-000023
 tags:
   - engineering-work-order
   - controlled-publication
@@ -64,7 +65,7 @@ Title: SPEC-0007 Revision 15 Controlled Publication
 
 Classification: Engineering Work Order
 
-Status: Active
+Status: Superseded
 
 Priority: Highest
 
@@ -328,6 +329,25 @@ Engineering Governance
 
 2026-07-17
 
+## Lifecycle Disposition
+
+Engineering Governance accepted the completed EWO-000022 execution record and
+activated EWO-000023 Revision 1 on 2026-07-18. EWO-000022 therefore transitions
+from Active to Superseded as the completed prior primary Homelab mission. Its
+Revision 15 publication authority and historical execution meaning remain
+preserved; no Revision 16 work is authorized by this transition.
+
+Transition Authority: Engineering Governance Authorization —
+Authorization-Publication Transaction for EWO-000023.
+
+Successor Authority: EWO-000023 Revision 1.
+
+Previous State: Active.
+
+Current State: Superseded.
+
+Transition Date: 2026-07-18.
+
 ## References
 
 CHAR-0001; POL-0001; STD-0000; STD-0001; STD-0002; STD-0003; STD-0004;
@@ -340,3 +360,4 @@ Publication Mission.
 | Version | Date | Description |
 | --- | --- | --- |
 | 1.0 | 2026-07-17 | Approved and activated Revision 15 controlled-publication authority. |
+| 1.1 | 2026-07-18 | Recorded completion acceptance and supersedence by approved Active EWO-000023. |

@@ -1,8 +1,8 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 31
-updated_at: '2026-07-17'
+revision: 35
+updated_at: '2026-07-18'
 serialization: yaml
 mutation_history:
 - revision: 2
@@ -197,6 +197,30 @@ mutation_history:
   actor: Codex publication agent
   action: record SPEC-0007 Revision 15 publication readiness
   reason: Record verified acquisition, SPEC-0007 Version 1.1 controlled publication, evidence, and governance-review readiness while preserving EWO-000022 lifecycle authority as Active.
+- revision: 32
+  previous_revision: 31
+  at: '2026-07-18T00:00:00+00:00'
+  actor: Engineering Governance authorization-publication agent
+  action: transition EMP-MISSION-SPEC-0007-REVISION-15-PUBLICATION to completed
+  reason: Engineering Governance accepted EWO-000022 execution and activated EWO-000023 as the successor primary Homelab authority.
+- revision: 33
+  previous_revision: 32
+  at: '2026-07-18T00:00:01+00:00'
+  actor: Engineering Governance authorization-publication agent
+  action: transition EMP-WORK-SPEC-0007-REVISION-15-PUBLICATION to completed
+  reason: Revision 15 publication, evidence, validation, and commit completed successfully under EWO-000022.
+- revision: 34
+  previous_revision: 33
+  at: '2026-07-18T00:00:02+00:00'
+  actor: Engineering Governance authorization-publication agent
+  action: create and activate EMP-MISSION-GOVERNANCE-AUTHORITY-ARCHITECTURE
+  reason: Register the approved bounded governance-authority architecture investigation under EWO-000023.
+- revision: 35
+  previous_revision: 34
+  at: '2026-07-18T00:00:03+00:00'
+  actor: Engineering Governance authorization-publication agent
+  action: create and activate EMP-WORK-GOVERNANCE-AUTHORITY-ARCHITECTURE
+  reason: Register EWO-000023 as the Active documentation-only investigation authority without authorizing implementation.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -446,7 +470,7 @@ entities:
   - registry_id: EMP-MISSION-SPEC-0007-REVISION-15-PUBLICATION
     object_type: Mission
     title: SPEC-0007 Revision 15 Controlled Publication
-    management_state: active
+    management_state: completed
     owner: Engineering Governance
     scope: EMP-PROJECT-HOMELAB
     authority_reference: EWO-000022
@@ -460,8 +484,8 @@ entities:
     - type: related_to
       target: SPEC-0007
     created_at: '2026-07-17T19:48:47+00:00'
-    updated_at: '2026-07-17T21:15:00+00:00'
-    revision: 2
+    updated_at: '2026-07-18T00:00:00+00:00'
+    revision: 3
     transition_history:
     - from: null
       to: active
@@ -469,11 +493,47 @@ entities:
       actor: Engineering Governance authorization agent
       reason: The Engineering Mission Handoff approves and activates the bounded Revision 15 controlled-publication mission.
       authority_reference: EWO-000022
+    - from: active
+      to: completed
+      at: '2026-07-18T00:00:00+00:00'
+      actor: Engineering Governance authorization-publication agent
+      reason: Engineering Governance accepted the completed Revision 15 publication and activated EWO-000023.
+      authority_reference: EWO-000023
     project_id: EMP-PROJECT-HOMELAB
     order: 2
     objective: Persist Engineering Platform Construction Specification Revision 15 as a new controlled SPEC-0007 revision.
     entry_criteria: EWO-000022 is Approved and Active; Category A Work Initiation passes; the Revision 15 source and trust boundary are verified.
     completion_criteria: Revision 15 is acquired, reconciled, approved, published, evidenced, validated, and committed within EWO-000022 authority.
+  - registry_id: EMP-MISSION-GOVERNANCE-AUTHORITY-ARCHITECTURE
+    object_type: Mission
+    title: Governance Authority Architecture Investigation
+    management_state: active
+    owner: Engineering Governance
+    scope: EMP-PROJECT-HOMELAB
+    authority_reference: EWO-000023
+    source_records:
+    - EWO-000023
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: EWO-000023
+    - type: related_to
+      target: EMP-MISSION-SPEC-0007-REVISION-15-PUBLICATION
+    created_at: '2026-07-18T00:00:02+00:00'
+    updated_at: '2026-07-18T00:00:02+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-18T00:00:02+00:00'
+      actor: Engineering Governance authorization-publication agent
+      reason: Engineering Governance approved and activated EWO-000023 Revision 1.
+      authority_reference: EWO-000023
+    project_id: EMP-PROJECT-HOMELAB
+    order: 3
+    objective: Investigate a permanent bounded governance-authority architecture without implementing it.
+    entry_criteria: EWO-000023 is persisted, Approved, and Active; the authorization-publication transaction is committed; and Category A Work Initiation passes.
+    completion_criteria: Required investigation artifacts, evidence, analyses, exactly one Draft EDR, validation, roadmap, recommendation package, and Completion Report are ready for Governance review without implementation.
   phases:
   - registry_id: EMP-PHASE-1-1
     object_type: Phase
@@ -1151,7 +1211,7 @@ entities:
   - registry_id: EMP-WORK-SPEC-0007-REVISION-15-PUBLICATION
     object_type: WorkItem
     title: SPEC-0007 Revision 15 Controlled Publication
-    management_state: active
+    management_state: completed
     owner: Engineering Governance
     scope: EWO-000022
     authority_reference: EWO-000022
@@ -1165,8 +1225,8 @@ entities:
     - type: related_to
       target: SPEC-0007
     created_at: '2026-07-17T19:48:47+00:00'
-    updated_at: '2026-07-17T21:15:00+00:00'
-    revision: 2
+    updated_at: '2026-07-18T00:00:01+00:00'
+    revision: 3
     transition_history:
     - from: null
       to: active
@@ -1174,6 +1234,12 @@ entities:
       actor: Engineering Governance authorization agent
       reason: EWO-000022 authorizes the bounded Revision 15 controlled-publication mission.
       authority_reference: EWO-000022
+    - from: active
+      to: completed
+      at: '2026-07-18T00:00:01+00:00'
+      actor: Engineering Governance authorization-publication agent
+      reason: Revision 15 publication execution completed and was accepted by Engineering Governance.
+      authority_reference: EWO-000023
     project_id: EMP-PROJECT-HOMELAB
     order: 10
     mission_id: EMP-MISSION-SPEC-0007-REVISION-15-PUBLICATION
@@ -1182,6 +1248,38 @@ entities:
     work_type: controlled-document-publication
     priority: 1
     completion_criteria: Revision 15 source acquisition, reconciliation, controlled publication, evidence, validation, state reconciliation, and bounded repository commit pass under EWO-000022.
+    queue_ids: []
+  - registry_id: EMP-WORK-GOVERNANCE-AUTHORITY-ARCHITECTURE
+    object_type: WorkItem
+    title: Governance Authority Architecture Investigation
+    management_state: active
+    owner: Engineering Governance
+    scope: EWO-000023
+    authority_reference: EWO-000023
+    source_records:
+    - EWO-000023
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: EWO-000023
+    created_at: '2026-07-18T00:00:03+00:00'
+    updated_at: '2026-07-18T00:00:03+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-18T00:00:03+00:00'
+      actor: Engineering Governance authorization-publication agent
+      reason: EWO-000023 authorizes the bounded documentation-only investigation.
+      authority_reference: EWO-000023
+    project_id: EMP-PROJECT-HOMELAB
+    order: 11
+    mission_id: EMP-MISSION-GOVERNANCE-AUTHORITY-ARCHITECTURE
+    phase_id: null
+    sprint_id: null
+    work_type: governance-architecture-investigation
+    priority: 1
+    completion_criteria: Complete all EWO-000023 investigation deliverables and validation without implementing or activating any recommendation.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP

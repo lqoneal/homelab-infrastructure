@@ -1,20 +1,20 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 5.1
+version: 5.2
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-17
-phase: SPEC-0007 Revision 15 Controlled Publication Complete
+last_updated: 2026-07-18
+phase: Governance Authority Architecture Investigation Authorized
 classification: Project State
-predecessor_revision: PROJ-0001@5.0
+predecessor_revision: PROJ-0001@5.1
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EWO-000022
-approval_date: 2026-07-17
-persistence_status: Pending
+approval_reference: Engineering Governance Authorization - Authorization-Publication Transaction for EWO-000023
+approval_date: 2026-07-18
+persistence_status: Persisted
 source_of_truth: true
 declared_deferrals:
   - legacy-document-migration
@@ -45,6 +45,8 @@ relationships:
     target: EWO-000021
   - type: related_to
     target: EWO-000022
+  - type: related_to
+    target: EWO-000023
   - type: related_to
     target: EOS-0003
   - type: related_to
@@ -137,9 +139,10 @@ Build the Engineering Operating System foundation for AI Assistant, SprinterOS, 
 
 **Current Overall Goal:**
 
-Preserve the published SPEC-0007 Version 1.1 Engineering Baseline and await
-Engineering Governance lifecycle disposition for EWO-000022 before beginning
-any separately authorized successor mission.
+Preserve the published SPEC-0007 Version 1.1 Engineering Baseline and execute
+only the bounded governance-authority architecture investigation authorized by
+EWO-000023 Revision 1. No governance architecture implementation or SPEC-0007
+Revision 16 work is authorized.
 
 ---
 
@@ -147,13 +150,13 @@ any separately authorized successor mission.
 
 **Current Phase:**
 
-SPEC-0007 Revision 15 Controlled Publication Complete
+Governance Authority Architecture Investigation Authorized
 
 **Phase Objective:**
 
-SPEC-0007 Version 1.1 publishes Revision 15 as a controlled Engineering
-Baseline. Planning and Developing areas remain explicit deferrals and provide
-no implementation authority.
+EWO-000022 execution is accepted and Superseded. EWO-000023 is the Approved
+Active authority for a documentation-only governance architecture
+investigation; implementation remains prohibited.
 
 ---
 
@@ -309,19 +312,17 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-EWO-000022 remains the Active bounded Homelab work authority pending
-Engineering Governance lifecycle disposition. Its execution deliverables are
-complete: the selected Revision 15 manuscript was acquired with matching
-SHA-256, reconciled, and published as SPEC-0007 Version 1.1. Version 1.0 is
-preserved in Git history.
+EWO-000023 Revision 1 is the Active bounded Homelab work authority. EWO-000022
+execution is accepted and Superseded after publishing SPEC-0007 Version 1.1;
+Version 1.0 remains preserved in Git history.
 
 **Next Immediate Step:**
 
-Engineering Governance reviews EWO-000022 evidence and determines lifecycle
-closure. Notification implementation, Raspberry Pi qualification,
-architecture development, SprinterOS diagnostics, and notification Stage 2/3
-remain outside this completed execution objective and require separate Active
-authority.
+After the authorization-publication commit, launch EWO-000023 through
+`engctl codex --ewo EWO-000023 --` and repeat complete Category A Engineering
+Work Initiation before beginning the bounded architectural investigation.
+Governance architecture implementation, SPEC-0007 Revision 16 work,
+SprinterOS diagnostics, and notification Stage 2/3 remain unauthorized.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -351,7 +352,9 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 | Raspberry Pi boot | Successful; HDMI, keyboard, and login operational |
 | Unresolved SprinterOS condition | Persistent microSD/MMC storage I/O errors; fault isolation not active |
 | Current SprinterOS mission | None active; next qualified candidate requires an approved Active EWO |
-| Freshness | Reconciled through 2026-07-15 post-update qualification; zero unreconciled completed milestones |
+| Engineering Platform specification | SPEC-0007 Version 1.1 is the active Revision 15 Engineering Baseline |
+| Primary Homelab authority | EWO-000023 Revision 1; architectural investigation only |
+| Freshness | Reconciled through the 2026-07-18 EWO-000023 authorization-publication transaction |
 
 ---
 
@@ -561,3 +564,4 @@ When resuming this project:
 | 4.9     | 2026-07-17 | Published SPEC-0007 Engineering Baseline 1.0, completed repository reconciliation, and recorded MILESTONE-0006 transition to governed self-implementation. |
 | 5.0     | 2026-07-17 | Registered and activated EWO-000022 and its mission as the bounded authority for SPEC-0007 Revision 15 discovery, SCP acquisition, reconciliation, controlled publication, evidence, validation, and repository commit. |
 | 5.1     | 2026-07-17 | Published SPEC-0007 Version 1.1 from the verified Revision 15 source, recorded acquisition and publication evidence, and advanced EWO-000022 to governance review without claiming lifecycle closure. |
+| 5.2     | 2026-07-18 | Accepted and superseded completed EWO-000022, activated EWO-000023 for a bounded governance-authority architecture investigation, and prohibited implementation. |
