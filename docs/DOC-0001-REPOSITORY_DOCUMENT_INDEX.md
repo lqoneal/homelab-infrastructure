@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.47
+version: 2.48
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: Governance Stabilization Procedure Published and Integrated
+phase: Engineering Governance Framework Version 1.0 Operational Qualification Milestone
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.46
+predecessor_revision: DOC-0001@2.47
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EGR-000006
+approval_reference: Engineering Governance Framework Version 1.0 Operational Qualification Milestone
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -143,6 +143,8 @@ relationships:
     target: MILESTONE-0007
   - type: indexes
     target: MILESTONE-0007-PUBLICATION-VERIFICATION
+  - type: indexes
+    target: MILESTONE-0008
   - type: related_to
     target: EWO-000018
 tags:
@@ -432,6 +434,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | MILESTONE-0006 | Engineering Platform Transition to Self-Implementation | Approved | Engineering Platform | `docs/project/milestones/2026-07-17-engineering-platform-transition-to-self-implementation.md` |
 | MILESTONE-0007 | Governance Authority Transaction Architecture Qualified | Approved | Engineering Governance | `docs/project/milestones/2026-07-18-governance-authority-transaction-architecture-qualified.md` |
 | MILESTONE-0007-PUBLICATION-VERIFICATION | MILESTONE-0007 Publication Verification Report | Active | Engineering Governance | `docs/project/milestones/MILESTONE-0007-PUBLICATION-VERIFICATION-REPORT.md` |
+| MILESTONE-0008 | Engineering Governance Framework Version 1.0 Operationally Qualified | Approved | Engineering Governance | `docs/project/milestones/2026-07-18-engineering-governance-framework-1.0-operationally-qualified.md` |
 
 This table shall be updated whenever a controlled document is created, superseded, or archived.
 
@@ -686,3 +689,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.45 | 2026-07-18 | Approved, activated, published, and integrated PROC-0006 Version 1.0 under EGR-000005, with reference-only revisions to PROC-0001, PROC-0002, PROC-0004, and PROC-0005. |
 | 2.46 | 2026-07-18 | Registered PROC-0007 Version 0.1 as the Draft Governance Stabilization Procedure implementing the qualified twelve-stage orchestration model with Active PROC-0006 as its external qualification dependency. |
 | 2.47 | 2026-07-18 | Approved, activated, published, and integrated PROC-0007 Version 1.0 under EGR-000006, with reference-only revisions to PROC-0001, PROC-0002, PROC-0004, PROC-0005, and PROC-0006. |
+| 2.48 | 2026-07-18 | Registered MILESTONE-0008 as the Approved Engineering Governance Framework Version 1.0 operational-qualification boundary completing Governance Phase I without changing procedures or introducing implementation authority. |
