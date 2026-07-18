@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.34
+version: 2.35
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: MILESTONE-0007 Published
+phase: Engineering Reporting Standard Institutionalized
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.33
+predecessor_revision: DOC-0001@2.34
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Governance Authorization - Controlled MILESTONE-0007 Publication
+approval_reference: Engineering Governance Authorization - Engineering Reporting Standard Implementation
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -641,3 +641,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.32 | 2026-07-18 | Superseded completed EWO-000022 and registered approved Active EWO-000023 as the bounded governance-authority architecture investigation. |
 | 2.33 | 2026-07-18 | Registered Approved EDR-0003 Version 0.3, the complete EWO-000023 historical evidence set, the Archived lifecycle transition, and the immutable-boundary verification record without publishing MILESTONE-0007. |
 | 2.34 | 2026-07-18 | Published and registered MILESTONE-0007 as the historical summary of the immutable EWO-000023 qualification boundary and registered its publication verification without advancing EDR-0003 or authorizing implementation. |
+| 2.35 | 2026-07-18 | Synchronized STD-0003 Version 1.3, PROC-0001 Version 1.8, TPL-0001 Version 1.3, and TPL-0002 Version 1.2 as the atomic Engineering Reporting Standard implementation without creating a new reporting class. |

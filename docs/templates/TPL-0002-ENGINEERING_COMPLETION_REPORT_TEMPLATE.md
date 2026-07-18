@@ -1,12 +1,12 @@
 ---
 document_id: TPL-0002
 title: Completion Report Template
-version: 1.1
+version: 1.2
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-17
-phase: Governance Framework Modernization
+last_updated: 2026-07-18
+phase: Engineering Reporting Standard Institutionalization
 domain: Engineering Governance
 classification: Engineering Template
 source_of_truth: true
@@ -28,300 +28,187 @@ tags:
 
 # Completion Report Template
 
-## Required Report Title
+## Instantiation Rule
 
-Every instantiated report shall begin with exactly:
+Every instantiated report shall begin with exactly the following heading. No
+preface, status, certification, alternate title, or other report content may
+precede it.
 
 ```text
 # Completion Report
 ```
 
-No alternate report title is permitted for a current or future engineering
-mission.
+Complete sections in the order defined below. Use `Not Applicable` with a
+short rationale where a mandatory section does not apply. Do not omit the
+section. Historical Completion Reports remain valid under their originating
+template revision.
 
-## Completion Report Header
+## Transaction Identification
 
 Engineering Operating System:
 
 `<Engineering Operating System>`
 
-Engineering Work Order:
+Engineering Work Order or Authority:
 
-`<EWO Identifier>`
+`<Identifier and revision>`
 
-Revision Executed:
+Mission and Phase:
 
-`<Revision>`
+`<Mission and phase identifiers>`
 
-Mission:
+Mission Classification:
 
-`<Mission Identifier>`
+`<Category A | Category B | Category C>`
 
-Phase:
-
-`<Phase Identifier>`
-
-Completion Date:
+Execution Date:
 
 `<Date>`
 
-Implementation Agent:
+Execution Agent:
 
-`<Implementation Agent>`
+`<Agent>`
 
----
-
-## Work Order Summary
+## Execution Summary
 
 Purpose:
 
-`<Summary of work performed>`
+`<Authorized purpose>`
 
 Authorized Scope:
 
-`<Scope authorized by the Engineering Work Order>`
+`<Authorized scope>`
 
 Executed Scope:
 
 `<Scope actually executed>`
 
----
-
-## Mission Status
-
-Status:
+Mission Status:
 
 `<PASS | WARNING | FAIL | BLOCKED>`
 
-Mission Objective Assessment:
-
-`<Assessment>`
-
----
-
-## Execution Status
-
-Status:
+Execution Status:
 
 `<PASS | WARNING | FAIL>`
 
-Execution Summary:
+Scope Compliance:
 
-`<Summary>`
+`<Authorized activities, unauthorized activities, and deviations>`
 
----
+Definition of Done and Acceptance Criteria:
 
-## Operational Inventory Status
+`<MET | PARTIALLY MET | NOT MET, with assessment>`
 
-Status:
-
-`<PASS | WARNING | FAIL | NOT APPLICABLE>`
-
-Observations:
-
-`<Observations>`
-
----
-
-## Operational Preparation Status
-
-Status:
-
-`<PASS | WARNING | FAIL | NOT APPLICABLE>`
-
-Observations:
-
-`<Observations>`
-
----
-
-## Baseline Verification Status
-
-Status:
-
-`<PASS | WARNING | FAIL | NOT APPLICABLE>`
-
-Verification Summary:
-
-`<Summary>`
-
----
-
-## Phase Execution Status
-
-For each Engineering Phase:
-
-Phase:
-
-`<Identifier>`
-
-Status:
-
-`<PASS | WARNING | FAIL | BLOCKED>`
-
-Summary:
-
-`<Summary>`
-
-Repeat as required.
-
----
-
-## Repository Validation Status
-
-Complete only when applicable.
-
-Repository:
-
-`<Repository>`
-
-Integrity:
-
-`<Status>`
-
-Branch:
-
-`<Branch>`
-
-HEAD:
-
-`<Commit>`
-
-Remote:
-
-`<Remote>`
-
-Working Tree:
-
-`<Status>`
-
-Repository Observations:
-
-`<Observations>`
-
----
-
-## Scope Compliance
-
-Authorized Activities Performed:
-
-`<Summary>`
-
-Unauthorized Activities:
+Stop Conditions Encountered:
 
 `<None or description>`
 
-Scope Deviations:
+## Repository State
 
-`<None or description>`
+Starting Repository State:
 
----
+`<Repository, branch, commit, working tree, index, upstream, or Not Applicable>`
 
-## Definition of Done
+Ending Repository State:
 
-Status:
+`<Repository, branch, commit, working tree, index, upstream, or Not Applicable>`
 
-`<MET | NOT MET>`
+Repository Integrity:
 
-Assessment:
+`<Result and evidence or Not Applicable>`
 
-`<Assessment>`
+Runtime State:
 
----
+`<Starting and ending runtime state or Not Applicable>`
 
-## Acceptance Criteria
+## Commands Executed
 
-Status:
+`<Relevant non-sensitive command and activity summary, or Not Applicable>`
 
-`<MET | PARTIALLY MET | NOT MET>`
+Record terminal status where it affects conclusions. Do not expose secrets or
+replace evidence with unnecessary transcript volume.
 
-Assessment:
+## Artifacts Reviewed
 
-`<Assessment>`
+Controlled Records:
 
----
+`<Identifiers and revisions>`
 
-## Engineering Evidence Summary
+Evidence and Other Authorized Inputs:
 
-Evidence Produced:
+`<Authoritative locators or Not Applicable>`
 
-`<Summary>`
+## Repository Changes
 
-Evidence References:
-
-`<References>`
-
----
-
-## Engineering Findings
-
-Finding Identifier:
-
-`<Identifier>`
-
-Description:
-
-`<Finding>`
-
-Impact:
-
-`<Impact>`
-
-Repeat as required.
-
----
-
-## Operational Observations
-
-Observation:
-
-`<Observation>`
-
-Supporting Evidence:
-
-`<Evidence>`
-
-Mission Impact:
-
-`<Impact>`
-
-Repeat as required.
-
----
-
-## Files Modified
+Files Added, Modified, or Removed:
 
 `<List or None>`
 
----
+Commits or Tags Created:
 
-## Runtime Changes
+`<Locators or None>`
+
+Runtime Changes:
 
 `<Summary or None>`
 
----
+Historical Records Preserved:
 
-## Stop Conditions Encountered
+`<Summary>`
 
-`<None or description>`
+## Validation Activities
 
----
+For each validation activity record:
 
-## Recommended Next Engineering Work Order
+- validator identity or version;
+- scope;
+- whether output is partial or terminal;
+- terminal exit status when available;
+- duration when available;
+- individual results; and
+- complete aggregate result.
 
-Identifier:
+Never infer validator success from partial output or from a pipeline or later
+command that masks the validator's terminal status.
 
-`<Identifier>`
+## Deliverables Produced
 
-Purpose:
+`<Deliverable identity, status, and authoritative locator>`
 
-`<Purpose>`
+## Findings
 
-Recommendation:
+For each finding record identifier, description, supporting evidence, and
+impact. Use `None` when the execution produced no findings.
 
-`<Recommendation>`
+## Analysis
 
----
+`<Evidence-based interpretation of findings, limitations, and impact>`
+
+## Recommendations
+
+`<Recommendations and supporting rationale, or None>`
+
+Recommendations do not authorize their own implementation.
+
+## Final Certification
+
+Certification Question:
+
+`<Exact transaction-specific question or Not Applicable>`
+
+Certification Answer:
+
+`<One allowed answer or Not Applicable>`
+
+Supporting Rationale:
+
+`<Objective evidence>`
+
+No final certification may appear before this section.
+
+## Follow-on Work
+
+`<Separately authorized work, deferred evaluation, authority limitations, or None>`
 
 ## Governance Conformance Review
 
@@ -335,19 +222,19 @@ Recommendation:
 
 ### Trust Boundary Verification
 
-`<Assessment of local, repository, secret, network, host, and external-system boundaries as applicable>`
+`<Assessment of repository, runtime, secret, network, host, and external boundaries>`
 
 ### Controlled Document Compliance
 
-`<Assessment of whole-document revision, lifecycle, ownership, relationships, and traceability>`
+`<Assessment of lifecycle, ownership, relationships, whole-document revision, and traceability>`
 
 ### Authority Circumvention Assessment
 
 `<No circumvention detected | Potential circumvention identified | Confirmed authority violation>`
 
-For potential or confirmed circumvention, identify the affected authority or
-control, condition or action, whether it pre-existed the mission, impact,
-corrective recommendation, and required follow-up authority.
+For potential or confirmed circumvention, record the affected authority or
+control, condition or action, provenance, impact, recommendation, and required
+follow-up authority.
 
 ### Governance Gap Assessment
 
@@ -361,10 +248,8 @@ corrective recommendation, and required follow-up authority.
 
 `<CONFORMANT | CONFORMANT WITH FOLLOW-UP REQUIRED | NONCONFORMANT | BLOCKED>`
 
-Mission completion shall not be reported until every item in this section is
-complete.
-
----
+Mission completion shall not be reported until every Governance Conformance
+Review item is complete.
 
 ## Engineering Governance Notes
 
@@ -382,23 +267,19 @@ Governance Comments:
 
 `<Comments>`
 
----
-
 ## References
 
-Governing Engineering Work Order:
+Governing Engineering Work Order or Authority:
 
 `<Reference>`
 
 Applicable Engineering Evidence:
 
-`<Reference>`
+`<References>`
 
 Applicable Engineering Records:
 
-`<Reference>`
-
----
+`<References>`
 
 ## Revision History
 
@@ -406,3 +287,4 @@ Applicable Engineering Records:
 | --- | --- | --- |
 | 1.0 | 2026-07-09 | Initial Engineering Completion Report Template established. |
 | 1.1 | 2026-07-17 | Standardized the exact Completion Report title and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
+| 1.2 | 2026-07-18 | Institutionalized the execution-first report structure, ordered results and certification sections, repository and validation evidence capture, applicability handling, and authoritative reusable reporting terminology. |

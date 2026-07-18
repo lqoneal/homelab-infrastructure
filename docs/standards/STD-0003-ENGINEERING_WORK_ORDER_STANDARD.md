@@ -1,12 +1,12 @@
 ---
 document_id: STD-0003
 title: Engineering Work Order Standard
-version: 1.2
+version: 1.3
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
 last_updated: 2026-07-17
-phase: Governance Framework Modernization
+phase: Engineering Reporting Standard Institutionalization
 domain: Engineering Governance
 classification: Engineering Standard
 source_of_truth: true
@@ -168,26 +168,49 @@ Every Engineering Work Order shall require production of sufficient engineering 
 
 ## Completion Report Requirements
 
-Every Engineering Work Order shall require a Completion Report containing, at minimum:
+Every delivered report produced after execution of an Engineering Work Order
+shall be a Completion Report and shall begin with exactly:
 
-* Work Order Summary;
-* Mission Status;
-* Execution Status;
-* Scope Compliance;
-* Definition of Done;
-* Acceptance Criteria;
-* Files Modified;
-* Runtime Changes;
-* Repository Integrity, when applicable;
-* Engineering Findings;
-* Operational Observations;
-* Recommended Next Engineering Work Order;
-* Governance Conformance Review; and
-* Engineering Governance Notes.
+```text
+# Completion Report
+```
 
-The report title shall be exactly `Completion Report`. An Engineering Work
-Order shall not define an alternate report title or omit the repository-standard
-report structure in TPL-0002.
+No preface, status, certification, alternate title, or other report content may
+precede that heading. An Engineering Work Order shall not redefine the common
+report structure or duplicate reusable reporting instructions owned by
+TPL-0002.
+
+### Execution and Results Separation
+
+The Completion Report shall first identify the transaction and report what was
+executed. Its execution record shall address repository state, relevant
+commands or activities, artifacts reviewed, repository and runtime changes,
+validation activities, deliverables, scope compliance, mission status,
+completion criteria, and applicable evidence.
+
+Only after the execution record is complete shall the report present, in this
+order:
+
+1. Findings;
+2. Analysis;
+3. Recommendations;
+4. Final Certification; and
+5. Follow-on Work.
+
+The Governance Conformance Review shall follow these sections and remains a
+mandatory part of mission completion. TPL-0002 is the authoritative reusable
+structure and terminology for the complete report.
+
+### Final Certification
+
+When a mission requires a certification answer, the exact transaction-specific
+question and allowed answer set shall be supplied by its Engineering Work
+Order. The answer shall appear only within `Final Certification`. Findings,
+analysis, recommendations, validation results, and ordinary status values are
+not final certification.
+
+Mandatory sections that do not apply shall state `Not Applicable` with a short
+rationale; they shall not be silently omitted.
 
 The Governance Conformance Review is mandatory for every Codex engineering
 mission and shall contain:
@@ -298,3 +321,4 @@ This standard is complete when every Engineering Work Order activated under the 
 | 1.0 | 2026-07-09 | Initial Engineering Work Order Standard established. |
 | 1.1 | 2026-07-10 | Established Active as the Engineering Work Order execution-authority lifecycle state under EWO-000012. |
 | 1.2 | 2026-07-17 | Required repository-governed mission classification, the exact Completion Report title, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
+| 1.3 | 2026-07-18 | Institutionalized execution-first Completion Reports, mandatory execution/results separation, ordered findings through follow-on work, Final Certification placement, and TPL-0002 structural ownership. |

@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 38
+revision: 39
 updated_at: '2026-07-18'
 serialization: yaml
 mutation_history:
@@ -239,6 +239,12 @@ mutation_history:
   actor: Engineering Governance milestone-publication agent
   action: publish MILESTONE-0007 historical summary
   reason: Register the achieved historical summary of the immutable EWO-000023 Governance Authority Transaction architecture qualification without creating evidence, work, implementation authority, adoption, or institutionalization.
+- revision: 39
+  previous_revision: 38
+  at: '2026-07-18T09:00:00+00:00'
+  actor: Engineering Governance reporting-standard implementation agent
+  action: institutionalize Engineering Reporting Standard
+  reason: Record the completed Workstream 1 controlled-document refinement of STD-0003, PROC-0001, TPL-0001, and TPL-0002 without redesigning governance or creating a new reporting class.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -1525,6 +1531,40 @@ entities:
     - Attributable deferrals
     - Work Registry integration
     - Governance planning architecture
+  - registry_id: EMP-WORK-ENGINEERING-REPORTING-STANDARD
+    object_type: WorkItem
+    title: Engineering Reporting Standard Institutionalization
+    management_state: completed
+    owner: Engineering Governance
+    scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    authority_reference: Engineering Governance Authorization - Engineering Reporting Standard Implementation
+    source_records:
+    - STD-0003
+    - PROC-0001
+    - TPL-0001
+    - TPL-0002
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ENGINEERING-LIFECYCLE-CLOSEOUT-CONTROLS
+    created_at: '2026-07-18T09:00:00+00:00'
+    updated_at: '2026-07-18T09:00:00+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: completed
+      at: '2026-07-18T09:00:00+00:00'
+      actor: Engineering Governance reporting-standard implementation agent
+      reason: The four-document reporting refinement package was implemented and prepared for atomic publication under direct Engineering Governance authority.
+      authority_reference: Engineering Governance Authorization - Engineering Reporting Standard Implementation
+    project_id: EMP-PROJECT-HOMELAB
+    order: 16
+    mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    phase_id: null
+    sprint_id: null
+    work_type: governance-institutionalization
+    priority: 1
+    completion_criteria: STD-0003 owns normative reporting requirements, PROC-0001 owns report production workflow, TPL-0002 owns reusable structure, and TPL-0001 owns transaction-specific authorization fields; validation and atomic publication pass without architectural redesign.
+    queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP
     object_type: Queue

@@ -1,12 +1,12 @@
 ---
 document_id: TPL-0001
 title: Engineering Work Order Template
-version: 1.2
+version: 1.3
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
 last_updated: 2026-07-17
-phase: Governance Framework Modernization
+phase: Engineering Reporting Standard Institutionalization
 domain: Engineering Governance
 classification: Engineering Template
 source_of_truth: true
@@ -259,29 +259,21 @@ The Implementation Agent shall produce a Completion Report prior to stopping whe
 
 ## Completion Report Requirements
 
-The Completion Report shall include:
+Produce the repository-standard Completion Report required by STD-0003 through
+the workflow in PROC-0001 and the authoritative structure in TPL-0002. Do not
+duplicate or redefine their reusable reporting requirements in this Work Order.
 
-* the exact title `Completion Report`;
+Transaction-Specific Final Certification Question:
 
-* Work Order Summary;
-* Mission Status;
-* Execution Status;
-* Scope Compliance;
-* Definition of Done;
-* Acceptance Criteria;
-* Files Modified;
-* Runtime Changes;
-* Repository Integrity, when applicable;
-* Engineering Findings;
-* Operational Observations;
-* Recommended Next Engineering Work Order;
-* Engineering Governance Notes; and
-* a completed Governance Conformance Review containing Authority Verification,
-  Mission Scope Compliance, Trust Boundary Verification, Controlled Document
-  Compliance, Authority Circumvention Assessment, Governance Gap Assessment,
-  Documentation Requirement, and Overall Governance Status.
+`<Exact question or Not Applicable>`
 
-Mission completion shall not be reported until this review is complete.
+Allowed Final Certification Answer Set:
+
+`<Exact allowed answers or Not Applicable>`
+
+Transaction-Specific Reporting Additions:
+
+`<Only additions required by this mission or None>`
 
 ---
 
@@ -336,3 +328,4 @@ Applicable engineering records:
 | 1.0 | 2026-07-09 | Initial Engineering Work Order Template established. |
 | 1.1 | 2026-07-10 | Removed Issued and established Active as the Engineering Work Order execution-authority lifecycle state under EWO-000012. |
 | 1.2 | 2026-07-17 | Added repository-governed mission classification, exact Completion Report title, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
+| 1.3 | 2026-07-18 | Replaced duplicated Completion Report structure with authoritative references and limited Work Orders to transaction-specific certification and reporting additions. |

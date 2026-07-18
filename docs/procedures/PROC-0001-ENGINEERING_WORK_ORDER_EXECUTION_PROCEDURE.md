@@ -1,12 +1,12 @@
 ---
 document_id: PROC-0001
 title: Engineering Work Order Execution Procedure
-version: 1.7
+version: 1.8
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
 last_updated: 2026-07-17
-phase: Codex Wrapper Enforcement
+phase: Engineering Reporting Standard Institutionalization
 domain: Engineering Governance
 classification: Engineering Procedure
 source_of_truth: true
@@ -347,32 +347,41 @@ Evidence shall correspond to the Engineering Work Order objectives.
 
 Produce the Completion Report required by the Engineering Work Order.
 
-The report shall summarize:
+The report shall conform to STD-0003 and instantiate TPL-0002. Begin with the
+exact required heading and complete the execution record before findings or
+certification. Do not restate or redefine the standard section model in the
+Engineering Work Order.
 
-* execution performed;
-* engineering evidence;
-* mission status;
-* execution status;
-* scope compliance;
-* engineering findings;
-* operational observations;
-* recommended next Engineering Work Order.
+### Report Production Workflow
 
-The report title shall be exactly `Completion Report` and shall conform to
-TPL-0002. Every Codex engineering mission shall include a completed Governance
-Conformance Review containing Authority Verification, Mission Scope
-Compliance, Trust Boundary Verification, Controlled Document Compliance,
-Authority Circumvention Assessment, Governance Gap Assessment, Documentation
-Requirement, and Overall Governance Status.
+1. Record transaction identity, governing authority, executed scope, and
+   execution agent.
+2. Record repository start and end identity, branch, commit, working-tree and
+   index state, plus runtime state where applicable.
+3. Summarize relevant commands and activities without disclosing secrets or
+   substituting raw transcript volume for attributable evidence.
+4. Inventory controlled artifacts reviewed, repository and runtime changes,
+   validation activities, and delivered artifacts.
+5. For every validator, distinguish partial output from terminal completion.
+   Capture the terminal exit status and do not claim a conclusion until the
+   validator has completed. A pipeline or subsequent successful command shall
+   not mask the validator status.
+6. Complete mission status, scope compliance, completion criteria, and the
+   execution/results boundary required by STD-0003.
+7. Present Findings, Analysis, Recommendations, Final Certification, and
+   Follow-on Work in the standard order.
+8. Complete the Governance Conformance Review. Mission completion shall not be
+   reported before it is complete.
+
+Use `Not Applicable` with rationale when a mandatory section does not apply.
+Historical Completion Reports remain valid and shall not be rewritten solely
+to adopt the current structure.
 
 Authority Circumvention Assessment shall return exactly one allowed value from
 STD-0003. A governance gap, exception, ambiguity, or circumvention condition
 shall not be silently corrected or omitted. Record the affected authority,
 impact, whether it pre-existed the mission, corrective recommendation, and
 required follow-up authority.
-
-Mission completion shall not be reported until the Governance Conformance
-Review is complete.
 
 Engineering Governance Notes remain blank.
 
@@ -731,4 +740,5 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.4 | 2026-07-15 | Established mandatory Commit Classification, traceability, validation, dependency ordering, commit boundaries, and milestone publication controls after Engineering State Reconciliation. |
 | 1.5 | 2026-07-15 | Established Commit Reconstruction Planning, approved reconstruction methods, execution gates, persistent planning artifacts, and proportional planning governance. |
 | 1.6 | 2026-07-17 | Added the Mission Classification Gate, risk-proportional Category A/B/C initiation, exact Completion Report standard, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
+| 1.8 | 2026-07-18 | Established the execution-first report production workflow, repository start/end capture, safe activity summaries, terminal validator-status requirements, partial-output handling, applicability treatment, and ordered results reporting. |
 | 1.7 | 2026-07-17 | Required repository-governed Codex missions to launch through `engctl codex`, added initiation-time bypass detection and exception controls, and defined the mandatory notification lifecycle under EWO-000019. |
