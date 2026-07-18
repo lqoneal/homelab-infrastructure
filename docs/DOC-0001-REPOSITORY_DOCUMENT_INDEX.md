@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.41
+version: 2.42
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: Publication Framework Integrated
+phase: Publication Reference Correction
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.40
+predecessor_revision: DOC-0001@2.41
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Handoff - Engineering Governance Publication Framework Integration
+approval_reference: Handoff 1 - TPL-0001 Publication Reference Correction
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -668,3 +668,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.39 | 2026-07-18 | Published and indexed SPEC-0009 Version 1.0 as the authoritative Notification Service architecture with deterministic lifecycle, ownership, identity, interface, compatibility, and Deferred Execution boundaries without authorizing implementation. |
 | 2.40 | 2026-07-18 | Published and indexed PROC-0005 Version 1.0 as the single reusable operational controlled-document publication procedure with separated authority domains, exact publication-boundary controls, deterministic evidence, proportional application, and informative automation transitions without authorizing automation or implementation. |
 | 2.41 | 2026-07-18 | Integrated PROC-0005 across the documentation architecture, lifecycle and persistence standards, Work Order execution, EGR processing, Handoff construction, and Work Initiation while preserving normative and specialized ownership. |
+| 2.42 | 2026-07-18 | Corrected TPL-0001 to resolve PROC-0005 for common controlled publication while preserving PROC-0001 as the Engineering Work Order execution owner. |

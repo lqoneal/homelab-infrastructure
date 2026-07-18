@@ -1,12 +1,12 @@
 ---
 document_id: TPL-0001
 title: Engineering Work Order Template
-version: 1.6
+version: 1.7
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
 last_updated: 2026-07-18
-phase: Engineering Handoff Construction Procedure Institutionalization
+phase: Publication Reference Correction
 domain: Engineering Governance
 classification: Engineering Template
 source_of_truth: true
@@ -19,6 +19,7 @@ related_documents:
   - STD-0004
   - PROC-0001
   - PROC-0004
+  - PROC-0005
   - TPL-0002
   - SPEC-0008
   - EWO-000012
@@ -213,7 +214,8 @@ Required Repository History Action: `<Commit, tag, push, or None>`
 Publication Exceptions: `<Approved exceptions and authority reference or None>`
 
 Apply lifecycle and persistence requirements from STD-0001 and STD-0002 and the
-publication workflow from PROC-0001.
+common controlled publication workflow from PROC-0005. PROC-0001 remains the
+Engineering Work Order execution procedure.
 
 ## Final Certification Question
 
@@ -263,3 +265,4 @@ Approval Date: `<Date>`
 | 1.4 | 2026-07-18 | Refined the template into a concise authorization contract with single-owner references for reusable lifecycle, execution, validation, publication, state, and reporting behavior. |
 | 1.5 | 2026-07-18 | Assigned construction behavior to PROC-0004 and retained TPL-0001 as the sole reusable structural owner. |
 | 1.6 | 2026-07-18 | Added structural fields for an explicitly selected ETP and frozen resolved manifest while assigning model and resolution semantics to SPEC-0008 and PROC-0004. |
+| 1.7 | 2026-07-18 | Corrected the controlled-publication workflow reference to PROC-0005 while preserving PROC-0001 ownership of Engineering Work Order execution. |
