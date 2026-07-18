@@ -1,19 +1,19 @@
 ---
 document_id: PROC-0005
 title: Controlled Document Publication Procedure
-version: 1.0
+version: 1.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-18
 last_updated: 2026-07-18
-phase: Controlled Document Publication Procedure Institutionalization
+phase: Governance Qualification Procedure Integration
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: null
+predecessor_revision: PROC-0005@1.0
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Handoff - Controlled Document Publication Procedure Controlled Publication
+approval_reference: EGR-000005
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -40,6 +40,8 @@ relationships:
     target: PROC-0002
   - type: related_to
     target: PROC-0004
+  - type: related_to
+    target: PROC-0006
   - type: related_to
     target: TPL-0002
   - type: indexed_by
@@ -108,12 +110,19 @@ Execution shall resolve and apply the current applicable revisions of:
   publication subject;
 - PROC-0004 — Engineering Handoff Construction Procedure, when a governed
   publication handoff must be constructed;
+- PROC-0006 — Governance Qualification Procedure, when the publication
+  transaction invokes the common Governance qualification capability;
 - TPL-0002 — Completion Report Template, for the qualified execution report
   when the applicable transaction requires one; and
 - DOC-0001 — Repository Document Index, for registered identity and discovery.
 
 These records remain authoritative for their respective requirements. This
 procedure references rather than duplicates their semantics.
+
+When PROC-0006 is invoked, this procedure remains the publication lifecycle
+and execution owner. PROC-0006 returns a qualification result and routing
+recommendation to the caller; it does not authorize Stage 5, invoke this
+procedure recursively, or alter a publication outcome.
 
 ## 4. Terms
 
@@ -796,3 +805,4 @@ publication authority, or corrective authority from repository state.
 | Version | Date | Description |
 | --- | --- | --- |
 | 1.0 | 2026-07-18 | Published the qualified reusable six-stage controlled-document publication workflow, separated authority and outcome domains, exact publication-boundary controls, evidence and validation models, proportional application, and informative automation transition appendix without authorizing automation or downstream implementation. |
+| 1.1 | 2026-07-18 | Integrated Active PROC-0006 as an optional external qualification dependency while preserving PROC-0005 publication lifecycle, authorization, execution, outcome, and verification ownership. |

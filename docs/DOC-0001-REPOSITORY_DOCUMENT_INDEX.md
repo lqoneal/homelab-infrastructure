@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.44
+version: 2.45
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: Governance Qualification Procedure Qualified Draft Registered
+phase: Governance Qualification Procedure Published and Integrated
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.43
+predecessor_revision: DOC-0001@2.44
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Governance Qualification Procedure Review and Qualification
+approval_reference: EGR-000005
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -101,6 +101,8 @@ relationships:
     target: EWO-000020
   - type: indexes
     target: EGR-000004
+  - type: indexes
+    target: EGR-000005
   - type: indexes
     target: EWO-000021
   - type: indexes
@@ -352,7 +354,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | PROC-0003 | Engineering Recovery Runbook | Active | Engineering Governance | `docs/procedures/PROC-0003-ENGINEERING_RECOVERY_RUNBOOK.md` |
 | PROC-0004 | Engineering Handoff Construction Procedure | Active | Engineering Governance | `docs/procedures/PROC-0004-ENGINEERING_HANDOFF_CONSTRUCTION_PROCEDURE.md` |
 | PROC-0005 | Controlled Document Publication Procedure | Active | Engineering Governance | `docs/procedures/PROC-0005-CONTROLLED_DOCUMENT_PUBLICATION_PROCEDURE.md` |
-| PROC-0006 | Governance Qualification Procedure | Draft | Engineering Governance | `docs/procedures/PROC-0006-GOVERNANCE-QUALIFICATION-PROCEDURE.md` |
+| PROC-0006 | Governance Qualification Procedure | Active | Engineering Governance | `docs/procedures/PROC-0006-GOVERNANCE-QUALIFICATION-PROCEDURE.md` |
 | TPL-0001 | Engineering Work Order Template | Active | Engineering Governance | `docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md` |
 | TPL-0002 | Completion Report Template | Active | Engineering Governance | `docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md` |
 | TPL-0003 | Engineering Evidence Package Template | Active | Engineering Governance | `docs/templates/TPL-0003-ENGINEERING_EVIDENCE_PACKAGE_TEMPLATE.md` |
@@ -361,6 +363,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EGR-000002 | Governance Framework Modernization Authorization | Active | Engineering Governance | `docs/resolutions/EGR-000002-GOVERNANCE-FRAMEWORK-MODERNIZATION-AUTHORIZATION.md` |
 | EGR-000003 | EWO-000020 Notification Service Authorization | Active | Engineering Governance | `docs/resolutions/EGR-000003-EWO-000020-NOTIFICATION-SERVICE-AUTHORIZATION.md` |
 | EGR-000004 | Engineering Platform Repository Reconciliation Authorization | Active | Engineering Governance | `docs/resolutions/EGR-000004-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION-AUTHORIZATION.md` |
+| EGR-000005 | PROC-0006 Approval and Activation | Active | Engineering Governance | `docs/resolutions/EGR-000005-PROC-0006-APPROVAL-AND-ACTIVATION.md` |
 | EWO-000010 | Governance Baseline 1.0 Qualification | Active | Engineering Governance | `docs/work-orders/EWO-000010-GOVERNANCE_BASELINE_1.0_QUALIFICATION.md` |
 | EWO-000010-EVIDENCE | EWO-000010 Qualification Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000010-QUALIFICATION-EVIDENCE-PACKAGE.md` |
 | EWO-000010-COMPLETION | EWO-000010 Qualification Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000010-QUALIFICATION-COMPLETION-REPORT.md` |
@@ -674,3 +677,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.42 | 2026-07-18 | Corrected TPL-0001 to resolve PROC-0005 for common controlled publication while preserving PROC-0001 as the Engineering Work Order execution owner. |
 | 2.43 | 2026-07-18 | Registered PROC-0006 Version 0.1 as the Draft Governance Qualification Procedure implementing the qualified nine-stage capability without granting operational authority or publishing it as Active. |
 | 2.44 | 2026-07-18 | Registered qualified Draft PROC-0006 Version 0.2 after bounded stage-accounting and terminal-routing remediation; approval, activation, and controlled publication remain pending. |
+| 2.45 | 2026-07-18 | Approved, activated, published, and integrated PROC-0006 Version 1.0 under EGR-000005, with reference-only revisions to PROC-0001, PROC-0002, PROC-0004, and PROC-0005. |

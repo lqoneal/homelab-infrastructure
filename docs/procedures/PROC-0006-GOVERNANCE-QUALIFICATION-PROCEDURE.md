@@ -1,20 +1,20 @@
 ---
 document_id: PROC-0006
 title: Governance Qualification Procedure
-version: 0.2
-status: Draft
+version: 1.0
+status: Active
 owner: Engineering Governance
 created: 2026-07-18
 last_updated: 2026-07-18
-phase: Governance Review Remediation
+phase: Initial Controlled Publication
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: PROC-0006@0.1
+predecessor_revision: PROC-0006@0.2
 successor_revision: null
-approval_status: Pending
-approval_authority: null
-approval_reference: null
-approval_date: null
+approval_status: Approved
+approval_authority: Engineering Governance
+approval_reference: EGR-000005
+approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
 information_scope: Governance qualification invocation, evidence sufficiency, independent review, finding classification, bounded remediation, conformance requalification, recommendation, external decision routing, and closeout
@@ -53,6 +53,10 @@ relationships:
     target: TPL-0003
   - type: indexed_by
     target: DOC-0001
+  - type: authorized_by
+    target: EGR-000005
+  - type: validated_by
+    target: EGR-000005
 tags:
   - governance
   - qualification
@@ -568,3 +572,4 @@ The following remain Deferred Execution and require separate authorization:
 | --- | --- | --- |
 | 0.1 | 2026-07-18 | Developed the Draft reusable Governance Qualification Procedure from the qualified nine-stage capability and integrated authority contract without approving, activating, publishing, or automating it. |
 | 0.2 | 2026-07-18 | Resolved review findings by making every stage explicitly accountable, routing blocked and withdrawn outcomes through closeout, and adding deterministic scenario routing without changing the qualified architecture or authority model. |
+| 1.0 | 2026-07-18 | Approved, activated, and published the qualified reusable Governance Qualification Procedure under EGR-000005 without changing its architecture, authority model, or interaction contracts. |
