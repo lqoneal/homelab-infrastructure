@@ -1,19 +1,19 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.32
+version: 2.33
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: Governance Authority Architecture Investigation Authorized
+phase: EWO-000023 Historical Evidence Boundary Established
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.31
+predecessor_revision: DOC-0001@2.32
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Governance Authorization - Authorization-Publication Transaction for EWO-000023
+approval_reference: Engineering Governance Authorization - Historical Evidence Persistence Transaction for EWO-000023
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -117,6 +117,12 @@ relationships:
     target: EWO-000022-COMPLETION
   - type: indexes
     target: EWO-000023
+  - type: indexes
+    target: EDR-0003
+  - type: indexes
+    target: EWO-000023-COMPLETION
+  - type: indexes
+    target: EWO-000023-HISTORICAL-EVIDENCE-PERSISTENCE
   - type: related_to
     target: EWO-000018
 tags:
@@ -297,6 +303,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | HW-0001 | Master Hardware Register | Active | Homelab Infrastructure | `docs/hardware/HW-0001-MASTER_HARDWARE_REGISTER.md` |
 | EDR-0001 | Hardware Asset Record Architecture | Approved | Homelab Infrastructure | `docs/edr/EDR-0001-HARDWARE_ASSET_RECORD_ARCHITECTURE.md` |
 | EDR-0002 | Engineering Authority Model | Draft | EOS Program | `docs/edr/EDR-0002-ENGINEERING_AUTHORITY_MODEL.md` |
+| EDR-0003 | Governed Authorization Transaction Architecture | Approved | Engineering Governance | `docs/edr/EDR-0003-GOVERNED-AUTHORIZATION-TRANSACTION-ARCHITECTURE.md` |
 | EOS-0001 | Engineering Operating System Constitution | Draft | EOS Program | `docs/eos/EOS-0001-ENGINEERING_OPERATING_SYSTEM_CONSTITUTION.md` |
 | EOS-0002 | Engineering Operating System Master Plan | Draft | EOS Program | `docs/eos/EOS-0002-ENGINEERING_OPERATING_SYSTEM_MASTER_PLAN.md` |
 | EOS-0003 | EOS Operational Persistence Profile | Active | Homelab Infrastructure | `docs/eos/EOS-0003-OPERATIONAL_PERSISTENCE_PROFILE.md` |
@@ -358,7 +365,21 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EWO-000022 | SPEC-0007 Revision 15 Controlled Publication | Superseded | Engineering Governance | `docs/work-orders/EWO-000022-SPEC-0007-REVISION-15-CONTROLLED-PUBLICATION.md` |
 | EWO-000022-EVIDENCE | EWO-000022 Engineering Evidence Package | Approved | Engineering Governance | `docs/work-orders/EWO-000022-ENGINEERING-EVIDENCE-PACKAGE.md` |
 | EWO-000022-COMPLETION | EWO-000022 Engineering Completion Report | Approved | Engineering Governance | `docs/work-orders/EWO-000022-ENGINEERING-COMPLETION-REPORT.md` |
-| EWO-000023 | Governance Authority Architecture Investigation | Active | Engineering Governance | `docs/work-orders/EWO-000023-GOVERNANCE-AUTHORITY-ARCHITECTURE-INVESTIGATION.md` |
+| EWO-000023 | Governance Authority Architecture Investigation | Archived | Engineering Governance | `docs/work-orders/EWO-000023-GOVERNANCE-AUTHORITY-ARCHITECTURE-INVESTIGATION.md` |
+| EWO-000023-COMPLETION | EWO-000023 Engineering Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000023-ENGINEERING-COMPLETION-REPORT.md` |
+| EWO-000023-PHASE-1-AUTHORITY-BOUNDARY | EWO-000023 Phase 1 Authority Boundary Analysis | Draft | Engineering Governance | `docs/work-orders/EWO-000023-PHASE-1-AUTHORITY-BOUNDARY-ANALYSIS.md` |
+| EWO-000023-PHASE-1-EVIDENCE | EWO-000023 Phase 1 Engineering Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000023-PHASE-1-ENGINEERING-EVIDENCE-PACKAGE.md` |
+| EWO-000023-PHASE-1-INVESTIGATION | EWO-000023 Phase 1 Authority-Gap Characterization | Draft | Engineering Governance | `docs/work-orders/EWO-000023-PHASE-1-INVESTIGATION-REPORT.md` |
+| EWO-000023-PHASE-2-ALTERNATIVES | EWO-000023 Phase 2 Alternative Architecture Evaluation | Draft | Engineering Governance | `docs/work-orders/EWO-000023-PHASE-2-ALTERNATIVE-ARCHITECTURE-EVALUATION.md` |
+| EWO-000023-PHASE-2-COMPARATIVE-ANALYSIS | EWO-000023 Phase 2 Comparative Architecture Analysis | Draft | Engineering Governance | `docs/work-orders/EWO-000023-PHASE-2-COMPARATIVE-ANALYSIS.md` |
+| EWO-000023-PHASE-2-EVIDENCE | EWO-000023 Phase 2 Engineering Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000023-PHASE-2-ENGINEERING-EVIDENCE-PACKAGE.md` |
+| EWO-000023-PHASE-2-OWNERSHIP | EWO-000023 Phase 2 Repository Ownership Analysis | Draft | Engineering Governance | `docs/work-orders/EWO-000023-PHASE-2-REPOSITORY-OWNERSHIP-ANALYSIS.md` |
+| EWO-000023-PHASE-3-EVIDENCE | EWO-000023 Phase 3 Engineering Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000023-PHASE-3-ENGINEERING-EVIDENCE-PACKAGE.md` |
+| EWO-000023-PHASE-3-RECOMMENDATION | EWO-000023 Phase 3 Governance Recommendation Package | Draft | Engineering Governance | `docs/work-orders/EWO-000023-PHASE-3-GOVERNANCE-RECOMMENDATION-PACKAGE.md` |
+| EWO-000023-PHASE-3-ROADMAP | EWO-000023 Phase 3 Governed Authorization Transaction Implementation Roadmap | Draft | Engineering Governance | `docs/work-orders/EWO-000023-PHASE-3-IMPLEMENTATION-ROADMAP.md` |
+| EWO-000023-PHASE-3-REPOSITORY-IMPACT | EWO-000023 Phase 3 Repository Impact Analysis | Draft | Engineering Governance | `docs/work-orders/EWO-000023-PHASE-3-REPOSITORY-IMPACT-ANALYSIS.md` |
+| EWO-000023-PHASE-3-VALIDATION | EWO-000023 Phase 3 Validation Report | Draft | Engineering Governance | `docs/work-orders/EWO-000023-PHASE-3-VALIDATION-REPORT.md` |
+| EWO-000023-HISTORICAL-EVIDENCE-PERSISTENCE | EWO-000023 Historical Evidence Persistence Report | Active | Engineering Governance | `docs/work-orders/EWO-000023-HISTORICAL-EVIDENCE-PERSISTENCE-REPORT.md` |
 | FIN-0001 | Master Financial Ledger | Active | Homelab Infrastructure | `docs/finance/FIN-0001-MASTER_FINANCIAL_LEDGER.md` |
 | FIN-0002 | Master Procurement Register | Active | Homelab Infrastructure | `docs/finance/FIN-0002-MASTER_PROCUREMENT_REGISTER.md` |
 | PROC-000001 | Engineering Terminal 01 Procurement | Closed | Homelab Infrastructure | `docs/finance/procurements/PROC-000001.md` |
@@ -612,3 +633,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.30 | 2026-07-17 | Registered Approved Active EWO-000022 as the bounded authority for SPEC-0007 Revision 15 controlled publication. |
 | 2.31 | 2026-07-17 | Published SPEC-0007 Version 1.1 from the authoritative Revision 15 manuscript and registered EWO-000022 publication evidence and Completion Report. |
 | 2.32 | 2026-07-18 | Superseded completed EWO-000022 and registered approved Active EWO-000023 as the bounded governance-authority architecture investigation. |
+| 2.33 | 2026-07-18 | Registered Approved EDR-0003 Version 0.3, the complete EWO-000023 historical evidence set, the Archived lifecycle transition, and the immutable-boundary verification record without publishing MILESTONE-0007. |

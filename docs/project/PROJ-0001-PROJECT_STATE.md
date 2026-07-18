@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 5.2
+version: 5.3
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: Governance Authority Architecture Investigation Authorized
+phase: EWO-000023 Historical Evidence Boundary Established
 classification: Project State
-predecessor_revision: PROJ-0001@5.1
+predecessor_revision: PROJ-0001@5.2
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Governance Authorization - Authorization-Publication Transaction for EWO-000023
+approval_reference: Engineering Governance Authorization - Historical Evidence Persistence Transaction for EWO-000023
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -139,10 +139,11 @@ Build the Engineering Operating System foundation for AI Assistant, SprinterOS, 
 
 **Current Overall Goal:**
 
-Preserve the published SPEC-0007 Version 1.1 Engineering Baseline and execute
-only the bounded governance-authority architecture investigation authorized by
-EWO-000023 Revision 1. No governance architecture implementation or SPEC-0007
-Revision 16 work is authorized.
+Preserve the published SPEC-0007 Version 1.1 Engineering Baseline and the
+immutable EWO-000023 historical evidence boundary. EWO-000023 is Archived,
+EDR-0003 Version 0.3 is Approved, and MILESTONE-0007 is ready for a later
+separately authorized historical-summary publication. No implementation,
+operational adoption, or SPEC-0007 Revision 16 work is authorized.
 
 ---
 
@@ -150,13 +151,14 @@ Revision 16 work is authorized.
 
 **Current Phase:**
 
-Governance Authority Architecture Investigation Authorized
+EWO-000023 Historical Evidence Boundary Established
 
 **Phase Objective:**
 
-EWO-000022 execution is accepted and Superseded. EWO-000023 is the Approved
-Active authority for a documentation-only governance architecture
-investigation; implementation remains prohibited.
+EWO-000023 completed its documentation-only investigation and transitioned
+exceptionally from Active to Archived. Engineering authority is closed;
+approved future obligations are transferred to the proposed Governance Review
+Pattern Institutionalization mission as deferred planning only.
 
 ---
 
@@ -312,17 +314,17 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-EWO-000023 Revision 1 is the Active bounded Homelab work authority. EWO-000022
-execution is accepted and Superseded after publishing SPEC-0007 Version 1.1;
-Version 1.0 remains preserved in Git history.
+No EWO-000023 execution authority remains. Its complete evidence boundary is
+repository-controlled, EDR-0003 Version 0.3 is Approved, and Work Registry
+Revision 37 records completed Engineering work and deferred Governance
+planning without evaluation or implementation authority.
 
 **Next Immediate Step:**
 
-After the authorization-publication commit, launch EWO-000023 through
-`engctl codex --ewo EWO-000023 --` and repeat complete Category A Engineering
-Work Initiation before beginning the bounded architectural investigation.
-Governance architecture implementation, SPEC-0007 Revision 16 work,
-SprinterOS diagnostics, and notification Stage 2/3 remain unauthorized.
+Await separately authorized publication of MILESTONE-0007 as a historical
+summary of the immutable boundary. Do not relaunch EWO-000023. Governance
+architecture implementation, operational adoption, SPEC-0007 Revision 16
+work, SprinterOS diagnostics, and notification Stage 2/3 remain unauthorized.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -353,8 +355,10 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 | Unresolved SprinterOS condition | Persistent microSD/MMC storage I/O errors; fault isolation not active |
 | Current SprinterOS mission | None active; next qualified candidate requires an approved Active EWO |
 | Engineering Platform specification | SPEC-0007 Version 1.1 is the active Revision 15 Engineering Baseline |
-| Primary Homelab authority | EWO-000023 Revision 1; architectural investigation only |
-| Freshness | Reconciled through the 2026-07-18 EWO-000023 authorization-publication transaction |
+| Primary Homelab authority | No active EWO-000023 authority; separately approved work required |
+| EWO-000023 evidence | Immutable, indexed, and reconstructable from controlled repository history |
+| Milestone readiness | MILESTONE-0007 ready for later historical-summary publication; not published |
+| Freshness | Reconciled through the 2026-07-18 EWO-000023 historical evidence persistence transaction |
 
 ---
 
@@ -565,3 +569,4 @@ When resuming this project:
 | 5.0     | 2026-07-17 | Registered and activated EWO-000022 and its mission as the bounded authority for SPEC-0007 Revision 15 discovery, SCP acquisition, reconciliation, controlled publication, evidence, validation, and repository commit. |
 | 5.1     | 2026-07-17 | Published SPEC-0007 Version 1.1 from the verified Revision 15 source, recorded acquisition and publication evidence, and advanced EWO-000022 to governance review without claiming lifecycle closure. |
 | 5.2     | 2026-07-18 | Accepted and superseded completed EWO-000022, activated EWO-000023 for a bounded governance-authority architecture investigation, and prohibited implementation. |
+| 5.3     | 2026-07-18 | Approved EDR-0003 Version 0.3, archived completed EWO-000023, persisted and indexed its complete historical evidence boundary, transferred future obligations to deferred Governance planning, and established MILESTONE-0007 publication readiness without publishing it. |

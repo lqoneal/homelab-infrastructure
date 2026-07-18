@@ -3,7 +3,7 @@ document_id: EWO-000023
 title: Governance Authority Architecture Investigation
 version: 1.0
 revision: 1
-status: Active
+status: Archived
 owner: Engineering Governance
 created: 2026-07-18
 last_updated: 2026-07-18
@@ -15,7 +15,7 @@ approval_authority: Engineering Governance
 approval_reference: Engineering Governance Authorization - EWO-000023 Governance Authority Architecture Investigation
 approval_date: 2026-07-18
 persistence_status: Persisted
-phase: Governance Authority Architecture Investigation Authorized
+phase: Engineering Administrative Closeout Complete
 domain: Engineering Governance
 source_of_truth: true
 related_documents:
@@ -38,9 +38,64 @@ tags:
   - governance-architecture
   - architectural-investigation
   - authority
+  - archived
 ---
 
 # Engineering Work Order
+
+## Exceptional Lifecycle Transition Record
+
+Source Lifecycle State: Active
+
+Destination Lifecycle State: Archived
+
+Reason: EWO-000023 completed all authorized Engineering work, received an
+Approved Governance disposition, transferred every approved future obligation
+to authoritative Governance planning, and has no successor Engineering Work
+Order. Ordinary `Active` to `Superseded` sequencing is unsuitable because
+STD-0001 requires an approved and activated successor for supersedence.
+
+Approving Authority: Engineering Governance
+
+Affected Revision: EWO-000023 Revision 1
+
+Transition Authorization: Engineering Governance Authorization — Exceptional
+Lifecycle Transition for EWO-000023
+
+Transition Date: 2026-07-18
+
+Persistence Effects: The previously persisted Active revision remains
+preserved at repository baseline `4e6ac19`. This Archived transition is Pending
+persistence and makes no claim of an immutable closeout commit.
+
+Relationship Effects: Existing governing, evidence, completion, decision, and
+planning relationships remain historically valid. No successor or
+`supersedes` relationship is created. DOC-0001 synchronization remains pending
+the separately authorized persistence and registration transaction.
+
+Dependency Effects: All approved future obligations are owned by proposed
+mission `EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION` and its
+four deferred workstreams. No evaluation, implementation, or execution
+dependency is activated.
+
+Supporting Evidence: EDR-0003 Version 0.3; EWO-000023-COMPLETION; Phase 1
+through Phase 3 evidence and validation; Approved Governance disposition;
+Engineering Lifecycle Closeout Verification; Recommendation Reconciliation;
+Governance Planning Transfer; Work Registry Revision 37; and successful
+Engineering Platform validation.
+
+Engineering Authority: Closed
+
+Engineering Responsibility: Transferred to Engineering Governance planning
+
+Future Evaluation Authority: Engineering Governance through separately
+authorized work only
+
+Future Implementation Authority: Separately authorized work only
+
+This exceptional transition uses the existing STD-0001 `Archived` state. It
+does not invent `Closed`, record false supersedence, revise governance, or
+authorize additional work.
 
 ## Engineering Governance Header
 
@@ -52,7 +107,7 @@ Implementation Agent: Codex
 
 Mission: EMP-MISSION-GOVERNANCE-AUTHORITY-ARCHITECTURE
 
-Phase: Governance Authority Architecture Investigation
+Phase: Engineering Administrative Closeout Complete
 
 Engineering Work Order: EWO-000023
 
@@ -62,15 +117,15 @@ Title: Governance Authority Architecture Investigation
 
 Classification: Engineering Work Order
 
-Status: Active
+Status: Archived
 
 Authorization Date: 2026-07-18
 
 Approving Authority: Engineering Governance
 
-Lifecycle Transition: Approved to Active
+Lifecycle Transition: Exceptional Active to Archived
 
-Execution Authorization: Architectural investigation only
+Execution Authorization: None; Engineering authority terminated
 
 Execution Mode: Category A — Repository Engineering Work
 
@@ -183,8 +238,8 @@ record, or any activity that would implement a recommendation.
 
 ### Phase 0 — Initiation and Baseline
 
-Execute complete Category A Work Initiation. Verify EWO-000023 Revision 1 is
-Approved and Active, the authorization-publication transaction is committed,
+Execute complete Category A Work Initiation. At execution initiation, verify
+EWO-000023 Revision 1 is Approved and Active, the authorization-publication transaction is committed,
 Engineering State is current, and the repository is clean and healthy.
 
 ### Phase 1 — Authority-Gap Characterization
@@ -249,7 +304,7 @@ commit.
 
 ### Acceptance Criteria
 
-- EWO-000023 Revision 1 is Approved and Active throughout execution.
+- EWO-000023 Revision 1 remained Approved and Active throughout execution.
 - Category A Work Initiation and STD-0004 freshness qualification pass.
 - At least three materially distinct corrective architectures are evaluated.
 - Reserved and delegable decisions are explicitly separated.
@@ -270,10 +325,9 @@ authorization.
 
 ## Resume Policy
 
-Upon interruption, verify EWO-000023 Revision 1 remains Approved and Active;
-repeat Category A initiation, Engineering State freshness, repository health,
-authority-boundary, and artifact-integrity checks; then resume at the first
-incomplete investigation phase.
+The execution resume policy applied while this Work Order was Active. After the
+authorized exceptional transition to Archived, it conveys no execution or
+resume authority. Any future work requires separately authorized active work.
 
 ## Communication Contract
 
@@ -331,3 +385,4 @@ Authorization-Publication Transaction for EWO-000023.
 | Version | Date | Description |
 | --- | --- | --- |
 | 1.0 | 2026-07-18 | Approved and activated the bounded governance-authority architecture investigation. |
+| 1.0-closeout | 2026-07-18 | Recorded the explicitly authorized exceptional Active-to-Archived transition after Engineering completion and Governance planning transfer; persistence remains Pending. |

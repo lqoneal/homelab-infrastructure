@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 35
+revision: 37
 updated_at: '2026-07-18'
 serialization: yaml
 mutation_history:
@@ -221,6 +221,18 @@ mutation_history:
   actor: Engineering Governance authorization-publication agent
   action: create and activate EMP-WORK-GOVERNANCE-AUTHORITY-ARCHITECTURE
   reason: Register EWO-000023 as the Active documentation-only investigation authority without authorizing implementation.
+- revision: 36
+  previous_revision: 35
+  at: '2026-07-18T06:00:00+00:00'
+  actor: Engineering Governance planning-transfer agent
+  action: execute EWO-000023 Governance Planning Transfer Transaction
+  reason: Transfer every approved EWO-000023 future obligation from Engineering execution into one proposed Governance institutionalization mission and four deferred planning workstreams without evaluation or implementation authority.
+- revision: 37
+  previous_revision: 36
+  at: '2026-07-18T07:00:00+00:00'
+  actor: Engineering Governance lifecycle-transition agent
+  action: project exceptional EWO-000023 Active-to-Archived lifecycle transition
+  reason: Record completed Engineering execution, terminated EWO-000023 authority, and transferred responsibility to Governance planning without false supersedence or new lifecycle states.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -507,7 +519,7 @@ entities:
   - registry_id: EMP-MISSION-GOVERNANCE-AUTHORITY-ARCHITECTURE
     object_type: Mission
     title: Governance Authority Architecture Investigation
-    management_state: active
+    management_state: completed
     owner: Engineering Governance
     scope: EMP-PROJECT-HOMELAB
     authority_reference: EWO-000023
@@ -520,8 +532,8 @@ entities:
     - type: related_to
       target: EMP-MISSION-SPEC-0007-REVISION-15-PUBLICATION
     created_at: '2026-07-18T00:00:02+00:00'
-    updated_at: '2026-07-18T00:00:02+00:00'
-    revision: 1
+    updated_at: '2026-07-18T07:00:00+00:00'
+    revision: 2
     transition_history:
     - from: null
       to: active
@@ -529,11 +541,49 @@ entities:
       actor: Engineering Governance authorization-publication agent
       reason: Engineering Governance approved and activated EWO-000023 Revision 1.
       authority_reference: EWO-000023
+    - from: active
+      to: completed
+      at: '2026-07-18T07:00:00+00:00'
+      actor: Engineering Governance lifecycle-transition agent
+      reason: EWO-000023 completed Engineering execution and transitioned exceptionally from Active to Archived after Governance planning transfer.
+      authority_reference: Engineering Governance Authorization - Exceptional Lifecycle Transition for EWO-000023
     project_id: EMP-PROJECT-HOMELAB
     order: 3
     objective: Investigate a permanent bounded governance-authority architecture without implementing it.
     entry_criteria: EWO-000023 is persisted, Approved, and Active; the authorization-publication transaction is committed; and Category A Work Initiation passes.
     completion_criteria: Required investigation artifacts, evidence, analyses, exactly one Draft EDR, validation, roadmap, recommendation package, and Completion Report are ready for Governance review without implementation.
+    controlled_lifecycle_state: Archived
+    engineering_authority: closed
+    responsibility_status: transferred-to-governance-planning
+  - registry_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    object_type: Mission
+    title: Engineering Governance Review Pattern Institutionalization
+    management_state: proposed
+    owner: Engineering Governance
+    scope: EMP-PROJECT-HOMELAB
+    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    source_records:
+    - EDR-0003
+    - EWO-000023
+    - EWO-000023-COMPLETION
+    relationships:
+    - type: related_to
+      target: EMP-MISSION-GOVERNANCE-AUTHORITY-ARCHITECTURE
+    created_at: '2026-07-18T06:00:00+00:00'
+    updated_at: '2026-07-18T06:00:00+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: proposed
+      at: '2026-07-18T06:00:00+00:00'
+      actor: Engineering Governance planning-transfer agent
+      reason: Accept planning responsibility for approved EWO-000023 future obligations without authorizing evaluation, implementation, or execution.
+      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    project_id: EMP-PROJECT-HOMELAB
+    order: 4
+    objective: Preserve and plan future evaluation of the Engineering Governance Review Pattern and all approved EWO-000023 governance-improvement candidates.
+    entry_criteria: Separately authorized Governance work identifies the exact evaluation scope, controlled sources, owners, and boundaries; no authority is inherited from this planning entry.
+    completion_criteria: Every approved institutionalization recommendation is dispositioned through separately authorized Governance work with complete traceability and no inferred implementation authority.
   phases:
   - registry_id: EMP-PHASE-1-1
     object_type: Phase
@@ -1252,7 +1302,7 @@ entities:
   - registry_id: EMP-WORK-GOVERNANCE-AUTHORITY-ARCHITECTURE
     object_type: WorkItem
     title: Governance Authority Architecture Investigation
-    management_state: active
+    management_state: completed
     owner: Engineering Governance
     scope: EWO-000023
     authority_reference: EWO-000023
@@ -1263,8 +1313,8 @@ entities:
     - type: represented_by
       target: EWO-000023
     created_at: '2026-07-18T00:00:03+00:00'
-    updated_at: '2026-07-18T00:00:03+00:00'
-    revision: 1
+    updated_at: '2026-07-18T07:00:00+00:00'
+    revision: 2
     transition_history:
     - from: null
       to: active
@@ -1272,6 +1322,12 @@ entities:
       actor: Engineering Governance authorization-publication agent
       reason: EWO-000023 authorizes the bounded documentation-only investigation.
       authority_reference: EWO-000023
+    - from: active
+      to: completed
+      at: '2026-07-18T07:00:00+00:00'
+      actor: Engineering Governance lifecycle-transition agent
+      reason: EWO-000023 completed all Engineering obligations and transitioned exceptionally from Active to Archived.
+      authority_reference: Engineering Governance Authorization - Exceptional Lifecycle Transition for EWO-000023
     project_id: EMP-PROJECT-HOMELAB
     order: 11
     mission_id: EMP-MISSION-GOVERNANCE-AUTHORITY-ARCHITECTURE
@@ -1281,6 +1337,188 @@ entities:
     priority: 1
     completion_criteria: Complete all EWO-000023 investigation deliverables and validation without implementing or activating any recommendation.
     queue_ids: []
+    controlled_lifecycle_state: Archived
+    engineering_authority: closed
+    responsibility_status: transferred-to-governance-planning
+  - registry_id: EMP-WORK-APPROVAL-PACKAGE-GOVERNANCE-CONTROLS
+    object_type: WorkItem
+    title: Approval-Package Governance Controls
+    management_state: deferred
+    owner: Engineering Governance
+    scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    source_records:
+    - EDR-0003
+    - EWO-000023-COMPLETION
+    relationships:
+    - type: related_to
+      target: EMP-WORK-GOVERNANCE-AUTHORITY-ARCHITECTURE
+    created_at: '2026-07-18T06:00:00+00:00'
+    updated_at: '2026-07-18T06:00:00+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: deferred
+      at: '2026-07-18T06:00:00+00:00'
+      actor: Engineering Governance planning-transfer agent
+      reason: Accept planning ownership only; evaluation and implementation remain separately authorized future work.
+      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    project_id: EMP-PROJECT-HOMELAB
+    order: 12
+    mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    phase_id: null
+    sprint_id: null
+    work_type: governance-planning
+    priority: 2
+    completion_criteria: Evaluation only. Separately authorized Governance work dispositions the Approval Package Synchronization Declaration, Approval Package Synchronization Verification, and Approval Package Manifest; implementation is not authorized.
+    queue_ids: []
+    planning_status: deferred
+    evaluation_status: not-authorized
+    implementation_status: not-authorized
+    authorization_status: planning-ownership-only
+    originating_approval: EDR-0003 Governance disposition and Governance Planning Transfer Transaction
+    dependency_chain: EDR-0003 approval and publication, then separate Governance evaluation authority
+    reentry_conditions: Approved and published EDR-0003 plus a separately authorized Governance evaluation EWO or superior controlled authority.
+    recommendations:
+    - Approval Package Synchronization Declaration
+    - Approval Package Synchronization Verification
+    - Approval Package Manifest
+  - registry_id: EMP-WORK-GOVERNANCE-RECORD-TRANSACTION-ARCHITECTURE
+    object_type: WorkItem
+    title: Governance Record and Transaction Architecture
+    management_state: deferred
+    owner: Engineering Governance
+    scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    source_records:
+    - EDR-0003
+    - EWO-000023-COMPLETION
+    relationships:
+    - type: related_to
+      target: EMP-WORK-GOVERNANCE-AUTHORITY-ARCHITECTURE
+    created_at: '2026-07-18T06:00:00+00:00'
+    updated_at: '2026-07-18T06:00:00+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: deferred
+      at: '2026-07-18T06:00:00+00:00'
+      actor: Engineering Governance planning-transfer agent
+      reason: Accept planning ownership only; evaluation and implementation remain separately authorized future work.
+      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    project_id: EMP-PROJECT-HOMELAB
+    order: 13
+    mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    phase_id: null
+    sprint_id: null
+    work_type: governance-planning
+    priority: 2
+    completion_criteria: Evaluation only. Separately authorized Governance work dispositions the Permanent Engineering Governance Disposition Report, Governance Transaction Series, and Controlled Governance Record-Class Architecture; implementation is not authorized.
+    queue_ids: []
+    planning_status: deferred
+    evaluation_status: not-authorized
+    implementation_status: not-authorized
+    authorization_status: planning-ownership-only
+    originating_approval: EDR-0003 Governance disposition, deferred record-class recommendation, and Governance Planning Transfer Transaction
+    dependency_chain: EDR-0003 approval and publication, then separate Governance evaluation authority
+    reentry_conditions: Approved and published EDR-0003 plus a separately authorized Governance evaluation EWO or superior controlled authority.
+    recommendations:
+    - Permanent Engineering Governance Disposition Report
+    - Governance Transaction Series
+    - Controlled Governance Record-Class Architecture
+  - registry_id: EMP-WORK-ENGINEERING-LIFECYCLE-CLOSEOUT-CONTROLS
+    object_type: WorkItem
+    title: Engineering Lifecycle Closeout Controls
+    management_state: deferred
+    owner: Engineering Governance
+    scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    source_records:
+    - EDR-0003
+    - EWO-000023-COMPLETION
+    relationships:
+    - type: related_to
+      target: EMP-WORK-GOVERNANCE-AUTHORITY-ARCHITECTURE
+    created_at: '2026-07-18T06:00:00+00:00'
+    updated_at: '2026-07-18T06:00:00+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: deferred
+      at: '2026-07-18T06:00:00+00:00'
+      actor: Engineering Governance planning-transfer agent
+      reason: Accept planning ownership only; evaluation and implementation remain separately authorized future work.
+      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    project_id: EMP-PROJECT-HOMELAB
+    order: 14
+    mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    phase_id: null
+    sprint_id: null
+    work_type: governance-planning
+    priority: 2
+    completion_criteria: Evaluation only. Separately authorized Governance work dispositions Deferred Recommendation Reconciliation, Closeout Completeness Verification, Engineering Closeout Transition Phase, Mandatory Engineering Closeout Transition Gate, and Engineering Authority Transfer Verification; implementation is not authorized.
+    queue_ids: []
+    planning_status: deferred
+    evaluation_status: not-authorized
+    implementation_status: not-authorized
+    authorization_status: planning-ownership-only
+    originating_approval: Engineering Lifecycle Closeout Verification, Recommendation Reconciliation, and Governance Planning Transfer Transaction
+    dependency_chain: Authoritative planning transfer, then separate Governance evaluation authority
+    reentry_conditions: Separately authorized Governance evaluation EWO or superior controlled authority defining lifecycle-owner scope.
+    recommendations:
+    - Deferred Recommendation Reconciliation
+    - Closeout Completeness Verification
+    - Engineering Closeout Transition Phase
+    - Mandatory Engineering Closeout Transition Gate
+    - Engineering Authority Transfer Verification
+    - Administrative Closeout Procedure standardization
+    - Repository Publication Sequencing Procedure evaluation
+  - registry_id: EMP-WORK-GOVERNANCE-PLANNING-INTEGRATION
+    object_type: WorkItem
+    title: Governance Planning Integration
+    management_state: deferred
+    owner: Engineering Governance
+    scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    source_records:
+    - EDR-0003
+    - EWO-000023-COMPLETION
+    relationships:
+    - type: related_to
+      target: EMP-WORK-GOVERNANCE-AUTHORITY-ARCHITECTURE
+    created_at: '2026-07-18T06:00:00+00:00'
+    updated_at: '2026-07-18T06:00:00+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: deferred
+      at: '2026-07-18T06:00:00+00:00'
+      actor: Engineering Governance planning-transfer agent
+      reason: Accept planning ownership only; evaluation and implementation remain separately authorized future work.
+      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    project_id: EMP-PROJECT-HOMELAB
+    order: 15
+    mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
+    phase_id: null
+    sprint_id: null
+    work_type: governance-planning
+    priority: 2
+    completion_criteria: Evaluation only. Separately authorized Governance work dispositions authoritative planning ownership, Governance Planning Transfer Transaction, transfer-of-responsibility model, attributable deferrals, Work Registry integration, and governance planning architecture; implementation is not authorized.
+    queue_ids: []
+    planning_status: deferred
+    evaluation_status: not-authorized
+    implementation_status: not-authorized
+    authorization_status: planning-ownership-only
+    originating_approval: Recommendation Reconciliation and Governance Planning Transfer Transaction
+    dependency_chain: Completed planning transfer, then separate Governance evaluation authority
+    reentry_conditions: Separately authorized Governance evaluation EWO or superior controlled authority defining planning-owner scope.
+    recommendations:
+    - Authoritative planning ownership
+    - Governance Planning Transfer Transaction
+    - Transfer-of-responsibility model
+    - Attributable deferrals
+    - Work Registry integration
+    - Governance planning architecture
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP
     object_type: Queue
@@ -1564,6 +1802,118 @@ entities:
     reentry_conditions: Separate Stage 3 authority and an approved structured event
       contract that does not parse private Codex output.
     target_horizon: Future Engineering Operations enhancement
+    resolution_reference: null
+  - registry_id: EMP-DEFERRAL-APPROVAL-PACKAGE-GOVERNANCE-CONTROLS
+    object_type: Deferral
+    title: Defer Approval-Package Governance Controls Evaluation
+    management_state: active
+    owner: Engineering Governance
+    scope: EMP-WORK-APPROVAL-PACKAGE-GOVERNANCE-CONTROLS
+    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    source_records:
+    - EDR-0003
+    - EWO-000023-COMPLETION
+    relationships:
+    - type: related_to
+      target: EMP-WORK-APPROVAL-PACKAGE-GOVERNANCE-CONTROLS
+    created_at: '2026-07-18T06:00:00+00:00'
+    updated_at: '2026-07-18T06:00:00+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-18T06:00:00+00:00'
+      actor: Engineering Governance planning-transfer agent
+      reason: Preserve future evaluation while withholding evaluation and implementation authority.
+      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    work_item_id: EMP-WORK-APPROVAL-PACKAGE-GOVERNANCE-CONTROLS
+    reason: Planning ownership is accepted for lifecycle closeout controls and Administrative Closeout Procedure standardization; evaluation and implementation require separate Governance authority.
+    reentry_conditions: Approved and published EDR-0003 plus separately authorized Governance evaluation work.
+    target_horizon: Post-EDR-0003 publication institutionalization
+    resolution_reference: null
+  - registry_id: EMP-DEFERRAL-GOVERNANCE-RECORD-TRANSACTION-ARCHITECTURE
+    object_type: Deferral
+    title: Defer Governance Record and Transaction Architecture Evaluation
+    management_state: active
+    owner: Engineering Governance
+    scope: EMP-WORK-GOVERNANCE-RECORD-TRANSACTION-ARCHITECTURE
+    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    source_records:
+    - EDR-0003
+    - EWO-000023-COMPLETION
+    relationships:
+    - type: related_to
+      target: EMP-WORK-GOVERNANCE-RECORD-TRANSACTION-ARCHITECTURE
+    created_at: '2026-07-18T06:00:00+00:00'
+    updated_at: '2026-07-18T06:00:00+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-18T06:00:00+00:00'
+      actor: Engineering Governance planning-transfer agent
+      reason: Preserve future evaluation while withholding evaluation and implementation authority.
+      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    work_item_id: EMP-WORK-GOVERNANCE-RECORD-TRANSACTION-ARCHITECTURE
+    reason: Planning ownership is accepted; evaluation and implementation require separate Governance authority.
+    reentry_conditions: Approved and published EDR-0003 plus separately authorized Governance evaluation work.
+    target_horizon: Post-EDR-0003 publication institutionalization
+    resolution_reference: null
+  - registry_id: EMP-DEFERRAL-ENGINEERING-LIFECYCLE-CLOSEOUT-CONTROLS
+    object_type: Deferral
+    title: Defer Engineering Lifecycle Closeout Controls Evaluation
+    management_state: active
+    owner: Engineering Governance
+    scope: EMP-WORK-ENGINEERING-LIFECYCLE-CLOSEOUT-CONTROLS
+    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    source_records:
+    - EDR-0003
+    - EWO-000023-COMPLETION
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ENGINEERING-LIFECYCLE-CLOSEOUT-CONTROLS
+    created_at: '2026-07-18T06:00:00+00:00'
+    updated_at: '2026-07-18T06:00:00+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-18T06:00:00+00:00'
+      actor: Engineering Governance planning-transfer agent
+      reason: Preserve future evaluation while withholding evaluation and implementation authority.
+      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    work_item_id: EMP-WORK-ENGINEERING-LIFECYCLE-CLOSEOUT-CONTROLS
+    reason: Planning ownership is accepted; evaluation and implementation require separate Governance authority.
+    reentry_conditions: Separately authorized Governance evaluation work defining lifecycle-owner scope.
+    target_horizon: Post-EDR-0003 publication institutionalization
+    resolution_reference: null
+  - registry_id: EMP-DEFERRAL-GOVERNANCE-PLANNING-INTEGRATION
+    object_type: Deferral
+    title: Defer Governance Planning Integration Evaluation
+    management_state: active
+    owner: Engineering Governance
+    scope: EMP-WORK-GOVERNANCE-PLANNING-INTEGRATION
+    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    source_records:
+    - EDR-0003
+    - EWO-000023-COMPLETION
+    relationships:
+    - type: related_to
+      target: EMP-WORK-GOVERNANCE-PLANNING-INTEGRATION
+    created_at: '2026-07-18T06:00:00+00:00'
+    updated_at: '2026-07-18T06:00:00+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-18T06:00:00+00:00'
+      actor: Engineering Governance planning-transfer agent
+      reason: Preserve future evaluation while withholding evaluation and implementation authority.
+      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    work_item_id: EMP-WORK-GOVERNANCE-PLANNING-INTEGRATION
+    reason: Planning ownership is accepted; evaluation and implementation require separate Governance authority.
+    reentry_conditions: Separately authorized Governance evaluation work defining planning-owner scope.
+    target_horizon: Post-EDR-0003 publication institutionalization
     resolution_reference: null
   dependencies:
   - registry_id: EMP-DEPENDENCY-SPRINTEROS-ON-EMP
