@@ -55,6 +55,42 @@ class EventConsumerTests(unittest.TestCase):
             [1, 2, 3],
         )
 
+    def test_pending_does_not_advance_checkpoint(self) -> None:
+        consumer = self.consumer()
+
+        events = consumer.pending()
+
+        self.assertEqual(
+            [event.sequence for event in events],
+            [1, 2, 3],
+        )
+        self.assertEqual(consumer.checkpoint(), 0)
+
+    def test_acknowledge_advances_checkpoint(self) -> None:
+        consumer = self.consumer()
+
+        consumer.acknowledge(2)
+
+        self.assertEqual(consumer.checkpoint(), 2)
+        self.assertEqual(
+            [event.sequence for event in consumer.pending()],
+            [3],
+        )
+
+    def test_acknowledge_never_moves_checkpoint_backward(self) -> None:
+        consumer = self.consumer()
+
+        consumer.acknowledge(3)
+        consumer.acknowledge(1)
+
+        self.assertEqual(consumer.checkpoint(), 3)
+
+    def test_invalid_acknowledgement_is_rejected(self) -> None:
+        consumer = self.consumer()
+
+        with self.assertRaises(ValueError):
+            consumer.acknowledge(0)
+
     def test_second_consume_returns_no_events(self) -> None:
         consumer = self.consumer()
         consumer.consume()

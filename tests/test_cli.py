@@ -9,6 +9,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SRC_ROOT = PROJECT_ROOT / "src"
@@ -747,6 +748,303 @@ class ConsumeCliTests(unittest.TestCase):
             errors,
             "eens: --limit must be greater than zero",
         )
+
+
+class NotifyCliTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp_directory = tempfile.TemporaryDirectory()
+        root = Path(self.temp_directory.name)
+        self.database_path = root / "eens.sqlite3"
+        self.checkpoint_path = root / "notify-checkpoints.sqlite3"
+        self.store = EventStore(self.database_path)
+
+        for index in range(1, 4):
+            self.store.append(
+                EngineeringEvent(
+                    event_type="engineering.test",
+                    source="test",
+                    subject=f"Event {index}",
+                    idempotency_key=f"notify-cli-event-{index}",
+                    payload={"index": index},
+                )
+            )
+
+    def tearDown(self) -> None:
+        self.temp_directory.cleanup()
+
+    def run_cli(self, *arguments: str) -> tuple[int, str, str]:
+        output = io.StringIO()
+        errors = io.StringIO()
+
+        with (
+            contextlib.redirect_stdout(output),
+            contextlib.redirect_stderr(errors),
+        ):
+            exit_code = main(list(arguments))
+
+        return (
+            exit_code,
+            output.getvalue().strip(),
+            errors.getvalue().strip(),
+        )
+
+    def arguments(self) -> tuple[str, ...]:
+        return (
+            "--database",
+            str(self.database_path),
+            "notify",
+            "ntfy",
+            "--server",
+            "https://ntfy.sh",
+            "--topic",
+            "engineering-test",
+            "--checkpoint",
+            str(self.checkpoint_path),
+        )
+
+    def test_notify_uses_environment_configuration(self) -> None:
+        with (
+            patch.dict(
+                "os.environ",
+                {
+                    "EENS_NTFY_SERVER": "https://env.example",
+                    "EENS_NTFY_TOPIC": "env-topic",
+                    "EENS_NTFY_TOKEN": "env-token",
+                },
+                clear=False,
+            ),
+            patch("eens.cli.NtfyNotifier") as notifier_class,
+            patch("eens.cli.NotificationDispatcher") as dispatcher_class,
+        ):
+            dispatcher_class.return_value.dispatch.return_value = []
+
+            exit_code, output, errors = self.run_cli(
+                "--database",
+                str(self.database_path),
+                "notify",
+                "ntfy",
+                "--checkpoint",
+                str(self.checkpoint_path),
+            )
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(output, "")
+        self.assertEqual(errors, "")
+        notifier_class.assert_called_once_with(
+            server="https://env.example",
+            topic="env-topic",
+            token="env-token",
+            timeout=10.0,
+        )
+
+    def test_notify_cli_configuration_overrides_environment(self) -> None:
+        with (
+            patch.dict(
+                "os.environ",
+                {
+                    "EENS_NTFY_SERVER": "https://env.example",
+                    "EENS_NTFY_TOPIC": "env-topic",
+                    "EENS_NTFY_TOKEN": "env-token",
+                },
+                clear=False,
+            ),
+            patch("eens.cli.NtfyNotifier") as notifier_class,
+            patch("eens.cli.NotificationDispatcher") as dispatcher_class,
+        ):
+            dispatcher_class.return_value.dispatch.return_value = []
+
+            exit_code, output, errors = self.run_cli(
+                *self.arguments(),
+                "--token",
+                "cli-token",
+            )
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(output, "")
+        self.assertEqual(errors, "")
+        notifier_class.assert_called_once_with(
+            server="https://ntfy.sh",
+            topic="engineering-test",
+            token="cli-token",
+            timeout=10.0,
+        )
+
+    def test_notify_uses_default_server(self) -> None:
+        with (
+            patch.dict(
+                "os.environ",
+                {
+                    "EENS_NTFY_TOPIC": "env-topic",
+                },
+                clear=True,
+            ),
+            patch("eens.cli.NtfyNotifier") as notifier_class,
+            patch("eens.cli.NotificationDispatcher") as dispatcher_class,
+        ):
+            dispatcher_class.return_value.dispatch.return_value = []
+
+            exit_code, output, errors = self.run_cli(
+                "--database",
+                str(self.database_path),
+                "notify",
+                "ntfy",
+                "--checkpoint",
+                str(self.checkpoint_path),
+            )
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(output, "")
+        self.assertEqual(errors, "")
+        notifier_class.assert_called_once_with(
+            server="https://ntfy.sh",
+            topic="env-topic",
+            token=None,
+            timeout=10.0,
+        )
+
+    @patch("eens.notify.urllib.request.urlopen")
+    def test_notify_delivers_pending_events(
+        self,
+        urlopen: MagicMock,
+    ) -> None:
+        response = MagicMock()
+        response.status = 200
+        response.__enter__.return_value = response
+        response.__exit__.return_value = False
+        urlopen.return_value = response
+
+        exit_code, output, errors = self.run_cli(*self.arguments())
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("sequence: 1", output)
+        self.assertIn("sequence: 3", output)
+        self.assertEqual(urlopen.call_count, 3)
+        self.assertEqual(errors, "")
+
+    @patch("eens.notify.urllib.request.urlopen")
+    def test_notify_retry_outputs_nothing(
+        self,
+        urlopen: MagicMock,
+    ) -> None:
+        response = MagicMock()
+        response.status = 200
+        response.__enter__.return_value = response
+        response.__exit__.return_value = False
+        urlopen.return_value = response
+
+        self.run_cli(*self.arguments())
+        exit_code, output, errors = self.run_cli(*self.arguments())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(output, "")
+        self.assertEqual(urlopen.call_count, 3)
+        self.assertEqual(errors, "")
+
+    @patch("eens.notify.urllib.request.urlopen")
+    def test_notify_limit(
+        self,
+        urlopen: MagicMock,
+    ) -> None:
+        response = MagicMock()
+        response.status = 200
+        response.__enter__.return_value = response
+        response.__exit__.return_value = False
+        urlopen.return_value = response
+
+        exit_code, output, errors = self.run_cli(
+            *self.arguments(),
+            "--limit",
+            "2",
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("sequence: 1", output)
+        self.assertIn("sequence: 2", output)
+        self.assertNotIn("sequence: 3", output)
+        self.assertEqual(urlopen.call_count, 2)
+        self.assertEqual(errors, "")
+
+    @patch("eens.notify.urllib.request.urlopen")
+    def test_notify_json_lines(
+        self,
+        urlopen: MagicMock,
+    ) -> None:
+        response = MagicMock()
+        response.status = 200
+        response.__enter__.return_value = response
+        response.__exit__.return_value = False
+        urlopen.return_value = response
+
+        exit_code, output, errors = self.run_cli(
+            *self.arguments(),
+            "--limit",
+            "1",
+            "--json",
+        )
+
+        record = json.loads(output)
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(record["sequence"], 1)
+        self.assertEqual(record["status_code"], 200)
+        self.assertEqual(
+            record["endpoint"],
+            "https://ntfy.sh/engineering-test",
+        )
+        self.assertEqual(errors, "")
+
+    def test_notify_rejects_nonpositive_limit(self) -> None:
+        exit_code, output, errors = self.run_cli(
+            *self.arguments(),
+            "--limit",
+            "0",
+        )
+
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(output, "")
+        self.assertEqual(
+            errors,
+            "eens: --limit must be greater than zero",
+        )
+
+    @patch("eens.notify.urllib.request.urlopen")
+    def test_notify_failure_returns_one_and_preserves_event(
+        self,
+        urlopen: MagicMock,
+    ) -> None:
+        import urllib.error
+
+        urlopen.side_effect = urllib.error.URLError(
+            "network unavailable"
+        )
+
+        exit_code, output, errors = self.run_cli(*self.arguments())
+
+        self.assertEqual(exit_code, 1)
+        self.assertEqual(output, "")
+        self.assertIn(
+            "eens: notification delivery failed:",
+            errors,
+        )
+
+        response = MagicMock()
+        response.status = 200
+        response.__enter__.return_value = response
+        response.__exit__.return_value = False
+        urlopen.side_effect = None
+        urlopen.return_value = response
+        urlopen.reset_mock()
+
+        retry_code, retry_output, retry_errors = self.run_cli(
+            *self.arguments(),
+            "--limit",
+            "1",
+        )
+
+        self.assertEqual(retry_code, 0)
+        self.assertIn("sequence: 1", retry_output)
+        self.assertEqual(retry_errors, "")
+
 
 
 if __name__ == "__main__":

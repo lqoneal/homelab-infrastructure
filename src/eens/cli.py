@@ -13,6 +13,11 @@ from .events import EngineeringEvent
 from .lifecycle import HandoffLifecycleProducer
 from .runtime import HandoffCommandRunner
 from .consumer import EventConsumer
+from .notify import (
+    NotificationDispatcher,
+    NotificationError,
+    NtfyNotifier,
+)
 from .store import EventStore, IdempotencyConflictError, StoredEvent
 
 
@@ -26,6 +31,27 @@ def resolve_database_path(value: str | None = None) -> Path:
     if candidate:
         return Path(candidate).expanduser()
     return DEFAULT_DATABASE_PATH
+
+
+def resolve_ntfy_server(value: str | None = None) -> str:
+    """Resolve the ntfy server from an argument, environment, or default."""
+
+    return value or os.environ.get(
+        "EENS_NTFY_SERVER",
+        "https://ntfy.sh",
+    )
+
+
+def resolve_ntfy_topic(value: str | None = None) -> str | None:
+    """Resolve the ntfy topic from an argument or environment."""
+
+    return value or os.environ.get("EENS_NTFY_TOPIC")
+
+
+def resolve_ntfy_token(value: str | None = None) -> str | None:
+    """Resolve the optional ntfy token from an argument or environment."""
+
+    return value or os.environ.get("EENS_NTFY_TOKEN")
 
 
 def parse_payload(value: str) -> dict[str, Any]:
@@ -244,6 +270,60 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Emit one JSON object per consumed event",
+    )
+
+    notify_parser = subparsers.add_parser(
+        "notify",
+        help="Deliver pending events through a notification transport",
+    )
+    notify_subparsers = notify_parser.add_subparsers(
+        dest="notify_transport",
+        required=True,
+    )
+
+    ntfy_parser = notify_subparsers.add_parser(
+        "ntfy",
+        help="Deliver pending events to an ntfy topic",
+    )
+    ntfy_parser.add_argument(
+        "--server",
+        help=(
+            "ntfy server base URL; overrides EENS_NTFY_SERVER "
+            "(default: https://ntfy.sh)"
+        ),
+    )
+    ntfy_parser.add_argument(
+        "--topic",
+        help="ntfy topic name; overrides EENS_NTFY_TOPIC",
+    )
+    ntfy_parser.add_argument(
+        "--token",
+        help="Optional ntfy access token",
+    )
+    ntfy_parser.add_argument(
+        "--consumer",
+        default="ntfy",
+        help="Stable notification consumer identity",
+    )
+    ntfy_parser.add_argument(
+        "--limit",
+        type=int,
+        help="Maximum number of events to deliver",
+    )
+    ntfy_parser.add_argument(
+        "--checkpoint",
+        help="Optional explicit checkpoint database path",
+    )
+    ntfy_parser.add_argument(
+        "--timeout",
+        type=float,
+        default=10.0,
+        help="HTTP timeout in seconds",
+    )
+    ntfy_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print one JSON object per delivered event",
     )
 
     return parser
@@ -677,6 +757,73 @@ def run_consume(
 
     return 0
 
+def run_notify_ntfy(
+    database_path: Path,
+    *,
+    server: str,
+    topic: str,
+    token: str | None,
+    consumer_name: str,
+    limit: int | None,
+    checkpoint_path: str | None,
+    timeout: float,
+    json_output: bool,
+) -> int:
+    """Deliver pending events to ntfy using a durable checkpoint."""
+
+    if limit is not None and limit < 1:
+        print("eens: --limit must be greater than zero", file=sys.stderr)
+        return 2
+
+    checkpoint_database = (
+        Path(checkpoint_path).expanduser()
+        if checkpoint_path
+        else database_path.with_name(
+            f"{database_path.stem}.consumers.sqlite3"
+        )
+    )
+
+    try:
+        consumer = EventConsumer(
+            EventStore(database_path),
+            checkpoint_database,
+            consumer_name=consumer_name,
+        )
+        notifier = NtfyNotifier(
+            server=server,
+            topic=topic,
+            token=token,
+            timeout=timeout,
+        )
+        delivered = NotificationDispatcher(
+            consumer,
+            notifier,
+        ).dispatch(limit=limit)
+    except NotificationError as exc:
+        print(f"eens: notification delivery failed: {exc}", file=sys.stderr)
+        return 1
+    except (TypeError, ValueError) as exc:
+        print(f"eens: invalid notification request: {exc}", file=sys.stderr)
+        return 2
+
+    for result in delivered:
+        output = {
+            "sequence": result.sequence,
+            "endpoint": result.endpoint,
+            "status_code": result.status_code,
+        }
+
+        if json_output:
+            print(json.dumps(output, sort_keys=True))
+        else:
+            print(f"sequence: {output['sequence']}")
+            print(f"endpoint: {output['endpoint']}")
+            print(f"status_code: {output['status_code']}")
+            print()
+
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     """Run the EENS command-line interface."""
 
@@ -751,6 +898,23 @@ def main(argv: list[str] | None = None) -> int:
                 checkpoint_path=arguments.checkpoint,
                 json_output=arguments.json,
             )
+
+        if (
+            arguments.command == "notify"
+            and arguments.notify_transport == "ntfy"
+        ):
+            return run_notify_ntfy(
+                database_path,
+                server=resolve_ntfy_server(arguments.server),
+                topic=resolve_ntfy_topic(arguments.topic),
+                token=resolve_ntfy_token(arguments.token),
+                consumer_name=arguments.consumer,
+                limit=arguments.limit,
+                checkpoint_path=arguments.checkpoint,
+                timeout=arguments.timeout,
+                json_output=arguments.json,
+            )
+
     except OSError as exc:
         print(f"eens: {exc}", file=sys.stderr)
         return 1

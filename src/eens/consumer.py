@@ -37,46 +37,29 @@ class EventConsumer:
         self._consumer_name = normalized_name
         self._initialize_checkpoint_store()
 
-    def consume(
+    def pending(
         self,
         *,
         limit: int | None = None,
     ) -> list[StoredEvent]:
-        """Return pending events and advance the checkpoint."""
+        """Return pending events without advancing the checkpoint."""
 
         if limit is not None and limit < 1:
             raise ValueError("limit must be greater than zero")
 
-        checkpoint = self.checkpoint()
-        events = list(
+        return list(
             self._store.replay(
-                after_sequence=checkpoint,
+                after_sequence=self.checkpoint(),
                 limit=limit,
             )
         )
 
-        if not events:
-            return []
+    def acknowledge(self, sequence: int) -> None:
+        """Advance the checkpoint through a successfully processed event."""
 
-        self._advance(events[-1].sequence)
-        return events
+        if sequence < 1:
+            raise ValueError("sequence must be greater than zero")
 
-    def checkpoint(self) -> int:
-        """Return the current checkpoint for this consumer."""
-
-        with closing(self._connect()) as connection:
-            row = connection.execute(
-                """
-                SELECT sequence
-                FROM consumer_checkpoints
-                WHERE consumer_name = ?
-                """,
-                (self._consumer_name,),
-            ).fetchone()
-
-        return 0 if row is None else int(row[0])
-
-    def _advance(self, sequence: int) -> None:
         with closing(self._connect()) as connection:
             with connection:
                 connection.execute(
@@ -94,6 +77,35 @@ class EventConsumer:
                     """,
                     (self._consumer_name, sequence),
                 )
+
+    def consume(
+        self,
+        *,
+        limit: int | None = None,
+    ) -> list[StoredEvent]:
+        """Return pending events and advance the checkpoint."""
+
+        events = self.pending(limit=limit)
+
+        if events:
+            self.acknowledge(events[-1].sequence)
+
+        return events
+
+    def checkpoint(self) -> int:
+        """Return the current checkpoint for this consumer."""
+
+        with closing(self._connect()) as connection:
+            row = connection.execute(
+                """
+                SELECT sequence
+                FROM consumer_checkpoints
+                WHERE consumer_name = ?
+                """,
+                (self._consumer_name,),
+            ).fetchone()
+
+        return 0 if row is None else int(row[0])
 
     def _initialize_checkpoint_store(self) -> None:
         self._checkpoint_path.parent.mkdir(
