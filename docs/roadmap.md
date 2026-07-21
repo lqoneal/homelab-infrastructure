@@ -4,6 +4,67 @@ Status: Active
 
 ---
 
+## Engineering Event and Notification System
+
+### Completed — EENS Operational Alpha Foundation
+
+The Engineering Event and Notification System Operational Alpha foundation is
+implemented and qualified.
+
+Completed work includes:
+
+- preservation and import of the qualified standalone EENS history without
+  squashing;
+- preservation of imported namespaced EENS tags;
+- establishment of `services/eens` as the canonical Homelab repository source;
+- qualification of LOpi as the current operational EENS host;
+- append-only SQLite engineering-event persistence;
+- SQLite write-ahead logging;
+- idempotent event acceptance;
+- ordered event replay;
+- durable independent consumer checkpoints;
+- engineering handoff lifecycle event production;
+- wrapped-command lifecycle event production;
+- ntfy notification delivery;
+- continuous notification-consumer runtime; and
+- systemd user-service supervision.
+
+The canonical repository source is:
+
+`/data/engineering/repositories/homelab/services/eens`
+
+The current qualified LOpi deployment is:
+
+`/home/loneal/data/engineering/eens`
+
+The repository source and operational deployment are intentionally separate.
+
+### Future — Full HNS Expansion
+
+EENS Operational Alpha is the completed event and notification foundation. It
+does not represent completion of the broader Homelab Notification Service
+architecture.
+
+Future HNS expansion includes:
+
+- authenticated WebSocket Tier 1 transport;
+- the reference workstation client;
+- subscription registration and management;
+- delivery-obligation records;
+- delivery-attempt evidence and ledgers;
+- producer registration, authentication, and authorization;
+- a provider registry;
+- multiple notification and presentation adapters;
+- advanced routing and retry policy;
+- Remote Approval;
+- dashboard, metrics, observability, and automation consumers; and
+- complete HNS operational qualification.
+
+These expansion items remain future engineering work and require separately
+authorized implementation.
+
+---
+
 # Governance Framework Modernization ✅
 
 Completed under EGR-000002 and EWO-000018.

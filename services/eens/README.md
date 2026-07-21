@@ -1,5 +1,48 @@
 # Engineering Event & Notification System
 
+## Source and Operational Deployment
+
+### Canonical Source
+
+The authoritative EENS source is maintained in the Homelab repository on
+thaDuke at:
+
+`/data/engineering/repositories/homelab/services/eens`
+
+Development, testing, controlled documentation updates, service-definition
+changes, and release preparation must originate from this repository source.
+
+### Qualified LOpi Deployment
+
+The currently qualified EENS Operational Alpha deployment is:
+
+`/home/loneal/data/engineering/eens`
+
+This directory is an operational deployment. It is not the authoritative
+repository.
+
+Changes made directly in the LOpi deployment do not replace
+repository-controlled changes. Any synchronization from the canonical source
+to LOpi must be deliberate, reviewed, and validated before the deployed service
+is restarted.
+
+Runtime examples in this document continue to use the qualified LOpi
+deployment path.
+
+### Implementation Boundary
+
+The current implementation is EENS Operational Alpha. It includes durable
+SQLite WAL event storage, ordered replay, consumer checkpoints, lifecycle
+event production, ntfy delivery, and systemd user-service supervision.
+
+It is not the complete HNS architecture. Authenticated WebSocket transport,
+the reference workstation client, subscription management, delivery-obligation
+and attempt tracking, producer authorization, multiple provider adapters,
+advanced routing, Remote Approval, and complete HNS qualification remain
+future work.
+
+
+
 The Engineering Event & Notification System (EENS) provides durable,
 agent-neutral engineering lifecycle events and notification delivery.
 

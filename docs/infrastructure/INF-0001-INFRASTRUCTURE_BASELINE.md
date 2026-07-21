@@ -2,20 +2,20 @@
 
 document_id: INF-0001
 title: Engineering Infrastructure Baseline
-version: 2.6
+version: 2.7
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-19
-phase: Controlled Documentation Reconciliation and Engineering Standards Update
+last_updated: 2026-07-21
+phase: EENS Operational Infrastructure Reconciliation
 domain: Infrastructure
 classification: Global Infrastructure Baseline
-predecessor_revision: INF-0001@2.5
+predecessor_revision: INF-0001@2.6
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff - Mission 0 Controlled Documentation Reconciliation and Engineering Standards Update
-approval_date: 2026-07-19
+approval_reference: Mission 7 - EENS Operational Infrastructure Reconciliation
+approval_date: 2026-07-21
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -42,6 +42,83 @@ tags:
 ---
 
 # Engineering Infrastructure Baseline
+
+## EENS Operational Alpha Infrastructure
+
+### Authoritative Source
+
+The canonical repository source for the Engineering Event and Notification
+System is maintained on thaDuke at:
+
+`/data/engineering/repositories/homelab/services/eens`
+
+The Homelab repository is the authoritative location for controlled source
+changes, tests, configuration templates, service definitions, installation
+scripts, and supporting documentation.
+
+### Qualified Operational Deployment
+
+The currently qualified EENS Operational Alpha deployment is maintained on
+LOpi at:
+
+`/home/loneal/data/engineering/eens`
+
+The canonical repository source and the LOpi operational deployment are
+separate locations. Changes made directly within the LOpi deployment do not
+replace repository-controlled engineering changes. Deployment synchronization
+must be intentional and separately validated.
+
+LOpi is the qualified operational host for the current EENS Operational Alpha
+baseline.
+
+### Runtime Supervision
+
+The EENS notification consumer runs under systemd user-service supervision.
+
+The qualified runtime uses:
+
+- a continuous EENS service process;
+- restart-on-failure behavior;
+- user-scoped systemd lifecycle management;
+- local environment configuration outside the repository; and
+- ntfy as the current notification delivery transport.
+
+### Durable Event State
+
+The current durable event store is SQLite using write-ahead logging.
+
+The qualified runtime database location is:
+
+`/home/loneal/data/engineering/eens/runtime/db/eens.sqlite3`
+
+The implemented durable-state baseline supports:
+
+- append-only engineering event persistence;
+- idempotent event acceptance;
+- ordered replay; and
+- independent durable consumer checkpoints.
+
+### Configuration and Secret Boundary
+
+Private ntfy topic names, access tokens, credentials, and other local secret
+values are operational configuration. They must remain outside controlled
+repository documentation and must not be recorded in this infrastructure
+baseline.
+
+Repository configuration files may contain variable names and safe placeholder
+values only.
+
+### Architecture Boundary
+
+This infrastructure baseline qualifies EENS Operational Alpha. It does not
+claim that the complete Homelab Notification Service architecture is
+operational.
+
+Authenticated WebSocket transport, the reference workstation client,
+subscription management, obligation and attempt evidence, producer
+authorization, multiple provider adapters, advanced routing, Remote Approval,
+and complete HNS qualification remain future work.
+
 
 ## Purpose
 
@@ -446,6 +523,7 @@ System-wide IPv6 remains enabled. Public service exposure over IPv6 is intention
 
 | Version | Date | Description |
 | ------- | ---- | ----------- |
+| 2.7 | 2026-07-21 | Recorded the canonical EENS source, qualified LOpi deployment, systemd runtime, SQLite WAL state, ntfy transport, secret boundary, and deferred HNS architecture. |
 | 1.9 | 2026-07-16 | Established the qualified `thaDuke` storage-discovery, SMART, read-only filesystem inspection, stable-identification, and safe mount-control tool baseline. |
 | 2.0 | 2026-07-16 | Reconciled the rebuilt thaDuke GPT, LVM, filesystem, H10 NAND/Optane namespace, and available-capacity baseline. |
 | 2.1 | 2026-07-16 | Established the dedicated 400 GiB temporary Engineering backup LV and governed empty workspace while retaining 80.87 GiB VG expansion capacity. |

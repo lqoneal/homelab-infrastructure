@@ -1,28 +1,25 @@
 ---
 document_id: SPEC-0009
 title: Notification Service Specification
-version: 1.6
+version: 1.7
 status: Active
 owner: Engineering Platform
 created: 2026-07-18
-last_updated: 2026-07-18
-phase: HNS Decision Classification Recorded
+last_updated: 2026-07-21
+phase: EENS Operational Alpha Reconciled
 domain: Engineering Platform
 classification: Engineering Specification
-predecessor_revision: SPEC-0009@1.5
+predecessor_revision: SPEC-0009@1.6
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
-approval_reference: Codex Handoff - SPEC-0009 Refinement: Engineering Decision Classification Model
-approval_date: 2026-07-18
+approval_reference: Mission 7 - EENS Repository Convergence and Operational Baseline Reconciliation
+approval_date: 2026-07-21
 persistence_status: Persisted
 source_of_truth: true
 information_scope: Notification Service architecture, event model, lifecycle, ownership, interfaces, trust boundaries, reliability, compatibility, and deferred execution
 declared_deferrals:
-  - notification-service-implementation
-  - canonical-event-envelope-qualification
   - eos-compatible-outbox-implementation
-  - ntfy-adapter-migration
   - remote-approval-service-specification
   - remote-approval-service-implementation
   - dashboard-consumers
@@ -1030,16 +1027,57 @@ calling subsystem:
 | notification regression tests | Exercise configuration rejection, secret handling, wrapper triggers, signals, timeouts, exit preservation, and provider-failure degradation |
 | INF-0001 and historical records | Describe the accepted Stage 1 runtime, wrapper enforcement, and deferred Stage 2/3 work |
 
-No HNS server, service unit, local broker, event API, database, delivery queue,
-subscription registry, provider registry, workstation agent, dashboard, local
-native adapter, delivery ledger, or replay endpoint exists. The Work Registry
-records Stage 1 as completed, Stage 2 heartbeat and Stage 3 structured events as
-deferred, and the former notification-service implementation item as cancelled.
+#### Implemented — EENS Operational Alpha
 
-Repository evidence identifies the proposed server hardware as operational
-AST-000007, Raspberry Pi 5 (8 GB), but does not qualify it for HNS hosting.
-Repository evidence does not establish `letoatreides` operating system,
-availability, network behavior, or native notification interface.
+The Engineering Event and Notification System Operational Alpha baseline is
+implemented and operationally qualified.
+
+The implemented baseline includes:
+
+- a canonical engineering event model;
+- an append-only SQLite event store;
+- SQLite write-ahead logging;
+- idempotent event acceptance;
+- ordered event replay;
+- durable, independent consumer checkpoints;
+- handoff-lifecycle producer and runtime-wrapper integration;
+- ntfy notification delivery;
+- a continuous EENS runtime service; and
+- systemd user-service supervision on LOpi.
+
+LOpi is the qualified operational host for the EENS Operational Alpha
+baseline.
+
+The canonical repository source is:
+
+`/data/engineering/repositories/homelab/services/eens`
+
+The current qualified LOpi deployment is:
+
+`/home/loneal/data/engineering/eens`
+
+The canonical source and operational deployment are intentionally distinct.
+The LOpi deployment is not the authoritative repository.
+
+#### Deferred — Full HNS Architecture
+
+EENS Operational Alpha is a partial implementation of this specification. It
+does not establish complete HNS implementation or full SPEC-0009 conformance.
+
+The following architecture remains deferred:
+
+- authenticated WebSocket Tier 1 transport;
+- the reference workstation client;
+- the subscription registry;
+- the delivery-obligation and delivery-attempt ledger;
+- producer registration, authentication, and authorization;
+- the provider registry and multiple delivery adapters;
+- advanced routing, retry, and delivery-policy behavior;
+- Remote Approval; and
+- complete HNS operational qualification.
+
+Repository evidence does not yet establish the proposed `letoatreides`
+reference workstation client or its native notification interface.
 
 ### 15.2 Current Notification Flow and Trigger Inventory
 

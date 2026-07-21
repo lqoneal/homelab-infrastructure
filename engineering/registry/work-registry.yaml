@@ -1,8 +1,8 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 45
-updated_at: '2026-07-19'
+revision: 46
+updated_at: '2026-07-21'
 serialization: yaml
 mutation_history:
 - revision: 2
@@ -281,6 +281,14 @@ mutation_history:
   actor: Codex
   action: create EMP-WORK-ENGINEERING-QUALIFICATION-STATE-PERSISTENCE
   reason: Record standardized Qualification Report persistence and resume consumption as deferred platform work without implementing Engineering State or EOS behavior.
+- revision: 46
+  previous_revision: 45
+  at: '2026-07-21T10:30:00-07:00'
+  actor: Mission 7 repository reconciliation agent
+  action: register MISSION-000007 EENS Repository Convergence
+  reason: Record the qualified EENS Operational Alpha repository convergence,
+    canonical-source and operational-deployment boundary, preserved standalone
+    history, and deferred full HNS expansion.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -2368,3 +2376,48 @@ entities:
     dependency_kind: qualification-gate
     satisfaction_criteria: SprinterOS MILESTONE-0004 is approved and project, phase,
       sprint, controller, EOS, and EMP state agree.
+
+missions:
+- mission_id: MISSION-000007
+  title: EENS Repository Convergence
+  status: in_progress
+  repository_branch: migration/eens-convergence
+  baseline_commit: 4484a34c45e4fc2d10bcf15bb1c873536b4bcc9d
+  scope:
+  - preserve and import qualified standalone EENS history without squashing
+  - establish services/eens as the canonical Homelab repository source
+  - reconcile authoritative and supporting repository documentation
+  - preserve the boundary between EENS Operational Alpha and future HNS
+    architecture
+  implemented_state:
+    capability: EENS Operational Alpha
+    qualified_host: LOpi
+    canonical_source: /data/engineering/repositories/homelab/services/eens
+    qualified_deployment: /home/loneal/data/engineering/eens
+    runtime_supervision: systemd user service
+    durable_store: SQLite using write-ahead logging
+    notification_transport: ntfy
+    capabilities:
+    - append-only engineering event persistence
+    - idempotent event acceptance
+    - ordered event replay
+    - durable independent consumer checkpoints
+    - engineering handoff lifecycle event production
+    - wrapped-command lifecycle event production
+    - continuous notification delivery
+  historical_boundary:
+    evidence: Qualified standalone EENS implementation history and namespaced
+      tags were imported without squashing.
+    ewo_000020: Preserved as historically superseded and not treated as the
+      execution authority for the imported standalone implementation.
+  future_hns_work:
+  - authenticated WebSocket Tier 1 transport
+  - reference workstation client
+  - subscription registry
+  - delivery obligations
+  - delivery-attempt evidence
+  - producer authentication and authorization
+  - provider registry and multiple adapters
+  - advanced routing and retry policy
+  - Remote Approval
+  - complete HNS operational qualification

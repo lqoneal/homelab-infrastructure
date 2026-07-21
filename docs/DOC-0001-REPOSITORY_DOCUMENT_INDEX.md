@@ -1,20 +1,20 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.51
+version: 2.52
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-19
-phase: Raspberry Pi Qualification Architecture Recommendation Persistence
+last_updated: 2026-07-21
+phase: EENS Repository Convergence
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.50
+predecessor_revision: DOC-0001@2.51
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff - Persist Raspberry Pi Qualification Architecture Recommendations
-approval_date: 2026-07-19
+approval_reference: Mission 7 Handoff 2D.2 - EENS Service Discovery Reconciliation
+approval_date: 2026-07-21
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -119,6 +119,8 @@ relationships:
     target: SPEC-0008
   - type: indexes
     target: SPEC-0009
+  - type: discovers
+    target: EENS-OPERATIONAL-ALPHA
   - type: indexes
     target: SPEC-0010
   - type: indexes
@@ -582,6 +584,53 @@ They remain useful published references but require migration, replacement, or a
 
 ---
 
+# Engineering Service Discovery
+
+## EENS Operational Alpha
+
+The Engineering Event and Notification System Operational Alpha is the
+qualified notification-service implementation represented in this repository.
+
+Its canonical repository source is:
+
+```text
+services/eens
+```
+
+The canonical engineering-workstation source location is:
+
+```text
+/data/engineering/repositories/homelab/services/eens
+```
+
+The qualified LOpi operational deployment is:
+
+```text
+/home/loneal/data/engineering/eens
+```
+
+`services/eens` is the authoritative version-controlled implementation source.
+The LOpi path is the qualified runtime deployment produced from that source.
+Runtime deployment state does not replace repository history or controlled
+engineering records, and repository publication alone does not assert that a
+deployment is running or qualified.
+
+The Operational Alpha includes append-only event persistence, idempotent event
+acceptance, ordered replay, independent durable consumer checkpoints,
+engineering handoff and wrapped-command lifecycle event production, and
+continuous notification delivery through ntfy.
+
+SPEC-0009 remains the authoritative notification-service architecture.
+INF-0001 owns the infrastructure and deployment baseline. PROJ-0001 owns
+current project state. The Work Registry records operational management state.
+
+Future HNS capabilities, including authenticated WebSocket transport,
+workstation clients, subscription management, delivery-attempt evidence,
+producer authorization, advanced routing and retry policy, Remote Approval,
+and complete HNS qualification, remain future engineering work.
+
+---
+
 # Source of Truth
 
 Engineering knowledge is governed by Authoritative Engineering Records.
@@ -722,3 +771,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.49 | 2026-07-19 | Reconciled STD-0005, PROC-0003, and INF-0001 authority for the Mission 0 qualification lifecycle; added host-versus-sandbox, evidence-identity, preservation, hardware-isolation, storage-qualification, and appropriation traceability without duplicating operational procedures. |
 | 2.50 | 2026-07-19 | Published and registered SPEC-0010 as the Engineering Knowledge Repository architecture and synchronized STD-0000/STD-0002 knowledge-object, persistence, EOS-boundary, and historical-discovery authority. |
 | 2.51 | 2026-07-19 | Synchronized STD-0005 Version 1.2, SPEC-0007 Version 1.2, and SPEC-0004 Version 1.3 for reference-oriented Raspberry Pi qualification orchestration, standardized Qualification Reports, persistent Engineering State consumption, resume integration, and authoritative-procedure dependency without implementation. |
+| 2.52 | 2026-07-21 | Registered EENS Operational Alpha service discovery, canonical repository source, qualified LOpi deployment, source-versus-deployment boundary, implemented capabilities, and deferred HNS expansion under Mission 7 repository convergence. |

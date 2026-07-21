@@ -1,19 +1,19 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 6.4
+version: 6.5
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-18
-phase: HNS Infrastructure Discovery Required
+last_updated: 2026-07-21
+phase: EENS Repository Convergence Reconciliation
 classification: Project State
-predecessor_revision: PROJ-0001@6.3
+predecessor_revision: PROJ-0001@6.4
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
-approval_reference: Codex Handoff - SPEC-0009 Refinement: Engineering Decision Classification Model
-approval_date: 2026-07-18
+approval_reference: Mission 7 - EENS Repository Convergence and Operational Baseline Reconciliation
+approval_date: 2026-07-21
 persistence_status: Persisted
 source_of_truth: true
 declared_deferrals:
@@ -156,25 +156,32 @@ Revision 16 work is authorized.
 
 **Current Phase:**
 
-HNS Infrastructure Discovery Required
+EENS Repository Convergence Reconciliation
 
 **Phase Objective:**
 
-SPEC-0009 Version 1.6 requires read-only Infrastructure Discovery and
-Validation before evidence-based Implementation Planning and the Notification
-Sprint. SQLite WAL and authenticated WebSocket remain architecture
-recommendations, not final implementation selections. The designated Raspberry
-Pi and `letoatreides`, current runtime, candidate technologies, and baseline
-metrics must be validated before Phase 2 decisions. Version 1.5 records HNS as
-the authoritative accepted engineering event-record and delivery platform,
-while engineering producers retain lifecycle-fact ownership and replaceable
-providers remain consumers and presentation mechanisms only. Version 1.6 also
-records the advisory Known/Unknown/Decision model: Phase 1 converts Unknowns
-to validated Known facts, Phase 2 resolves Decisions from that evidence, and
-Phase 3 implements reviewed decisions. It retains
-advisory Event Platform extensibility, foundational authority separation,
-producer identity, independent event/delivery/provider identity, store and
-transport evolution, and preferred migration guidance without changing scope.
+Reconcile Homelab controlled documentation with the completed EENS repository
+convergence and qualified Operational Alpha baseline.
+
+The complete qualified EENS implementation history has been imported without
+squashing beneath `services/eens`, with imported namespaced tags and historical
+engineering evidence preserved.
+
+EENS Operational Alpha is implemented and qualified. Its current capabilities
+include the canonical engineering event model, SQLite WAL persistence,
+idempotent acceptance, ordered replay, durable consumer checkpoints,
+handoff-lifecycle producer integration, ntfy delivery, continuous runtime, and
+systemd user-service supervision.
+
+LOpi is the qualified operational EENS host. The canonical source is
+`/data/engineering/repositories/homelab/services/eens`; the current qualified
+LOpi deployment is `/home/loneal/data/engineering/eens`.
+
+The broader HNS architecture remains partially implemented. Authenticated
+WebSocket Tier 1, the reference workstation client, subscriptions, delivery
+obligations and attempt evidence, producer authorization, provider registry,
+multiple delivery adapters, advanced routing, Remote Approval, and complete
+HNS qualification remain future work.
 No implementation or runtime migration has begun.
 
 ---
@@ -303,9 +310,12 @@ No implementation or runtime migration has begun.
 - `repair_yaml_header.py` remediation remains deferred and unchanged.
 - Legacy controlled-document migration and repository-wide persistence remediation remain separately governed technical debt.
 - Multi-host operation, dashboards, notifications, analytics, metric calculation, scheduling, AI planning, optimization, and autonomous management remain separately authorized EMP enhancements.
-- HNS implementation remains deferred pending validation of the Raspberry Pi
-  host, `letoatreides`, event contract, durable store, local transport, endpoint
-  adapters, retry model, latency targets, migration, and operational qualification.
+- EENS Operational Alpha is implemented and operationally qualified on LOpi.
+  Full HNS architecture remains future work, including authenticated WebSocket
+  Tier 1, the reference workstation client, subscriptions, delivery obligations
+  and attempt evidence, producer authorization, provider registry, multiple
+  delivery adapters, advanced routing, Remote Approval, and full HNS
+  qualification.
 - Private AI Assistant implementation remains deferred behind SprinterOS in portfolio order.
 - SprinterOS reports persistent microSD/MMC storage I/O errors after the
   platform update. Media, filesystem, controller/interface, and
@@ -383,10 +393,10 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 | EWO-000023 evidence | Immutable, indexed, and reconstructable from controlled repository history |
 | Milestone state | MILESTONE-0007 published as a historical summary; no new evidence or authority established |
 | Reporting standard | Execution-first Completion Reports institutionalized through STD-0003, PROC-0001, TPL-0001, and TPL-0002 |
-| Freshness | Reconciled through the 2026-07-18 Engineering Transaction Profile implementation transaction |
-| Notification planning | SPEC-0009 Version 1.6 records the HNS authority and Known/Unknown/Decision principles and requires read-only infrastructure validation before implementation planning; implementation not started |
-| Notification authority | Designated Raspberry Pi HNS service for accepted events and durable delivery state |
-| Reference client | `letoatreides` proposed; endpoint facts require implementation-planning validation |
+| Freshness | Reconciled through the 2026-07-21 EENS repository convergence and Operational Alpha documentation transaction |
+| Notification platform | EENS Operational Alpha is implemented and qualified on LOpi; `services/eens` is canonical source, while advanced HNS architecture remains deferred |
+| Notification authority | Qualified LOpi EENS Operational Alpha runtime for accepted events and durable consumer state |
+| Reference client | `letoatreides` remains proposed and deferred; no reference workstation client is operational |
 | Delivery priority | Persistent LAN delivery primary; local history secondary visibility; Apple/mobile best-effort and non-authoritative |
 
 ---
