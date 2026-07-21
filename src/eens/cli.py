@@ -7,8 +7,9 @@ import json
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
-from .store import EventStore
+from .store import EventStore, StoredEvent
 
 
 DEFAULT_DATABASE_PATH = Path("runtime/db/eens.sqlite3")
@@ -55,7 +56,40 @@ def build_parser() -> argparse.ArgumentParser:
         help="Print health information as JSON",
     )
 
+    get_parser = subparsers.add_parser(
+        "get",
+        help="Retrieve one event by durable sequence number",
+    )
+    get_parser.add_argument(
+        "sequence",
+        type=int,
+        help="Durable event sequence number",
+    )
+    get_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print the stored event as JSON",
+    )
+
     return parser
+
+
+def stored_event_to_dict(stored_event: StoredEvent) -> dict[str, Any]:
+    """Convert a stored event to a serializable dictionary."""
+
+    event = stored_event.event
+    return {
+        "sequence": stored_event.sequence,
+        "stored_at": stored_event.stored_at,
+        "fingerprint": stored_event.fingerprint,
+        "event_id": event.event_id,
+        "event_type": event.event_type,
+        "source": event.source,
+        "subject": event.subject,
+        "occurred_at": event.occurred_at,
+        "idempotency_key": event.idempotency_key,
+        "payload": event.payload,
+    }
 
 
 def run_count(database_path: Path) -> int:
@@ -92,6 +126,47 @@ def run_health(database_path: Path, *, json_output: bool = False) -> int:
     return 0 if healthy else 1
 
 
+def run_get(
+    database_path: Path,
+    sequence: int,
+    *,
+    json_output: bool = False,
+) -> int:
+    """Execute the get command."""
+
+    if sequence < 1:
+        print("eens: sequence must be greater than zero", file=sys.stderr)
+        return 2
+
+    store = EventStore(database_path)
+    stored_event = store.get_by_sequence(sequence)
+
+    if stored_event is None:
+        print(f"eens: event sequence {sequence} not found", file=sys.stderr)
+        return 1
+
+    result = stored_event_to_dict(stored_event)
+
+    if json_output:
+        print(json.dumps(result, sort_keys=True))
+    else:
+        print(f"sequence: {result['sequence']}")
+        print(f"stored_at: {result['stored_at']}")
+        print(f"fingerprint: {result['fingerprint']}")
+        print(f"event_id: {result['event_id']}")
+        print(f"event_type: {result['event_type']}")
+        print(f"source: {result['source']}")
+        print(f"subject: {result['subject']}")
+        print(f"occurred_at: {result['occurred_at']}")
+        print(f"idempotency_key: {result['idempotency_key']}")
+        print(
+            "payload: "
+            + json.dumps(result["payload"], sort_keys=True)
+        )
+
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     """Run the EENS command-line interface."""
 
@@ -106,6 +181,13 @@ def main(argv: list[str] | None = None) -> int:
         if arguments.command == "health":
             return run_health(
                 database_path,
+                json_output=arguments.json,
+            )
+
+        if arguments.command == "get":
+            return run_get(
+                database_path,
+                arguments.sequence,
                 json_output=arguments.json,
             )
     except OSError as exc:
