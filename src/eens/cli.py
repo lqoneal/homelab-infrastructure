@@ -12,6 +12,7 @@ from typing import Any
 from .events import EngineeringEvent
 from .lifecycle import HandoffLifecycleProducer
 from .runtime import HandoffCommandRunner
+from .consumer import EventConsumer
 from .store import EventStore, IdempotencyConflictError, StoredEvent
 
 
@@ -219,6 +220,30 @@ def build_parser() -> argparse.ArgumentParser:
         "command_args",
         nargs=argparse.REMAINDER,
         help="Command to execute; precede it with --",
+    )
+
+    consume_parser = subparsers.add_parser(
+        "consume",
+        help="Consume persisted events using a durable checkpoint",
+    )
+    consume_parser.add_argument(
+        "--consumer",
+        required=True,
+        help="Stable consumer identity",
+    )
+    consume_parser.add_argument(
+        "--limit",
+        type=int,
+        help="Maximum number of events to consume",
+    )
+    consume_parser.add_argument(
+        "--checkpoint",
+        help="Optional explicit checkpoint database path",
+    )
+    consume_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Emit one JSON object per consumed event",
     )
 
     return parser
@@ -588,6 +613,70 @@ def run_wrapped_command(
 
     return result.returncode
 
+
+def run_consume(
+    database_path: Path,
+    *,
+    consumer_name: str,
+    limit: int | None,
+    checkpoint_path: str | None,
+    json_output: bool,
+) -> int:
+    """Consume events and advance a durable per-consumer checkpoint."""
+
+    if limit is not None and limit < 1:
+        print("eens: --limit must be greater than zero", file=sys.stderr)
+        return 2
+
+    checkpoint_database = (
+        Path(checkpoint_path).expanduser()
+        if checkpoint_path
+        else database_path.with_name(
+            f"{database_path.stem}.consumers.sqlite3"
+        )
+    )
+
+    try:
+        consumer = EventConsumer(
+            EventStore(database_path),
+            checkpoint_database,
+            consumer_name=consumer_name,
+        )
+        consumed = consumer.consume(limit=limit)
+    except (TypeError, ValueError) as exc:
+        print(f"eens: invalid consumer request: {exc}", file=sys.stderr)
+        return 2
+
+    for stored_event in consumed:
+        event = stored_event.event
+        output = {
+            "sequence": stored_event.sequence,
+            "event_type": event.event_type,
+            "source": event.source,
+            "subject": event.subject,
+            "occurred_at": event.occurred_at,
+            "payload": event.payload,
+            "event_id": event.event_id,
+            "idempotency_key": event.idempotency_key,
+            "fingerprint": stored_event.fingerprint,
+        }
+
+        if json_output:
+            print(json.dumps(output, sort_keys=True))
+        else:
+            print(f"sequence: {output['sequence']}")
+            print(f"event_type: {output['event_type']}")
+            print(f"source: {output['source']}")
+            print(f"subject: {output['subject']}")
+            print(f"occurred_at: {output['occurred_at']}")
+            print(
+                "payload: "
+                + json.dumps(output["payload"], sort_keys=True)
+            )
+            print()
+
+    return 0
+
 def main(argv: list[str] | None = None) -> int:
     """Run the EENS command-line interface."""
 
@@ -652,6 +741,15 @@ def main(argv: list[str] | None = None) -> int:
                 source=arguments.source,
                 cwd=arguments.cwd,
                 command_args=arguments.command_args,
+            )
+
+        if arguments.command == "consume":
+            return run_consume(
+                database_path,
+                consumer_name=arguments.consumer,
+                limit=arguments.limit,
+                checkpoint_path=arguments.checkpoint,
+                json_output=arguments.json,
             )
     except OSError as exc:
         print(f"eens: {exc}", file=sys.stderr)

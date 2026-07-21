@@ -643,5 +643,111 @@ class RunCliTests(unittest.TestCase):
         self.assertEqual(EventStore(self.database_path).count(), 2)
 
 
+class ConsumeCliTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp_directory = tempfile.TemporaryDirectory()
+        root = Path(self.temp_directory.name)
+        self.database_path = root / "eens.sqlite3"
+        self.checkpoint_path = root / "checkpoints.sqlite3"
+        self.store = EventStore(self.database_path)
+
+        for index in range(1, 4):
+            self.store.append(
+                EngineeringEvent(
+                    event_type="engineering.test",
+                    source="test",
+                    subject=f"Event {index}",
+                    idempotency_key=f"consume-event-{index}",
+                    payload={"index": index},
+                )
+            )
+
+    def tearDown(self) -> None:
+        self.temp_directory.cleanup()
+
+    def run_cli(self, *arguments: str) -> tuple[int, str, str]:
+        output = io.StringIO()
+        errors = io.StringIO()
+        with (
+            contextlib.redirect_stdout(output),
+            contextlib.redirect_stderr(errors),
+        ):
+            exit_code = main(list(arguments))
+        return (
+            exit_code,
+            output.getvalue().strip(),
+            errors.getvalue().strip(),
+        )
+
+    def arguments(self) -> tuple[str, ...]:
+        return (
+            "--database",
+            str(self.database_path),
+            "consume",
+            "--consumer",
+            "notifications",
+            "--checkpoint",
+            str(self.checkpoint_path),
+        )
+
+    def test_consume_outputs_pending_events(self) -> None:
+        exit_code, output, errors = self.run_cli(*self.arguments())
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("sequence: 1", output)
+        self.assertIn("sequence: 3", output)
+        self.assertEqual(errors, "")
+
+    def test_consume_retry_outputs_nothing(self) -> None:
+        self.run_cli(*self.arguments())
+        exit_code, output, errors = self.run_cli(*self.arguments())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(output, "")
+        self.assertEqual(errors, "")
+
+    def test_consume_limit(self) -> None:
+        exit_code, output, errors = self.run_cli(
+            *self.arguments(),
+            "--limit",
+            "2",
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("sequence: 1", output)
+        self.assertIn("sequence: 2", output)
+        self.assertNotIn("sequence: 3", output)
+        self.assertEqual(errors, "")
+
+    def test_consume_json_lines(self) -> None:
+        exit_code, output, errors = self.run_cli(
+            *self.arguments(),
+            "--limit",
+            "1",
+            "--json",
+        )
+
+        record = json.loads(output)
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(record["sequence"], 1)
+        self.assertEqual(record["payload"], {"index": 1})
+        self.assertEqual(errors, "")
+
+    def test_consume_rejects_nonpositive_limit(self) -> None:
+        exit_code, output, errors = self.run_cli(
+            *self.arguments(),
+            "--limit",
+            "0",
+        )
+
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(output, "")
+        self.assertEqual(
+            errors,
+            "eens: --limit must be greater than zero",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
