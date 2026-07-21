@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+
+runtime/db/*.sqlite3
+runtime/db/*.sqlite3-shm
+runtime/db/*.sqlite3-wal
+runtime/log/*
+runtime/backups/*
+
+!runtime/log/.gitkeep
+!runtime/backups/.gitkeep
