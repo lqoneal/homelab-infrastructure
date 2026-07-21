@@ -293,6 +293,48 @@ def run_replay(
     return 0
 
 
+def _matching_existing_event(
+    store: EventStore,
+    *,
+    event_type: str,
+    source: str,
+    subject: str,
+    idempotency_key: str,
+    payload: dict[str, Any],
+    event_id: str | None,
+    occurred_at: str | None,
+) -> StoredEvent | None:
+    """Resolve an existing idempotent request before generating metadata."""
+
+    for stored_event in store.replay():
+        existing = stored_event.event
+
+        if existing.idempotency_key != idempotency_key:
+            continue
+
+        matches = (
+            existing.event_type == event_type
+            and existing.source == source
+            and existing.subject == subject
+            and existing.payload == payload
+            and (event_id is None or existing.event_id == event_id)
+            and (
+                occurred_at is None
+                or existing.occurred_at == occurred_at
+            )
+        )
+
+        if not matches:
+            raise IdempotencyConflictError(
+                f"idempotency key already belongs to sequence "
+                f"{stored_event.sequence}"
+            )
+
+        return stored_event
+
+    return None
+
+
 def run_emit(
     database_path: Path,
     *,
@@ -307,37 +349,61 @@ def run_emit(
 ) -> int:
     """Execute the emit command."""
 
-    event_arguments: dict[str, Any] = {
-        "event_type": event_type,
-        "source": source,
-        "subject": subject,
-        "idempotency_key": idempotency_key,
-        "payload": payload,
-    }
-
-    if event_id is not None:
-        event_arguments["event_id"] = event_id
-
-    if occurred_at is not None:
-        event_arguments["occurred_at"] = occurred_at
+    store = EventStore(database_path)
 
     try:
-        event = EngineeringEvent(**event_arguments)
-        result = EventStore(database_path).append(event)
+        existing = _matching_existing_event(
+            store,
+            event_type=event_type,
+            source=source,
+            subject=subject,
+            idempotency_key=idempotency_key,
+            payload=payload,
+            event_id=event_id,
+            occurred_at=occurred_at,
+        )
+
+        if existing is not None:
+            output = {
+                "status": "duplicate",
+                "inserted": False,
+                "sequence": existing.sequence,
+                "event_id": existing.event.event_id,
+                "fingerprint": existing.fingerprint,
+            }
+        else:
+            event_arguments: dict[str, Any] = {
+                "event_type": event_type,
+                "source": source,
+                "subject": subject,
+                "idempotency_key": idempotency_key,
+                "payload": payload,
+            }
+
+            if event_id is not None:
+                event_arguments["event_id"] = event_id
+
+            if occurred_at is not None:
+                event_arguments["occurred_at"] = occurred_at
+
+            event = EngineeringEvent(**event_arguments)
+            result = store.append(event)
+
+            output = {
+                "status": (
+                    "inserted" if result.inserted else "duplicate"
+                ),
+                "inserted": result.inserted,
+                "sequence": result.sequence,
+                "event_id": event.event_id,
+                "fingerprint": event.fingerprint(),
+            }
     except IdempotencyConflictError as exc:
         print(f"eens: idempotency conflict: {exc}", file=sys.stderr)
         return 1
     except (TypeError, ValueError) as exc:
         print(f"eens: invalid event: {exc}", file=sys.stderr)
         return 2
-
-    output = {
-        "status": "inserted" if result.inserted else "duplicate",
-        "inserted": result.inserted,
-        "sequence": result.sequence,
-        "event_id": event.event_id,
-        "fingerprint": event.fingerprint(),
-    }
 
     if json_output:
         print(json.dumps(output, sort_keys=True))
