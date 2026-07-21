@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from .events import EngineeringEvent
+from .lifecycle import HandoffLifecycleProducer
 from .store import EventStore, IdempotencyConflictError, StoredEvent
 
 
@@ -152,6 +153,41 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print the append result as JSON",
+    )
+
+    handoff_parser = subparsers.add_parser(
+        "handoff",
+        help="Emit a standardized engineering handoff lifecycle event",
+    )
+    handoff_parser.add_argument(
+        "state",
+        choices=("started", "completed", "failed"),
+        help="Handoff lifecycle state",
+    )
+    handoff_parser.add_argument(
+        "--mission",
+        required=True,
+        help="Mission name",
+    )
+    handoff_parser.add_argument(
+        "--handoff",
+        required=True,
+        type=int,
+        help="Mission-scoped handoff number",
+    )
+    handoff_parser.add_argument(
+        "--source",
+        default="engineering-handoff-lifecycle",
+        help="Lifecycle producer identity",
+    )
+    handoff_parser.add_argument(
+        "--detail",
+        help="Optional completion or failure detail",
+    )
+    handoff_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print the lifecycle result as JSON",
     )
 
     return parser
@@ -416,6 +452,62 @@ def run_emit(
     return 0
 
 
+
+def run_handoff(
+    database_path: Path,
+    *,
+    state: str,
+    mission: str,
+    handoff: int,
+    source: str,
+    detail: str | None = None,
+    json_output: bool = False,
+) -> int:
+    """Emit a standardized engineering handoff lifecycle event."""
+
+    if handoff < 1:
+        print("eens: --handoff must be greater than zero", file=sys.stderr)
+        return 2
+
+    try:
+        result = HandoffLifecycleProducer(
+            EventStore(database_path),
+            source=source,
+        ).emit(
+            state=state,
+            mission=mission,
+            handoff=handoff,
+            detail=detail,
+        )
+    except (TypeError, ValueError) as exc:
+        print(f"eens: invalid handoff event: {exc}", file=sys.stderr)
+        return 2
+    except IdempotencyConflictError as exc:
+        print(f"eens: idempotency conflict: {exc}", file=sys.stderr)
+        return 1
+
+    output = {
+        "status": "inserted" if result.inserted else "duplicate",
+        "inserted": result.inserted,
+        "sequence": result.sequence,
+        "event_type": result.event.event_type,
+        "idempotency_key": result.event.idempotency_key,
+        "event_id": result.event.event_id,
+        "fingerprint": result.event.fingerprint(),
+    }
+
+    if json_output:
+        print(json.dumps(output, sort_keys=True))
+    else:
+        print(f"status: {output['status']}")
+        print(f"sequence: {output['sequence']}")
+        print(f"event_type: {output['event_type']}")
+        print(f"idempotency_key: {output['idempotency_key']}")
+        print(f"event_id: {output['event_id']}")
+        print(f"fingerprint: {output['fingerprint']}")
+
+    return 0
+
 def main(argv: list[str] | None = None) -> int:
     """Run the EENS command-line interface."""
 
@@ -458,6 +550,17 @@ def main(argv: list[str] | None = None) -> int:
                 payload=arguments.payload,
                 event_id=arguments.event_id,
                 occurred_at=arguments.occurred_at,
+                json_output=arguments.json,
+            )
+
+        if arguments.command == "handoff":
+            return run_handoff(
+                database_path,
+                state=arguments.state,
+                mission=arguments.mission,
+                handoff=arguments.handoff,
+                source=arguments.source,
+                detail=arguments.detail,
                 json_output=arguments.json,
             )
     except OSError as exc:

@@ -458,5 +458,95 @@ class CliTests(unittest.TestCase):
         self.assertEqual(stored.event.occurred_at, occurred_at)
 
 
+class HandoffCliTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp_directory = tempfile.TemporaryDirectory()
+        self.database_path = (
+            Path(self.temp_directory.name) / "eens.sqlite3"
+        )
+
+    def tearDown(self) -> None:
+        self.temp_directory.cleanup()
+
+    def run_cli(self, *arguments: str) -> tuple[int, str, str]:
+        output = io.StringIO()
+        errors = io.StringIO()
+        with (
+            contextlib.redirect_stdout(output),
+            contextlib.redirect_stderr(errors),
+        ):
+            exit_code = main(list(arguments))
+        return (
+            exit_code,
+            output.getvalue().strip(),
+            errors.getvalue().strip(),
+        )
+
+    def arguments(self, state: str = "started") -> tuple[str, ...]:
+        return (
+            "--database",
+            str(self.database_path),
+            "handoff",
+            state,
+            "--mission",
+            "EENS Operational Alpha",
+            "--handoff",
+            "1",
+        )
+
+    def test_handoff_started_is_emitted(self) -> None:
+        exit_code, output, errors = self.run_cli(*self.arguments())
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("status: inserted", output)
+        self.assertIn(
+            "event_type: engineering.handoff.started",
+            output,
+        )
+        self.assertEqual(EventStore(self.database_path).count(), 1)
+        self.assertEqual(errors, "")
+
+    def test_handoff_exact_retry_is_duplicate(self) -> None:
+        self.run_cli(*self.arguments())
+        exit_code, output, errors = self.run_cli(*self.arguments())
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("status: duplicate", output)
+        self.assertIn("sequence: 1", output)
+        self.assertEqual(EventStore(self.database_path).count(), 1)
+        self.assertEqual(errors, "")
+
+    def test_handoff_json_output(self) -> None:
+        exit_code, output, errors = self.run_cli(
+            *self.arguments("completed"),
+            "--detail",
+            "Qualification passed.",
+            "--json",
+        )
+
+        result = json.loads(output)
+
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(result["inserted"])
+        self.assertEqual(
+            result["event_type"],
+            "engineering.handoff.completed",
+        )
+        self.assertEqual(errors, "")
+
+    def test_handoff_rejects_nonpositive_number(self) -> None:
+        arguments = list(self.arguments())
+        arguments[arguments.index("--handoff") + 1] = "0"
+
+        exit_code, output, errors = self.run_cli(*arguments)
+
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(output, "")
+        self.assertEqual(
+            errors,
+            "eens: --handoff must be greater than zero",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
