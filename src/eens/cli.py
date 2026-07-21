@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from pathlib import Path
@@ -44,6 +45,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="Print the number of persisted engineering events",
     )
 
+    health_parser = subparsers.add_parser(
+        "health",
+        help="Report EENS event-store health",
+    )
+    health_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print health information as JSON",
+    )
+
     return parser
 
 
@@ -53,6 +64,32 @@ def run_count(database_path: Path) -> int:
     store = EventStore(database_path)
     print(store.count())
     return 0
+
+
+def run_health(database_path: Path, *, json_output: bool = False) -> int:
+    """Execute the health command."""
+
+    store = EventStore(database_path)
+    event_count = store.count()
+    journal_mode = store.journal_mode()
+    healthy = journal_mode == "wal"
+
+    result = {
+        "status": "ok" if healthy else "degraded",
+        "database": str(database_path),
+        "journal_mode": journal_mode,
+        "event_count": event_count,
+    }
+
+    if json_output:
+        print(json.dumps(result, sort_keys=True))
+    else:
+        print(f"status: {result['status']}")
+        print(f"database: {result['database']}")
+        print(f"journal_mode: {result['journal_mode']}")
+        print(f"event_count: {result['event_count']}")
+
+    return 0 if healthy else 1
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -65,6 +102,12 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if arguments.command == "count":
             return run_count(database_path)
+
+        if arguments.command == "health":
+            return run_health(
+                database_path,
+                json_output=arguments.json,
+            )
     except OSError as exc:
         print(f"eens: {exc}", file=sys.stderr)
         return 1
