@@ -2,20 +2,20 @@
 
 document_id: INF-0001
 title: Engineering Infrastructure Baseline
-version: 2.5
+version: 2.6
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-17
-phase: Codex Wrapper Enforcement
+last_updated: 2026-07-19
+phase: Controlled Documentation Reconciliation and Engineering Standards Update
 domain: Infrastructure
 classification: Global Infrastructure Baseline
-predecessor_revision: INF-0001@2.4
+predecessor_revision: INF-0001@2.5
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EWO-000019
-approval_date: 2026-07-17
+approval_reference: Codex Handoff - Mission 0 Controlled Documentation Reconciliation and Engineering Standards Update
+approval_date: 2026-07-19
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -28,6 +28,8 @@ relationships:
     target: HW-0001
   - type: governed_by
     target: PROC-0003
+  - type: conforms_to
+    target: STD-0005
 tags:
   - infrastructure
   - engineering
@@ -71,6 +73,13 @@ Project-specific infrastructure shall be documented within the respective projec
 
 This document shall be reviewed during the Work Initiation Ritual whenever engineering work depends on the development environment or shared infrastructure.
 
+Before interpreting an access, mount, repository, device, or tool failure as an
+infrastructure fault, verify the execution environment under PROC-0003. Record
+whether execution occurs on the Engineering host or within a sandbox,
+container, remote context, chroot, or other constrained namespace; verify the
+canonical repository path and required write capability; and identify policy,
+privilege, mount, device, and network limitations.
+
 ---
 
 # Engineering Terminal Privilege Model
@@ -96,6 +105,21 @@ Administrative tasks include:
 * Operating system maintenance
 
 This principle preserves least privilege, reduces accidental system-level changes, improves reproducibility, and avoids clipboard or session isolation issues observed when running administrator terminal sessions.
+
+## Engineering Host and Sandbox Model
+
+The Engineering host is authoritative for infrastructure state. Sandboxes and
+other constrained execution environments may intentionally expose read-only
+bind mounts, filtered device nodes, restricted logs, reduced privileges, or
+different mount namespaces. Those characteristics are execution constraints,
+not evidence that the host filesystem, repository, or storage asset has failed.
+
+Infrastructure conclusions shall be corroborated in the host context using
+effective mount and filesystem options, configured mount sources, device and
+logical-volume state, repository ownership and permissions, host logs, and a
+minimal capability check appropriate to the authorized mission. If host
+verification is unavailable, record the uncertainty and do not perform a
+remount, repair, or configuration change based solely on the sandbox view.
 
 ---
 
@@ -242,6 +266,31 @@ and bridge expose it, filesystem checks use non-repair modes, and assessment
 mounts use `ro,nosuid,nodev,noexec`. A capability installation or validation
 does not qualify, register, assign, repair, or authorize writes to any storage
 asset.
+
+### Infrastructure Qualification Philosophy
+
+Mission 0 qualifies infrastructure assets independently of project
+assignment. Following qualification, an asset may be retained as a reusable
+Homelab engineering resource until a separate Operational Assignment
+(Appropriation) decision integrates it into a project or service.
+
+The controlled lifecycle is Asset Discovery, Asset Identification, Inventory,
+Evidence Acquisition, Qualification, Operational Assignment, Monitoring, and
+Retirement. Evidence acquisition, recovery, restoration, and operational
+deployment remain separate decisions. Incidental Homelab assets discovered
+during an investigation should be preserved and independently qualified under
+their own identity and evidence boundary when authorized.
+
+Backups, successful reads, successful mounts, and tool health summaries do not
+alone qualify storage. Qualification is an evidence-based fitness decision
+under STD-0005 and PROC-0003. Temporary disqualification, quarantine, or
+pending qualification is acceptable when identity, health, interface, power,
+filesystem, or preservation evidence is incomplete or conflicting.
+
+Before permanent hardware disqualification, isolate one variable at a time
+where safe: media, reader, controller, interface, host, power delivery,
+adapter, cable, firmware, or software layer. Preserve evidence before repair;
+qualify before recovery whenever practical.
 
 ---
 
@@ -565,3 +614,4 @@ These targets describe the intended engineering direction and shall be updated a
 | 2.3     | 2026-07-17 | Established shared Codex lifecycle notifications, secure ntfy configuration, controller usage, failure behavior, troubleshooting, and future self-hosted migration. |
 | 2.4     | 2026-07-17 | Recorded value-free example rejection and completed controlled live acceptance of the Stage 1 notification workflow. |
 | 2.5     | 2026-07-17 | Required wrapper use for repository-governed Codex missions, added initiation-time bypass detection, and added bounded mission-timeout notification behavior. |
+| 2.6     | 2026-07-19 | Distinguished authoritative host state from sandbox constraints; required execution-environment and write-capability verification; codified asset-oriented infrastructure qualification, evidence-based storage decisions, incidental-asset handling, preservation sequencing, and one-variable hardware isolation. |

@@ -1,8 +1,8 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 42
-updated_at: '2026-07-18'
+revision: 45
+updated_at: '2026-07-19'
 serialization: yaml
 mutation_history:
 - revision: 2
@@ -263,6 +263,24 @@ mutation_history:
   actor: Engineering Governance ETP implementation agent
   action: institutionalize Engineering Transaction Profile capability
   reason: Publish SPEC-0008, one conservative baseline profile, bounded PROC-0004 and TPL-0001 integration, and fail-closed validation without new document classes, runtime services, or semantic ownership changes.
+- revision: 43
+  previous_revision: 42
+  at: '2026-07-19T03:11:49+00:00'
+  actor: Codex
+  action: create EMP-WORK-RASPBERRY-PI-ENGINEERING-QUALIFICATION-PROCEDURE
+  reason: Record the non-implementing Raspberry Pi EQP recommendation after completed documentation discovery.
+- revision: 44
+  previous_revision: 43
+  at: '2026-07-19T03:12:22+00:00'
+  actor: Codex
+  action: create EMP-WORK-ENGINEERING-QUALIFICATION-AUTOMATION
+  reason: Record future Engineering OS qualification automation separately from procedure development; no implementation is authorized.
+- revision: 45
+  previous_revision: 44
+  at: '2026-07-19T03:33:22+00:00'
+  actor: Codex
+  action: create EMP-WORK-ENGINEERING-QUALIFICATION-STATE-PERSISTENCE
+  reason: Record standardized Qualification Report persistence and resume consumption as deferred platform work without implementing Engineering State or EOS behavior.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -1687,6 +1705,147 @@ entities:
     priority: 1
     completion_criteria: SPEC-0008 owns profile coordination, the sole baseline profile resolves deterministically and fail-closed, PROC-0004 consumes it, TPL-0001 records the frozen manifest, and existing semantic owners remain unchanged through atomic validated publication.
     queue_ids: []
+  - registry_id: EMP-WORK-RASPBERRY-PI-ENGINEERING-QUALIFICATION-PROCEDURE
+    object_type: WorkItem
+    title: Raspberry Pi Engineering Qualification Procedure
+    management_state: proposed
+    owner: Engineering Governance
+    scope: Reusable Raspberry Pi engineering workstation commissioning qualification
+    authority_reference: Codex Handoff — Record Raspberry Pi Engineering Qualification Procedure Recommendation
+    source_records:
+    - STD-0005
+    - PROC-0001
+    - PROC-0003
+    - INF-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-SPRINTEROS-PRODUCT
+    created_at: '2026-07-19T03:08:05+00:00'
+    updated_at: '2026-07-19T03:08:05+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: proposed
+      at: '2026-07-19T03:08:05+00:00'
+      actor: Codex
+      reason: Record a future procedure recommendation after portfolio discovery found no reusable Raspberry Pi qualification procedure.
+      authority_reference: Codex Handoff — Record Raspberry Pi Engineering Qualification Procedure Recommendation
+    project_id: EMP-PROJECT-HOMELAB
+    order: 20
+    mission_id: null
+    phase_id: null
+    sprint_id: null
+    work_type: controlled-procedure-recommendation
+    priority: 2
+    completion_criteria: Under separate future authorization, publish a repeatable controlled Raspberry Pi Engineering Qualification Procedure for engineering workstation commissioning. The procedure shall cover physical inspection, asset identification, power validation, storage validation, operating system verification, SSH provisioning and validation, network validation, hardware inventory, firmware validation, thermal validation, engineering baseline verification, asset registration, role assignment, documentation update, and engineering qualification sign-off. It shall reference existing authorities instead of duplicating their requirements.
+    queue_ids: []
+    planning_status: recommendation-recorded
+    implementation_status: not-authorized
+    recommended_workflow:
+    - Physical inspection
+    - Asset identification
+    - Power validation
+    - Storage validation
+    - Operating system verification
+    - SSH provisioning and validation
+    - Network validation
+    - Hardware inventory
+    - Firmware validation
+    - Thermal validation
+    - Engineering baseline verification
+    - Asset registration
+    - Role assignment
+    - Documentation update
+    - Engineering qualification sign-off
+    gap_summary: STD-0005 governs the hardware lifecycle, PROC-0003 governs recovery and Raspberry Pi update qualification, PROC-0001 governs work initiation and execution, and INF-0001 records infrastructure baselines; none defines an end-to-end repeatable Raspberry Pi commissioning qualification procedure.
+    reentry_conditions:
+    - Separate engineering authorization to develop controlled documentation
+    - Whole-document reconciliation of every controlled document selected for revision
+    - Confirmation that no intervening controlled procedure supersedes this recommendation
+  - registry_id: EMP-WORK-ENGINEERING-QUALIFICATION-AUTOMATION
+    object_type: WorkItem
+    title: Engineering Qualification Workflow Automation
+    management_state: proposed
+    owner: Engineering Platform
+    scope: Future Engineering OS automation of the governed qualification workflow
+    authority_reference: Codex Handoff — Record Raspberry Pi Engineering Qualification Procedure Recommendation
+    source_records:
+    - STD-0005
+    - SPEC-0007
+    relationships:
+    - type: related_to
+      target: EMP-WORK-RASPBERRY-PI-ENGINEERING-QUALIFICATION-PROCEDURE
+    created_at: '2026-07-19T03:08:05+00:00'
+    updated_at: '2026-07-19T03:08:05+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: proposed
+      at: '2026-07-19T03:08:05+00:00'
+      actor: Codex
+      reason: Record future Engineering OS qualification automation separately from procedure development; no implementation is authorized.
+      authority_reference: Codex Handoff — Record Raspberry Pi Engineering Qualification Procedure Recommendation
+    project_id: EMP-PROJECT-HOMELAB
+    order: 21
+    mission_id: null
+    phase_id: null
+    sprint_id: null
+    work_type: engineering-platform-automation-recommendation
+    priority: 3
+    completion_criteria: After a Raspberry Pi Engineering Qualification Procedure is published and under separate implementation authorization, provide an Engineering OS workflow such as engctl qualify that executes or orchestrates the governed qualification stages, preserves validation evidence, and reports qualification status without creating a second source of procedural authority.
+    queue_ids: []
+    planning_status: recommendation-recorded
+    implementation_status: not-authorized
+    future_capability: engctl qualify
+    dependency_summary: Procedure publication and activation must precede automation design and implementation.
+    reentry_conditions:
+    - Published Raspberry Pi Engineering Qualification Procedure
+    - Separate Engineering OS automation authorization
+    - Defined evidence and validation interfaces compatible with the published procedure
+  - registry_id: EMP-WORK-ENGINEERING-QUALIFICATION-STATE-PERSISTENCE
+    object_type: WorkItem
+    title: Engineering Qualification State Persistence
+    management_state: proposed
+    owner: Engineering Platform
+    scope: Standardized Qualification Report persistence for Engineering State and resume consumption
+    authority_reference: Codex Handoff — Persist Raspberry Pi Qualification Architecture Recommendations
+    source_records:
+    - STD-0004
+    - STD-0005
+    - SPEC-0004
+    - SPEC-0007
+    relationships:
+    - type: related_to
+      target: EMP-WORK-RASPBERRY-PI-ENGINEERING-QUALIFICATION-PROCEDURE
+    - type: related_to
+      target: EMP-WORK-ENGINEERING-QUALIFICATION-AUTOMATION
+    created_at: '2026-07-19T03:33:22+00:00'
+    updated_at: '2026-07-19T03:33:22+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: proposed
+      at: '2026-07-19T03:33:22+00:00'
+      actor: Codex
+      reason: Record missing deferred architecture work after duplicate review found procedure-publication and automation items but no qualification-state persistence item.
+      authority_reference: Codex Handoff — Persist Raspberry Pi Qualification Architecture Recommendations
+    project_id: EMP-PROJECT-HOMELAB
+    order: 22
+    mission_id: null
+    phase_id: null
+    sprint_id: null
+    work_type: engineering-platform-state-persistence-recommendation
+    priority: 2
+    completion_criteria: Under separate future authorization, define and implement standardized Qualification Reports as persistent Engineering State artifacts with asset identity, qualification disposition, limitations, authoritative source linkage, freshness, and traceability consumable by Engineering Resume and future Engineering Platform automation without duplicating the report, asset record, or governing procedure.
+    queue_ids: []
+    planning_status: recommendation-recorded
+    implementation_status: not-authorized
+    dependency_summary: The authoritative Qualification Procedure and standardized Qualification Report contract must exist before state persistence, resume integration, or qualification automation is implemented.
+    reentry_conditions:
+    - Published authoritative Engineering Qualification Procedure
+    - Approved standardized Qualification Report contract
+    - Separately authorized Engineering State and resume integration work
+    - Defined ownership and freshness interfaces consistent with STD-0004, STD-0005, SPEC-0004, and SPEC-0007
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP
     object_type: Queue

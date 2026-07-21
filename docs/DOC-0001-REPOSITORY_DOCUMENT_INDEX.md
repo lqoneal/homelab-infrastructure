@@ -1,21 +1,21 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.48
+version: 2.51
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-18
-phase: Engineering Governance Framework Version 1.0 Operational Qualification Milestone
+last_updated: 2026-07-19
+phase: Raspberry Pi Qualification Architecture Recommendation Persistence
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.47
+predecessor_revision: DOC-0001@2.50
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Engineering Governance Framework Version 1.0 Operational Qualification Milestone
-approval_date: 2026-07-18
-persistence_status: Persisted
+approval_reference: Codex Handoff - Persist Raspberry Pi Qualification Architecture Recommendations
+approval_date: 2026-07-19
+persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
 relationships:
@@ -119,6 +119,8 @@ relationships:
     target: SPEC-0008
   - type: indexes
     target: SPEC-0009
+  - type: indexes
+    target: SPEC-0010
   - type: indexes
     target: MILESTONE-0006
   - type: indexes
@@ -345,6 +347,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | SPEC-0007 | Engineering Platform Construction Specification | Active | Engineering Platform | `docs/specifications/SPEC-0007-ENGINEERING-PLATFORM-CONSTRUCTION-SPECIFICATION.md` |
 | SPEC-0008 | Engineering Transaction Profile Specification | Active | Engineering Governance | `docs/specifications/SPEC-0008-ENGINEERING_TRANSACTION_PROFILE_SPECIFICATION.md` |
 | SPEC-0009 | Notification Service Specification | Active | Engineering Platform | `docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md` |
+| SPEC-0010 | Engineering Knowledge Repository Architecture | Active | Engineering Platform | `docs/specifications/SPEC-0010-ENGINEERING-KNOWLEDGE-REPOSITORY-ARCHITECTURE.md` |
 | SERVICE-0001 | EOS Core Services Catalog | Draft | EOS Program | `docs/services/SERVICE-0001-EOS_CORE_SERVICES_CATALOG.md` |
 | SERVICE-0002 | EMP Management Services Catalog | Active | Engineering Management Platform | `docs/services/SERVICE-0002-EMP_MANAGEMENT_SERVICES_CATALOG.md` |
 | GEN-0001 | Engineering Operating System Genesis Record | Active | Engineering Governance | `docs/genesis/GEN-0001-GENESIS_GOVERNANCE_RECORD.md` |
@@ -597,6 +600,27 @@ Examples:
 
 Duplication of controlled engineering information is prohibited.
 
+## Mission 0 Qualification Authority and Traceability
+
+The following map establishes authoritative ownership for reusable Mission 0
+qualification guidance. Future handoffs shall reference these authorities
+instead of reproducing their procedures.
+
+| Engineering concern | Authoritative document | Supporting relationship |
+| --- | --- | --- |
+| Asset lifecycle, qualification gates, appropriation, monitoring, and retirement | STD-0005 | HW-0001 and AST records own asset-specific state. |
+| Qualification orchestration and report requirement | STD-0005 | A future platform-specific procedure references existing authorities; it does not duplicate them. |
+| Qualification Report persistence and automation dependency | SPEC-0007 | STD-0004 owns state freshness; SPEC-0004 owns derived resume reconstruction. |
+| Evidence identity, acquisition, preservation, recovery, restoration, execution-environment verification, and hardware isolation | PROC-0003 | PROC-0001 initiates bounded work; project records supply system-specific acceptance criteria. |
+| Engineering host baseline, repository locations, storage capability, and host-versus-sandbox model | INF-0001 | Project infrastructure references this global baseline without duplicating it. |
+| Controlled-document discovery, authority routing, and publication traceability | DOC-0001 | PROC-0005 governs controlled publication; STD-0001 and STD-0002 govern lifecycle and persistence. |
+
+The lifecycle vocabulary is: Asset Discovery, Asset Identification,
+Inventory, Evidence Acquisition, Qualification, Operational Assignment
+(Appropriation), Monitoring, and Retirement. Recovery, Restoration, and
+Operational Deployment are separate decisions and shall not be inferred from
+acquisition, readability, backup status, or qualification alone.
+
 ---
 
 # Engineering Principles
@@ -614,6 +638,11 @@ The governing principles include:
 * Resumability by design
 * Traceability
 * Relationships are first-class
+* Verify evidence identity before investigation
+* Preserve evidence before recovery or repair
+* Qualify assets independently of project assignment
+* Distinguish Engineering host state from execution-environment constraints
+* Isolate one variable before permanent hardware disqualification
 
 ---
 
@@ -690,3 +719,6 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.46 | 2026-07-18 | Registered PROC-0007 Version 0.1 as the Draft Governance Stabilization Procedure implementing the qualified twelve-stage orchestration model with Active PROC-0006 as its external qualification dependency. |
 | 2.47 | 2026-07-18 | Approved, activated, published, and integrated PROC-0007 Version 1.0 under EGR-000006, with reference-only revisions to PROC-0001, PROC-0002, PROC-0004, PROC-0005, and PROC-0006. |
 | 2.48 | 2026-07-18 | Registered MILESTONE-0008 as the Approved Engineering Governance Framework Version 1.0 operational-qualification boundary completing Governance Phase I without changing procedures or introducing implementation authority. |
+| 2.49 | 2026-07-19 | Reconciled STD-0005, PROC-0003, and INF-0001 authority for the Mission 0 qualification lifecycle; added host-versus-sandbox, evidence-identity, preservation, hardware-isolation, storage-qualification, and appropriation traceability without duplicating operational procedures. |
+| 2.50 | 2026-07-19 | Published and registered SPEC-0010 as the Engineering Knowledge Repository architecture and synchronized STD-0000/STD-0002 knowledge-object, persistence, EOS-boundary, and historical-discovery authority. |
+| 2.51 | 2026-07-19 | Synchronized STD-0005 Version 1.2, SPEC-0007 Version 1.2, and SPEC-0004 Version 1.3 for reference-oriented Raspberry Pi qualification orchestration, standardized Qualification Reports, persistent Engineering State consumption, resume integration, and authoritative-procedure dependency without implementation. |

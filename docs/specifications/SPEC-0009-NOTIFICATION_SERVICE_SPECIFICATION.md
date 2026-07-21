@@ -1,19 +1,19 @@
 ---
 document_id: SPEC-0009
 title: Notification Service Specification
-version: 1.0
+version: 1.6
 status: Active
 owner: Engineering Platform
 created: 2026-07-18
 last_updated: 2026-07-18
-phase: Notification Service Controlled Publication
+phase: HNS Decision Classification Recorded
 domain: Engineering Platform
 classification: Engineering Specification
-predecessor_revision: null
+predecessor_revision: SPEC-0009@1.5
 successor_revision: null
 approval_status: Approved
-approval_authority: Engineering Governance
-approval_reference: Handoff - Notification Service Controlled Publication
+approval_authority: Homelab Infrastructure
+approval_reference: Codex Handoff - SPEC-0009 Refinement: Engineering Decision Classification Model
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -61,17 +61,20 @@ tags:
   - value-blind
   - transport-independent
   - deferred-execution
+  - homelab-notification-system
+  - hns
 ---
 
 # Notification Service Specification
 
 ## 1. Purpose
 
-This specification defines a reusable Engineering Platform Notification
-Service architecture. The service publishes value-blind engineering lifecycle
-events, routes them to authorized consumers and delivery adapters, records
-delivery evidence, and preserves failure isolation between engineering work and
-notification delivery.
+This specification defines the Homelab Notification System as the authoritative
+engineering event-record and delivery platform for the Engineering Platform.
+Engineering producers publish value-blind lifecycle facts to HNS; HNS accepts
+and durably persists those events, manages their delivery obligations, routes
+them to authorized consumers and adapters, records delivery evidence, and
+preserves failure isolation between engineering work and notification delivery.
 
 This controlled specification does not activate EWO-000020, authorize
 implementation, change the existing notification runtime, create Governance
@@ -81,7 +84,21 @@ authority, or establish a new controlled-document owner.
 
 The Notification Service is a cross-cutting platform service. It consumes
 facts emitted by authoritative lifecycle owners and makes those facts available
-to delivery adapters and future engineering consumers.
+to delivery adapters and future engineering consumers. HNS is authoritative for
+the accepted event record and its delivery lifecycle; it is not the originator
+or owner of the underlying engineering lifecycle fact.
+
+The foundational responsibility model is:
+
+| Role | Responsibility | Authority Boundary |
+| --- | --- | --- |
+| Engineering producer | Own the applicable lifecycle fact and publish its canonical event | Cannot delegate fact ownership to HNS or a provider merely by publishing |
+| Homelab Notification System | Accept, validate, persist, replay, route, retry, and record delivery obligations and evidence | Authoritative for accepted event records and delivery state; cannot create or redefine source lifecycle facts |
+| Notification provider | Transport or present an event and return provider acknowledgement or identifiers | Consumer/presentation mechanism only; owns no engineering fact or accepted HNS event |
+
+Providers shall remain replaceable without changing producer contracts,
+engineering event identity, lifecycle authority, or the authoritative HNS event
+record.
 
 The service shall preserve these boundaries:
 
@@ -221,6 +238,74 @@ Delivery evidence is operational evidence, not proof that a human observed or
 accepted the notification. Explicit acknowledgement is a separate future
 interface.
 
+### 4.7 Homelab Notification System Deployment Direction
+
+The approved product name is **Homelab Notification System**, with `hns` as
+the suggested service identifier. The designated Raspberry Pi shall host the
+central, always-on service independently of interactive workstation sessions.
+It shall provide event ingestion, durable notification storage, local delivery
+brokering, retry and delivery-status management, and provider routing.
+
+The HNS server is authoritative for accepted notification events, persistence,
+delivery obligations, and delivery results. Source lifecycle owners remain
+authoritative for the engineering facts they submit; HNS does not acquire
+authority to create or reinterpret those facts. Desktop, browser, terminal,
+mobile, email, and future endpoints are presentation or delivery adapters.
+
+The required acceptance and delivery sequence is:
+
+```text
+Engineering lifecycle event
+        ↓
+Event accepted by Homelab Notification System
+        ↓
+Event persisted locally
+        ↓
+Local workstation delivery attempted
+        ↓
+Remote/mobile delivery attempted
+        ↓
+Delivery results recorded independently
+```
+
+An event is safely recorded when HNS has durably persisted it. Provider
+delivery, human presentation, and acknowledgement are independent results and
+are not prerequisites for event validity.
+
+### 4.8 Reference Client and Delivery Tiers
+
+`letoatreides` is the proposed first reference workstation client. Before
+implementation, its operating system, availability, network behavior, and
+native notification interface shall be validated. The intended client shall
+maintain a persistent LAN connection, display native notifications, retain or
+expose history, acknowledge receipt where supported, and recover missed events
+after reconnecting.
+
+HNS shall define three delivery tiers:
+
+1. **Tier 1 — Immediate Local Delivery.** `letoatreides`, the engineering
+   workstation, and future Homelab workstations use MQTT, WebSocket, or another
+   design-qualified persistent LAN transport for the lowest practical and most
+   predictable latency.
+2. **Tier 2 — Local Operational Visibility.** A browser dashboard, terminal
+   status view, durable event history, and future Engineering Platform
+   interfaces provide visibility independent of transient desktop alerts.
+3. **Tier 3 — Remote and Mobile Delivery.** iPhone and future remote endpoints
+   use optional providers such as ntfy or email for best-effort awareness.
+
+Apple push delivery and every other external mobile path are non-deterministic,
+secondary channels. Successful iPhone presentation is neither authoritative
+proof of event completion nor required proof of receipt.
+
+The architecture baseline recommends SQLite in WAL mode as the event and
+delivery store and authenticated WebSocket as the Tier 1 workstation transport.
+They are not final implementation selections: Phase 1 shall collect comparable
+facts without deciding, and Phase 2 shall confirm or revise the selections using
+only validated evidence. The reasons, alternatives, and validation gates are
+recorded in sections 8.8 and 8.9. The designated Raspberry Pi, lightweight
+workstation agent, native adapters, and optional ntfy provider remain subject
+to implementation qualification.
+
 ## 5. Engineering Event Model
 
 ### 5.1 Canonical Envelope
@@ -304,6 +389,40 @@ Supporting service events shall use a separate notification-service subject and
 shall not recursively create delivery-failure notifications through the same
 failed route. Operators receive such conditions through a bounded fallback
 diagnostic or a separately healthy route.
+
+### 5.5 Initial Platform Event Catalog
+
+The Notification Sprint shall implement the following provider-independent
+catalog. Event names are versioned; presentation titles are adapter concerns.
+
+| Event | Canonical Type | Subject | Required Context |
+| --- | --- | --- | --- |
+| Work Started | `engineering.work.started.v1` | work | mission, source host |
+| Work Completed | `engineering.work.completed.v1` | work | mission, outcome, source host |
+| Handoff Created | `engineering.handoff.created.v1` | handoff | mission ID, Handoff ID and mission-local number |
+| Handoff Started | `engineering.handoff.started.v1` | handoff | mission ID, Handoff ID and attempt |
+| Handoff Completed | `engineering.handoff.completed.v1` | handoff | mission ID, Handoff ID and outcome |
+| Handoff Failed | `engineering.handoff.failed.v1` | handoff | mission ID, Handoff ID and safe reason code |
+| Process Started | `engineering.process.started.v1` | process | parent Handoff when applicable, source host |
+| Process Completed | `engineering.process.completed.v1` | process | parent Handoff when applicable, exit class |
+| Process Failed | `engineering.process.failed.v1` | process | parent Handoff when applicable, safe reason code |
+| Qualification Completed | `engineering.qualification.completed.v1` | qualification | related mission/Handoff, result |
+| Publication Completed | `engineering.publication.completed.v1` | publication | artifact locator, related mission/Handoff |
+| Milestone Recorded | `engineering.milestone.recorded.v1` | milestone | milestone ID, related project/mission |
+| Engineering Alert | `engineering.alert.raised.v1` | alert | severity, priority, safe reason code |
+
+Every event requires `schema_version`, globally unique `event_id`, canonical
+`event_type`, UTC `occurred_at`, HNS-assigned UTC `recorded_at`, authenticated
+producer service and instance IDs, `source_host`, project/repository scope,
+severity, priority, correlation ID, and an idempotency key. Mission context is
+required for mission work; Handoff context is required for Handoff events and
+must combine stable opaque identity with the mission-local Handoff number.
+Process identity may aid diagnostics but never substitutes for Handoff identity.
+
+Severity is one of `DEBUG`, `INFO`, `NOTICE`, `WARNING`, `ERROR`, or `CRITICAL`.
+Priority is one of `LOW`, `NORMAL`, `HIGH`, or `URGENT`. Severity describes the
+condition; priority controls routing urgency. Neither grants engineering
+authority.
 
 ## 6. Handoff Notification Lifecycle
 
@@ -532,6 +651,96 @@ interface is not part of the Notification Service. In particular:
 This separation permits future integration without redesigning the event
 envelope or routing architecture while leaving approval semantics undefined.
 
+### 8.8 Persistent Event Store Baseline
+
+SQLite in WAL mode is the current architecture recommendation for the
+Raspberry Pi implementation baseline, subject to Phase 1 evidence and Phase 2
+selection.
+It provides transactional acceptance, crash recovery, indexed replay, mature
+backup tooling, and sufficient single-node throughput without a database
+service. PostgreSQL would add operational weight without a demonstrated
+multi-writer requirement; append-only JSON or flat files do not provide safe
+concurrent indexing and obligation transactions.
+
+The logical schema is:
+
+| Relation | Purpose | Principal Keys and Indexes |
+| --- | --- | --- |
+| `events` | Immutable canonical envelope and acceptance metadata | PK `event_id`; unique producer/idempotency key; indexes on recorded time, type, mission, Handoff, source host, severity/priority |
+| `subscriptions` | Versioned endpoint filters and policy references | PK `subscription_id`; unique endpoint/filter revision |
+| `obligations` | One independent delivery obligation per event/subscription | PK `obligation_id`; unique event/subscription; indexes on state and next attempt |
+| `attempts` | Append-only delivery evidence | PK `attempt_id`; unique obligation/attempt number; index on completion/result |
+| `consumer_cursors` | Durable replay and acknowledgement position | PK consumer/stream; index on last acknowledged event position |
+| `service_metadata` | Schema version and maintenance state | PK metadata key |
+
+Ingress uses one transaction to insert the event and initial obligations, then
+acknowledges acceptance only after commit. Duplicate producer/idempotency keys
+return the original event without adding obligations. Canonical event bodies
+are immutable; corrections are new causally linked events.
+
+Use an HNS-assigned monotonically increasing database position for replay while
+retaining `event_id` as the public identity. Replay is `position > cursor`,
+ordered by position, with bounded pages. WAL, database, and configuration must
+reside on qualified persistent storage, not a transient filesystem. Backup uses
+SQLite's online backup mechanism plus integrity verification; restore requires
+schema validation, integrity check, and obligation recovery before ingress.
+
+Retention is policy-driven. The baseline retains canonical events and terminal
+delivery summaries for at least 90 days; verbose attempt records may compact
+after 30 days only after terminal summary preservation. Unacknowledged events,
+pending obligations, audit-relevant alerts, and records under an explicit hold
+must not be removed. Exact values remain an operational-qualification gate.
+
+### 8.9 Local Transport Decision
+
+| Candidate | Latency | Complexity | Reliability/Recovery | Workstation Fit | Decision |
+| --- | --- | --- | --- | --- | --- |
+| MQTT | Excellent | Medium/high: separate broker, ACLs and topic design | QoS and persistent sessions help, but retained-message semantics do not replace HNS replay | Broad libraries | Defer; useful if device scale or non-HNS publishers justify a broker |
+| WebSocket | Excellent | Low/medium: served by HNS | Bidirectional ack plus HNS cursor replay | Broad native and application support | Architecture recommendation; Phase 2 decision pending |
+| Server-Sent Events | Excellent one-way | Low | Browser reconnect cursor is useful; client ack needs separate HTTP | Excellent browser fit | Use optionally for Tier 2 browser views |
+| Long polling | Higher overhead and latency | Low | Straightforward cursor replay | Universal | Fallback only |
+| Raw custom TCP | Excellent | High protocol/security burden | Must invent framing, auth, replay and compatibility | Variable | Rejected |
+
+If confirmed in Phase 2, the protocol is authenticated TLS WebSocket on the LAN. After
+connection, the client presents its stable endpoint ID and last durable cursor;
+HNS replays missed events in order, then streams new events. The client sends
+application-level received/processed acknowledgements. WebSocket frames carry
+canonical envelopes and protocol control messages, not provider-formatted text.
+Ping/pong detects broken connections; reconnect uses bounded exponential
+backoff with jitter and resets promptly after a stable session.
+
+The transport provides at-least-once delivery. HNS persistence and cursors,
+not socket lifetime, provide reliability. Authentication, certificate trust,
+LAN exposure, reconnect behavior, slow-consumer limits, and load/latency tests
+are mandatory qualification gates.
+
+### 8.10 Provider and Endpoint Architecture
+
+Provider adapters implement the section 8.4 contract behind the routing
+engine. The initial registry identifies `workstation-websocket`, `ntfy`, and
+future `email`, `slack`, `discord`, and `sms` adapters by capability; provider
+configuration and credentials are opaque secret references. Producers cannot
+name provider credentials or call adapters. Adapter failure is recorded only
+against its obligation and never blocks event acceptance or another tier.
+
+The reference workstation agent shall:
+
+- run independently of an interactive shell and maintain one authenticated
+  WebSocket connection;
+- persist endpoint identity, last acknowledged cursor, and a bounded local
+  notification/history cache;
+- deduplicate by `event_id` before native presentation;
+- acknowledge receipt and, separately where useful, successful presentation;
+- reconnect with jitter, request all events after its durable cursor, and
+  present missed events according to policy rather than flooding the desktop;
+- map severity/priority to native urgency without changing canonical facts;
+- expose local history and health diagnostics; and
+- keep credentials outside repository content, logs, and notification bodies.
+
+The native adapter is selected only after `letoatreides` OS and desktop-session
+facts are verified. Native presentation is transient and non-authoritative;
+the agent's cursor and HNS event history remain the recovery sources.
+
 ## 9. Authentication and Authorization
 
 ### 9.1 Producer Authentication
@@ -699,7 +908,212 @@ The event envelope permits a value-blind `contract_locator` extension after its
 authority, disclosure, and persistence treatment are separately specified. It
 shall identify, not duplicate, a frozen resolved contract.
 
+### 14.5 Long-Term Engineering Event Platform Vision
+
+HNS is implemented first as a notification system, but its provider-independent
+event log, subscriptions, acknowledged streams, replay, and consumer interfaces
+form a reusable foundation for a future Engineering Event Platform. Without
+changing current scope, the same accepted stream may later support Engineering
+Platform event streaming, operational dashboards, live engineering status, EOS
+activity feeds, `engctl` status streaming, workflow visualization, telemetry,
+future automation, and AI consumers.
+
+This is an extensibility vision, not a current implementation requirement. The
+Notification Sprint remains bounded to the accepted HNS phases and shall not
+implement general telemetry, automation, AI integration, or portfolio-wide
+event families merely because the interfaces can support them. Each future
+producer, event family, or consumer requires its own ownership, security,
+privacy, capacity, and qualification treatment.
+
+### 14.6 Foundational Authority-Separation Principle
+
+Every implementation and extension shall preserve this invariant:
+
+> Source services own engineering lifecycle facts; HNS owns accepted event
+> records, delivery obligations, and delivery evidence; presentation providers
+> own neither.
+
+Accordingly, HNS is the authoritative engineering event-record and delivery
+platform, while providers are consumers of engineering events and presentation
+mechanisms only. Providers shall not own, redefine, or become the authoritative
+source of engineering lifecycle information.
+
+Authentication proves which producer submitted an event but does not grant
+that producer ownership of the referenced lifecycle fact. Persistence by HNS
+does not transfer lifecycle authority. Delivery, provider acceptance, desktop
+presentation, mobile presentation, consumer acknowledgement, and human
+observation do not create, approve, complete, or alter engineering work.
+
+### 14.7 Transport and Store Evolution Guidance
+
+Authenticated TLS WebSocket remains the preferred Tier 1 architecture
+recommendation because one persistent bidirectional channel can support low
+latency delivery, replay cursors, acknowledgement, dashboards, live operational
+views, and future Engineering Platform interfaces without provider coupling.
+That broader utility strengthens the recommendation but does not bypass the
+mandatory Phase 1 comparison or Phase 2 decision. New engineering evidence may
+confirm or revise it.
+
+SQLite WAL remains the preferred event-store recommendation because it combines
+transactional durability with low single-node operational complexity on the
+designated Raspberry Pi. Implementation shall isolate persistence behind the
+section 8.6 port, use portable migrations and canonical export/replay formats,
+avoid SQLite-specific behavior in domain logic, and preserve stable public
+identities. Those boundaries permit later migration to PostgreSQL or another
+qualified store without changing producers, consumers, event semantics, or
+provider adapters.
+
+### 14.8 Canonical Producer Identity Guidance
+
+Every accepted event shall reference a registered producer identity. The
+canonical producer descriptor should contain:
+
+- stable opaque `producer_id`;
+- human-readable `producer_name` for operations only;
+- `producer_version` identifying the emitting contract implementation;
+- stable `host_id` distinct from mutable display hostname;
+- bounded declared `capabilities` or event-family claims; and
+- `authentication_identity` or an opaque binding to the authenticated workload.
+
+Ingress derives or verifies security-sensitive identity fields from the
+authenticated connection; it shall not trust self-asserted display fields for
+authorization. Producer registration binds permitted event families and scopes.
+Examples may include Codex bridges, `engctl`, EOS, `homelabctl`, `sprinterctl`,
+printer, backup, monitoring, and future Engineering Platform components, but
+listing a candidate grants no publish permission and creates no immediate
+implementation obligation.
+
+### 14.9 Independent Event, Delivery, and Provider Identities
+
+Implementations shall keep three identities distinct:
+
+1. **Event ID** identifies one immutable engineering fact and remains stable
+   across replay, routing, retries, and providers.
+2. **Delivery ID** (the existing `obligation_id`) identifies one event-to-
+   subscription/endpoint obligation. One event may have many Delivery IDs, and
+   every retry retains the same Delivery ID with a new attempt number.
+3. **Provider Notification ID** identifies the provider-specific artifact, such
+   as an ntfy message, APNs identifier, desktop presentation, or future provider
+   receipt. It is optional, adapter-owned evidence and never replaces Event ID
+   or Delivery ID.
+
+This separation is required for provider-independent auditing, retry analysis,
+partial-delivery tracking, replay, deduplication, and migration. Provider IDs
+shall be stored only as bounded, non-secret receipt metadata and may not be
+used as engineering lifecycle identity.
+
+### 14.10 Preferred Migration Pattern
+
+The preferred evolution pattern is **Shadow Persistence → Muted Local Delivery
+→ Controlled Dual Routing → Provider Cutover → Qualification → Prototype
+Retirement**. It preserves a working notification path, creates comparison
+evidence before presentation changes, prevents a flag-day migration, and delays
+removal until rollback and operational qualification succeed. Section 19 owns
+the detailed gates. This pattern guides HNS evolution and may inform similar
+adapter migrations, but it does not authorize migration or generalize into a
+new Engineering Platform procedure.
+
 ## 15. Existing Runtime Compatibility
+
+### 15.1 Current-State Assessment
+
+Repository discovery found one implemented notification transport and one
+calling subsystem:
+
+| Component | Current Responsibility |
+| --- | --- |
+| `scripts/engctl` | Sources the helper and wrapper; exposes `engctl codex`; sets the repository root used for configuration fallback |
+| `scripts/lib/eos/codex.sh` | Constructs value-blind messages and synchronously triggers start, terminal, timeout, interruption, report-qualification-failure, and wrapper-bypass notifications |
+| `scripts/lib/notifications/ntfy.sh` | Discovers and validates configuration, creates an ntfy HTTP request, invokes curl, and returns provider success/failure |
+| `configs/notifications.env.example` | Documents public configuration names and safe placeholder values |
+| per-user or ignored `notifications.env` | Stores `NTFY_BASE_URL`, `NTFY_TOPIC`, optional `NTFY_TOKEN`, and `NTFY_PRIORITY` with required mode `0600` |
+| notification regression tests | Exercise configuration rejection, secret handling, wrapper triggers, signals, timeouts, exit preservation, and provider-failure degradation |
+| INF-0001 and historical records | Describe the accepted Stage 1 runtime, wrapper enforcement, and deferred Stage 2/3 work |
+
+No HNS server, service unit, local broker, event API, database, delivery queue,
+subscription registry, provider registry, workstation agent, dashboard, local
+native adapter, delivery ledger, or replay endpoint exists. The Work Registry
+records Stage 1 as completed, Stage 2 heartbeat and Stage 3 structured events as
+deferred, and the former notification-service implementation item as cancelled.
+
+Repository evidence identifies the proposed server hardware as operational
+AST-000007, Raspberry Pi 5 (8 GB), but does not qualify it for HNS hosting.
+Repository evidence does not establish `letoatreides` operating system,
+availability, network behavior, or native notification interface.
+
+### 15.2 Current Notification Flow and Trigger Inventory
+
+```text
+engctl codex invocation or wrapper-gate observation
+        ↓
+eos_codex_notification builds title and plaintext metadata
+        ↓
+notify_ntfy loads local shell configuration
+        ↓
+curl synchronously POSTs to NTFY_BASE_URL/NTFY_TOPIC
+        ↓
+ntfy accepts or rejects the request
+        ↓
+external provider and Apple push path attempt presentation
+        ↓
+wrapper continues regardless of notification result
+```
+
+| Trigger | Location | Timing | Result |
+| --- | --- | --- | --- |
+| Wrapper bypass | `eos_codex_wrapper_gate` | At protected resume/qualification entry when a Codex thread lacks the wrapper marker | Attempts `Codex Wrapper Bypass`; gate returns 78 |
+| Process start | `eos_codex_run` | Immediately before launching the child | Attempts `Codex Started` |
+| Signal | nested `eos_codex_interrupted` | After forwarding INT/TERM/HUP and waiting for child | Attempts `Codex Interrupted` |
+| Timeout | `eos_codex_run` terminal branch | After timeout returns status 143 | Attempts `Codex Timed Out` |
+| Successful wrapper completion | terminal branch | After child exit and report qualification | Attempts `Codex Complete` |
+| Report contract rejection | terminal branch | Child exits zero but report qualification fails | Attempts `Codex Report Qualification Failed`; wrapper returns 65 |
+| Process failure | terminal branch | Child exits nonzero outside timeout handling | Attempts `Codex Failed` |
+
+The present implementation observes one wrapper process, not an accepted
+Handoff identity. A long-lived or resumed Codex session can contain multiple
+Handoffs without independent current notifications. There is no `Handoff
+Created` trigger and no durable link among notifications.
+
+### 15.3 Existing Behavior and Failure Semantics
+
+- Every provider call is synchronous on the wrapper path, with a five-second
+  connection timeout and 15-second total timeout. Start and completion can each
+  add provider/network delay, although failure does not replace the child result.
+- There is no retry, queue, replay, delivery acknowledgement, provider receipt,
+  duplicate suppression, persisted event history, or missed-event recovery.
+- Logging is limited to bounded stderr diagnostics and warnings. Provider
+  results are not durably recorded.
+- Messages contain status, repository, Work Order, optional duration/signal,
+  and host. They omit prompts, output, diffs, repository content, and secrets.
+- Configuration discovery prefers `NTFY_CONFIG_FILE`, then the XDG per-user
+  file, then an ignored repository-local file. Mode `0600`, HTTPS, non-empty
+  non-placeholder topic, and newline safety are enforced.
+- curl input hides the topic and token from command-line arguments, uses normal
+  TLS verification, and supports an optional bearer token.
+- All triggers use the same default ntfy priority and fixed `codex,engineering`
+  tags. Provider presentation owns subsequent mobile behavior and latency.
+
+### 15.4 Technical Debt and Latency Contributors
+
+| Finding | Consequence | Architectural Disposition |
+| --- | --- | --- |
+| Wrapper calls ntfy directly | Producer, presentation, and provider are coupled | Publish canonical events to HNS ingress; adapters route later |
+| Process lifecycle substitutes for Handoff lifecycle | Multi-Handoff sessions are incomplete or ambiguous | Allocate stable mission/Handoff identity and emit each Handoff transition |
+| Synchronous external HTTP | Provider DNS, TLS, network, service, and push latency affect wrapper wall time | Persist locally first; dispatch providers asynchronously |
+| No event or delivery store | No authoritative history, audit, replay, or recovery | SQLite transactional event/obligation ledger |
+| No idempotency or deduplication | Repeated triggers can duplicate presentation | Stable event/idempotency keys plus endpoint dedupe |
+| No retries or classified outcomes | Transient provider failure is permanently lost | Independent obligations, classified retry and attempt evidence |
+| One provider-specific configuration contract | New providers require producer/runtime changes | Provider registry and opaque adapter configuration |
+| Shell-sourced configuration | Trusted file can execute shell code and is awkward for multiple endpoints | Move HNS configuration to validated data plus protected secret references |
+| Fixed titles, tags and priority | Routing and urgency cannot express event semantics | Canonical severity/priority; adapter-specific presentation mapping |
+| No local client path | iPhone delivery inherits external nondeterminism | Persistent authenticated LAN WebSocket to workstation agent |
+| No service supervision | Notification capability depends on wrapper calls and external ntfy | Always-on Raspberry Pi service under host-native supervision |
+
+Dominant current latency contributors are synchronous DNS/TCP/TLS setup,
+provider request processing, ntfy-to-platform routing, Apple push scheduling,
+device connectivity, and OS presentation. HNS removes the external segments
+from Tier 1 by keeping a warm LAN connection, committing locally before route
+dispatch, avoiding batching, and acknowledging at receipt and presentation.
 
 The current runtime may be represented through a transitional lifecycle-bridge
 mapping without changing its behavior. This bridge is distinct from a delivery
@@ -737,19 +1151,81 @@ interpreted as authorization to execute this backlog.
 
 ### 16.1 Ordered Engineering Backlog
 
-1. Notification Service implementation.
-2. Canonical engineering event envelope qualification.
-3. EOS-compatible outbox implementation under the existing EOS ownership
-   boundary.
-4. Existing `ntfy` adapter migration after compatibility qualification.
-5. Remote Approval Service Specification under separate design authority.
-6. Remote Approval Service implementation under separate implementation
-   authority.
-7. Dashboard consumer implementation.
-8. Metrics and observability consumer implementation.
-9. EOS automation consumer implementation under the existing EOS boundary.
-10. Frozen per-EWO resolved-manifest consumption enhancement described in
-    section 16.2.
+The mandatory first five items form **Phase 1 — Infrastructure Discovery and
+Validation**. They are read-only, establish facts, and shall not finalize an
+implementation technology or alter infrastructure:
+
+1. **Current-state notification validation:** identify and map all notification
+   documents, scripts, wrappers, configurations, services, runtime behavior,
+   existing backlog entries, triggers, latency characteristics, and operational
+   limitations.
+2. **Raspberry Pi hosting validation:** confirm the designated host, storage,
+   hardware model, operating system, memory, availability, network placement,
+   available services, uptime expectations, backup/recovery constraints, and
+   deployment suitability.
+3. **`letoatreides` endpoint validation:** confirm operating system,
+   availability, network role and reconnect behavior, desktop environment,
+   notification capabilities, native APIs, startup behavior, and reference
+   client suitability.
+4. **Candidate technology fact collection:** evaluate SQLite, MQTT, WebSocket,
+   Server-Sent Events, and any justified lightweight alternatives against the
+   observed hosts and requirements without selecting a final technology.
+5. **Baseline metrics:** measure publication, end-to-end notification,
+   workstation delivery, mobile delivery, retry behavior, duplicate behavior,
+   and delivery reliability using a documented clock and sample method.
+
+Items 6 through 12 form **Phase 2 — Implementation Planning** and shall use
+only the evidence accepted from Phase 1:
+
+6. **Event-contract design:** finalize provider-independent event types,
+   envelope versioning, timestamps, source host, mission and per-mission
+   Handoff identity, severity, priority, duplicate-suppression keys, and
+   compatibility rules.
+7. **Persistent event-store selection and design:** select and qualify the lightweight
+   durable store, acceptance transaction, retention, recovery, and missed-event
+   query model while preserving the existing EOS ownership boundary.
+8. **Local transport selection:** decide among MQTT, WebSocket, Server-Sent
+   Events, and justified
+   alternatives against LAN latency, persistence, authentication, reconnect,
+   endpoint extensibility, and operational simplicity.
+9. **Workstation and deployment architecture:** define service placement,
+   persistent connection, history,
+   acknowledgement where supported, reconnect, missed-event retrieval,
+   duplicate suppression, packaging, and supervision.
+10. **Provider, native adapter, and retry design:** define the first workstation
+   presentation integration without making presentation authoritative.
+   Retain ntfy as an optional mobile adapter; define independent endpoint
+    obligations, attempt evidence, retry policy, exhaustion, recovery,
+    acknowledgement semantics, and failure isolation.
+11. **Latency objectives and qualification criteria:** derive measurable
+    acceptance, local-presentation, reconnect-recovery, mobile, durability,
+    security, backup, recovery, and rollback targets from the baseline.
+12. **Validated implementation plan:** finalize the gated Phase 3 sequence,
+    dependencies, validation gates, compatibility strategy, and rollback plan.
+
+Items 13 through 20 form **Phase 3 — Notification Sprint Implementation** and
+remain deferred until the validated plan is reviewed and accepted:
+
+13. **Core Notification Service.**
+14. **Persistent Event Store.**
+15. **Local Transport Layer.**
+16. **Reference Workstation Client.**
+17. **ntfy Provider Adapter.**
+18. **Prototype migration:** replace process-oriented triggering with direct
+    Handoff-lifecycle emission for every engineering Handoff; preserve the
+    working ntfy path until replacement equivalence is validated, avoid a
+    transition outage, and remove obsolete behavior only after validation.
+19. **Operational qualification:** validate durability, multi-client delivery,
+    retry, duplicate suppression, reconnect recovery, tier independence,
+    source-host and mission/Handoff identity, observability, latency, security,
+    backup/recovery, and rollback.
+20. **Future consumers:** implement the Tier 2 dashboard/terminal consumers,
+    metrics and observability consumers, and EOS automation consumers under
+    their existing ownership boundaries.
+21. **Remote Approval Service:** specify and implement separately; HNS
+    notification or acknowledgement does not define approval authority.
+22. **Frozen per-EWO resolved-manifest consumption:** retain the separately
+    deferred enhancement described in section 16.2.
 
 Supporting work within those separately authorized backlog items includes
 stable Handoff identity allocation, wrapper-to-EMLS lifecycle-producer
@@ -757,6 +1233,19 @@ migration, producer and consumer identity infrastructure, subscription
 administration, retry-policy values and retention periods, structured progress
 and heartbeat qualification, delivery acknowledgement UX, implementation
 qualification, and operational migration.
+
+The initial producer integration scope includes engineering Handoff lifecycle,
+Codex execution lifecycle, `engctl`, EOS, Mission 0 services, and future
+Engineering Platform components. Notifications remain Handoff-oriented rather
+than process-session-oriented. Handoff numbering restarts at Handoff 1 for each
+mission; identifiers and payloads shall always preserve mission context and
+shall never treat a Handoff number as portfolio-global.
+
+The initial event-design catalog shall evaluate engineering work started;
+Handoff created, started, completed, and failed; process started, completed,
+and failed; qualification completed; publication completed; milestone
+recorded; and engineering alert. Architecture design owns the final names and
+definitions.
 
 ### 16.2 Future Architectural Enhancement
 
@@ -799,28 +1288,135 @@ acceptance until its separately authorized evidence demonstrates:
 | Wrapper implementation | PRESERVED | No wrapper change is specified or performed. |
 | Remote Approval compatibility | COMPATIBLE | Observation uses the event stream; decisions require a separate future command interface. |
 
-## 19. Recommended Post-Publication Sequence
+## 19. Migration Strategy and Implementation Roadmap
 
-This sequence organizes the Deferred Execution backlog in section 16; it does
-not duplicate or supersede that authoritative backlog. Every step requires
-separate authorization:
+The Notification Sprint follows **Discover → Validate → Design → Implement →
+Qualify**. Phase 1 is the mandatory entry point. No migration occurs through
+this publication.
 
-1. Obtain separate authorization for the selected Deferred Execution scope.
-2. Qualify the specified Handoff Identity Authority interface and
-   authoritative event-family ownership model.
-3. Define the EOS-compatible outbox persistence contract.
-4. Qualify the envelope, lifecycle, security, and value-blind schemas.
-5. Implement ingress and durable outbox before external adapters.
-6. Implement subscription routing and delivery evidence.
-7. Add an ntfy compatibility adapter and migrate only after equivalence tests.
-8. Add internal consumer interfaces for dashboards, monitoring, metrics, and
-   EOS automation.
-9. Validate multi-Handoff recovery, retries, partial delivery, and failure
-   isolation.
-10. Produce the Remote Approval Service Specification under separate Governance
-    authority before considering its implementation.
+### 19.0 Engineering Decision Classification Model
 
-## 20. Planning Conclusion
+For each material implementation question, planning records shall distinguish
+the following categories:
+
+| Classification | Meaning | Permitted Treatment |
+| --- | --- | --- |
+| **Known** | A fact supported by objective, reproducible engineering evidence, such as measured infrastructure characteristics, verified repository behavior, confirmed platform capability, documented interfaces, or validated operational observation | May be cited as an implementation input with its evidence source, collection time, method, and material limitations |
+| **Unknown** | A relevant fact not yet established with adequate evidence | Must become an explicit discovery objective; shall not be silently converted into an assumption or architecture constraint |
+| **Decision** | An implementation choice that evaluates alternatives against requirements and Known facts | Remains unresolved until its prerequisite Unknowns are converted to Known facts; the selected outcome shall cite evidence, alternatives, tradeoffs, and validation conditions |
+
+Architectural preference, familiarity, convention, or an unverified inventory
+entry is not sufficient by itself to classify an item as Known or to finalize a
+Decision. When evidence conflicts, is stale, or is incomplete, the item remains
+Unknown or the Decision remains open. A Decision may be revisited when new
+validated evidence materially changes its premises.
+
+The advisory workflow is:
+
+```text
+Engineering question
+        ↓
+Classify each material input as Known, Unknown, or Decision
+        ↓
+Collect and record evidence for Unknown items
+        ↓
+Convert supported Unknowns to Known; record remaining limitations
+        ↓
+Resolve Decisions using validated Known facts
+        ↓
+Record rationale and validation gates
+        ↓
+Proceed with the separately approved implementation
+```
+
+Phase 1 primarily converts Unknowns into Known facts and does not finalize
+Decision items. Phase 2 resolves Decisions using accepted Phase 1 evidence.
+Phase 3 implements only the reviewed decisions within its approved scope. This
+model reinforces the existing roadmap; it does not add a phase, technology,
+deliverable, implementation obligation, or authority mechanism.
+
+### 19.1 Phase 1 — Infrastructure Discovery and Validation
+
+Phase 1 is entirely read-only and makes no final technology selection. It shall
+validate the Raspberry Pi, `letoatreides`, and the existing notification path;
+collect comparable SQLite, MQTT, WebSocket, Server-Sent Events, and justified
+alternative facts; and establish repeatable latency, retry, duplicate, and
+reliability metrics.
+
+Required deliverables are an Infrastructure Validation Report, Platform
+Capability Assessment, Notification Baseline Metrics, Candidate Technology
+Evaluation, updated Project State, and Completion Report. Phase 1 exits only
+when facts, collection methods, limitations, and unresolved unknowns are
+reviewable and no infrastructure or runtime change occurred.
+
+### 19.2 Phase 2 — Implementation Planning
+
+Phase 2 may begin only after Phase 1 evidence is accepted. Using only validated
+facts, it finalizes the transport and store selections, workstation and
+deployment architecture, retry policy, latency objectives, operational
+qualification criteria, dependencies, gates, rollback, and phased sequence.
+It performs no implementation. Architecture recommendations in sections 8.8
+and 8.9 remain provisional until this phase confirms or revises them.
+
+### 19.3 Phase 3 — Notification Sprint Implementation
+
+Phase 3 requires review and acceptance of the validated implementation plan.
+Each implementation subphase requires its own bounded handoff, preserves the
+existing ntfy path until cutover validation, and has an explicit rollback to
+the last qualified state.
+
+| Phase | Implementation Scope | Dependencies | Validation Gate | Rollback Boundary |
+| --- | --- | --- | --- | --- |
+| 3.1 — Core service | Raspberry Pi service skeleton, authenticated ingress, schema validation, routing boundaries, health endpoint and supervision | Accepted Phase 2 plan; host/storage/network qualification; event ownership and identity contract | Service restart, authentication rejection, schema fixtures, no provider dependency | Stop HNS; current wrapper remains unchanged |
+| 3.2 — Persistent event store | Validated store schema, transactional event/obligation acceptance, backup, retention and recovery | 3.1; qualified persistent storage | Crash/restart, duplicate acceptance, integrity, backup/restore, cursor replay | Restore verified database or stop HNS; wrapper still uses ntfy |
+| 3.3 — Local transport layer | Validated transport, cursor replay, ack, reconnect and slow-client handling | 3.1–3.2; certificate and endpoint identity design | LAN latency, disconnect/reconnect, missed-event replay, duplicate suppression, load and authorization | Disable transport listener; no effect on legacy path |
+| 3.4 — Reference workstation client | `letoatreides` agent, durable cursor/cache, native adapter, history and health | Verified OS/network/native API; 3.3 | Native presentation, session independence, reboot, reconnect, offline replay and dedupe | Stop/uninstall agent; legacy mobile path continues |
+| 3.5 — ntfy provider adapter | HNS adapter with protected configuration, async obligations and delivery evidence | 3.1–3.2; compatibility fixtures | Payload equivalence, secret safety, timeout/retry classes, partial failure | Disable HNS ntfy subscription; retain legacy helper |
+| 3.6 — Migration from prototype | Lifecycle bridge publishes canonical events while legacy notification remains available; controlled shadow, dual-route, then single-writer cutover | Stable Handoff identity; 3.1–3.5 | Every Handoff independently recorded; no outage; no duplicate presentation; rollback rehearsal | Re-enable legacy wrapper trigger and disable HNS producer epoch |
+| 3.7 — Operational qualification | End-to-end durability, latency, security, backup/recovery, observability and retirement evidence | All prior gates | Acceptance targets met over restart, network loss, provider outage and multi-Handoff tests | Retain prototype until qualification accepted |
+
+Migration stages are:
+
+1. **Observe:** baseline current ntfy timing and failure behavior without changing
+   triggers.
+2. **Shadow persist:** publish canonical events to HNS while legacy ntfy remains
+   the presenting path; compare expected and persisted events.
+3. **Shadow local delivery:** run the reference agent with presentation muted;
+   validate ordering, replay, acknowledgement, dedupe, and latency.
+4. **Controlled dual route:** enable local presentation while retaining legacy
+   ntfy; use distinct idempotency and presentation policy to prevent duplicate
+   operator alerts.
+5. **Provider cutover:** route ntfy through HNS and disable the direct helper
+   only after equivalence and rollback rehearsal.
+6. **Lifecycle cutover:** replace process-derived events with direct per-Handoff
+   lifecycle publication under a fenced single-writer epoch.
+7. **Retire:** remove obsolete wrapper notification logic and configuration only
+   after operational qualification and an observation window with no unresolved
+   event loss, duplicates, or latency regressions.
+
+Rollback never deletes HNS history. It stops new canonical publication or
+delivery at a defined phase boundary, restores the previously qualified direct
+ntfy trigger if necessary, and records the rollback condition. Database schema
+changes require forward-compatible migrations and a verified pre-migration
+backup. Provider failure never requires rollback of local authoritative event
+recording.
+
+## 20. Architecture Decision Summary
+
+| Decision | Baseline |
+| --- | --- |
+| Service placement | Always-on designated Raspberry Pi; AST-000007 requires HNS host qualification |
+| Event authority | Source systems own lifecycle facts; HNS owns accepted notification records, obligations and delivery evidence |
+| Persistence | SQLite WAL recommendation; final selection deferred to Phase 2 evidence review |
+| Tier 1 transport | Authenticated TLS WebSocket recommendation; final selection deferred to Phase 2 evidence review |
+| Tier 2 transport | Event query/history API; optional SSE for browser live updates |
+| Tier 3 providers | Asynchronous adapters; ntfy first, mobile presentation non-authoritative |
+| Delivery semantics | Durable at-least-once with event/obligation deduplication |
+| Reference endpoint | `letoatreides`, gated on OS, availability, network and native API validation |
+| Latency posture | Persist locally, route local first, keep connections warm, avoid batching, dispatch providers asynchronously |
+| Migration | Shadow, controlled dual route, provider cutover, lifecycle cutover, observation, retirement |
+
+## 21. Planning Conclusion
 
 The proposed architecture separates authoritative lifecycle facts from
 delivery mechanics, preserves Handoff-level identity, and provides reusable
@@ -835,3 +1431,9 @@ authority.
 | Version | Date | Description |
 | --- | --- | --- |
 | 1.0 | 2026-07-18 | Published the qualified Notification Service architecture, deterministic event lifecycle, ownership and identity boundaries, transport-independent interfaces, reliability model, trust boundaries, runtime compatibility, and explicit Deferred Execution backlog without authorizing implementation. |
+| 1.1 | 2026-07-18 | Recorded the approved Homelab Notification System direction: Raspberry Pi authority, `letoatreides` reference client, three delivery tiers, authoritative local persistence, secondary mobile delivery, bounded implementation backlog, and outage-free ntfy migration without beginning implementation. |
+| 1.2 | 2026-07-18 | Established the HNS implementation architecture baseline from repository assessment: canonical platform event catalog, SQLite WAL store, authenticated WebSocket Tier 1 transport, provider and workstation interfaces, current-flow and technical-debt analysis, staged migration, rollback, validation gates, and seven-phase roadmap without runtime or Governance changes. |
+| 1.3 | 2026-07-18 | Inserted mandatory read-only Infrastructure Discovery and Validation before evidence-based Implementation Planning and the seven-subphase Notification Sprint; made technology recommendations provisional pending validated facts and preserved implementation deferral. |
+| 1.4 | 2026-07-18 | Accepted advisory architecture observations: long-term Engineering Event Platform vision, foundational authority separation, WebSocket and SQLite evolution rationale, canonical producer identity, independent event/delivery/provider identities, future-consumer extensibility, and the preferred staged migration pattern without expanding scope or sequencing. |
+| 1.5 | 2026-07-18 | Recorded HNS as the authoritative engineering event-record and delivery platform, clarified producer/HNS/provider responsibilities, made providers explicitly replaceable consumers and presentation mechanisms, and preserved source lifecycle ownership and implementation scope. |
+| 1.6 | 2026-07-18 | Recorded the advisory Known/Unknown/Decision classification model, evidence-conversion workflow, and Phase 1/2/3 relationship without changing architecture, sequencing, scope, technologies, or implementation obligations. |

@@ -1,21 +1,21 @@
 ---
 document_id: STD-0000
 title: Engineering Documentation Standard
-version: 1.6
+version: 1.7
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-18
-phase: Publication Framework Integration
+last_updated: 2026-07-19
+phase: Engineering Knowledge Repository Foundation
 domain: Engineering Governance
 classification: Engineering Standard
-predecessor_revision: STD-0000@1.5
+predecessor_revision: STD-0000@1.6
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Handoff - Engineering Governance Publication Framework Integration
-approval_date: 2026-07-18
-persistence_status: Persisted
+approval_reference: Codex Handoff - Mission 0 Engineering Knowledge Repository Foundation and Automated Evidence Persistence
+approval_date: 2026-07-19
+persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
 relationships:
@@ -33,6 +33,8 @@ relationships:
     target: STD-0003
   - type: depends_on
     target: SPEC-0001
+  - type: governs
+    target: SPEC-0010
   - type: related_to
     target: GEN-0001
   - type: related_to
@@ -265,6 +267,20 @@ Persists objective, reproducible, attributable, and traceable evidence produced 
 
 Reports execution status, scope compliance, outcomes, validation, findings, observations, and recommendations for a governing Engineering Work Order. Engineering Governance determines acceptance.
 
+### Engineering Knowledge Object
+
+Persists validated historical engineering knowledge, evidence identity,
+provenance, rationale, relationships, limitations, and reusable lessons under
+SPEC-0010. A knowledge object may contain a report or supporting artifact, or
+reference an authoritative controlled or domain record by immutable locator
+and digest. It does not acquire the source record's Governance Authority,
+Information Authority, lifecycle state, or current-state ownership.
+
+The Engineering Knowledge Repository owns historical knowledge-object content,
+integrity, indexing, retention, and discovery. EOS continues to own current
+operational state. Controlled documents and domain records continue to own
+their governing and domain facts.
+
 ### Domain and Project Records
 
 Project, infrastructure, service, asset, financial, milestone, validation, and other domain records own engineering information within their defined scope. Their identifiers and responsibilities shall be registered by the authoritative repository index and governed by applicable records.
@@ -286,6 +302,10 @@ Controlled relationships shall preserve the following responsibilities:
 * Engineering Work Orders instantiate applicable templates and execute applicable procedures;
 * Evidence Packages and Completion Reports are produced under and reference their Engineering Work Order;
 * Engineering Work Orders remain traceable to their Evidence Packages and Completion Reports;
+* Engineering Knowledge Objects preserve historical execution knowledge and
+  relate missions, Work Orders, evidence, assets, repositories, controlled
+  documents, decisions, lessons, and future missions without duplicating their
+  authoritative owners;
 * Findings inform controlled improvement;
 * Resolutions record Engineering Governance disposition and authorize approved changes;
 * indexes provide discovery without replacing authoritative information owners;
@@ -546,6 +566,7 @@ Controlled engineering documentation shall support traceability among, as applic
 * Engineering Work Orders and executed revisions;
 * Findings and Resolutions;
 * Evidence Packages and Completion Reports;
+* Engineering Knowledge Objects and their authoritative source locators;
 * engineering assets, services, repositories, and implementations;
 * validation, qualification, acceptance, and baselines.
 
@@ -627,3 +648,4 @@ an explicit bounded deferral and follow-up authority.
 | 1.4 | 2026-07-13 | Established the minimum normative Engineering Governance Resolution record architecture, including authority, identity, required content, disposition, scope, lifecycle, relationships, execution boundaries, discovery, and historical-preservation requirements. |
 | 1.5 | 2026-07-17 | Established repository-governed workflow publications, the Completion Report class and exact title, and holistic governance-subsystem reconciliation under EGR-000002 and EWO-000018. |
 | 1.6 | 2026-07-18 | Integrated PROC-0005 as the single reusable operational controlled-document publication procedure while preserving normative standards, representation ownership, specialized procedures, and Governance authority. |
+| 1.7 | 2026-07-19 | Established Engineering Knowledge Objects and EKR responsibility within the documentation architecture while preserving EOS current-state ownership and existing controlled and domain information authorities. |

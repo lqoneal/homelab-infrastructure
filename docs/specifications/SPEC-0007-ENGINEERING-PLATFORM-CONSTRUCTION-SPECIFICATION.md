@@ -1,20 +1,20 @@
 ---
 document_id: SPEC-0007
 title: Engineering Platform Construction Specification
-version: 1.1
+version: 1.2
 status: Active
 owner: Engineering Platform
 created: 2026-07-17
-last_updated: 2026-07-17
-phase: SPEC-0007 Revision 15 Controlled Publication
+last_updated: 2026-07-19
+phase: Raspberry Pi Qualification Architecture Recommendation Persistence
 domain: Engineering Platform
 classification: Engineering Specification
-predecessor_revision: 1.0
+predecessor_revision: SPEC-0007@1.1
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: EWO-000022
-approval_date: 2026-07-17
+approval_reference: Codex Handoff - Persist Raspberry Pi Qualification Architecture Recommendations
+approval_date: 2026-07-19
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals:
@@ -35,6 +35,12 @@ relationships:
     target: EMP-0001
   - type: related_to
     target: EOS-0003
+  - type: related_to
+    target: STD-0004
+  - type: related_to
+    target: STD-0005
+  - type: related_to
+    target: SPEC-0004
   - type: authorized_by
     target: EWO-000022
   - type: published_by
@@ -249,6 +255,47 @@ Discovery → Mission Proposal → Planning Review → Proposal Acceptance → A
 
   - Performance and scalability objectives.
 
+## Qualification Artifact and Engineering State Architecture
+
+Future engineering qualification shall use the following ownership flow:
+
+```text
+Engineering Asset
+        ↓
+Engineering Qualification Procedure
+        ↓
+Qualification Report
+        ↓
+Engineering State
+        ↓
+Resume System
+        ↓
+Engineering Automation
+```
+
+The asset record owns asset identity, lifecycle condition, limitations, and
+current disposition. The future controlled Qualification Procedure shall
+orchestrate existing authorities without copying their requirements. A
+standardized Qualification Report shall represent the completed qualification
+and its evidence-backed disposition. Engineering State shall persist the
+applicable report identity, asset relationship, disposition, limitations,
+source locator, and freshness needed by resume and later automation; it shall
+not replace the report or asset record.
+
+Resume shall consume persisted, current qualification state whenever practical
+instead of rediscovering an unchanged asset. Rediscovery remains required when
+identity, freshness, integrity, environment, or governing requirements cannot
+be established from authoritative state. SPEC-0004 owns reconstruction
+behavior and STD-0004 owns state freshness and reconciliation.
+
+Future qualification automation, including a possible `engctl qualify`
+interface, shall depend on publication of the Qualification Procedure as an
+authoritative controlled document. Automation shall consume the procedure and
+produce the standardized report; it shall not embed a competing procedure or
+infer qualification from asset discovery alone. Procedure publication, report
+schema, state persistence, resume integration, and automation remain separate,
+deferred implementation boundaries.
+
 ## Revision 15 Planning Note
 
 This interaction architecture is intentionally high-level. Detailed interaction contracts shall be developed in dedicated controlled specifications for each platform service and cross-cutting capability before implementation.
@@ -381,3 +428,4 @@ remains source evidence and is not itself a controlled document.
 | --- | --- | --- |
 | 1.0 | 2026-07-17 | Published the Revision 14-derived Engineering Baseline 1.0 under EGR-000004 and EWO-000021. |
 | 1.1 | 2026-07-17 | Published the Revision 15 editorial reconciliation as a controlled Engineering Baseline under EWO-000022. |
+| 1.2 | 2026-07-19 | Added the deferred Qualification Report, Engineering State, resume-consumption, and automation dependency architecture; required future qualification automation to depend on an authoritative Qualification Procedure without implementing platform behavior. |

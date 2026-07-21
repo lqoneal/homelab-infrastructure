@@ -1,16 +1,17 @@
 ---
 document_id: SPEC-0004
 title: Engineering Context Reconstruction Service
-version: 1.2
+version: 1.3
 status: Draft
 owner: EOS Program
 created: 2026-07-08
-last_updated: 2026-07-15
+last_updated: 2026-07-19
 governed_by: EOS-0001
 implements:
   - EDR-0002
 depends_on:
   - SPEC-0001
+  - SPEC-0007
 conforms_to:
   - STD-0004
 ---
@@ -62,6 +63,7 @@ The service consumes Authoritative Engineering Records, including:
 - Specifications
 - Milestones
 - Validation records
+- Persisted Qualification Reports and their current Engineering State references
 - Engineering checkpoints
 
 The service SHALL NOT depend upon derived views.
@@ -126,9 +128,10 @@ The service SHALL:
 2. Load governing records.
 3. Resolve engineering relationships.
 4. Determine active work.
-5. Identify blockers.
-6. Determine next approved action.
-7. Generate a derived engineering context view.
+5. Resolve applicable persisted asset-qualification state and its freshness.
+6. Identify blockers.
+7. Determine next approved action.
+8. Generate a derived engineering context view.
 
 ---
 
@@ -145,7 +148,19 @@ The service SHALL:
 - expose the active checkpoint project, repository, applicability, and
   repository-scoped synchronization result;
 - report checkpoint and authoritative-state conflicts; and
+- consume current persisted qualification state when available rather than
+  rediscovering unchanged engineering assets;
+- require rediscovery or requalification when qualification identity,
+  freshness, integrity, applicability, or governing requirements do not
+  resolve; and
 - refuse to present a known completed or superseded objective as current.
+
+Qualification reports and qualification-state references are authoritative
+inputs only within the ownership boundaries defined by STD-0005, STD-0004, and
+SPEC-0007. ECRS produces no qualification decision, does not alter an asset
+record, and does not make its derived resume output authoritative. Current
+resume behavior remains unchanged until separately authorized persistence and
+integration work is implemented and qualified.
 
 Resume generation is qualified for implementation only when required
 authoritative state resolves, no execution-significant conflict remains, and
@@ -174,3 +189,4 @@ reconciliation triggers, and source precedence established by STD-0004.
 | --- | --- | --- |
 | 1.1 | 2026-07-15 | Integrated STD-0004 freshness, source precedence, and stale-objective rejection. |
 | 1.2 | 2026-07-15 | Defined repository-aware checkpoint identity, applicability, strict commit verification, and not-applicable resume semantics. |
+| 1.3 | 2026-07-19 | Recorded future consumption of persisted Qualification Reports and qualification state, with freshness and rediscovery gates, without changing current resume implementation. |

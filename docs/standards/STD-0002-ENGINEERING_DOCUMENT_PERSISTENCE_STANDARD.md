@@ -1,22 +1,22 @@
 ---
 document_id: STD-0002
 title: Engineering Document Persistence Standard
-version: 1.3
+version: 1.4
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-18
-phase: Publication Framework Integration
+last_updated: 2026-07-19
+phase: Engineering Knowledge Repository Foundation
 domain: Engineering Governance
 classification: Engineering Standard
 source_of_truth: true
-predecessor_revision: STD-0002@1.2
+predecessor_revision: STD-0002@1.3
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Handoff - Engineering Governance Publication Framework Integration
-approval_date: 2026-07-18
-persistence_status: Persisted
+approval_reference: Codex Handoff - Mission 0 Engineering Knowledge Repository Foundation and Automated Evidence Persistence
+approval_date: 2026-07-19
+persistence_status: Pending
 declared_deferrals: []
 relationships:
   - type: governed_by
@@ -29,6 +29,8 @@ relationships:
     target: STD-0001
   - type: conforms_to
     target: SPEC-0001
+  - type: governs
+    target: SPEC-0010
   - type: implemented_by
     target: PROC-0005
   - type: related_to
@@ -71,7 +73,12 @@ Examples include:
 * Engineering Governance Findings;
 * Engineering Governance Resolutions;
 * Completion Reports;
-* Evidence Packages.
+* Evidence Packages; and
+* Engineering Knowledge Objects and their manifests.
+
+Controlled documents remain governed by SPEC-0001. Engineering Knowledge
+Objects use the historical knowledge architecture in SPEC-0010 and shall not
+be treated as replacement controlled-document revisions.
 
 ---
 
@@ -219,6 +226,32 @@ Engineering Work Orders shall reference their Completion Reports.
 
 ---
 
+## Engineering Knowledge Persistence
+
+Validated historical mission knowledge shall be persisted through EKR under
+SPEC-0010 when a knowledge capture requirement applies. Persistence shall
+record one immutable knowledge object or authoritative source reference,
+cryptographic digest, provenance, mission and authority linkage, validation
+disposition, subjects, relationships, sensitivity, retention, and limitations.
+
+Record-once persistence is mandatory: when a controlled document, asset
+record, Completion Report, Evidence Package, or project record already owns
+the content, EKR shall reference its authoritative revision and digest rather
+than create a competing copy. EOS shall persist only current knowledge
+pointers and synchronization state, not the historical object corpus.
+
+Knowledge publication is incomplete until both the object and its authoritative
+index entry are durably persisted. Partial publication shall remain visibly
+incomplete and recoverable. Corrections create a successor object; published
+content is not edited in place.
+
+Automated capture shall be idempotent, attributable, schema-validated,
+sensitivity-aware, and fail closed on ambiguous identity, authority, integrity,
+retention, or relationship state. Automation shall not originate approval,
+qualification, acceptance, lifecycle transition, or execution authority.
+
+---
+
 ## Cold-Start Discovery
 
 The persistence model shall support deterministic recovery after interruption.
@@ -235,6 +268,12 @@ Given any current engineering activity, an engineer or implementation agent shal
 without requiring undocumented knowledge.
 
 For a historical revision, discovery and reconstruction shall follow SPEC-0001 and shall resolve to one full commit object identifier, repository path, and verified blob object identifier.
+
+Historical discovery shall also locate relevant EKR objects by permanent
+identifier, mission, Work Order, asset, repository, controlled document,
+decision, symptom, artifact class, date, disposition, and lesson learned.
+Cold-start reconstruction shall not depend on conversation history, a search
+service, embeddings, or a non-reproducible derived graph.
 
 ---
 
@@ -310,3 +349,4 @@ publication and its registered planning relationships.
 | 1.1 | 2026-07-10 | Referenced the revision persistence, supersedence, Git locator, and deterministic reconstruction architecture in SPEC-0001 and retained operational persistence controls under EWO-000011 Revision 2. |
 | 1.2 | 2026-07-17 | Required persistence of repository-governed workflow behavior and prohibited conversation or handoff history as a substitute under EGR-000002 and EWO-000018. |
 | 1.3 | 2026-07-18 | Integrated PROC-0005 as the operational method for exact publication boundaries, atomic persistence, immutable locator capture, and post-publication verification while preserving this Standard's persistence authority. |
+| 1.4 | 2026-07-19 | Extended persistence governance to Engineering Knowledge Objects, record-once source referencing, atomic publication and indexing, automated-capture safety, EOS boundary preservation, and cold-start historical discovery under SPEC-0010. |

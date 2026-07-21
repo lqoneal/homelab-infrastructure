@@ -1,59 +1,57 @@
 # Engineering Notification Implementation Roadmap
 
-## Prerequisites
+## Mandatory Entry Sequence
 
-- separately approved implementation authority;
-- Active SPEC-0009 resolved as architecture baseline;
-- disposition of current uncommitted wrapper work without absorbing it;
-- qualified canonical envelope profile;
-- qualified transitional Handoff Identity Authority or EMLS availability;
-- approved EOS-compatible application persistence contract; and
-- exact Notification Sprint boundary and acceptance plan.
+### Phase 1 — Infrastructure Discovery and Validation
 
-## Recommended Sequence
+This phase is entirely read-only. It shall not finalize implementation choices,
+modify infrastructure, deploy services, or change notification runtime.
 
-### Phase 1 — Domain and Contract Foundation
+Validate and report:
 
-Implement envelope types, validation, terminal mapping, ownership permissions,
-value-blind policy, provider port, persistence port, clock, and deterministic
-IDs. Validate with pure unit and property tests.
+- Raspberry Pi hardware model, OS, storage, memory, connectivity, uptime
+  expectations, available services, and deployment suitability;
+- `letoatreides` OS, availability, network role, desktop environment, native
+  notification APIs, startup behavior, and reference-client suitability;
+- all current wrappers, scripts, ntfy configuration, triggers, latency
+  characteristics, retry/duplicate behavior, and limitations;
+- comparable SQLite, MQTT, WebSocket, Server-Sent Events, and justified
+  alternative facts; and
+- measured publication, workstation, mobile, retry, duplicate, and delivery
+  reliability baselines with documented methods and limitations.
 
-### Phase 2 — Durable Core
+Deliverables are the Infrastructure Validation Report, Platform Capability
+Assessment, Notification Baseline Metrics, Candidate Technology Evaluation,
+updated Project State, and Completion Report.
 
-Implement event acceptance, transactional outbox, subscription versioning,
-obligations, leases, attempts, retry scheduling, recovery, evidence queries,
-and safe health. Test crash points and duplicate acceptance.
+### Phase 2 — Implementation Planning
 
-### Phase 3 — ntfy Adapter
+Begin only after Phase 1 evidence is reviewed and accepted. Using only validated
+facts, finalize transport and event-store selections, workstation architecture,
+deployment model, retry policy, latency objectives, operational qualification
+criteria, dependencies, rollback, and the gated implementation sequence. No
+implementation occurs in this phase.
 
-Port current security and delivery behavior; add common adapter contract tests,
-mock server tests, rate limiting, response classification, and secret-redaction
-tests. Do not integrate the wrapper yet.
+Architecture recommendations for SQLite WAL and authenticated WebSocket remain
+provisional until this phase confirms or revises them.
 
-### Phase 4 — Identity and Lifecycle Bridge
+### Phase 3 — Notification Sprint Implementation
 
-Implement the qualified identity/sequence client and wrapper observation bridge.
-Test multiple Handoffs per persistent session, resume, timeout, signals,
-execution/report divergence, and exactly one terminal event.
+Begin only after the validated implementation plan is reviewed and accepted.
+The expected bounded subphases are:
 
-### Phase 5 — Shadow and Migration
+1. Core Notification Service.
+2. Persistent Event Store.
+3. Local Transport Layer.
+4. Reference Workstation Client.
+5. ntfy Provider Adapter.
+6. Migration from Prototype.
+7. Operational Qualification.
 
-Run existing and service pipelines under a controlled comparison without
-duplicate operator delivery. Produce equivalence evidence and execute the
-single-writer cutover only after approval.
-
-### Phase 6 — Operational Qualification
-
-Validate provider outage/recovery, process crash, persistence restart,
-duplicates, ordering, partial delivery, exhausted retry, configuration reload,
-concurrent Handoffs, and graceful shutdown. Obtain operator confirmation for
-bounded live ntfy tests.
-
-### Phase 7 — Adoption
-
-Publish client guidance and onboard `engctl`, EOS-safe integrations, and Mission
-0 services incrementally. Future provider and event-family work remains
-separately qualified.
+Implementation prerequisites also include disposition of current uncommitted
+wrapper work without absorbing it, a qualified canonical envelope and stable
+Handoff identity source, an approved application-persistence boundary, and an
+exact Notification Sprint scope and acceptance plan.
 
 ## Validation Strategy
 

@@ -50,6 +50,33 @@ Environment:
 EOF
 }
 
+eos_codex_completion_contract() {
+    local work_order="$1"
+    if [[ "$work_order" == "Not specified" ]]; then
+        printf '%s' 'This engctl codex session is non-EWO work. Do not imply ETP governance or Engineering Work Order authority.'
+        return 0
+    fi
+
+    printf '%s' "This is a governed Engineering Work Order session for $work_order. The resolved Completion Report contract is ETP-BASELINE-CONTROLLED-PUBLICATION@1.0, PROC-0001@1.8, STD-0003@1.3, and TPL-0002@1.2. For every handoff in this persistent or resumed session, including concise handoffs and PASS, FAIL, or BLOCKED outcomes, independently consume that contract: read and instantiate the active TPL-0002, begin the final response exactly with '# Completion Report', and place nothing before that heading. Do not rely on conversational recall."
+}
+
+eos_codex_report_qualification_summary() {
+    local state="$1" governance="$2"
+    local total passed failed
+    if [[ "$governance" != "governed" ]]; then
+        printf 'Report Qualification: NOT APPLICABLE (non-EWO session)\n'
+        return 0
+    fi
+
+    total="$(awk 'END { print NR + 0 }' "$state" 2>/dev/null)"
+    passed="$(awk -F '\t' '$2 == "PASS" { count++ } END { print count + 0 }' "$state" 2>/dev/null)"
+    failed=$((total - passed))
+    printf 'Report Qualification: %s (passed=%s failed=%s total=%s)\n' \
+        "$([[ "$total" -gt 0 && "$failed" -eq 0 ]] && echo PASS || echo FAIL)" \
+        "$passed" "$failed" "$total"
+    [[ "$total" -gt 0 && "$failed" -eq 0 ]]
+}
+
 eos_codex_wrapper_gate() {
     local operation="${1:-repository-governed engineering initiation}"
 
@@ -74,7 +101,8 @@ eos_codex_run() {
     local work_order="${CODEX_EWO:-Not specified}"
     local codex_bin="${CODEX_BIN:-codex}"
     local mission_timeout="${CODEX_TIMEOUT:-0}"
-    local repository host start_epoch end_epoch elapsed duration
+    local repository host start_epoch end_epoch elapsed duration governance
+    local contract contract_config notify_config qualification_root qualification_state qualifier
     local child_pid="" final_sent=0 codex_exit=0
     local -a codex_args=()
 
@@ -128,6 +156,25 @@ eos_codex_run() {
     repository="$(eos_codex_repository_name)"
     host="$(hostname)"
     start_epoch="$(date +%s)"
+    qualifier="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/codex-report-qualify.sh"
+    qualification_root="$(mktemp -d "${TMPDIR:-/tmp}/engctl-codex-qualification.XXXXXX")"
+    qualification_state="$qualification_root/report-qualification.tsv"
+    : > "$qualification_state"
+    trap 'rm -rf "$qualification_root"' RETURN
+
+    if [[ "$work_order" == "Not specified" ]]; then
+        governance="non-ewo"
+    else
+        governance="governed"
+    fi
+    contract="$(eos_codex_completion_contract "$work_order")"
+    contract_config="developer_instructions=$(jq -Rn --arg value "$contract" '$value')"
+    notify_config="notify=$(jq -cn \
+        --arg qualifier "$qualifier" \
+        --arg state "$qualification_state" \
+        --arg governance "$governance" \
+        '["bash", $qualifier, $state, $governance]')"
+    codex_args=( -c "$contract_config" -c "$notify_config" "${codex_args[@]}" )
 
     eos_codex_notification "Codex Started" "Running" "$repository" "$work_order" "$host" || true
 
@@ -142,6 +189,7 @@ eos_codex_run() {
         end_epoch="$(date +%s)"
         elapsed=$((end_epoch - start_epoch))
         duration="$(eos_codex_duration "$elapsed")"
+        eos_codex_report_qualification_summary "$qualification_state" "$governance" || true
         eos_codex_notification "Codex Interrupted" "Interrupted" "$repository" "$work_order" "$host" "$duration" "$signal_name" || true
         final_sent=1
         return "$((128 + signal_number))"
@@ -171,10 +219,18 @@ eos_codex_run() {
     end_epoch="$(date +%s)"
     elapsed=$((end_epoch - start_epoch))
     duration="$(eos_codex_duration "$elapsed")"
+    local qualification_output qualification_status=0
+    qualification_output="$(eos_codex_report_qualification_summary "$qualification_state" "$governance")" \
+        || qualification_status=$?
+    printf '%s\n' "$qualification_output"
+
     if ((mission_timeout > 0 && codex_exit == 143)); then
         eos_codex_notification "Codex Timed Out" "Timed out after ${mission_timeout}s" "$repository" "$work_order" "$host" "$duration" || true
-    elif ((codex_exit == 0)); then
+    elif ((codex_exit == 0 && qualification_status == 0)); then
         eos_codex_notification "Codex Complete" "Success" "$repository" "$work_order" "$host" "$duration" || true
+    elif ((codex_exit == 0)); then
+        eos_codex_notification "Codex Report Qualification Failed" "Execution succeeded; report qualification failed" "$repository" "$work_order" "$host" "$duration" || true
+        codex_exit=65
     else
         eos_codex_notification "Codex Failed" "Exit code $codex_exit" "$repository" "$work_order" "$host" "$duration" || true
     fi

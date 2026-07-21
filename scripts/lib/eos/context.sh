@@ -412,9 +412,99 @@ eos_render_operational_status() {
     eos_render_printer_health || true
 }
 
+eos_markdown_field() {
+    local path="$1" label="$2"
+    awk -v label="$label" '
+        $0 == "**" label ":**" { capture=1; next }
+        capture && /^[[:space:]]*$/ { if (value != "") { print value; printed=1; exit } }
+        capture {
+            line=$0
+            sub(/^[[:space:]]+/, "", line)
+            value=(value == "" ? line : value " " line)
+        }
+        END { if (capture && value != "" && !printed) print value }
+    ' "$path" 2>/dev/null
+}
+
+eos_context_value() {
+    local context="$1" key="$2"
+    sed -n "s/^${key}=//p" <<<"$context" | head -1
+}
+
+eos_render_resume_summary() {
+    local project="$1" state="$2" registry_context="$3"
+    local project_title mission phase active_work authority next_action repository_state
+    local checkpoint_sync upstream platform_health banner
+
+    project_title="$(eos_context_value "$registry_context" management_project_title)"
+    mission="$(eos_context_value "$registry_context" management_current_missions)"
+    phase="$(eos_context_value "$registry_context" management_current_phases)"
+    active_work="$(eos_context_value "$registry_context" management_active_work)"
+    [[ -n "$project_title" ]] || project_title="$project"
+    [[ -n "$mission" && "$mission" != "none" ]] || mission="No active mission"
+    if [[ -z "$phase" || "$phase" == "none" ]]; then
+        phase="$(eos_frontmatter_value "$state" phase 2>/dev/null || true)"
+    fi
+    [[ -n "$phase" ]] || phase="unknown"
+    [[ -n "$active_work" ]] || active_work="unknown"
+
+    if [[ "$active_work" == "none" ]]; then
+        authority="No active work authority; separate authorization required"
+        next_action="$(eos_markdown_field "$state" "Next Immediate Step")"
+        [[ -n "$next_action" ]] || next_action="Obtain separate authorization before beginning engineering work"
+    else
+        authority="Consult the controlled authority associated with $active_work"
+        next_action="Continue authorized active work: $active_work"
+    fi
+
+    repository_state="$(eos_repository_state "$project")"
+    upstream="$(eos_repository_sync_status "$project")"
+    checkpoint_sync="$(eos_checkpoint_sync_status "$project" 2>/dev/null || true)"
+    platform_health="PASS"
+    if [[ "$repository_state" == unknown* || "$checkpoint_sync" == invalid* ]]; then
+        platform_health="FAIL"
+    elif [[ "$repository_state" != "clean" || "$checkpoint_sync" != "aligned" || "$upstream" == unavailable* ]]; then
+        platform_health="WARNING"
+    fi
+    if [[ "$active_work" == "none" || "$active_work" == "unknown" || "$platform_health" == "FAIL" ]]; then
+        banner="ACTION REQUIRED"
+    else
+        banner="READY"
+    fi
+
+    echo "===================================="
+    echo "ENGINEERING WORK INITIATION — $banner"
+    echo "===================================="
+    echo
+    echo "EXECUTIVE SUMMARY"
+    echo "------------------------------------"
+    printf '%-25s %s\n' "Project:" "$project_title ($project)"
+    printf '%-25s %s\n' "Mission:" "$mission"
+    printf '%-25s %s\n' "Phase:" "$phase"
+    printf '%-25s %s\n' "Active Work:" "$active_work"
+    printf '%-25s %s\n' "Current Authority:" "$authority"
+    printf '%-25s %s\n' "Next Recommended Action:" "$next_action"
+    printf '%-25s %s\n' "Repository Status:" "$repository_state; $upstream"
+    printf '%-25s %s\n' "Platform Health:" "$platform_health"
+    echo
+    echo "ENGINEERING SESSION CONTRACT"
+    echo "------------------------------------"
+    if [[ "$active_work" == "none" ]]; then
+        printf '%-25s %s\n' "Objective:" "Obtain and confirm separate engineering work authorization"
+        printf '%-25s %s\n' "Authorized Work:" "None"
+        printf '%-25s %s\n' "Success Criteria:" "Authorized work and its bounded success criteria are recorded"
+        printf '%-25s %s\n' "Expected Closeout:" "No engineering closeout until work is separately authorized"
+    else
+        printf '%-25s %s\n' "Objective:" "Execute the active work within its recorded scope"
+        printf '%-25s %s\n' "Authorized Work:" "$active_work"
+        printf '%-25s %s\n' "Success Criteria:" "Satisfy the criteria recorded for the authorized work"
+        printf '%-25s %s\n' "Expected Closeout:" "Complete the closeout required by the recorded authority"
+    fi
+}
+
 eos_render_resume() {
     local project="${1:-homelab}"
-    local root state checkpoint
+    local root state checkpoint registry_context=""
 
     root="$(eos_project_root "$project")"
     state="$(eos_project_state "$project")"
@@ -424,15 +514,11 @@ eos_render_resume() {
         checkpoint="$(eos_latest_checkpoint || true)"
     fi
 
-    echo "===================================="
-    echo "EOS ENGINEERING RESUME"
-    echo "===================================="
-    echo
-    echo "Project:"
-    echo "$project"
-    echo
+    if declare -F emp_registry_context >/dev/null 2>&1; then
+        registry_context="$(emp_registry_context "$project")"
+    fi
 
-    eos_git_summary "$project"
+    eos_render_resume_summary "$project" "$state" "$registry_context"
 
     echo
     eos_render_operational_status
@@ -445,12 +531,22 @@ eos_render_resume() {
         eos_render_operational_summary "$project"
     fi
 
-    if declare -F emp_registry_context >/dev/null 2>&1; then
+    echo
+    echo "------------------------------------"
+    echo "EOS ENGINEERING RESUME — DETAILED"
+    echo "------------------------------------"
+    echo
+    echo "Project:"
+    echo "$project"
+    echo
+    eos_git_summary "$project"
+
+    if [[ -n "$registry_context" ]]; then
         echo
         echo "------------------------------------"
         echo "ENGINEERING WORK REGISTRY"
         echo "------------------------------------"
-        emp_registry_context "$project"
+        printf '%s\n' "$registry_context"
     fi
 
     echo

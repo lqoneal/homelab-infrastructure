@@ -147,6 +147,15 @@ grep -Fq "Checkpoint Sync:       not applicable" <<<"$sprinter_resume"
 grep -Fq "Persistent MMC Storage I/O Investigation" <<<"$sprinter_resume"
 
 homelab_resume="$("$REPOSITORY_ROOT/scripts/engctl" resume homelab)"
+grep -Fq "ENGINEERING WORK INITIATION — ACTION REQUIRED" <<<"$homelab_resume"
+grep -Fq "EXECUTIVE SUMMARY" <<<"$homelab_resume"
+grep -Fq "ENGINEERING SESSION CONTRACT" <<<"$homelab_resume"
+grep -Fq "Next Recommended Action:" <<<"$homelab_resume"
+grep -Fq "Platform Health:" <<<"$homelab_resume"
+[[ "$(grep -n -m1 "EXECUTIVE SUMMARY" <<<"$homelab_resume" | cut -d: -f1)" -lt \
+    "$(grep -n -m1 "OPERATIONAL STATUS" <<<"$homelab_resume" | cut -d: -f1)" ]]
+[[ "$(grep -n -m1 "OPERATIONAL STATUS" <<<"$homelab_resume" | cut -d: -f1)" -lt \
+    "$(grep -n -m1 "ENGINEERING CONTEXT" <<<"$homelab_resume" | cut -d: -f1)" ]]
 homelab_wrapper_resume="$(ENGCTL_PATH="$REPOSITORY_ROOT/scripts/engctl" "$REPOSITORY_ROOT/scripts/homelabctl" resume)"
 [[ "$homelab_resume" == "$homelab_wrapper_resume" ]]
 sprinter_wrapper_resume="$(ENGCTL="$REPOSITORY_ROOT/scripts/engctl" \

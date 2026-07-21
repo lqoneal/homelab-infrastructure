@@ -1,18 +1,18 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 5.8
+version: 6.4
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-07-18
-phase: Engineering Transaction Profile Institutionalized
+phase: HNS Infrastructure Discovery Required
 classification: Project State
-predecessor_revision: PROJ-0001@5.7
+predecessor_revision: PROJ-0001@6.3
 successor_revision: null
 approval_status: Approved
-approval_authority: Engineering Governance
-approval_reference: Engineering Governance Authorization - Engineering Transaction Profile Implementation
+approval_authority: Homelab Infrastructure
+approval_reference: Codex Handoff - SPEC-0009 Refinement: Engineering Decision Classification Model
 approval_date: 2026-07-18
 persistence_status: Persisted
 source_of_truth: true
@@ -156,15 +156,26 @@ Revision 16 work is authorized.
 
 **Current Phase:**
 
-Engineering Transaction Profile Institutionalized
+HNS Infrastructure Discovery Required
 
 **Phase Objective:**
 
-SPEC-0008 Version 1.0 owns the ETP model and one conservative baseline profile.
-PROC-0004 Version 1.1 consumes and validates explicit profile selection, and
-TPL-0001 Version 1.6 records the frozen resolved manifest. Existing semantic
-owners, Governance authority, and platform architecture remain unchanged;
-runtime resolution, additional profiles, registries, and automation are deferred.
+SPEC-0009 Version 1.6 requires read-only Infrastructure Discovery and
+Validation before evidence-based Implementation Planning and the Notification
+Sprint. SQLite WAL and authenticated WebSocket remain architecture
+recommendations, not final implementation selections. The designated Raspberry
+Pi and `letoatreides`, current runtime, candidate technologies, and baseline
+metrics must be validated before Phase 2 decisions. Version 1.5 records HNS as
+the authoritative accepted engineering event-record and delivery platform,
+while engineering producers retain lifecycle-fact ownership and replaceable
+providers remain consumers and presentation mechanisms only. Version 1.6 also
+records the advisory Known/Unknown/Decision model: Phase 1 converts Unknowns
+to validated Known facts, Phase 2 resolves Decisions from that evidence, and
+Phase 3 implements reviewed decisions. It retains
+advisory Event Platform extensibility, foundational authority separation,
+producer identity, independent event/delivery/provider identity, store and
+transport evolution, and preferred migration guidance without changing scope.
+No implementation or runtime migration has begun.
 
 ---
 
@@ -292,6 +303,9 @@ runtime resolution, additional profiles, registries, and automation are deferred
 - `repair_yaml_header.py` remediation remains deferred and unchanged.
 - Legacy controlled-document migration and repository-wide persistence remediation remain separately governed technical debt.
 - Multi-host operation, dashboards, notifications, analytics, metric calculation, scheduling, AI planning, optimization, and autonomous management remain separately authorized EMP enhancements.
+- HNS implementation remains deferred pending validation of the Raspberry Pi
+  host, `letoatreides`, event contract, durable store, local transport, endpoint
+  adapters, retry model, latency targets, migration, and operational qualification.
 - Private AI Assistant implementation remains deferred behind SprinterOS in portfolio order.
 - SprinterOS reports persistent microSD/MMC storage I/O errors after the
   platform update. Media, filesystem, controller/interface, and
@@ -320,17 +334,21 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-No EWO-000023 execution authority remains. Its complete evidence boundary is
-repository-controlled, EDR-0003 Version 0.3 is Approved, and Work Registry
-Revision 37 records completed Engineering work and deferred Governance
-planning without evaluation or implementation authority.
+The HNS roadmap and advisory architecture guidance are recorded in SPEC-0009
+Version 1.6 and the
+subordinate notification implementation roadmap. Infrastructure Discovery and
+Validation is now the mandatory, read-only entry phase. The current ntfy
+wrapper, Handoff execution behavior, workstation runtime, Raspberry Pi
+services, Mission 0 services, and Governance documents remain unchanged.
 
 **Next Immediate Step:**
 
-Await separately authorized work. Do not relaunch EWO-000023 or infer authority
-from MILESTONE-0007. Governance architecture implementation, operational
-adoption, institutionalization, SPEC-0007 Revision 16 work, SprinterOS
-diagnostics, and notification Stage 2/3 remain unauthorized.
+Issue the bounded, read-only HNS Phase 1 Infrastructure Discovery and
+Validation handoff. Produce the Infrastructure Validation Report, Platform
+Capability Assessment, Notification Baseline Metrics, Candidate Technology
+Evaluation, updated Project State, and Completion Report. Do not finalize
+technology selections or begin implementation planning until its evidence is
+reviewed and accepted.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -366,6 +384,10 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 | Milestone state | MILESTONE-0007 published as a historical summary; no new evidence or authority established |
 | Reporting standard | Execution-first Completion Reports institutionalized through STD-0003, PROC-0001, TPL-0001, and TPL-0002 |
 | Freshness | Reconciled through the 2026-07-18 Engineering Transaction Profile implementation transaction |
+| Notification planning | SPEC-0009 Version 1.6 records the HNS authority and Known/Unknown/Decision principles and requires read-only infrastructure validation before implementation planning; implementation not started |
+| Notification authority | Designated Raspberry Pi HNS service for accepted events and durable delivery state |
+| Reference client | `letoatreides` proposed; endpoint facts require implementation-planning validation |
+| Delivery priority | Persistent LAN delivery primary; local history secondary visibility; Apple/mobile best-effort and non-authoritative |
 
 ---
 
@@ -582,3 +604,9 @@ When resuming this project:
 | 5.6     | 2026-07-18 | Institutionalized TPL-0001 Version 1.4 as a concise Engineering Handoff authorization contract, preserved single-owner semantic responsibility, and left historical Engineering Work Orders unchanged. |
 | 5.7     | 2026-07-18 | Published PROC-0004 Version 1.0 as the single Engineering Handoff construction owner, synchronized TPL-0001 Version 1.5 as structural owner, and preserved Governance authorization and PROC-0001 execution boundaries. |
 | 5.8     | 2026-07-18 | Published SPEC-0008 Version 1.0, one conservative baseline ETP, PROC-0004 Version 1.1 consumption, TPL-0001 Version 1.6 manifest structure, and deterministic fail-closed validation without runtime services or ownership redistribution. |
+| 5.9     | 2026-07-18 | Recorded SPEC-0009 Version 1.1 Homelab Notification System planning: designated Raspberry Pi authority, `letoatreides` reference client, three delivery tiers, authoritative local persistence, secondary mobile delivery, bounded implementation backlog, and migration direction without implementation or Governance changes. |
+| 6.0     | 2026-07-18 | Established SPEC-0009 Version 1.2 as the HNS implementation architecture baseline after current-state assessment, selecting SQLite WAL and authenticated WebSocket, defining provider/endpoint contracts, migration gates, rollback, latency strategy, and the seven-phase Notification Sprint roadmap without implementation. |
+| 6.1     | 2026-07-18 | Refined the HNS roadmap to require read-only Infrastructure Discovery and Validation before evidence-based Implementation Planning and the seven-subphase Notification Sprint; retained technology choices as provisional recommendations and deferred all implementation. |
+| 6.2     | 2026-07-18 | Recorded SPEC-0009 Version 1.4 advisory architecture observations covering Event Platform vision, authority separation, producer and three-part identity models, transport/store evolution, future consumers, and staged migration without changing the roadmap or implementation scope. |
+| 6.3     | 2026-07-18 | Recorded SPEC-0009 Version 1.5 HNS authority principle: producers own lifecycle facts, HNS owns accepted event records and delivery state, and replaceable providers remain consumers/presentation mechanisms without changing roadmap or implementation scope. |
+| 6.4     | 2026-07-18 | Recorded SPEC-0009 Version 1.6 Known/Unknown/Decision methodology: Phase 1 establishes facts, Phase 2 resolves evidence-based decisions, and Phase 3 implements reviewed decisions without changing roadmap sequencing or scope. |

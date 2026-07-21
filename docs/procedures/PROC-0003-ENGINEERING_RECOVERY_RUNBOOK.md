@@ -1,20 +1,20 @@
 ---
 document_id: PROC-0003
 title: Engineering Recovery Runbook
-version: 1.1
+version: 1.2
 status: Active
 owner: Engineering Governance
 created: 2026-07-15
-last_updated: 2026-07-16
-phase: Engineering Storage Qualification Capability
+last_updated: 2026-07-19
+phase: Controlled Documentation Reconciliation and Engineering Standards Update
 domain: Engineering Recovery
 classification: Engineering Procedure
-predecessor_revision: PROC-0003@1.0
+predecessor_revision: PROC-0003@1.1
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Codex Handoff Procedure - Engineering Storage Qualification Capability Implementation
-approval_date: 2026-07-16
+approval_reference: Codex Handoff - Mission 0 Controlled Documentation Reconciliation and Engineering Standards Update
+approval_date: 2026-07-19
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals:
@@ -32,6 +32,8 @@ relationships:
     target: STD-0002
   - type: related_to
     target: PROC-0001
+  - type: conforms_to
+    target: STD-0005
   - type: related_to
     target: INF-0001
   - type: indexed_by
@@ -99,7 +101,12 @@ PROC-0001 and record:
    available destination bytes, and evidence destination;
 5. the recovery point required before any major platform modification;
 6. rollback criteria and confirmation that no destructive or corrective action
-   is implied by qualification authority.
+   is implied by qualification authority; and
+7. the execution environment, including whether commands run on the
+   Engineering host or in a sandbox, container, remote session, chroot, or
+   other constrained context; effective repository and device access; write
+   capability required by the mission; namespace and privilege boundaries;
+   and any policy-imposed mount, network, tool, or filesystem constraints.
 
 Device paths are observations, not identities. Re-discover identities after
 every reconnect, reboot, remount, or session resumption. The destination shall
@@ -107,6 +114,52 @@ have more free bytes than the worst-case completed artifact and evidence set,
 including an engineering margin specified by the mission. Source partitions
 shall be unmounted for normal acquisition. Live acquisition is prohibited
 unless explicitly accepted as a documented exception with consistency limits.
+
+### Evidence Identity Verification
+
+Before technical investigation, positively identify every source, target,
+destination, evidence artifact, and applicable repository. Correlate stable
+hardware identifiers, exact capacity, partition and filesystem identifiers,
+physical attachment, controlled asset records, artifact names and hashes, and
+expected topology as applicable. Preserve this correlation before
+qualification, recovery, repair, restoration, or forensic analysis.
+
+Do not infer identity from a device path, mount point, readable content,
+successful command, backup label, or operator expectation alone. Stop when
+identity is ambiguous, inconsistent, duplicated, or changes unexpectedly.
+
+### Execution Environment Verification
+
+Determine infrastructure state from the Engineering host. A sandbox may
+present a read-only bind mount, hidden device nodes, filtered logs, restricted
+privileges, or a different namespace while the host remains healthy. Compare
+VFS and filesystem options, host configuration, device mapping, repository
+ownership, and effective write capability in the host context before
+classifying an infrastructure failure.
+
+Execution-environment constraints are limitations of the investigation unless
+independently corroborated by host evidence. If host verification is not
+authorized or available, report the limitation and leave infrastructure state
+undetermined; do not remount, repair, or reconfigure based solely on sandbox
+observations.
+
+### Investigation Sequence
+
+Apply the following order and preserve evidence at each boundary:
+
+1. verify authority, scope, repository state, and execution environment;
+2. positively identify evidence and assets;
+3. inventory configuration, topology, mounts, dependencies, and symptoms;
+4. acquire original non-mutating evidence;
+5. qualify the evidence and isolate the failing layer or variable;
+6. preserve required artifacts and establish rollback;
+7. request or confirm separate corrective authority;
+8. perform recovery or repair only when supported; and
+9. validate restoration and operational deployment as separate decisions.
+
+Evidence acquisition, qualification, recovery, restoration, and operational
+deployment are not interchangeable. Preservation precedes repair, and
+qualification precedes recovery whenever practical.
 
 ## Recovery Acquisition
 
@@ -349,6 +402,27 @@ separate mission explicitly authorizes that action. A successful read-only
 mount validates access for that media; tool availability alone validates the
 platform capability but makes no claim about a storage asset.
 
+Backups and successful reads are evidence, not qualification decisions.
+Qualification requires identity-linked evidence sufficient for the stated
+use, including material limitations and contradictory observations. Record a
+temporary disqualification or pending-qualification disposition when the
+evidence is incomplete, unsafe to extend, or dependent on an unisolated
+component.
+
+### Hardware Failure Isolation
+
+Before permanently disqualifying an asset, vary one factor at a time when safe
+and within authority. For storage investigations this commonly means comparing
+media, reader or enclosure, controller, interface, host, power delivery,
+adapter, and cable independently. For compute, network, and peripheral assets,
+apply the same method to their equivalent replaceable layers.
+
+Capture the baseline symptom before substitution, preserve stable identity,
+change only the selected variable, repeat the relevant non-destructive test,
+and record whether the fault follows the asset or remains with the path. An
+unavailable SMART bridge, failed mount, or single-host error does not by itself
+permanently disqualify the media.
+
 ### MMC I/O Classification
 
 Classify each storage symptom by layer and preserve its exact timestamp and
@@ -504,3 +578,4 @@ The Engineering Recovery completion report shall contain:
 | ------- | ---- | ----------- |
 | 1.0 | 2026-07-15 | Published the authoritative recovery workflow and lessons qualified during SprinterOS Sprint 1.1. |
 | 1.1 | 2026-07-16 | Added the qualified non-destructive removable-media discovery, SMART, read-only filesystem and mount, safe-unmount, stable-identification, and evidence-preservation workflow. |
+| 1.2 | 2026-07-19 | Required evidence identity and execution-environment verification, separated acquisition through deployment decisions, established preservation-before-repair sequencing, codified evidence-based storage qualification and temporary disqualification, and required one-variable hardware isolation before permanent disqualification. |
