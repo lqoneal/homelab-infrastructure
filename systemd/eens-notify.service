@@ -1,0 +1,26 @@
+[Unit]
+Description=Engineering Event and Notification System ntfy Service
+Documentation=file:///home/loneal/data/engineering/eens/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/loneal/data/engineering/eens
+
+Environment=PYTHONPATH=/home/loneal/data/engineering/eens/src
+EnvironmentFile=/home/loneal/.config/eens/eens.env
+
+ExecStart=/home/loneal/data/engineering/eens/.venv/bin/python -m eens service ntfy
+
+Restart=on-failure
+RestartSec=5s
+
+TimeoutStopSec=30s
+KillSignal=SIGTERM
+
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

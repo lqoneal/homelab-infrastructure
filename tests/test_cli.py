@@ -1047,5 +1047,76 @@ class NotifyCliTests(unittest.TestCase):
 
 
 
+
+class ServiceCliTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp_directory = tempfile.TemporaryDirectory()
+        root = Path(self.temp_directory.name)
+        self.database_path = root / "eens.sqlite3"
+        self.checkpoint_path = root / "consumers.sqlite3"
+
+    def tearDown(self) -> None:
+        self.temp_directory.cleanup()
+
+    def run_cli(self, *arguments: str) -> tuple[int, str, str]:
+        output = io.StringIO()
+        errors = io.StringIO()
+
+        with (
+            contextlib.redirect_stdout(output),
+            contextlib.redirect_stderr(errors),
+        ):
+            exit_code = main(list(arguments))
+
+        return (
+            exit_code,
+            output.getvalue().strip(),
+            errors.getvalue().strip(),
+        )
+
+    def test_service_ntfy_runs_notification_service(self) -> None:
+        with (
+            patch("eens.cli.NtfyNotifier") as notifier_class,
+            patch("eens.cli.NotificationDispatcher") as dispatcher_class,
+            patch("eens.cli.NotificationService") as service_class,
+        ):
+            exit_code, output, errors = self.run_cli(
+                "--database",
+                str(self.database_path),
+                "service",
+                "ntfy",
+                "--server",
+                "https://ntfy.sh",
+                "--topic",
+                "engineering-test",
+                "--consumer",
+                "ntfy-service",
+                "--checkpoint",
+                str(self.checkpoint_path),
+                "--timeout",
+                "7.5",
+                "--poll-interval",
+                "2.0",
+            )
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(output, "")
+        self.assertEqual(errors, "")
+
+        notifier_class.assert_called_once_with(
+            server="https://ntfy.sh",
+            topic="engineering-test",
+            token=None,
+            timeout=7.5,
+        )
+        dispatcher_class.assert_called_once()
+        service_class.assert_called_once_with(
+            dispatcher_class.return_value,
+            poll_interval=2.0,
+            error_handler=unittest.mock.ANY,
+        )
+        service_class.return_value.run.assert_called_once_with()
+
+
 if __name__ == "__main__":
     unittest.main()

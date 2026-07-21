@@ -18,6 +18,7 @@ from .notify import (
     NotificationError,
     NtfyNotifier,
 )
+from .server import NotificationService
 from .store import EventStore, IdempotencyConflictError, StoredEvent
 
 
@@ -324,6 +325,56 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print one JSON object per delivered event",
+    )
+
+    service_parser = subparsers.add_parser(
+        "service",
+        help="Run a long-running notification service",
+    )
+    service_subparsers = service_parser.add_subparsers(
+        dest="service_transport",
+        required=True,
+    )
+
+    service_ntfy_parser = service_subparsers.add_parser(
+        "ntfy",
+        help="Continuously deliver pending events to an ntfy topic",
+    )
+    service_ntfy_parser.add_argument(
+        "--server",
+        help=(
+            "ntfy server base URL; overrides EENS_NTFY_SERVER "
+            "(default: https://ntfy.sh)"
+        ),
+    )
+    service_ntfy_parser.add_argument(
+        "--topic",
+        help="ntfy topic name; overrides EENS_NTFY_TOPIC",
+    )
+    service_ntfy_parser.add_argument(
+        "--token",
+        help="Optional ntfy access token",
+    )
+    service_ntfy_parser.add_argument(
+        "--consumer",
+        default="ntfy-service",
+        help="Stable notification consumer identity",
+    )
+    service_ntfy_parser.add_argument(
+        "--checkpoint",
+        help="Optional explicit checkpoint database path",
+    )
+    service_ntfy_parser.add_argument(
+        "--timeout",
+        type=float,
+        default=10.0,
+        help="HTTP timeout in seconds",
+    )
+    service_ntfy_parser.add_argument(
+        "--poll-interval",
+        type=float,
+        default=1.0,
+        help="Seconds between notification dispatch cycles",
     )
 
     return parser
@@ -824,6 +875,58 @@ def run_notify_ntfy(
     return 0
 
 
+def run_service_ntfy(
+    database_path: Path,
+    *,
+    server: str,
+    topic: str | None,
+    token: str | None,
+    consumer_name: str,
+    checkpoint_path: str | None,
+    timeout: float,
+    poll_interval: float,
+) -> int:
+    """Continuously deliver pending events to ntfy."""
+
+    checkpoint_database = (
+        Path(checkpoint_path).expanduser()
+        if checkpoint_path
+        else database_path.with_name(
+            f"{database_path.stem}.consumers.sqlite3"
+        )
+    )
+
+    def report_error(error: NotificationError) -> None:
+        print(
+            f"eens: notification delivery failed: {error}",
+            file=sys.stderr,
+        )
+
+    consumer = EventConsumer(
+        EventStore(database_path),
+        checkpoint_database,
+        consumer_name=consumer_name,
+    )
+    notifier = NtfyNotifier(
+        server=server,
+        topic=topic,
+        token=token,
+        timeout=timeout,
+    )
+    dispatcher = NotificationDispatcher(
+        consumer,
+        notifier,
+    )
+    service = NotificationService(
+        dispatcher,
+        poll_interval=poll_interval,
+        error_handler=report_error,
+    )
+    service.run()
+
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     """Run the EENS command-line interface."""
 
@@ -897,6 +1000,21 @@ def main(argv: list[str] | None = None) -> int:
                 limit=arguments.limit,
                 checkpoint_path=arguments.checkpoint,
                 json_output=arguments.json,
+            )
+
+        if (
+            arguments.command == "service"
+            and arguments.service_transport == "ntfy"
+        ):
+            return run_service_ntfy(
+                database_path,
+                server=resolve_ntfy_server(arguments.server),
+                topic=resolve_ntfy_topic(arguments.topic),
+                token=resolve_ntfy_token(arguments.token),
+                consumer_name=arguments.consumer,
+                checkpoint_path=arguments.checkpoint,
+                timeout=arguments.timeout,
+                poll_interval=arguments.poll_interval,
             )
 
         if (
