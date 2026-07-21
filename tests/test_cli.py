@@ -548,5 +548,100 @@ class HandoffCliTests(unittest.TestCase):
         )
 
 
+class RunCliTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp_directory = tempfile.TemporaryDirectory()
+        self.database_path = (
+            Path(self.temp_directory.name) / "eens.sqlite3"
+        )
+
+    def tearDown(self) -> None:
+        self.temp_directory.cleanup()
+
+    def run_cli(self, *arguments: str) -> tuple[int, str, str]:
+        output = io.StringIO()
+        errors = io.StringIO()
+        with (
+            contextlib.redirect_stdout(output),
+            contextlib.redirect_stderr(errors),
+        ):
+            exit_code = main(list(arguments))
+        return (
+            exit_code,
+            output.getvalue().strip(),
+            errors.getvalue().strip(),
+        )
+
+    def base_arguments(self, handoff: int = 2) -> tuple[str, ...]:
+        return (
+            "--database",
+            str(self.database_path),
+            "run",
+            "--mission",
+            "EENS Operational Alpha",
+            "--handoff",
+            str(handoff),
+            "--",
+        )
+
+    def test_run_success_returns_zero_and_emits_pair(self) -> None:
+        exit_code, _, errors = self.run_cli(
+            *self.base_arguments(),
+            sys.executable,
+            "-c",
+            "raise SystemExit(0)",
+        )
+
+        events = list(EventStore(self.database_path).replay())
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(len(events), 2)
+        self.assertEqual(
+            events[-1].event.event_type,
+            "engineering.handoff.completed",
+        )
+        self.assertEqual(errors, "")
+
+    def test_run_failure_preserves_exit_code(self) -> None:
+        exit_code, _, errors = self.run_cli(
+            *self.base_arguments(3),
+            sys.executable,
+            "-c",
+            "raise SystemExit(9)",
+        )
+
+        events = list(EventStore(self.database_path).replay())
+
+        self.assertEqual(exit_code, 9)
+        self.assertEqual(
+            events[-1].event.event_type,
+            "engineering.handoff.failed",
+        )
+        self.assertEqual(errors, "")
+
+    def test_run_requires_command(self) -> None:
+        exit_code, output, errors = self.run_cli(
+            *self.base_arguments()
+        )
+
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(output, "")
+        self.assertEqual(
+            errors,
+            "eens: wrapped command is required after --",
+        )
+
+    def test_run_command_not_found_returns_127(self) -> None:
+        exit_code, output, errors = self.run_cli(
+            *self.base_arguments(4),
+            "definitely-not-a-real-command-eens",
+        )
+
+        self.assertEqual(exit_code, 127)
+        self.assertEqual(output, "")
+        self.assertIn("eens: command not found:", errors)
+        self.assertEqual(EventStore(self.database_path).count(), 2)
+
+
 if __name__ == "__main__":
     unittest.main()

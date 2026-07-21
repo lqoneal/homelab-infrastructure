@@ -11,6 +11,7 @@ from typing import Any
 
 from .events import EngineeringEvent
 from .lifecycle import HandoffLifecycleProducer
+from .runtime import HandoffCommandRunner
 from .store import EventStore, IdempotencyConflictError, StoredEvent
 
 
@@ -188,6 +189,36 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print the lifecycle result as JSON",
+    )
+
+    run_parser = subparsers.add_parser(
+        "run",
+        help="Run a command inside a handoff lifecycle",
+    )
+    run_parser.add_argument(
+        "--mission",
+        required=True,
+        help="Mission name",
+    )
+    run_parser.add_argument(
+        "--handoff",
+        required=True,
+        type=int,
+        help="Mission-scoped handoff number",
+    )
+    run_parser.add_argument(
+        "--source",
+        default="engineering-handoff-runtime",
+        help="Runtime producer identity",
+    )
+    run_parser.add_argument(
+        "--cwd",
+        help="Optional working directory for the wrapped command",
+    )
+    run_parser.add_argument(
+        "command_args",
+        nargs=argparse.REMAINDER,
+        help="Command to execute; precede it with --",
     )
 
     return parser
@@ -508,6 +539,55 @@ def run_handoff(
 
     return 0
 
+
+def run_wrapped_command(
+    database_path: Path,
+    *,
+    mission: str,
+    handoff: int,
+    source: str,
+    cwd: str | None,
+    command_args: list[str],
+) -> int:
+    """Execute a command inside a standardized handoff lifecycle."""
+
+    if handoff < 1:
+        print("eens: --handoff must be greater than zero", file=sys.stderr)
+        return 2
+
+    normalized_command = list(command_args)
+    if normalized_command and normalized_command[0] == "--":
+        normalized_command = normalized_command[1:]
+
+    if not normalized_command:
+        print("eens: wrapped command is required after --", file=sys.stderr)
+        return 2
+
+    try:
+        result = HandoffCommandRunner(
+            EventStore(database_path),
+            source=source,
+        ).run(
+            mission=mission,
+            handoff=handoff,
+            command=normalized_command,
+            cwd=Path(cwd).expanduser() if cwd else None,
+        )
+    except FileNotFoundError as exc:
+        print(f"eens: command not found: {exc.filename}", file=sys.stderr)
+        return 127
+    except NotADirectoryError as exc:
+        print(f"eens: invalid working directory: {exc}", file=sys.stderr)
+        return 2
+    except (TypeError, ValueError) as exc:
+        print(f"eens: invalid runtime request: {exc}", file=sys.stderr)
+        return 2
+    except IdempotencyConflictError as exc:
+        print(f"eens: idempotency conflict: {exc}", file=sys.stderr)
+        return 1
+
+    return result.returncode
+
 def main(argv: list[str] | None = None) -> int:
     """Run the EENS command-line interface."""
 
@@ -562,6 +642,16 @@ def main(argv: list[str] | None = None) -> int:
                 source=arguments.source,
                 detail=arguments.detail,
                 json_output=arguments.json,
+            )
+
+        if arguments.command == "run":
+            return run_wrapped_command(
+                database_path,
+                mission=arguments.mission,
+                handoff=arguments.handoff,
+                source=arguments.source,
+                cwd=arguments.cwd,
+                command_args=arguments.command_args,
             )
     except OSError as exc:
         print(f"eens: {exc}", file=sys.stderr)
