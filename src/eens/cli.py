@@ -9,7 +9,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from .store import EventStore, StoredEvent
+from .events import EngineeringEvent
+from .store import EventStore, IdempotencyConflictError, StoredEvent
 
 
 DEFAULT_DATABASE_PATH = Path("runtime/db/eens.sqlite3")
@@ -22,6 +23,24 @@ def resolve_database_path(value: str | None = None) -> Path:
     if candidate:
         return Path(candidate).expanduser()
     return DEFAULT_DATABASE_PATH
+
+
+def parse_payload(value: str) -> dict[str, Any]:
+    """Parse and validate a JSON object payload."""
+
+    try:
+        payload = json.loads(value)
+    except json.JSONDecodeError as exc:
+        raise argparse.ArgumentTypeError(
+            f"payload must be valid JSON: {exc.msg}"
+        ) from exc
+
+    if not isinstance(payload, dict):
+        raise argparse.ArgumentTypeError(
+            "payload must be a JSON object"
+        )
+
+    return payload
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -90,6 +109,49 @@ def build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Print replay results as a JSON array",
+    )
+
+    emit_parser = subparsers.add_parser(
+        "emit",
+        help="Validate and persist an engineering event",
+    )
+    emit_parser.add_argument(
+        "event_type",
+        help="Engineering event type",
+    )
+    emit_parser.add_argument(
+        "--source",
+        required=True,
+        help="Event producer or originating component",
+    )
+    emit_parser.add_argument(
+        "--subject",
+        required=True,
+        help="Human-readable event subject",
+    )
+    emit_parser.add_argument(
+        "--idempotency-key",
+        required=True,
+        help="Stable key used for duplicate suppression",
+    )
+    emit_parser.add_argument(
+        "--payload",
+        type=parse_payload,
+        default={},
+        help="JSON object payload; defaults to {}",
+    )
+    emit_parser.add_argument(
+        "--event-id",
+        help="Optional UUID event identifier",
+    )
+    emit_parser.add_argument(
+        "--occurred-at",
+        help="Optional ISO-8601 event timestamp",
+    )
+    emit_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print the append result as JSON",
     )
 
     return parser
@@ -231,6 +293,63 @@ def run_replay(
     return 0
 
 
+def run_emit(
+    database_path: Path,
+    *,
+    event_type: str,
+    source: str,
+    subject: str,
+    idempotency_key: str,
+    payload: dict[str, Any],
+    event_id: str | None = None,
+    occurred_at: str | None = None,
+    json_output: bool = False,
+) -> int:
+    """Execute the emit command."""
+
+    event_arguments: dict[str, Any] = {
+        "event_type": event_type,
+        "source": source,
+        "subject": subject,
+        "idempotency_key": idempotency_key,
+        "payload": payload,
+    }
+
+    if event_id is not None:
+        event_arguments["event_id"] = event_id
+
+    if occurred_at is not None:
+        event_arguments["occurred_at"] = occurred_at
+
+    try:
+        event = EngineeringEvent(**event_arguments)
+        result = EventStore(database_path).append(event)
+    except IdempotencyConflictError as exc:
+        print(f"eens: idempotency conflict: {exc}", file=sys.stderr)
+        return 1
+    except (TypeError, ValueError) as exc:
+        print(f"eens: invalid event: {exc}", file=sys.stderr)
+        return 2
+
+    output = {
+        "status": "inserted" if result.inserted else "duplicate",
+        "inserted": result.inserted,
+        "sequence": result.sequence,
+        "event_id": event.event_id,
+        "fingerprint": event.fingerprint(),
+    }
+
+    if json_output:
+        print(json.dumps(output, sort_keys=True))
+    else:
+        print(f"status: {output['status']}")
+        print(f"sequence: {output['sequence']}")
+        print(f"event_id: {output['event_id']}")
+        print(f"fingerprint: {output['fingerprint']}")
+
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     """Run the EENS command-line interface."""
 
@@ -260,6 +379,19 @@ def main(argv: list[str] | None = None) -> int:
                 database_path,
                 after=arguments.after,
                 limit=arguments.limit,
+                json_output=arguments.json,
+            )
+
+        if arguments.command == "emit":
+            return run_emit(
+                database_path,
+                event_type=arguments.event_type,
+                source=arguments.source,
+                subject=arguments.subject,
+                idempotency_key=arguments.idempotency_key,
+                payload=arguments.payload,
+                event_id=arguments.event_id,
+                occurred_at=arguments.occurred_at,
                 json_output=arguments.json,
             )
     except OSError as exc:

@@ -336,6 +336,127 @@ class CliTests(unittest.TestCase):
             "eens: --limit must be greater than zero",
         )
 
+    def emit_arguments(self) -> tuple[str, ...]:
+        return (
+            "--database",
+            str(self.database_path),
+            "emit",
+            "engineering.handoff.started",
+            "--source",
+            "cli-test",
+            "--subject",
+            "Operational Alpha Handoff 5",
+            "--idempotency-key",
+            "cli-test-handoff-5-started",
+            "--payload",
+            '{"mission":"EENS","handoff":5,"status":"started"}',
+        )
+
+    def test_emit_inserts_event(self) -> None:
+        exit_code, output, errors = self.run_cli(
+            *self.emit_arguments()
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn("status: inserted", output)
+        self.assertIn("sequence: 1", output)
+        self.assertEqual(EventStore(self.database_path).count(), 1)
+        self.assertEqual(errors, "")
+
+    def test_emit_json_output(self) -> None:
+        exit_code, output, errors = self.run_cli(
+            *self.emit_arguments(),
+            "--json",
+        )
+
+        result = json.loads(output)
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(result["status"], "inserted")
+        self.assertTrue(result["inserted"])
+        self.assertEqual(result["sequence"], 1)
+        self.assertEqual(errors, "")
+
+    def test_emit_persists_payload(self) -> None:
+        self.run_cli(*self.emit_arguments())
+
+        stored = EventStore(self.database_path).get_by_sequence(1)
+
+        self.assertIsNotNone(stored)
+        assert stored is not None
+        self.assertEqual(
+            stored.event.payload,
+            {"mission": "EENS", "handoff": 5, "status": "started"},
+        )
+
+    def test_emit_exact_duplicate_is_suppressed(self) -> None:
+        first_code, _, first_errors = self.run_cli(
+            *self.emit_arguments()
+        )
+        second_code, second_output, second_errors = self.run_cli(
+            *self.emit_arguments()
+        )
+
+        self.assertEqual(first_code, 0)
+        self.assertEqual(second_code, 0)
+        self.assertIn("status: duplicate", second_output)
+        self.assertIn("sequence: 1", second_output)
+        self.assertEqual(EventStore(self.database_path).count(), 1)
+        self.assertEqual(first_errors, "")
+        self.assertEqual(second_errors, "")
+
+    def test_emit_conflicting_duplicate_is_rejected(self) -> None:
+        self.run_cli(*self.emit_arguments())
+
+        arguments = list(self.emit_arguments())
+        payload_index = arguments.index("--payload") + 1
+        arguments[payload_index] = (
+            '{"mission":"EENS","handoff":5,"status":"changed"}'
+        )
+
+        exit_code, output, errors = self.run_cli(*arguments)
+
+        self.assertEqual(exit_code, 1)
+        self.assertEqual(output, "")
+        self.assertIn("eens: idempotency conflict:", errors)
+        self.assertEqual(EventStore(self.database_path).count(), 1)
+
+    def test_emit_rejects_invalid_event_uuid(self) -> None:
+        exit_code, output, errors = self.run_cli(
+            *self.emit_arguments(),
+            "--event-id",
+            "not-a-uuid",
+        )
+
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(output, "")
+        self.assertIn("eens: invalid event:", errors)
+        self.assertEqual(EventStore(self.database_path).count(), 0)
+
+    def test_emit_accepts_explicit_identity_and_time(self) -> None:
+        event_id = "11111111-1111-4111-8111-111111111111"
+        occurred_at = "2026-07-21T12:00:00+00:00"
+
+        exit_code, output, errors = self.run_cli(
+            *self.emit_arguments(),
+            "--event-id",
+            event_id,
+            "--occurred-at",
+            occurred_at,
+            "--json",
+        )
+
+        result = json.loads(output)
+        stored = EventStore(self.database_path).get_by_sequence(1)
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(result["event_id"], event_id)
+        self.assertEqual(errors, "")
+        self.assertIsNotNone(stored)
+        assert stored is not None
+        self.assertEqual(stored.event.event_id, event_id)
+        self.assertEqual(stored.event.occurred_at, occurred_at)
+
 
 if __name__ == "__main__":
     unittest.main()
