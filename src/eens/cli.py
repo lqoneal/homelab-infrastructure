@@ -71,6 +71,27 @@ def build_parser() -> argparse.ArgumentParser:
         help="Print the stored event as JSON",
     )
 
+    replay_parser = subparsers.add_parser(
+        "replay",
+        help="Replay stored events in durable sequence order",
+    )
+    replay_parser.add_argument(
+        "--after",
+        type=int,
+        default=0,
+        help="Replay events with sequence numbers greater than this value",
+    )
+    replay_parser.add_argument(
+        "--limit",
+        type=int,
+        help="Maximum number of events to return",
+    )
+    replay_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print replay results as a JSON array",
+    )
+
     return parser
 
 
@@ -167,6 +188,49 @@ def run_get(
     return 0
 
 
+def run_replay(
+    database_path: Path,
+    *,
+    after: int = 0,
+    limit: int | None = None,
+    json_output: bool = False,
+) -> int:
+    """Execute the replay command."""
+
+    if after < 0:
+        print("eens: --after must be zero or greater", file=sys.stderr)
+        return 2
+
+    if limit is not None and limit < 1:
+        print("eens: --limit must be greater than zero", file=sys.stderr)
+        return 2
+
+    store = EventStore(database_path)
+    events = [
+        stored_event_to_dict(stored_event)
+        for stored_event in store.replay(after_sequence=after, limit=limit)
+    ]
+
+    if json_output:
+        print(json.dumps(events, sort_keys=True))
+        return 0
+
+    for index, event in enumerate(events):
+        if index:
+            print()
+        print(f"sequence: {event['sequence']}")
+        print(f"event_type: {event['event_type']}")
+        print(f"source: {event['source']}")
+        print(f"subject: {event['subject']}")
+        print(f"occurred_at: {event['occurred_at']}")
+        print(
+            "payload: "
+            + json.dumps(event["payload"], sort_keys=True)
+        )
+
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     """Run the EENS command-line interface."""
 
@@ -188,6 +252,14 @@ def main(argv: list[str] | None = None) -> int:
             return run_get(
                 database_path,
                 arguments.sequence,
+                json_output=arguments.json,
+            )
+
+        if arguments.command == "replay":
+            return run_replay(
+                database_path,
+                after=arguments.after,
+                limit=arguments.limit,
                 json_output=arguments.json,
             )
     except OSError as exc:

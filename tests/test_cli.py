@@ -50,15 +50,20 @@ class CliTests(unittest.TestCase):
             errors.getvalue().strip(),
         )
 
-    def append_sample_event(self) -> int:
+    def append_sample_event(
+        self,
+        number: int = 1,
+        *,
+        event_type: str = "engineering.handoff.started",
+    ) -> int:
         store = EventStore(self.database_path)
         result = store.append(
             EngineeringEvent(
-                event_type="engineering.handoff.started",
+                event_type=event_type,
                 source="cli-test",
-                subject="Handoff 1",
-                idempotency_key="cli-test-handoff-1",
-                payload={"mission": "EENS", "handoff": 1},
+                subject=f"Handoff {number}",
+                idempotency_key=f"cli-test-handoff-{number}-{event_type}",
+                payload={"mission": "EENS", "handoff": number},
             )
         )
         return result.sequence
@@ -202,6 +207,133 @@ class CliTests(unittest.TestCase):
         self.assertEqual(
             errors,
             "eens: sequence must be greater than zero",
+        )
+
+    def test_replay_empty_store(self) -> None:
+        exit_code, output, errors = self.run_cli(
+            "--database",
+            str(self.database_path),
+            "replay",
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(output, "")
+        self.assertEqual(errors, "")
+
+    def test_replay_preserves_sequence_order(self) -> None:
+        first = self.append_sample_event(1)
+        second = self.append_sample_event(
+            2,
+            event_type="engineering.handoff.completed",
+        )
+
+        exit_code, output, errors = self.run_cli(
+            "--database",
+            str(self.database_path),
+            "replay",
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertLess(
+            output.index(f"sequence: {first}"),
+            output.index(f"sequence: {second}"),
+        )
+        self.assertIn("subject: Handoff 1", output)
+        self.assertIn("subject: Handoff 2", output)
+        self.assertEqual(errors, "")
+
+    def test_replay_after_sequence(self) -> None:
+        first = self.append_sample_event(1)
+        second = self.append_sample_event(2)
+
+        exit_code, output, errors = self.run_cli(
+            "--database",
+            str(self.database_path),
+            "replay",
+            "--after",
+            str(first),
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertNotIn(f"sequence: {first}", output)
+        self.assertIn(f"sequence: {second}", output)
+        self.assertEqual(errors, "")
+
+    def test_replay_limit(self) -> None:
+        self.append_sample_event(1)
+        self.append_sample_event(2)
+
+        exit_code, output, errors = self.run_cli(
+            "--database",
+            str(self.database_path),
+            "replay",
+            "--limit",
+            "1",
+            "--json",
+        )
+
+        result = json.loads(output)
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["sequence"], 1)
+        self.assertEqual(errors, "")
+
+    def test_replay_json_output(self) -> None:
+        self.append_sample_event(1)
+        self.append_sample_event(
+            2,
+            event_type="engineering.handoff.completed",
+        )
+
+        exit_code, output, errors = self.run_cli(
+            "--database",
+            str(self.database_path),
+            "replay",
+            "--json",
+        )
+
+        result = json.loads(output)
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(
+            [event["sequence"] for event in result],
+            [1, 2],
+        )
+        self.assertEqual(result[0]["subject"], "Handoff 1")
+        self.assertEqual(result[1]["subject"], "Handoff 2")
+        self.assertEqual(errors, "")
+
+    def test_replay_rejects_negative_after(self) -> None:
+        exit_code, output, errors = self.run_cli(
+            "--database",
+            str(self.database_path),
+            "replay",
+            "--after",
+            "-1",
+        )
+
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(output, "")
+        self.assertEqual(
+            errors,
+            "eens: --after must be zero or greater",
+        )
+
+    def test_replay_rejects_nonpositive_limit(self) -> None:
+        exit_code, output, errors = self.run_cli(
+            "--database",
+            str(self.database_path),
+            "replay",
+            "--limit",
+            "0",
+        )
+
+        self.assertEqual(exit_code, 2)
+        self.assertEqual(output, "")
+        self.assertEqual(
+            errors,
+            "eens: --limit must be greater than zero",
         )
 
 
