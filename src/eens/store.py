@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator
@@ -59,7 +60,7 @@ class EventStore:
         return connection
 
     def _initialize(self) -> None:
-        with self._connect() as connection:
+        with closing(self._connect()) as connection:
             connection.execute("PRAGMA journal_mode = WAL")
             connection.execute("PRAGMA synchronous = FULL")
             connection.executescript(
@@ -92,7 +93,7 @@ class EventStore:
         fingerprint = event.fingerprint()
         stored_at = utc_now()
 
-        with self._connect() as connection:
+        with closing(self._connect()) as connection:
             try:
                 connection.execute("BEGIN IMMEDIATE")
                 existing = connection.execute(
@@ -169,7 +170,7 @@ class EventStore:
                 raise
 
     def get_by_sequence(self, sequence: int) -> StoredEvent | None:
-        with self._connect() as connection:
+        with closing(self._connect()) as connection:
             row = connection.execute(
                 "SELECT * FROM events WHERE sequence = ?",
                 (sequence,),
@@ -201,21 +202,21 @@ class EventStore:
             sql += " LIMIT ?"
             parameters.append(limit)
 
-        with self._connect() as connection:
+        with closing(self._connect()) as connection:
             rows = connection.execute(sql, parameters).fetchall()
 
         for row in rows:
             yield self._row_to_stored_event(row)
 
     def count(self) -> int:
-        with self._connect() as connection:
+        with closing(self._connect()) as connection:
             row = connection.execute(
                 "SELECT COUNT(*) AS event_count FROM events"
             ).fetchone()
         return int(row["event_count"])
 
     def journal_mode(self) -> str:
-        with self._connect() as connection:
+        with closing(self._connect()) as connection:
             row = connection.execute("PRAGMA journal_mode").fetchone()
         return str(row[0]).lower()
 
