@@ -285,6 +285,53 @@ def validate_metadata(
         validation.check(target in identities, f"{label}: relationship target {target} resolves")
 
 
+def validate_repository_relationships(
+    validation: Validation,
+    identities: dict[str, Path],
+) -> None:
+    """Enforce SPEC-0001 relationship vocabulary for every controlled record."""
+    for document_id, path in sorted(identities.items()):
+        try:
+            metadata = load_frontmatter(path)
+        except (OSError, ValueError, yaml.YAMLError) as error:
+            validation.check(
+                False,
+                f"{document_id}: relationship metadata readable ({error})",
+            )
+            continue
+        relationships = metadata.get("relationships")
+        if relationships is None:
+            continue
+        validation.check(
+            isinstance(relationships, list),
+            f"{document_id}: repository-wide relationships are a list",
+        )
+        if not isinstance(relationships, list):
+            continue
+        for position, relationship in enumerate(relationships, start=1):
+            valid_shape = (
+                isinstance(relationship, dict)
+                and isinstance(relationship.get("type"), str)
+                and isinstance(relationship.get("target"), str)
+            )
+            validation.check(
+                valid_shape,
+                f"{document_id}: repository-wide relationship {position} has type and target",
+            )
+            if not valid_shape:
+                continue
+            relation_type = relationship["type"]
+            target = relationship["target"]
+            validation.check(
+                relation_type in RELATIONSHIP_TYPES,
+                f"{document_id}: repository-wide relationship type {relation_type} recognized",
+            )
+            validation.check(
+                target in identities,
+                f"{document_id}: repository-wide relationship target {target} resolves",
+            )
+
+
 def validate_governance_cycles(
     validation: Validation,
     metadata_by_id: dict[str, dict[str, Any]],
@@ -322,6 +369,7 @@ def main() -> int:
     identities, duplicates = document_identity_map(files)
 
     validation.check(not duplicates, "document identifiers are unique")
+    validate_repository_relationships(validation, identities)
     for document_id, path in FRAMEWORK_PATHS.items():
         validation.check(path.is_file(), f"{document_id}: canonical framework path exists")
         validation.check(
