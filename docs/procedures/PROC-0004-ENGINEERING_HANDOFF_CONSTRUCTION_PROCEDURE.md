@@ -68,11 +68,12 @@ tags:
 
 ## Purpose
 
-This procedure is the single authoritative owner of Engineering Handoff
-construction. It defines how an Operational Engineer converts an Engineering
-Authorization Kernel supplied by Engineering Governance into a complete
-Engineering Work Order using authoritative controlled documentation and
-TPL-0001.
+This procedure is the single authoritative owner of converting Engineering
+Governance intent into a complete Engineering Work Order. During Transitional
+Engineering Handoff Governance, an Engineering Handoff issued by Engineering
+Governance is the approved initiating directive. An Engineering Authorization
+Kernel may be embedded in or referenced by that Handoff as structured input;
+it is not a separate constitutional prerequisite.
 
 Construction preserves Governance authority; it does not originate, expand, or
 activate that authority. PROC-0001 governs execution only after Engineering
@@ -82,7 +83,7 @@ Governance has approved and activated the completed Engineering Work Order.
 
 This procedure governs:
 
-- Authorization Kernel intake;
+- Governance-issued Handoff intake and, when present, Authorization Kernel intake;
 - repository and engineering-context reconstruction;
 - controlled-document discovery and authority resolution;
 - inheritance, precedence, and reference insertion;
@@ -98,8 +99,8 @@ implementation.
 
 | Responsibility | Authoritative owner | Construction treatment |
 | --- | --- | --- |
-| Mission authorization, purpose, and expected outcome | Engineering Governance | Kernel content; preserve without expansion |
-| Scope, authority ceiling, prohibitions, exceptions, risk, publication authority, and certification | Engineering Governance | Kernel content; non-delegable |
+| Mission authorization, purpose, and expected outcome | Engineering Governance through the Governance-issued Handoff | Preserve without expansion |
+| Scope, authority ceiling, prohibitions, exceptions, risk, publication authority, and certification | Engineering Governance through the Governance-issued Handoff | Preserve without expansion; non-delegable |
 | Normative Engineering Work Order semantics | STD-0003 | Resolve and reference |
 | Handoff construction workflow | PROC-0004 | Apply this procedure |
 | Reusable handoff structure | TPL-0001 | Instantiate; do not treat as procedural authority |
@@ -117,9 +118,12 @@ implementation.
 
 ### Definition
 
-The Engineering Authorization Kernel is the minimum Governance-authored input
-required before handoff construction may begin. It is governed authorization
-content, not a constructed Engineering Work Order and not execution authority.
+The Engineering Authorization Kernel is an optional structured representation
+of Governance-authored content used during EWO construction. During
+Transitional Engineering Handoff Governance, the Governance-issued Handoff is
+the required initiating input and may itself contain every Kernel field. A
+separate Kernel shall not be required when the Handoff is complete. Neither a
+Kernel nor a Handoff is an Engineering Work Order or execution authority.
 
 The Kernel shall identify:
 
@@ -135,13 +139,13 @@ The Kernel shall identify:
 10. publication authority; and
 11. the exact final certification question and allowed answer set.
 
-The Kernel shall also carry its Governance authority identity, approval
-authority, date, and authoritative locator. Missing required content blocks
+The Handoff, or an incorporated Kernel, shall also carry its Governance issuer
+identity, date, and authoritative locator. Missing required content blocks EWO
 construction unless Engineering Governance supplies clarification.
 
 ### Content Boundary
 
-Engineering Governance authors and owns Kernel content. The Operational
+Engineering Governance authors and owns Handoff and Kernel content. The Operational
 Engineer may normalize formatting, resolve identifiers, insert authoritative
 references, clarify non-substantive wording, and narrow an execution boundary
 to preserve the stated ceiling. The Operational Engineer shall not originate
@@ -153,8 +157,9 @@ The construction lifecycle is:
 
 ```text
 Engineering Governance Authorization
-        -> Engineering Authorization Kernel
-        -> Operational Engineer Construction
+        -> Governance-issued Engineering Handoff
+        -> optional embedded or referenced Authorization Kernel
+        -> Operational Engineer EWO Construction
         -> Engineering Governance Review
         -> Approved Active Engineering Work Order or Rejection
 ```
@@ -165,10 +170,12 @@ procedure.
 
 ## Construction Sequence
 
-### Step 1 — Authorization Kernel Intake
+### Step 1 — Governance-Issued Handoff Intake
 
-Record the Kernel locator and verify its Governance source, completeness, and
-internal consistency. Do not begin assembly from conversation history,
+Record the Handoff locator and verify its Governance issuer, completeness, and
+internal consistency. When a Kernel is present, record its locator and verify
+that it agrees with the Handoff. Do not require a separate Kernel during the
+transitional period and do not begin assembly from conversation history,
 unpublished notes, or an unattributable summary.
 
 Resolve the Kernel's explicit Engineering Transaction Profile selection when
@@ -189,14 +196,15 @@ does not replace the controlled record it resolves.
 
 ### Step 4 — Authority Resolution
 
-Resolve the authority chain from CHAR-0001 through applicable policy,
-standards, procedures, specifications, Governance decisions, and the Kernel.
-Confirm that the Kernel issuer has the authority represented and that no
+Resolve the authority chain from CHAR-0001 through the Governance-issued
+Handoff and then through applicable policy, standards, procedures,
+specifications, Governance decisions, and any Kernel. Confirm that the Handoff
+issuer has the authority represented and that no
 subordinate or derived record is being used to originate Governance authority.
 
 ### Step 5 — Scope and Inheritance Resolution
 
-Map the Kernel scope, authority ceiling, prohibitions, exceptions,
+Map the Handoff scope and any incorporated Kernel scope, authority ceiling, prohibitions, exceptions,
 dependencies, deliverables, success criteria, publication authority, and
 certification into TPL-0001 fields. Inherit reusable behavior only through its
 authoritative owner. Do not inherit authority from context, precedent, a prior
@@ -208,18 +216,18 @@ match, multiple matches, inactive state, missing references, incompatibility,
 or a prohibited override. PROC-0004 consumes and validates profiles; SPEC-0008
 owns their model and compatibility semantics.
 
-When the Kernel authorizes controlled document publication, resolve PROC-0005
+When the Handoff or its incorporated Kernel authorizes controlled document publication, resolve PROC-0005
 and include its common publication workflow, evidence, boundary, and
 verification obligations in the constructed handoff. Preserve PROC-0001 as the
 execution owner and the applicable standards and specifications as requirement
 owners. PROC-0005 supplies no publication or lifecycle authority.
 
-When the Kernel requires Governance qualification, resolve PROC-0006 and
+When the Handoff or its incorporated Kernel requires Governance qualification, resolve PROC-0006 and
 include its invocation, evidence, stage, result, and caller-return obligations.
 PROC-0006 supplies no Governance decision, lifecycle, publication, baseline,
 or implementation authority.
 
-When the Kernel requires Governance stabilization, resolve PROC-0007 and
+When the Handoff or its incorporated Kernel requires Governance stabilization, resolve PROC-0007 and
 include its authorization, baseline, inventory, dependency, coordination,
 external-qualification, routing, state-separation, and closeout obligations.
 PROC-0007 supplies no execution, qualification, Governance decision,
@@ -295,7 +303,7 @@ Resolve applicable records in this order:
 4. applicable Active standards;
 5. applicable Active procedures;
 6. approved specifications and baselines within their maturity limits;
-7. the Engineering Authorization Kernel and related Governance decisions;
+7. the Governance-issued Engineering Handoff, any incorporated Engineering Authorization Kernel, and related Governance decisions;
 8. current Project State, mission records, and authoritative technical owners;
 9. Work Registry and EOS records within their declared information boundaries;
 10. the current Active TPL-0001 revision; and
@@ -336,7 +344,8 @@ Governance Authority nor Information Authority.
 ## Authority Preservation Validation
 
 Authority Preservation Validation is mandatory before submission. Compare the
-constructed handoff directly with the Authorization Kernel and verify that
+constructed EWO directly with the Governance-issued Handoff and, when present,
+the Authorization Kernel, and verify that
 construction has not:
 
 - broadened authority;
@@ -355,7 +364,7 @@ Governance.
 
 The validation record shall identify:
 
-- Kernel locator and identity;
+- Handoff locator and identity, plus any Kernel locator and identity;
 - constructed handoff identity and revision;
 - field-by-field authority and scope comparison;
 - every narrowing or clarification;

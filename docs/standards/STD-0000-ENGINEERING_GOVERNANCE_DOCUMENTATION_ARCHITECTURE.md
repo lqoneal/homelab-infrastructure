@@ -147,6 +147,13 @@ Each controlled document class shall perform its assigned engineering responsibi
 
 Repository modification and engineering execution shall occur only under explicit, bounded authority. An Active Engineering Work Order is the ordinary mission-specific execution authority.
 
+During Transitional Engineering Handoff Governance, a Governance-issued
+Engineering Handoff supplies constitutional initiation authority under
+CHAR-0001. It is not an Engineering Work Order and does not authorize execution;
+the applicable subordinate processes shall still construct, review, approve,
+and activate an EWO before execution and shall retain all publication,
+qualification, evidence, and repository controls.
+
 ### Principle 6 — Stable Execution
 
 Engineering execution consumes an approved Governance Baseline. The baseline shall remain frozen during an active phase unless Engineering Governance approves correction of an execution-blocking defect.
@@ -320,6 +327,12 @@ Relationships are controlled engineering information. They shall be explicit whe
 ### Authority
 
 The Active Engineering Work Order is the ordinary single mission-specific execution authority. Conversational context, task notes, derived views, generated instructions, and implementation-agent inference shall not expand its authority.
+
+A Governance-issued Engineering Handoff may initiate EWO construction during
+the Charter-defined transitional period, but the resulting EWO remains the
+bounded execution authorization. Neither the Handoff nor its initiation effect
+may be interpreted as EWO approval, activation, or permission to modify the
+repository.
 
 Only Engineering Governance may approve or activate an Engineering Work Order unless superior governance explicitly establishes another controlled authorization mechanism.
 

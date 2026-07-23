@@ -275,11 +275,19 @@ repository publication, that publication is the sole operational source for
 Engineering Work Initiation, mission classification, mission lifecycle,
 Completion Report structure, and Governance Conformance Review requirements.
 
-Conversation history, prompts, and handoffs are historical or mission-input
-artifacts. They may identify an approval or reference repository authority, but
-they shall not redefine, weaken, replace, or silently extend repository-governed
-behavior. This operational-source rule remains subordinate to the authority
-origin and hierarchy established by CHAR-0001.
+Conversation history and prompts are historical or mission-input artifacts.
+Engineering Handoffs are governed according to CHAR-0001. During Transitional
+Engineering Handoff Governance, a Handoff issued by Engineering Governance is
+an approved directive and may initiate the subordinate governance processes
+within its stated scope. It does not replace their required review, lifecycle,
+publication, qualification, evidence, or repository-control activities and it
+does not itself confer EWO execution authority.
+
+Outside that Charter-defined transitional treatment, a handoff may identify an
+approval or reference repository authority, but shall not redefine, weaken,
+replace, or silently extend repository-governed behavior. This
+operational-source rule remains subordinate to the authority origin and
+hierarchy established by CHAR-0001.
 
 ## Governance Architecture Validation
 
@@ -290,9 +298,11 @@ Report architecture, templates, and governance workflow for its complete
 affected subsystem.
 
 Future-mission verification shall demonstrate that an implementation agent can
-derive the applicable initiation, classification, lifecycle, reporting, and
-conformance-review behavior from repository-controlled governance without
-custom handoff instructions.
+derive classification, lifecycle, reporting, and conformance-review behavior
+from repository-controlled governance. During Transitional Engineering Handoff
+Governance, initiation may derive from a Governance-issued Handoff as provided
+by CHAR-0001; mission-specific Handoff instructions remain bounded by the
+Charter and cannot override subordinate lifecycle controls.
 
 ---
 

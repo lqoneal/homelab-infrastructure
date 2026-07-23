@@ -196,6 +196,14 @@ Before Stage 1 begins, verify:
 Failure to establish authority, identity context, or repository identity stops
 the workflow before content construction.
 
+During Transitional Engineering Handoff Governance, a Governance-issued
+Engineering Handoff satisfies the Draft preparation and workflow-initiation
+authority precondition when the proposed document and scope are explicit in
+that Handoff. It does not by itself satisfy content approval,
+lifecycle-transition approval, publication execution, commit, push, tag,
+qualification, or downstream implementation authority. Those authorities and
+gates remain separately required by this procedure and its governing records.
+
 ## 7. Publication Lifecycle
 
 ```text
