@@ -43,7 +43,7 @@ relationships:
     target: PROC-0006
   - type: related_to
     target: PROC-0007
-  - type: uses
+  - type: depends_on
     target: TPL-0001
   - type: related_to
     target: TPL-0002

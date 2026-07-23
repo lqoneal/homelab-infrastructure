@@ -119,8 +119,6 @@ relationships:
     target: SPEC-0008
   - type: indexes
     target: SPEC-0009
-  - type: discovers
-    target: EENS-OPERATIONAL-ALPHA
   - type: indexes
     target: SPEC-0010
   - type: indexes
