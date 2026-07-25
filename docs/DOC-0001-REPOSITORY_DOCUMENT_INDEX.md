@@ -1,20 +1,20 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.52
+version: 2.53
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-21
+last_updated: 2026-07-24
 phase: EENS Repository Convergence
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.51
+predecessor_revision: DOC-0001@2.52
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Mission 7 Handoff 2D.2 - EENS Service Discovery Reconciliation
-approval_date: 2026-07-21
+approval_reference: Mission A - Validation Baseline Remediation
+approval_date: 2026-07-24
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -119,8 +119,6 @@ relationships:
     target: SPEC-0008
   - type: indexes
     target: SPEC-0009
-  - type: discovers
-    target: EENS-OPERATIONAL-ALPHA
   - type: indexes
     target: SPEC-0010
   - type: indexes
@@ -772,3 +770,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.50 | 2026-07-19 | Published and registered SPEC-0010 as the Engineering Knowledge Repository architecture and synchronized STD-0000/STD-0002 knowledge-object, persistence, EOS-boundary, and historical-discovery authority. |
 | 2.51 | 2026-07-19 | Synchronized STD-0005 Version 1.2, SPEC-0007 Version 1.2, and SPEC-0004 Version 1.3 for reference-oriented Raspberry Pi qualification orchestration, standardized Qualification Reports, persistent Engineering State consumption, resume integration, and authoritative-procedure dependency without implementation. |
 | 2.52 | 2026-07-21 | Registered EENS Operational Alpha service discovery, canonical repository source, qualified LOpi deployment, source-versus-deployment boundary, implemented capabilities, and deferred HNS expansion under Mission 7 repository convergence. |
+| 2.53 | 2026-07-24 | Removed the invalid non-controlled `discovers` relationship to the unresolved `EENS-OPERATIONAL-ALPHA` service label while preserving indexed SPEC-0009 authority and the EENS service-discovery record. |
