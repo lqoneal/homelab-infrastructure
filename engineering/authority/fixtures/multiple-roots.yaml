@@ -1,0 +1,16 @@
+schema_version: 1
+graph_id: multiple-root-authority-chain
+root: organization
+nodes:
+  - id: organization
+    kind: root-authority
+    domain: authority
+    rank: 0
+    authority_parents: []
+    capabilities: [execute]
+  - id: competing-root
+    kind: root-authority
+    domain: authority
+    rank: 0
+    authority_parents: []
+    capabilities: [execute]

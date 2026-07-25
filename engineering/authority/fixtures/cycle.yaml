@@ -1,0 +1,22 @@
+schema_version: 1
+graph_id: cyclic-authority-chain
+root: organization
+nodes:
+  - id: organization
+    kind: root-authority
+    domain: authority
+    rank: 0
+    authority_parents: []
+    capabilities: [execute]
+  - id: mission
+    kind: mission-authority
+    domain: authority
+    rank: 2
+    authority_parents: [work-package]
+    capabilities: [execute]
+  - id: work-package
+    kind: work-package
+    domain: authority
+    rank: 3
+    authority_parents: [mission]
+    capabilities: [execute]

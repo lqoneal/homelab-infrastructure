@@ -1,0 +1,28 @@
+schema_version: 1
+graph_id: multi-parent-authority-chain
+root: organization
+nodes:
+  - id: organization
+    kind: root-authority
+    domain: authority
+    rank: 0
+    authority_parents: []
+    capabilities: [execute]
+  - id: governance-a
+    kind: governance-authority
+    domain: authority
+    rank: 1
+    authority_parents: [organization]
+    capabilities: [execute]
+  - id: governance-b
+    kind: governance-authority
+    domain: authority
+    rank: 1
+    authority_parents: [organization]
+    capabilities: [execute]
+  - id: mission
+    kind: mission-authority
+    domain: authority
+    rank: 2
+    authority_parents: [governance-a, governance-b]
+    capabilities: [execute]

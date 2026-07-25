@@ -1,0 +1,16 @@
+schema_version: 1
+graph_id: non-monotonic-rank-chain
+root: organization
+nodes:
+  - id: organization
+    kind: root-authority
+    domain: authority
+    rank: 2
+    authority_parents: []
+    capabilities: [execute]
+  - id: mission
+    kind: mission-authority
+    domain: authority
+    rank: 1
+    authority_parents: [organization]
+    capabilities: [execute]

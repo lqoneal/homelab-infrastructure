@@ -1,0 +1,46 @@
+schema_version: 1
+graph_id: valid-authority-chain
+root: organization
+nodes:
+  - id: organization
+    kind: root-authority
+    domain: authority
+    rank: 0
+    authority_parents: []
+    capabilities: [approve, delegate, execute, publish, qualify]
+  - id: charter
+    kind: constitutional-delegation
+    domain: authority
+    rank: 1
+    authority_parents: [organization]
+    capabilities: [approve, delegate, execute, publish, qualify]
+  - id: governance
+    kind: governance-decision-authority
+    domain: authority
+    rank: 2
+    authority_parents: [charter]
+    capabilities: [approve, delegate, execute, publish, qualify]
+  - id: baseline
+    kind: frozen-governance-baseline
+    domain: authority
+    rank: 3
+    authority_parents: [governance]
+    capabilities: [delegate, execute, publish, qualify]
+  - id: mission
+    kind: mission-authority
+    domain: authority
+    rank: 4
+    authority_parents: [baseline]
+    capabilities: [delegate, execute, qualify]
+  - id: work-package
+    kind: work-package
+    domain: authority
+    rank: 5
+    authority_parents: [mission]
+    capabilities: [execute]
+  - id: session
+    kind: execution-session
+    domain: authority
+    rank: 6
+    authority_parents: [work-package]
+    capabilities: [execute]

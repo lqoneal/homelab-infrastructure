@@ -1,0 +1,65 @@
+schema_version: 1
+title: Offline Authority Graph Schema
+type: object
+required:
+  - schema_version
+  - graph_id
+  - root
+  - nodes
+properties:
+  schema_version:
+    const: 1
+  graph_id:
+    type: string
+    minLength: 1
+  root:
+    type: string
+    minLength: 1
+  nodes:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      required:
+        - id
+        - kind
+        - domain
+        - rank
+        - authority_parents
+        - capabilities
+      properties:
+        id:
+          type: string
+          minLength: 1
+        kind:
+          type: string
+          minLength: 1
+        domain:
+          enum:
+            - authority
+            - information
+            - lifecycle
+            - publication
+            - evidence
+            - qualification
+            - registry
+            - runtime
+            - resume
+            - repository
+        rank:
+          type: integer
+          minimum: 0
+        authority_parents:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+        capabilities:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+      additionalProperties: false
+additionalProperties: false

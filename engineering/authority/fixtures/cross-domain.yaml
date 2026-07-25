@@ -1,0 +1,16 @@
+schema_version: 1
+graph_id: cross-domain-authority-chain
+root: organization
+nodes:
+  - id: organization
+    kind: root-authority
+    domain: authority
+    rank: 0
+    authority_parents: []
+    capabilities: [execute]
+  - id: runtime-view
+    kind: derived-runtime-view
+    domain: runtime
+    rank: 1
+    authority_parents: [organization]
+    capabilities: [execute]
