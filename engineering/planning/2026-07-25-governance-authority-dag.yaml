@@ -1,0 +1,78 @@
+schema_version: 1
+model: proposed-governance-authority-dag
+status: design-only
+root: engineering-organization
+edge_semantics: child-to-single-authority-parent
+nodes:
+  engineering-organization:
+    rank: 0
+    parent: null
+    kind: root-authority
+  engineering-charter:
+    rank: 1
+    parent: engineering-organization
+    kind: constitutional-delegation
+  engineering-governance:
+    rank: 2
+    parent: engineering-charter
+    kind: governance-decision-authority
+  governance-baseline:
+    rank: 3
+    parent: engineering-governance
+    kind: frozen-normative-baseline
+  mission-authority:
+    rank: 4
+    parent: governance-baseline
+    kind: bounded-mission-authority
+  work-package:
+    rank: 5
+    parent: mission-authority
+    kind: bounded-execution-authority
+  execution-session:
+    rank: 6
+    parent: work-package
+    kind: runtime-authority-consumer
+non_authority_domains:
+  information_ownership:
+    rule: each governed fact has exactly one owning controlled record
+    transfers_authority: false
+  lifecycle:
+    rule: lifecycle registrar records a decision supplied by engineering-governance
+    transfers_authority: false
+  publication:
+    rule: publication executor persists an authorized effect manifest
+    transfers_authority: false
+  evidence:
+    rule: evidence records observations and never accepts itself
+    transfers_authority: false
+  qualification:
+    rule: qualification returns findings and recommendations to its caller
+    transfers_authority: false
+  registry:
+    rule: registry projects operational management state from controlled sources
+    transfers_authority: false
+  runtime:
+    rule: runtime consumes a frozen work package and cannot change authority
+    transfers_authority: false
+  resume:
+    rule: resume derives context and fails closed on disagreement
+    transfers_authority: false
+  repository:
+    rule: Git persists evidence of publication and cannot activate authority
+    transfers_authority: false
+prohibited_edges:
+  - derived-record-to-controlled-source
+  - runtime-to-work-package
+  - work-package-to-mission-authority-as-parent-reversal
+  - mission-authority-to-governance-baseline-as-parent-reversal
+  - publication-result-to-governance-decision
+  - evidence-to-acceptance-decision
+  - registry-state-to-controlled-lifecycle
+  - resume-output-to-authority
+validation_rules:
+  - exactly one node has a null parent
+  - every non-root authority node has exactly one parent
+  - every parent resolves
+  - parent rank is strictly less than child rank
+  - non-authority domains cannot appear as authority parents
+  - authority traversal terminates at engineering-organization
