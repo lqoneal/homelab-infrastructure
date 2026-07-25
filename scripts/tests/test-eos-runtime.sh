@@ -148,6 +148,9 @@ grep -Fq "Persistent MMC Storage I/O Investigation" <<<"$sprinter_resume"
 
 homelab_resume="$("$REPOSITORY_ROOT/scripts/engctl" resume homelab)"
 grep -Fq "ENGINEERING WORK INITIATION — ACTION REQUIRED" <<<"$homelab_resume"
+grep -Fq "Mission:                  Zeus Operational Alpha" <<<"$homelab_resume"
+grep -Fq "Phase:                    Zeus Operational Alpha" <<<"$homelab_resume"
+! grep -Fq "Issue the bounded, read-only HNS Phase 1" <<<"$homelab_resume"
 grep -Fq "EXECUTIVE SUMMARY" <<<"$homelab_resume"
 grep -Fq "ENGINEERING SESSION CONTRACT" <<<"$homelab_resume"
 grep -Fq "Next Recommended Action:" <<<"$homelab_resume"
@@ -158,6 +161,16 @@ grep -Fq "Platform Health:" <<<"$homelab_resume"
     "$(grep -n -m1 "ENGINEERING CONTEXT" <<<"$homelab_resume" | cut -d: -f1)" ]]
 homelab_wrapper_resume="$(ENGCTL_PATH="$REPOSITORY_ROOT/scripts/engctl" "$REPOSITORY_ROOT/scripts/homelabctl" resume)"
 [[ "$homelab_resume" == "$homelab_wrapper_resume" ]]
+
+conflict_state="$EOS_WORKSPACE/eos/state/conflicting-project-state.md"
+cp "$PROJECT_ROOT/docs/project/PROJ-0001-PROJECT_STATE.md" "$conflict_state"
+sed -i '2i mission: Conflicting Mission' "$conflict_state"
+registry_context="$(emp_registry_context homelab)"
+conflict_resume="$(eos_render_resume_summary homelab "$conflict_state" "$registry_context")"
+grep -Fq "ENGINEERING WORK INITIATION — RECONCILIATION REQUIRED" <<<"$conflict_resume"
+grep -Fq "AUTHORITY DISAGREEMENT" <<<"$conflict_resume"
+rm -f "$conflict_state"
+
 sprinter_wrapper_resume="$(ENGCTL="$REPOSITORY_ROOT/scripts/engctl" \
     "$REPOSITORY_ROOT/../SprinterOS/scripts/sprinterctl" resume)"
 grep -Fq "sprinteros" <<<"$sprinter_wrapper_resume"

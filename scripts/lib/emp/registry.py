@@ -852,6 +852,10 @@ class WorkRegistry:
             selected = items if states is None else [i for i in items if i.get("management_state") in states]
             return ",".join(str(item["registry_id"]) for item in selected) or "none"
 
+        def titles(items: list[dict[str, Any]], states: set[str] | None = None) -> str:
+            selected = items if states is None else [i for i in items if i.get("management_state") in states]
+            return ",".join(str(item["title"]) for item in selected) or "none"
+
         return [
             f"registry_path={self.registry_path}",
             f"registry_id={self.data['registry_id']}",
@@ -866,7 +870,9 @@ class WorkRegistry:
             f"management_project_order={project['order']}",
             f"management_project_sources={','.join(project['source_records']) or 'none'}",
             f"management_current_missions={ids(missions, {'authorized', 'active', 'blocked'})}",
+            f"management_current_mission_titles={titles(missions, {'authorized', 'active', 'blocked'})}",
             f"management_current_phases={ids(phases, {'ready', 'active', 'blocked'})}",
+            f"management_current_phase_titles={titles(phases, {'ready', 'active', 'blocked'})}",
             f"management_current_sprints={ids(sprints, {'ready', 'active', 'blocked'})}",
             f"management_open_work={ids(work_items, {'proposed', 'ready', 'active', 'blocked', 'deferred'})}",
             f"management_active_work={ids(work_items, {'active'})}",

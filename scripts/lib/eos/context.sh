@@ -433,22 +433,33 @@ eos_context_value() {
 
 eos_render_resume_summary() {
     local project="$1" state="$2" registry_context="$3"
-    local project_title mission phase active_work authority next_action repository_state
-    local checkpoint_sync upstream platform_health banner
+    local project_title mission phase state_mission state_phase active_work authority next_action repository_state
+    local checkpoint_sync upstream platform_health banner authority_conflict=0
 
     project_title="$(eos_context_value "$registry_context" management_project_title)"
-    mission="$(eos_context_value "$registry_context" management_current_missions)"
-    phase="$(eos_context_value "$registry_context" management_current_phases)"
+    mission="$(eos_context_value "$registry_context" management_current_mission_titles)"
+    phase="$(eos_context_value "$registry_context" management_current_phase_titles)"
+    state_mission="$(eos_frontmatter_value "$state" mission 2>/dev/null || true)"
+    state_phase="$(eos_frontmatter_value "$state" phase 2>/dev/null || true)"
     active_work="$(eos_context_value "$registry_context" management_active_work)"
     [[ -n "$project_title" ]] || project_title="$project"
-    [[ -n "$mission" && "$mission" != "none" ]] || mission="No active mission"
+    if [[ -z "$mission" || "$mission" == "none" ]]; then
+        mission="${state_mission:-No active mission}"
+    elif [[ -n "$state_mission" && "$mission" != "$state_mission" ]]; then
+        authority_conflict=1
+    fi
     if [[ -z "$phase" || "$phase" == "none" ]]; then
-        phase="$(eos_frontmatter_value "$state" phase 2>/dev/null || true)"
+        phase="$state_phase"
+    elif [[ -n "$state_phase" && "$phase" != "$state_phase" ]]; then
+        authority_conflict=1
     fi
     [[ -n "$phase" ]] || phase="unknown"
     [[ -n "$active_work" ]] || active_work="unknown"
 
-    if [[ "$active_work" == "none" ]]; then
+    if [[ "$authority_conflict" -ne 0 ]]; then
+        authority="AUTHORITY DISAGREEMENT: Project State and Work Registry do not agree"
+        next_action="Reconcile authoritative mission and phase records before engineering work"
+    elif [[ "$active_work" == "none" ]]; then
         authority="No active work authority; separate authorization required"
         next_action="$(eos_markdown_field "$state" "Next Immediate Step")"
         [[ -n "$next_action" ]] || next_action="Obtain separate authorization before beginning engineering work"
@@ -461,12 +472,14 @@ eos_render_resume_summary() {
     upstream="$(eos_repository_sync_status "$project")"
     checkpoint_sync="$(eos_checkpoint_sync_status "$project" 2>/dev/null || true)"
     platform_health="PASS"
-    if [[ "$repository_state" == unknown* || "$checkpoint_sync" == invalid* ]]; then
+    if [[ "$authority_conflict" -ne 0 || "$repository_state" == unknown* || "$checkpoint_sync" == invalid* ]]; then
         platform_health="FAIL"
     elif [[ "$repository_state" != "clean" || "$checkpoint_sync" != "aligned" || "$upstream" == unavailable* ]]; then
         platform_health="WARNING"
     fi
-    if [[ "$active_work" == "none" || "$active_work" == "unknown" || "$platform_health" == "FAIL" ]]; then
+    if [[ "$authority_conflict" -ne 0 ]]; then
+        banner="RECONCILIATION REQUIRED"
+    elif [[ "$active_work" == "none" || "$active_work" == "unknown" || "$platform_health" == "FAIL" ]]; then
         banner="ACTION REQUIRED"
     else
         banner="READY"

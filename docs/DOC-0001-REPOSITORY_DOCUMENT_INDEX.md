@@ -1,20 +1,20 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.53
+version: 2.54
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-24
-phase: EENS Repository Convergence
+last_updated: 2026-07-25
+phase: Zeus Operational Alpha
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.52
+predecessor_revision: DOC-0001@2.53
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
-approval_reference: Mission A - Validation Baseline Remediation
-approval_date: 2026-07-24
+approval_reference: Mission B - Authority Establishment and Portfolio Reconciliation
+approval_date: 2026-07-25
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -53,6 +53,8 @@ relationships:
     target: EGR-000001
   - type: related_to
     target: PROJ-0001
+  - type: indexes
+    target: PHASE-0001
   - type: related_to
     target: INF-0001
   - type: related_to
@@ -331,6 +333,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | ----------- | ----- | ------ | ----- | ---- |
 | DOC-0001 | Repository Document Index | Active | Homelab Infrastructure | `docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md` |
 | PROJ-0001 | Project State | Active | Homelab Infrastructure | `docs/project/PROJ-0001-PROJECT_STATE.md` |
+| PHASE-0001 | Zeus Operational Alpha Authority | Active | Homelab Infrastructure | `docs/project/PHASE-0001-ZEUS-OPERATIONAL-ALPHA-AUTHORITY.md` |
 | INF-0001 | Engineering Infrastructure Baseline | Active | Homelab Infrastructure | `docs/infrastructure/INF-0001-INFRASTRUCTURE_BASELINE.md` |
 | HW-0001 | Master Hardware Register | Active | Homelab Infrastructure | `docs/hardware/HW-0001-MASTER_HARDWARE_REGISTER.md` |
 | EDR-0001 | Hardware Asset Record Architecture | Approved | Homelab Infrastructure | `docs/edr/EDR-0001-HARDWARE_ASSET_RECORD_ARCHITECTURE.md` |
@@ -771,3 +774,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.51 | 2026-07-19 | Synchronized STD-0005 Version 1.2, SPEC-0007 Version 1.2, and SPEC-0004 Version 1.3 for reference-oriented Raspberry Pi qualification orchestration, standardized Qualification Reports, persistent Engineering State consumption, resume integration, and authoritative-procedure dependency without implementation. |
 | 2.52 | 2026-07-21 | Registered EENS Operational Alpha service discovery, canonical repository source, qualified LOpi deployment, source-versus-deployment boundary, implemented capabilities, and deferred HNS expansion under Mission 7 repository convergence. |
 | 2.53 | 2026-07-24 | Removed the invalid non-controlled `discovers` relationship to the unresolved `EENS-OPERATIONAL-ALPHA` service label while preserving indexed SPEC-0009 authority and the EENS service-discovery record. |
+| 2.54 | 2026-07-25 | Indexed PHASE-0001 and reconciled repository discovery to the Zeus Operational Alpha authority baseline while preserving completed EENS history. |

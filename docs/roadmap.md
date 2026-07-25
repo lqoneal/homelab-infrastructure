@@ -4,6 +4,26 @@ Status: Active
 
 ---
 
+## Current Mission — Zeus Operational Alpha
+
+Zeus Operational Alpha is the current authoritative Homelab engineering
+mission under PHASE-0001 and PROJ-0001.
+
+The current authority establishes portfolio direction and a consistent resume
+baseline only. No Zeus runtime implementation, production modification,
+autonomous execution, feature development, or Work Package execution is
+authorized.
+
+The next eligible mission is Mission C — Zeus Operational Alpha Capability
+Discovery. Mission C is read-only and may produce an implementation baseline
+and Work Package architecture after separate initiation.
+
+Historical roadmap items remain recorded for continuity. Their ordering or
+unchecked state does not supersede PHASE-0001, establish current priority, or
+authorize execution.
+
+---
+
 ## Engineering Event and Notification System
 
 ### Completed — EENS Operational Alpha Foundation

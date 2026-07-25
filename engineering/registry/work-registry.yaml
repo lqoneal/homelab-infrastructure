@@ -1,8 +1,8 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 46
-updated_at: '2026-07-21'
+revision: 47
+updated_at: '2026-07-25'
 serialization: yaml
 mutation_history:
 - revision: 2
@@ -289,6 +289,14 @@ mutation_history:
   reason: Record the qualified EENS Operational Alpha repository convergence,
     canonical-source and operational-deployment boundary, preserved standalone
     history, and deferred full HNS expansion.
+- revision: 47
+  previous_revision: 46
+  at: '2026-07-25T00:00:00-07:00'
+  actor: Mission B authority reconciliation agent
+  action: establish Zeus Operational Alpha authority projection
+  reason: Close historical MISSION-000007, establish the active Zeus mission and
+    phase, and register Mission C as planned read-only work without authorizing
+    runtime implementation.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -427,6 +435,37 @@ entities:
       path: null
       presence: planned
   missions:
+  - registry_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    object_type: Mission
+    title: Zeus Operational Alpha
+    management_state: active
+    owner: Homelab Infrastructure
+    scope: EMP-PROJECT-HOMELAB
+    authority_reference: PHASE-0001
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: PHASE-0001
+    created_at: 2026-07-25
+    updated_at: 2026-07-25
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-25
+      actor: Mission B authority reconciliation agent
+      reason: PHASE-0001 establishes Zeus Operational Alpha as the current Homelab
+        mission without authorizing runtime implementation.
+      authority_reference: PHASE-0001
+    project_id: EMP-PROJECT-HOMELAB
+    order: 5
+    objective: Establish a single authority baseline for read-only Zeus capability
+      discovery before any implementation is authorized.
+    entry_criteria: Mission A validation baseline is clean and PHASE-0001 is Active.
+    completion_criteria: A separately authorized mission accepts the read-only
+      capability-discovery baseline without beginning runtime implementation.
   - registry_id: EMP-MISSION-PLATFORM-ROADMAP
     object_type: Mission
     title: Engineering Management Platform Roadmap
@@ -641,6 +680,38 @@ entities:
     entry_criteria: Separately authorized Governance work identifies the exact evaluation scope, controlled sources, owners, and boundaries; no authority is inherited from this planning entry.
     completion_criteria: Every approved institutionalization recommendation is dispositioned through separately authorized Governance work with complete traceability and no inferred implementation authority.
   phases:
+  - registry_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    object_type: Phase
+    title: Zeus Operational Alpha
+    management_state: active
+    owner: Homelab Infrastructure
+    scope: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    authority_reference: PHASE-0001
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: PHASE-0001
+    created_at: 2026-07-25
+    updated_at: 2026-07-25
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: 2026-07-25
+      actor: Mission B authority reconciliation agent
+      reason: Activate the authority-establishment phase while keeping all Zeus
+        implementation work inactive.
+      authority_reference: PHASE-0001
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    order: 1
+    entry_criteria: PHASE-0001 and PROJ-0001 agree on the Zeus mission and phase.
+    exit_criteria: Authority records, registry, resume, Work Initiation, roadmap,
+      and validators agree on one Zeus baseline.
+    validation_records:
+    - PHASE-0001
+    - PROJ-0001
   - registry_id: EMP-PHASE-1-1
     object_type: Phase
     title: Core Architecture and Work Registry Foundation
@@ -861,6 +932,41 @@ entities:
     capacity_assumption: One bounded implementation mission; no scheduling or capacity
       automation.
   work_items:
+  - registry_id: EMP-WORK-ZEUS-CAPABILITY-DISCOVERY
+    object_type: WorkItem
+    title: Mission C - Zeus Operational Alpha Capability Discovery
+    management_state: ready
+    owner: Homelab Infrastructure
+    scope: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    authority_reference: PHASE-0001
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    created_at: 2026-07-25
+    updated_at: 2026-07-25
+    revision: 1
+    transition_history:
+    - from: null
+      to: ready
+      at: 2026-07-25
+      actor: Mission B authority reconciliation agent
+      reason: Register Mission C as the next read-only mission; readiness does not
+        authorize execution or Zeus runtime implementation.
+      authority_reference: PHASE-0001
+    project_id: EMP-PROJECT-HOMELAB
+    order: 23
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: capability-discovery
+    priority: 1
+    completion_criteria: Produce a read-only Zeus implementation baseline and Work
+      Package architecture without modifying production runtime.
+    queue_ids:
+    - EMP-QUEUE-PORTFOLIO-ROADMAP
   - registry_id: EMP-WORK-REGISTRY-FOUNDATION
     object_type: WorkItem
     title: Implement Operational Work Registry Foundation
@@ -1881,8 +1987,10 @@ entities:
       or schedule execution.
     entries:
     - position: 1
-      work_item_id: EMP-WORK-SPRINTEROS-PRODUCT
+      work_item_id: EMP-WORK-ZEUS-CAPABILITY-DISCOVERY
     - position: 2
+      work_item_id: EMP-WORK-SPRINTEROS-PRODUCT
+    - position: 3
       work_item_id: EMP-WORK-PRIVATE-AI-PRODUCT
   milestones:
   - registry_id: EMP-MILESTONE-REGISTRY-OPERATIONAL
@@ -2380,7 +2488,8 @@ entities:
 missions:
 - mission_id: MISSION-000007
   title: EENS Repository Convergence
-  status: in_progress
+  status: completed
+  completed_at: '2026-07-21T10:30:00-07:00'
   repository_branch: migration/eens-convergence
   baseline_commit: 4484a34c45e4fc2d10bcf15bb1c873536b4bcc9d
   scope:

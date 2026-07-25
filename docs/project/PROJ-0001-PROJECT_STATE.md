@@ -1,19 +1,20 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 6.5
+version: 6.6
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-21
-phase: EENS Repository Convergence Reconciliation
+last_updated: 2026-07-25
+mission: Zeus Operational Alpha
+phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@6.4
+predecessor_revision: PROJ-0001@6.5
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
-approval_reference: Mission 7 - EENS Repository Convergence and Operational Baseline Reconciliation
-approval_date: 2026-07-21
+approval_reference: PHASE-0001
+approval_date: 2026-07-25
 persistence_status: Persisted
 source_of_truth: true
 declared_deferrals:
@@ -49,6 +50,8 @@ relationships:
     target: EWO-000023
   - type: related_to
     target: EOS-0003
+  - type: related_to
+    target: PHASE-0001
   - type: related_to
     target: MILESTONE-0003
   - type: related_to
@@ -141,14 +144,13 @@ Build the Engineering Operating System foundation for AI Assistant, SprinterOS, 
 
 **Current Overall Goal:**
 
-Preserve the published SPEC-0007 Version 1.1 Engineering Baseline, immutable
-EWO-000023 evidence boundary, MILESTONE-0007 historical summary, and qualified
-Engineering Reporting Standard, Engineering Handoff template, and authoritative
-Engineering Handoff Construction Procedure, and conservative Engineering
-Transaction Profile baseline.
-EWO-000023 remains Archived and EDR-0003 remains in its authorized evidence
-state. No operational adoption, unrelated institutionalization, or SPEC-0007
-Revision 16 work is authorized.
+Establish and preserve Zeus Operational Alpha as the single current Homelab
+engineering mission authority, with Project State, Work Registry, roadmap,
+resume, and Work Initiation in agreement before implementation-adjacent
+capability discovery begins.
+
+No Zeus runtime implementation, production modification, autonomous execution,
+feature development, or Work Package execution is authorized.
 
 ---
 
@@ -156,33 +158,23 @@ Revision 16 work is authorized.
 
 **Current Phase:**
 
-EENS Repository Convergence Reconciliation
+Zeus Operational Alpha
 
 **Phase Objective:**
 
-Reconcile Homelab controlled documentation with the completed EENS repository
-convergence and qualified Operational Alpha baseline.
+Establish the PHASE-0001 Zeus Operational Alpha authority baseline and prepare
+the portfolio for a separately authorized, read-only capability-discovery
+mission.
 
-The complete qualified EENS implementation history has been imported without
-squashing beneath `services/eens`, with imported namespaced tags and historical
-engineering evidence preserved.
+MISSION-000007 EENS Repository Convergence is completed historical work. EENS
+Operational Alpha remains implemented and qualified on LOpi, with
+`services/eens` as canonical source. Its history, evidence, milestones,
+provenance, runtime behavior, and deferred HNS boundary remain intact.
 
-EENS Operational Alpha is implemented and qualified. Its current capabilities
-include the canonical engineering event model, SQLite WAL persistence,
-idempotent acceptance, ordered replay, durable consumer checkpoints,
-handoff-lifecycle producer integration, ntfy delivery, continuous runtime, and
-systemd user-service supervision.
-
-LOpi is the qualified operational EENS host. The canonical source is
-`/data/engineering/repositories/homelab/services/eens`; the current qualified
-LOpi deployment is `/home/loneal/data/engineering/eens`.
-
-The broader HNS architecture remains partially implemented. Authenticated
-WebSocket Tier 1, the reference workstation client, subscriptions, delivery
-obligations and attempt evidence, producer authorization, provider registry,
-multiple delivery adapters, advanced routing, Remote Approval, and complete
-HNS qualification remain future work.
-No implementation or runtime migration has begun.
+Mission C — Zeus Operational Alpha Capability Discovery is the next eligible
+mission after this reconciliation passes and is committed. Mission C may
+produce an implementation baseline and Work Package architecture, but it may
+not modify production runtime.
 
 ---
 
@@ -344,21 +336,17 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-The HNS roadmap and advisory architecture guidance are recorded in SPEC-0009
-Version 1.6 and the
-subordinate notification implementation roadmap. Infrastructure Discovery and
-Validation is now the mandatory, read-only entry phase. The current ntfy
-wrapper, Handoff execution behavior, workstation runtime, Raspberry Pi
-services, Mission 0 services, and Governance documents remain unchanged.
+Complete the Zeus Operational Alpha authority reconciliation defined by
+PHASE-0001. Align Project State, Work Registry, DOC-0001, roadmap
+interpretation, derived resume context, and Work Initiation without implementing
+Zeus runtime behavior.
 
 **Next Immediate Step:**
 
-Issue the bounded, read-only HNS Phase 1 Infrastructure Discovery and
-Validation handoff. Produce the Infrastructure Validation Report, Platform
-Capability Assessment, Notification Baseline Metrics, Candidate Technology
-Evaluation, updated Project State, and Completion Report. Do not finalize
-technology selections or begin implementation planning until its evidence is
-reviewed and accepted.
+After Mission B is committed and every authority and repository validation gate
+passes, issue Mission C — Zeus Operational Alpha Capability Discovery as a
+separately bounded, read-only mission. Do not begin Zeus runtime implementation
+or Work Package execution.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -393,7 +381,7 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 | EWO-000023 evidence | Immutable, indexed, and reconstructable from controlled repository history |
 | Milestone state | MILESTONE-0007 published as a historical summary; no new evidence or authority established |
 | Reporting standard | Execution-first Completion Reports institutionalized through STD-0003, PROC-0001, TPL-0001, and TPL-0002 |
-| Freshness | Reconciled through the 2026-07-21 EENS repository convergence and Operational Alpha documentation transaction |
+| Freshness | Reconciled through the 2026-07-25 Zeus Operational Alpha authority-establishment transaction |
 | Notification platform | EENS Operational Alpha is implemented and qualified on LOpi; `services/eens` is canonical source, while advanced HNS architecture remains deferred |
 | Notification authority | Qualified LOpi EENS Operational Alpha runtime for accepted events and durable consumer state |
 | Reference client | `letoatreides` remains proposed and deferred; no reference workstation client is operational |
@@ -542,10 +530,14 @@ None. Mission 0 is complete.
 7. Treat MILESTONE-0005 and tag `engineering-platform-foundation-1.0`, once
    created, as the Engineering Platform Foundation 1.0 operational baseline.
 8. Validate and inspect the operational registry through `engctl registry validate` and `engctl registry list`.
-9. Do not resume the persistent MMC storage I/O investigation until an approved
+9. Confirm PHASE-0001, this Project State, registry context, and `engctl resume`
+   all identify Zeus Operational Alpha as the current mission and phase.
+10. Treat Mission C as planned read-only work, not active implementation
+    authority.
+11. Do not resume the persistent MMC storage I/O investigation until an approved
    Active EWO establishes its diagnostic scope and execution controls.
-10. When EWO-000016 is selected for execution, begin at Stage A backup re-verification and honor every sequential gate.
-11. After EWO-000016 completes or stops, return to the current primary project task recorded above.
+12. When EWO-000016 is selected for execution, begin at Stage A backup re-verification and honor every sequential gate.
+13. After EWO-000016 completes or stops, return to the current primary project task recorded above.
 
 ---
 
@@ -557,8 +549,8 @@ When resuming this project:
 - Treat `/data/engineering/repositories/homelab` as the canonical Homelab repository.
 - Treat `/data/engineering/repositories/shared-libraries` as the canonical shared controller framework.
 - Do not use `/home/loneal/Projects` or `/home/loneal/Development` as authoritative locations.
-- Continue from the 2026-07-15 Engineering State Reconciliation checkpoint and
-  authoritative Project State, not the historical Mission 0.4 checkpoint.
+- Continue from PHASE-0001 and this authoritative Project State, not the
+  historical EENS convergence or Mission 0.4 resume points.
 - Preserve the EMP Foundation, Engineering Platform, and verified recovery
   baselines; registry readiness does not replace SprinterOS project-controlled
   authority.
@@ -567,6 +559,8 @@ When resuming this project:
   corrective action remain unauthorized until an approved Active EWO applies.
 - Treat EWO-000016 as an authorized bounded side mission that does not supersede the primary sprint or task.
 - Resume EWO-000016 only at its first incomplete gated stage and preserve unrelated working-tree content.
+- Treat Mission C as the next planned read-only mission. It does not authorize
+  Zeus runtime implementation or Work Package execution.
 - Do not infer authority for work outside the current recorded mission and phase authorization.
 
 ---
@@ -620,3 +614,5 @@ When resuming this project:
 | 6.2     | 2026-07-18 | Recorded SPEC-0009 Version 1.4 advisory architecture observations covering Event Platform vision, authority separation, producer and three-part identity models, transport/store evolution, future consumers, and staged migration without changing the roadmap or implementation scope. |
 | 6.3     | 2026-07-18 | Recorded SPEC-0009 Version 1.5 HNS authority principle: producers own lifecycle facts, HNS owns accepted event records and delivery state, and replaceable providers remain consumers/presentation mechanisms without changing roadmap or implementation scope. |
 | 6.4     | 2026-07-18 | Recorded SPEC-0009 Version 1.6 Known/Unknown/Decision methodology: Phase 1 establishes facts, Phase 2 resolves evidence-based decisions, and Phase 3 implements reviewed decisions without changing roadmap sequencing or scope. |
+| 6.5     | 2026-07-21 | Reconciled completed EENS repository convergence, qualified Operational Alpha service discovery, canonical source, LOpi deployment, preserved history, and deferred HNS expansion. |
+| 6.6     | 2026-07-25 | Established PHASE-0001 Zeus Operational Alpha authority, closed EENS convergence as historical work, aligned the resume point to Mission C capability discovery, and prohibited Zeus runtime implementation. |
