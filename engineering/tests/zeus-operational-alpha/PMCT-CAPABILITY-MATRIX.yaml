@@ -35,7 +35,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate assessment recognition and controlled mission transition and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-01 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-01 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -62,7 +62,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate first-qualification authority lifecycle and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-02 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-02 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -89,7 +89,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate dispatcher policy resolution and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-03 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-03 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -148,7 +148,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate production execution-agent registry and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-05 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-05 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -211,7 +211,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate dispatcher-to-agent invocation and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-07 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-07 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -244,7 +244,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate admission-driven dispatch authorization and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-08 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-08 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -278,7 +278,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate production cli execution management and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-09 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-09 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -313,7 +313,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate production eens execution lifecycle and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-10 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-10 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -348,7 +348,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate cryptographically signed execution evidence and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-11 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-11 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -384,7 +384,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate independent evidence qualification and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-12 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-12 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -421,7 +421,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate live authoritative reconciliation and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-13 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-13 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -459,7 +459,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate authority restoration coordination and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-14 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-14 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -499,7 +499,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate integrated production execution foundation and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-15 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-15 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -539,7 +539,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate controlled-document reconciliation and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-16 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-16 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -579,7 +579,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate production implementation commit and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-17 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-17 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -756,7 +756,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate operational qualification mission authorization and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-21 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-21 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -802,7 +802,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate complete operational wop construction and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-22 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-22 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -850,7 +850,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate admission with dispatch permitted and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-23 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-23 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -999,7 +999,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate independent evidence qualification passes and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-26 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-26 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -1155,7 +1155,7 @@ gates:
   positive_demonstration: Through the authoritative CLI, demonstrate operational alpha capability qualification and capture the resulting production-observable state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-29 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-29 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code

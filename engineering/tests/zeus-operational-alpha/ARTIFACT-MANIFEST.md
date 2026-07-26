@@ -6,7 +6,7 @@ The controlled package contains:
 - locked YAML capability matrix and generator;
 - repository-native Bash operator entry points;
 - 30 auditable gate procedures;
-- Bash helper libraries and Python read-only runtime;
+- Bash helper libraries and Python authoritative-state-observation runtime;
 - three JSON schemas and three evidence templates;
 - controlled initial capability-state record;
 - seven framework self-test modules and test runner;

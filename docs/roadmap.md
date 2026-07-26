@@ -128,11 +128,22 @@ not imply a gate pass. Missing production CLI surfaces remain backlog work and
 are not stubbed by the PMCT.
 
 ZEUS-P2-021 implements `zeus next-action` as the first production-facing,
-read-only PMCT decision surface. The resolver evaluates authoritative
+authoritative-state-observation PMCT decision surface. The resolver evaluates authoritative
 repository, publication, authority, dispatcher, agent, PMCT, gate, mode, work
 authority, and blocker state and selects the earliest unmet prerequisite.
 Current mode is BETA and current action is signed baseline republication.
-PMCT OA-01 passes; OA-02 through OA-30 remain unpassed.
+OA-01 implementation and Codex PMCT validation are complete with a `PASS`
+demonstration result. Independent operator verification is pending, operator
+acceptance is not recorded, and OA-01 gate status is
+`AWAITING_OPERATOR_VERIFICATION`. OA-02 is blocked by
+`OA-01_OPERATOR_ACCEPTANCE_REQUIRED`; OA-02 through OA-30 remain unaccepted.
+
+ZEUS-P2-022 clarifies that inspection commands preserve authoritative
+engineering, tracked repository, and operational decision state while
+explicitly documented bounded runtime presentation telemetry may advance.
+PMCT now supports exact run-ID inspection and reporting for reproducible
+second-window verification. This correction does not resume the Progressive
+WOP or advance any OA gate.
 
 The current `generate-wop` qualification workflow remains review-only. This
 roadmap entry does not approve implementation, operational admission,

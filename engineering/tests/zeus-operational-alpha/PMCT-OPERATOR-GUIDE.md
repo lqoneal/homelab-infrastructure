@@ -25,18 +25,31 @@ surface or demonstration is absent. Future commands are reported as
 `EXPECTED_NOT_YET_IMPLEMENTED` during discovery, but become `NOT_READY` when
 the selected gate requires them.
 
+`PASS` does not mean the operator independently verified or accepted the gate.
+The lifecycle is implementation complete, Codex validation PASS, operator
+verification pending, operator acceptance not recorded, and gate awaiting
+operator verification until the WOP receipt is created and reconciled.
+
 Return failed work to Codex with the run ID, report path, evidence directory,
 failed assertions, and unchanged repository status. Do not paste secrets.
 
 Evidence is stored at `engineering/runtime/pmct/runs/<run-id>/`. Repeating
-read-only discovery is safe. An interrupted run without `COMPLETE` is
-incomplete; rerun the same gate to create a new run and retain the interrupted
-directory as evidence. A report can be retrieved with `pmct report OA-NN`.
+authoritative-state observation is safe: tracked repository, authority,
+project, PMCT capability, qualification, dispatcher, execution, mission, and
+operational decision state remain unchanged. Documented bounded presentation
+telemetry such as operator-interface `invocation_count` may advance, and each
+PMCT run creates a new evidence directory. An interrupted run without
+`COMPLETE` is incomplete; rerun the same gate to create a new run and retain
+the interrupted directory as evidence. Inspect and report an exact completed
+run with `pmct inspect <PMCT-RUN-ID>` and `pmct report <PMCT-RUN-ID>`.
+Gate-based `pmct report OA-NN` remains a latest-run convenience and shall not
+be used when an exact run ID is available. Bare `pmct inspect` reports current
+live state.
 
-State-changing gates are read-only unless the matrix marks the gate as a state
-transition and the operator supplies `--authorized-transition`. The framework
-then still requires separately resolved authority. P2-020 deliberately
-contains no authorized production transition implementation.
+State-changing gates remain observation-only unless the matrix marks the gate
+as a state transition and the operator supplies `--authorized-transition`.
+The framework then still requires separately resolved authority. P2-020
+deliberately contains no authorized production transition implementation.
 
 ## OA-01 copyable example
 
@@ -49,10 +62,13 @@ engineering/tests/zeus-operational-alpha/bin/pmct report OA-01
 ```
 
 ZEUS-P2-021 implements the locked `zeus next-action` acceptance interface.
-OA-01 now demonstrates `PASS` while still recording the stale published
+OA-01 has a Codex PMCT demonstration result of `PASS` while still recording the stale published
 baseline, inactive dispatcher, empty agent registry, BETA mode, disabled
 dispatch, and the correctly prioritized baseline-republication action.
-The overall PMCT remains `NOT_READY`; OA-02 through OA-30 have not passed.
+Independent operator verification is pending and operator acceptance is not
+recorded. The OA-01 gate status is `AWAITING_OPERATOR_VERIFICATION`; OA-02 is
+blocked by `OA-01_OPERATOR_ACCEPTANCE_REQUIRED`. The overall PMCT remains
+`NOT_READY`; OA-02 through OA-30 have not been accepted.
 
 OA-30 can pass only after OA-01 through OA-29 have passed and a separate
 authorized declaration is observably performed and evidenced. Any earlier

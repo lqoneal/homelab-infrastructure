@@ -3,7 +3,9 @@
 Version: 1.0
 Identity: `ZEUS_PROGRESSIVE_MANUAL_CAPABILITY_TEST`
 Authority: ZEUS-P2-020
-Current overall result: `NOT_READY` (OA-01 `PASS`; OA-02 through OA-30 not passed)
+Current overall result: `NOT_READY` (OA-01 Codex demonstration `PASS`;
+independent operator verification pending; operator acceptance not recorded;
+OA-02 blocked; OA-02 through OA-30 not accepted)
 
 ## Normative behavior
 
@@ -16,8 +18,11 @@ A capability passes only when Zeus demonstrates the behavior through the
 authoritative interface, rejects an invalid case safely, proves idempotency,
 proves interruption/resume where applicable, produces complete durable
 evidence, and retains all eligible earlier capabilities. Manual review remains
-mandatory. A run does not mutate the controlled capability-state record or
-self-approve a gate.
+mandatory. A PMCT `PASS` is a Codex demonstration result, not operator
+verification or gate acceptance. A run does not mutate the controlled
+capability-state record, record operator acceptance, or self-approve a gate.
+No later gate is eligible until the preceding gate has both a `PASS`
+demonstration and separately recorded operator acceptance.
 
 Controlled states are:
 
@@ -33,6 +38,9 @@ Final run output includes `PMCT_RUN_ID`, `PMCT_GATE`, `PMCT_RESULT`,
 `PMCT_COMPLETION_MARKER=COMPLETE`. Exit zero is reserved for a demonstrated
 `PASS`; `FAIL`, `BLOCKED`, and `NOT_READY` exit nonzero. The harness does not
 use `set -e`, so diagnostic collection continues after individual failures.
+`pmct inspect <PMCT-RUN-ID>` and `pmct report <PMCT-RUN-ID>` resolve only that
+completed run. Gate-based `pmct report OA-NN` is retained as an interactive
+latest-run convenience and is not sufficient for exact-run evidence proof.
 
 ## Fixed production CLI acceptance contract
 
@@ -66,11 +74,31 @@ not faked. A command absent before its gate is eligible is
 
 ## State protection
 
-Read-only is the default. A state-changing gate must be named as such in the
-matrix and requires `--authorized-transition`, active scoped authority,
-visible preflight, request identity, idempotency, resulting-state verification,
-and no automatic roll-forward. P2-020 implements no state-changing procedure;
-supplying the flag therefore blocks safely. There is no generic bypass.
+Authoritative-state observation is the default. Inspection commands and PMCT
+runs shall not modify authoritative engineering state, tracked repository
+content, or operational decision state:
+
+- authoritative engineering state includes published baselines, authority,
+  project state, PMCT capability state, qualification state, dispatcher state,
+  execution state, and mission state;
+- repository state means tracked repository content and Git identity;
+- operational decision state includes the next authorized action, capability
+  qualification, Operational Alpha progression, dispatcher authorization, and
+  production eligibility.
+
+Runtime presentation telemetry is permitted only when it is explicitly
+documented, deterministic, bounded, non-authoritative, and never consumed by
+engineering decisions, PMCT qualification, authority resolution, dispatcher
+logic, or promotion decisions. The currently approved example is the
+operator-interface `invocation_count`. PMCT evidence creation beneath
+`engineering/runtime/pmct/runs/` is separately required test output, not
+presentation telemetry or authoritative state.
+
+A state-changing gate must be named as such in the matrix and requires
+`--authorized-transition`, active scoped authority, visible preflight, request
+identity, idempotency, resulting-state verification, and no automatic
+roll-forward. P2-020 implements no state-changing procedure; supplying the
+flag therefore blocks safely. There is no generic bypass.
 
 Every run creates a unique directory and create-only JSON records, hashes every
 evidence artifact, records no secret environment values, and writes `COMPLETE`

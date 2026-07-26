@@ -31,6 +31,17 @@ class EvidenceTests(unittest.TestCase):
             manifest = json.loads((directory / "run-manifest.json").read_text())
             self.assertRegex(manifest["evidence_digest"], r"^[0-9a-f]{64}$")
 
+    def test_exact_completed_run_selection(self):
+        with tempfile.TemporaryDirectory(dir=pmct.REPOSITORY) as temporary:
+            runtime = Path(temporary) / "runtime"
+            with patch.dict(os.environ, {"PMCT_RUNTIME_ROOT": str(runtime)}):
+                result, directory = pmct.evidence_run(pmct.matrix()["gates"][0])
+                self.assertEqual(pmct.completed_run(result["run_id"]), directory)
+                with self.assertRaisesRegex(pmct.PmctError, "invalid PMCT run ID"):
+                    pmct.completed_run("../escape")
+                with self.assertRaisesRegex(pmct.PmctError, "not found"):
+                    pmct.completed_run("PMCT-20000101T000000Z-000000000000")
+
 
 if __name__ == "__main__":
     unittest.main()

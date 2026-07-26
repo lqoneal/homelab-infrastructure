@@ -30,6 +30,16 @@ class ProtectionTests(unittest.TestCase):
         result, _ = pmct.classify(pmct.matrix()["gates"][0], state, checks)
         self.assertEqual(result, "PASS")
 
+    def test_oa02_requires_recorded_oa01_operator_acceptance(self):
+        state = pmct.inspect_state()
+        checks = pmct.evaluate(pmct.matrix()["gates"][1], state)
+        result, reasons = pmct.classify(pmct.matrix()["gates"][1], state, checks)
+        self.assertEqual(result, "BLOCKED")
+        self.assertIn(
+            "prerequisite gate operator acceptance is not recorded: OA-01",
+            reasons,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

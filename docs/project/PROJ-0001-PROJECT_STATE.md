@@ -1,7 +1,7 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 7.4
+version: 7.8
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,7 +9,7 @@ last_updated: 2026-07-27
 mission: Zeus Operational Alpha
 phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@7.3
+predecessor_revision: PROJ-0001@7.7
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -152,6 +152,11 @@ authority.
 Mission ZEUS-P1-OPERATOR-INTERFACE qualifies only the global launcher and
 first-100-invocation orientation. It does not dispatch a mission, grant
 approval, relax WOP admission, or create execution authority.
+
+ZEUS-P2-022 distinguishes immutable authoritative engineering, repository,
+and operational decision state from explicitly documented bounded runtime
+presentation telemetry. Operator-interface `invocation_count` remains
+non-authoritative and cannot participate in PMCT or engineering decisions.
 
 ---
 
@@ -340,16 +345,20 @@ The side mission does not replace the current phase or primary task. It shall no
 
 Preserve the commissioned authority, P2-019 execution foundation, P2-020 PMCT,
 and P2-021 next-action resolver. The published baseline remains
-`b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf`; PMCT OA-01 is `PASS`,
-dispatcher activation is `PREPARED`, and the production agent registry is
-empty. Operational Alpha remains incomplete.
+`b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf`; OA-01 implementation is
+complete and its Codex PMCT demonstration is `PASS`, but independent operator
+verification is pending and operator acceptance is not recorded. OA-01 gate
+status is `AWAITING_OPERATOR_VERIFICATION`. Dispatcher activation is
+`PREPARED`, and the production agent registry is empty. Operational Alpha
+remains incomplete.
 
 **Next Immediate Step:**
 
-Under separate authority, reconcile the repository baseline identified by
-`zeus next-action`; separately implement the OA-02 authority status and
-work-lifecycle acceptance interfaces before attempting OA-02. Do not publish,
-activate, qualify, register, or dispatch under P2-021.
+Complete independent OA-01 operator verification and record operator
+acceptance. OA-02 eligibility is blocked by
+`OA-01_OPERATOR_ACCEPTANCE_REQUIRED`. Do not begin OA-02, publish, activate,
+qualify, register, or dispatch before that lifecycle prerequisite is
+reconciled.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -630,5 +639,6 @@ When resuming this project:
 | 7.3     | 2026-07-26 | Published the production authority hierarchy and Authority Restoration Principle through SPEC-0011, reconciled controlled and operational documentation, and recorded the post-commit repository-baseline restoration requirement without changing runtime behavior. |
 | 7.4     | 2026-07-26 | Republished repository identity and baseline facets at revision 2, activated baseline `b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf`, restored normal Authority Resolution and admission eligibility, and preserved disabled dispatch. |
 | 7.5     | 2026-07-26 | Implemented and independently qualified the P2-019 production execution foundation in bounded qualification mode; production activation, agent registration, baseline republication, and first operational execution remain pending. |
-| 7.6     | 2026-07-26 | Established the read-only Progressive Manual Capability Test with a locked cumulative OA-01 through OA-30 sequence, durable evidence, controlled result vocabulary, and an honest initial OA-01 `NOT_READY` result. |
-| 7.7     | 2026-07-26 | Implemented the authoritative read-only `zeus next-action` BETA decision interface and demonstrated PMCT OA-01 `PASS` without production-state mutation; overall PMCT remains `NOT_READY`. |
+| 7.6     | 2026-07-26 | Established the authoritative-state-preserving Progressive Manual Capability Test with a locked cumulative OA-01 through OA-30 sequence, durable evidence, controlled result vocabulary, and an honest initial OA-01 `NOT_READY` result. |
+| 7.7     | 2026-07-26 | Implemented the authoritative-state-observation `zeus next-action` BETA interface and produced an OA-01 Codex PMCT demonstration result of `PASS` without operator acceptance; overall PMCT remains `NOT_READY`. |
+| 7.8     | 2026-07-26 | Clarified authoritative-state observation, bounded operator-interface presentation telemetry, and exact-run PMCT proof; recorded OA-01 Codex validation PASS with operator verification pending and OA-02 blocked. |

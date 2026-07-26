@@ -1,8 +1,8 @@
 # Zeus Operational Alpha Progress
 
 Date: 2026-07-26
-Current completed implementation milestone: `ZEUS-P2-021`
-Resume status: PMCT OA-01 PASS; overall NOT_READY; repository baseline republication remains the authoritative next action
+Current completed implementation milestone: `ZEUS-P2-022`
+Resume status: OA-01 implementation complete and Codex validation PASS; operator verification pending; acceptance not recorded; OA-02 blocked
 Production ownership model: Lawrence O'Neal / `loneal`
 Commissioning status: `READY`
 
@@ -29,7 +29,8 @@ Commissioning status: `READY`
 | ZEUS-P2-018 Dispatcher Commissioning Assessment | Correctly stopped NOT READY and recorded the missing production execution foundation | `engineering/evidence/2026-07-26-zeus-p2-018-dispatcher-commissioning-assessment.md` |
 | ZEUS-P2-019 Production Execution Foundation | Implementation and production-faithful qualification complete; prepared activation and empty registry preserve the commissioning boundary | `engineering/evidence/2026-07-26-zeus-p2-019-completion-report.md` |
 | ZEUS-P2-020 Progressive Manual Capability Test | PMCT framework implemented with locked OA-01–OA-30 sequence; example OA-01 result is `NOT_READY`; no capability gate has passed | `engineering/evidence/pmct/OA-01-example/` |
-| ZEUS-P2-021 Next Action Acceptance Interface | Read-only BETA resolver implemented; OA-01 manual demonstration PASS; overall PMCT remains NOT_READY | `engineering/evidence/pmct/OA-01-PASS/` |
+| ZEUS-P2-021 Next Action Acceptance Interface | BETA resolver implemented; OA-01 Codex demonstration PASS; operator verification pending and acceptance not recorded | `engineering/evidence/pmct/OA-01-PASS/` |
+| ZEUS-P2-022 Runtime Telemetry Contract Clarification | Contract and exact-run proof completed; OA-01 awaits operator verification and OA-02 remains blocked | `engineering/evidence/2026-07-26-zeus-p2-022-completion-report.md` |
 
 ## Resume point
 
@@ -42,6 +43,18 @@ commands recorded in the P1 evidence before publication or later modification.
 This progress record is operational project tracking only. It grants no
 mission-selection, approval, WOP admission, execution, qualification, or
 reconciliation authority.
+
+OA-01 lifecycle:
+
+```text
+OA-01_IMPLEMENTATION=COMPLETE
+OA-01_CODEX_VALIDATION=PASS
+OA-01_OPERATOR_VERIFICATION=PENDING
+OA-01_OPERATOR_ACCEPTANCE=NOT_RECORDED
+OA-01_GATE_STATUS=AWAITING_OPERATOR_VERIFICATION
+OA-02_ELIGIBILITY=BLOCKED
+BLOCKING_REASON=OA-01_OPERATOR_ACCEPTANCE_REQUIRED
+```
 
 ## Backlog
 

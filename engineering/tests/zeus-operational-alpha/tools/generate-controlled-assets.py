@@ -98,7 +98,10 @@ def gate(number: int) -> dict:
             "identity and verify no duplicate state, event, evidence, or action."
         ),
         "interruption_demonstration": (
-            "Read-only: verify repeatable discovery without mutation."
+            "Authoritative-state observation: verify repeatable discovery "
+            "without authoritative engineering, repository, or operational "
+            "decision-state mutation; only documented bounded presentation "
+            "telemetry is permitted."
             if not state_change else
             "With explicit transition authority and a controlled object, interrupt "
             "after preflight and verify checkpointed resume without duplicate effects."
@@ -140,7 +143,7 @@ def main() -> None:
 # Gate identity: {item['gate_id']}
 # Capability statement: {item['title']}
 # Current applicability: discovered at runtime; unavailable future interfaces produce NOT_READY.
-# Required authority: controlled PMCT read-only authority; state changes require --authorized-transition.
+# Required authority: controlled PMCT observation authority; state changes require --authorized-transition.
 # Required commands: {requirements}
 # Required artifacts: run manifest, repository, discovery, assertions, result, report, hashes, COMPLETE.
 # Preconditions: exact repository identity and prior gate PASS where required.

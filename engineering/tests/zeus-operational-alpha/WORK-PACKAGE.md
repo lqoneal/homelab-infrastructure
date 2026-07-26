@@ -17,11 +17,17 @@ engineering/tests/zeus-operational-alpha/bin/pmct inspect
 engineering/tests/zeus-operational-alpha/bin/pmct run OA-01
 ```
 
-The PMCT runtime is read-only. Rollback before commit removes only P2-020
-files; after commit, use a normal reviewed revert commit. Never reset or delete
-the unrelated unsigned P2-019 package.
+The PMCT runtime preserves authoritative engineering, repository, and
+operational decision state while creating test evidence and allowing only
+explicitly documented bounded presentation telemetry. Rollback before commit
+removes only P2-020 files; after commit, use a normal reviewed revert commit.
+Never reset or delete the unrelated unsigned P2-019 package.
 
 Interruption leaves a run without `COMPLETE`; preserve it and rerun the gate.
 Resume means a new unique run, not editing prior evidence. Controlled
 reconciliation updates the PMCT state, Project State, Work Registry, roadmap,
 progress/resume tracker, and completion report after validation.
+
+A PMCT `PASS` records only the Codex demonstration result. The next gate
+remains blocked until independent operator verification succeeds and an
+operator acceptance receipt is recorded and reconciled.

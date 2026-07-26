@@ -2,7 +2,7 @@
 # Gate identity: OA-19
 # Capability statement: Dispatcher commissioning
 # Current applicability: discovered at runtime; unavailable future interfaces produce NOT_READY.
-# Required authority: controlled PMCT read-only authority; state changes require --authorized-transition.
+# Required authority: controlled PMCT observation authority; state changes require --authorized-transition.
 # Required commands: zeus dispatcher activation, zeus dispatcher probe
 # Required artifacts: run manifest, repository, discovery, assertions, result, report, hashes, COMPLETE.
 # Preconditions: exact repository identity and prior gate PASS where required.

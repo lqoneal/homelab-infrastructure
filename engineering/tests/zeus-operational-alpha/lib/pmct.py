@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only, evidence-producing Progressive Manual Capability Test."""
+"""Authoritative-state-preserving, evidence-producing capability test."""
 
 from __future__ import annotations
 
@@ -223,11 +223,16 @@ def classify(gate: dict[str, Any], state: dict[str, Any], assertions: list[dict[
     capability_state = load_state()
     missing_prerequisites = [
         prior for prior in prerequisites
-        if capability_state["gates"][prior]["status"] != "PASS"
+        if (
+            capability_state["gates"][prior]["status"] != "PASS"
+            or capability_state["gates"][prior].get("operator_acceptance")
+            != "RECORDED"
+        )
     ]
     if missing_prerequisites:
         return "BLOCKED", reasons + [
-            "prerequisite gates have not passed: " + ", ".join(missing_prerequisites)
+            "prerequisite gate operator acceptance is not recorded: "
+            + ", ".join(missing_prerequisites)
         ]
     # Manual review is always required before persistent PASS. A run may only
     # demonstrate PASS when every mandatory assertion succeeds and the command
@@ -252,14 +257,23 @@ def safe_runtime() -> Path:
     return root
 
 
+def completed_run(run_id: str) -> Path:
+    if not re.fullmatch(r"PMCT-\d{8}T\d{6}Z-[0-9a-f]{12}", run_id):
+        raise PmctError(f"invalid PMCT run ID: {run_id}")
+    directory = safe_runtime() / "runs" / run_id
+    if not directory.is_dir() or not (directory / "COMPLETE").is_file():
+        raise PmctError(f"completed PMCT run not found: {run_id}")
+    return directory
+
+
 def evaluate(gate: dict[str, Any], state: dict[str, Any]) -> list[dict[str, Any]]:
     gate_id = gate["gate_id"]
     checks = [
         assertion("repository_identity", state["repository_identity_valid"],
                   f"repository={state['repository']}"),
-        assertion("production_state_read_only", not gate["state_change"],
+        assertion("authoritative_state_observation", not gate["state_change"],
                   "gate requires authorized transition" if gate["state_change"]
-                  else "read-only discovery"),
+                  else "authoritative engineering and decision state preserved"),
     ]
     for command in gate["required_commands"]:
         available = state["command_availability"].get(command, {}).get("available", False)
@@ -285,14 +299,14 @@ def evaluate(gate: dict[str, Any], state: dict[str, Any]) -> list[dict[str, Any]
         assertion(
             "idempotency_adapter",
             gate_id == "OA-01",
-            "OA-01 repeats read-only repository discovery"
+            "OA-01 repeats authoritative-state repository discovery"
             if gate_id == "OA-01" else
             f"{gate_id} idempotency adapter is not yet implemented",
         ),
         assertion(
             "interruption_resume",
             not gate["state_change"],
-            "NOT_APPLICABLE: read-only gate has no transition to interrupt"
+            "NOT_APPLICABLE: observation-only gate has no transition to interrupt"
             if not gate["state_change"] else
             "state-changing interruption/resume demonstration requires separate authority",
         ),
@@ -341,7 +355,7 @@ def evaluate(gate: dict[str, Any], state: dict[str, Any]) -> list[dict[str, Any]
                 "dispatch_remains_disabled",
                 isinstance(state["next_action_probe"], dict)
                 and state["next_action_probe"].get("operational_dispatch") == "DISABLED",
-                "read-only decision must not enable dispatch",
+                "observational decision must not enable dispatch",
             ),
             assertion(
                 "read_only_idempotency",
@@ -408,9 +422,9 @@ def evidence_run(gate: dict[str, Any], *, authorized_transition: bool = False) -
     write_json(directory / "assertions.json", assertions)
     write_json(directory / "capability-result.json", result_value)
     commands = [
-        {"command": "git rev-parse HEAD", "classification": "read-only"},
-        {"command": "git status --short", "classification": "read-only"},
-        {"command": "zeus --help", "classification": "read-only"},
+        {"command": "git rev-parse HEAD", "classification": "authoritative-state-observation"},
+        {"command": "git status --short", "classification": "authoritative-state-observation"},
+        {"command": "zeus --help", "classification": "authoritative-state-observation"},
     ]
     write_json(directory / "commands.json", commands)
     repository_text = (
@@ -477,25 +491,54 @@ def emit_run(result: dict[str, Any], directory: Path) -> int:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="pmct")
     sub = parser.add_subparsers(dest="command", required=True)
-    sub.add_parser("inspect")
+    inspect = sub.add_parser("inspect")
+    inspect.add_argument(
+        "run_id", nargs="?",
+        help="exact completed PMCT run ID; omit for current-state inspection",
+    )
     sub.add_parser("list")
     show = sub.add_parser("show"); show.add_argument("gate")
     execute = sub.add_parser("run"); execute.add_argument("gate")
     execute.add_argument("--authorized-transition", action="store_true")
-    report = sub.add_parser("report"); report.add_argument("gate")
+    report = sub.add_parser("report")
+    report.add_argument("selector", help="gate ID or exact completed PMCT run ID")
     args = parser.parse_args(argv)
     try:
         value = matrix()
         gates = {gate["gate_id"]: gate for gate in value["gates"]}
         if args.command == "inspect":
-            print(json.dumps(inspect_state(), indent=2, sort_keys=True))
+            if args.run_id:
+                directory = completed_run(args.run_id)
+                inspected = {
+                    "run_manifest": json.loads(
+                        (directory / "run-manifest.json").read_text()
+                    ),
+                    "capability_result": json.loads(
+                        (directory / "capability-result.json").read_text()
+                    ),
+                    "evidence_directory": str(directory),
+                    "completion_marker": (directory / "COMPLETE").read_text().strip(),
+                }
+            else:
+                inspected = inspect_state()
+            print(json.dumps(inspected, indent=2, sort_keys=True))
             return 0
         if args.command == "list":
             current = load_state()
             for gate in value["gates"]:
-                print(f"{gate['gate_id']}\\t{current['gates'][gate['gate_id']]['status']}\\t{gate['title']}")
+                gate_state = current["gates"][gate["gate_id"]]
+                lifecycle = gate_state.get("gate_status", "NOT_STARTED")
+                print(
+                    f"{gate['gate_id']}\\t{gate_state['status']}\\t"
+                    f"{lifecycle}\\t{gate['title']}"
+                )
             return 0
-        gate_id = args.gate.upper()
+        selector = args.selector if args.command == "report" else args.gate
+        if args.command == "report" and selector.startswith("PMCT-"):
+            directory = completed_run(selector)
+            print((directory / "capability-report.md").read_text(), end="")
+            return 0
+        gate_id = selector.upper()
         if gate_id not in gates:
             raise PmctError(f"unknown gate: {gate_id}")
         if args.command == "show":

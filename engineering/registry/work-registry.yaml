@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 58
+revision: 60
 updated_at: '2026-07-26'
 serialization: yaml
 mutation_history:
@@ -383,6 +383,21 @@ mutation_history:
   action: implement authoritative next-action acceptance interface
   reason: Register the read-only state-derived BETA decision surface and OA-01
     PASS evidence without authorizing or performing production transition.
+- revision: 59
+  previous_revision: 58
+  at: '2026-07-26T22:15:00+00:00'
+  actor: ZEUS-P2-022 implementation agent
+  action: register runtime telemetry contract clarification for review
+  reason: Distinguish immutable authoritative and decision state from bounded
+    presentation telemetry, preserve the OA-01 Codex PASS result, and record
+    operator verification pending with OA-02 blocked.
+- revision: 60
+  previous_revision: 59
+  at: '2026-07-26T23:00:00+00:00'
+  actor: ZEUS-P2-022 closeout agent
+  action: complete runtime telemetry contract clarification
+  reason: Operator approved the corrected documentation and lifecycle state for
+    closeout while OA-01 remains awaiting independent operator verification.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -2425,7 +2440,7 @@ entities:
     work_type: test-framework-implementation
     priority: 0
     completion_criteria: Locked cumulative PMCT, evidence package, self-tests,
-      controlled reconciliation, and honest OA-01 result are complete.
+      controlled reconciliation, and honest initial OA-01 NOT_READY result are complete.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-021-NEXT-ACTION
     object_type: WorkItem
@@ -2454,7 +2469,7 @@ entities:
       to: completed
       at: '2026-07-26T21:35:00+00:00'
       actor: ZEUS-P2-021 implementation agent
-      reason: State-derived decision interface and PMCT OA-01 demonstration passed.
+      reason: State-derived decision interface and Codex PMCT OA-01 demonstration passed; operator acceptance remains separately required.
       authority_reference: ZEUS-P2-021
     project_id: EMP-PROJECT-HOMELAB
     order: 34
@@ -2464,7 +2479,48 @@ entities:
     work_type: acceptance-interface-implementation
     priority: 0
     completion_criteria: Human and JSON next-action output derives from authoritative
-      state, remains BETA/read-only, and PMCT OA-01 passes.
+      state, remains BETA/observational, and produces an OA-01 Codex PASS
+      demonstration without implying operator acceptance.
+    queue_ids: []
+  - registry_id: EMP-WORK-ZEUS-P2-022-RUNTIME-TELEMETRY
+    object_type: WorkItem
+    title: Zeus Runtime Telemetry Contract Clarification
+    management_state: completed
+    owner: Lawrence O'Neal
+    scope: ZEUS-P2-022
+    authority_reference: ZEUS-P2-022
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ZEUS-P2-021-NEXT-ACTION
+    created_at: 2026-07-26
+    updated_at: 2026-07-26
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-26T22:00:00+00:00'
+      actor: loneal through authenticated instruction
+      reason: ZEUS-P2-022 authorizes contract clarification and WOP correction.
+      authority_reference: ZEUS-P2-022
+    - from: active
+      to: completed
+      at: '2026-07-26T23:00:00+00:00'
+      actor: ZEUS-P2-022 closeout agent
+      reason: Operator approved the corrected telemetry contract and enforced
+        OA-01 acceptance lifecycle for repository closeout.
+      authority_reference: ZEUS-P2-022
+    project_id: EMP-PROJECT-HOMELAB
+    order: 35
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: contract-clarification
+    priority: 0
+    completion_criteria: Authoritative-state immutability and bounded presentation
+      telemetry are explicit, exact-run PMCT proof works, and the WOP manifest verifies.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP

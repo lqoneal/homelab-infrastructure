@@ -26,6 +26,13 @@ class ResultTests(unittest.TestCase):
     def test_controlled_state_records_only_demonstrated_oa01_pass(self):
         state = pmct.load_state()
         self.assertEqual(state["overall_result"], "NOT_READY")
+        self.assertEqual(
+            state["gates"]["OA-01"]["gate_status"],
+            "AWAITING_OPERATOR_VERIFICATION",
+        )
+        self.assertEqual(
+            state["gates"]["OA-01"]["operator_acceptance"], "NOT_RECORDED"
+        )
         passed = [
             gate for gate, item in state["gates"].items()
             if item["status"] == "PASS"

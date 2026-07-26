@@ -16,10 +16,19 @@ engineering/tests/zeus-operational-alpha/bin/pmct run OA-01
 engineering/tests/zeus-operational-alpha/bin/pmct report OA-01
 ```
 
-Normal execution is read-only. Runtime evidence is stored beneath
-`engineering/runtime/pmct/runs/` and ignored by Git. Controlled capability
-state remains at `engineering/runtime/pmct/capability-state.yaml`.
+For reproducible evidence review, use the exact returned run identifier with
+`pmct inspect <PMCT-RUN-ID>` and `pmct report <PMCT-RUN-ID>`. Gate-based report
+selection is a latest-run convenience only.
 
-The overall state remains `NOT_READY`. OA-01 passed through an actual P2-021
-manual demonstration; no historical implementation result was inferred as a
-PMCT pass.
+Normal execution preserves authoritative engineering, repository, and
+operational decision state. Runtime evidence is stored beneath
+`engineering/runtime/pmct/runs/` and ignored by Git. Explicitly documented,
+bounded, non-authoritative presentation telemetry may advance. Controlled
+capability state remains at `engineering/runtime/pmct/capability-state.yaml`.
+
+The overall state remains `NOT_READY`. OA-01 has a P2-021 Codex demonstration
+result of `PASS`, but independent operator verification is pending and
+operator acceptance is not recorded. OA-01 gate status is
+`AWAITING_OPERATOR_VERIFICATION`; OA-02 is blocked pending the required
+operator acceptance. No historical implementation result was inferred as
+operator acceptance.

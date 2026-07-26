@@ -5,7 +5,14 @@ last_evaluated_gate: OA-01
 last_run_id: PMCT-20260726T213253Z-24ce9ab65a93
 updated_at: '2026-07-26T21:32:53Z'
 gates:
-  OA-01: {status: PASS, reason: authoritative next-action interface demonstrated repository-aware BETA decision and safe non-advancement}
+  OA-01:
+    status: PASS
+    reason: authoritative next-action interface demonstrated repository-aware BETA decision and safe non-advancement
+    implementation_status: COMPLETE
+    codex_validation: PASS
+    operator_verification: PENDING
+    operator_acceptance: NOT_RECORDED
+    gate_status: AWAITING_OPERATOR_VERIFICATION
   OA-02: {status: NOT_READY, reason: manual capability demonstration not yet executed}
   OA-03: {status: NOT_READY, reason: manual capability demonstration not yet executed}
   OA-04: {status: NOT_READY, reason: manual capability demonstration not yet executed}

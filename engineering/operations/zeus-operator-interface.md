@@ -88,6 +88,24 @@ blocking conditions. It selects the first unmet prerequisite; it does not
 activate, publish, qualify, register, dispatch, or otherwise perform the
 reported action.
 
+Here, read-only means that the command does not modify repository content,
+orchestration state, authority, publication, dispatcher, agent, qualification,
+PMCT capability, dispatch, promotion, or resume state. Like every normal Zeus
+invocation, it may perform exactly one bounded presentation-history mutation:
+atomically incrementing `invocation_count` in
+`.zeus/runtime/operator-interface-state.json`. It may also acquire and create
+the adjacent empty lock file needed to serialize that increment. No other
+runtime mutation is permitted for `next-action`.
+
+The operator-interface record is non-authoritative presentation history. It is
+not an input to next-action resolution or any authority, publication,
+dispatcher, agent, qualification, dispatch, promotion, PMCT-result, or resume
+decision. Its only behavioral effect is whether the first-100-invocation
+orientation text is emitted to `stderr`; it cannot change the decision object
+or its digest. A normal invocation that changes any field other than the
+monotonic `invocation_count`, changes any authoritative state, or creates any
+other durable record violates this command contract.
+
 ```text
 zeus next-action
 zeus next-action --json

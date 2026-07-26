@@ -2,14 +2,14 @@
 # Gate identity: OA-15
 # Capability statement: Integrated production execution foundation
 # Current applicability: discovered at runtime; unavailable future interfaces produce NOT_READY.
-# Required authority: controlled PMCT read-only authority; state changes require --authorized-transition.
+# Required authority: controlled PMCT observation authority; state changes require --authorized-transition.
 # Required commands: zeus dispatcher probe, zeus invocation probe
 # Required artifacts: run manifest, repository, discovery, assertions, result, report, hashes, COMPLETE.
 # Preconditions: exact repository identity and prior gate PASS where required.
 # Positive path: Through the authoritative CLI, demonstrate integrated production execution foundation and capture the resulting production-observable state.
 # Negative path: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-15 request and verify Zeus rejects it without advancing state.
 # Idempotency: Repeat the OA-15 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-# Interruption/recovery: Read-only: verify repeatable discovery without mutation.
+# Interruption/recovery: Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.
 # Regression scope: OA-01, OA-02, OA-03, OA-04, OA-05, OA-06, OA-07, OA-08, OA-09, OA-10, OA-11, OA-12, OA-13, OA-14
 # Evidence requirements: repository identity and exact HEAD; command stdout, stderr, and return code; OA-15 positive and negative assertions; evidence integrity manifest and completion marker
 # PASS: all mandatory observable assertions pass and evidence is complete.
