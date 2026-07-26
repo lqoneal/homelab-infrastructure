@@ -1,0 +1,91 @@
+{
+  "agreement_status": "AGREEMENT",
+  "authority_chain": [
+    "work-package",
+    "mission",
+    "baseline",
+    "governance",
+    "charter",
+    "organization"
+  ],
+  "authority_node": "work-package",
+  "authorized_effects": [
+    {
+      "constraints": [
+        "no execution or live consumer"
+      ],
+      "effect_id": "verify-compatibility",
+      "kind": "execute",
+      "target": "offline-authority-wop-model"
+    }
+  ],
+  "decision_digest": "52b64a75563c1a7933ed8654ae6c6a540efc889ca2956f4e6b1f986150fb6cb8",
+  "decision_reasons": [],
+  "dependency_evaluation": {
+    "missing": [],
+    "present": [
+      "WOP-223e4567-e89b-42d3-a456-426614174001"
+    ],
+    "required": [
+      "WOP-223e4567-e89b-42d3-a456-426614174001"
+    ]
+  },
+  "disagreement_classification": "NONE",
+  "enforcement_authority": "LEGACY",
+  "enforcement_decision": "AUTHORIZED",
+  "evaluation_id": "ADR-4c772e8b-091f-5685-aee7-90df9db48ede",
+  "evaluation_timestamp": "2026-07-25T00:15:00Z",
+  "execution_context": {
+    "assumptions": [
+      "evaluation is offline and side-effect-free"
+    ],
+    "baseline_commit": "3f3c06b37a289b0268369acfaaa9f47a4e6a4c3c",
+    "branch": "main",
+    "principal_id": "mission-f-offline-agent",
+    "repository": "/data/engineering/repositories/homelab"
+  },
+  "first_divergent_decision_point": "NONE",
+  "lease_status": "VALID",
+  "legacy_authorization_decision": "AUTHORIZED",
+  "mission": "EMP-MISSION-ZEUS-OPERATIONAL-ALPHA",
+  "phase": "EMP-PHASE-ZEUS-OPERATIONAL-ALPHA",
+  "prerequisite_evaluation": {
+    "missing": [],
+    "present": [
+      "evidence-mission-d-and-e-tests"
+    ],
+    "required": [
+      "evidence-mission-d-and-e-tests"
+    ]
+  },
+  "prohibited_effects": [
+    "execute-production",
+    "create-session"
+  ],
+  "receipt_status": "VALID",
+  "repository_baseline_commit": "d943299ed023f03175ee7665847975db634e383f",
+  "repository_identity": "/data/engineering/repositories/homelab",
+  "requested_capabilities": [
+    "execute"
+  ],
+  "resolved_capabilities": [
+    "execute"
+  ],
+  "revocation_status": "ABSENT",
+  "schema_version": 1,
+  "shadow_only": true,
+  "signature_status": "VALID",
+  "software_versions": {
+    "adr_schema": "1",
+    "authority_engine": "1",
+    "compatibility_layer": "1",
+    "engctl": "0.8.0",
+    "eos_platform": "shadow-1",
+    "shadow_authorization": "1",
+    "wop_contract": "1"
+  },
+  "structured_reason_code": "AUTHORIZED",
+  "wop_id": "WOP-223e4567-e89b-42d3-a456-426614174000",
+  "work_item": "MISSION-F-OFFLINE-COMPATIBILITY",
+  "zeus_authorization_decision": "AUTHORIZED"
+}
