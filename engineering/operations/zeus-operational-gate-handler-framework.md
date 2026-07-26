@@ -9,8 +9,10 @@ operational dispatch denial. `GateHandlerFramework` owns only discovery,
 compatibility negotiation, bounded invocation, and the verification-first
 handler contract.
 
-The framework does not provide a production dispatcher or operational handler.
-The only checked-in handler is non-mutating and qualification-only.
+The framework does not provide a production dispatcher. P2-010 adds the
+operational-only artifact handler described in
+`engineering/operations/zeus-operational-artifact-gate-handler.md`; the
+existing reference handler remains non-mutating and qualification-only.
 
 ## Discovery and registration
 
@@ -83,8 +85,8 @@ Its manifest is `engineering/handlers/qualification-handler.yaml`.
 
 ## Operational extension lifecycle
 
-A future operational handler requires separate implementation scope,
-controlled implementation registration, an exact compatible manifest,
+A future additional operational handler requires separate implementation
+scope, controlled implementation registration, an exact compatible manifest,
 deterministic idempotency and external checkpoint storage, timeout/cancellation
 and compensation qualification, authentic commissioning, and an explicitly
 enabled execution boundary unavailable from the current CLI.

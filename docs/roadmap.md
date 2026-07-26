@@ -75,6 +75,14 @@ negotiation, verification-first lifecycle, deterministic skip semantics,
 subprocess timeout/failure isolation, and a non-mutating qualification
 handler. No operational handler or dispatcher is included.
 
+ZEUS-P2-010 adds and qualifies the first operational-only handler: immutable
+execution context, safe declarative artifact creation/verification, exact
+repository and WOP binding, dependency checks, action-level checkpoints,
+between-action cancellation, deterministic resume, post-action verification,
+structured evidence, and EENS projection. Qualification uses isolated
+temporary workspaces and simulated accepted admission; production dispatch
+remains disabled and unavailable from the CLI.
+
 Remaining separately controlled work:
 
 - controlled enrollment of authentic owner public keys;

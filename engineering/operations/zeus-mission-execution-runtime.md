@@ -87,6 +87,12 @@ A future separately commissioned integration must inject a controlled handler
 and explicitly enable the runtime boundary after authentic commissioning. That
 work is outside P2-008.
 
+ZEUS-P2-010 supplies the first controlled operational handler and immutable
+context provider, but the production boundary remains disabled and
+unconfigurable from the CLI. Its qualification injects the boundary only in an
+isolated test runtime. See
+`engineering/operations/zeus-operational-artifact-gate-handler.md`.
+
 ## Commands and recovery
 
 ```text
