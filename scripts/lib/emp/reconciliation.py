@@ -368,7 +368,7 @@ class ConsistencyVerifier:
         if by_kind["work_registry"].get("wops", {}).get(wop_id) != "Closed":
             raise ReconciliationError("Work Registry WOP is not Closed")
         if by_kind["mission_registry"].get("missions", {}).get(mission_id) != "completed":
-            raise ReconciliationError("Mission Registry is not completed")
+            raise ReconciliationError("mission registry state is not completed")
         lifecycle = by_kind["wop_lifecycle"]
         required_path = [
             "Ready",

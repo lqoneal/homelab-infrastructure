@@ -1,5 +1,10 @@
 # Zeus Mission Admission Runtime
 
+The production operator is Lawrence O'Neal, authenticated as `loneal`.
+Operational admission verifies signed operator-owned authority records; it
+does not seek a second human approver. Zeus remains unable to originate an
+approval or bypass admission policy.
+
 ## Purpose and boundary
 
 ZEUS-P2-007 provides one supervised, repository-local coordinator for mission
@@ -32,7 +37,7 @@ stage and diagnostics; `INTERRUPTED` preserves the next stage. Resume skips
 completed stages, retries only the current incomplete stage, and returns an
 unchanged terminal record when a decided admission is replayed.
 
-The stable runtime interfaces are repository verification, Mission Registry
+The stable runtime interfaces are repository verification, mission-record
 selectors, owner-enrollment and publication readiness probes, the Authority
 Resolution Runtime and sealed ARB, the WOP Service, and the Admission
 Controller. Authority resolution is implemented only by the Authority
@@ -56,7 +61,8 @@ scripts/zeus admit-mission start \
 
 ## Operational workflow
 
-Operational admission uses only mission, work-item, and principal selectors:
+Operational admission uses only mission, work-item, and principal selectors.
+The production principal selector is `loneal`:
 
 ```text
 scripts/zeus admit-mission start \
@@ -64,14 +70,14 @@ scripts/zeus admit-mission start \
   --intent "Prepare a supervised operational WOP" \
   --mission EMP-MISSION-ID \
   --work-item EMP-WORK-ID \
-  --principal PRINCIPAL-ID \
+  --principal loneal \
   --repository /data/engineering/repositories/homelab
 ```
 
 Before resolving authority, the coordinator reads publication commissioning
 and owner-enrollment assessments, then invokes the Authority Resolution
 Runtime against the repository-fixed source. Missing enrollment, publication,
-approval, identity, baseline, or authority state produces a structured blocker
+operator approval, identity, baseline, or authority state produces a structured blocker
 and no WOP. An accepted result means only eligibility for separately
 controlled submission; `automatically_submitted` and `dispatch_permitted`
 remain false.

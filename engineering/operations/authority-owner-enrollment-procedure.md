@@ -4,6 +4,10 @@ Date: 2026-07-26
 Status: Operational toolkit procedure; controlled adoption pending Governance publication
 Mission: ZEUS-P2-006
 
+Production ownership amendment: ZEUS-P2-013. Lawrence O'Neal is the sole
+designated owner and `loneal` is the sole production principal for every
+authority record type.
+
 ## Boundary
 
 This procedure prepares and validates public artifacts. It does not establish
@@ -19,20 +23,21 @@ receipts may enter the repository workflow.
 
 | Role | Responsibility |
 | --- | --- |
-| Enrollment authorization authority | Authorize owner enrollment lifecycle requests with its own enrolled key |
-| Designated authority owner | Control its signing key and sign its publication envelopes |
+| Lawrence O'Neal (`loneal`) | Authenticate the CLI session, control the production key, authorize the enrollment lifecycle request, and sign domain-specific publication envelopes |
 | Enrollment registrar | Verify signed requests and update the public enrollment registry |
-| Trust compiler | Produce candidate trust files after all eight owners are active |
+| Trust compiler | Produce candidate trust files after Lawrence O'Neal is actively enrolled |
 | Publication validator | Verify owner envelope signatures and assemble a candidate source |
-| Mission Admission | Sign operational configuration and explicitly control activation |
+| Authenticated operator | Sign operational configuration and explicitly control activation |
 
-No role inherits another role’s signing authority.
+These are functional roles within one human ownership model. They do not imply
+additional people, organizations, committees, or principals. Record and
+validation separation remains mandatory even though the roles share one owner.
 
 ## Bootstrap prerequisite
 
-The enrollment authorization authority must externally publish:
+Lawrence O'Neal must externally publish:
 
-1. an approved authorization principal;
+1. the authorization principal `loneal`;
 2. its public key in `engineering/authority/enrollment-allowed-signers`; and
 3. a controlled update setting
    `enrollment-root-policy.operationally_configured: true`.
@@ -42,22 +47,23 @@ The toolkit cannot perform or approve this root bootstrap. Until it occurs,
 
 ## Enrollment
 
-An owner generates and retains its key outside the repository. Only its public
-key is supplied:
+Lawrence O'Neal generates and retains the production key outside the
+repository. Only its public key is supplied:
 
 ```text
 scripts/authority-ownerctl prepare-enrollment \
   --action enroll \
-  --owner "Mission Registry" \
-  --principal mission-registry-publisher \
+  --owner "Lawrence O'Neal" \
+  --principal loneal \
   --authorization-reference AUTHORIZED-ENROLLMENT-ID \
   --public-key OWNER.pub \
   --at 2026-07-26T22:00:00Z > REQUEST.json
 ```
 
-The output is unsigned. The enrollment authorization authority reviews the
-owner, principal, fingerprint, authorization reference, and scope, then signs
-the exact canonical JSON externally:
+The output is unsigned. Lawrence O'Neal reviews the owner, principal,
+fingerprint, authorization reference, and scope, then signs the exact canonical
+JSON externally. The signature records the authenticated human decision; Zeus
+does not create it:
 
 ```text
 ssh-keygen -Y sign -f ENROLLMENT_AUTHORITY_PRIVATE_KEY \
@@ -69,7 +75,7 @@ The registrar applies it:
 ```text
 scripts/authority-ownerctl apply-enrollment \
   --request REQUEST.json --signature REQUEST.json.sig \
-  --signer ENROLLMENT-AUTHORITY-PRINCIPAL
+  --signer loneal
 ```
 
 The fixed production root policy and registry cannot be overridden. Test
@@ -92,12 +98,12 @@ scripts/authority-ownerctl status
 scripts/authority-ownerctl compile-trust --output CANDIDATE-DIRECTORY
 ```
 
-Compilation requires an intact registry digest and at least one active identity
-for every designated owner. It emits candidate-only `owner-trust-policy.yaml`
+Compilation requires an intact registry digest and one active `loneal`
+identity for Lawrence O'Neal. It emits candidate-only `owner-trust-policy.yaml`
 and `allowed-signers`. It never installs them into production.
 
-Review owner separation, principals, fingerprints, lifecycle, authorization
-references, and registry digest before a separately controlled installation.
+Review the owner and principal, fingerprint, lifecycle, authorization reference,
+and registry digest before a separately controlled installation.
 
 ## Publication preparation
 
@@ -108,28 +114,29 @@ scripts/authority-ownerctl publication-template \
   --record-type approval_authority
 ```
 
-An owner supplies a completed payload and prepares a canonical unsigned
-envelope:
+The authenticated operator supplies a completed payload for each authority
+domain and prepares a canonical unsigned envelope:
 
 ```text
 scripts/authority-ownerctl prepare-publication \
   --record-type RECORD-TYPE \
   --record-id RECORD-ID \
-  --signer-principal OWNER-PRINCIPAL \
+  --signer-principal loneal \
   --payload OWNER-PAYLOAD.yaml \
   --at 2026-07-26T22:00:00Z > ENVELOPE.json
 ```
 
-The command validates required metadata, selects the fixed owner from the
-record-type map, calculates payload digest and deterministic envelope ID, and
-does not sign.
+The command validates required metadata, selects Lawrence O'Neal as the fixed
+production owner, calculates the payload digest and deterministic envelope ID,
+and does not sign.
 
-The designated owner reviews and signs `ENVELOPE.json` with
+Lawrence O'Neal reviews and signs `ENVELOPE.json` with
 `zeus-authority-publication`, then the P2-004 publication procedure stages it.
 
-## Governance approval support
+## Operator approval support
 
-Governance supplies the decision payload. The toolkit only validates it:
+Lawrence O'Neal supplies the decision payload through the authenticated
+operator workflow. The toolkit only validates it:
 
 ```text
 scripts/authority-ownerctl validate-governance-approval \
@@ -140,8 +147,8 @@ Validation requires authority, reference, explicit `GRANTED` or `DENIED`
 decision, decision time, `Active` lifecycle binding, and a 64-character scope
 digest. Output includes `approval_generated: false`.
 
-The Governance owner then prepares and signs the publication envelope. No
-other owner or operator may fill in or sign the decision.
+Lawrence O'Neal then prepares and signs the publication envelope as `loneal`.
+Zeus may not fill in, infer, or sign the decision.
 
 ## Commissioning diagnostics
 
@@ -155,7 +162,7 @@ Diagnostics separately report:
 - missing owner enrollments;
 - compiled owner trust and signer keys;
 - missing prepared envelopes and detached signatures;
-- missing Governance approval publication;
+- missing authenticated-operator approval publication;
 - empty operational record collections; and
 - activation status.
 

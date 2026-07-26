@@ -109,3 +109,7 @@ x-security:
   autonomous_approval: false
   autonomous_submission: false
   autonomous_execution: false
+x-production-ownership:
+  owner: Lawrence O'Neal
+  principal: loneal
+  authority_source: Zeus authenticated CLI session

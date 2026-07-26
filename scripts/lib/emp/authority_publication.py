@@ -34,31 +34,27 @@ SIGNATURE_NAMESPACE = "zeus-authority-publication"
 TRUST_POLICY_RELATIVE_PATH = Path("engineering/authority/owner-trust-policy.yaml")
 TRANSACTION_SCHEMA_VERSION = 1
 DIGEST_PATTERN = re.compile(r"^[0-9a-f]{64}$")
+PRODUCTION_AUTHORITY_OWNER = "Lawrence O'Neal"
+PRODUCTION_AUTHORITY_PRINCIPAL = "loneal"
 
 RECORD_RULES = {
-    "mission_authority": ("missions", "Mission Registry"),
-    "phase_authority": ("phases", "Mission Registry"),
-    "work_item_authority": ("work_items", "Mission Registry"),
-    "repository_identity": ("repositories", "Repository Identity Management"),
-    "repository_baseline": ("repositories", "Repository Identity Management"),
-    "authority_node": (
-        "authority_bindings", "Governance Authority Graph Registrar"
-    ),
-    "approval_authority": (
-        "approvals", "Engineering Governance decision registry"
-    ),
+    "mission_authority": ("missions", PRODUCTION_AUTHORITY_OWNER),
+    "phase_authority": ("phases", PRODUCTION_AUTHORITY_OWNER),
+    "work_item_authority": ("work_items", PRODUCTION_AUTHORITY_OWNER),
+    "repository_identity": ("repositories", PRODUCTION_AUTHORITY_OWNER),
+    "repository_baseline": ("repositories", PRODUCTION_AUTHORITY_OWNER),
+    "authority_node": ("authority_bindings", PRODUCTION_AUTHORITY_OWNER),
+    "approval_authority": ("approvals", PRODUCTION_AUTHORITY_OWNER),
     "authorization_decision": (
-        "authorization_decisions", "Authorization Decision Service"
+        "authorization_decisions", PRODUCTION_AUTHORITY_OWNER
     ),
-    "identity_record": ("principals", "Identity Provider"),
-    "governing_baseline": (
-        "governing_baselines", "Engineering Governance Baseline Registrar"
-    ),
+    "identity_record": ("principals", PRODUCTION_AUTHORITY_OWNER),
+    "governing_baseline": ("governing_baselines", PRODUCTION_AUTHORITY_OWNER),
     "operational_configuration": (
-        "operational_configurations", "Mission Admission Controller"
+        "operational_configurations", PRODUCTION_AUTHORITY_OWNER
     ),
     "operational_revocation": (
-        "operational_revocations", "Mission Admission Controller"
+        "operational_revocations", PRODUCTION_AUTHORITY_OWNER
     ),
 }
 REQUIRED_RECORD_TYPES = {
@@ -144,14 +140,14 @@ def validate_publication_payload(record_type: str, payload: Mapping[str, Any]) -
     if record_type == "approval_authority":
         if payload.get("decision") not in {"GRANTED", "DENIED"}:
             raise AuthorityPublicationError(
-                "Governance approval decision must be supplied as GRANTED or DENIED"
+                "operator approval decision must be supplied as GRANTED or DENIED"
             )
         if payload.get("authorized_lifecycle_state") != "Active":
             raise AuthorityPublicationError(
-                "Governance approval must explicitly bind Active lifecycle"
+                "operator approval must explicitly bind Active lifecycle"
             )
         if not DIGEST_PATTERN.fullmatch(str(payload.get("scope_digest", ""))):
-            raise AuthorityPublicationError("Governance approval scope digest invalid")
+            raise AuthorityPublicationError("operator approval scope digest invalid")
 
 
 def prepare_publication_envelope(
@@ -320,8 +316,8 @@ def commissioning_status(repository_root: Path | str) -> dict[str, Any]:
     if "approval_authority" not in published_types:
         blockers.append(
             {
-                "code": "GOVERNANCE_APPROVAL_PUBLICATION_MISSING",
-                "detail": "no owner-prepared Governance approval envelope",
+                "code": "OPERATOR_APPROVAL_PUBLICATION_MISSING",
+                "detail": "no authenticated-operator approval envelope",
             }
         )
     if source_enabled and not isinstance(source.get("activation"), Mapping):

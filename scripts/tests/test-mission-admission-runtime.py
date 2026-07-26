@@ -88,7 +88,7 @@ class MissionAdmissionRuntimeTests(unittest.TestCase):
             "intent": "Prepare a supervised operational WOP",
             "mission_id": "EMP-MISSION-ZEUS-OPERATIONAL-ALPHA",
             "work_item_id": "EMP-WORK-ZEUS-P2-005-AUTHORITY-COMMISSIONING",
-            "principal_id": "operator-loneal",
+            "principal_id": "loneal",
             "repository": str(ROOT),
         }
         state = self.runtime.start(request, at=AT)
@@ -102,7 +102,7 @@ class MissionAdmissionRuntimeTests(unittest.TestCase):
             diagnostics["commissioning"]["commissioning_state"], "BLOCKED"
         )
         self.assertIn(
-            "Authorization Decision Service",
+            "Lawrence O'Neal",
             diagnostics["owner_enrollment"]["missing_owners"],
         )
         self.assertNotIn("wop_result", state["artifacts"])

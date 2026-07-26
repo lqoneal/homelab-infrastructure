@@ -22,13 +22,15 @@ class AuthorityResolutionError(ValueError):
     """Authority state cannot produce a valid operational bundle."""
 
 
+PRODUCTION_AUTHORITY_OWNER = "Lawrence O'Neal"
+PRODUCTION_AUTHORITY_PRINCIPAL = "loneal"
 OWNER = {
-    "mission": "Mission Registry",
-    "repository": "Repository Identity Management",
-    "approval": "Engineering Governance decision registry",
-    "authority": "Governance Authority Graph Registrar",
-    "governing_baseline": "Engineering Governance Baseline Registrar",
-    "submitter": "Identity Provider",
+    "mission": PRODUCTION_AUTHORITY_OWNER,
+    "repository": PRODUCTION_AUTHORITY_OWNER,
+    "approval": PRODUCTION_AUTHORITY_OWNER,
+    "authority": PRODUCTION_AUTHORITY_OWNER,
+    "governing_baseline": PRODUCTION_AUTHORITY_OWNER,
+    "submitter": PRODUCTION_AUTHORITY_OWNER,
 }
 AUTHORITY_STATE_RELATIVE_PATH = Path(
     "engineering/authority/operational-authority-state.yaml"

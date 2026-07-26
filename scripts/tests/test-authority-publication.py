@@ -36,19 +36,10 @@ AT = datetime(2026, 7, 26, 20, 0, tzinfo=timezone.utc)
 MISSION = "EMP-MISSION-ZEUS-OPERATIONAL-ALPHA"
 PHASE = "EMP-PHASE-ZEUS-OPERATIONAL-ALPHA"
 WORK = "EMP-WORK-ZEUS-P2-004-QUALIFIED"
-PRINCIPAL = "operator-loneal"
+PRINCIPAL = "loneal"
 GRAPH_PATH = "engineering/authority/fixtures/valid.yaml"
 
-PRINCIPALS = {
-    "Mission Registry": "mission-registry-publisher",
-    "Repository Identity Management": "repository-identity-publisher",
-    "Governance Authority Graph Registrar": "authority-graph-publisher",
-    "Engineering Governance decision registry": "governance-decision-publisher",
-    "Authorization Decision Service": "authorization-decision-publisher",
-    "Identity Provider": "identity-provider-publisher",
-    "Engineering Governance Baseline Registrar": "baseline-publisher",
-    "Mission Admission Controller": "mission-admission-publisher",
-}
+PRINCIPALS = {"Lawrence O'Neal": "loneal"}
 
 
 class PublicationQualificationTests(unittest.TestCase):
@@ -356,7 +347,7 @@ class PublicationQualificationTests(unittest.TestCase):
             "approval_authority",
             "APPROVAL-ZEUS-P2-004",
             {"decision": "GRANTED"},
-            owner="Mission Registry",
+            owner="Untrusted Owner",
         )
         with self.assertRaisesRegex(AuthorityPublicationError, "does not own"):
             self.framework.stage(

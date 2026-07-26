@@ -233,7 +233,7 @@ class OwnerEnrollmentTests(unittest.TestCase):
             published_at=AT,
             payload=payload,
         )
-        self.assertEqual(envelope["owner"], "Engineering Governance decision registry")
+        self.assertEqual(envelope["owner"], "Lawrence O'Neal")
         self.assertNotIn("signature", envelope)
 
     def test_diagnostics_distinguish_enrollment_and_publication_blockers(self):
@@ -244,7 +244,7 @@ class OwnerEnrollmentTests(unittest.TestCase):
         self.assertIn("ENROLLMENT_ROOT_NOT_CONFIGURED", codes)
         self.assertIn("OWNER_ENROLLMENT_MISSING", codes)
         self.assertIn("UNSIGNED_PUBLICATION_MISSING", codes)
-        self.assertIn("GOVERNANCE_APPROVAL_PUBLICATION_MISSING", codes)
+        self.assertIn("OPERATOR_APPROVAL_PUBLICATION_MISSING", codes)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 7.0
+version: 7.1
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -338,20 +338,18 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-Preserve the published Zeus Operational Alpha runtime baseline established
-through ZEUS-P2-010 at commit
-`b93145fbe895a70325479232a3f3d8febb5f5d54`. P2-002 through P2-010 are
-implemented, qualified, reconciled, and published. Production commissioning
-and operational dispatch remain disabled pending authentic external authority
-and a separately controlled activation transaction.
+Integrate ZEUS-P2-013 as the Zeus Operational Alpha production ownership
+baseline. Lawrence O'Neal is the sole human production authority across all
+domains, using principal `loneal` through an authenticated Zeus CLI session.
+Production commissioning and operational dispatch remain disabled pending
+authentic key enrollment, signed domain records, readiness, and activation.
 
 **Next Immediate Step:**
 
-Use `b93145fbe895a70325479232a3f3d8febb5f5d54` as the qualified
-implementation baseline for future separately scoped Zeus work. This
-project-state reconciliation records already-published engineering state only;
-it does not activate production, commission authority, approve a WOP, enable
-dispatch, or authorize deferred Governance work.
+Validate and publish the ZEUS-P2-013 ownership-model changes, then resume
+commissioning with Lawrence O'Neal's authentic `loneal` enrollment and signed
+records. This project-state update does not activate production, commission
+authority, approve a WOP, or enable dispatch.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -370,7 +368,8 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 
 | Domain | Reconciled state |
 | --- | --- |
-| Zeus Operational Alpha runtime | P2-002 through P2-010 qualified and published at `b93145fbe895a70325479232a3f3d8febb5f5d54`; operational handler present, production unconfigured, dispatch disabled |
+| Zeus Operational Alpha runtime | P2-002 through P2-010 qualified; ZEUS-P2-013 single-human ownership model integrated in the working tree; production unconfigured and dispatch disabled |
+| Zeus production authority | Lawrence O'Neal is sole owner across all authority domains; production principal `loneal`; Zeus authenticated CLI session is the authority source |
 | Engineering Platform | Operational; aggregate validation qualified |
 | Storage qualification capability | Operational; SMART, stable identification, read-only filesystem inspection and mount control qualified |
 | Engineering Management Platform | Operational; validation qualified |
@@ -387,7 +386,7 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 | EWO-000023 evidence | Immutable, indexed, and reconstructable from controlled repository history |
 | Milestone state | MILESTONE-0007 published as a historical summary; no new evidence or authority established |
 | Reporting standard | Execution-first Completion Reports institutionalized through STD-0003, PROC-0001, TPL-0001, and TPL-0002 |
-| Freshness | Reconciled through the 2026-07-25 Zeus Operational Alpha authority-establishment transaction |
+| Freshness | Reconciled through ZEUS-P2-013 on 2026-07-26; publication pending |
 | Notification platform | EENS Operational Alpha is implemented and qualified on LOpi; `services/eens` is canonical source, while advanced HNS architecture remains deferred |
 | Notification authority | Qualified LOpi EENS Operational Alpha runtime for accepted events and durable consumer state |
 | Reference client | `letoatreides` remains proposed and deferred; no reference workstation client is operational |

@@ -32,7 +32,7 @@ AT = datetime(2026, 7, 26, 12, 0, tzinfo=timezone.utc)
 MISSION = "EMP-MISSION-ZEUS-OPERATIONAL-ALPHA"
 PHASE = "EMP-PHASE-ZEUS-OPERATIONAL-ALPHA"
 WORK = "EMP-WORK-ZEUS-P2-003-QUALIFICATION"
-PRINCIPAL = "operator-loneal"
+PRINCIPAL = "loneal"
 GRAPH_PATH = "engineering/authority/fixtures/valid.yaml"
 
 
@@ -81,13 +81,13 @@ def authoritative_state() -> dict:
         "operationally_configured": True,
         "missions": {
             MISSION: record(
-                MISSION, "Mission Registry", lifecycle_state="active"
+                MISSION, "Lawrence O'Neal", lifecycle_state="active"
             )
         },
         "phases": {
             PHASE: record(
                 PHASE,
-                "Mission Registry",
+                "Lawrence O'Neal",
                 mission_id=MISSION,
                 lifecycle_state="active",
             )
@@ -95,7 +95,7 @@ def authoritative_state() -> dict:
         "work_items": {
             WORK: record(
                 WORK,
-                "Mission Registry",
+                "Lawrence O'Neal",
                 mission_id=MISSION,
                 phase_id=PHASE,
                 lifecycle_state="qualified",
@@ -110,7 +110,7 @@ def authoritative_state() -> dict:
         "repositories": {
             "homelab": record(
                 "REPOSITORY-HOMELAB",
-                "Repository Identity Management",
+                "Lawrence O'Neal",
                 repository_id="REPOSITORY-HOMELAB",
                 canonical_locator=str(ROOT),
                 baseline_commit=head,
@@ -120,7 +120,7 @@ def authoritative_state() -> dict:
         "approvals": {
             "APPROVAL-ZEUS-P2-003": record(
                 "APPROVAL-ZEUS-P2-003",
-                "Engineering Governance decision registry",
+                "Lawrence O'Neal",
                 reference="APPROVAL-ZEUS-P2-003",
                 authority="Human Engineering Authority",
                 decision="GRANTED",
@@ -132,7 +132,7 @@ def authoritative_state() -> dict:
         "authority_bindings": {
             "AUTHORITY-BINDING-ZEUS-P2-003": record(
                 "AUTHORITY-BINDING-ZEUS-P2-003",
-                "Governance Authority Graph Registrar",
+                "Lawrence O'Neal",
                 graph_path=GRAPH_PATH,
                 authority_node_id="work-package",
                 graph_version=graph.graph_id,
@@ -144,7 +144,7 @@ def authoritative_state() -> dict:
         "governing_baselines": {
             "GOVERNING-ZEUS-WOP-1": record(
                 "GOVERNING-ZEUS-WOP-1",
-                "Engineering Governance Baseline Registrar",
+                "Lawrence O'Neal",
                 lifecycle_state="Active",
                 **manifest_material,
                 manifest_digest=digest(manifest_material),
@@ -153,7 +153,7 @@ def authoritative_state() -> dict:
         "principals": {
             PRINCIPAL: record(
                 PRINCIPAL,
-                "Identity Provider",
+                "Lawrence O'Neal",
                 authentication_status="VERIFIED",
                 session_id="SESSION-ZEUS-P2-003",
                 authentication_record="AUTHN-ZEUS-P2-003",

@@ -47,3 +47,8 @@ x-boundary:
   publisher_creates_human_approval: false
   runtime_self_activation: false
   explicit_activation_required: true
+x-production-ownership:
+  owner: Lawrence O'Neal
+  principal: loneal
+  authority_source: Zeus authenticated CLI session
+  future_domain_delegation_supported: true

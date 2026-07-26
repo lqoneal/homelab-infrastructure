@@ -1,5 +1,9 @@
 # Zeus Mission Execution Runtime
 
+Lawrence O'Neal, authenticated as `loneal`, is the production Execution
+Authority. Zeus executes and audits the authenticated operator's admitted
+command; it does not independently authorize execution.
+
 ## Purpose and safety boundary
 
 ZEUS-P2-008 adds a persistent, restartable execution coordinator for WOPs

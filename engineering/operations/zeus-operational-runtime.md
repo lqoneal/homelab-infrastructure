@@ -2,6 +2,12 @@
 
 ## Architecture and ownership
 
+The authoritative production ownership model is
+`engineering/operations/authority-ownership-specification.md`. Lawrence O'Neal,
+authenticated as principal `loneal`, is the single human authority for every
+Zeus Operational Alpha domain. Zeus is the interface through which that
+authority is recorded and enforced; it is not an independent authority.
+
 The repository root discovered from `scripts/zeus` defines the Zeus runtime.
 Its only authoritative orchestration store is:
 
@@ -133,8 +139,8 @@ repository-fixed source:
 `engineering/authority/operational-authority-state.yaml`
 
 The checked-in source is intentionally unconfigured. Live generation fails
-closed until the designated owners publish a complete mission/work item,
-repository assertion, granted human approval, authority binding, governing
+closed until the authenticated operator publishes a complete mission/work item,
+repository assertion, signed operator approval, authority binding, governing
 baseline, and authenticated principal record at that location. Tests may use
 an isolated source override only when `ZEUS_TESTING=1`; production ignores the
 override.
@@ -193,10 +199,10 @@ engineering/authority/owner-trust-policy.yaml
 engineering/authority/allowed-signers
 ```
 
-Both are intentionally unconfigured. Legitimate owner keys and principals must
-be enrolled through a separate controlled action before production publication
-can begin. The publication framework does not generate keys, sign envelopes,
-create approvals, or assign owners.
+Both are intentionally unconfigured. Lawrence O'Neal's public key and `loneal`
+principal must be enrolled through the supported enrollment action before
+production publication can begin. The publication framework does not generate
+keys, sign envelopes, create approvals, or authenticate a session by itself.
 
 Review commissioning state without loading trust keys or changing files:
 
@@ -204,10 +210,10 @@ Review commissioning state without loading trust keys or changing files:
 scripts/authority-publishctl status
 ```
 
-The command reports enrolled versus required owners, allowed-signer count,
+The command reports enrolled versus required ownership, allowed-signer count,
 authority-source activation, required record collections, typed blockers, and
 a deterministic assessment digest. `BLOCKED` is the expected result until
-authentic owner-managed inputs have been enrolled and published.
+authentic operator-managed inputs have been enrolled and published.
 
 Owner enrollment and unsigned publication preparation use:
 
@@ -218,11 +224,11 @@ scripts/authority-ownerctl publication-template --record-type RECORD-TYPE
 scripts/authority-ownerctl prepare-publication --help
 ```
 
-The complete workflow, lifecycle rules, Governance approval boundary, and
+The complete workflow, lifecycle rules, operator approval boundary, and
 recovery procedure are documented in
 `engineering/operations/authority-owner-enrollment-procedure.md`.
 
-Each owner constructs an envelope conforming to
+The authenticated operator constructs each domain-specific envelope conforming to
 `engineering/authority/authority-publication-envelope.schema.yaml`, calculates
 the canonical payload digest and deterministic envelope identity, and signs the
 canonical JSON envelope externally:
@@ -232,7 +238,8 @@ ssh-keygen -Y sign -f OWNER_PRIVATE_KEY \
   -n zeus-authority-publication ENVELOPE.json
 ```
 
-The private key never enters the repository or publication command.
+The private key never enters the repository or publication command. All
+production envelopes use owner `Lawrence O'Neal` and signer principal `loneal`.
 
 ### Staging and readiness
 
@@ -243,7 +250,7 @@ scripts/authority-publishctl stage --transaction TRANSACTION \
 scripts/authority-publishctl verify --transaction TRANSACTION
 ```
 
-`stage` verifies record-type ownership, the trusted principal, detached
+`stage` verifies record-type ownership, the trusted `loneal` principal, detached
 signature, revision, timestamp, payload digest, and envelope identity before a
 create-only copy is accepted. Every readiness check rebuilds the candidate from
 the signed envelopes; `candidate.yaml` is never trusted as input.
@@ -252,13 +259,13 @@ Readiness requires signed mission, phase, work-item, repository identity,
 repository baseline, authority-node, approval, identity, governing-baseline,
 and operational-configuration records. It then invokes the real Authority
 Resolution Runtime against a provisional in-memory copy. Missing records,
-owner disagreement, invalid lifecycle, dependency failure, stale Git baseline,
+ownership disagreement, invalid lifecycle, dependency failure, stale Git baseline,
 invalid authority graph, unverified identity, or approval-scope mismatch
 prevents readiness.
 
 Authorization Decision Records use the same signed workflow but are not a
-pre-WOP activation prerequisite because their owner creates them only when an
-exact WOP is evaluated.
+pre-WOP activation prerequisite because the authenticated operator creates one
+only when an exact WOP is evaluated.
 
 ### Explicit activation
 

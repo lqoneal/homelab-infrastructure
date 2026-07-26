@@ -41,3 +41,6 @@ x-boundary:
   private_keys_permitted: false
   self_authorization: false
   installs_production_trust: false
+x-production-ownership:
+  owner: Lawrence O'Neal
+  principal: loneal

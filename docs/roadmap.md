@@ -14,6 +14,13 @@ baseline only. No Zeus runtime implementation, production modification,
 autonomous execution, feature development, or Work Package execution is
 authorized.
 
+ZEUS-P2-013 establishes the production ownership model: Lawrence O'Neal is the
+sole human owner of every operational authority domain and `loneal` is the
+production principal. An authenticated Zeus CLI command represents that
+operator's authority subject to repository policy and runtime validation.
+Zeus remains an execution and enforcement interface, not an autonomous
+authority.
+
 The next eligible mission is Mission C — Zeus Operational Alpha Capability
 Discovery. Mission C is read-only and may produce an implementation baseline
 and Work Package architecture after separate initiation.
@@ -32,24 +39,24 @@ Admission and WOP generation.
 ZEUS-P2-003 implements and qualifies the repository-local runtime, sealed ARB,
 immutable WOP finalization, explicit dual generation modes, and fail-closed
 validation. The repository-fixed live source is deliberately unconfigured
-until its designated owners publish operational records.
+until Lawrence O'Neal publishes operational records as `loneal`.
 
 ZEUS-P2-004 implements and qualifies signed, owner-scoped staging, full-source
 readiness verification, explicit atomic activation, rollback, revocation, and
 recovery. Production trust roots and authority records remain unenrolled, so
 the checked-in runtime continues to fail closed.
 
-ZEUS-P2-005 commissioning preflight is blocked. No production owner principals
-or signer keys are enrolled, no signed publication envelopes are present, and
-no genuine ZEUS-P2-005 approval record has been supplied. Workstation SSH keys
-are not treated as authority-owner keys. Both operational switches remain
-false until the designated owners provide authentic inputs through the
-publication framework.
+ZEUS-P2-005 commissioning preflight is blocked. The production principal
+`loneal` and its signer key are not enrolled, no signed publication envelopes
+are present, and no genuine operator approval record has been supplied.
+Workstation SSH keys are not automatically treated as authority keys. Both
+operational switches remain false until Lawrence O'Neal supplies authentic
+inputs through the publication framework.
 
 ZEUS-P2-006 implements and qualifies the remaining software-side owner
 enrollment toolkit: public-key inspection, externally authorized enrollment,
 rotation, suspension, retirement, candidate trust compilation, unsigned
-publication templates, Governance approval payload validation, and
+publication templates, operator approval payload validation, and
 blocker-specific commissioning diagnostics. It neither enrolls production
 owners nor activates Zeus.
 
@@ -58,7 +65,7 @@ Qualification and future operational admissions now traverse the same
 persistent, digest-protected, restartable state machine through repository
 verification, authority resolution, WOP generation, submission eligibility,
 and admission decision. Production remains blocked at the authority gate
-because authentic external owner artifacts are absent. The runtime never
+because authentic operator-owned artifacts are absent. The runtime never
 self-enables, submits, dispatches, or executes.
 
 ZEUS-P2-008 implements and qualifies the persistent Mission Execution Runtime:
@@ -85,8 +92,8 @@ remains disabled and unavailable from the CLI.
 
 Remaining separately controlled work:
 
-- controlled enrollment of authentic owner public keys;
-- signed publication of live owner records;
+- controlled enrollment of Lawrence O'Neal's authentic public key for `loneal`;
+- `loneal`-signed publication of live authority-domain records;
 - append-only ARB/WOP publication receipts;
 - independent ARB provenance verification at admission; and
 - operational activation after supervised live-source qualification.

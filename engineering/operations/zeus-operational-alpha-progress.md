@@ -3,6 +3,7 @@
 Date: 2026-07-26
 Current completed mission: `ZEUS-P2-010-OPERATIONAL-GATE-HANDLER-QUALIFICATION`
 Resume status: qualified implementation candidate in the working tree
+Production ownership model: Lawrence O'Neal / `loneal`
 
 ## Mission tracker
 
@@ -20,6 +21,7 @@ Resume status: qualified implementation candidate in the working tree
 | ZEUS-P2-008 Mission Execution Runtime | Implemented and qualified in non-mutating qualification mode; operational dispatch disabled | `engineering/evidence/2026-07-27-zeus-p2-008-completion-report.md` |
 | ZEUS-P2-009 Gate Handler Framework and Baseline Reconciliation | P2-002–P2-008 baseline published; pluggable verification-first framework qualified | `engineering/evidence/2026-07-27-zeus-p2-009-completion-report.md` |
 | ZEUS-P2-010 Operational Gate Handler Qualification | Operational-only artifact handler qualified in isolated workspaces; production dispatch remains disabled | `engineering/evidence/2026-07-27-zeus-p2-010-completion-report.md` |
+| ZEUS-P2-013 Authority Ownership Specification | Single-human production ownership model integrated; commissioning still requires authentic `loneal` enrollment and signed records | `engineering/operations/authority-ownership-specification.md` |
 
 ## Resume point
 
@@ -42,12 +44,9 @@ reconciliation authority.
   unconfigured and fails closed.
 - P0: enroll authentic owner public keys and principals in the fixed trust
   policy through a separately controlled key-enrollment action.
-- P0 commissioning blocker: obtain owner-controlled signer principals/public
-  keys for Mission Registry, Repository Identity Management, Governance
-  Authority Graph Registrar, Engineering Governance decision registry,
-  Authorization Decision Service, Identity Provider, Governance Baseline
-  Registrar, and Mission Admission Controller.
-- P0 commissioning blocker: obtain the genuine Governance approval and signed
+- P0 commissioning blocker: enroll Lawrence O'Neal's authentic public key for
+  production principal `loneal`.
+- P0 commissioning blocker: obtain the genuine authenticated-operator approval and signed
   publication envelopes for the selected mission, phase, work item, repository
   identity/baseline, authority binding, identity, governing baseline, and
   operational configuration.
@@ -74,8 +73,9 @@ reconciliation authority.
   for the non-mutating qualification handler only.
 - P1: extend cooperative cancellation beyond the qualified between-action
   sentinel only when a future action type has a safe compensation contract.
-- P1: qualify source-specific read adapters when Mission Registry, Governance,
-  repository identity, and identity-provider services expose durable APIs.
+- P1: qualify source-specific read adapters if authority-domain services later
+  expose durable APIs; those service boundaries do not imply separate human
+  owners.
 - P1: complete supervised end-to-end negative and rollback qualification before
   any operational activation.
 - Consider a future separately authorized migration from environment-only
@@ -85,7 +85,7 @@ reconciliation authority.
 - Consider platform-specific locking support only if Zeus is ported beyond
   the current POSIX platform.
 
-Recommended next Zeus mission: perform supervised commissioning only after the
-eight designated owners supply authentic enrollment, signed publications, and
-Governance approval; until then, improve operator-facing admission-state
+Recommended next Zeus mission: perform supervised commissioning only after
+Lawrence O'Neal enrolls `loneal`, supplies signed publications, and records the
+operator approval; until then, improve operator-facing admission-state
 health and recovery diagnostics without expanding authority.

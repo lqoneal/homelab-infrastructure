@@ -4,6 +4,9 @@ signature_namespace: zeus-owner-enrollment
 allowed_signers_file: engineering/authority/enrollment-allowed-signers
 authorization_principals: []
 status: awaiting-controlled-enrollment-authority
+production_owner: Lawrence O'Neal
+production_principal: loneal
 description: >-
-  Fixed trust root for authorization of owner public-key enrollment. It is
-  intentionally unconfigured; the toolkit cannot authorize its own trust root.
+  Fixed trust root for authorization of Lawrence O'Neal's production public-key
+  enrollment as principal loneal. It is intentionally unconfigured; the
+  toolkit cannot authorize its own trust root.
