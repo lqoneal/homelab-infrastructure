@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+"""Inspect and validate EMP Execution Oversight state."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from scripts.lib.emp.execution_oversight import (  # noqa: E402
+    ExecutionOversight,
+    OversightError,
+    OversightStore,
+)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("state", type=Path)
+    parser.add_argument("command", choices=("validate", "replay"))
+    parser.add_argument("--session")
+    args = parser.parse_args()
+    try:
+        oversight = ExecutionOversight(OversightStore(args.state))
+        if args.command == "replay":
+            if not args.session:
+                raise OversightError("--session is required for replay")
+            print(
+                json.dumps(
+                    oversight.reconstruct(args.session),
+                    indent=2,
+                    sort_keys=True,
+                    separators=(",", ": "),
+                )
+            )
+        else:
+            print("PASS: execution oversight state is valid")
+        return 0
+    except (OversightError, ValueError) as error:
+        print(f"FAIL: {error}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,15 @@
+schema_version: 1
+title: EMP Execution Session
+type: object
+required:
+  - session_id
+  - assignment_id
+  - mission_id
+  - wop_id
+  - repository_identity
+  - baseline_commit
+  - execution_agent_identity
+  - creation_timestamp
+  - event_ledger
+  - event_payloads
+additionalProperties: false

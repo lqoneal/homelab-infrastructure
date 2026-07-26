@@ -1,0 +1,14 @@
+schema_version: 1
+title: EMP Immutable Execution Event
+type: object
+required:
+  - event_identifier
+  - timestamp
+  - producing_component
+  - execution_agent
+  - execution_state
+  - event_payload_digest
+  - previous_event_hash
+  - current_event_hash
+  - sequence
+additionalProperties: false

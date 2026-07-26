@@ -1,0 +1,18 @@
+schema_version: 1
+title: Authenticated EENS Execution Event Envelope
+type: object
+required:
+  - event_identifier
+  - timestamp
+  - producing_component
+  - execution_agent
+  - execution_state
+  - payload
+  - assignment_id
+  - session_id
+  - repository_identity
+  - baseline_commit
+  - authentication_digest
+properties:
+  producing_component: {const: EENS}
+additionalProperties: false
