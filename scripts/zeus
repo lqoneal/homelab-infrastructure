@@ -9,6 +9,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.lib.emp.orchestration import MissionOrchestrator, OrchestrationError, OrchestrationStore  # noqa: E402
+from scripts.lib.emp.reasoning import ContextManager, ConversationEngine, ReasoningError, WopGenerator, WopGuidanceService  # noqa: E402
+from scripts.lib.emp.wop_admission import load_submission  # noqa: E402
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -29,6 +31,11 @@ def main(argv=None):
     completion=sub.add_parser("completion"); completion.add_argument("action", choices=("show",)); completion.add_argument("identifier")
     sub.add_parser("resume")
     policy=sub.add_parser("policy"); policy.add_argument("action", choices=("configure",)); policy.add_argument("policy_id")
+    show_wop=sub.add_parser("show"); show_wop.add_argument("subject", choices=("wop-template","wop-requirements","wop-example"))
+    validate=sub.add_parser("validate"); validate.add_argument("wop_package"); validate.add_argument("--repository", required=True)
+    explain=sub.add_parser("explain"); explain.add_argument("subject", choices=("rejection",)); explain.add_argument("record")
+    converse=sub.add_parser("converse"); converse.add_argument("request"); converse.add_argument("--context", type=Path, required=True); converse.add_argument("--repository"); converse.add_argument("--package"); converse.add_argument("--rejection")
+    generate=sub.add_parser("generate-wop"); generate.add_argument("intent"); generate.add_argument("--mission", required=True); generate.add_argument("--phase", required=True); generate.add_argument("--repository", required=True); generate.add_argument("--submitter", required=True); generate.add_argument("--approval-authority", required=True); generate.add_argument("--approval-reference", required=True); generate.add_argument("--approval-date", required=True); generate.add_argument("--authority-node", required=True); generate.add_argument("--adr", required=True); generate.add_argument("--immutable-wop", required=True)
     a=p.parse_args(argv); o=MissionOrchestrator(OrchestrationStore(a.state))
     try:
         if a.command=="status" or a.command=="resume": emit(o.status())
@@ -40,8 +47,18 @@ def main(argv=None):
         elif a.command=="mission": emit(o.data["missions"][a.mission_id])
         elif a.command in ("approve","decline"): emit(o.decide(a.approval_id, a.command.upper(), operator=a.operator, timestamp=now(a.at)))
         elif a.command=="policy": o.configure_policy(a.policy_id); emit({"policy_id":a.policy_id})
+        elif a.command=="show":
+            guidance=WopGuidanceService()
+            emit({"wop-template":guidance.template,"wop-requirements":guidance.requirements,"wop-example":guidance.example}[a.subject]())
+        elif a.command=="validate": emit(WopGuidanceService().validate(load_submission(a.wop_package),a.repository))
+        elif a.command=="explain": emit(WopGuidanceService().explain_rejection(a.record))
+        elif a.command=="converse":
+            package=load_submission(a.package) if a.package else None
+            response=ConversationEngine().respond(a.request,repository=a.repository,package=package,rejection=a.rejection,status=o.status())
+            ContextManager(a.context).record(a.request,response); emit(response)
+        elif a.command=="generate-wop": emit(WopGenerator().generate(intent=a.intent,mission_id=a.mission,phase_id=a.phase,repository_identity=a.repository,submitter_identity=a.submitter,approval_authority=a.approval_authority,approval_reference=a.approval_reference,approval_date=a.approval_date,authority_node_id=a.authority_node,adr_reference=a.adr,immutable_wop_reference=a.immutable_wop))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (OrchestrationError, KeyError, OSError, json.JSONDecodeError) as error:
+    except (OrchestrationError, ReasoningError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr); return 78
 if __name__ == "__main__": raise SystemExit(main())

@@ -34,3 +34,32 @@ properties:
   sections: {type: object}
   submission_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
 additionalProperties: false
+x-zeus-authoritative-contract:
+  procedure: PROC-0001@1.11
+  template: TPL-0001@1.7
+  standards: [STD-0000, STD-0001, STD-0002, STD-0003, STD-0004]
+  execution_package_references:
+    - authority_node_id
+    - authorization_decision_record
+    - immutable_wop
+  required_sections:
+    - purpose_and_expected_outcome
+    - mission_classification
+    - governing_references
+    - scope
+    - explicit_authority
+    - prohibited_activities
+    - dependencies_and_entry_criteria
+    - deliverables
+    - execution_sequence
+    - success_and_acceptance_criteria
+    - validation_profile
+    - publication_and_synchronization
+    - stop_resume_and_escalation
+    - completion_report_requirement
+  example_values:
+    mission_id: ZEUS-EXAMPLE
+    phase_id: SUPERVISED-PREPARATION
+    repository_identity: /data/engineering/repositories/homelab
+    submitter_identity: operator
+  operator_review_required: true

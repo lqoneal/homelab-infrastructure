@@ -18,32 +18,19 @@ from typing import Any, Mapping
 import yaml
 
 
+SCHEMA_PATH = (
+    Path(__file__).resolve().parents[3]
+    / "engineering/admission/wop-submission.schema.yaml"
+)
+AUTHORITATIVE_SCHEMA = yaml.safe_load(SCHEMA_PATH.read_text(encoding="utf-8"))
+CONTRACT = AUTHORITATIVE_SCHEMA["x-zeus-authoritative-contract"]
 DECISIONS = {"ACCEPTED", "RESUBMISSION_REQUIRED"}
 VALIDATOR_VERSION = "1"
-PROCEDURE = "PROC-0001@1.11"
-TEMPLATE = "TPL-0001@1.7"
-STANDARDS = ("STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004")
-REQUIRED_SECTIONS = (
-    "purpose_and_expected_outcome",
-    "mission_classification",
-    "governing_references",
-    "scope",
-    "explicit_authority",
-    "prohibited_activities",
-    "dependencies_and_entry_criteria",
-    "deliverables",
-    "execution_sequence",
-    "success_and_acceptance_criteria",
-    "validation_profile",
-    "publication_and_synchronization",
-    "stop_resume_and_escalation",
-    "completion_report_requirement",
-)
-REQUIRED_EXECUTION_REFERENCES = (
-    "authority_node_id",
-    "authorization_decision_record",
-    "immutable_wop",
-)
+PROCEDURE = CONTRACT["procedure"]
+TEMPLATE = CONTRACT["template"]
+STANDARDS = tuple(CONTRACT["standards"])
+REQUIRED_SECTIONS = tuple(CONTRACT["required_sections"])
+REQUIRED_EXECUTION_REFERENCES = tuple(CONTRACT["execution_package_references"])
 REQUIRED_SUBMISSION_FORMAT = {
     "schema_version": 1,
     "document_type": "EngineeringWorkOrder",
