@@ -113,7 +113,10 @@ objects remain recoverable but are not repository-integrity failures. Runtime
 orientation verification naturally advanced the operator invocation counter;
 tests did not modify the real operator counter.
 
-Acceptance is PASS subject to the final pre-push remote re-fetch, safe
-fast-forward of local `main`, non-force push, post-push equality check, and
-clean-state verification documented in the Completion Report and final mission
-response. Zeus P2 has not started. Governance remains frozen by default.
+Acceptance is PASS. The final pre-push re-fetch found `origin/main` unchanged,
+local `main` was safely fast-forwarded, and a non-force push synchronized local
+and remote `main` at `7098c9d147d15b0e74f3af58ad46027e939b4c86`.
+The factual synchronization addendum containing this paragraph is then
+published normally; its exact final object ID is reported by Git and the final
+mission response because a commit cannot embed its own object ID. Zeus P2 has
+not started. Governance remains frozen by default.

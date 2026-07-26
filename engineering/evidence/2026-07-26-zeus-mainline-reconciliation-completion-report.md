@@ -23,14 +23,16 @@ rebase, squash, or destructive reset occurred.
 - Conflicts: none
 - Auto-merge review: `docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md` combined
   without a conflict and retained both histories' requirements
-- Final local `main`: the closeout commit containing this report after the
-  controlled fast-forward; resolve with `git rev-parse main`
-- Final `origin/main`: the same closeout commit after the verified non-force
-  push; resolve with `git rev-parse origin/main`
-- Push: required after the final immediate re-fetch confirms the remote has not
-  moved
-- Synchronization acceptance: local and remote `main` must resolve identically
-  after push
+- Qualified closeout commit first synchronized on local and remote `main`:
+  `7098c9d147d15b0e74f3af58ad46027e939b4c86`
+- Final local `main`: the factual synchronization addendum commit containing
+  this report; exact object ID is obtained with `git rev-parse main`
+- Final `origin/main`: the same addendum commit after its verified non-force
+  push; exact object ID is obtained with `git rev-parse origin/main`
+- Push: occurred without force; direct `ls-remote` verification observed
+  `7098c9d147d15b0e74f3af58ad46027e939b4c86` before this addendum
+- Synchronization acceptance: PASS; the addendum is subject to the same
+  post-push equality verification
 
 ## Qualification result
 
@@ -71,6 +73,6 @@ No reconciliation defect is deferred. Pre-existing dangling Git objects do not
 affect integrity. Governance remains frozen by default, no deferred governance
 development was performed, and Zeus P2 has not begun.
 
-The repository is qualified to begin separately authorized Zeus P2 planning
-only after the final non-force push and post-push local/remote equality checks
-pass. This report does not authorize or begin Zeus P2.
+The repository is qualified to begin separately authorized Zeus P2 planning.
+The required non-force push and post-push local/remote equality checks passed.
+This report does not authorize or begin Zeus P2.
