@@ -1,8 +1,8 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 47
-updated_at: '2026-07-25'
+revision: 53
+updated_at: '2026-07-26'
 serialization: yaml
 mutation_history:
 - revision: 2
@@ -297,6 +297,54 @@ mutation_history:
   reason: Close historical MISSION-000007, establish the active Zeus mission and
     phase, and register Mission C as planned read-only work without authorizing
     runtime implementation.
+- revision: 48
+  previous_revision: 47
+  at: '2026-07-26T12:00:00-07:00'
+  actor: ZEUS-P2-003 implementation agent
+  action: register completed Authority Resolution Runtime implementation
+  reason: Project the qualified repository-local ARB runtime, operational WOP
+    integration, qualification compatibility, and fail-closed live-source
+    activation boundary without originating approval or authority.
+- revision: 49
+  previous_revision: 48
+  at: '2026-07-26T20:00:00-07:00'
+  actor: ZEUS-P2-004 implementation agent
+  action: register completed operational authority publication framework
+  reason: Project the qualified signed publication, readiness, explicit
+    activation, rollback, revocation, and recovery capability while production
+    owner trust and records remain unenrolled.
+- revision: 50
+  previous_revision: 49
+  at: '2026-07-26T21:00:00-07:00'
+  actor: ZEUS-P2-005 commissioning preflight agent
+  action: register blocked operational authority commissioning
+  reason: Preserve the fail-closed commissioning result after confirming that
+    authentic owner trust anchors, signed records, and Governance approval were
+    not supplied; no workstation or qualification identity is promoted.
+- revision: 51
+  previous_revision: 50
+  at: '2026-07-26T22:00:00-07:00'
+  actor: ZEUS-P2-006 implementation agent
+  action: register completed authority owner enrollment toolkit
+  reason: Project secure public-key enrollment lifecycle, candidate trust
+    compilation, unsigned publication preparation, approval validation, and
+    enhanced diagnostics without enrolling owners or activating production.
+- revision: 52
+  previous_revision: 51
+  at: '2026-07-26T23:00:00-07:00'
+  actor: ZEUS-P2-007 implementation agent
+  action: register completed Mission Admission Runtime integration
+  reason: Project the qualified persistent, restartable admission coordinator,
+    shared qualification and operational interfaces, structured evidence, and
+    fail-closed authority gate without commissioning or execution.
+- revision: 53
+  previous_revision: 52
+  at: '2026-07-27T00:00:00-07:00'
+  actor: ZEUS-P2-008 implementation agent
+  action: register completed Mission Execution Runtime
+  reason: Project the qualified restartable gate engine, checkpoints,
+    immutable execution evidence, EENS adapter, and disabled operational
+    dispatch boundary without commissioning production.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -932,6 +980,234 @@ entities:
     capacity_assumption: One bounded implementation mission; no scheduling or capacity
       automation.
   work_items:
+  - registry_id: EMP-WORK-ZEUS-P2-008-MISSION-EXECUTION-RUNTIME
+    object_type: WorkItem
+    title: ZEUS-P2-008 Mission Execution Runtime
+    management_state: completed
+    owner: Homelab Infrastructure
+    scope: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    authority_reference: ZEUS-P2-008
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ZEUS-P2-007-MISSION-ADMISSION-RUNTIME
+    created_at: '2026-07-27T00:00:00-07:00'
+    updated_at: '2026-07-27T00:00:00-07:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: completed
+      at: '2026-07-27T00:00:00-07:00'
+      actor: ZEUS-P2-008 implementation agent
+      reason: Persistent state, typed gates, checkpoints, evidence publication,
+        EENS projection, recovery, and qualification pass while operational
+        dispatch remains disabled.
+      authority_reference: ZEUS-P2-008
+    project_id: EMP-PROJECT-HOMELAB
+    order: 29
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: mission-execution-runtime
+    priority: 1
+    completion_criteria: Qualified WOPs traverse a persistent idempotent gate
+      engine with immutable evidence, checkpoints, interruption recovery, and
+      EENS integration while operational dispatch stays fail closed.
+    queue_ids: []
+  - registry_id: EMP-WORK-ZEUS-P2-007-MISSION-ADMISSION-RUNTIME
+    object_type: WorkItem
+    title: ZEUS-P2-007 Mission Admission Runtime Integration
+    management_state: completed
+    owner: Homelab Infrastructure
+    scope: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    authority_reference: ZEUS-P2-007
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ZEUS-P2-006-OWNER-ENROLLMENT-TOOLKIT
+    created_at: '2026-07-26T23:00:00-07:00'
+    updated_at: '2026-07-26T23:00:00-07:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: completed
+      at: '2026-07-26T23:00:00-07:00'
+      actor: ZEUS-P2-007 implementation agent
+      reason: The shared admission state machine, evidence, resume behavior,
+        diagnostics, integration, and qualification pass while production
+        commissioning remains external and blocked.
+      authority_reference: ZEUS-P2-007
+    project_id: EMP-PROJECT-HOMELAB
+    order: 28
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: mission-admission-runtime-integration
+    priority: 1
+    completion_criteria: The supervised admission pipeline uses shared runtime
+      interfaces, persists auditable stage evidence, resumes idempotently,
+      preserves qualification behavior, and fails closed without authentic
+      operational authority.
+    queue_ids: []
+  - registry_id: EMP-WORK-ZEUS-P2-006-OWNER-ENROLLMENT-TOOLKIT
+    object_type: WorkItem
+    title: ZEUS-P2-006 Authority Owner Enrollment and Commissioning Toolkit
+    management_state: completed
+    owner: Homelab Infrastructure
+    scope: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    authority_reference: ZEUS-P2-006
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ZEUS-P2-005-AUTHORITY-COMMISSIONING
+    created_at: '2026-07-26T22:00:00-07:00'
+    updated_at: '2026-07-26T22:00:00-07:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: completed
+      at: '2026-07-26T22:00:00-07:00'
+      actor: ZEUS-P2-006 implementation agent
+      reason: Toolkit and qualification are complete while genuine owner
+        enrollment and commissioning remain external.
+      authority_reference: ZEUS-P2-006
+    project_id: EMP-PROJECT-HOMELAB
+    order: 27
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: authority-owner-enrollment-toolkit
+    priority: 1
+    completion_criteria: Enrollment lifecycle, trust compilation, unsigned
+      publication preparation, approval validation, diagnostics,
+      documentation, and repository qualification pass without production
+      enrollment or activation.
+    queue_ids: []
+  - registry_id: EMP-WORK-ZEUS-P2-005-AUTHORITY-COMMISSIONING
+    object_type: WorkItem
+    title: ZEUS-P2-005 Operational Authority Commissioning
+    management_state: blocked
+    owner: Homelab Infrastructure
+    scope: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    authority_reference: ZEUS-P2-005
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    created_at: '2026-07-26T21:00:00-07:00'
+    updated_at: '2026-07-26T21:00:00-07:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: blocked
+      at: '2026-07-26T21:00:00-07:00'
+      actor: ZEUS-P2-005 commissioning preflight agent
+      reason: Authentic owner principals, public keys, signed envelopes, and
+        Governance approval are absent; activation is prohibited.
+      authority_reference: ZEUS-P2-005
+    project_id: EMP-PROJECT-HOMELAB
+    order: 26
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: operational-authority-commissioning
+    priority: 1
+    completion_criteria: All designated owners publish authentic signed
+      records, readiness passes, activation is receipt-bound, operational WOP
+      generation succeeds, and validation passes without dispatch.
+    queue_ids: []
+    blocking_conditions:
+    - production owner trust anchors not enrolled
+    - production allowed-signers file contains no keys
+    - genuine Governance approval publication absent
+    - required signed operational record envelopes absent
+    blocker_ids:
+    - ZEUS-P2-005-BLOCKER-OWNER-TRUST
+    - ZEUS-P2-005-BLOCKER-GOVERNANCE-APPROVAL
+    - ZEUS-P2-005-BLOCKER-SIGNED-RECORDS
+    reentry_conditions:
+    - each designated owner supplies an approved signer principal and public key
+    - Governance supplies a signed granted approval bound to exact work scope
+    - all required owners supply signed publication envelopes
+  - registry_id: EMP-WORK-ZEUS-P2-004-AUTHORITY-PUBLICATION
+    object_type: WorkItem
+    title: ZEUS-P2-004 Operational Authority Source Activation Framework
+    management_state: completed
+    owner: Homelab Infrastructure
+    scope: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    authority_reference: ZEUS-P2-004
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    created_at: '2026-07-26T20:00:00-07:00'
+    updated_at: '2026-07-26T20:00:00-07:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: completed
+      at: '2026-07-26T20:00:00-07:00'
+      actor: ZEUS-P2-004 implementation agent
+      reason: Record framework qualification without enrolling owner keys,
+        fabricating records, or activating production.
+      authority_reference: ZEUS-P2-004
+    project_id: EMP-PROJECT-HOMELAB
+    order: 25
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: operational-authority-publication
+    priority: 1
+    completion_criteria: Signed owner publication, candidate reconstruction,
+      readiness, explicit activation, rollback, revocation, recovery,
+      documentation, and qualification pass while production remains
+      fail-closed.
+    queue_ids: []
+  - registry_id: EMP-WORK-ZEUS-P2-003-AUTHORITY-RESOLUTION
+    object_type: WorkItem
+    title: ZEUS-P2-003 Authority Resolution Runtime Implementation
+    management_state: completed
+    owner: Homelab Infrastructure
+    scope: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    authority_reference: ZEUS-P2-003
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    created_at: '2026-07-26T12:00:00-07:00'
+    updated_at: '2026-07-26T12:00:00-07:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: completed
+      at: '2026-07-26T12:00:00-07:00'
+      actor: ZEUS-P2-003 implementation agent
+      reason: Record the completed and qualified implementation while live
+        authority-source publication remains fail-closed.
+      authority_reference: ZEUS-P2-003
+    project_id: EMP-PROJECT-HOMELAB
+    order: 24
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: authority-resolution-runtime
+    priority: 1
+    completion_criteria: Runtime, ARB sealing, dual-mode WOP generation,
+      validation, compatibility, documentation, evidence, and repository
+      qualification pass without live approval allocation.
+    queue_ids: []
   - registry_id: EMP-WORK-ZEUS-CAPABILITY-DISCOVERY
     object_type: WorkItem
     title: Mission C - Zeus Operational Alpha Capability Discovery

@@ -95,3 +95,214 @@ scripts/zeus generate-wop INTENT --mission MISSION-ID --phase PHASE-ID \
 
 Commands requiring packages or records must be supplied real qualified inputs;
 runtime discovery does not relax their validation.
+
+## Authority resolution and WOP generation modes
+
+ZEUS-P2-003 adds two mutually exclusive generation paths.
+
+Qualification mode is the backward-compatible default. Existing explicit
+authority fields remain accepted, and omitted authority fields receive
+unambiguous `PLACEHOLDER-*` values:
+
+```text
+scripts/zeus generate-wop "Qualification intent" \
+  --mission ZEUS-QUALIFICATION \
+  --repository /data/engineering/repositories/homelab
+```
+
+Every qualification result remains `review_required: true` and
+`automatically_submitted: false`. It allocates no operational authority.
+
+Operational mode accepts only mission/work selectors and an authenticated
+principal selector:
+
+```text
+scripts/zeus generate-wop "Bounded operational intent" \
+  --mode operational \
+  --mission EMP-MISSION-ID \
+  --work-item EMP-WORK-ID \
+  --principal PRINCIPAL-ID \
+  --repository /data/engineering/repositories/homelab
+```
+
+Operational mode rejects `--phase`, `--submitter`, `--approval-authority`,
+`--approval-reference`, `--approval-date`, `--authority-node`, `--adr`, and
+`--immutable-wop`. The Authority Resolution Runtime reads only the
+repository-fixed source:
+
+`engineering/authority/operational-authority-state.yaml`
+
+The checked-in source is intentionally unconfigured. Live generation fails
+closed until the designated owners publish a complete mission/work item,
+repository assertion, granted human approval, authority binding, governing
+baseline, and authenticated principal record at that location. Tests may use
+an isolated source override only when `ZEUS_TESTING=1`; production ignores the
+override.
+
+The runtime validates ownership labels, lifecycle and qualification state,
+approval scope, repository root and exact Git baseline, authority-DAG
+resolution, governing-manifest digest, authentication state, placeholders,
+provenance completeness, expiry, and the ARB seal. WOP rendering still requires
+explicit review and performs no submission, admission, dispatch, approval, or
+execution.
+
+## Unified mission admission
+
+ZEUS-P2-007 composes repository verification, mission qualification, owner and
+publication readiness, Authority Resolution, WOP generation, submission
+eligibility, and admission decision into one persistent state machine:
+
+```text
+scripts/zeus admit-mission start --mode qualification \
+  --intent "Qualification intent" --mission ZEUS-QUALIFICATION \
+  --repository /data/engineering/repositories/homelab
+```
+
+Operational mode accepts mission, work-item, and principal selectors but
+remains fail closed while authentic owner artifacts are absent. Qualification
+and operational paths use the same coordinator and WOP interface; only their
+authority provider differs. Neither path automatically submits or dispatches.
+Stage evidence, interruption, resume, replay, failure categories, and recovery
+are specified in
+`engineering/operations/zeus-mission-admission-runtime.md`.
+
+## Mission execution
+
+ZEUS-P2-008 extends a decided admission into a persistent, checkpointed
+execution state machine:
+
+```text
+scripts/zeus execute-mission start --admission-id MISSION-ADMISSION-ID
+```
+
+Qualification mode traverses validation, preparation, simulated execution, and
+verification without side effects. Operational execution remains blocked at
+the dispatch boundary because no commissioned execution handler is installed.
+Evidence, EENS projection, idempotency, interruption, resume, cancellation,
+and recovery are specified in
+`engineering/operations/zeus-mission-execution-runtime.md`.
+
+## Controlled authority publication
+
+ZEUS-P2-004 introduces `scripts/authority-publishctl`. Publication uses
+detached SSH signatures in the `zeus-authority-publication` namespace.
+Production trusts only the repository-fixed policy and signer file:
+
+```text
+engineering/authority/owner-trust-policy.yaml
+engineering/authority/allowed-signers
+```
+
+Both are intentionally unconfigured. Legitimate owner keys and principals must
+be enrolled through a separate controlled action before production publication
+can begin. The publication framework does not generate keys, sign envelopes,
+create approvals, or assign owners.
+
+Review commissioning state without loading trust keys or changing files:
+
+```text
+scripts/authority-publishctl status
+```
+
+The command reports enrolled versus required owners, allowed-signer count,
+authority-source activation, required record collections, typed blockers, and
+a deterministic assessment digest. `BLOCKED` is the expected result until
+authentic owner-managed inputs have been enrolled and published.
+
+Owner enrollment and unsigned publication preparation use:
+
+```text
+scripts/authority-ownerctl status
+scripts/authority-ownerctl prepare-enrollment --help
+scripts/authority-ownerctl publication-template --record-type RECORD-TYPE
+scripts/authority-ownerctl prepare-publication --help
+```
+
+The complete workflow, lifecycle rules, Governance approval boundary, and
+recovery procedure are documented in
+`engineering/operations/authority-owner-enrollment-procedure.md`.
+
+Each owner constructs an envelope conforming to
+`engineering/authority/authority-publication-envelope.schema.yaml`, calculates
+the canonical payload digest and deterministic envelope identity, and signs the
+canonical JSON envelope externally:
+
+```text
+ssh-keygen -Y sign -f OWNER_PRIVATE_KEY \
+  -n zeus-authority-publication ENVELOPE.json
+```
+
+The private key never enters the repository or publication command.
+
+### Staging and readiness
+
+```text
+scripts/authority-publishctl initialize --transaction TRANSACTION
+scripts/authority-publishctl stage --transaction TRANSACTION \
+  --envelope ENVELOPE.json --signature ENVELOPE.json.sig
+scripts/authority-publishctl verify --transaction TRANSACTION
+```
+
+`stage` verifies record-type ownership, the trusted principal, detached
+signature, revision, timestamp, payload digest, and envelope identity before a
+create-only copy is accepted. Every readiness check rebuilds the candidate from
+the signed envelopes; `candidate.yaml` is never trusted as input.
+
+Readiness requires signed mission, phase, work-item, repository identity,
+repository baseline, authority-node, approval, identity, governing-baseline,
+and operational-configuration records. It then invokes the real Authority
+Resolution Runtime against a provisional in-memory copy. Missing records,
+owner disagreement, invalid lifecycle, dependency failure, stale Git baseline,
+invalid authority graph, unverified identity, or approval-scope mismatch
+prevents readiness.
+
+Authorization Decision Records use the same signed workflow but are not a
+pre-WOP activation prerequisite because their owner creates them only when an
+exact WOP is evaluated.
+
+### Explicit activation
+
+```text
+scripts/authority-publishctl activate --transaction TRANSACTION
+```
+
+Activation reruns readiness, verifies that the candidate has not changed,
+preserves the previous source bytes, atomically publishes the candidate, and
+creates a digest-bound receipt. Only this command changes
+`operationally_configured` to `true`. Staging, readiness, ARS, WOP generation,
+and the runtime itself cannot enable it.
+
+Production activation always targets
+`engineering/authority/operational-authority-state.yaml`. Alternate policies
+or targets are accepted only under `ZEUS_TESTING=1`.
+
+### Rollback, revocation, and recovery
+
+Rollback is valid only for the activation transaction while the active source
+still matches its receipt:
+
+```text
+scripts/authority-publishctl rollback --transaction TRANSACTION
+```
+
+It atomically restores the exact pre-activation bytes and records a rollback
+receipt. If the active bytes or saved snapshot digest changed, rollback stops
+for investigation.
+
+Revocation requires a separately signed `operational_revocation` envelope
+owned by Mission Admission and bound to the activation transaction:
+
+```text
+scripts/authority-publishctl revoke \
+  --envelope REVOCATION.json --signature REVOCATION.json.sig \
+  --receipt REVOCATION-RECEIPT.yaml
+```
+
+Revocation sets `operationally_configured: false` without deleting published
+records or history. Recovery requires a new complete signed publication
+transaction; neither rollback nor revocation silently reactivates a prior
+source.
+
+Preserve the transaction directory, envelopes, signatures, readiness record,
+source snapshot, and receipts as one audit unit. Never hand-edit an activated
+source or transaction.

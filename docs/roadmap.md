@@ -22,6 +22,64 @@ Historical roadmap items remain recorded for continuity. Their ordering or
 unchecked state does not supersede PHASE-0001, establish current priority, or
 authorize execution.
 
+### ZEUS-P2-002 — Authority Resolution Architecture
+
+The operational WOP authority-resolution architecture is documented and
+architecturally qualified. It assigns exactly one originator to every authority
+artifact and introduces a sealed Authority Resolution Bundle between Mission
+Admission and WOP generation.
+
+ZEUS-P2-003 implements and qualifies the repository-local runtime, sealed ARB,
+immutable WOP finalization, explicit dual generation modes, and fail-closed
+validation. The repository-fixed live source is deliberately unconfigured
+until its designated owners publish operational records.
+
+ZEUS-P2-004 implements and qualifies signed, owner-scoped staging, full-source
+readiness verification, explicit atomic activation, rollback, revocation, and
+recovery. Production trust roots and authority records remain unenrolled, so
+the checked-in runtime continues to fail closed.
+
+ZEUS-P2-005 commissioning preflight is blocked. No production owner principals
+or signer keys are enrolled, no signed publication envelopes are present, and
+no genuine ZEUS-P2-005 approval record has been supplied. Workstation SSH keys
+are not treated as authority-owner keys. Both operational switches remain
+false until the designated owners provide authentic inputs through the
+publication framework.
+
+ZEUS-P2-006 implements and qualifies the remaining software-side owner
+enrollment toolkit: public-key inspection, externally authorized enrollment,
+rotation, suspension, retirement, candidate trust compilation, unsigned
+publication templates, Governance approval payload validation, and
+blocker-specific commissioning diagnostics. It neither enrolls production
+owners nor activates Zeus.
+
+ZEUS-P2-007 implements and qualifies the unified Mission Admission Runtime.
+Qualification and future operational admissions now traverse the same
+persistent, digest-protected, restartable state machine through repository
+verification, authority resolution, WOP generation, submission eligibility,
+and admission decision. Production remains blocked at the authority gate
+because authentic external owner artifacts are absent. The runtime never
+self-enables, submits, dispatches, or executes.
+
+ZEUS-P2-008 implements and qualifies the persistent Mission Execution Runtime:
+typed gates, digest-bound state, immutable hash-chained evidence, checkpoints,
+safe interruption/resume, explicit wait/suspend/cancel states, stable handler
+idempotency keys, and an EENS append-only event adapter. Qualification performs
+a complete non-mutating simulation. Operational execution stops at the
+disabled dispatch boundary; no production handler or activation was added.
+
+Remaining separately controlled work:
+
+- controlled enrollment of authentic owner public keys;
+- signed publication of live owner records;
+- append-only ARB/WOP publication receipts;
+- independent ARB provenance verification at admission; and
+- operational activation after supervised live-source qualification.
+
+The current `generate-wop` qualification workflow remains review-only. This
+roadmap entry does not approve implementation, operational admission,
+submission, dispatch, or execution.
+
 ---
 
 ## Engineering Event and Notification System

@@ -27,8 +27,14 @@ def fresh_registry():
 
 registry = fresh_registry()
 assert registry.validate() == []
-assert len(registry.objects) == 60
+assert len(registry.objects) == 66
 assert {
+    "EMP-WORK-ZEUS-P2-008-MISSION-EXECUTION-RUNTIME",
+    "EMP-WORK-ZEUS-P2-007-MISSION-ADMISSION-RUNTIME",
+    "EMP-WORK-ZEUS-P2-006-OWNER-ENROLLMENT-TOOLKIT",
+    "EMP-WORK-ZEUS-P2-005-AUTHORITY-COMMISSIONING",
+    "EMP-WORK-ZEUS-P2-004-AUTHORITY-PUBLICATION",
+    "EMP-WORK-ZEUS-P2-003-AUTHORITY-RESOLUTION",
     "EMP-WORK-CODEX-NTFY-STAGE-1",
     "EMP-WORK-CODEX-NTFY-STAGE-2",
     "EMP-WORK-CODEX-NTFY-STAGE-3",
@@ -76,7 +82,10 @@ assert (
     == "satisfied"
 )
 assert any(
-    line.startswith("management_completed_work=EMP-WORK-REGISTRY-FOUNDATION")
+    line.startswith("management_completed_work=")
+    and "EMP-WORK-REGISTRY-FOUNDATION" in line
+    and "EMP-WORK-ZEUS-P2-003-AUTHORITY-RESOLUTION" in line
+    and "EMP-WORK-ZEUS-P2-004-AUTHORITY-PUBLICATION" in line
     for line in registry.context("homelab")
 )
 
