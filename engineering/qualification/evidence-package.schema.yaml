@@ -1,0 +1,21 @@
+schema_version: 1
+title: EMP Immutable Evidence Package
+type: object
+required:
+  - evidence_package_id
+  - assignment_id
+  - execution_session_id
+  - mission_id
+  - wop_id
+  - repository_identity
+  - baseline_commit
+  - execution_agent_identity
+  - evidence_manifest
+  - artifact_digests
+  - required_evidence_declarations
+  - produced_evidence_declarations
+  - completion_metadata
+  - package_checksum
+  - package_signature
+  - package_timestamp
+additionalProperties: false

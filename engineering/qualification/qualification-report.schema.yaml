@@ -1,0 +1,17 @@
+schema_version: 1
+title: EMP Immutable Qualification Report
+type: object
+required:
+  - qualification_id
+  - evidence_package_id
+  - qualification_decision
+  - reason_codes
+  - missing_evidence
+  - unexpected_evidence
+  - integrity_results
+  - completeness_evaluation
+  - qualified_objectives
+  - unqualified_objectives
+  - deterministic_digest
+  - timestamp
+additionalProperties: false

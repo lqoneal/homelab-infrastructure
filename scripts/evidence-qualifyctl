@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+"""Validate or replay EMP qualification history."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from scripts.lib.emp.evidence_qualification import (  # noqa: E402
+    QualificationError,
+    QualificationHistory,
+)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("history", type=Path)
+    parser.add_argument("command", choices=("validate", "replay"))
+    parser.add_argument("--package")
+    args = parser.parse_args()
+    try:
+        history = QualificationHistory(args.history)
+        if args.command == "replay":
+            if not args.package:
+                raise QualificationError("--package is required for replay")
+            print(
+                json.dumps(
+                    [report.data for report in history.replay(args.package)],
+                    indent=2,
+                    sort_keys=True,
+                    separators=(",", ": "),
+                )
+            )
+        else:
+            print("PASS: qualification history is valid")
+        return 0
+    except (QualificationError, ValueError) as error:
+        print(f"FAIL: {error}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
