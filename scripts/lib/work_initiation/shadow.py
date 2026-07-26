@@ -9,7 +9,7 @@ import json
 import os
 import sys
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
@@ -113,6 +113,7 @@ class ShadowAuthorizationService:
         expected_authority_node_id: str | None = None,
         lease: ExecutionLease | None = None,
         revocation: RevocationRecord | None = None,
+        enforcement_mode: str | None = None,
     ) -> AuthorizationDecisionRecord:
         zeus = CompatibilityEvaluator().evaluate(
             graph=graph,
@@ -125,6 +126,29 @@ class ShadowAuthorizationService:
             lease=lease,
             revocation=revocation,
         )
+        if enforcement_mode in ("enforcement", "rollback"):
+            context_mismatches = []
+            if state.repository != repository_identity:
+                context_mismatches.append("repository")
+            if state.baseline_commit != repository_baseline_commit:
+                context_mismatches.append("baseline_commit")
+            if context_mismatches:
+                mismatch_text = ",".join(sorted(context_mismatches))
+                zeus = replace(
+                    zeus,
+                    decision=DecisionCode.EXECUTION_CONTEXT_MISMATCH,
+                    reasons=(
+                        "observed repository context mismatch: " + mismatch_text,
+                    ),
+                    input_digest=hashlib.sha256(
+                        (
+                            zeus.input_digest
+                            + repository_identity
+                            + repository_baseline_commit
+                            + mismatch_text
+                        ).encode("utf-8")
+                    ).hexdigest(),
+                )
         return self._record(
             zeus=zeus,
             wop=wop,
@@ -136,6 +160,7 @@ class ShadowAuthorizationService:
             repository_baseline_commit=repository_baseline_commit,
             lease=lease,
             revocation=revocation,
+            enforcement_mode=enforcement_mode,
         )
 
     def validation_failure(
@@ -146,6 +171,7 @@ class ShadowAuthorizationService:
         legacy_authorized: bool,
         repository_identity: str,
         repository_baseline_commit: str,
+        enforcement_mode: str | None = None,
     ) -> AuthorizationDecisionRecord:
         zeus = CompatibilityDecision(
             decision=DecisionCode.VALIDATION_FAILURE,
@@ -179,6 +205,7 @@ class ShadowAuthorizationService:
             repository_baseline_commit=repository_baseline_commit,
             lease=None,
             revocation=None,
+            enforcement_mode=enforcement_mode,
         )
 
     def _record(
@@ -194,6 +221,7 @@ class ShadowAuthorizationService:
         repository_baseline_commit: str,
         lease: ExecutionLease | None,
         revocation: RevocationRecord | None,
+        enforcement_mode: str | None,
     ) -> AuthorizationDecisionRecord:
         data = wop.data
         binding = data.get("authority_binding", {})
@@ -241,6 +269,19 @@ class ShadowAuthorizationService:
             disagreement = "LEGACY_DENY_ZEUS_ALLOW"
             first_divergence = "LEGACY_AUTHORIZATION"
 
+        if enforcement_mode not in (None, "shadow", "enforcement", "rollback"):
+            raise ValueError(f"unknown authorization mode: {enforcement_mode}")
+        authoritative_source = (
+            "ZEUS" if enforcement_mode == "enforcement" else "LEGACY"
+        )
+        enforcement_decision = (
+            "AUTHORIZED" if zeus.authorized else "REJECTED"
+            if enforcement_mode == "enforcement"
+            else legacy
+        )
+        if enforcement_mode != "enforcement":
+            enforcement_decision = legacy
+
         decision_material = {
             "authority_chain": list(zeus.authority_chain),
             "authority_node": zeus.authority_node_id,
@@ -252,6 +293,17 @@ class ShadowAuthorizationService:
             "zeus_decision": zeus.decision.value,
             "zeus_input_digest": zeus.input_digest,
         }
+        if enforcement_mode is not None:
+            decision_material.update(
+                {
+                    "authoritative_decision_source": authoritative_source,
+                    "enforcement_decision": enforcement_decision,
+                    "enforcement_mode": enforcement_mode.upper(),
+                    "rollback_status": (
+                        "ACTIVE" if enforcement_mode == "rollback" else "AVAILABLE"
+                    ),
+                }
+            )
         decision_digest = _digest(decision_material)
         evaluation_material = {
             "decision_digest": decision_digest,
@@ -288,7 +340,7 @@ class ShadowAuthorizationService:
         )
 
         record = {
-            "schema_version": 1,
+            "schema_version": 1 if enforcement_mode is None else 2,
             "evaluation_id": evaluation_id,
             "evaluation_timestamp": _utc_text(reference_time),
             "repository_identity": repository_identity,
@@ -336,10 +388,21 @@ class ShadowAuthorizationService:
             "decision_reasons": list(zeus.reasons),
             "decision_digest": decision_digest,
             "software_versions": SOFTWARE_VERSIONS,
-            "shadow_only": True,
-            "enforcement_authority": "LEGACY",
-            "enforcement_decision": legacy,
+            "shadow_only": enforcement_mode in (None, "shadow"),
+            "enforcement_authority": authoritative_source,
+            "enforcement_decision": enforcement_decision,
         }
+        if enforcement_mode is not None:
+            record.update(
+                {
+                    "enforcement_mode": enforcement_mode.upper(),
+                    "authoritative_decision_source": authoritative_source,
+                    "legacy_comparison_result": legacy,
+                    "rollback_status": (
+                        "ACTIVE" if enforcement_mode == "rollback" else "AVAILABLE"
+                    ),
+                }
+            )
         return AuthorizationDecisionRecord.from_mapping(record)
 
 
@@ -356,6 +419,11 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--lease", type=Path)
     parser.add_argument("--revocation", type=Path)
     parser.add_argument("--expected-authority")
+    parser.add_argument(
+        "--mode",
+        choices=("shadow", "enforcement", "rollback"),
+        default="shadow",
+    )
     return parser
 
 
@@ -411,6 +479,7 @@ def main(argv: list[str] | None = None) -> int:
             repository_identity=repository,
             repository_baseline_commit=baseline,
             expected_authority_node_id=args.expected_authority,
+            enforcement_mode=args.mode,
         )
     except Exception as error:
         record = service.validation_failure(
@@ -419,6 +488,7 @@ def main(argv: list[str] | None = None) -> int:
             legacy_authorized=legacy_authorized,
             repository_identity=repository,
             repository_baseline_commit=baseline,
+            enforcement_mode=args.mode,
         )
     target = record.persist(args.output_directory)
     print(
@@ -431,7 +501,9 @@ def main(argv: list[str] | None = None) -> int:
             }
         )
     )
-    return 0
+    if args.mode == "shadow":
+        return 0
+    return 0 if record.data["enforcement_decision"] == "AUTHORIZED" else 1
 
 
 if __name__ == "__main__":

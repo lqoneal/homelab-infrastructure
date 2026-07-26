@@ -1,0 +1,15 @@
+schema_version: 1
+default_mode: enforcement
+rollback_mode: rollback
+scenarios:
+  - {id: zeus-allow-legacy-deny, expected: AUTHORIZED}
+  - {id: zeus-deny-legacy-allow, expected: REJECTED}
+  - {id: missing-wop, expected: REJECTED}
+  - {id: unknown-authority, expected: REJECTED}
+  - {id: invalid-graph, expected: REJECTED}
+  - {id: invalid-context, expected: REJECTED}
+  - {id: unauthorized-capability, expected: REJECTED}
+  - {id: unauthorized-effect, expected: REJECTED}
+  - {id: expired, expected: REJECTED}
+  - {id: revoked, expected: REJECTED}
+  - {id: signature-failure, expected: REJECTED}

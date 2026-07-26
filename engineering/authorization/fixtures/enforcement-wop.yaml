@@ -1,0 +1,44 @@
+schema_version: 1
+wop_id: WOP-323e4567-e89b-42d3-a456-426614174000
+authority_binding:
+  authority_node_id: work-package
+  mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+  phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+  work_item_id: MISSION-H-AUTHORIZATION-ENFORCEMENT
+execution_context:
+  principal_id: mission-h-qualification-agent
+  repository: /data/engineering/repositories/homelab
+  baseline_commit: a99de6f4cfd252c88a2d98184833be27877bab2c
+  branch: main
+  assumptions:
+    - authorization is separate from execution
+authorized_effects:
+  - effect_id: authorize-initiation
+    kind: execute
+    target: engineering-work-initiation-decision
+    constraints:
+      - no WOP execution or dispatch
+prohibited_effects:
+  - execute-wop
+  - dispatch-work
+  - acquire-live-lease
+prerequisites:
+  - prerequisite_id: mission-g1-qualified
+    required: true
+    evidence_ref: evidence-mission-g1-qualified
+dependencies: []
+valid_from: '2026-07-25T00:00:00+00:00'
+expires_at: '2026-08-25T00:00:00+00:00'
+lease_policy:
+  required: true
+  maximum_duration_seconds: 3600
+revocation_policy:
+  revocable: true
+  authority_node_ids:
+    - governance
+    - mission
+payload_digest: 41933653854395c13c1084be7d5ec3cc78ac388a28002afc30acb5913ca119a4
+signature:
+  algorithm: sha256-digest-fixture
+  key_id: mission-f-offline-fixture
+  value: 41933653854395c13c1084be7d5ec3cc78ac388a28002afc30acb5913ca119a4

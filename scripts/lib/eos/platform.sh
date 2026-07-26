@@ -99,20 +99,22 @@ eos_platform_legacy_qualify() {
     echo "Active Git Operation: none"
 }
 
-eos_shadow_authorize() {
+eos_work_initiation_authorize() {
     local project="${1:-homelab}"
     local legacy_status="${2:-1}"
-    local root tool output_dir legacy_decision
+    local root tool output_dir legacy_decision mode
     local -a arguments
     root="$(eos_project_root "$project")"
     tool="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/work-initiation-shadow"
     output_dir="${EOS_SHADOW_ADR_DIR:-$(eos_runtime_dir)/authorization-decisions}"
+    mode="${EOS_AUTHORIZATION_MODE:-enforcement}"
     legacy_decision="rejected"
     [[ "$legacy_status" -eq 0 ]] && legacy_decision="authorized"
     arguments=(
         --repository "$root"
         --legacy-decision "$legacy_decision"
         --output-directory "$output_dir"
+        --mode "$mode"
     )
     [[ -n "${EOS_SHADOW_EVALUATION_TIME:-}" ]] \
         && arguments+=(--at "$EOS_SHADOW_EVALUATION_TIME")
@@ -129,7 +131,7 @@ eos_shadow_authorize() {
         && arguments+=(--expected-authority "$EOS_SHADOW_EXPECTED_AUTHORITY")
 
     echo
-    echo "Shadow Authorization Mode:"
+    echo "Authorization Mode: ${mode^^}"
     if ! "$tool" "${arguments[@]}"; then
         echo "WARN: shadow authorization record generation failed" >&2
         return 1
@@ -138,10 +140,22 @@ eos_shadow_authorize() {
 
 eos_platform_qualify() {
     local project="${1:-homelab}"
-    local legacy_status=0
+    local legacy_status=0 authorization_status=0 mode
     eos_platform_legacy_qualify "$project" || legacy_status=$?
-    eos_shadow_authorize "$project" "$legacy_status" || true
-    return "$legacy_status"
+    mode="${EOS_AUTHORIZATION_MODE:-enforcement}"
+    eos_work_initiation_authorize "$project" "$legacy_status" \
+        || authorization_status=$?
+    case "$mode" in
+        rollback|shadow) return "$legacy_status" ;;
+        enforcement)
+            [[ "$authorization_status" -eq 0 ]] && return 0
+            return 77
+            ;;
+        *)
+            echo "ERROR: unknown authorization mode: $mode" >&2
+            return 77
+            ;;
+    esac
 }
 
 eos_platform_validate() {

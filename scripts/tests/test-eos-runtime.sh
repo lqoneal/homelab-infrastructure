@@ -212,10 +212,10 @@ platform_output="$(eos_render_platform homelab)"
 grep -Fq "ENGINEERING PLATFORM" <<<"$platform_output"
 inventory_output="$(eos_platform_repository_inventory)"
 grep -Fq "homelab" <<<"$inventory_output"
-qualification_output="$(eos_platform_qualify homelab)"
+qualification_output="$(EOS_AUTHORIZATION_MODE=rollback eos_platform_qualify homelab)"
 grep -Fq "Active Git Operation: none" <<<"$qualification_output"
 grep -Fq "SSH Agent:" <<<"$qualification_output"
-grep -Fq "Shadow Authorization Mode:" <<<"$qualification_output"
+grep -Fq "Authorization Mode: ROLLBACK" <<<"$qualification_output"
 [[ "$(find "$(eos_runtime_dir)/authorization-decisions" -type f | awk 'END { print NR + 0 }')" -eq 1 ]]
 
 agent_output="$(eos_ssh_agent_state)"

@@ -1,0 +1,9 @@
+prerequisite_evidence:
+  - evidence-mission-g1-qualified
+satisfied_dependencies: []
+requested_effects:
+  - authorize-initiation
+principal_id: mission-h-qualification-agent
+repository: /data/engineering/repositories/homelab
+baseline_commit: a99de6f4cfd252c88a2d98184833be27877bab2c
+branch: main

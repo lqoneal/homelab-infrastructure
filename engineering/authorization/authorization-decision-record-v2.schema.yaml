@@ -1,0 +1,68 @@
+schema_version: 2
+title: Enforcement Authorization Decision Record
+type: object
+required:
+  - schema_version
+  - evaluation_id
+  - evaluation_timestamp
+  - repository_identity
+  - repository_baseline_commit
+  - wop_id
+  - authority_chain
+  - authority_node
+  - mission
+  - phase
+  - work_item
+  - execution_context
+  - requested_capabilities
+  - resolved_capabilities
+  - authorized_effects
+  - prohibited_effects
+  - prerequisite_evaluation
+  - dependency_evaluation
+  - lease_status
+  - receipt_status
+  - signature_status
+  - zeus_authorization_decision
+  - legacy_comparison_result
+  - disagreement_classification
+  - decision_digest
+  - software_versions
+  - enforcement_mode
+  - authoritative_decision_source
+  - rollback_status
+  - enforcement_decision
+properties:
+  schema_version: {const: 2}
+  evaluation_id: {type: string, pattern: '^ADR-[0-9a-f-]{36}$'}
+  evaluation_timestamp: {type: string}
+  repository_identity: {type: string}
+  repository_baseline_commit: {type: string, pattern: '^[0-9a-f]{40}$'}
+  wop_id: {type: string}
+  authority_chain: {type: array}
+  authority_node: {type: string}
+  mission: {type: string}
+  phase: {type: string}
+  work_item: {type: string}
+  execution_context: {type: object}
+  requested_capabilities: {type: array}
+  resolved_capabilities: {type: array}
+  authorized_effects: {type: array}
+  prohibited_effects: {type: array}
+  prerequisite_evaluation: {type: object}
+  dependency_evaluation: {type: object}
+  lease_status: {enum: [VALID, INVALID_OR_ABSENT]}
+  receipt_status: {enum: [VALID, INVALID_OR_ABSENT]}
+  signature_status: {enum: [VALID, INVALID_OR_ABSENT]}
+  zeus_authorization_decision: {type: string}
+  legacy_comparison_result: {enum: [AUTHORIZED, REJECTED]}
+  disagreement_classification:
+    enum: [NONE, LEGACY_ALLOW_ZEUS_DENY, LEGACY_DENY_ZEUS_ALLOW]
+  decision_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+  software_versions: {type: object}
+  enforcement_mode: {enum: [ENFORCEMENT, ROLLBACK, SHADOW]}
+  authoritative_decision_source: {enum: [ZEUS, LEGACY]}
+  rollback_status: {enum: [AVAILABLE, ACTIVE]}
+  enforcement_decision: {enum: [AUTHORIZED, REJECTED]}
+  shadow_only: {type: boolean}
+additionalProperties: true

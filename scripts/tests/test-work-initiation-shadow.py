@@ -218,6 +218,7 @@ source '{ROOT}/scripts/lib/eos/platform.sh'
 eos_platform_legacy_qualify() {{ return 7; }}
 eos_project_root() {{ echo '{ROOT}'; }}
 eos_runtime_dir() {{ echo '{directory}'; }}
+export EOS_AUTHORIZATION_MODE=rollback
 eos_platform_qualify homelab
 status=$?
 test "$status" -eq 7
@@ -239,6 +240,7 @@ source '{ROOT}/scripts/lib/eos/platform.sh'
 eos_platform_legacy_qualify() {{ return 0; }}
 eos_project_root() {{ echo '{ROOT}'; }}
 eos_runtime_dir() {{ echo '/dev/null/not-writable'; }}
+export EOS_AUTHORIZATION_MODE=rollback
 eos_platform_qualify homelab >/dev/null 2>&1
 test "$?" -eq 0
 """
