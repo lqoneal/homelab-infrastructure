@@ -206,6 +206,7 @@ class MissionExecutionRuntime:
         evidence_publisher=None,
         event_sink=None,
         operational_dispatch_enabled: bool = False,
+        operational_context_provider=None,
     ):
         self.root = Path(repository_root).resolve()
         self.store = store
@@ -228,6 +229,7 @@ class MissionExecutionRuntime:
         )
         self.event_sink = event_sink
         self.operational_dispatch_enabled = operational_dispatch_enabled
+        self.operational_context_provider = operational_context_provider
 
     def start(
         self,
@@ -446,6 +448,16 @@ class MissionExecutionRuntime:
                 "EXECUTION_HANDLER_UNAVAILABLE",
                 "no controlled execution handler is configured",
             )
+        operational_context = None
+        if state["mode"] == "operational":
+            if self.operational_context_provider is None:
+                raise ExecutionBlocked(
+                    "OPERATIONAL_CONTEXT_UNAVAILABLE",
+                    "no operational execution context provider is configured",
+                )
+            operational_context = self.operational_context_provider(
+                deepcopy(state), deepcopy(wop)
+            )
         try:
             return framework.execute(
                 mode=state["mode"],
@@ -468,6 +480,7 @@ class MissionExecutionRuntime:
                     and item["payload"].get("gate_id") == gate_id
                 )
                 - 1,
+                "operational_context": operational_context,
                 "at": self._time(at),
                 },
             )

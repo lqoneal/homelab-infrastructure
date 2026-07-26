@@ -1,0 +1,19 @@
+handler_id: zeus.operational.artifact
+version: 1.0.0
+api_version: zeus-gate-handler/1
+modes:
+- operational
+gates:
+- EXECUTE_WORK
+- VERIFY_COMPLETION
+capabilities:
+- action-checkpoints
+- artifact-create
+- artifact-verify
+- cancellation
+- deterministic
+- idempotent
+- restartable
+- structured-evidence
+- verification-first
+mutating: true
