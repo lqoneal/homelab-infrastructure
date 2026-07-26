@@ -1,0 +1,71 @@
+schema_version: 1
+title: Shadow Authorization Decision Record
+type: object
+required:
+  - schema_version
+  - evaluation_id
+  - evaluation_timestamp
+  - repository_identity
+  - repository_baseline_commit
+  - authority_node
+  - authority_chain
+  - mission
+  - phase
+  - work_item
+  - wop_id
+  - execution_context
+  - requested_capabilities
+  - resolved_capabilities
+  - authorized_effects
+  - prohibited_effects
+  - prerequisite_evaluation
+  - dependency_evaluation
+  - lease_status
+  - receipt_status
+  - signature_status
+  - legacy_authorization_decision
+  - zeus_authorization_decision
+  - agreement_status
+  - disagreement_classification
+  - first_divergent_decision_point
+  - structured_reason_code
+  - decision_digest
+  - software_versions
+  - shadow_only
+  - enforcement_authority
+  - enforcement_decision
+properties:
+  schema_version: {const: 1}
+  evaluation_id: {type: string, pattern: '^ADR-[0-9a-f-]{36}$'}
+  evaluation_timestamp: {type: string}
+  repository_identity: {type: string}
+  repository_baseline_commit: {type: string}
+  authority_node: {type: string}
+  authority_chain: {type: array}
+  mission: {type: string}
+  phase: {type: string}
+  work_item: {type: string}
+  wop_id: {type: string}
+  execution_context: {type: object}
+  requested_capabilities: {type: array}
+  resolved_capabilities: {type: array}
+  authorized_effects: {type: array}
+  prohibited_effects: {type: array}
+  prerequisite_evaluation: {type: object}
+  dependency_evaluation: {type: object}
+  lease_status: {enum: [VALID, INVALID_OR_ABSENT]}
+  receipt_status: {enum: [VALID, INVALID_OR_ABSENT]}
+  signature_status: {enum: [VALID, INVALID_OR_ABSENT]}
+  legacy_authorization_decision: {enum: [AUTHORIZED, REJECTED]}
+  zeus_authorization_decision: {type: string}
+  agreement_status: {enum: [AGREEMENT, DISAGREEMENT]}
+  disagreement_classification:
+    enum: [NONE, LEGACY_ALLOW_ZEUS_DENY, LEGACY_DENY_ZEUS_ALLOW]
+  first_divergent_decision_point: {type: string}
+  structured_reason_code: {type: string}
+  decision_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+  software_versions: {type: object}
+  shadow_only: {const: true}
+  enforcement_authority: {const: LEGACY}
+  enforcement_decision: {enum: [AUTHORIZED, REJECTED]}
+additionalProperties: false

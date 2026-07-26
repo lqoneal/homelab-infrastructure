@@ -1,0 +1,18 @@
+schema_version: 1
+scenarios:
+  - id: legacy-allow-zeus-allow
+    legacy_authorized: true
+    requested_effects: [verify-compatibility]
+    expected_agreement: AGREEMENT
+  - id: legacy-deny-zeus-deny
+    legacy_authorized: false
+    requested_effects: [execute-production]
+    expected_agreement: AGREEMENT
+  - id: legacy-allow-zeus-deny
+    legacy_authorized: true
+    requested_effects: [execute-production]
+    expected_agreement: DISAGREEMENT
+  - id: legacy-deny-zeus-allow
+    legacy_authorized: false
+    requested_effects: [verify-compatibility]
+    expected_agreement: DISAGREEMENT

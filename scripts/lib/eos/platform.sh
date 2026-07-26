@@ -48,7 +48,7 @@ eos_render_platform() {
     echo "  resume status doctor ssh checkpoint eos repository registry portfolio project queue milestone dependency defer context validate platform"
 }
 
-eos_platform_qualify() {
+eos_platform_legacy_qualify() {
     local project="${1:-homelab}"
     local root marker marker_path active=0
     root="$(eos_project_root "$project")"
@@ -97,6 +97,51 @@ eos_platform_qualify() {
     fi
 
     echo "Active Git Operation: none"
+}
+
+eos_shadow_authorize() {
+    local project="${1:-homelab}"
+    local legacy_status="${2:-1}"
+    local root tool output_dir legacy_decision
+    local -a arguments
+    root="$(eos_project_root "$project")"
+    tool="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/work-initiation-shadow"
+    output_dir="${EOS_SHADOW_ADR_DIR:-$(eos_runtime_dir)/authorization-decisions}"
+    legacy_decision="rejected"
+    [[ "$legacy_status" -eq 0 ]] && legacy_decision="authorized"
+    arguments=(
+        --repository "$root"
+        --legacy-decision "$legacy_decision"
+        --output-directory "$output_dir"
+    )
+    [[ -n "${EOS_SHADOW_EVALUATION_TIME:-}" ]] \
+        && arguments+=(--at "$EOS_SHADOW_EVALUATION_TIME")
+    [[ -n "${EOS_SHADOW_AUTHORITY_GRAPH:-}" ]] \
+        && arguments+=(--authority-graph "$EOS_SHADOW_AUTHORITY_GRAPH")
+    [[ -n "${EOS_SHADOW_WOP:-}" ]] && arguments+=(--wop "$EOS_SHADOW_WOP")
+    [[ -n "${EOS_SHADOW_STATE:-}" ]] && arguments+=(--state "$EOS_SHADOW_STATE")
+    [[ -n "${EOS_SHADOW_RECEIPT:-}" ]] \
+        && arguments+=(--receipt "$EOS_SHADOW_RECEIPT")
+    [[ -n "${EOS_SHADOW_LEASE:-}" ]] && arguments+=(--lease "$EOS_SHADOW_LEASE")
+    [[ -n "${EOS_SHADOW_REVOCATION:-}" ]] \
+        && arguments+=(--revocation "$EOS_SHADOW_REVOCATION")
+    [[ -n "${EOS_SHADOW_EXPECTED_AUTHORITY:-}" ]] \
+        && arguments+=(--expected-authority "$EOS_SHADOW_EXPECTED_AUTHORITY")
+
+    echo
+    echo "Shadow Authorization Mode:"
+    if ! "$tool" "${arguments[@]}"; then
+        echo "WARN: shadow authorization record generation failed" >&2
+        return 1
+    fi
+}
+
+eos_platform_qualify() {
+    local project="${1:-homelab}"
+    local legacy_status=0
+    eos_platform_legacy_qualify "$project" || legacy_status=$?
+    eos_shadow_authorize "$project" "$legacy_status" || true
+    return "$legacy_status"
 }
 
 eos_platform_validate() {

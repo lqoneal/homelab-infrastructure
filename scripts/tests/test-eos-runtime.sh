@@ -215,6 +215,8 @@ grep -Fq "homelab" <<<"$inventory_output"
 qualification_output="$(eos_platform_qualify homelab)"
 grep -Fq "Active Git Operation: none" <<<"$qualification_output"
 grep -Fq "SSH Agent:" <<<"$qualification_output"
+grep -Fq "Shadow Authorization Mode:" <<<"$qualification_output"
+[[ "$(find "$(eos_runtime_dir)/authorization-decisions" -type f | awk 'END { print NR + 0 }')" -eq 1 ]]
 
 agent_output="$(eos_ssh_agent_state)"
 [[ -n "$agent_output" ]]
