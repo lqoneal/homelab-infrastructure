@@ -1,20 +1,20 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 6.7
+version: 6.8
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-25
+last_updated: 2026-07-26
 mission: Zeus Operational Alpha
 phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@6.6
+predecessor_revision: PROJ-0001@6.7
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
 approval_reference: PHASE-0001
-approval_date: 2026-07-25
+approval_date: 2026-07-26
 persistence_status: Persisted
 source_of_truth: true
 declared_deferrals:
@@ -338,17 +338,19 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-Complete the Zeus Operational Alpha authority reconciliation defined by
-PHASE-0001. Align Project State, Work Registry, DOC-0001, roadmap
-interpretation, derived resume context, and Work Initiation without implementing
-Zeus runtime behavior.
+Preserve the qualified Zeus Operational Alpha P0/P1 baseline established by
+repository reconciliation mission ZEUS-REPO-R1. Zeus P0 operational bootstrap
+and P1 operator-interface work are complete. The local Zeus/EMP history and the
+five remote governance commits are joined by a history-preserving merge without
+changing the substance of either history.
 
 **Next Immediate Step:**
 
-After Mission B is committed and every authority and repository validation gate
-passes, issue Mission C — Zeus Operational Alpha Capability Discovery as a
-separately bounded, read-only mission. Do not begin Zeus runtime implementation
-or Work Package execution.
+No Zeus P2 work has started. Any Zeus P2 planning or implementation requires a
+separately authorized mission after this reconciled baseline is accepted.
+Governance work remains frozen by default; the imported governance records do
+not authorize deferred governance development, architecture redesign, or a new
+execution scope.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -619,3 +621,4 @@ When resuming this project:
 | 6.5     | 2026-07-21 | Reconciled completed EENS repository convergence, qualified Operational Alpha service discovery, canonical source, LOpi deployment, preserved history, and deferred HNS expansion. |
 | 6.6     | 2026-07-25 | Established PHASE-0001 Zeus Operational Alpha authority, closed EENS convergence as historical work, aligned the resume point to Mission C capability discovery, and prohibited Zeus runtime implementation. |
 | 6.7     | 2026-07-25 | Qualified the bounded Zeus global launcher and first-100-invocation operator orientation, kept operator-interface state separate from orchestration state, and preserved all approval, WOP, execution, qualification, and reconciliation authority boundaries. |
+| 6.8     | 2026-07-26 | Recorded qualified ZEUS-REPO-R1 mainline reconciliation, preserved completed Zeus P0/P1 and the remote governance history, kept governance frozen by default, and confirmed that Zeus P2 has not started. |
