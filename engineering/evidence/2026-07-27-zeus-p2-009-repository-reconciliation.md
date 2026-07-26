@@ -2,7 +2,7 @@
 
 Date: 2026-07-27
 Phase: 0 — mandatory pre-implementation reconciliation
-Status: GROUPS A-C COMMITTED; GROUP D READY FOR PUBLICATION
+Status: COMPLETE — published qualified baseline established
 
 ## Repository identity and topology
 
@@ -193,5 +193,12 @@ Committed groups:
 | --- | --- | --- |
 | A | `1f548817f769c0671274de0ace4e4818f0fd80dd` | PASS |
 | B | `3577615c55b2d48d6e1926c49fc02276ecd652f6` | PASS |
-| C | `e558ff0` | PASS |
-| D | this reconciliation commit | pending staged verification |
+| C | `e558ff00798f824b56e0d5955f15efc12fac1de1` | PASS |
+| D | `3497d29067530c32fbdc52e245191f05b3a8bd63` | PASS |
+
+The non-force push updated `origin/main` from `5ebaa32` through `3497d29`.
+After publication, local `main`, `origin/main`, and `origin/HEAD` resolved to
+`3497d29067530c32fbdc52e245191f05b3a8bd63`; ahead/behind was `0/0`, the
+working tree was clean, and all four operational configuration switches
+remained false. This commit is the qualified implementation baseline for
+P2-009.

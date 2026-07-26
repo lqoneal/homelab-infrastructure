@@ -68,6 +68,13 @@ idempotency keys, and an EENS append-only event adapter. Qualification performs
 a complete non-mutating simulation. Operational execution stops at the
 disabled dispatch boundary; no production handler or activation was added.
 
+ZEUS-P2-009 first publishes P2-002 through P2-008 as four verified commits at
+qualified baseline `3497d29067530c32fbdc52e245191f05b3a8bd63`. It then adds a
+manifest-discovered gate-handler registry, stable API and capability
+negotiation, verification-first lifecycle, deterministic skip semantics,
+subprocess timeout/failure isolation, and a non-mutating qualification
+handler. No operational handler or dispatcher is included.
+
 Remaining separately controlled work:
 
 - controlled enrollment of authentic owner public keys;

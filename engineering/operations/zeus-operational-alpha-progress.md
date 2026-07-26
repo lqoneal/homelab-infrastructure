@@ -1,7 +1,7 @@
 # Zeus Operational Alpha Progress
 
 Date: 2026-07-26
-Current completed mission: `ZEUS-P2-008-MISSION-EXECUTION-RUNTIME`
+Current completed mission: `ZEUS-P2-009-OPERATIONAL-GATE-HANDLER-FRAMEWORK`
 Resume status: qualified implementation candidate in the working tree
 
 ## Mission tracker
@@ -18,6 +18,7 @@ Resume status: qualified implementation candidate in the working tree
 | ZEUS-P2-006 Authority Owner Enrollment Toolkit | Implemented and qualified; genuine owner artifacts still required | `engineering/evidence/2026-07-26-zeus-p2-006-completion-report.md` |
 | ZEUS-P2-007 Mission Admission Runtime Integration | Implemented and qualified; production remains fail closed | `engineering/evidence/2026-07-26-zeus-p2-007-completion-report.md` |
 | ZEUS-P2-008 Mission Execution Runtime | Implemented and qualified in non-mutating qualification mode; operational dispatch disabled | `engineering/evidence/2026-07-27-zeus-p2-008-completion-report.md` |
+| ZEUS-P2-009 Gate Handler Framework and Baseline Reconciliation | P2-002–P2-008 baseline published; pluggable verification-first framework qualified | `engineering/evidence/2026-07-27-zeus-p2-009-completion-report.md` |
 
 ## Resume point
 
@@ -67,6 +68,9 @@ reconciliation authority.
   no production dispatcher.
 - P1: define artifact-store retention and external-effect compensation
   contracts for future operational gate handlers.
+- P1: design cooperative mid-call cancellation transport with the first
+  separately authorized operational handler; process termination is sufficient
+  for the non-mutating qualification handler only.
 - P1: qualify source-specific read adapters when Mission Registry, Governance,
   repository identity, and identity-provider services expose durable APIs.
 - P1: complete supervised end-to-end negative and rollback qualification before

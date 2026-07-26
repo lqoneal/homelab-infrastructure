@@ -27,8 +27,9 @@ def fresh_registry():
 
 registry = fresh_registry()
 assert registry.validate() == []
-assert len(registry.objects) == 66
+assert len(registry.objects) == 67
 assert {
+    "EMP-WORK-ZEUS-P2-009-GATE-HANDLER-FRAMEWORK",
     "EMP-WORK-ZEUS-P2-008-MISSION-EXECUTION-RUNTIME",
     "EMP-WORK-ZEUS-P2-007-MISSION-ADMISSION-RUNTIME",
     "EMP-WORK-ZEUS-P2-006-OWNER-ENROLLMENT-TOOLKIT",

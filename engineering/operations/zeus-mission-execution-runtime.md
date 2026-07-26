@@ -59,10 +59,14 @@ uses the current gate and completed checkpoints to retry only incomplete work.
 A handler must use the supplied idempotency key when it can create external
 effects.
 
+Handler discovery, registration, capability negotiation, compatibility,
+verification-first lifecycle, isolation, and extension rules are defined in
+`engineering/operations/zeus-operational-gate-handler-framework.md`.
+
 ## Qualification execution
 
 Qualification admissions ending in `QUALIFICATION_ONLY` may traverse the full
-execution state machine. The built-in qualification handler performs no
+execution state machine. The manifest-discovered qualification handler performs no
 external side effects, submission, or dispatch:
 
 ```text
