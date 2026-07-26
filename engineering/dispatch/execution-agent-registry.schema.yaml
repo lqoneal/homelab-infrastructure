@@ -1,0 +1,8 @@
+schema_version: 1
+title: EMP Qualified Execution Agent Registry
+type: object
+required: [schema_version, agents]
+properties:
+  schema_version: {const: 1}
+  agents: {type: array}
+additionalProperties: false

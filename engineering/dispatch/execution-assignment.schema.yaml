@@ -1,0 +1,20 @@
+schema_version: 1
+title: EMP Execution Assignment
+type: object
+required:
+  - schema_version
+  - assignment_id
+  - mission_id
+  - wop_id
+  - repository_identity
+  - baseline_commit
+  - authority_chain
+  - authorization_decision_record
+  - wop_digest
+  - required_capabilities
+  - intended_execution_agent
+  - expected_evidence_requirements
+  - dispatch_timestamp
+  - assignment_checksum
+  - human_approval_reference
+additionalProperties: false

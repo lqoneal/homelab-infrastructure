@@ -1,0 +1,25 @@
+{
+  "agents": [
+    {
+      "identity": "supervised-agent-1",
+      "protocol_version": "ea-v1",
+      "qualification_status": "qualified",
+      "supported_capabilities": [
+        "execute"
+      ],
+      "supported_platform": "linux-amd64",
+      "trust_level": "supervised"
+    },
+    {
+      "identity": "suspended-agent",
+      "protocol_version": "ea-v1",
+      "qualification_status": "suspended",
+      "supported_capabilities": [
+        "execute"
+      ],
+      "supported_platform": "linux-amd64",
+      "trust_level": "supervised"
+    }
+  ],
+  "schema_version": 1
+}
