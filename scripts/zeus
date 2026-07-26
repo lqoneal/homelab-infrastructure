@@ -13,6 +13,10 @@ from scripts.lib.emp.operational_runtime import bootstrap, verify_authoritative_
 from scripts.lib.emp.operator_interface import ORIENTATION, OperatorInterfaceStore, initial_state, status as intro_status  # noqa: E402
 from scripts.lib.emp.reasoning import ContextManager, ConversationEngine, ReasoningError, WopGenerator, WopGuidanceService  # noqa: E402
 from scripts.lib.emp.wop_admission import load_submission  # noqa: E402
+from scripts.lib.emp.authority_resolution import AuthorityResolutionError, AuthorityResolutionRuntime, authoritative_source_path, load_authority_state  # noqa: E402
+from scripts.lib.emp.wop_service import OperationalWopService  # noqa: E402
+from scripts.lib.emp.mission_admission_runtime import AdmissionStateStore, MissionAdmissionError, MissionAdmissionRuntime  # noqa: E402
+from scripts.lib.emp.mission_execution_runtime import ExecutionStateStore, MissionExecutionError, MissionExecutionRuntime  # noqa: E402
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -71,7 +75,9 @@ def main(argv=None):
     validate=sub.add_parser("validate"); validate.add_argument("wop_package"); validate.add_argument("--repository", required=True)
     explain=sub.add_parser("explain"); explain.add_argument("subject", choices=("rejection",)); explain.add_argument("record")
     converse=sub.add_parser("converse"); converse.add_argument("request"); converse.add_argument("--context", type=Path, required=True); converse.add_argument("--repository"); converse.add_argument("--package"); converse.add_argument("--rejection")
-    generate=sub.add_parser("generate-wop"); generate.add_argument("intent"); generate.add_argument("--mission", required=True); generate.add_argument("--phase", required=True); generate.add_argument("--repository", required=True); generate.add_argument("--submitter", required=True); generate.add_argument("--approval-authority", required=True); generate.add_argument("--approval-reference", required=True); generate.add_argument("--approval-date", required=True); generate.add_argument("--authority-node", required=True); generate.add_argument("--adr", required=True); generate.add_argument("--immutable-wop", required=True)
+    generate=sub.add_parser("generate-wop"); generate.add_argument("intent"); generate.add_argument("--mode", choices=("qualification","operational"), default="qualification"); generate.add_argument("--mission", required=True); generate.add_argument("--phase"); generate.add_argument("--repository", required=True); generate.add_argument("--submitter"); generate.add_argument("--approval-authority"); generate.add_argument("--approval-reference"); generate.add_argument("--approval-date"); generate.add_argument("--authority-node"); generate.add_argument("--adr"); generate.add_argument("--immutable-wop"); generate.add_argument("--work-item"); generate.add_argument("--principal"); generate.add_argument("--at")
+    admit_mission=sub.add_parser("admit-mission"); admit_mission.add_argument("action", choices=("start","resume","status")); admit_mission.add_argument("--admission-id"); admit_mission.add_argument("--mode", choices=("qualification","operational")); admit_mission.add_argument("--intent"); admit_mission.add_argument("--mission"); admit_mission.add_argument("--phase"); admit_mission.add_argument("--work-item"); admit_mission.add_argument("--principal"); admit_mission.add_argument("--submitter"); admit_mission.add_argument("--repository", default=str(ROOT)); admit_mission.add_argument("--at"); admit_mission.add_argument("--max-stages", type=int)
+    execute_mission=sub.add_parser("execute-mission"); execute_mission.add_argument("action", choices=("start","resume","status","suspend","cancel")); execute_mission.add_argument("--admission-id"); execute_mission.add_argument("--execution-id"); execute_mission.add_argument("--reason", default="OPERATOR"); execute_mission.add_argument("--at"); execute_mission.add_argument("--max-gates", type=int)
     a=p.parse_args(arguments)
     if a.command is None:
         p.print_help()
@@ -112,9 +118,85 @@ def main(argv=None):
             package=load_submission(a.package) if a.package else None
             response=ConversationEngine().respond(a.request,repository=a.repository,package=package,rejection=a.rejection,status=o.status())
             ContextManager(a.context).record(a.request,response); emit(response)
-        elif a.command=="generate-wop": emit(WopGenerator().generate(intent=a.intent,mission_id=a.mission,phase_id=a.phase,repository_identity=a.repository,submitter_identity=a.submitter,approval_authority=a.approval_authority,approval_reference=a.approval_reference,approval_date=a.approval_date,authority_node_id=a.authority_node,adr_reference=a.adr,immutable_wop_reference=a.immutable_wop))
+        elif a.command=="admit-mission":
+            admission_directory=ROOT/".zeus/runtime/mission-admissions"
+            if os.environ.get("ZEUS_TESTING")=="1" and os.environ.get("ZEUS_ADMISSION_STORE"):
+                admission_directory=Path(os.environ["ZEUS_ADMISSION_STORE"])
+            admission_store=AdmissionStateStore(admission_directory)
+            if a.action=="status":
+                if not a.admission_id: raise MissionAdmissionError("--admission-id is required")
+                result=admission_store.load(a.admission_id)
+            else:
+                admission_runtime=MissionAdmissionRuntime(ROOT,admission_store)
+                if a.action=="start":
+                    result=admission_runtime.start({"mode":a.mode,"intent":a.intent,
+                        "mission_id":a.mission,"phase_id":a.phase,
+                        "work_item_id":a.work_item,"principal_id":a.principal,
+                        "submitter_identity":a.submitter,"repository":a.repository},
+                        at=now(a.at),max_stages=a.max_stages)
+                else:
+                    if not a.admission_id: raise MissionAdmissionError("--admission-id is required")
+                    result=admission_runtime.run(a.admission_id,at=now(a.at),max_stages=a.max_stages)
+            emit(result)
+            if result["status"]=="BLOCKED": return 78
+        elif a.command=="execute-mission":
+            admission_directory=ROOT/".zeus/runtime/mission-admissions"
+            execution_directory=ROOT/".zeus/runtime/mission-executions"
+            if os.environ.get("ZEUS_TESTING")=="1":
+                if os.environ.get("ZEUS_ADMISSION_STORE"): admission_directory=Path(os.environ["ZEUS_ADMISSION_STORE"])
+                if os.environ.get("ZEUS_EXECUTION_STORE"): execution_directory=Path(os.environ["ZEUS_EXECUTION_STORE"])
+            execution_store=ExecutionStateStore(execution_directory)
+            execution_runtime=MissionExecutionRuntime(ROOT,execution_store,AdmissionStateStore(admission_directory))
+            if a.action=="start":
+                if not a.admission_id: raise MissionExecutionError("--admission-id is required")
+                result=execution_runtime.start(a.admission_id,at=now(a.at),max_gates=a.max_gates)
+            elif a.action=="status":
+                if not a.execution_id: raise MissionExecutionError("--execution-id is required")
+                result=execution_store.load(a.execution_id)
+            elif a.action=="resume":
+                if not a.execution_id: raise MissionExecutionError("--execution-id is required")
+                result=execution_runtime.resume(a.execution_id,at=now(a.at),max_gates=a.max_gates)
+            elif a.action=="suspend":
+                if not a.execution_id: raise MissionExecutionError("--execution-id is required")
+                result=execution_runtime.suspend(a.execution_id,at=now(a.at),reason=a.reason)
+            else:
+                if not a.execution_id: raise MissionExecutionError("--execution-id is required")
+                result=execution_runtime.cancel(a.execution_id,at=now(a.at),reason=a.reason)
+            emit(result)
+            if result["state"] in ("Waiting","Failed"): return 78
+        elif a.command=="generate-wop":
+            if a.mode=="qualification":
+                if any((a.work_item,a.principal,a.at)):
+                    raise ReasoningError("operational selectors are not valid in qualification mode")
+                emit(WopGenerator().generate(intent=a.intent,mission_id=a.mission,
+                    phase_id=a.phase or "QUALIFICATION-PHASE",repository_identity=a.repository,
+                    submitter_identity=a.submitter or "qualification-operator",
+                    approval_authority=a.approval_authority or "PLACEHOLDER-APPROVAL-AUTHORITY",
+                    approval_reference=a.approval_reference or "PLACEHOLDER-APPROVAL-REFERENCE",
+                    approval_date=a.approval_date or "1970-01-01",
+                    authority_node_id=a.authority_node or "PLACEHOLDER-AUTHORITY-NODE",
+                    adr_reference=a.adr or "PLACEHOLDER-ADR",
+                    immutable_wop_reference=a.immutable_wop or "PLACEHOLDER-IMMUTABLE-WOP"))
+            else:
+                forbidden=(a.phase,a.submitter,a.approval_authority,a.approval_reference,
+                    a.approval_date,a.authority_node,a.adr,a.immutable_wop)
+                if any(value is not None for value in forbidden):
+                    raise AuthorityResolutionError("operational mode rejects caller-supplied authority fields")
+                if not a.work_item or not a.principal:
+                    raise AuthorityResolutionError("operational mode requires --work-item and --principal")
+                repository=Path(a.repository).resolve()
+                resolved_at=now(a.at)
+                source_path=authoritative_source_path(repository)
+                if os.environ.get("ZEUS_TESTING")=="1" and os.environ.get("ZEUS_AUTHORITY_STATE"):
+                    source_path=Path(os.environ["ZEUS_AUTHORITY_STATE"])
+                bundle=AuthorityResolutionRuntime(repository,
+                    load_authority_state(source_path)).resolve(
+                        mission_id=a.mission,work_item_id=a.work_item,
+                        principal_id=a.principal,issued_at=resolved_at)
+                emit(OperationalWopService().generate(intent=a.intent,bundle=bundle,
+                    repository_root=repository,at=resolved_at))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (OrchestrationError, ReasoningError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+    except (OrchestrationError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr); return 78
 if __name__ == "__main__": raise SystemExit(main())

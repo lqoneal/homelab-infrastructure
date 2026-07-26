@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+"""Operator interface for the Zeus Mission Execution Runtime."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from scripts.lib.emp.mission_admission_runtime import AdmissionStateStore  # noqa: E402
+from scripts.lib.emp.mission_execution_runtime import (  # noqa: E402
+    ExecutionStateStore,
+    MissionExecutionError,
+    MissionExecutionRuntime,
+)
+
+
+def at(value):
+    parsed = (
+        datetime.fromisoformat(value.replace("Z", "+00:00"))
+        if value
+        else datetime.now(timezone.utc)
+    )
+    if parsed.tzinfo is None:
+        raise argparse.ArgumentTypeError("timestamp must include timezone")
+    return parsed
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(prog="mission-executionctl")
+    parser.add_argument(
+        "action", choices=("start", "resume", "status", "suspend", "cancel")
+    )
+    parser.add_argument("--admission-id")
+    parser.add_argument("--execution-id")
+    parser.add_argument("--reason", default="OPERATOR")
+    parser.add_argument("--at")
+    parser.add_argument("--max-gates", type=int)
+    parser.add_argument("--store", type=Path)
+    parser.add_argument("--admission-store", type=Path)
+    args = parser.parse_args(argv)
+    testing = os.environ.get("ZEUS_TESTING") == "1"
+    if (args.store or args.admission_store) and not testing:
+        parser.error("store overrides require ZEUS_TESTING=1")
+    execution_store = ExecutionStateStore(
+        args.store or ROOT / ".zeus/runtime/mission-executions"
+    )
+    admission_store = AdmissionStateStore(
+        args.admission_store or ROOT / ".zeus/runtime/mission-admissions"
+    )
+    runtime = MissionExecutionRuntime(ROOT, execution_store, admission_store)
+    timestamp = at(args.at)
+    try:
+        if args.action == "start":
+            if not args.admission_id:
+                raise MissionExecutionError("--admission-id is required")
+            result = runtime.start(
+                args.admission_id, at=timestamp, max_gates=args.max_gates
+            )
+        elif args.action == "status":
+            if not args.execution_id:
+                raise MissionExecutionError("--execution-id is required")
+            result = execution_store.load(args.execution_id)
+        elif args.action == "resume":
+            if not args.execution_id:
+                raise MissionExecutionError("--execution-id is required")
+            result = runtime.resume(
+                args.execution_id, at=timestamp, max_gates=args.max_gates
+            )
+        elif args.action == "suspend":
+            if not args.execution_id:
+                raise MissionExecutionError("--execution-id is required")
+            result = runtime.suspend(
+                args.execution_id, at=timestamp, reason=args.reason
+            )
+        else:
+            if not args.execution_id:
+                raise MissionExecutionError("--execution-id is required")
+            result = runtime.cancel(
+                args.execution_id, at=timestamp, reason=args.reason
+            )
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 78 if result["state"] in {"Waiting", "Failed"} else 0
+    except (MissionExecutionError, OSError, ValueError) as error:
+        print(f"FAIL: {error}", file=sys.stderr)
+        return 78
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
