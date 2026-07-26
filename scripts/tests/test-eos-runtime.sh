@@ -212,6 +212,7 @@ platform_output="$(eos_render_platform homelab)"
 grep -Fq "ENGINEERING PLATFORM" <<<"$platform_output"
 inventory_output="$(eos_platform_repository_inventory)"
 grep -Fq "homelab" <<<"$inventory_output"
+eos_wop_admission_require() { return 0; }
 qualification_output="$(EOS_AUTHORIZATION_MODE=rollback eos_platform_qualify homelab)"
 grep -Fq "Active Git Operation: none" <<<"$qualification_output"
 grep -Fq "SSH Agent:" <<<"$qualification_output"

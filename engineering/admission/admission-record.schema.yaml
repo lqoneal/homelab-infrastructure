@@ -1,0 +1,38 @@
+schema_version: 1
+title: Immutable WOP Admission Record
+type: object
+required:
+  - schema_version
+  - admission_id
+  - admission_decision
+  - evaluation_timestamp
+  - repository_identity
+  - wop_id
+  - mission_id
+  - submitter_identity
+  - submission_digest
+  - validation_summary
+  - validation_failures
+  - authoritative_references
+  - validator_version
+  - deterministic_checksum
+properties:
+  schema_version: {const: 1}
+  admission_id: {type: string, pattern: '^ADMISSION-[0-9a-f-]{36}$'}
+  admission_decision:
+    type: string
+    enum: [ACCEPTED, RESUBMISSION_REQUIRED]
+  evaluation_timestamp: {type: string}
+  repository_identity: {type: string}
+  wop_id: {type: string}
+  mission_id: {type: string}
+  submitter_identity: {type: string}
+  submission_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+  validation_summary: {type: object}
+  validation_failures: {type: array}
+  authoritative_references: {type: array}
+  validator_version: {const: '1'}
+  deterministic_checksum: {type: string, pattern: '^[0-9a-f]{64}$'}
+  required_submission_format: {type: object}
+  execution_status: {type: array}
+additionalProperties: false

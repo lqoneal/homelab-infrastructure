@@ -215,6 +215,7 @@ class WorkInitiationShadowTests(unittest.TestCase):
             script = f"""
 set +e
 source '{ROOT}/scripts/lib/eos/platform.sh'
+eos_wop_admission_require() {{ return 0; }}
 eos_platform_legacy_qualify() {{ return 7; }}
 eos_project_root() {{ echo '{ROOT}'; }}
 eos_runtime_dir() {{ echo '{directory}'; }}
@@ -237,6 +238,7 @@ test "$(find '{directory}/authorization-decisions' -type f | wc -l)" -eq 1
         script = f"""
 set +e
 source '{ROOT}/scripts/lib/eos/platform.sh'
+eos_wop_admission_require() {{ return 0; }}
 eos_platform_legacy_qualify() {{ return 0; }}
 eos_project_root() {{ echo '{ROOT}'; }}
 eos_runtime_dir() {{ echo '/dev/null/not-writable'; }}

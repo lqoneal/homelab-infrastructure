@@ -234,6 +234,7 @@ class WorkInitiationEnforcementTests(unittest.TestCase):
             script = f"""
 set +e
 source '{ROOT}/scripts/lib/eos/platform.sh'
+eos_wop_admission_require() {{ return 0; }}
 eos_platform_legacy_qualify() {{ return 0; }}
 eos_project_root() {{ echo '{ROOT}'; }}
 eos_runtime_dir() {{ echo '{directory}'; }}
@@ -293,6 +294,7 @@ test "$(find '{directory}/authorization-decisions' -name 'ADR-*.json' | wc -l)" 
             script = f"""
 set +e
 source '{ROOT}/scripts/lib/eos/platform.sh'
+eos_wop_admission_require() {{ return 0; }}
 eos_platform_legacy_qualify() {{ return 9; }}
 eos_project_root() {{ echo '{ROOT}'; }}
 eos_runtime_dir() {{ echo '{directory}'; }}

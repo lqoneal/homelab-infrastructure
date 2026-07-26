@@ -1,0 +1,36 @@
+schema_version: 1
+title: WOP Submission Admission Contract
+type: object
+required:
+  - schema_version
+  - document_type
+  - wop_id
+  - mission_id
+  - phase_id
+  - revision
+  - status
+  - title
+  - repository_identity
+  - submitter_identity
+  - approval
+  - execution_package_references
+  - authoritative_references
+  - sections
+  - submission_digest
+properties:
+  schema_version: {const: 1}
+  document_type: {const: EngineeringWorkOrder}
+  wop_id: {type: string, pattern: '^WOP-[0-9a-f-]{36}$'}
+  mission_id: {type: string}
+  phase_id: {type: string}
+  revision: {type: integer, minimum: 1}
+  status: {const: Active}
+  title: {type: string}
+  repository_identity: {type: string}
+  submitter_identity: {type: string}
+  approval: {type: object}
+  execution_package_references: {type: object}
+  authoritative_references: {type: array}
+  sections: {type: object}
+  submission_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+additionalProperties: false

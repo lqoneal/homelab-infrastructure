@@ -138,9 +138,29 @@ eos_work_initiation_authorize() {
     fi
 }
 
+eos_wop_admission_require() {
+    local project="${1:-homelab}"
+    local root tool record expected_wop
+    root="$(eos_project_root "$project")"
+    tool="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/wop-admissionctl"
+    record="${EOS_WOP_ADMISSION_RECORD:-}"
+    expected_wop="${EOS_WOP_ADMISSION_WOP_ID:-}"
+    if [[ -z "$record" ]]; then
+        echo "RESUBMISSION_REQUIRED: an ACCEPTED WOP Admission Record is required" >&2
+        return 78
+    fi
+    local -a arguments=(verify-record --record "$record" --repository "$root")
+    [[ -n "$expected_wop" ]] && arguments+=(--wop "$expected_wop")
+    if ! "$tool" "${arguments[@]}"; then
+        echo "RESUBMISSION_REQUIRED: WOP admission record is invalid or mismatched" >&2
+        return 78
+    fi
+}
+
 eos_platform_qualify() {
     local project="${1:-homelab}"
     local legacy_status=0 authorization_status=0 mode
+    eos_wop_admission_require "$project" || return 78
     eos_platform_legacy_qualify "$project" || legacy_status=$?
     mode="${EOS_AUTHORIZATION_MODE:-enforcement}"
     eos_work_initiation_authorize "$project" "$legacy_status" \
