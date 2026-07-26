@@ -1,0 +1,19 @@
+schema_version: 1
+title: EMP Immutable WOP Completion Record
+type: object
+required:
+  - completion_id
+  - mission_id
+  - wop_id
+  - assignment_id
+  - execution_session_id
+  - qualification_report_id
+  - evidence_package_id
+  - repository_identity
+  - baseline_before_reconciliation
+  - baseline_after_reconciliation
+  - reconciliation_summary
+  - modified_authoritative_records
+  - completion_timestamp
+  - deterministic_digest
+additionalProperties: false

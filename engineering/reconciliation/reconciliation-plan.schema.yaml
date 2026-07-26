@@ -1,0 +1,12 @@
+schema_version: 1
+title: EMP Immutable Reconciliation Plan
+type: object
+required:
+  - plan_id
+  - originating_wop
+  - qualification_report_reference
+  - approval_reference
+  - declared_scope
+  - targets
+  - plan_digest
+additionalProperties: false
