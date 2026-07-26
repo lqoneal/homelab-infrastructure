@@ -385,21 +385,23 @@ class PublicationQualificationTests(unittest.TestCase):
         with self.assertRaises(AuthorityPublicationError):
             self.framework.verify_readiness(self.transaction, at=AT)
 
-    def test_unconfigured_repository_trust_policy_blocks_publication(self):
-        with self.assertRaisesRegex(AuthorityPublicationError, "not configured"):
-            AuthorityPublicationFramework(
-                ROOT,
-                policy_path=ROOT / "engineering/authority/owner-trust-policy.yaml",
-            )
+    def test_configured_repository_trust_policy_loads(self):
+        framework = AuthorityPublicationFramework(
+            ROOT,
+            policy_path=ROOT / "engineering/authority/owner-trust-policy.yaml",
+        )
+        self.assertEqual(
+            set(framework.policy.value["owners"]), {"Lawrence O'Neal"}
+        )
 
-    def test_production_commissioning_status_is_blocked_without_owner_inputs(self):
+    def test_production_commissioning_status_is_blocked_without_publications(self):
         status = commissioning_status(ROOT)
         self.assertEqual(status["commissioning_state"], "BLOCKED")
-        self.assertFalse(status["trust_policy_configured"])
+        self.assertTrue(status["trust_policy_configured"])
         self.assertFalse(status["authority_source_configured"])
-        self.assertEqual(status["allowed_signer_count"], 0)
+        self.assertEqual(status["allowed_signer_count"], 1)
         codes = {item["code"] for item in status["blockers"]}
-        self.assertIn("OWNER_TRUST_NOT_ENROLLED", codes)
+        self.assertNotIn("OWNER_TRUST_NOT_ENROLLED", codes)
         self.assertIn("REQUIRED_RECORD_COLLECTION_EMPTY", codes)
 
 

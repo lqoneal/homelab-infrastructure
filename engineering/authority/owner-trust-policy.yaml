@@ -1,13 +1,17 @@
 schema_version: 1
-operationally_configured: false
+operationally_configured: true
 signature_namespace: zeus-authority-publication
 allowed_signers_file: engineering/authority/allowed-signers
-owners: {}
-status: awaiting-owner-key-publication
+owners:
+  Lawrence O'Neal:
+    principals:
+      - loneal
+source_registry_digest: 34564b809340d0c7efc85ef9e125756471d5edb5be212db8b962401eabd629c8
+status: production-owner-trust-configured
 production_owner: Lawrence O'Neal
 production_principal: loneal
 description: >-
   Repository-fixed trust policy for operational authority publication.
   Lawrence O'Neal is the sole production owner and loneal is the production
-  principal. No trusted key is checked in; publication and activation therefore
-  fail closed until the authentic public key is enrolled.
+  principal. Production trust was compiled from owner enrollment registry
+  revision 1 by ZEUS-P2-014.

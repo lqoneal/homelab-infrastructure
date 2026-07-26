@@ -115,6 +115,9 @@ class OwnerEnrollmentTests(unittest.TestCase):
         )
 
     def test_public_keys_enroll_with_external_authorization_and_compile(self):
+        production_policy = (
+            ROOT / "engineering/authority/owner-trust-policy.yaml"
+        ).read_bytes()
         for index, owner in enumerate(sorted(REQUIRED_OWNERS), start=1):
             self.enroll(owner, f"owner-{index}", self.key(f"owner-{index}"))
         status = self.registry.verify()
@@ -125,10 +128,9 @@ class OwnerEnrollmentTests(unittest.TestCase):
         self.assertTrue(policy["operationally_configured"])
         self.assertTrue(policy["candidate_only"])
         self.assertEqual(set(policy["owners"]), REQUIRED_OWNERS)
-        self.assertFalse(
-            (ROOT / "engineering/authority/owner-trust-policy.yaml").read_text()
-            .splitlines()[1]
-            .endswith("true")
+        self.assertEqual(
+            (ROOT / "engineering/authority/owner-trust-policy.yaml").read_bytes(),
+            production_policy,
         )
 
     def test_rotation_suspension_and_retirement_are_authorized(self):
@@ -238,11 +240,11 @@ class OwnerEnrollmentTests(unittest.TestCase):
 
     def test_diagnostics_distinguish_enrollment_and_publication_blockers(self):
         owner_status = enrollment_status(ROOT)
-        self.assertFalse(owner_status["trust_compilation_ready"])
+        self.assertTrue(owner_status["trust_compilation_ready"])
         status = commissioning_status(ROOT)
         codes = {item["code"] for item in status["blockers"]}
-        self.assertIn("ENROLLMENT_ROOT_NOT_CONFIGURED", codes)
-        self.assertIn("OWNER_ENROLLMENT_MISSING", codes)
+        self.assertNotIn("ENROLLMENT_ROOT_NOT_CONFIGURED", codes)
+        self.assertNotIn("OWNER_ENROLLMENT_MISSING", codes)
         self.assertIn("UNSIGNED_PUBLICATION_MISSING", codes)
         self.assertIn("OPERATOR_APPROVAL_PUBLICATION_MISSING", codes)
 
