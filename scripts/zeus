@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+"""Minimal operator interface for supervised Zeus orchestration."""
+
+from __future__ import annotations
+import argparse, json, sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from scripts.lib.emp.orchestration import MissionOrchestrator, OrchestrationError, OrchestrationStore  # noqa: E402
+
+def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
+def emit(value): print(json.dumps(value, sort_keys=True))
+
+def main(argv=None):
+    p = argparse.ArgumentParser()
+    p.add_argument("--state", type=Path, required=True)
+    sub = p.add_subparsers(dest="command", required=True)
+    sub.add_parser("status")
+    submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository", required=True); submit.add_argument("--baseline", required=True); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append", required=True); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact", required=True); submit.add_argument("--affected-repository", action="append", required=True); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
+    missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
+    show = sub.add_parser("mission"); show.add_argument("action", choices=("show",)); show.add_argument("mission_id")
+    for decision in ("approve", "decline"):
+        q=sub.add_parser(decision); q.add_argument("approval_id"); q.add_argument("--operator", required=True); q.add_argument("--at")
+    execution=sub.add_parser("execution"); execution.add_argument("action", choices=("status",)); execution.add_argument("identifier")
+    evidence=sub.add_parser("evidence"); evidence.add_argument("action", choices=("show",)); evidence.add_argument("identifier")
+    qualification=sub.add_parser("qualification"); qualification.add_argument("action", choices=("show",)); qualification.add_argument("identifier")
+    completion=sub.add_parser("completion"); completion.add_argument("action", choices=("show",)); completion.add_argument("identifier")
+    sub.add_parser("resume")
+    policy=sub.add_parser("policy"); policy.add_argument("action", choices=("configure",)); policy.add_argument("policy_id")
+    a=p.parse_args(argv); o=MissionOrchestrator(OrchestrationStore(a.state))
+    try:
+        if a.command=="status" or a.command=="resume": emit(o.status())
+        elif a.command=="submit": emit(o.submit(admission_record=a.wop_package, repository_identity=a.repository, baseline_commit=a.baseline, priority=a.priority, staging_order=a.order, dependencies=a.dependency, required_approvals=a.approval, resources_available=a.resources_available, blocking_conditions=a.blocking_condition, estimated_impact=a.impact, affected_repositories=a.affected_repository, queue_timestamp=now(a.at)))
+        elif a.command=="missions" and a.action=="list":
+            if a.repository and a.baseline: o.evaluate(observed_repository=a.repository, observed_baseline=a.baseline, completed_missions=a.completed)
+            emit(o.data["missions"])
+        elif a.command=="missions": emit(o.select(policy_id=a.policy, timestamp=now(a.at)).data)
+        elif a.command=="mission": emit(o.data["missions"][a.mission_id])
+        elif a.command in ("approve","decline"): emit(o.decide(a.approval_id, a.command.upper(), operator=a.operator, timestamp=now(a.at)))
+        elif a.command=="policy": o.configure_policy(a.policy_id); emit({"policy_id":a.policy_id})
+        else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
+        return 0
+    except (OrchestrationError, KeyError, OSError, json.JSONDecodeError) as error:
+        print(f"FAIL: {error}", file=sys.stderr); return 78
+if __name__ == "__main__": raise SystemExit(main())

@@ -1,0 +1,15 @@
+schema_version: 1
+title: Selection Decision Record
+type: object
+required: [selection_id, selected_mission, eligible_mission_set, rejected_mission_set, dependency_evaluations, priority_evaluations, policy_evaluations, timestamp, checksum]
+properties:
+  selection_id: {type: string}
+  selected_mission: {type: string}
+  eligible_mission_set: {type: array}
+  rejected_mission_set: {type: array}
+  dependency_evaluations: {type: object}
+  priority_evaluations: {type: object}
+  policy_evaluations: {type: object}
+  timestamp: {type: string}
+  checksum: {type: string, pattern: '^[0-9a-f]{64}$'}
+additionalProperties: false
