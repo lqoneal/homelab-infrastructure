@@ -1,7 +1,7 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 6.9
+version: 7.0
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,7 +9,7 @@ last_updated: 2026-07-27
 mission: Zeus Operational Alpha
 phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@6.8
+predecessor_revision: PROJ-0001@6.9
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -339,19 +339,19 @@ The side mission does not replace the current phase or primary task. It shall no
 **Current Task:**
 
 Preserve the published Zeus Operational Alpha runtime baseline established
-through ZEUS-P2-009 at commit
-`7a2e3967a96e949dac0cab2b0c49b8cd61bacf0e`. P2-002 through P2-009 are
+through ZEUS-P2-010 at commit
+`b93145fbe895a70325479232a3f3d8febb5f5d54`. P2-002 through P2-010 are
 implemented, qualified, reconciled, and published. Production commissioning
 and operational dispatch remain disabled pending authentic external authority
-and a separately qualified operational handler.
+and a separately controlled activation transaction.
 
 **Next Immediate Step:**
 
-Use `7a2e3967a96e949dac0cab2b0c49b8cd61bacf0e` as the implementation
-authority baseline for separately scoped ZEUS-P2-010. This project-state
-reconciliation records already-published engineering state only; it does not
-activate production, commission authority, approve a WOP, enable dispatch, or
-authorize deferred Governance work.
+Use `b93145fbe895a70325479232a3f3d8febb5f5d54` as the qualified
+implementation baseline for future separately scoped Zeus work. This
+project-state reconciliation records already-published engineering state only;
+it does not activate production, commission authority, approve a WOP, enable
+dispatch, or authorize deferred Governance work.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -370,7 +370,7 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 
 | Domain | Reconciled state |
 | --- | --- |
-| Zeus Operational Alpha runtime | P2-002 through P2-009 qualified and published at `7a2e3967a96e949dac0cab2b0c49b8cd61bacf0e`; production unconfigured and dispatch disabled |
+| Zeus Operational Alpha runtime | P2-002 through P2-010 qualified and published at `b93145fbe895a70325479232a3f3d8febb5f5d54`; operational handler present, production unconfigured, dispatch disabled |
 | Engineering Platform | Operational; aggregate validation qualified |
 | Storage qualification capability | Operational; SMART, stable identification, read-only filesystem inspection and mount control qualified |
 | Engineering Management Platform | Operational; validation qualified |
@@ -625,3 +625,4 @@ When resuming this project:
 | 6.7     | 2026-07-25 | Qualified the bounded Zeus global launcher and first-100-invocation operator orientation, kept operator-interface state separate from orchestration state, and preserved all approval, WOP, execution, qualification, and reconciliation authority boundaries. |
 | 6.8     | 2026-07-26 | Recorded qualified ZEUS-REPO-R1 mainline reconciliation, preserved completed Zeus P0/P1 and the remote governance history, kept governance frozen by default, and confirmed that Zeus P2 has not started. |
 | 6.9     | 2026-07-27 | Reconciled the published P2-002 through P2-009 Zeus runtime at qualified implementation baseline `7a2e3967a96e949dac0cab2b0c49b8cd61bacf0e` while preserving production commissioning, authority, approval, and dispatch blockers. |
+| 7.0     | 2026-07-27 | Reconciled the published P2-010 operational artifact handler and qualification at baseline `b93145fbe895a70325479232a3f3d8febb5f5d54` while preserving authentic commissioning and disabled production dispatch. |

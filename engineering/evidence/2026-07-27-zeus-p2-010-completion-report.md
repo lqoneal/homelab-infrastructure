@@ -1,7 +1,7 @@
 # ZEUS-P2-010 Completion Report
 
 Date: 2026-07-27
-Status: PASS — final publication pending
+Status: PASS — implementation and qualification published
 
 ## Outcome
 
@@ -76,3 +76,15 @@ fail-closed.
 Recommended follow-on work is a Mission Zero commissioning rehearsal using
 authentic owner-managed records and an explicitly non-dispatching readiness
 exercise.
+
+## Publication
+
+The implementation and qualification were published by non-force push:
+
+- `1350cfb8d4a8a184f1630a8d823f410d74836db9` — operational handler,
+  execution context, runtime integration, and tests
+- `b93145fbe895a70325479232a3f3d8febb5f5d54` — documentation, evidence,
+  roadmap, progress, and registry reconciliation
+
+PROJ-0001 v7.0 records `b93145f` as the resulting qualified implementation
+baseline. The project-state closeout itself grants no production authority.
