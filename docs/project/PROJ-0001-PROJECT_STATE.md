@@ -1,7 +1,7 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 6.6
+version: 6.7
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,7 +9,7 @@ last_updated: 2026-07-25
 mission: Zeus Operational Alpha
 phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@6.5
+predecessor_revision: PROJ-0001@6.6
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -144,13 +144,14 @@ Build the Engineering Operating System foundation for AI Assistant, SprinterOS, 
 
 **Current Overall Goal:**
 
-Establish and preserve Zeus Operational Alpha as the single current Homelab
-engineering mission authority, with Project State, Work Registry, roadmap,
-resume, and Work Initiation in agreement before implementation-adjacent
-capability discovery begins.
+Operate the bounded Zeus Operational Alpha foundation with a qualified
+repository-local runtime and operator interface while preserving the separation
+between presentation, orchestration state, and every approval or execution
+authority.
 
-No Zeus runtime implementation, production modification, autonomous execution,
-feature development, or Work Package execution is authorized.
+Mission ZEUS-P1-OPERATOR-INTERFACE qualifies only the global launcher and
+first-100-invocation orientation. It does not dispatch a mission, grant
+approval, relax WOP admission, or create execution authority.
 
 ---
 
@@ -162,19 +163,20 @@ Zeus Operational Alpha
 
 **Phase Objective:**
 
-Establish the PHASE-0001 Zeus Operational Alpha authority baseline and prepare
-the portfolio for a separately authorized, read-only capability-discovery
-mission.
+Preserve the PHASE-0001 Zeus Operational Alpha authority boundary while
+qualifying bounded operator access to the already implemented supervised
+orchestration interface.
 
 MISSION-000007 EENS Repository Convergence is completed historical work. EENS
 Operational Alpha remains implemented and qualified on LOpi, with
 `services/eens` as canonical source. Its history, evidence, milestones,
 provenance, runtime behavior, and deferred HNS boundary remain intact.
 
-Mission C — Zeus Operational Alpha Capability Discovery is the next eligible
-mission after this reconciliation passes and is committed. Mission C may
-produce an implementation baseline and Work Package architecture, but it may
-not modify production runtime.
+The ZEUS-P1 operator-interface mission is complete in the current worktree:
+launcher reconciliation, orientation state, regression qualification,
+operational documentation, and closeout evidence are present. The next mission
+must remain separately authorized and must not infer approval or execution
+authority from this interface.
 
 ---
 
@@ -616,3 +618,4 @@ When resuming this project:
 | 6.4     | 2026-07-18 | Recorded SPEC-0009 Version 1.6 Known/Unknown/Decision methodology: Phase 1 establishes facts, Phase 2 resolves evidence-based decisions, and Phase 3 implements reviewed decisions without changing roadmap sequencing or scope. |
 | 6.5     | 2026-07-21 | Reconciled completed EENS repository convergence, qualified Operational Alpha service discovery, canonical source, LOpi deployment, preserved history, and deferred HNS expansion. |
 | 6.6     | 2026-07-25 | Established PHASE-0001 Zeus Operational Alpha authority, closed EENS convergence as historical work, aligned the resume point to Mission C capability discovery, and prohibited Zeus runtime implementation. |
+| 6.7     | 2026-07-25 | Qualified the bounded Zeus global launcher and first-100-invocation operator orientation, kept operator-interface state separate from orchestration state, and preserved all approval, WOP, execution, qualification, and reconciliation authority boundaries. |

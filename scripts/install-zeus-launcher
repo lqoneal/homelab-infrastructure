@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+"""Install, verify, or safely remove the per-user Zeus launcher."""
+
+from __future__ import annotations
+
+import os
+import sys
+from pathlib import Path
+
+REPOSITORY = Path(__file__).resolve().parents[1]
+SOURCE = (REPOSITORY / "scripts/zeus").resolve()
+BIN = Path.home() / ".local/bin"
+LAUNCHER = BIN / "zeus"
+
+
+def fail(message: str) -> int:
+    print(f"FAIL: {message}", file=sys.stderr)
+    return 78
+
+
+def correct() -> bool:
+    return LAUNCHER.is_symlink() and LAUNCHER.resolve() == SOURCE
+
+
+def path_has_bin() -> bool:
+    return any(Path(item).expanduser() == BIN for item in os.environ.get("PATH", "").split(":"))
+
+
+def main(argv: list[str]) -> int:
+    action = argv[1] if len(argv) == 2 else ""
+    if action not in {"install", "verify", "remove"}:
+        print("usage: install-zeus-launcher {install|verify|remove}", file=sys.stderr)
+        return 64
+    if action != "remove" and not path_has_bin():
+        return fail(f"{BIN} is not present in PATH")
+    if not SOURCE.is_file() or not os.access(SOURCE, os.X_OK):
+        return fail(f"authoritative Zeus CLI is not executable: {SOURCE}")
+    if action == "install":
+        if correct():
+            print(f"launcher already correct: {LAUNCHER} -> {SOURCE}")
+            return 0
+        if LAUNCHER.exists() or LAUNCHER.is_symlink():
+            return fail(f"refusing to replace conflicting launcher: {LAUNCHER}")
+        BIN.mkdir(parents=True, exist_ok=True)
+        LAUNCHER.symlink_to(SOURCE)
+        print(f"installed: {LAUNCHER} -> {SOURCE}")
+        return 0
+    if action == "verify":
+        if not correct():
+            return fail(f"launcher is missing or conflicting: {LAUNCHER}")
+        print(f"verified: {LAUNCHER} -> {SOURCE}")
+        return 0
+    if not (LAUNCHER.exists() or LAUNCHER.is_symlink()):
+        print(f"launcher already absent: {LAUNCHER}")
+        return 0
+    if not correct():
+        return fail(f"refusing to remove conflicting launcher: {LAUNCHER}")
+    LAUNCHER.unlink()
+    print(f"removed: {LAUNCHER}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv))

@@ -20,6 +20,23 @@ from scripts.lib.emp.wop_admission import verify_accepted_record
 class OrchestrationError(ValueError):
     """Fail-closed orchestration error."""
 
+ORCHESTRATION_SCHEMA_VERSION = 1
+ORCHESTRATION_KEYS = {
+    "schema_version", "missions", "selection_records",
+    "approval_requests", "configured_policy",
+}
+
+
+def empty_orchestration_state() -> dict[str, Any]:
+    """Return the one canonical initial state for the current store schema."""
+    return {
+        "schema_version": ORCHESTRATION_SCHEMA_VERSION,
+        "missions": {},
+        "selection_records": {},
+        "approval_requests": {},
+        "configured_policy": None,
+    }
+
 
 def canonical_json(value: Any) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
@@ -45,10 +62,7 @@ class OrchestrationStore:
 
     def load(self) -> dict[str, Any]:
         if not self.path.exists():
-            return {
-                "schema_version": 1, "missions": {}, "selection_records": {},
-                "approval_requests": {}, "configured_policy": None,
-            }
+            return empty_orchestration_state()
         try:
             value = json.loads(self.path.read_text())
         except (OSError, json.JSONDecodeError) as error:
@@ -274,10 +288,57 @@ class MissionOrchestrator:
         }
 
     def validate(self) -> None:
-        required = {"schema_version", "missions", "selection_records",
-                    "approval_requests", "configured_policy"}
-        if set(self._data) != required or self._data["schema_version"] != 1:
+        if self._data.get("schema_version") != ORCHESTRATION_SCHEMA_VERSION:
+            raise OrchestrationError(
+                f"incompatible orchestration schema version: "
+                f"expected {ORCHESTRATION_SCHEMA_VERSION}, "
+                f"found {self._data.get('schema_version')!r}"
+            )
+        if set(self._data) != ORCHESTRATION_KEYS:
             raise OrchestrationError("orchestration store shape is invalid")
+        if (
+            not isinstance(self._data["missions"], dict)
+            or not isinstance(self._data["selection_records"], dict)
+            or not isinstance(self._data["approval_requests"], dict)
+            or (
+                self._data["configured_policy"] is not None
+                and not isinstance(self._data["configured_policy"], str)
+            )
+        ):
+            raise OrchestrationError("orchestration store field types are invalid")
+        mission_required = {
+            "mission_id", "mission_state", "eligibility_state",
+            "approval_request_id", "queue_timestamp", "priority",
+            "staging_order",
+        }
+        for mission_id, mission in self._data["missions"].items():
+            if (
+                not isinstance(mission_id, str)
+                or not isinstance(mission, dict)
+                or not mission_required.issubset(mission)
+                or mission["mission_id"] != mission_id
+                or not isinstance(mission["mission_state"], str)
+                or mission["eligibility_state"] not in {"unknown", "eligible", "blocked"}
+                or not isinstance(mission["priority"], int)
+                or not isinstance(mission["staging_order"], int)
+            ):
+                raise OrchestrationError("orchestration store contains an invalid mission")
+        approval_required = {
+            "approval_request_id", "mission_id", "status", "history",
+        }
+        for approval_id, approval in self._data["approval_requests"].items():
+            if (
+                not isinstance(approval_id, str)
+                or not isinstance(approval, dict)
+                or not approval_required.issubset(approval)
+                or approval["approval_request_id"] != approval_id
+                or approval["mission_id"] not in self._data["missions"]
+                or approval["status"] not in {"PENDING", "APPROVED", "DECLINED"}
+                or not isinstance(approval["history"], list)
+            ):
+                raise OrchestrationError(
+                    "orchestration store contains an invalid approval request"
+                )
         for record in self._data["selection_records"].values():
             SelectionDecisionRecord(canonical_json(record)).validate()
 

@@ -10,5 +10,8 @@ __pycache__/
 
 *.pyc
 
+# Repository-local Zeus operational runtime (owned by the Zeus operator).
+.zeus/
+
 # Local Engineering Operations secrets
 /configs/notifications.env

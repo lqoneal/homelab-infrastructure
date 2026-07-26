@@ -2,13 +2,15 @@
 """Minimal operator interface for supervised Zeus orchestration."""
 
 from __future__ import annotations
-import argparse, json, sys
+import argparse, json, os, sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.lib.emp.orchestration import MissionOrchestrator, OrchestrationError, OrchestrationStore  # noqa: E402
+from scripts.lib.emp.operational_runtime import bootstrap, verify_authoritative_path  # noqa: E402
+from scripts.lib.emp.operator_interface import ORIENTATION, OperatorInterfaceStore, initial_state, status as intro_status  # noqa: E402
 from scripts.lib.emp.reasoning import ContextManager, ConversationEngine, ReasoningError, WopGenerator, WopGuidanceService  # noqa: E402
 from scripts.lib.emp.wop_admission import load_submission  # noqa: E402
 
@@ -16,10 +18,44 @@ def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if v
 def emit(value): print(json.dumps(value, sort_keys=True))
 
 def main(argv=None):
-    p = argparse.ArgumentParser()
-    p.add_argument("--state", type=Path, required=True)
-    sub = p.add_subparsers(dest="command", required=True)
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    override = "--state" in arguments or bool(os.environ.get("ZEUS_STATE"))
+    test_mode = os.environ.get("ZEUS_TESTING")
+    testing = test_mode is not None
+    operator_path = None
+    if testing:
+        configured = os.environ.get("ZEUS_OPERATOR_STATE")
+        if configured:
+            operator_path = Path(configured)
+    try:
+        interface_store = OperatorInterfaceStore(ROOT, operator_path)
+        interface_state = (
+            initial_state()
+            if override
+            else interface_store.load() if test_mode == "1" else interface_store.increment()
+        )
+        auto_intro = (
+            not override
+            and test_mode != "1"
+            and interface_state["invocation_count"] <= interface_state["orientation_limit"]
+            and os.environ.get("ZEUS_NO_INTRO") != "1"
+        )
+        if auto_intro:
+            print(ORIENTATION, file=sys.stderr)
+    except (OrchestrationError, OSError, json.JSONDecodeError, ValueError) as error:
+        print(f"FAIL: {error}", file=sys.stderr)
+        return 78
+
+    p = argparse.ArgumentParser(
+        prog="zeus",
+        description="Supervised Zeus engineering orchestration interface.",
+    )
+    p.add_argument("--state", type=Path, help="engineering/test state override")
+    sub = p.add_subparsers(dest="command")
+    sub.add_parser("bootstrap")
     sub.add_parser("status")
+    intro = sub.add_parser("intro", help="review operator orientation")
+    intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
     submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository", required=True); submit.add_argument("--baseline", required=True); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append", required=True); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact", required=True); submit.add_argument("--affected-repository", action="append", required=True); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
     show = sub.add_parser("mission"); show.add_argument("action", choices=("show",)); show.add_argument("mission_id")
@@ -36,8 +72,28 @@ def main(argv=None):
     explain=sub.add_parser("explain"); explain.add_argument("subject", choices=("rejection",)); explain.add_argument("record")
     converse=sub.add_parser("converse"); converse.add_argument("request"); converse.add_argument("--context", type=Path, required=True); converse.add_argument("--repository"); converse.add_argument("--package"); converse.add_argument("--rejection")
     generate=sub.add_parser("generate-wop"); generate.add_argument("intent"); generate.add_argument("--mission", required=True); generate.add_argument("--phase", required=True); generate.add_argument("--repository", required=True); generate.add_argument("--submitter", required=True); generate.add_argument("--approval-authority", required=True); generate.add_argument("--approval-reference", required=True); generate.add_argument("--approval-date", required=True); generate.add_argument("--authority-node", required=True); generate.add_argument("--adr", required=True); generate.add_argument("--immutable-wop", required=True)
-    a=p.parse_args(argv); o=MissionOrchestrator(OrchestrationStore(a.state))
+    a=p.parse_args(arguments)
+    if a.command is None:
+        p.print_help()
+        return 0
     try:
+        environment_state = os.environ.get("ZEUS_STATE")
+        requested_state = a.state or (Path(environment_state) if environment_state else None)
+        if a.command == "bootstrap":
+            emit(bootstrap(ROOT, requested_state))
+            return 0
+        if a.command == "intro":
+            if a.status:
+                emit(intro_status(interface_state))
+            else:
+                print(ORIENTATION)
+            return 0
+        state = requested_state or verify_authoritative_path(ROOT)
+        if requested_state is None and not state.exists():
+            raise OrchestrationError(
+                f"operational state does not exist at {state}; run 'zeus bootstrap'"
+            )
+        o=MissionOrchestrator(OrchestrationStore(state))
         if a.command=="status" or a.command=="resume": emit(o.status())
         elif a.command=="submit": emit(o.submit(admission_record=a.wop_package, repository_identity=a.repository, baseline_commit=a.baseline, priority=a.priority, staging_order=a.order, dependencies=a.dependency, required_approvals=a.approval, resources_available=a.resources_available, blocking_conditions=a.blocking_condition, estimated_impact=a.impact, affected_repositories=a.affected_repository, queue_timestamp=now(a.at)))
         elif a.command=="missions" and a.action=="list":
