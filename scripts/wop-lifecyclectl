@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+"""Offline EMP WOP Lifecycle Manager inspection CLI."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from scripts.lib.emp.wop_lifecycle import (  # noqa: E402
+    LifecycleError,
+    LifecycleStore,
+    WopLifecycleManager,
+)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("state", type=Path)
+    parser.add_argument("command", choices=("validate", "inventory", "resume"))
+    parser.add_argument("--wop")
+    args = parser.parse_args()
+    try:
+        manager = WopLifecycleManager(LifecycleStore(args.state))
+        if args.command == "validate":
+            manager.validate()
+            print(
+                f"PASS: {len(manager.data['packages'])} WOP(s), "
+                f"{len(manager.data['queue'])} queue entry(s)"
+            )
+        elif args.command == "inventory":
+            print(json.dumps(manager.data, sort_keys=True))
+        else:
+            if not args.wop:
+                raise LifecycleError("resume requires --wop")
+            print(json.dumps(manager.reconstruct(args.wop), sort_keys=True))
+    except LifecycleError as error:
+        print(f"FAIL: {error}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

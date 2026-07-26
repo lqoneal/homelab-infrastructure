@@ -1,0 +1,17 @@
+{
+  "authority_chain": [
+    "work-package",
+    "mission",
+    "baseline",
+    "governance",
+    "charter",
+    "organization"
+  ],
+  "authoritative_decision_source": "ZEUS",
+  "decision_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+  "enforcement_decision": "AUTHORIZED",
+  "repository_baseline_commit": "553050c7030131a423cc76038a2b5cdd34efd756",
+  "repository_identity": "/data/engineering/repositories/homelab",
+  "schema_version": 2,
+  "wop_id": "WOP-423e4567-e89b-42d3-a456-426614174000"
+}

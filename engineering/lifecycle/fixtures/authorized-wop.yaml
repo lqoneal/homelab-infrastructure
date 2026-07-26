@@ -1,0 +1,44 @@
+schema_version: 1
+wop_id: WOP-423e4567-e89b-42d3-a456-426614174000
+authority_binding:
+  authority_node_id: work-package
+  mission_id: EMP-MISSION-ZEUS-LIFECYCLE-QUALIFICATION
+  phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+  work_item_id: MISSION-I-WOP-LIFECYCLE
+execution_context:
+  principal_id: mission-i-lifecycle-agent
+  repository: /data/engineering/repositories/homelab
+  baseline_commit: 553050c7030131a423cc76038a2b5cdd34efd756
+  branch: main
+  assumptions:
+    - lifecycle management terminates at Ready
+authorized_effects:
+  - effect_id: manage-lifecycle
+    kind: execute
+    target: offline-wop-lifecycle
+    constraints:
+      - no dispatch or execution
+prohibited_effects:
+  - dispatch-wop
+  - execute-wop
+  - acquire-execution-lease
+prerequisites:
+  - prerequisite_id: authorization-enforcement-qualified
+    required: true
+    evidence_ref: evidence-mission-h-qualified
+dependencies: []
+valid_from: '2026-07-25T00:00:00+00:00'
+expires_at: '2026-08-25T00:00:00+00:00'
+lease_policy:
+  required: false
+  maximum_duration_seconds: 3600
+revocation_policy:
+  revocable: true
+  authority_node_ids:
+    - governance
+    - mission
+payload_digest: dac2d143ae01649e811c3b95e165ad37e2f9214805ccd2daaa881b75de4c5cf9
+signature:
+  algorithm: sha256-digest-fixture
+  key_id: mission-f-offline-fixture
+  value: dac2d143ae01649e811c3b95e165ad37e2f9214805ccd2daaa881b75de4c5cf9

@@ -1,0 +1,10 @@
+schema_version: 1
+title: EMP WOP Lifecycle State
+type: object
+required: [schema_version, manager_id, packages, queue]
+properties:
+  schema_version: {const: 1}
+  manager_id: {const: EMP-WOP-LIFECYCLE}
+  packages: {type: object}
+  queue: {type: array}
+additionalProperties: false
