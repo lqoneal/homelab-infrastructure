@@ -1,0 +1,49 @@
+schema_version: 1
+title: Operational Authority Publication Envelope
+type: object
+required:
+  - schema_version
+  - envelope_id
+  - record_type
+  - record_id
+  - record_revision
+  - owner
+  - signer_principal
+  - published_at
+  - payload
+  - payload_digest
+properties:
+  schema_version: {const: 1}
+  envelope_id:
+    type: string
+    pattern: '^PUBLICATION-[0-9a-f-]{36}$'
+  record_type:
+    enum:
+      - mission_authority
+      - phase_authority
+      - work_item_authority
+      - repository_identity
+      - repository_baseline
+      - authority_node
+      - approval_authority
+      - authorization_decision
+      - identity_record
+      - governing_baseline
+      - operational_configuration
+      - operational_revocation
+  record_id: {type: string, minLength: 1}
+  record_revision: {type: integer, minimum: 1}
+  owner: {type: string, minLength: 1}
+  signer_principal: {type: string, minLength: 1}
+  published_at: {type: string, format: date-time}
+  payload: {type: object}
+  payload_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+additionalProperties: false
+x-signature:
+  format: detached-ssh-signature
+  namespace: zeus-authority-publication
+  trust_policy: engineering/authority/owner-trust-policy.yaml
+x-boundary:
+  publisher_creates_human_approval: false
+  runtime_self_activation: false
+  explicit_activation_required: true

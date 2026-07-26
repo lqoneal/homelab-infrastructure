@@ -1,0 +1,15 @@
+schema_version: 1
+operationally_configured: false
+status: awaiting-controlled-authority-publication
+description: >-
+  Repository-fixed source location for the Authority Resolution Runtime.
+  Empty collections and false configuration intentionally prevent live
+  operational WOP generation until owner records are separately published.
+missions: {}
+phases: {}
+work_items: {}
+repositories: {}
+approvals: {}
+authority_bindings: {}
+governing_baselines: {}
+principals: {}

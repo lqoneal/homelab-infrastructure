@@ -1,0 +1,6 @@
+schema_version: 1
+revision: 0
+operationally_configured: false
+enrollments: {}
+registry_digest: cdec7ba977b1f7cb2e50c0e91b2c1d244406531c7b4d0555a0987c04d8cb7ace
+status: awaiting-authorized-owner-enrollment

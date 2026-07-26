@@ -1,0 +1,43 @@
+schema_version: 1
+title: Authority Owner Enrollment Request
+type: object
+required:
+  - schema_version
+  - request_id
+  - action
+  - owner
+  - principal
+  - authorization_reference
+  - requested_at
+  - target_enrollment_id
+  - key
+properties:
+  schema_version: {const: 1}
+  request_id:
+    type: string
+    pattern: '^OWNER-ENROLLMENT-[0-9a-f-]{36}$'
+  action: {enum: [enroll, rotate, suspend, retire]}
+  owner: {type: string, minLength: 1}
+  principal: {type: string, minLength: 1}
+  authorization_reference: {type: string, minLength: 1}
+  requested_at: {type: string, format: date-time}
+  target_enrollment_id: {type: [string, 'null']}
+  key:
+    oneOf:
+      - type: 'null'
+      - type: object
+        required: [public_key, fingerprint, key_type]
+        properties:
+          public_key: {type: string, minLength: 1}
+          fingerprint: {type: string, pattern: '^SHA256:'}
+          key_type: {type: string, minLength: 1}
+        additionalProperties: false
+additionalProperties: false
+x-signature:
+  format: detached-ssh-signature
+  namespace: zeus-owner-enrollment
+  trust_root: engineering/authority/enrollment-root-policy.yaml
+x-boundary:
+  private_keys_permitted: false
+  self_authorization: false
+  installs_production_trust: false

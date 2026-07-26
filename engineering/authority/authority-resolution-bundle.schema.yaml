@@ -1,0 +1,111 @@
+schema_version: 1
+title: Proposed Zeus Authority Resolution Bundle
+description: Architectural contract; not activated for operational enforcement.
+type: object
+required:
+  - schema_version
+  - resolution_id
+  - mode
+  - issued_at
+  - expires_at
+  - mission
+  - repository
+  - approval
+  - authority
+  - governing_baseline
+  - submitter
+  - reservations
+  - provenance
+  - resolver_version
+  - bundle_digest
+properties:
+  schema_version: {const: 1}
+  resolution_id: {type: string, pattern: '^ARB-[0-9a-f-]{36}$'}
+  mode: {const: operational}
+  issued_at: {type: string, format: date-time}
+  expires_at: {type: string, format: date-time}
+  mission:
+    type: object
+    required: [mission_id, phase_id, work_item_id, intent_revision, qualification_record]
+    properties:
+      mission_id: {type: string, minLength: 1}
+      phase_id: {type: string, minLength: 1}
+      work_item_id: {type: string, minLength: 1}
+      intent_revision: {type: integer, minimum: 1}
+      qualification_record: {type: string, minLength: 1}
+    additionalProperties: false
+  repository:
+    type: object
+    required: [repository_id, canonical_locator, baseline_commit, assertion_id]
+    properties:
+      repository_id: {type: string, minLength: 1}
+      canonical_locator: {type: string, minLength: 1}
+      baseline_commit: {type: string, pattern: '^[0-9a-f]{40}$'}
+      assertion_id: {type: string, minLength: 1}
+    additionalProperties: false
+  approval:
+    type: object
+    required: [reference, authority, decision, decision_at, authorized_lifecycle_state, scope_digest]
+    properties:
+      reference: {type: string, minLength: 1}
+      authority: {type: string, minLength: 1}
+      decision: {const: GRANTED}
+      decision_at: {type: string, format: date-time}
+      authorized_lifecycle_state: {const: Active}
+      scope_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+    additionalProperties: false
+  authority:
+    type: object
+    required: [authority_node_id, graph_version, chain, capabilities, resolution_digest]
+    properties:
+      authority_node_id: {type: string, minLength: 1}
+      graph_version: {type: string, minLength: 1}
+      chain: {type: array, minItems: 1, items: {type: string}}
+      capabilities: {type: array, uniqueItems: true, items: {type: string}}
+      resolution_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+    additionalProperties: false
+  governing_baseline:
+    type: object
+    required: [manifest_id, manifest_revision, references, manifest_digest]
+    properties:
+      manifest_id: {type: string, minLength: 1}
+      manifest_revision: {type: integer, minimum: 1}
+      references: {type: array, minItems: 1, uniqueItems: true, items: {type: string}}
+      manifest_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+    additionalProperties: false
+  submitter:
+    type: object
+    required: [principal_id, session_id, authentication_record]
+    properties:
+      principal_id: {type: string, minLength: 1}
+      session_id: {type: string, minLength: 1}
+      authentication_record: {type: string, minLength: 1}
+    additionalProperties: false
+  reservations:
+    type: object
+    required: [wop_reservation_id, adr_evaluation_request_id]
+    properties:
+      wop_reservation_id: {type: string, minLength: 1}
+      adr_evaluation_request_id: {type: string, minLength: 1}
+    additionalProperties: false
+  provenance:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      required: [field, owner, record_id, record_revision, record_digest]
+      properties:
+        field: {type: string, minLength: 1}
+        owner: {type: string, minLength: 1}
+        record_id: {type: string, minLength: 1}
+        record_revision: {type: string, minLength: 1}
+        record_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+      additionalProperties: false
+  resolver_version: {type: string, minLength: 1}
+  bundle_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+additionalProperties: false
+x-security:
+  operational_callers_may_override_authority_fields: false
+  autonomous_approval: false
+  autonomous_submission: false
+  autonomous_execution: false

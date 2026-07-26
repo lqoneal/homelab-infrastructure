@@ -1,0 +1,10 @@
+schema_version: 1
+operationally_configured: false
+signature_namespace: zeus-authority-publication
+allowed_signers_file: engineering/authority/allowed-signers
+owners: {}
+status: awaiting-owner-key-publication
+description: >-
+  Repository-fixed trust policy for operational authority publication.
+  No trusted owner principals or keys are checked in; publication and
+  activation therefore fail closed until separately controlled key enrollment.

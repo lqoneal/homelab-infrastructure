@@ -1,0 +1,9 @@
+schema_version: 1
+operationally_configured: false
+signature_namespace: zeus-owner-enrollment
+allowed_signers_file: engineering/authority/enrollment-allowed-signers
+authorization_principals: []
+status: awaiting-controlled-enrollment-authority
+description: >-
+  Fixed trust root for authorization of owner public-key enrollment. It is
+  intentionally unconfigured; the toolkit cannot authorize its own trust root.
