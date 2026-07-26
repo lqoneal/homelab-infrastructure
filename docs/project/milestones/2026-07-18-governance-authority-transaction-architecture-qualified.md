@@ -25,7 +25,7 @@ relationships:
     target: EWO-000023
   - type: validates
     target: EDR-0003
-  - type: evidenced_by
+  - type: validated_by
     target: EWO-000023-COMPLETION
   - type: related_to
     target: EGR-000001

@@ -43,7 +43,7 @@ relationships:
     target: SPEC-0004
   - type: authorized_by
     target: EWO-000022
-  - type: published_by
+  - type: produced_by
     target: EWO-000022
   - type: validated_by
     target: EWO-000022-EVIDENCE

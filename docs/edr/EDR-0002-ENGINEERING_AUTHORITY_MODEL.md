@@ -102,6 +102,14 @@ Bootstrap authority is defined by CHAR-0001 and historically documented by GEN-0
 
 This decision preserves bootstrap authority by reference only. It does not restate, extend, reactivate, or create an alternative bootstrap mechanism. Ordinary engineering activity proceeds through current repository-controlled authorization after bootstrap governance has been established.
 
+CHAR-0001 v1.1 also establishes a distinct, temporary mechanism for removing
+manual Handoff-generation circularity. During Transitional Engineering Handoff
+Governance, a Handoff issued by Engineering Governance supplies constitutional
+initiation authority for subordinate repository-controlled processes. This is
+not a recurring Genesis bootstrap, does not make the repository the origin of
+authority, and does not replace EWO execution authorization or any subordinate
+review, lifecycle, publication, qualification, evidence, or repository control.
+
 ## Two Distinct Forms of Authority
 
 EOS distinguishes Governance Authority from Information Authority. The two concepts are related but are not interchangeable.

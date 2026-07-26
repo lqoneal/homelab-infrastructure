@@ -1,11 +1,11 @@
 ---
 document_id: CHAR-0001
 title: Engineering Charter
-version: 1.0
+version: 1.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-10
-last_updated: 2026-07-10
+last_updated: 2026-07-22
 phase: Governance Foundation
 domain: Engineering Governance
 classification: Foundational Governance Charter
@@ -82,6 +82,36 @@ Engineering Governance is responsible for:
 - improving the Engineering Operating System.
 
 Engineering Governance may delegate execution responsibility but retains governance responsibility.
+
+### Transitional Engineering Handoff Governance
+
+Engineering Governance recognizes that Engineering Handoff generation is presently a manual engineering activity.
+
+Until Engineering Handoff generation has been established as an operational automated capability through the controlled engineering lifecycle, every Engineering Handoff issued by Engineering Governance shall be considered approved by Engineering Governance.
+
+During this transitional period:
+
+- Engineering Handoffs constitute the authoritative expression of Engineering Governance intent.
+- Engineering Handoffs provide the constitutional authority required to initiate subordinate engineering governance processes.
+- The authority, scope, limitations, deliverables, prohibitions, success criteria, and certification requirements for each engineering mission shall remain defined by the individual Engineering Handoff.
+- Subordinate controlled documentation shall interpret and execute Engineering Handoffs consistent with this Charter.
+
+This transitional authority shall not eliminate, merge, bypass, or diminish any subsequent governance activity established by subordinate controlled documentation, including:
+
+- Engineering Work Order construction;
+- Engineering Work Order review;
+- lifecycle transitions;
+- publication;
+- qualification;
+- activation;
+- implementation authorization;
+- repository modification controls;
+- evidence requirements; or
+- any other governance responsibility established by subordinate controlled documentation.
+
+This transitional provision exists solely to remove circular authority dependencies while Engineering Handoff generation remains a manual engineering activity.
+
+This transitional provision shall terminate automatically upon activation of an automated Engineering Handoff generation capability through the controlled engineering lifecycle.
 
 ---
 
@@ -179,6 +209,12 @@ Engineering Governance may:
 
 Bootstrap authority shall be used only when repository-controlled authorization cannot yet exist or cannot be created without circular dependency.
 
+During the Transitional Engineering Handoff Governance period, Engineering Governance may originate engineering authority through an approved Engineering Handoff whenever repository-controlled authorization would otherwise become circular.
+
+Engineering Handoffs issued under this Charter shall serve as the constitutional source of authority for subsequent repository-controlled authorization processes until the automated Engineering Handoff generation capability becomes operational.
+
+Subordinate controlled documentation shall reconcile its operational procedures to this Charter and shall not invalidate an Engineering Handoff solely because repository-controlled authority has not yet been generated.
+
 Once repository-controlled authority is established, ordinary engineering work shall proceed through the standard controlled process.
 
 Bootstrap authority shall not be used to bypass an available and valid repository-controlled authorization mechanism.
@@ -213,6 +249,10 @@ Every amendment shall:
 - preserve engineering history;
 - be published as a controlled revision;
 - trigger reconciliation of affected subordinate records.
+
+Until all affected subordinate controlled documentation has been reconciled, this Charter shall govern in the event of conflict between this Charter and subordinate controlled documentation.
+
+Reconciliation shall restore consistency without diminishing the authority established by this Charter.
 
 ---
 

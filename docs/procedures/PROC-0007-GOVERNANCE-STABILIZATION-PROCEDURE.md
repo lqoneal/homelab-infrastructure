@@ -47,9 +47,9 @@ relationships:
     target: PROC-0005
   - type: depends_on
     target: PROC-0006
-  - type: uses
+  - type: depends_on
     target: TPL-0002
-  - type: uses
+  - type: depends_on
     target: TPL-0003
   - type: indexed_by
     target: DOC-0001

@@ -79,6 +79,14 @@ During the Governance Bootstrap:
 
 The Governance Bootstrap shall never be repeated.
 
+The Transitional Engineering Handoff Governance mechanism established by
+CHAR-0001 v1.1 is not a repetition of the Governance Bootstrap. It is a
+Charter-controlled, temporary initiation mechanism for Governance-issued
+Handoffs while Handoff generation remains manual. It neither recreates the
+Genesis event nor bypasses the subordinate EWO, lifecycle, publication,
+qualification, evidence, or repository-control processes established after
+bootstrap.
+
 ---
 
 ## Transition to Controlled Operational Governance
