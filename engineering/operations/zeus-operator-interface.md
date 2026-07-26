@@ -1,10 +1,12 @@
 # Zeus Operator Interface
 
 For Zeus Operational Alpha, the operator is Lawrence O'Neal and the production
-principal is `loneal`. An authenticated CLI command carries the operator's full
-human authority for that command, subject to repository policy and runtime
-validation. Zeus does not gain independent authority from the session and does
-not invent approval records.
+principal is `loneal`. The authenticated Zeus CLI is the authoritative
+interface through which Lawrence O'Neal exercises engineering authority,
+subject to repository policy and runtime validation. Controlled documentation
+remains the normal operational source of execution authority. Zeus does not
+gain independent authority from the session and does not invent approval
+records.
 
 ## Global launcher
 

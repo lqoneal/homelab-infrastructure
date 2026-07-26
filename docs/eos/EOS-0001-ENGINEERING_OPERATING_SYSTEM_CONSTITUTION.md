@@ -1,12 +1,12 @@
 ---
 document_id: EOS-0001
 title: Engineering Operating System Constitution
-version: 1.0
+version: 1.1
 status: Draft
 owner: EOS Program
 created: 2026-07-08
-last_updated: 2026-07-08
-authority: Highest Governing Document
+last_updated: 2026-07-26
+authority: Related Draft architectural record subordinate to CHAR-0001
 source_of_truth: true
 ---
 
@@ -22,7 +22,12 @@ The Engineering Operating System (EOS) exists to preserve that knowledge indepen
 
 EOS establishes the constitutional principles, governance structure, and engineering discipline necessary to ensure that engineering work remains reproducible, resumable, verifiable, and continuously improvable throughout its lifecycle.
 
-All subordinate engineering artifacts derive their authority from this Constitution.
+This Draft does not originate engineering authority. Production engineering
+authority originates solely with Lawrence O'Neal. Principal `loneal` is the
+authenticated production identity, and the Zeus CLI is the authoritative
+interface through which Lawrence O'Neal exercises that authority. Controlled
+documentation is the normal operational source of execution authority under
+CHAR-0001 and SPEC-0011.
 
 ---
 

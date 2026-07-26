@@ -95,9 +95,10 @@ It governs documentation architecture and relationships. It does not govern sour
 
 ### Origin of Engineering Authority
 
-Engineering authority originates with the Engineering Organization.
-
-The Engineering Organization establishes Engineering Governance and delegates authority for governing engineering activities. Engineering Governance exercises that delegated authority through CHAR-0001 and subordinate repository-controlled governance.
+Production engineering authority originates solely with Lawrence O'Neal and is
+exercised through authenticated principal `loneal` and the Zeus CLI.
+Engineering Governance is the controlled governance function established
+through CHAR-0001 and subordinate repository-controlled governance.
 
 Neither this standard nor any repository, controlled record, database, service, interface, generated output, or implementation agent originates engineering authority.
 
@@ -129,7 +130,9 @@ Governance Authority and Information Authority shall not be conflated. A record 
 
 ### Principle 1 — Delegated Authority
 
-Every controlled record shall operate within an authority chain traceable to the Engineering Organization, Engineering Governance, CHAR-0001, and applicable subordinate governance.
+Every controlled record shall operate within an authority chain traceable to
+Lawrence O'Neal, authenticated principal `loneal`, the Zeus CLI, CHAR-0001,
+SPEC-0011, and applicable subordinate governance.
 
 ### Principle 2 — One Authoritative Information Owner
 
@@ -183,10 +186,14 @@ Derived Engineering Views shall preserve source traceability and shall not posse
 Engineering authority and controlled execution follow the hierarchy established by CHAR-0001:
 
 ```text
-Engineering Organization
-        ↓ delegates authority to
-Engineering Governance
-        ↓ formalized through
+Lawrence O'Neal
+        ↓ represented by
+Authenticated principal loneal
+        ↓ instructs through
+Zeus CLI
+        ↓ resolves through
+Authority Resolution Runtime
+        ↓ governed through
 CHAR-0001 — Engineering Charter
         ↓
 Repository Governance
@@ -210,7 +217,12 @@ Engineering Qualification
 Engineering Baselines
 ```
 
-This hierarchy represents authority and governance precedence. It does not require every relationship between controlled records to be strictly linear.
+This hierarchy represents authority and governance precedence. Controlled
+documentation is the normal operational source of execution authority and
+derives its authority ultimately from Lawrence O'Neal. Authority-resolution
+failures enter the restoration process in SPEC-0011 before execution. The
+hierarchy does not require every relationship between controlled records to be
+strictly linear.
 
 Engineering Decision Records establish approved engineering decisions within their delegated scope. Templates provide reusable document structure. Repository indexes provide discovery. Findings and Resolutions support controlled improvement. These records participate in the architecture according to their assigned responsibilities without creating an alternative governance hierarchy.
 
@@ -572,7 +584,7 @@ Indexes, search results, resume output, dashboards, and generated navigation are
 
 Controlled engineering documentation shall support traceability among, as applicable:
 
-* the Engineering Organization and Engineering Governance;
+* Lawrence O'Neal, authenticated principal `loneal`, the Zeus CLI, and controlled Engineering Governance;
 * Charter, policies, standards, specifications, procedures, and templates;
 * Engineering Decision Records;
 * missions, phases, sprints, recovery plans, and recovery units;

@@ -92,9 +92,10 @@ Repository-wide metadata rollout, legacy migration, historical-locator backfill,
 
 ### 3.1 Origin and Delegation of Authority
 
-Engineering authority originates with the Engineering Organization.
-
-The Engineering Organization delegates governance responsibility to Engineering Governance. Engineering Governance exercises that delegated authority through CHAR-0001 and subordinate repository-controlled governance.
+Production engineering authority originates solely with Lawrence O'Neal and is
+exercised through authenticated principal `loneal` and the Zeus CLI.
+Engineering Governance is the controlled governance function expressed
+through CHAR-0001 and subordinate repository-controlled governance.
 
 This specification is subordinate to CHAR-0001 and POL-0001 and conforms to STD-0000. No metadata field, repository operation, Git object, service, interface, or controlled record originates engineering authority.
 
@@ -104,7 +105,10 @@ CHAR-0001 is the highest foundational governing record within EOS.
 
 POL-0001 is the highest policy-level normative record and remains subordinate to the Charter. Standards define mandatory rules, Specifications define models and architectures, Procedures define repeatable workflows, and Active Engineering Work Orders authorize bounded execution.
 
-When a represented relationship conflicts with superior governance, superior governance prevails and the record fails validation pending authorized reconciliation.
+When a represented relationship conflicts with superior governance, superior
+governance prevails and the record enters the Authority Restoration Principle
+defined by SPEC-0011. Execution remains ineligible until controlled
+reconciliation, validation, and normal authority re-resolution succeed.
 
 ### 3.3 Repository Authority
 

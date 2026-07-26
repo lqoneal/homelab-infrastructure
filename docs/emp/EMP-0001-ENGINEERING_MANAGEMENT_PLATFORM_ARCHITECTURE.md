@@ -1,11 +1,11 @@
 ---
 document_id: EMP-0001
 title: Engineering Management Platform Architecture
-version: 1.3
+version: 1.4
 status: Active
 owner: Engineering Management Platform
 created: 2026-07-13
-last_updated: 2026-07-15
+last_updated: 2026-07-26
 phase: Engineering Management Platform Phase 1.3 Complete
 domain: Engineering Management
 classification: Platform Architecture
@@ -58,6 +58,8 @@ relationships:
     target: DOC-0001
   - type: related_to
     target: PROJ-0001
+  - type: conforms_to
+    target: SPEC-0011
 tags:
   - emp
   - architecture
@@ -81,7 +83,13 @@ EMP does not originate governance authority, replace authoritative records, or r
 # 1. Architectural Position
 
 ```text
-Engineering Governance and controlled authority
+Lawrence O'Neal / authenticated principal loneal
+                       |
+                       v
+Zeus CLI / Authority Resolution Runtime
+                       |
+                       v
+Controlled-document execution authority
                        |
                        v
 Engineering Management Platform
@@ -96,14 +104,23 @@ Mission 0 Engineering Platform and EOS services
 Project repositories and authoritative engineering records
 ```
 
-The layers cooperate without transferring authority:
+The layers cooperate without transferring authority. Lawrence O'Neal is the
+sole ultimate engineering authority; the Zeus CLI is the authoritative
+interface through which he exercises it. Controlled documentation is the
+normal operational source of execution authority.
 
+- Zeus resolves, validates, reconciles, and executes controlled authority.
 - Engineering Governance establishes governance, activates Engineering Work Orders, and accepts outcomes.
 - EMP owns portfolio coordination and work-management information within the scope defined here.
 - EOS owns reusable operational engineering services and derived engineering views.
 - Project and domain records own project-specific engineering facts, execution authority, evidence, and outcomes.
 
 EMP management state never expands an Engineering Work Order, performs a governance transition, or makes a project record authoritative.
+
+If controlled authority is missing, stale, conflicting, incomplete, or
+invalid, Zeus treats the condition as authority restoration work under
+SPEC-0011. EMP may report the affected management state, but it does not
+bypass, replace, or independently restore execution authority.
 
 ---
 

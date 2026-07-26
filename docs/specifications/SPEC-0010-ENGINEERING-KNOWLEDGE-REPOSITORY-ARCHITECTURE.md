@@ -321,12 +321,16 @@ mission and artifact digest shall not create a duplicate object. Publication,
 indexing, and relationship updates shall be transactional or recoverably
 journaled. Partial capture shall remain visibly incomplete and retryable.
 
-Automation shall fail closed on identity ambiguity, missing authority,
+Automation shall stop safely on identity ambiguity, missing authority,
 unresolved secrets, digest mismatch, invalid schema, missing required output,
 broken relationships, retention ambiguity, or unavailable authoritative
 destination. Automation creates no approval, acceptance, execution authority,
 controlled-document lifecycle transition, asset qualification, or EOS state
 change beyond an already authorized transaction.
+
+Missing or invalid authority shall enter the Authority Restoration Principle in
+SPEC-0011. The affected records must be reconciled and normal authority
+resolution must succeed before automation resumes.
 
 ## EOS and Repository Synchronization
 

@@ -15,27 +15,28 @@ earlier designs—such as registries, controllers, providers, services,
 committees, or separate operators—are functional domains, not additional human
 owners or principals.
 
-Zeus is an execution and enforcement interface. It does not possess independent
-authority, invent approvals, self-authorize, or weaken a failed validation.
+Zeus is the authority-resolution, validation, reconciliation, and execution
+system. It does not possess independent authority, invent approvals,
+self-authorize, or weaken a failed validation.
 Every accepted command is an authenticated action of `loneal`, subject to the
 repository's policy, lifecycle, signature, provenance, auditing, repository,
 and runtime checks.
 
 ## Domain ownership
 
-| Authority domain | Owner | Production principal | Authority source |
+| Authority domain | Owner | Production principal | Authoritative interface |
 | --- | --- | --- | --- |
-| Governance Authority | Lawrence O'Neal | `loneal` | Zeus authenticated CLI session |
-| Repository Authority | Lawrence O'Neal | `loneal` | Zeus authenticated CLI session |
-| Mission Authority | Lawrence O'Neal | `loneal` | Zeus authenticated CLI session |
-| Work Authority | Lawrence O'Neal | `loneal` | Zeus authenticated CLI session |
-| Approval Authority | Lawrence O'Neal | `loneal` | Zeus authenticated CLI session |
-| Identity Authority | Lawrence O'Neal | `loneal` | Zeus authenticated CLI session |
-| Authority Publication Authority | Lawrence O'Neal | `loneal` | Zeus authenticated CLI session |
-| Execution Authority | Lawrence O'Neal | `loneal` | Zeus authenticated CLI session |
-| Qualification Authority | Lawrence O'Neal | `loneal` | Zeus authenticated CLI session |
-| Completion Authority | Lawrence O'Neal | `loneal` | Zeus authenticated CLI session |
-| Reconciliation Authority | Lawrence O'Neal | `loneal` | Zeus authenticated CLI session |
+| Governance Authority | Lawrence O'Neal | `loneal` | Authenticated Zeus CLI |
+| Repository Authority | Lawrence O'Neal | `loneal` | Authenticated Zeus CLI |
+| Mission Authority | Lawrence O'Neal | `loneal` | Authenticated Zeus CLI |
+| Work Authority | Lawrence O'Neal | `loneal` | Authenticated Zeus CLI |
+| Approval Authority | Lawrence O'Neal | `loneal` | Authenticated Zeus CLI |
+| Identity Authority | Lawrence O'Neal | `loneal` | Authenticated Zeus CLI |
+| Authority Publication Authority | Lawrence O'Neal | `loneal` | Authenticated Zeus CLI |
+| Execution Authority | Lawrence O'Neal | `loneal` | Authenticated Zeus CLI |
+| Qualification Authority | Lawrence O'Neal | `loneal` | Authenticated Zeus CLI |
+| Completion Authority | Lawrence O'Neal | `loneal` | Authenticated Zeus CLI |
+| Reconciliation Authority | Lawrence O'Neal | `loneal` | Authenticated Zeus CLI |
 
 Domain separation remains part of each record's type and provenance. Common
 ownership does not collapse records, signatures, lifecycle transitions, or
@@ -73,6 +74,18 @@ The Authority Resolution Runtime verifies the approval record, scope,
 lifecycle, ownership, repository baseline, authority graph, governing
 baseline, identity, and provenance. It does not search for another human
 approver.
+
+## Authority restoration
+
+Controlled documentation is the normal operational source of execution
+authority and derives its authority ultimately from Lawrence O'Neal. Zeus
+always attempts normal controlled-document resolution first.
+
+Missing, stale, conflicting, incomplete, or invalid authority is reconciliation
+work under SPEC-0011. Bootstrapping authorization permits reconciliation of
+controlled documentation; it never bypasses controlled authority. After
+reconciliation Zeus validates the repository, re-runs normal authority
+resolution, and executes only under restored controlled-document authority.
 
 ## Authentication and publication
 

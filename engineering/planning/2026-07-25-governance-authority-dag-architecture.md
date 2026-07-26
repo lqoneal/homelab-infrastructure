@@ -111,13 +111,14 @@ between domains by inference.
 ### Authority nodes
 
 ```text
-rank 0  Engineering Organization       root
-rank 1  Engineering Charter            parent: Organization
-rank 2  Engineering Governance         parent: Charter
-rank 3  Frozen Governance Baseline     parent: Governance decision
-rank 4  Mission Authority              parent: Governance Baseline
-rank 5  Work Package                   parent: Mission Authority
-rank 6  Execution Session              parent: Work Package
+rank 0  Lawrence O'Neal                ultimate engineering authority
+rank 1  Principal loneal / Zeus CLI    authenticated instruction interface
+rank 2  Engineering Charter            controlled authority foundation
+rank 3  Authority Resolution Runtime   normal or restoration resolution
+rank 4  Frozen Governance Baseline     controlled execution authority
+rank 5  Mission Authority              parent: Governance Baseline
+rank 6  Work Package                   parent: Mission Authority
+rank 7  Execution Session              parent: Work Package
 ```
 
 Each authority-bearing instance has exactly one `authority_parent`. Additional
@@ -244,4 +245,3 @@ parent and bootstrap recursion is excluded.
 Mission D should implement only the offline authority graph schema and
 validator with fixtures. Governance publications and live Work Initiation
 enforcement must remain later, separately approved work.
-

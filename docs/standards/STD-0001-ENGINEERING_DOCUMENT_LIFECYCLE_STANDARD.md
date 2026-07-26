@@ -98,9 +98,15 @@ standard's normal document lifecycle controls.
 
 ### Authority Chain
 
-Engineering authority originates with the Engineering Organization.
+Production engineering authority originates solely with Lawrence O'Neal and is
+exercised through authenticated principal `loneal` and the Zeus CLI.
+Engineering Governance is the controlled governance function expressed
+through CHAR-0001 and subordinate repository-controlled governance.
 
-The Engineering Organization delegates governance responsibility to Engineering Governance. Engineering Governance exercises that delegated authority through CHAR-0001 — Engineering Charter and subordinate repository-controlled governance.
+Controlled documents are the normal operational source of execution authority.
+Missing, stale, conflicting, incomplete, or invalid lifecycle authority shall
+enter controlled reconciliation under SPEC-0011 before normal authority is
+re-resolved and execution proceeds.
 
 This standard is subordinate to CHAR-0001 and POL-0001 — Engineering Governance Policy and conforms to STD-0000 — Engineering Documentation Standard.
 

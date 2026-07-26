@@ -1,11 +1,11 @@
 ---
 document_id: CHAR-0001
 title: Engineering Charter
-version: 1.1
+version: 1.2
 status: Active
 owner: Engineering Governance
 created: 2026-07-10
-last_updated: 2026-07-22
+last_updated: 2026-07-26
 phase: Governance Foundation
 domain: Engineering Governance
 classification: Foundational Governance Charter
@@ -15,6 +15,7 @@ related_documents:
   - POL-0001
   - STD-0000
   - EDR-0002
+  - SPEC-0011
 tags:
   - engineering
   - charter
@@ -29,7 +30,7 @@ tags:
 
 This Charter establishes the origin of engineering authority for the Engineering Operating System.
 
-It defines the relationship between the Engineering Organization, Engineering Governance, and repository-controlled records.
+It defines the relationship between the ultimate engineering authority, the authenticated production principal, Zeus, Engineering Governance, and repository-controlled records.
 
 The Charter provides the foundational authority upon which all subordinate engineering governance is established.
 
@@ -53,15 +54,23 @@ This Charter does not directly govern engineering implementation.
 
 ## Origin of Engineering Authority
 
-Engineering authority originates with the Engineering Organization.
+For the production Zeus environment, engineering authority originates solely
+with Lawrence O'Neal, the Ultimate Engineering Authority.
 
-The Engineering Organization establishes Engineering Governance and delegates authority for governing engineering activities.
+Principal `loneal` is the authenticated production identity representing that
+authority. The authenticated Zeus CLI is the authoritative interface through
+which Lawrence O'Neal exercises engineering authority.
 
-Engineering Governance derives its authority directly from the Engineering Organization.
+Engineering Governance is the controlled governance function through which
+that authority is recorded and administered. It is not an independent person,
+organization, committee, or competing source of authority.
 
-Repository-controlled records derive their authority from Engineering Governance.
+Repository-controlled records derive their authority ultimately from Lawrence
+O'Neal. They are the normal operational source of execution authority after
+authentication, publication, validation, and authority resolution.
 
-Repository-controlled records do not constitute the origin of engineering authority.
+Repository-controlled records do not constitute the ultimate origin of
+engineering authority, and the Zeus system does not originate authority.
 
 ---
 
@@ -131,21 +140,16 @@ They do not create or originate engineering authority.
 
 ## Delegation Hierarchy
 
-Engineering authority is delegated through the following hierarchy:
+Engineering authority is expressed and resolved through the following
+hierarchy:
 
-1. Engineering Organization
-2. Engineering Governance
-3. Engineering Charter
-4. Repository Governance
-5. Policies
-6. Standards
-7. Specifications
-8. Procedures
-9. Engineering Work Orders
-10. Engineering Execution
-11. Engineering Evidence
-12. Engineering Qualification
-13. Engineering Baselines
+1. Lawrence O'Neal, Ultimate Engineering Authority
+2. Authenticated production principal `loneal`
+3. Zeus CLI, Authoritative Instruction Interface
+4. Authority Resolution Runtime
+5. Controlled repository governance and engineering records
+6. Authorized engineering execution
+7. Engineering evidence, qualification, completion, and reconciliation
 
 Each level shall remain consistent with the authority delegated by the level above it.
 
@@ -197,27 +201,26 @@ Process deficiencies identified during initiation, execution, validation, or qua
 
 ## Bootstrap Authority
 
-Engineering Governance possesses authority independent of repository state.
+Lawrence O'Neal possesses ultimate engineering authority independent of
+repository state and exercises it through authenticated principal `loneal` and
+the Zeus CLI.
 
-Engineering Governance may:
+Bootstrapping authority exists only to restore authoritative repository state
+when controlled documentation cannot authorize execution. It authorizes
+reconciliation of controlled documentation before operational execution
+proceeds; it never authorizes a bypass of controlled documentation, policy,
+authentication, provenance, validation, or auditing.
 
-- establish the first controlled record of a repository;
-- establish foundational governance records;
-- authorize creation of new repository-controlled governance;
-- correct a repository bootstrap deadlock;
-- publish the authority necessary to begin controlled execution.
+Zeus shall first attempt normal authority resolution. Missing, stale,
+conflicting, incomplete, or invalid authority shall be handled according to the
+Authority Restoration Principle in SPEC-0011. Deterministic reconciliation
+that requires no human engineering decision shall be performed automatically.
+An explicit authenticated decision shall be requested only when reconciliation
+requires Lawrence O'Neal to exercise ultimate engineering authority.
 
-Bootstrap authority shall be used only when repository-controlled authorization cannot yet exist or cannot be created without circular dependency.
-
-During the Transitional Engineering Handoff Governance period, Engineering Governance may originate engineering authority through an approved Engineering Handoff whenever repository-controlled authorization would otherwise become circular.
-
-Engineering Handoffs issued under this Charter shall serve as the constitutional source of authority for subsequent repository-controlled authorization processes until the automated Engineering Handoff generation capability becomes operational.
-
-Subordinate controlled documentation shall reconcile its operational procedures to this Charter and shall not invalidate an Engineering Handoff solely because repository-controlled authority has not yet been generated.
-
-Once repository-controlled authority is established, ordinary engineering work shall proceed through the standard controlled process.
-
-Bootstrap authority shall not be used to bypass an available and valid repository-controlled authorization mechanism.
+After reconciliation, Zeus shall validate the repository and re-run normal
+authority resolution. Execution may proceed only under restored
+controlled-document authority.
 
 ---
 

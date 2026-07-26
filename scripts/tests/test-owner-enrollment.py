@@ -238,15 +238,15 @@ class OwnerEnrollmentTests(unittest.TestCase):
         self.assertEqual(envelope["owner"], "Lawrence O'Neal")
         self.assertNotIn("signature", envelope)
 
-    def test_diagnostics_distinguish_enrollment_and_publication_blockers(self):
+    def test_production_diagnostics_report_commissioned_authority(self):
         owner_status = enrollment_status(ROOT)
         self.assertTrue(owner_status["trust_compilation_ready"])
         status = commissioning_status(ROOT)
-        codes = {item["code"] for item in status["blockers"]}
-        self.assertNotIn("ENROLLMENT_ROOT_NOT_CONFIGURED", codes)
-        self.assertNotIn("OWNER_ENROLLMENT_MISSING", codes)
-        self.assertIn("UNSIGNED_PUBLICATION_MISSING", codes)
-        self.assertIn("OPERATOR_APPROVAL_PUBLICATION_MISSING", codes)
+        self.assertEqual(status["commissioning_state"], "READY")
+        self.assertEqual(status["blockers"], [])
+        self.assertEqual(status["active_owner_enrollment_count"], 1)
+        self.assertEqual(status["prepared_envelope_count"], 10)
+        self.assertEqual(status["detached_signature_count"], 10)
 
 
 if __name__ == "__main__":

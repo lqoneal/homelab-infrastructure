@@ -82,8 +82,9 @@ and no WOP. An accepted result means only eligibility for separately
 controlled submission; `automatically_submitted` and `dispatch_permitted`
 remain false.
 
-Production is deliberately not commissioned. This implementation never changes
-any `operationally_configured` switch.
+Production authority was commissioned by ZEUS-P2-014 through the separate
+publication interface. This admission implementation never changes any
+`operationally_configured` switch.
 
 ## Interruption, resume, and diagnostics
 

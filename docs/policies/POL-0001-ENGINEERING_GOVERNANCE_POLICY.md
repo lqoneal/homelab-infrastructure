@@ -1,11 +1,11 @@
 ---
 document_id: POL-0001
 title: Engineering Governance Policy
-version: 1.1
+version: 1.2
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-17
+last_updated: 2026-07-26
 phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Governance Policy
@@ -18,6 +18,7 @@ related_documents:
   - STD-0002
   - EGR-000002
   - EWO-000018
+  - SPEC-0011
 tags:
   - governance
   - policy
@@ -32,7 +33,11 @@ tags:
 
 This policy establishes the governance principles, delegated authority model, and decision framework for the Engineering Operating System (EOS). It derives its authority through CHAR-0001 — Engineering Charter.
 
-The Engineering Organization remains the origin of engineering authority. Engineering Governance exercises governance authority delegated by the Engineering Organization through CHAR-0001. This policy defines how that delegated authority guides governance decisions and disciplined, repeatable, and auditable engineering execution.
+Lawrence O'Neal is the sole ultimate engineering authority for the production
+Zeus environment. Principal `loneal` is the authenticated production identity,
+and the authenticated Zeus CLI is the authoritative interface through which
+that authority is exercised. Engineering Governance is the controlled
+governance function defined by CHAR-0001, not an independent authority.
 
 This policy is the highest policy-level normative record within the Engineering Governance hierarchy. It is subordinate to CHAR-0001 and is not the highest foundational governing record.
 
@@ -62,7 +67,7 @@ As a Policy, this document defines governance objectives, constraints, and inten
 
 Engineering Governance exists to:
 
-* establish governance direction and controlled authorization within authority delegated by the Engineering Organization through CHAR-0001;
+* establish governance direction and controlled authorization within authority exercised by Lawrence O'Neal through CHAR-0001;
 * protect engineering integrity;
 * ensure deterministic execution;
 * preserve engineering history;
@@ -79,6 +84,10 @@ Engineering Governance exists to:
 Engineering work shall be governed before it is executed.
 
 Execution shall proceed only under an approved Governance Baseline.
+
+Controlled documentation is the normal operational source of execution
+authority. Zeus shall resolve that authority before execution and shall not
+silently bypass it.
 
 ---
 
@@ -144,7 +153,8 @@ Validated improvements shall be recorded as Engineering Governance Findings and 
 
 ## Governance Authority
 
-Within the authority delegated by the Engineering Organization through CHAR-0001, Engineering Governance has sole governance authority to:
+Within the authority exercised by Lawrence O'Neal through CHAR-0001,
+Engineering Governance is the controlled function used to:
 
 * approve policies;
 * approve standards;
@@ -160,6 +170,12 @@ Within the authority delegated by the Engineering Organization through CHAR-0001
 * authorize governance revisions.
 
 Implementation agents possess only the bounded execution authority explicitly granted by an approved and active Engineering Work Order.
+
+Zeus is the authority-resolution, validation, reconciliation, and execution
+system. It does not invent approvals or self-authorize. When normal controlled
+authority cannot be resolved, Zeus shall treat the condition as authority
+restoration work under SPEC-0011. Bootstrapping authorizes reconciliation of
+controlled documentation, never execution outside it.
 
 ---
 

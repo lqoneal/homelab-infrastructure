@@ -16,10 +16,18 @@ authorized.
 
 ZEUS-P2-013 establishes the production ownership model: Lawrence O'Neal is the
 sole human owner of every operational authority domain and `loneal` is the
-production principal. An authenticated Zeus CLI command represents that
-operator's authority subject to repository policy and runtime validation.
-Zeus remains an execution and enforcement interface, not an autonomous
-authority.
+production principal. The authenticated Zeus CLI is the authoritative
+interface through which Lawrence O'Neal exercises engineering authority.
+Controlled documentation is the normal operational source of execution
+authority. Zeus resolves, validates, reconciles, and executes that authority;
+it is not an autonomous authority.
+
+ZEUS-P2-015 establishes the Authority Restoration Principle. Zeus first
+resolves controlled-document authority. A missing, stale, conflicting,
+incomplete, or invalid authority chain stops execution safely and becomes
+reconciliation work. Bootstrapping may authorize controlled-document
+reconciliation, but never a bypass. Automated restoration coordination is
+deferred runtime work.
 
 The next eligible mission is Mission C — Zeus Operational Alpha Capability
 Discovery. Mission C is read-only and may produce an implementation baseline
@@ -37,21 +45,21 @@ artifact and introduces a sealed Authority Resolution Bundle between Mission
 Admission and WOP generation.
 
 ZEUS-P2-003 implements and qualifies the repository-local runtime, sealed ARB,
-immutable WOP finalization, explicit dual generation modes, and fail-closed
-validation. The repository-fixed live source is deliberately unconfigured
-until Lawrence O'Neal publishes operational records as `loneal`.
+immutable WOP finalization, explicit dual generation modes, and safe authority
+validation. An unresolved authority condition blocks execution and enters the
+restoration model defined by SPEC-0011.
 
 ZEUS-P2-004 implements and qualifies signed, owner-scoped staging, full-source
 readiness verification, explicit atomic activation, rollback, revocation, and
-recovery. Production trust roots and authority records remain unenrolled, so
-the checked-in runtime continues to fail closed.
+recovery. Historical pre-commissioning refusals remain evidence of safe
+enforcement; current production trust and authority were commissioned by
+ZEUS-P2-014.
 
-ZEUS-P2-005 commissioning preflight is blocked. The production principal
-`loneal` and its signer key are not enrolled, no signed publication envelopes
-are present, and no genuine operator approval record has been supplied.
-Workstation SSH keys are not automatically treated as authority keys. Both
-operational switches remain false until Lawrence O'Neal supplies authentic
-inputs through the publication framework.
+ZEUS-P2-014 resolves the commissioning preflight: the explicitly designated
+production key enrolls principal `loneal`, registry-bound production trust is
+compiled, ten operator-signed authority records pass readiness, and the
+repository-fixed authority source is explicitly activated. Commissioning now
+reports `READY`.
 
 ZEUS-P2-006 implements and qualifies the remaining software-side owner
 enrollment toolkit: public-key inspection, externally authorized enrollment,
@@ -92,11 +100,11 @@ remains disabled and unavailable from the CLI.
 
 Remaining separately controlled work:
 
-- controlled enrollment of Lawrence O'Neal's authentic public key for `loneal`;
-- `loneal`-signed publication of live authority-domain records;
 - append-only ARB/WOP publication receipts;
 - independent ARB provenance verification at admission; and
-- operational activation after supervised live-source qualification.
+- production dispatcher commissioning. The first operational WOP was accepted
+  for admission, but execution remains prohibited while
+  `dispatch_permitted: false`.
 
 The current `generate-wop` qualification workflow remains review-only. This
 roadmap entry does not approve implementation, operational admission,

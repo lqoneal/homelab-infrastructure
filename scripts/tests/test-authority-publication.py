@@ -394,15 +394,13 @@ class PublicationQualificationTests(unittest.TestCase):
             set(framework.policy.value["owners"]), {"Lawrence O'Neal"}
         )
 
-    def test_production_commissioning_status_is_blocked_without_publications(self):
+    def test_production_commissioning_status_is_ready(self):
         status = commissioning_status(ROOT)
-        self.assertEqual(status["commissioning_state"], "BLOCKED")
+        self.assertEqual(status["commissioning_state"], "READY")
         self.assertTrue(status["trust_policy_configured"])
-        self.assertFalse(status["authority_source_configured"])
+        self.assertTrue(status["authority_source_configured"])
         self.assertEqual(status["allowed_signer_count"], 1)
-        codes = {item["code"] for item in status["blockers"]}
-        self.assertNotIn("OWNER_TRUST_NOT_ENROLLED", codes)
-        self.assertIn("REQUIRED_RECORD_COLLECTION_EMPTY", codes)
+        self.assertEqual(status["blockers"], [])
 
 
 if __name__ == "__main__":

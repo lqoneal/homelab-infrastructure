@@ -1,15 +1,15 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.54
+version: 2.55
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-25
+last_updated: 2026-07-26
 phase: Zeus Operational Alpha
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.53
+predecessor_revision: DOC-0001@2.54
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -123,6 +123,8 @@ relationships:
     target: SPEC-0009
   - type: indexes
     target: SPEC-0010
+  - type: indexes
+    target: SPEC-0011
   - type: indexes
     target: MILESTONE-0006
   - type: indexes
@@ -351,6 +353,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | SPEC-0008 | Engineering Transaction Profile Specification | Active | Engineering Governance | `docs/specifications/SPEC-0008-ENGINEERING_TRANSACTION_PROFILE_SPECIFICATION.md` |
 | SPEC-0009 | Notification Service Specification | Active | Engineering Platform | `docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md` |
 | SPEC-0010 | Engineering Knowledge Repository Architecture | Active | Engineering Platform | `docs/specifications/SPEC-0010-ENGINEERING-KNOWLEDGE-REPOSITORY-ARCHITECTURE.md` |
+| SPEC-0011 | Production Authority Restoration Specification | Active | Lawrence O'Neal | `docs/specifications/SPEC-0011-PRODUCTION-AUTHORITY-RESTORATION-SPECIFICATION.md` |
 | SERVICE-0001 | EOS Core Services Catalog | Draft | EOS Program | `docs/services/SERVICE-0001-EOS_CORE_SERVICES_CATALOG.md` |
 | SERVICE-0002 | EMP Management Services Catalog | Active | Engineering Management Platform | `docs/services/SERVICE-0002-EMP_MANAGEMENT_SERVICES_CATALOG.md` |
 | GEN-0001 | Engineering Operating System Genesis Record | Active | Engineering Governance | `docs/genesis/GEN-0001-GENESIS_GOVERNANCE_RECORD.md` |
@@ -775,3 +778,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.52 | 2026-07-21 | Registered EENS Operational Alpha service discovery, canonical repository source, qualified LOpi deployment, source-versus-deployment boundary, implemented capabilities, and deferred HNS expansion under Mission 7 repository convergence. |
 | 2.53 | 2026-07-24 | Removed the invalid non-controlled `discovers` relationship to the unresolved `EENS-OPERATIONAL-ALPHA` service label while preserving indexed SPEC-0009 authority and the EENS service-discovery record. |
 | 2.54 | 2026-07-25 | Indexed PHASE-0001 and reconciled repository discovery to the Zeus Operational Alpha authority baseline while preserving completed EENS history. |
+| 2.55 | 2026-07-26 | Published and indexed SPEC-0011 and reconciled the production authority hierarchy, controlled-document execution authority, Zeus CLI semantics, and Authority Restoration Principle. |

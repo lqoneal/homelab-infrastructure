@@ -161,7 +161,12 @@ Preparation and Decision Authority:
 
 Engineering Governance authorized this qualification and publication mission through the Codex Handoff Procedure titled **Governance Foundation Qualification & Publication**. That transitional authorization permits preparation of the decision record; this EGR is the repository-controlled record of the Engineering Governance decision.
 
-`approval_reference: EGR-000001` identifies this controlled record of the approval action. It does not make the record self-authorizing. Governance Authority originates with the Engineering Organization and is exercised by Engineering Governance through CHAR-0001 and POL-0001.
+`approval_reference: EGR-000001` identifies this controlled record of the
+approval action. It does not make the record self-authorizing. For the
+production Zeus environment, ultimate engineering authority originates solely
+with Lawrence O'Neal and is exercised through authenticated principal
+`loneal`, the Zeus CLI, and the controlled governance functions established by
+CHAR-0001 and POL-0001.
 
 Authority Boundary:
 

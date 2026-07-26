@@ -4,9 +4,12 @@
 
 The authoritative production ownership model is
 `engineering/operations/authority-ownership-specification.md`. Lawrence O'Neal,
-authenticated as principal `loneal`, is the single human authority for every
-Zeus Operational Alpha domain. Zeus is the interface through which that
-authority is recorded and enforced; it is not an independent authority.
+authenticated as principal `loneal`, is the sole ultimate engineering
+authority for every Zeus Operational Alpha domain. The authenticated Zeus CLI
+is the authoritative interface through which he exercises that authority.
+Controlled documentation is the normal operational source of execution
+authority. Zeus resolves, validates, reconciles, and executes that authority;
+it is not an independent authority.
 
 The repository root discovered from `scripts/zeus` defines the Zeus runtime.
 Its only authoritative orchestration store is:
@@ -138,12 +141,12 @@ repository-fixed source:
 
 `engineering/authority/operational-authority-state.yaml`
 
-The checked-in source is intentionally unconfigured. Live generation fails
-closed until the authenticated operator publishes a complete mission/work item,
-repository assertion, signed operator approval, authority binding, governing
-baseline, and authenticated principal record at that location. Tests may use
-an isolated source override only when `ZEUS_TESTING=1`; production ignores the
-override.
+ZEUS-P2-014 commissioned the repository-fixed source through controlled
+enrollment, signing, readiness, and activation. Operational resolution still
+requires a complete mission/work item, repository assertion, signed operator
+approval, authority binding, governing baseline, and authenticated principal
+record at that location. Tests may use an isolated source override only when
+`ZEUS_TESTING=1`; production ignores the override.
 
 The runtime validates ownership labels, lifecycle and qualification state,
 approval scope, repository root and exact Git baseline, authority-DAG
@@ -151,6 +154,14 @@ resolution, governing-manifest digest, authentication state, placeholders,
 provenance completeness, expiry, and the ARB seal. WOP rendering still requires
 explicit review and performs no submission, admission, dispatch, approval, or
 execution.
+
+When authority is missing, stale, conflicting, incomplete, or invalid, Zeus
+stops execution safely and reports an authority-resolution failure. Under
+SPEC-0011 this is an authority restoration condition: affected controlled
+records must be reconciled, the repository validated, and normal authority
+resolution rerun before execution. The current runtime does not yet automate
+that restoration sequence; bootstrapping never bypasses controlled
+documentation.
 
 ## Unified mission admission
 
@@ -164,10 +175,10 @@ scripts/zeus admit-mission start --mode qualification \
   --repository /data/engineering/repositories/homelab
 ```
 
-Operational mode accepts mission, work-item, and principal selectors but
-remains fail closed while authentic owner artifacts are absent. Qualification
-and operational paths use the same coordinator and WOP interface; only their
-authority provider differs. Neither path automatically submits or dispatches.
+Operational mode accepts mission, work-item, and principal selectors.
+Qualification and operational paths use the same coordinator and WOP
+interface; only their authority provider differs. Unresolved authority stops
+the path pending restoration. Neither path automatically submits or dispatches.
 Stage evidence, interruption, resume, replay, failure categories, and recovery
 are specified in
 `engineering/operations/zeus-mission-admission-runtime.md`.
@@ -199,10 +210,10 @@ engineering/authority/owner-trust-policy.yaml
 engineering/authority/allowed-signers
 ```
 
-Both are intentionally unconfigured. Lawrence O'Neal's public key and `loneal`
-principal must be enrolled through the supported enrollment action before
-production publication can begin. The publication framework does not generate
-keys, sign envelopes, create approvals, or authenticate a session by itself.
+ZEUS-P2-014 enrolled Lawrence O'Neal's production key and `loneal` principal
+through the supported enrollment action and installed registry-bound production
+trust. The publication framework does not generate keys, sign envelopes, create
+approvals, or authenticate a session by itself.
 
 Review commissioning state without loading trust keys or changing files:
 
@@ -212,8 +223,9 @@ scripts/authority-publishctl status
 
 The command reports enrolled versus required ownership, allowed-signer count,
 authority-source activation, required record collections, typed blockers, and
-a deterministic assessment digest. `BLOCKED` is the expected result until
-authentic operator-managed inputs have been enrolled and published.
+a deterministic assessment digest. After ZEUS-P2-014 activation it reports
+`READY` with one enrolled owner, one signer, ten signed publications, and no
+blockers.
 
 Owner enrollment and unsigned publication preparation use:
 

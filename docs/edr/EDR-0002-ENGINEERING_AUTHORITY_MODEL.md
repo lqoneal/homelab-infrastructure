@@ -1,11 +1,11 @@
 ---
 document_id: EDR-0002
 title: Engineering Authority Model
-version: 1.1
+version: 1.2
 status: Draft
 owner: EOS Program
 created: 2026-07-08
-last_updated: 2026-07-10
+last_updated: 2026-07-26
 phase: Governance Architecture Reconciliation
 domain: Engineering Governance
 classification: Foundational Architecture Decision Record
@@ -20,6 +20,7 @@ related_documents:
   - SPEC-0004
   - SPEC-0005
   - SERVICE-0001
+  - SPEC-0011
 tags:
   - engineering
   - authority
@@ -58,7 +59,10 @@ This decision does not originate engineering authority, redefine the governance 
 
 CHAR-0001 — Engineering Charter is the governing record for this decision.
 
-CHAR-0001 establishes the authority chain from the Engineering Organization through Engineering Governance and the Engineering Charter to subordinate repository-controlled records. No statement in this decision may be interpreted to supersede or redefine that chain.
+CHAR-0001 establishes the authority chain from Lawrence O'Neal through
+authenticated principal `loneal`, the Zeus CLI, authority resolution, and
+subordinate repository-controlled records. No statement in this decision may
+be interpreted to supersede or redefine that chain.
 
 ### Related Records
 
@@ -74,25 +78,32 @@ CHAR-0001 establishes the authority chain from the Engineering Organization thro
 
 ### Origin and Delegation of Governance Authority
 
-Engineering authority originates with the Engineering Organization.
-
-The Engineering Organization establishes Engineering Governance and delegates governance responsibility to it. Engineering Governance exercises that delegated authority through CHAR-0001 and the subordinate repository governance established under the Charter.
+Engineering authority for the production Zeus environment originates solely
+with Lawrence O'Neal. Principal `loneal` is the authenticated production
+identity, and the Zeus CLI is the authoritative interface through which that
+authority is exercised. Engineering Governance is a controlled function, not a
+separate human or organizational authority.
 
 The governing chain is:
 
 ```text
-Engineering Organization
+Lawrence O'Neal
         ↓
-Engineering Governance
+Authenticated principal loneal
         ↓
-CHAR-0001 — Engineering Charter
+Zeus CLI
+        ↓
+Authority Resolution Runtime
         ↓
 Repository-controlled governance and engineering records
         ↓
 Authorized engineering execution and evidence
 ```
 
-Repository-controlled records operate only within the authority delegated to the repository. They may govern, specify, authorize, record, or evidence engineering activity according to their document class and lifecycle state, but they do not originate engineering authority.
+Repository-controlled records are the normal operational source of execution
+authority. They derive their authority ultimately from Lawrence O'Neal and
+operate within their document class and lifecycle state, but they do not
+originate ultimate engineering authority.
 
 No subordinate record, including this Engineering Decision Record, may establish a competing governance hierarchy or expand its own delegated authority.
 
@@ -100,15 +111,11 @@ No subordinate record, including this Engineering Decision Record, may establish
 
 Bootstrap authority is defined by CHAR-0001 and historically documented by GEN-0001.
 
-This decision preserves bootstrap authority by reference only. It does not restate, extend, reactivate, or create an alternative bootstrap mechanism. Ordinary engineering activity proceeds through current repository-controlled authorization after bootstrap governance has been established.
-
-CHAR-0001 v1.1 also establishes a distinct, temporary mechanism for removing
-manual Handoff-generation circularity. During Transitional Engineering Handoff
-Governance, a Handoff issued by Engineering Governance supplies constitutional
-initiation authority for subordinate repository-controlled processes. This is
-not a recurring Genesis bootstrap, does not make the repository the origin of
-authority, and does not replace EWO execution authorization or any subordinate
-review, lifecycle, publication, qualification, evidence, or repository control.
+This decision preserves bootstrap authority by reference to CHAR-0001 and
+SPEC-0011. Bootstrapping authorizes reconciliation of controlled documentation
+when normal authority cannot be resolved. It does not bypass controlled
+documentation or authorize operational execution. After reconciliation, Zeus
+validates the repository and re-runs normal authority resolution.
 
 ## Two Distinct Forms of Authority
 
@@ -140,12 +147,13 @@ A record possesses Information Authority only for the information assigned to it
 
 EOS adopts the following Engineering Authority Model:
 
-1. Governance Authority derives from the Engineering Organization through Engineering Governance and CHAR-0001.
+1. Governance Authority derives from Lawrence O'Neal and is exercised through authenticated principal `loneal`, the Zeus CLI, and CHAR-0001.
 2. Repository-controlled records operate only within delegated authority and according to their document class and lifecycle state.
 3. Each governed engineering fact shall have one authoritative information owner.
 4. An Authoritative Engineering Record designation identifies that information owner; it does not create a governance tier.
 5. Derived Engineering Views possess no Governance Authority or Information Authority and shall remain traceable to their authoritative sources.
 6. Engineering information shall be changed through the controlled record that owns it and through the lifecycle and authorization mechanisms applicable to that record.
+7. Authority resolution failures shall enter the Authority Restoration Principle defined by SPEC-0011 and shall return to normal controlled-document authority before execution.
 
 ## Information Authority Model
 
@@ -258,7 +266,7 @@ Every derived view shall be traceable to one or more authoritative information s
 
 Engineering implementation shall be traceable, as applicable, through:
 
-* the Engineering Organization and Engineering Governance authority chain;
+* Lawrence O'Neal, principal `loneal`, the Zeus CLI, and the controlled Engineering Governance authority chain;
 * CHAR-0001 and applicable subordinate governance;
 * engineering decisions;
 * specifications, standards, and procedures;
@@ -338,7 +346,9 @@ Upon activation, subordinate records and services within its scope shall conform
 
 ## Decision Summary
 
-Engineering Governance governs through authority delegated by the Engineering Organization and formalized by CHAR-0001.
+Lawrence O'Neal exercises ultimate engineering authority through authenticated
+principal `loneal` and the Zeus CLI. Engineering Governance is the controlled
+function formalized by CHAR-0001.
 
 Controlled records own engineering information only within their delegated scope.
 
@@ -354,3 +364,4 @@ Derived views never govern and never become authoritative by use alone.
 | ------- | ---- | ----------- |
 | 1.0 | 2026-07-08 | Established the original single-source Authoritative Engineering Record and derived-view architecture. |
 | 1.1 | 2026-07-10 | Reconciled Governance Authority, Information Authority, Charter delegation, Draft lifecycle semantics, related-record traceability, and derived-view constraints under the Gate B Governance Architecture Reconciliation. |
+| 1.2 | 2026-07-26 | Reconciled the production authority hierarchy and authority-restoration model with CHAR-0001 and SPEC-0011. |

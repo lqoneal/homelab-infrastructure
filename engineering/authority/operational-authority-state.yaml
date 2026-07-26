@@ -1,15 +1,171 @@
+activation:
+  activated_at: '2026-07-26T19:44:43.839269Z'
+  previous_state_digest: 259e4ed1fa1c4e4b4d0323ba10ea3767b9fa492d2c634533b9e172a586132c6f
+  readiness_digest: 7e4a151c58de5a2ac0d5081881f7a7b95d18ce708f7f8771eec9889e14a29d63
+  transaction_id: AUTHORITY-PUBLICATION-23d37b6d-40af-4241-88c3-9ecd62535faa
+approvals:
+  ZEUS-P2-014-PRODUCTION-AUTHORITY-AUTHORIZATION:
+    authority: Lawrence O'Neal
+    authorized_lifecycle_state: Active
+    decision: GRANTED
+    decision_at: '2026-07-26T19:37:08Z'
+    owner: Lawrence O'Neal
+    publication_provenance:
+    - envelope_id: PUBLICATION-01465dec-dd30-5a70-ac49-defa1c7c6018
+      publication_digest: 66ebbe3c3b4ea90f4ff8ea43d9deac4fac403dc5ba3249bb1e9238d5112edc4a
+      record_type: approval_authority
+      signer_principal: loneal
+    record_id: ZEUS-P2-014-PRODUCTION-AUTHORITY-AUTHORIZATION
+    record_revision: 1
+    reference: ZEUS-P2-014-PRODUCTION-AUTHORITY-AUTHORIZATION
+    scope_digest: c86985b2483ac1c5a9e500595e13c7c1b1c809b2ce3fd0da0e6789e7f3b17456
+authority_bindings:
+  AUTHORITY-BINDING-ZEUS-P2-014:
+    authority_node_id: work-package
+    capabilities:
+    - execute
+    chain:
+    - work-package
+    - mission
+    - baseline
+    - governance
+    - charter
+    - organization
+    graph_path: engineering/authority/fixtures/valid.yaml
+    graph_version: valid-authority-chain
+    owner: Lawrence O'Neal
+    publication_provenance:
+    - envelope_id: PUBLICATION-7260ea59-ed08-5252-a932-1a0515a25efe
+      publication_digest: a11b4e5935a6bd9c0627ed27fe56968fa3e138f65e00a3a84b977dd29aaaac86
+      record_type: authority_node
+      signer_principal: loneal
+    record_id: AUTHORITY-BINDING-ZEUS-P2-014
+    record_revision: 1
+    resolution_digest: d694c31d23d1334f840b725555fedb2b1946367fd72998f6fd2ef77e18167b30
+authorization_decisions: {}
+governing_baselines:
+  GOVERNING-ZEUS-WOP-1:
+    lifecycle_state: Active
+    manifest_digest: 1d40d23e9c9db4152aaeaa3bc757e0d14c37567b3fa207a087ac9f6631f961f7
+    manifest_id: GOVERNING-ZEUS-WOP-1
+    manifest_revision: 1
+    owner: Lawrence O'Neal
+    publication_provenance:
+    - envelope_id: PUBLICATION-7e5c5b4c-7660-50c6-9eac-838fe17dede8
+      publication_digest: c4f8c527ac749e91f7d1553487dd992857d26fbe11de43c6c14e5377b28303cc
+      record_type: governing_baseline
+      signer_principal: loneal
+    record_id: GOVERNING-ZEUS-WOP-1
+    record_revision: 1
+    references:
+    - PROC-0001@1.11
+    - TPL-0001@1.7
+    - STD-0000
+    - STD-0001
+    - STD-0002
+    - STD-0003
+    - STD-0004
+missions:
+  EMP-MISSION-ZEUS-OPERATIONAL-ALPHA:
+    lifecycle_state: active
+    owner: Lawrence O'Neal
+    publication_provenance:
+    - envelope_id: PUBLICATION-cb854746-53c3-5a91-b371-626aa8bea110
+      publication_digest: 7a3e26a07012eac9d0bc65bf35e7ada4f2def8d4dc07622c751213cf200e735f
+      record_type: mission_authority
+      signer_principal: loneal
+    record_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    record_revision: 1
+operational_configurations:
+  OPERATIONAL-CONFIGURATION-ZEUS-P2-014:
+    activation_policy: explicit-ready-transaction-only
+    lifecycle_state: Active
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    owner: Lawrence O'Neal
+    principal_id: loneal
+    publication_provenance:
+    - envelope_id: PUBLICATION-978d3cad-7e58-5a2e-a0a7-bdb6b69b4a39
+      publication_digest: 7f6003c241fc84412f5e4f2ad8c91e91da4e88d23177a10c4f52481815a01b05
+      record_type: operational_configuration
+      signer_principal: loneal
+    record_id: OPERATIONAL-CONFIGURATION-ZEUS-P2-014
+    record_revision: 1
+    work_item_id: EMP-WORK-ZEUS-P2-014-COMMISSIONING
+operational_revocations: {}
+operationally_configured: true
+phases:
+  EMP-PHASE-ZEUS-OPERATIONAL-ALPHA:
+    lifecycle_state: active
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    owner: Lawrence O'Neal
+    publication_provenance:
+    - envelope_id: PUBLICATION-14e122cd-a455-531c-a275-c28ed93b683d
+      publication_digest: 91a0361c3e0b8755003b2563259e8f72adb13e3612ad35a6467688c8dbed4ebf
+      record_type: phase_authority
+      signer_principal: loneal
+    record_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    record_revision: 1
+principals:
+  loneal:
+    authentication_record: ZEUS-P2-014-PRODUCTION-AUTHORITY-AUTHORIZATION
+    authentication_status: VERIFIED
+    owner: Lawrence O'Neal
+    publication_provenance:
+    - envelope_id: PUBLICATION-a8c1ec5f-5f2e-553d-b0bd-4dfaa721ff99
+      publication_digest: 85708f75709db649c3f10b783faca2e917aab97b9ced2a5c8fe7e587910a7c67
+      record_type: identity_record
+      signer_principal: loneal
+    record_id: loneal
+    record_revision: 1
+    session_id: SESSION-ZEUS-P2-014-LONEAL
+publication_record_types:
+- approval_authority
+- authority_node
+- governing_baseline
+- identity_record
+- mission_authority
+- operational_configuration
+- phase_authority
+- repository_baseline
+- repository_identity
+- work_item_authority
+repositories:
+  homelab:
+    assertion_id: REPOSITORY-ASSERTION-ZEUS-P2-014
+    baseline_commit: 8c861f5a94064e98a4ecd7a3178ca53b90c27fa4
+    canonical_locator: /data/engineering/repositories/homelab
+    owner: Lawrence O'Neal
+    publication_provenance:
+    - envelope_id: PUBLICATION-1468c1bf-d9b9-5dd4-9047-737d955cc933
+      publication_digest: ff8383adc6bfee1ba4bf4ed6de7b37d213d31ea8919760baf6a670c539ae445f
+      record_type: repository_baseline
+      signer_principal: loneal
+    - envelope_id: PUBLICATION-4c3db802-c68f-540b-a8f8-c8d2566df7f8
+      publication_digest: 5dee4c9fd62f1adbaba556dea6232385e85ac15b2db30a851619b821eb042300
+      record_type: repository_identity
+      signer_principal: loneal
+    record_id: homelab
+    record_revision: 1
+    repository_id: REPOSITORY-HOMELAB
 schema_version: 1
-operationally_configured: false
-status: awaiting-controlled-authority-publication
-description: >-
-  Repository-fixed source location for the Authority Resolution Runtime.
-  Empty collections and false configuration intentionally prevent live
-  operational WOP generation until owner records are separately published.
-missions: {}
-phases: {}
-work_items: {}
-repositories: {}
-approvals: {}
-authority_bindings: {}
-governing_baselines: {}
-principals: {}
+source_digest: 79c1eadece607ea3e7f558427e89e0cf3b90ae2b1ffe0edd18c75de958c05382
+status: operational
+work_items:
+  EMP-WORK-ZEUS-P2-014-COMMISSIONING:
+    approval_reference: ZEUS-P2-014-PRODUCTION-AUTHORITY-AUTHORIZATION
+    authority_binding_id: AUTHORITY-BINDING-ZEUS-P2-014
+    lifecycle_state: qualified
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    owner: Lawrence O'Neal
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    publication_provenance:
+    - envelope_id: PUBLICATION-b97823c5-9e5c-5c5a-a036-e4e673524356
+      publication_digest: 6a5a9e607987cf6af7d74c1a38b576fa08b3c36b3997d4841823d6926fa7573b
+      record_type: work_item_authority
+      signer_principal: loneal
+    qualification_record: engineering/evidence/2026-07-26-zeus-p2-014-enrollment-and-trust-evidence.md
+    qualification_status: QUALIFIED
+    record_id: EMP-WORK-ZEUS-P2-014-COMMISSIONING
+    record_revision: 1
+    revision: 1
+    scope_digest: c86985b2483ac1c5a9e500595e13c7c1b1c809b2ce3fd0da0e6789e7f3b17456

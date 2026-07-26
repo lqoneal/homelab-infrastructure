@@ -82,30 +82,28 @@ class MissionAdmissionRuntimeTests(unittest.TestCase):
         replay = self.runtime.run(interrupted["admission_id"], at=AT)
         self.assertEqual(replay, resumed)
 
-    def test_production_operational_path_fails_at_authority_gate(self):
+    def test_production_operational_path_reaches_admission_decision(self):
         request = {
             "mode": "operational",
             "intent": "Prepare a supervised operational WOP",
             "mission_id": "EMP-MISSION-ZEUS-OPERATIONAL-ALPHA",
-            "work_item_id": "EMP-WORK-ZEUS-P2-005-AUTHORITY-COMMISSIONING",
+            "work_item_id": "EMP-WORK-ZEUS-P2-014-COMMISSIONING",
             "principal_id": "loneal",
             "repository": str(ROOT),
         }
         state = self.runtime.start(request, at=AT)
-        self.assertEqual(state["status"], "BLOCKED")
-        self.assertEqual(state["current_stage"], "AUTHORITY_RESOLUTION")
+        self.assertEqual(state["status"], "DECIDED")
+        self.assertIsNone(state["current_stage"])
         self.assertEqual(
-            state["failure"]["category"], "OPERATIONAL_READINESS_BLOCKER"
+            state["artifacts"]["admission_decision"]["admission_decision"],
+            "ACCEPTED",
         )
-        diagnostics = state["failure"]["diagnostics"]
-        self.assertEqual(
-            diagnostics["commissioning"]["commissioning_state"], "BLOCKED"
+        self.assertTrue(
+            state["artifacts"]["admission_decision"]["submission_eligible"]
         )
-        self.assertIn(
-            "Lawrence O'Neal",
-            diagnostics["owner_enrollment"]["missing_owners"],
+        self.assertFalse(
+            state["artifacts"]["admission_decision"]["dispatch_permitted"]
         )
-        self.assertNotIn("wop_result", state["artifacts"])
 
     def test_simulated_commissioned_source_reaches_admission_decision(self):
         fixture = runpy.run_path(

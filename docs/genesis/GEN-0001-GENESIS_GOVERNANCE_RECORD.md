@@ -1,11 +1,11 @@
 ---
 document_id: GEN-0001
 title: Engineering Operating System Genesis Record
-version: 1.0
+version: 1.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-09
+last_updated: 2026-07-26
 phase: Governance Bootstrap
 domain: Engineering Governance
 classification: Genesis Governance Record
@@ -29,11 +29,18 @@ tags:
 
 This document is the authoritative historical governance record of the constitutional establishment of the Engineering Operating System (EOS).
 
-It documents the one-time Governance Bootstrap through which Engineering Governance, acting under authority delegated by the Engineering Organization, transformed the approved governance framework into the first authoritative controlled engineering records.
+It documents the one-time Governance Bootstrap through which the controlled
+Engineering Governance function, acting under the ultimate authority of
+Lawrence O'Neal, transformed the approved governance framework into the first
+authoritative controlled engineering records.
 
 This document establishes the historical and constitutional origin of Governance Baseline 1.0.
 
-CHAR-0001 formalizes the governing authority chain from the Engineering Organization through Engineering Governance and the Engineering Charter to subordinate repository-controlled records. This Genesis Record is subordinate to that Charter and documents the historical bootstrap event without claiming that the Charter existed before the event.
+CHAR-0001 formalizes the production authority chain from Lawrence O'Neal
+through authenticated principal `loneal`, the Zeus CLI, and authority
+resolution to subordinate repository-controlled records. This Genesis Record
+is subordinate to that Charter and documents the historical bootstrap event
+without claiming that the Charter existed before the event.
 
 ---
 
@@ -72,7 +79,7 @@ The Governance Bootstrap is the one-time constitutional activity through which E
 
 During the Governance Bootstrap:
 
-* Engineering Governance acts directly under authority delegated by the Engineering Organization.
+* Engineering Governance acts as the controlled function through which Lawrence O'Neal's ultimate engineering authority is recorded.
 * Repository source documents are authored from Engineering Governance–approved content.
 * No implementation agent exercises governance authority.
 * No Engineering Work Order governs the bootstrap because an operational governance baseline does not yet exist.
@@ -91,12 +98,15 @@ bootstrap.
 
 ## Transition to Controlled Operational Governance
 
-Prior to completion of the Governance Bootstrap, Engineering Governance approval, exercised under authority delegated by the Engineering Organization, constitutes the authoritative source of governance content.
+Prior to completion of the Governance Bootstrap, the authenticated engineering
+decision of Lawrence O'Neal constitutes the authoritative source of governance
+content.
 
 Immediately upon successful completion of the Governance Bootstrap:
 
-* the Engineering Organization remains the origin of engineering authority;
-* Engineering Governance retains governance responsibility;
+* Lawrence O'Neal remains the sole ultimate engineering authority;
+* principal `loneal` represents that authority through the Zeus CLI;
+* Engineering Governance remains the controlled governance function;
 * CHAR-0001 formalizes the authority chain and is the highest foundational governing record;
 * repository-controlled governance documents become authoritative sources of operational governance only within their delegated scope;
 * conversation history becomes historical design context only;
@@ -152,7 +162,7 @@ Its purpose is to explain:
 * why the Governance Bootstrap was necessary;
 * why it occurred outside the normal Engineering Work Order lifecycle;
 * how Governance Baseline 1.0 was established; and
-* how operational governance became embodied in controlled repository records while the origin of engineering authority remained with the Engineering Organization and governance responsibility remained with Engineering Governance.
+* how operational governance became embodied in controlled repository records while ultimate engineering authority remained with Lawrence O'Neal and Engineering Governance remained the controlled governance function.
 
 Future engineers shall use this document to understand the constitutional origin of the Engineering Operating System.
 
