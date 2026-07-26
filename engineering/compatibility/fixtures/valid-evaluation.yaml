@@ -1,0 +1,10 @@
+prerequisite_evidence:
+  - evidence-mission-d-and-e-tests
+satisfied_dependencies:
+  - WOP-223e4567-e89b-42d3-a456-426614174001
+requested_effects:
+  - verify-compatibility
+principal_id: mission-f-offline-agent
+repository: /data/engineering/repositories/homelab
+baseline_commit: 3f3c06b37a289b0268369acfaaa9f47a4e6a4c3c
+branch: main

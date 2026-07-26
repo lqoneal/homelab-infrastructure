@@ -1,0 +1,22 @@
+schema_version: 1
+cases:
+  - {id: valid, expected: AUTHORIZED}
+  - {id: unknown-authority, expected: UNKNOWN_AUTHORITY}
+  - {id: invalid-graph-cycle, expected: INVALID_AUTHORITY_GRAPH}
+  - {id: authority-binding-mismatch, expected: AUTHORITY_BINDING_MISMATCH}
+  - {id: capability-outside-authority, expected: CAPABILITY_NOT_AUTHORIZED}
+  - {id: authority-expanding-child, expected: INVALID_AUTHORITY_GRAPH}
+  - {id: baseline-mismatch, expected: EXECUTION_CONTEXT_MISMATCH}
+  - {id: repository-mismatch, expected: EXECUTION_CONTEXT_MISMATCH}
+  - {id: unauthorized-effect, expected: EFFECT_NOT_AUTHORIZED}
+  - {id: prohibited-effect, expected: PROHIBITED_EFFECT_REQUESTED}
+  - {id: prerequisite-unsatisfied, expected: PREREQUISITE_FAILURE}
+  - {id: dependency-unsatisfied, expected: DEPENDENCY_FAILURE}
+  - {id: expired, expected: EXPIRED}
+  - {id: revoked, expected: REVOKED}
+  - {id: invalid-lease, expected: INVALID_LEASE}
+  - {id: invalid-receipt, expected: INVALID_PUBLICATION_RECEIPT}
+  - {id: signature-failed, expected: SIGNATURE_FAILURE}
+  - {id: malformed-wop, expected: INVALID_WOP}
+  - {id: duplicate-key-input, expected: VALIDATION_FAILURE}
+  - {id: deterministic-repeat, expected: AUTHORIZED}

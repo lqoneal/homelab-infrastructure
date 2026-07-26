@@ -1,0 +1,45 @@
+schema_version: 1
+wop_id: WOP-223e4567-e89b-42d3-a456-426614174000
+authority_binding:
+  authority_node_id: work-package
+  mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+  phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+  work_item_id: MISSION-F-OFFLINE-COMPATIBILITY
+execution_context:
+  principal_id: mission-f-offline-agent
+  repository: /data/engineering/repositories/homelab
+  baseline_commit: 3f3c06b37a289b0268369acfaaa9f47a4e6a4c3c
+  branch: main
+  assumptions:
+    - evaluation is offline and side-effect-free
+authorized_effects:
+  - effect_id: verify-compatibility
+    kind: execute
+    target: offline-authority-wop-model
+    constraints:
+      - no execution or live consumer
+prohibited_effects:
+  - execute-production
+  - create-session
+prerequisites:
+  - prerequisite_id: mission-d-and-e-valid
+    required: true
+    evidence_ref: evidence-mission-d-and-e-tests
+dependencies:
+  - wop_id: WOP-223e4567-e89b-42d3-a456-426614174001
+    required: true
+valid_from: '2026-07-25T00:00:00+00:00'
+expires_at: '2026-08-25T00:00:00+00:00'
+lease_policy:
+  required: true
+  maximum_duration_seconds: 3600
+revocation_policy:
+  revocable: true
+  authority_node_ids:
+    - governance
+    - mission
+payload_digest: 8b1c7b0858a4f027f033b012498988115cd5b62a36abf23494811b719c361a31
+signature:
+  algorithm: sha256-digest-fixture
+  key_id: mission-f-offline-fixture
+  value: 8b1c7b0858a4f027f033b012498988115cd5b62a36abf23494811b719c361a31
