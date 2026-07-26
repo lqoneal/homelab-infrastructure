@@ -1,0 +1,16 @@
+handler_id: zeus.qualification.reference
+version: 1.0.0
+api_version: zeus-gate-handler/1
+modes:
+- qualification
+gates:
+- EXECUTE_WORK
+- VERIFY_COMPLETION
+capabilities:
+- cancellation
+- deterministic
+- idempotent
+- restartable
+- structured-evidence
+- verification-first
+mutating: false

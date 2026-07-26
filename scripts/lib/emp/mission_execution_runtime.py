@@ -14,6 +14,13 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from scripts.lib.emp.authority_resolution import canonical_json, digest
+from scripts.lib.emp.gate_handlers import (
+    GateHandlerError,
+    GateHandlerFramework,
+    HandlerRegistry,
+    LegacyHandlerAdapter,
+    qualification_framework,
+)
 from scripts.lib.emp.mission_admission_runtime import (
     AdmissionStateStore,
     MissionAdmissionError,
@@ -185,19 +192,6 @@ class EensExecutionSink:
         }
 
 
-class QualificationGateHandler:
-    """Non-mutating gate handler used only for qualification execution."""
-
-    def execute(self, gate_id, context):
-        if gate_id == "EXECUTE_WORK":
-            return {
-                "result": "QUALIFIED_SIMULATION",
-                "side_effects_performed": False,
-                "artifacts": [],
-            }
-        return {"result": "PASS", "side_effects_performed": False, "artifacts": []}
-
-
 class MissionExecutionRuntime:
     VERSION = "zeus-mission-execution/1"
 
@@ -208,6 +202,7 @@ class MissionExecutionRuntime:
         admission_store: AdmissionStateStore,
         *,
         gate_handler=None,
+        handler_framework: GateHandlerFramework | None = None,
         evidence_publisher=None,
         event_sink=None,
         operational_dispatch_enabled: bool = False,
@@ -215,7 +210,19 @@ class MissionExecutionRuntime:
         self.root = Path(repository_root).resolve()
         self.store = store
         self.admission_store = admission_store
-        self.gate_handler = gate_handler
+        if gate_handler is not None and handler_framework is not None:
+            raise MissionExecutionError(
+                "gate_handler and handler_framework are mutually exclusive"
+            )
+        if gate_handler is not None:
+            registry = HandlerRegistry()
+            adapter = LegacyHandlerAdapter(
+                gate_handler, ("EXECUTE_WORK", "VERIFY_COMPLETION")
+            )
+            registry.register(adapter)
+            registry.activate_registered(adapter.manifest.handler_id)
+            handler_framework = GateHandlerFramework(registry, isolated=False)
+        self.handler_framework = handler_framework
         self.evidence_publisher = evidence_publisher or FileEvidencePublisher(
             store.directory / "published-evidence"
         )
@@ -431,26 +438,45 @@ class MissionExecutionRuntime:
                 "operational mission dispatch is not enabled",
                 {"production_activated": False, "dispatch_permitted": False},
             )
-        handler = self.gate_handler
-        if handler is None and state["mode"] == "qualification":
-            handler = QualificationGateHandler()
-        if handler is None:
+        framework = self.handler_framework
+        if framework is None and state["mode"] == "qualification":
+            framework = qualification_framework(self.root)
+        if framework is None:
             raise ExecutionBlocked(
                 "EXECUTION_HANDLER_UNAVAILABLE",
                 "no controlled execution handler is configured",
             )
-        return handler.execute(
-            gate_id,
-            {
+        try:
+            return framework.execute(
+                mode=state["mode"],
+                gate_id=gate_id,
+                context={
                 "execution_id": state["execution_id"],
                 "gate_idempotency_key": (
                     f"{state['execution_id']}:{gate_id}"
                 ),
                 "mission_id": state["mission_id"],
+                "repository": str(self.root),
                 "wop": deepcopy(wop),
+                "completed_gates": list(state["completed_gates"]),
+                "checkpoints": deepcopy(state["checkpoints"]),
+                "cancellation_requested": False,
+                "retry_count": sum(
+                    1
+                    for item in state["evidence"]
+                    if item["event"] == "GATE_STARTED"
+                    and item["payload"].get("gate_id") == gate_id
+                )
+                - 1,
                 "at": self._time(at),
-            },
-        )
+                },
+            )
+        except GateHandlerError as error:
+            raise ExecutionBlocked(
+                "GATE_HANDLER_FAILURE",
+                str(error),
+                {"gate_id": gate_id, "retryable": True},
+            ) from error
 
     def _load_admission(self, admission_id):
         try:
