@@ -1,0 +1,109 @@
+#!/usr/bin/env python3
+"""Controlled operational authority publication interface."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from scripts.lib.emp.authority_publication import (  # noqa: E402
+    AuthorityPublicationError,
+    AuthorityPublicationFramework,
+    commissioning_status,
+)
+from scripts.lib.emp.authority_resolution import authoritative_source_path  # noqa: E402
+
+
+def at(value: str | None) -> datetime:
+    return (
+        datetime.fromisoformat(value.replace("Z", "+00:00"))
+        if value
+        else datetime.now(timezone.utc)
+    )
+
+
+def emit(value) -> None:
+    print(json.dumps(value, indent=2, sort_keys=True))
+
+
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--repository", type=Path, default=ROOT)
+    parser.add_argument("--policy", type=Path)
+    sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("status")
+    initialize = sub.add_parser("initialize")
+    initialize.add_argument("--transaction", type=Path, required=True)
+    stage = sub.add_parser("stage")
+    stage.add_argument("--transaction", type=Path, required=True)
+    stage.add_argument("--envelope", type=Path, required=True)
+    stage.add_argument("--signature", type=Path, required=True)
+    verify = sub.add_parser("verify")
+    verify.add_argument("--transaction", type=Path, required=True)
+    verify.add_argument("--at")
+    activate = sub.add_parser("activate")
+    activate.add_argument("--transaction", type=Path, required=True)
+    activate.add_argument("--at")
+    rollback = sub.add_parser("rollback")
+    rollback.add_argument("--transaction", type=Path, required=True)
+    rollback.add_argument("--at")
+    revoke = sub.add_parser("revoke")
+    revoke.add_argument("--envelope", type=Path, required=True)
+    revoke.add_argument("--signature", type=Path, required=True)
+    revoke.add_argument("--receipt", type=Path, required=True)
+    revoke.add_argument("--at")
+    args = parser.parse_args(argv)
+    try:
+        if args.command == "status":
+            emit(commissioning_status(args.repository))
+            return 0
+        policy = args.policy
+        if policy is not None and os.environ.get("ZEUS_TESTING") != "1":
+            raise AuthorityPublicationError(
+                "production publication uses the repository-fixed trust policy"
+            )
+        framework = AuthorityPublicationFramework(
+            args.repository, policy_path=policy
+        )
+        target = authoritative_source_path(args.repository)
+        if args.command == "initialize":
+            emit({"transaction": str(framework.initialize(args.transaction))})
+        elif args.command == "stage":
+            emit(
+                framework.stage(
+                    transaction=args.transaction,
+                    envelope_path=args.envelope,
+                    signature_path=args.signature,
+                )
+            )
+        elif args.command == "verify":
+            emit(framework.verify_readiness(args.transaction, at=at(args.at)))
+        elif args.command == "activate":
+            emit(framework.activate(args.transaction, target=target, at=at(args.at)))
+        elif args.command == "rollback":
+            emit(framework.rollback(args.transaction, target=target, at=at(args.at)))
+        else:
+            emit(
+                framework.revoke(
+                    envelope_path=args.envelope,
+                    signature_path=args.signature,
+                    target=target,
+                    receipt_path=args.receipt,
+                    at=at(args.at),
+                )
+            )
+        return 0
+    except (AuthorityPublicationError, OSError, ValueError) as error:
+        print(f"FAIL: {error}", file=sys.stderr)
+        return 78
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

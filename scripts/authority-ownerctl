@@ -1,0 +1,152 @@
+#!/usr/bin/env python3
+"""Authority owner enrollment and unsigned publication preparation toolkit."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+import yaml
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from scripts.lib.emp.authority_publication import (  # noqa: E402
+    AuthorityPublicationError,
+    digest,
+    prepare_publication_envelope,
+    publication_template,
+    validate_publication_payload,
+)
+from scripts.lib.emp.owner_enrollment import (  # noqa: E402
+    OwnerEnrollmentError,
+    OwnerEnrollmentRegistry,
+    enrollment_status,
+    prepare_request,
+)
+
+
+def timestamp(value: str | None) -> datetime:
+    return (
+        datetime.fromisoformat(value.replace("Z", "+00:00"))
+        if value
+        else datetime.now(timezone.utc)
+    )
+
+
+def emit(value) -> None:
+    print(json.dumps(value, indent=2, sort_keys=True))
+
+
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--repository", type=Path, default=ROOT)
+    parser.add_argument("--root-policy", type=Path)
+    parser.add_argument("--registry", type=Path)
+    sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("status")
+    request = sub.add_parser("prepare-enrollment")
+    request.add_argument("--action", choices=("enroll", "rotate", "suspend", "retire"), required=True)
+    request.add_argument("--owner", required=True)
+    request.add_argument("--principal", required=True)
+    request.add_argument("--authorization-reference", required=True)
+    request.add_argument("--public-key", type=Path)
+    request.add_argument("--target-enrollment")
+    request.add_argument("--at")
+    apply = sub.add_parser("apply-enrollment")
+    apply.add_argument("--request", type=Path, required=True)
+    apply.add_argument("--signature", type=Path, required=True)
+    apply.add_argument("--signer", required=True)
+    compile_parser = sub.add_parser("compile-trust")
+    compile_parser.add_argument("--output", type=Path, required=True)
+    template = sub.add_parser("publication-template")
+    template.add_argument("--record-type", required=True)
+    prepare = sub.add_parser("prepare-publication")
+    prepare.add_argument("--record-type", required=True)
+    prepare.add_argument("--record-id", required=True)
+    prepare.add_argument("--record-revision", type=int, default=1)
+    prepare.add_argument("--signer-principal", required=True)
+    prepare.add_argument("--payload", type=Path, required=True)
+    prepare.add_argument("--at")
+    approval = sub.add_parser("validate-governance-approval")
+    approval.add_argument("--payload", type=Path, required=True)
+    args = parser.parse_args(argv)
+    try:
+        override = args.root_policy is not None or args.registry is not None
+        if override and os.environ.get("ZEUS_TESTING") != "1":
+            raise OwnerEnrollmentError(
+                "production enrollment uses repository-fixed policy and registry"
+            )
+        if args.command == "status":
+            emit(enrollment_status(args.repository, args.registry))
+        elif args.command == "prepare-enrollment":
+            emit(
+                prepare_request(
+                    action=args.action,
+                    owner=args.owner,
+                    principal=args.principal,
+                    authorization_reference=args.authorization_reference,
+                    requested_at=timestamp(args.at),
+                    public_key_path=args.public_key,
+                    target_enrollment_id=args.target_enrollment,
+                )
+            )
+        elif args.command in {"apply-enrollment", "compile-trust"}:
+            registry = OwnerEnrollmentRegistry(
+                args.repository,
+                policy_path=args.root_policy,
+                registry_path=args.registry,
+            )
+            if args.command == "apply-enrollment":
+                emit(
+                    registry.apply(
+                        request_path=args.request,
+                        signature=args.signature,
+                        signer=args.signer,
+                    )
+                )
+            else:
+                emit(registry.compile_trust(args.output))
+        elif args.command == "publication-template":
+            emit(publication_template(args.record_type))
+        elif args.command == "prepare-publication":
+            payload = yaml.safe_load(args.payload.read_text())
+            emit(
+                prepare_publication_envelope(
+                    record_type=args.record_type,
+                    record_id=args.record_id,
+                    record_revision=args.record_revision,
+                    signer_principal=args.signer_principal,
+                    published_at=timestamp(args.at),
+                    payload=payload,
+                )
+            )
+        else:
+            payload = yaml.safe_load(args.payload.read_text())
+            validate_publication_payload("approval_authority", payload)
+            emit(
+                {
+                    "validation": "PASS",
+                    "record_type": "approval_authority",
+                    "payload_digest": digest(payload),
+                    "approval_generated": False,
+                }
+            )
+        return 0
+    except (
+        AuthorityPublicationError,
+        OwnerEnrollmentError,
+        OSError,
+        ValueError,
+        yaml.YAMLError,
+    ) as error:
+        print(f"FAIL: {error}", file=sys.stderr)
+        return 78
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
