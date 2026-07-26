@@ -1,0 +1,16 @@
+repository=/data/engineering/repositories/homelab
+branch=main
+head=1b6bd3437af3b6dccac7cdcdffe065d74f310b2a
+published_baseline=b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf
+baseline_matches=false
+working_tree:
+M engineering/tests/zeus-operational-alpha/lib/pmct.py
+ M engineering/tests/zeus-operational-alpha/tests/test-command-discovery.py
+ M engineering/tests/zeus-operational-alpha/tests/test-evidence-integrity.py
+ M engineering/tests/zeus-operational-alpha/tests/test-state-protection.py
+ M scripts/zeus
+?? engineering/authority/publication-preparation/
+?? engineering/dispatch/preparations/
+?? engineering/evidence/2026-07-26-zeus-p2-019-repository-baseline-publication-preparation.md
+?? scripts/lib/emp/next_action.py
+?? scripts/tests/test-zeus-next-action.py

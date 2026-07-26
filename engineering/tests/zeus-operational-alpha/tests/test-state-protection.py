@@ -24,11 +24,11 @@ class ProtectionTests(unittest.TestCase):
             with self.assertRaisesRegex(pmct.PmctError, "scoped"):
                 pmct.safe_runtime()
 
-    def test_oa01_is_currently_not_ready(self):
+    def test_oa01_adapter_satisfies_current_observable_contract(self):
         state = pmct.inspect_state()
         checks = pmct.evaluate(pmct.matrix()["gates"][0], state)
         result, _ = pmct.classify(pmct.matrix()["gates"][0], state, checks)
-        self.assertEqual(result, "NOT_READY")
+        self.assertEqual(result, "PASS")
 
 
 if __name__ == "__main__":

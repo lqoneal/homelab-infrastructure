@@ -165,6 +165,18 @@ def inspect_state() -> dict[str, Any]:
     registry_path = REPOSITORY / "engineering/dispatch/execution-agent-registry.json"
     activation = json.loads(activation_path.read_text()) if activation_path.exists() else {}
     registry = json.loads(registry_path.read_text()) if registry_path.exists() else {}
+    commands = command_surface()
+    next_probe: dict[str, Any] | None = None
+    next_probe_error: str | None = None
+    if commands["zeus next-action"]["available"]:
+        probe = run([str(REPOSITORY / "scripts/zeus"), "next-action", "--json"])
+        if probe["returncode"] == 0:
+            try:
+                next_probe = json.loads(probe["stdout"])
+            except json.JSONDecodeError as error:
+                next_probe_error = f"invalid JSON: {error}"
+        else:
+            next_probe_error = probe["stderr"].strip() or "command failed"
     return {
         "repository": str(root), "repository_identity_valid": root == EXPECTED_REPOSITORY,
         "branch": branch, "head": head, "published_baseline": published_baseline(),
@@ -182,7 +194,9 @@ def inspect_state() -> dict[str, Any]:
             1 for agent in registry.get("agents", [])
             if agent.get("active") and agent.get("qualification_status") == "QUALIFIED"
         ),
-        "command_availability": command_surface(),
+        "command_availability": commands,
+        "next_action_probe": next_probe,
+        "next_action_probe_error": next_probe_error,
     }
 
 
@@ -302,6 +316,33 @@ def evaluate(gate: dict[str, Any], state: dict[str, Any]) -> list[dict[str, Any]
                       not state["dispatcher_active"] and
                       state["production_qualified_agent_count"] == 0,
                       "production prerequisites remain incomplete"),
+            assertion(
+                "next_action_executed",
+                isinstance(state["next_action_probe"], dict)
+                and not state["next_action_probe_error"],
+                state["next_action_probe_error"] or
+                "zeus next-action returned structured authoritative state",
+            ),
+            assertion(
+                "beta_mode_reported",
+                isinstance(state["next_action_probe"], dict)
+                and state["next_action_probe"].get("zeus_mode") == "BETA",
+                "current incomplete capability set must remain BETA",
+            ),
+            assertion(
+                "next_action_prioritizes_baseline",
+                isinstance(state["next_action_probe"], dict)
+                and state["next_action_probe"].get(
+                    "next_authorized_action", {}
+                ).get("code") == "PUBLISH_SIGNED_REPOSITORY_BASELINE",
+                "repository baseline reconciliation precedes dispatcher and agent work",
+            ),
+            assertion(
+                "dispatch_remains_disabled",
+                isinstance(state["next_action_probe"], dict)
+                and state["next_action_probe"].get("operational_dispatch") == "DISABLED",
+                "read-only decision must not enable dispatch",
+            ),
             assertion(
                 "read_only_idempotency",
                 all(state[key] == repeated[key] for key in stable_keys),

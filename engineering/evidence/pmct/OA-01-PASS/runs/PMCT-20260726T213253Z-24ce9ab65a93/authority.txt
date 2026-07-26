@@ -1,0 +1,5 @@
+operationally_configured=true
+dispatcher_status=PREPARED
+dispatcher_active=false
+production_agent_count=0
+production_qualified_agent_count=0

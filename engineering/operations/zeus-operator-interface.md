@@ -78,6 +78,32 @@ Bare `zeus` prints concise help and exits successfully without performing work.
 Unsupported natural language does not become unrestricted engineering
 instruction.
 
+## Operating mode and next action
+
+`zeus next-action` is the read-only production-facing decision interface. It
+resolves repository identity and HEAD, published baseline, configured
+authority, dispatcher activation, production agent registration and
+qualification, PMCT state, current gate, active Zeus work authority, and
+blocking conditions. It selects the first unmet prerequisite; it does not
+activate, publish, qualify, register, dispatch, or otherwise perform the
+reported action.
+
+```text
+zeus next-action
+zeus next-action --json
+```
+
+Human output includes stable machine-readable footer fields. `--json` emits
+the complete schema-versioned decision and deterministic decision digest.
+
+`ZEUS_MODE=BETA` means feature implementation, qualification, PMCT, and
+read-only production inspection are permitted within their separate authority
+while production safeguards remain active and Operational Alpha is incomplete.
+`ZEUS_MODE=PRODUCTION` is reserved for a future promotion decision after the
+published baseline matches, dispatcher is active, a qualified production
+agent exists, every PMCT gate passes, and no blocker remains. This interface
+cannot promote the operating mode.
+
 ## Corruption recovery
 
 Read, validation, lock, or write failure stops the invocation with exit 78.

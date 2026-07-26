@@ -18,6 +18,7 @@ from scripts.lib.emp.wop_service import OperationalWopService  # noqa: E402
 from scripts.lib.emp.mission_admission_runtime import AdmissionStateStore, MissionAdmissionError, MissionAdmissionRuntime  # noqa: E402
 from scripts.lib.emp.mission_execution_runtime import ExecutionStateStore, MissionExecutionError, MissionExecutionRuntime  # noqa: E402
 from scripts.lib.emp.production_execution import dispatch_readiness, load_json, load_registry  # noqa: E402
+from scripts.lib.emp.next_action import NextActionError, human_text as next_action_text, resolve_next_action  # noqa: E402
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -80,6 +81,7 @@ def main(argv=None):
     admit_mission=sub.add_parser("admit-mission"); admit_mission.add_argument("action", choices=("start","resume","status")); admit_mission.add_argument("--admission-id"); admit_mission.add_argument("--mode", choices=("qualification","operational")); admit_mission.add_argument("--intent"); admit_mission.add_argument("--mission"); admit_mission.add_argument("--phase"); admit_mission.add_argument("--work-item"); admit_mission.add_argument("--principal"); admit_mission.add_argument("--submitter"); admit_mission.add_argument("--repository", default=str(ROOT)); admit_mission.add_argument("--at"); admit_mission.add_argument("--max-stages", type=int)
     execute_mission=sub.add_parser("execute-mission"); execute_mission.add_argument("action", choices=("start","resume","status","suspend","cancel")); execute_mission.add_argument("--admission-id"); execute_mission.add_argument("--execution-id"); execute_mission.add_argument("--reason", default="OPERATOR"); execute_mission.add_argument("--at"); execute_mission.add_argument("--max-gates", type=int)
     dispatcher=sub.add_parser("dispatcher"); dispatcher.add_argument("action", choices=("status","agents","assignment","execution","eens","evidence","reconciliation")); dispatcher.add_argument("--identifier")
+    next_action=sub.add_parser("next-action"); next_action.add_argument("--json", action="store_true")
     a=p.parse_args(arguments)
     if a.command is None:
         p.print_help()
@@ -95,6 +97,11 @@ def main(argv=None):
                 emit(intro_status(interface_state))
             else:
                 print(ORIENTATION)
+            return 0
+        if a.command == "next-action":
+            decision=resolve_next_action(ROOT)
+            if a.json: emit(decision)
+            else: print(next_action_text(decision), end="")
             return 0
         state = requested_state or verify_authoritative_path(ROOT)
         if requested_state is None and not state.exists():
@@ -238,6 +245,6 @@ def main(argv=None):
                     repository_root=repository,at=resolved_at))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (OrchestrationError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+    except (OrchestrationError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr); return 78
 if __name__ == "__main__": raise SystemExit(main())

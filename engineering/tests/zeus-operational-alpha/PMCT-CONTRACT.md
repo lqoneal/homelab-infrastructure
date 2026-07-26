@@ -3,7 +3,7 @@
 Version: 1.0
 Identity: `ZEUS_PROGRESSIVE_MANUAL_CAPABILITY_TEST`
 Authority: ZEUS-P2-020
-Current result: `NOT_READY`
+Current overall result: `NOT_READY` (OA-01 `PASS`; OA-02 through OA-30 not passed)
 
 ## Normative behavior
 

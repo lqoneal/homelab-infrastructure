@@ -23,10 +23,14 @@ class ResultTests(unittest.TestCase):
         )
         self.assertNotEqual(result, "PASS")
 
-    def test_initial_state_has_no_pass(self):
+    def test_controlled_state_records_only_demonstrated_oa01_pass(self):
         state = pmct.load_state()
         self.assertEqual(state["overall_result"], "NOT_READY")
-        self.assertFalse(any(item["status"] == "PASS" for item in state["gates"].values()))
+        passed = [
+            gate for gate, item in state["gates"].items()
+            if item["status"] == "PASS"
+        ]
+        self.assertEqual(passed, ["OA-01"])
 
 
 if __name__ == "__main__":

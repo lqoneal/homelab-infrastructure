@@ -1,0 +1,73 @@
+{
+  "authority_operationally_configured": true,
+  "baseline_matches": false,
+  "branch": "main",
+  "dispatcher_active": false,
+  "dispatcher_status": "PREPARED",
+  "head": "1b6bd3437af3b6dccac7cdcdffe065d74f310b2a",
+  "next_action_probe": {
+    "authority": {
+      "active_work_authority": [],
+      "operationally_configured": true,
+      "status": "VALID"
+    },
+    "blocking_conditions": [
+      {
+        "code": "REPOSITORY_BASELINE_MISMATCH",
+        "detail": "published=b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf implementation=1b6bd3437af3b6dccac7cdcdffe065d74f310b2a"
+      },
+      {
+        "code": "DISPATCHER_INACTIVE",
+        "detail": "status=PREPARED"
+      },
+      {
+        "code": "NO_QUALIFIED_PRODUCTION_AGENT",
+        "detail": "registered=0"
+      },
+      {
+        "code": "PMCT_INCOMPLETE",
+        "detail": "overall=NOT_READY"
+      }
+    ],
+    "current_gate": "OA-01",
+    "decision_digest": "516cf23a3f2d1d7ab6fd462973f4a6f2b60ebea227f30d82af4a098458f08953",
+    "dispatcher": {
+      "active": false,
+      "status": "PREPARED"
+    },
+    "mission": "Zeus Operational Alpha",
+    "next_authorized_action": {
+      "code": "PUBLISH_SIGNED_REPOSITORY_BASELINE",
+      "description": "Publish signed repository baseline for current implementation HEAD",
+      "requires_separate_transition_authority": true
+    },
+    "operational_dispatch": "DISABLED",
+    "pmct": {
+      "last_evaluated_gate": "OA-01",
+      "status": "NOT_READY"
+    },
+    "production_agent_registry": {
+      "qualified_active_count": 0,
+      "registered_count": 0,
+      "status": "EMPTY"
+    },
+    "repository": {
+      "baseline_matches": false,
+      "branch": "main",
+      "identity": "/data/engineering/repositories/homelab",
+      "identity_valid": true,
+      "implementation_baseline": "1b6bd3437af3b6dccac7cdcdffe065d74f310b2a",
+      "published_baseline": "b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf"
+    },
+    "result": "NOT_READY",
+    "schema_version": 1,
+    "zeus_mode": "BETA"
+  },
+  "next_action_probe_error": null,
+  "production_agent_count": 0,
+  "production_qualified_agent_count": 0,
+  "published_baseline": "b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf",
+  "repository": "/data/engineering/repositories/homelab",
+  "repository_identity_valid": true,
+  "working_tree": "M engineering/tests/zeus-operational-alpha/lib/pmct.py\n M engineering/tests/zeus-operational-alpha/tests/test-command-discovery.py\n M engineering/tests/zeus-operational-alpha/tests/test-evidence-integrity.py\n M engineering/tests/zeus-operational-alpha/tests/test-state-protection.py\n M scripts/zeus\n?? engineering/authority/publication-preparation/\n?? engineering/dispatch/preparations/\n?? engineering/evidence/2026-07-26-zeus-p2-019-repository-baseline-publication-preparation.md\n?? scripts/lib/emp/next_action.py\n?? scripts/tests/test-zeus-next-action.py"
+}

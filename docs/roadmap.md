@@ -127,6 +127,13 @@ The initial result remains `NOT_READY`; implementation completion reports do
 not imply a gate pass. Missing production CLI surfaces remain backlog work and
 are not stubbed by the PMCT.
 
+ZEUS-P2-021 implements `zeus next-action` as the first production-facing,
+read-only PMCT decision surface. The resolver evaluates authoritative
+repository, publication, authority, dispatcher, agent, PMCT, gate, mode, work
+authority, and blocker state and selects the earliest unmet prerequisite.
+Current mode is BETA and current action is signed baseline republication.
+PMCT OA-01 passes; OA-02 through OA-30 remain unpassed.
+
 The current `generate-wop` qualification workflow remains review-only. This
 roadmap entry does not approve implementation, operational admission,
 submission, dispatch, or execution.

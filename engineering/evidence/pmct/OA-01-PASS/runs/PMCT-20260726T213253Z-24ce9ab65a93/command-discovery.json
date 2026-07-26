@@ -1,0 +1,82 @@
+{
+  "zeus admission evaluate": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus agent qualify": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus agent registry": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus agent select": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus agent status": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus authority restoration": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus authority status": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus authority work-lifecycle": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus dispatcher activation": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus dispatcher policy": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus dispatcher probe": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus dispatcher status": {
+    "available": true,
+    "classification": "AVAILABLE"
+  },
+  "zeus eens self-test": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus eens status": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus evidence self-test": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus invocation probe": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus next-action": {
+    "available": true,
+    "classification": "AVAILABLE"
+  },
+  "zeus qualification self-test": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus reconciliation self-test": {
+    "available": false,
+    "classification": "UNAVAILABLE"
+  },
+  "zeus status": {
+    "available": true,
+    "classification": "AVAILABLE"
+  }
+}

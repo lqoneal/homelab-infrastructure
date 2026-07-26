@@ -119,8 +119,9 @@ observable demonstration returns `ZEUS_PROGRESSIVE_TEST_RESULT=PASS`, produces
 complete integrity-verifiable evidence, and retains every eligible earlier
 gate. PMCT is read-only by default and cannot originate transition authority.
 
-The initial overall PMCT result is `NOT_READY`; no historical work is inferred
-as a PMCT pass.
+The overall PMCT result remains `NOT_READY`; no historical work is inferred as
+a PMCT pass. ZEUS-P2-021 demonstrates OA-01 `PASS` through the authoritative
+read-only next-action interface. OA-02 through OA-30 remain unpassed.
 
 ## Revision History
 

@@ -1,8 +1,8 @@
 # Zeus Operational Alpha Progress
 
 Date: 2026-07-26
-Current completed implementation milestone: `ZEUS-P2-020`
-Resume status: PMCT implemented; OA-01 is `NOT_READY`; implement the missing read-only OA-01 acceptance interface before rerun
+Current completed implementation milestone: `ZEUS-P2-021`
+Resume status: PMCT OA-01 PASS; overall NOT_READY; repository baseline republication remains the authoritative next action
 Production ownership model: Lawrence O'Neal / `loneal`
 Commissioning status: `READY`
 
@@ -29,6 +29,7 @@ Commissioning status: `READY`
 | ZEUS-P2-018 Dispatcher Commissioning Assessment | Correctly stopped NOT READY and recorded the missing production execution foundation | `engineering/evidence/2026-07-26-zeus-p2-018-dispatcher-commissioning-assessment.md` |
 | ZEUS-P2-019 Production Execution Foundation | Implementation and production-faithful qualification complete; prepared activation and empty registry preserve the commissioning boundary | `engineering/evidence/2026-07-26-zeus-p2-019-completion-report.md` |
 | ZEUS-P2-020 Progressive Manual Capability Test | PMCT framework implemented with locked OA-01–OA-30 sequence; example OA-01 result is `NOT_READY`; no capability gate has passed | `engineering/evidence/pmct/OA-01-example/` |
+| ZEUS-P2-021 Next Action Acceptance Interface | Read-only BETA resolver implemented; OA-01 manual demonstration PASS; overall PMCT remains NOT_READY | `engineering/evidence/pmct/OA-01-PASS/` |
 
 ## Resume point
 
@@ -50,7 +51,8 @@ reconciliation authority.
   invocation probe; EENS status/self-test; evidence, qualification, and
   reconciliation self-tests; and `zeus next-action`. Each surface requires
   positive, negative, idempotent, durable-evidence, and cumulative regression
-  demonstration at its locked gate.
+  demonstration at its locked gate. `zeus next-action` was completed by
+  ZEUS-P2-021.
 
 - P0: implement the SPEC-0011 authority-restoration coordinator: identify the
   blocking condition, affected records, required reconciliation, and

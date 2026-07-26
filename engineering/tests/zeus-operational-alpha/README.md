@@ -20,5 +20,6 @@ Normal execution is read-only. Runtime evidence is stored beneath
 `engineering/runtime/pmct/runs/` and ignored by Git. Controlled capability
 state remains at `engineering/runtime/pmct/capability-state.yaml`.
 
-The initial overall state is `NOT_READY`; no historical implementation result
-has been converted into a PMCT `PASS`.
+The overall state remains `NOT_READY`. OA-01 passed through an actual P2-021
+manual demonstration; no historical implementation result was inferred as a
+PMCT pass.

@@ -18,7 +18,7 @@ class EvidenceTests(unittest.TestCase):
             runtime = Path(temporary) / "runtime"
             with patch.dict(os.environ, {"PMCT_RUNTIME_ROOT": str(runtime), "SECRET_TOKEN": "do-not-copy"}):
                 result, directory = pmct.evidence_run(pmct.matrix()["gates"][0])
-            self.assertNotEqual(result["result"], "PASS")
+            self.assertIn(result["result"], pmct.TERMINAL_RESULTS)
             self.assertTrue((directory / "COMPLETE").is_file())
             hashes = (directory / "artifacts.sha256").read_text()
             for line in hashes.splitlines():

@@ -338,18 +338,18 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-Preserve the commissioned authority, qualified P2-019 execution foundation,
-and P2-020 PMCT. The published baseline remains
-`b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf`; PMCT OA-01 is `NOT_READY`,
+Preserve the commissioned authority, P2-019 execution foundation, P2-020 PMCT,
+and P2-021 next-action resolver. The published baseline remains
+`b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf`; PMCT OA-01 is `PASS`,
 dispatcher activation is `PREPARED`, and the production agent registry is
-empty. No Operational Alpha capability gate has passed.
+empty. Operational Alpha remains incomplete.
 
 **Next Immediate Step:**
 
-Under separate authority, implement the missing read-only `zeus next-action`
-acceptance interface and rerun PMCT OA-01. Do not begin OA-02, baseline
-publication, dispatcher activation, agent qualification/registration, or
-operational dispatch under P2-020.
+Under separate authority, reconcile the repository baseline identified by
+`zeus next-action`; separately implement the OA-02 authority status and
+work-lifecycle acceptance interfaces before attempting OA-02. Do not publish,
+activate, qualify, register, or dispatch under P2-021.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -631,3 +631,4 @@ When resuming this project:
 | 7.4     | 2026-07-26 | Republished repository identity and baseline facets at revision 2, activated baseline `b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf`, restored normal Authority Resolution and admission eligibility, and preserved disabled dispatch. |
 | 7.5     | 2026-07-26 | Implemented and independently qualified the P2-019 production execution foundation in bounded qualification mode; production activation, agent registration, baseline republication, and first operational execution remain pending. |
 | 7.6     | 2026-07-26 | Established the read-only Progressive Manual Capability Test with a locked cumulative OA-01 through OA-30 sequence, durable evidence, controlled result vocabulary, and an honest initial OA-01 `NOT_READY` result. |
+| 7.7     | 2026-07-26 | Implemented the authoritative read-only `zeus next-action` BETA decision interface and demonstrated PMCT OA-01 `PASS` without production-state mutation; overall PMCT remains `NOT_READY`. |

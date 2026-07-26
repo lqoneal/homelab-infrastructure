@@ -11,9 +11,9 @@ class DiscoveryTests(unittest.TestCase):
     def test_current_and_future_commands_are_distinguished(self):
         value = pmct.command_surface()
         self.assertTrue(value["zeus status"]["available"])
-        self.assertFalse(value["zeus next-action"]["available"])
+        self.assertTrue(value["zeus next-action"]["available"])
         self.assertEqual(
-            value["zeus next-action"]["classification"], "UNAVAILABLE"
+            value["zeus next-action"]["classification"], "AVAILABLE"
         )
         self.assertEqual(set(value), set(pmct.matrix()["production_cli_contract"]))
 

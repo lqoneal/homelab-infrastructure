@@ -1,0 +1,20 @@
+zeus admission evaluate	UNAVAILABLE
+zeus agent qualify	UNAVAILABLE
+zeus agent registry	UNAVAILABLE
+zeus agent select	UNAVAILABLE
+zeus agent status	UNAVAILABLE
+zeus authority restoration	UNAVAILABLE
+zeus authority status	UNAVAILABLE
+zeus authority work-lifecycle	UNAVAILABLE
+zeus dispatcher activation	UNAVAILABLE
+zeus dispatcher policy	UNAVAILABLE
+zeus dispatcher probe	UNAVAILABLE
+zeus dispatcher status	AVAILABLE
+zeus eens self-test	UNAVAILABLE
+zeus eens status	UNAVAILABLE
+zeus evidence self-test	UNAVAILABLE
+zeus invocation probe	UNAVAILABLE
+zeus next-action	AVAILABLE
+zeus qualification self-test	UNAVAILABLE
+zeus reconciliation self-test	UNAVAILABLE
+zeus status	AVAILABLE

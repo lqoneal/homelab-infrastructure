@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 57
+revision: 58
 updated_at: '2026-07-26'
 serialization: yaml
 mutation_history:
@@ -376,6 +376,13 @@ mutation_history:
   action: establish Progressive Manual Capability Test
   reason: Register the locked cumulative OA-01 through OA-30 manual acceptance
     framework and honest initial NOT_READY result without activating production.
+- revision: 58
+  previous_revision: 57
+  at: '2026-07-26T21:35:00+00:00'
+  actor: ZEUS-P2-021 implementation agent
+  action: implement authoritative next-action acceptance interface
+  reason: Register the read-only state-derived BETA decision surface and OA-01
+    PASS evidence without authorizing or performing production transition.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -2419,6 +2426,45 @@ entities:
     priority: 0
     completion_criteria: Locked cumulative PMCT, evidence package, self-tests,
       controlled reconciliation, and honest OA-01 result are complete.
+    queue_ids: []
+  - registry_id: EMP-WORK-ZEUS-P2-021-NEXT-ACTION
+    object_type: WorkItem
+    title: Zeus Next Action Acceptance Interface
+    management_state: completed
+    owner: Lawrence O'Neal
+    scope: ZEUS-P2-021
+    authority_reference: ZEUS-P2-021
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ZEUS-P2-020-PMCT
+    created_at: 2026-07-26
+    updated_at: 2026-07-26
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-26T21:30:00+00:00'
+      actor: loneal through authenticated instruction
+      reason: ZEUS-P2-021 authorizes the read-only acceptance interface only.
+      authority_reference: ZEUS-P2-021
+    - from: active
+      to: completed
+      at: '2026-07-26T21:35:00+00:00'
+      actor: ZEUS-P2-021 implementation agent
+      reason: State-derived decision interface and PMCT OA-01 demonstration passed.
+      authority_reference: ZEUS-P2-021
+    project_id: EMP-PROJECT-HOMELAB
+    order: 34
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: acceptance-interface-implementation
+    priority: 0
+    completion_criteria: Human and JSON next-action output derives from authoritative
+      state, remains BETA/read-only, and PMCT OA-01 passes.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP

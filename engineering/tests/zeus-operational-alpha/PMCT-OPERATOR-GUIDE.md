@@ -48,11 +48,11 @@ engineering/tests/zeus-operational-alpha/bin/pmct run OA-01
 engineering/tests/zeus-operational-alpha/bin/pmct report OA-01
 ```
 
-The expected current result is `NOT_READY`: Zeus can expose general status,
-but the locked `zeus next-action` acceptance interface is absent. The run
-still records the implementation baseline, stale published baseline,
-inactive dispatcher, empty agent registry, lack of Operational Alpha
-readiness, and command discovery.
+ZEUS-P2-021 implements the locked `zeus next-action` acceptance interface.
+OA-01 now demonstrates `PASS` while still recording the stale published
+baseline, inactive dispatcher, empty agent registry, BETA mode, disabled
+dispatch, and the correctly prioritized baseline-republication action.
+The overall PMCT remains `NOT_READY`; OA-02 through OA-30 have not passed.
 
 OA-30 can pass only after OA-01 through OA-29 have passed and a separate
 authorized declaration is observably performed and evidenced. Any earlier
