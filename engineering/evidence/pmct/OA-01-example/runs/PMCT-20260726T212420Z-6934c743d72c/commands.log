@@ -1,0 +1,3 @@
+read-only	git rev-parse HEAD
+read-only	git status --short
+read-only	zeus --help

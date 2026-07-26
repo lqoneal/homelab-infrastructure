@@ -109,6 +109,19 @@ Package architecture. It shall not modify production runtime.
 - Controlled-document, registry, repository, and Git integrity validation pass.
 - No Zeus implementation work or runtime change occurs.
 
+## Progressive Manual Capability Test
+
+ZEUS-P2-020 establishes the repository-controlled PMCT at
+`engineering/tests/zeus-operational-alpha/`. The OA-01 through OA-30 sequence
+is locked and cumulative. Implementation completion does not establish
+capability qualification. A gate may be accepted only after its manual,
+observable demonstration returns `ZEUS_PROGRESSIVE_TEST_RESULT=PASS`, produces
+complete integrity-verifiable evidence, and retains every eligible earlier
+gate. PMCT is read-only by default and cannot originate transition authority.
+
+The initial overall PMCT result is `NOT_READY`; no historical work is inferred
+as a PMCT pass.
+
 ## Revision History
 
 | Version | Date | Description |

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "branch": {"type": "string"},
+    "command_availability": {"type": "object"},
+    "completed_at": {"type": "string"},
+    "evidence_digest": {"pattern": "^[0-9a-f]{64}$", "type": "string"},
+    "gate": {"pattern": "^OA-[0-9]{2}$", "type": "string"},
+    "head": {"pattern": "^[0-9a-f]{40}$", "type": "string"},
+    "host_identity": {"type": "string"},
+    "operator_identity": {"type": "string"},
+    "pmct_version": {"const": "1.0"},
+    "published_baseline": {"type": ["string", "null"]},
+    "repository": {"type": "string"},
+    "repository_identity": {"type": "string"},
+    "result": {"enum": ["PASS", "FAIL", "BLOCKED", "NOT_READY"]},
+    "run_id": {"pattern": "^PMCT-", "type": "string"},
+    "schema_version": {"const": 1},
+    "started_at": {"type": "string"}
+  },
+  "required": ["schema_version", "pmct_version", "run_id", "gate", "started_at", "completed_at", "repository", "repository_identity", "branch", "head", "published_baseline", "operator_identity", "host_identity", "command_availability", "result", "evidence_digest"],
+  "title": "Zeus PMCT Run Manifest",
+  "type": "object"
+}

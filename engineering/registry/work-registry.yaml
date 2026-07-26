@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 56
+revision: 57
 updated_at: '2026-07-26'
 serialization: yaml
 mutation_history:
@@ -369,6 +369,13 @@ mutation_history:
   reason: Record the policy, activation, agent registry, invocation, EENS,
     evidence, reconciliation and integrated qualification foundation without
     claiming commissioning or operational execution.
+- revision: 57
+  previous_revision: 56
+  at: '2026-07-26T21:30:00+00:00'
+  actor: ZEUS-P2-020 implementation agent
+  action: establish Progressive Manual Capability Test
+  reason: Register the locked cumulative OA-01 through OA-30 manual acceptance
+    framework and honest initial NOT_READY result without activating production.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -2373,6 +2380,45 @@ entities:
     priority: 0
     completion_criteria: Production execution foundation implemented, validated,
       committed and prepared for separate signed publication and commissioning.
+    queue_ids: []
+  - registry_id: EMP-WORK-ZEUS-P2-020-PMCT
+    object_type: WorkItem
+    title: Zeus Progressive Manual Capability Test
+    management_state: completed
+    owner: Lawrence O'Neal
+    scope: ZEUS-P2-020
+    authority_reference: ZEUS-P2-020
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ZEUS-P2-019-EXECUTION-FOUNDATION
+    created_at: 2026-07-26
+    updated_at: 2026-07-26
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-26T21:00:00+00:00'
+      actor: loneal through authenticated instruction
+      reason: ZEUS-P2-020 authorizes test-framework implementation only.
+      authority_reference: ZEUS-P2-020
+    - from: active
+      to: completed
+      at: '2026-07-26T21:30:00+00:00'
+      actor: ZEUS-P2-020 implementation agent
+      reason: PMCT framework and self-validation completed while OA-01 remained NOT_READY.
+      authority_reference: ZEUS-P2-020
+    project_id: EMP-PROJECT-HOMELAB
+    order: 33
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: test-framework-implementation
+    priority: 0
+    completion_criteria: Locked cumulative PMCT, evidence package, self-tests,
+      controlled reconciliation, and honest OA-01 result are complete.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP

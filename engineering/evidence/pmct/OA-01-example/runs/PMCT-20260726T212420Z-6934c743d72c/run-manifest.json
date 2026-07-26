@@ -1,0 +1,99 @@
+{
+  "branch": "main",
+  "command_availability": {
+    "zeus admission evaluate": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus agent qualify": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus agent registry": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus agent select": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus agent status": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus authority restoration": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus authority status": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus authority work-lifecycle": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus dispatcher activation": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus dispatcher policy": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus dispatcher probe": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus dispatcher status": {
+      "available": true,
+      "classification": "AVAILABLE"
+    },
+    "zeus eens self-test": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus eens status": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus evidence self-test": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus invocation probe": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus next-action": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus qualification self-test": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus reconciliation self-test": {
+      "available": false,
+      "classification": "UNAVAILABLE"
+    },
+    "zeus status": {
+      "available": true,
+      "classification": "AVAILABLE"
+    }
+  },
+  "completed_at": "2026-07-26T21:24:23.284284Z",
+  "evidence_digest": "2bcfa28210fc94568251750b37e3aebd83041f2ae6b533f692760ead6fd61e5b",
+  "gate": "OA-01",
+  "head": "1015ff709656a59e096f1e4b6107f9fa17371e5f",
+  "host_identity": "atreides",
+  "operator_identity": "loneal",
+  "pmct_version": "1.0",
+  "published_baseline": "b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf",
+  "repository": "/data/engineering/repositories/homelab",
+  "repository_identity": "/data/engineering/repositories/homelab",
+  "result": "NOT_READY",
+  "run_id": "PMCT-20260726T212420Z-6934c743d72c",
+  "schema_version": 1,
+  "started_at": "2026-07-26T21:24:20.875545Z"
+}

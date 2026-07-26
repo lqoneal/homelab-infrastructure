@@ -1,0 +1,1254 @@
+test_name: ZEUS_PROGRESSIVE_MANUAL_CAPABILITY_TEST
+contract_version: '1.0'
+sequence_locked: true
+cumulative: true
+production_cli_contract:
+- zeus status
+- zeus next-action
+- zeus authority status
+- zeus authority work-lifecycle
+- zeus dispatcher policy
+- zeus dispatcher activation
+- zeus dispatcher status
+- zeus agent registry
+- zeus agent status
+- zeus agent qualify
+- zeus invocation probe
+- zeus agent select
+- zeus admission evaluate
+- zeus dispatcher probe
+- zeus eens status
+- zeus eens self-test
+- zeus evidence self-test
+- zeus qualification self-test
+- zeus reconciliation self-test
+- zeus authority restoration
+gates:
+- gate_id: OA-01
+  sequence: 1
+  title: Assessment recognition and controlled mission transition
+  required_commands:
+  - zeus status
+  - zeus next-action
+  optional_commands: []
+  prerequisites: []
+  positive_demonstration: Through the authoritative CLI, demonstrate assessment recognition and controlled mission transition and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-01 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-01 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-01 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates: []
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-02
+  sequence: 2
+  title: First-qualification authority lifecycle
+  required_commands:
+  - zeus authority status
+  - zeus authority work-lifecycle
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-01
+  positive_demonstration: Through the authoritative CLI, demonstrate first-qualification authority lifecycle and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-02 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-02 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-02 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-03
+  sequence: 3
+  title: Dispatcher policy resolution
+  required_commands:
+  - zeus dispatcher policy
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-02
+  positive_demonstration: Through the authoritative CLI, demonstrate dispatcher policy resolution and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-03 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-03 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-03 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-04
+  sequence: 4
+  title: Dispatcher activation
+  required_commands:
+  - zeus dispatcher activation
+  - zeus dispatcher status
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-03
+  positive_demonstration: Through the authoritative CLI, demonstrate dispatcher activation and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-04 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-04 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-04 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: true
+- gate_id: OA-05
+  sequence: 5
+  title: Production execution-agent registry
+  required_commands:
+  - zeus agent registry
+  - zeus agent status
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-04
+  positive_demonstration: Through the authoritative CLI, demonstrate production execution-agent registry and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-05 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-05 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-05 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-06
+  sequence: 6
+  title: Production execution-agent qualification
+  required_commands:
+  - zeus agent qualify
+  - zeus agent status
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-05
+  positive_demonstration: Through the authoritative CLI, demonstrate production execution-agent qualification and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-06 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-06 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-06 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: true
+- gate_id: OA-07
+  sequence: 7
+  title: Dispatcher-to-agent invocation
+  required_commands:
+  - zeus invocation probe
+  - zeus agent select
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-06
+  positive_demonstration: Through the authoritative CLI, demonstrate dispatcher-to-agent invocation and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-07 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-07 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-07 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-08
+  sequence: 8
+  title: Admission-driven dispatch authorization
+  required_commands:
+  - zeus admission evaluate
+  - zeus dispatcher probe
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-07
+  positive_demonstration: Through the authoritative CLI, demonstrate admission-driven dispatch authorization and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-08 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-08 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-08 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-09
+  sequence: 9
+  title: Production CLI execution management
+  required_commands:
+  - zeus dispatcher status
+  - zeus agent select
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-08
+  positive_demonstration: Through the authoritative CLI, demonstrate production cli execution management and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-09 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-09 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-09 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-10
+  sequence: 10
+  title: Production EENS execution lifecycle
+  required_commands:
+  - zeus eens status
+  - zeus eens self-test
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-09
+  positive_demonstration: Through the authoritative CLI, demonstrate production eens execution lifecycle and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-10 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-10 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-10 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-11
+  sequence: 11
+  title: Cryptographically signed execution evidence
+  required_commands:
+  - zeus evidence self-test
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-10
+  positive_demonstration: Through the authoritative CLI, demonstrate cryptographically signed execution evidence and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-11 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-11 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-11 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-12
+  sequence: 12
+  title: Independent evidence qualification
+  required_commands:
+  - zeus qualification self-test
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-11
+  positive_demonstration: Through the authoritative CLI, demonstrate independent evidence qualification and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-12 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-12 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-12 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-13
+  sequence: 13
+  title: Live authoritative reconciliation
+  required_commands:
+  - zeus reconciliation self-test
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-12
+  positive_demonstration: Through the authoritative CLI, demonstrate live authoritative reconciliation and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-13 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-13 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-13 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-14
+  sequence: 14
+  title: Authority restoration coordination
+  required_commands:
+  - zeus authority restoration
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-13
+  positive_demonstration: Through the authoritative CLI, demonstrate authority restoration coordination and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-14 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-14 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-14 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-15
+  sequence: 15
+  title: Integrated production execution foundation
+  required_commands:
+  - zeus dispatcher probe
+  - zeus invocation probe
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-14
+  positive_demonstration: Through the authoritative CLI, demonstrate integrated production execution foundation and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-15 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-15 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-15 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-16
+  sequence: 16
+  title: Controlled-document reconciliation
+  required_commands:
+  - zeus reconciliation self-test
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-15
+  positive_demonstration: Through the authoritative CLI, demonstrate controlled-document reconciliation and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-16 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-16 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-16 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-17
+  sequence: 17
+  title: Production implementation commit
+  required_commands:
+  - zeus status
+  optional_commands: []
+  prerequisites:
+  - OA-16
+  positive_demonstration: Through the authoritative CLI, demonstrate production implementation commit and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-17 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-17 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-17 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  - OA-16
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-18
+  sequence: 18
+  title: Signed repository-baseline republication
+  required_commands:
+  - zeus authority status
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-17
+  positive_demonstration: Through the authoritative CLI, demonstrate signed repository-baseline republication and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-18 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-18 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-18 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  - OA-16
+  - OA-17
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: true
+- gate_id: OA-19
+  sequence: 19
+  title: Dispatcher commissioning
+  required_commands:
+  - zeus dispatcher activation
+  - zeus dispatcher probe
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-18
+  positive_demonstration: Through the authoritative CLI, demonstrate dispatcher commissioning and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-19 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-19 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-19 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  - OA-16
+  - OA-17
+  - OA-18
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: true
+- gate_id: OA-20
+  sequence: 20
+  title: Production execution-agent activation
+  required_commands:
+  - zeus agent qualify
+  - zeus agent status
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-19
+  positive_demonstration: Through the authoritative CLI, demonstrate production execution-agent activation and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-20 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-20 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-20 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  - OA-16
+  - OA-17
+  - OA-18
+  - OA-19
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: true
+- gate_id: OA-21
+  sequence: 21
+  title: Operational qualification mission authorization
+  required_commands:
+  - zeus authority work-lifecycle
+  - zeus next-action
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-20
+  positive_demonstration: Through the authoritative CLI, demonstrate operational qualification mission authorization and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-21 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-21 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-21 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  - OA-16
+  - OA-17
+  - OA-18
+  - OA-19
+  - OA-20
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-22
+  sequence: 22
+  title: Complete operational WOP construction
+  required_commands:
+  - zeus admission evaluate
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-21
+  positive_demonstration: Through the authoritative CLI, demonstrate complete operational wop construction and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-22 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-22 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-22 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  - OA-16
+  - OA-17
+  - OA-18
+  - OA-19
+  - OA-20
+  - OA-21
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-23
+  sequence: 23
+  title: Admission with dispatch permitted
+  required_commands:
+  - zeus admission evaluate
+  - zeus dispatcher status
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-22
+  positive_demonstration: Through the authoritative CLI, demonstrate admission with dispatch permitted and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-23 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-23 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-23 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  - OA-16
+  - OA-17
+  - OA-18
+  - OA-19
+  - OA-20
+  - OA-21
+  - OA-22
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-24
+  sequence: 24
+  title: Zeus dispatches a real operational WOP
+  required_commands:
+  - zeus invocation probe
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-23
+  positive_demonstration: Through the authoritative CLI, demonstrate zeus dispatches a real operational wop and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-24 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-24 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-24 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  - OA-16
+  - OA-17
+  - OA-18
+  - OA-19
+  - OA-20
+  - OA-21
+  - OA-22
+  - OA-23
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: true
+- gate_id: OA-25
+  sequence: 25
+  title: Qualified agent executes the WOP
+  required_commands:
+  - zeus agent status
+  - zeus eens status
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-24
+  positive_demonstration: Through the authoritative CLI, demonstrate qualified agent executes the wop and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-25 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-25 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-25 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  - OA-16
+  - OA-17
+  - OA-18
+  - OA-19
+  - OA-20
+  - OA-21
+  - OA-22
+  - OA-23
+  - OA-24
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: true
+- gate_id: OA-26
+  sequence: 26
+  title: Independent evidence qualification passes
+  required_commands:
+  - zeus qualification self-test
+  - zeus evidence self-test
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-25
+  positive_demonstration: Through the authoritative CLI, demonstrate independent evidence qualification passes and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-26 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-26 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-26 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  - OA-16
+  - OA-17
+  - OA-18
+  - OA-19
+  - OA-20
+  - OA-21
+  - OA-22
+  - OA-23
+  - OA-24
+  - OA-25
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-27
+  sequence: 27
+  title: Zeus reconciles authoritative project state
+  required_commands:
+  - zeus reconciliation self-test
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-26
+  positive_demonstration: Through the authoritative CLI, demonstrate zeus reconciles authoritative project state and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-27 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-27 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-27 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  - OA-16
+  - OA-17
+  - OA-18
+  - OA-19
+  - OA-20
+  - OA-21
+  - OA-22
+  - OA-23
+  - OA-24
+  - OA-25
+  - OA-26
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: true
+- gate_id: OA-28
+  sequence: 28
+  title: Zeus closes the operational mission
+  required_commands:
+  - zeus status
+  - zeus next-action
+  optional_commands: []
+  prerequisites:
+  - OA-27
+  positive_demonstration: Through the authoritative CLI, demonstrate zeus closes the operational mission and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-28 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-28 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-28 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  - OA-16
+  - OA-17
+  - OA-18
+  - OA-19
+  - OA-20
+  - OA-21
+  - OA-22
+  - OA-23
+  - OA-24
+  - OA-25
+  - OA-26
+  - OA-27
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: true
+- gate_id: OA-29
+  sequence: 29
+  title: Operational Alpha capability qualification
+  required_commands:
+  - zeus qualification self-test
+  optional_commands:
+  - zeus status
+  prerequisites:
+  - OA-28
+  positive_demonstration: Through the authoritative CLI, demonstrate operational alpha capability qualification and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-29 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-29 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: 'Read-only: verify repeatable discovery without mutation.'
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-29 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  - OA-16
+  - OA-17
+  - OA-18
+  - OA-19
+  - OA-20
+  - OA-21
+  - OA-22
+  - OA-23
+  - OA-24
+  - OA-25
+  - OA-26
+  - OA-27
+  - OA-28
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: false
+- gate_id: OA-30
+  sequence: 30
+  title: Operational Alpha declaration
+  required_commands:
+  - zeus status
+  - zeus next-action
+  optional_commands: []
+  prerequisites:
+  - OA-29
+  positive_demonstration: Through the authoritative CLI, demonstrate operational alpha declaration and capture the resulting production-observable state.
+  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-30 request and verify Zeus rejects it without advancing state.
+  idempotency_demonstration: Repeat the OA-30 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
+  interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
+  evidence_requirements:
+  - repository identity and exact HEAD
+  - command stdout, stderr, and return code
+  - OA-30 positive and negative assertions
+  - evidence integrity manifest and completion marker
+  regression_gates:
+  - OA-01
+  - OA-02
+  - OA-03
+  - OA-04
+  - OA-05
+  - OA-06
+  - OA-07
+  - OA-08
+  - OA-09
+  - OA-10
+  - OA-11
+  - OA-12
+  - OA-13
+  - OA-14
+  - OA-15
+  - OA-16
+  - OA-17
+  - OA-18
+  - OA-19
+  - OA-20
+  - OA-21
+  - OA-22
+  - OA-23
+  - OA-24
+  - OA-25
+  - OA-26
+  - OA-27
+  - OA-28
+  - OA-29
+  allowed_results:
+  - PASS
+  - FAIL
+  - BLOCKED
+  - NOT_READY
+  manual_review_required: true
+  state_change: true

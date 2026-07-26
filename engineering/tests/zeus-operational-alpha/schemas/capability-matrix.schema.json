@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract_version": {"const": "1.0"},
+    "cumulative": {"const": true},
+    "gates": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "allowed_results": {"items": {"enum": ["PASS", "FAIL", "BLOCKED", "NOT_READY"]}, "type": "array"},
+          "evidence_requirements": {"items": {"type": "string"}, "minItems": 1, "type": "array"},
+          "gate_id": {"pattern": "^OA-[0-9]{2}$", "type": "string"},
+          "idempotency_demonstration": {"minLength": 1, "type": "string"},
+          "interruption_demonstration": {"minLength": 1, "type": "string"},
+          "manual_review_required": {"const": true},
+          "negative_demonstration": {"minLength": 1, "type": "string"},
+          "optional_commands": {"items": {"type": "string"}, "type": "array"},
+          "positive_demonstration": {"minLength": 1, "type": "string"},
+          "prerequisites": {"items": {"pattern": "^OA-[0-9]{2}$"}, "type": "array"},
+          "regression_gates": {"items": {"pattern": "^OA-[0-9]{2}$"}, "type": "array"},
+          "required_commands": {"items": {"type": "string"}, "type": "array"},
+          "sequence": {"maximum": 30, "minimum": 1, "type": "integer"},
+          "state_change": {"type": "boolean"},
+          "title": {"minLength": 1, "type": "string"}
+        },
+        "required": ["gate_id", "sequence", "title", "required_commands", "optional_commands", "prerequisites", "positive_demonstration", "negative_demonstration", "idempotency_demonstration", "interruption_demonstration", "evidence_requirements", "regression_gates", "allowed_results", "manual_review_required", "state_change"],
+        "type": "object"
+      },
+      "maxItems": 30,
+      "minItems": 30,
+      "type": "array"
+    },
+    "production_cli_contract": {"items": {"type": "string"}, "type": "array"},
+    "sequence_locked": {"const": true},
+    "test_name": {"const": "ZEUS_PROGRESSIVE_MANUAL_CAPABILITY_TEST"}
+  },
+  "required": ["test_name", "contract_version", "sequence_locked", "cumulative", "production_cli_contract", "gates"],
+  "title": "Zeus PMCT Capability Matrix",
+  "type": "object"
+}

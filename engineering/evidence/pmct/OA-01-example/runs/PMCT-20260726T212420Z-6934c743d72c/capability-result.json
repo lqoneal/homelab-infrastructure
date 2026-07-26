@@ -1,0 +1,99 @@
+{
+  "assertions": [
+    {
+      "assertion": "repository_identity",
+      "detail": "repository=/data/engineering/repositories/homelab",
+      "mandatory": true,
+      "passed": true
+    },
+    {
+      "assertion": "production_state_read_only",
+      "detail": "read-only discovery",
+      "mandatory": true,
+      "passed": true
+    },
+    {
+      "assertion": "required_command:zeus status",
+      "detail": "zeus status is available",
+      "mandatory": true,
+      "passed": true
+    },
+    {
+      "assertion": "required_command:zeus next-action",
+      "detail": "zeus next-action is unavailable",
+      "mandatory": true,
+      "passed": false
+    },
+    {
+      "assertion": "positive_path_adapter",
+      "detail": "gate-specific observable adapter is implemented",
+      "mandatory": true,
+      "passed": true
+    },
+    {
+      "assertion": "negative_path_adapter",
+      "detail": "OA-01 verifies that incomplete production prerequisites do not advance state",
+      "mandatory": true,
+      "passed": true
+    },
+    {
+      "assertion": "idempotency_adapter",
+      "detail": "OA-01 repeats read-only repository discovery",
+      "mandatory": true,
+      "passed": true
+    },
+    {
+      "assertion": "interruption_resume",
+      "detail": "NOT_APPLICABLE: read-only gate has no transition to interrupt",
+      "mandatory": true,
+      "passed": true
+    },
+    {
+      "assertion": "implementation_baseline_observed",
+      "detail": "HEAD=1015ff709656a59e096f1e4b6107f9fa17371e5f",
+      "mandatory": true,
+      "passed": true
+    },
+    {
+      "assertion": "published_baseline_mismatch_observed",
+      "detail": "published=b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf HEAD=1015ff709656a59e096f1e4b6107f9fa17371e5f",
+      "mandatory": true,
+      "passed": true
+    },
+    {
+      "assertion": "dispatcher_inactive",
+      "detail": "dispatcher=PREPARED",
+      "mandatory": true,
+      "passed": true
+    },
+    {
+      "assertion": "agent_registry_empty",
+      "detail": "agents=0",
+      "mandatory": true,
+      "passed": true
+    },
+    {
+      "assertion": "operational_alpha_not_claimed",
+      "detail": "production prerequisites remain incomplete",
+      "mandatory": true,
+      "passed": true
+    },
+    {
+      "assertion": "read_only_idempotency",
+      "detail": "repeated discovery returned the same repository and production state",
+      "mandatory": true,
+      "passed": true
+    }
+  ],
+  "contract_version": "1.0",
+  "gate": "OA-01",
+  "manual_review_required": true,
+  "reasons": [
+    "required command unavailable: zeus next-action",
+    "zeus next-action is unavailable"
+  ],
+  "result": "NOT_READY",
+  "run_id": "PMCT-20260726T212420Z-6934c743d72c",
+  "schema_version": 1,
+  "state_changed": false
+}

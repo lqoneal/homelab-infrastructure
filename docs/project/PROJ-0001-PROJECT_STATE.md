@@ -338,18 +338,18 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-Preserve the ZEUS-P2-016 commissioned authority and the qualified P2-019
-execution foundation. Repository record revision 2 still binds operational
-authority to `b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf`; after the P2-019 commit,
-normal authority resolution requires controlled baseline republication.
-Dispatcher activation and production-agent registration remain pending.
+Preserve the commissioned authority, qualified P2-019 execution foundation,
+and P2-020 PMCT. The published baseline remains
+`b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf`; PMCT OA-01 is `NOT_READY`,
+dispatcher activation is `PREPARED`, and the production agent registry is
+empty. No Operational Alpha capability gate has passed.
 
 **Next Immediate Step:**
 
-Publish the P2-019 implementation baseline, then obtain authentic signatures
-for dispatcher activation and production-agent registration. Do not dispatch
-an operational WOP during those steps. First operational execution
-qualification remains a separate milestone.
+Under separate authority, implement the missing read-only `zeus next-action`
+acceptance interface and rerun PMCT OA-01. Do not begin OA-02, baseline
+publication, dispatcher activation, agent qualification/registration, or
+operational dispatch under P2-020.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -630,3 +630,4 @@ When resuming this project:
 | 7.3     | 2026-07-26 | Published the production authority hierarchy and Authority Restoration Principle through SPEC-0011, reconciled controlled and operational documentation, and recorded the post-commit repository-baseline restoration requirement without changing runtime behavior. |
 | 7.4     | 2026-07-26 | Republished repository identity and baseline facets at revision 2, activated baseline `b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf`, restored normal Authority Resolution and admission eligibility, and preserved disabled dispatch. |
 | 7.5     | 2026-07-26 | Implemented and independently qualified the P2-019 production execution foundation in bounded qualification mode; production activation, agent registration, baseline republication, and first operational execution remain pending. |
+| 7.6     | 2026-07-26 | Established the read-only Progressive Manual Capability Test with a locked cumulative OA-01 through OA-30 sequence, durable evidence, controlled result vocabulary, and an honest initial OA-01 `NOT_READY` result. |

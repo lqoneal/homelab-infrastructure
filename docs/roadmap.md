@@ -119,6 +119,14 @@ The next controlled sequence is implementation-baseline republication,
 authentic dispatcher activation, authentic production-agent registration and
 qualification, then a separate first operational WOP execution qualification.
 
+ZEUS-P2-020 establishes the Progressive Manual Capability Test as the
+acceptance mechanism for the locked OA-01 through OA-30 sequence. Every gate is
+cumulative and requires observable CLI behavior, safe negative behavior,
+idempotency, applicable interruption/resume, durable evidence, and regression.
+The initial result remains `NOT_READY`; implementation completion reports do
+not imply a gate pass. Missing production CLI surfaces remain backlog work and
+are not stubbed by the PMCT.
+
 The current `generate-wop` qualification workflow remains review-only. This
 roadmap entry does not approve implementation, operational admission,
 submission, dispatch, or execution.

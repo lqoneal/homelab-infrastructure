@@ -1,0 +1,20 @@
+repository=/data/engineering/repositories/homelab
+branch=main
+head=1015ff709656a59e096f1e4b6107f9fa17371e5f
+published_baseline=b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf
+baseline_matches=false
+working_tree:
+M .gitignore
+ M docs/project/PHASE-0001-ZEUS-OPERATIONAL-ALPHA-AUTHORITY.md
+ M docs/project/PROJ-0001-PROJECT_STATE.md
+ M docs/roadmap.md
+ M engineering/operations/zeus-operational-alpha-progress.md
+ M engineering/registry/work-registry.yaml
+ M scripts/tests/test-emp-registry.py
+?? engineering/authority/publication-preparation/
+?? engineering/dispatch/preparations/
+?? engineering/evidence/2026-07-26-zeus-p2-019-repository-baseline-publication-preparation.md
+?? engineering/evidence/2026-07-26-zeus-p2-020-completion-report.md
+?? engineering/evidence/2026-07-26-zeus-p2-020-controlled-document-reconciliation.md
+?? engineering/runtime/
+?? engineering/tests/

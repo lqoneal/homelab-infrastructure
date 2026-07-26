@@ -1,4 +1,5 @@
 *.log
+!engineering/evidence/pmct/**/*.log
 
 logs/*
 
@@ -12,6 +13,14 @@ __pycache__/
 
 # Repository-local Zeus operational runtime (owned by the Zeus operator).
 .zeus/
+
+# Zeus Progressive Manual Capability Test runtime (controlled state is excepted).
+engineering/runtime/pmct/runs/
+engineering/runtime/pmct/evidence/
+engineering/runtime/pmct/logs/
+engineering/runtime/pmct/reports/
+engineering/runtime/pmct/checkpoints/
+engineering/runtime/pmct/artifacts/
 
 # Local Engineering Operations secrets
 /configs/notifications.env

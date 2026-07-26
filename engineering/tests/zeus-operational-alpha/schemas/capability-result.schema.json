@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "assertions": {"items": {"type": "object"}, "type": "array"},
+    "contract_version": {"const": "1.0"},
+    "gate": {"pattern": "^OA-[0-9]{2}$", "type": "string"},
+    "manual_review_required": {"const": true},
+    "reasons": {"items": {"type": "string"}, "type": "array"},
+    "result": {"enum": ["PASS", "FAIL", "BLOCKED", "NOT_READY"]},
+    "run_id": {"pattern": "^PMCT-", "type": "string"},
+    "schema_version": {"const": 1},
+    "state_changed": {"type": "boolean"}
+  },
+  "required": ["schema_version", "contract_version", "run_id", "gate", "result", "reasons", "assertions", "manual_review_required", "state_changed"],
+  "title": "Zeus PMCT Capability Result",
+  "type": "object"
+}

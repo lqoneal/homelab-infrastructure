@@ -1,8 +1,8 @@
 # Zeus Operational Alpha Progress
 
 Date: 2026-07-26
-Current completed implementation milestone: `ZEUS-P2-019`
-Resume status: execution foundation qualified; commit, baseline republication, dispatcher activation, and production-agent registration pending
+Current completed implementation milestone: `ZEUS-P2-020`
+Resume status: PMCT implemented; OA-01 is `NOT_READY`; implement the missing read-only OA-01 acceptance interface before rerun
 Production ownership model: Lawrence O'Neal / `loneal`
 Commissioning status: `READY`
 
@@ -28,6 +28,7 @@ Commissioning status: `READY`
 | ZEUS-P2-016 Repository Baseline Republication | Repository identity and baseline published at revision 2; Authority Resolution and operational admission eligibility restored; dispatch not invoked | `engineering/evidence/2026-07-26-zeus-p2-016-completion-report.md` |
 | ZEUS-P2-018 Dispatcher Commissioning Assessment | Correctly stopped NOT READY and recorded the missing production execution foundation | `engineering/evidence/2026-07-26-zeus-p2-018-dispatcher-commissioning-assessment.md` |
 | ZEUS-P2-019 Production Execution Foundation | Implementation and production-faithful qualification complete; prepared activation and empty registry preserve the commissioning boundary | `engineering/evidence/2026-07-26-zeus-p2-019-completion-report.md` |
+| ZEUS-P2-020 Progressive Manual Capability Test | PMCT framework implemented with locked OA-01–OA-30 sequence; example OA-01 result is `NOT_READY`; no capability gate has passed | `engineering/evidence/pmct/OA-01-example/` |
 
 ## Resume point
 
@@ -42,6 +43,14 @@ mission-selection, approval, WOP admission, execution, qualification, or
 reconciliation authority.
 
 ## Backlog
+
+- P0: implement the missing fixed PMCT production CLI acceptance surfaces:
+  authority status/work-lifecycle/restoration; dispatcher policy, activation,
+  and probe; agent registry/qualify/status/select; admission evaluate;
+  invocation probe; EENS status/self-test; evidence, qualification, and
+  reconciliation self-tests; and `zeus next-action`. Each surface requires
+  positive, negative, idempotent, durable-evidence, and cumulative regression
+  demonstration at its locked gate.
 
 - P0: implement the SPEC-0011 authority-restoration coordinator: identify the
   blocking condition, affected records, required reconciliation, and

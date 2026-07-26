@@ -1,0 +1,14 @@
+[
+  {
+    "classification": "read-only",
+    "command": "git rev-parse HEAD"
+  },
+  {
+    "classification": "read-only",
+    "command": "git status --short"
+  },
+  {
+    "classification": "read-only",
+    "command": "zeus --help"
+  }
+]
