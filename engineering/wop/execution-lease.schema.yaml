@@ -1,0 +1,12 @@
+schema_version: 1
+title: WOP Execution Lease
+type: object
+required: [lease_id, wop_id, payload_digest, holder_id, issued_at, expires_at]
+properties:
+  lease_id: {type: string}
+  wop_id: {type: string}
+  payload_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+  holder_id: {type: string}
+  issued_at: {type: string}
+  expires_at: {type: string}
+additionalProperties: false

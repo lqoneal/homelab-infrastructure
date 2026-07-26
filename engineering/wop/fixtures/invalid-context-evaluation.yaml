@@ -1,0 +1,10 @@
+prerequisite_evidence:
+  - evidence-authority-tests
+satisfied_dependencies:
+  - WOP-123e4567-e89b-42d3-a456-426614174001
+requested_effects:
+  - inspect-repository
+principal_id: wrong-agent
+repository: /tmp/wrong
+baseline_commit: '0000000000000000000000000000000000000000'
+branch: wrong

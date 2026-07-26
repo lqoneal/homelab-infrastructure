@@ -1,0 +1,27 @@
+schema_version: 1
+wop_id: WOP-123e4567-e89b-42d3-a456-426614174010
+authority_binding:
+  authority_node_id: [work-package, mission]
+  mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+  phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+  work_item_id: EMP-WORK-ZEUS-CAPABILITY-DISCOVERY
+execution_context:
+  principal_id: offline-test-agent
+  repository: /data/engineering/repositories/homelab
+  baseline_commit: e72f6514bdc91a1745e75a9f3d818f45df51d4de
+  branch: main
+  assumptions: [offline]
+authorized_effects:
+  - effect_id: inspect-repository
+    kind: read
+    target: repository
+    constraints: [no mutation]
+prohibited_effects: [deploy]
+prerequisites: []
+dependencies: []
+valid_from: '2026-07-25T00:00:00+00:00'
+expires_at: '2026-08-25T00:00:00+00:00'
+lease_policy: {required: true, maximum_duration_seconds: 3600}
+revocation_policy: {revocable: true, authority_node_ids: [governance]}
+payload_digest: '0000000000000000000000000000000000000000000000000000000000000000'
+signature: {algorithm: test, key_id: key, value: value}

@@ -1,0 +1,8 @@
+prerequisite_evidence: []
+satisfied_dependencies: []
+requested_effects:
+  - inspect-repository
+principal_id: offline-test-agent
+repository: /data/engineering/repositories/homelab
+baseline_commit: e72f6514bdc91a1745e75a9f3d818f45df51d4de
+branch: main

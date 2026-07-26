@@ -1,0 +1,5 @@
+receipt_id: RECEIPT-123e4567-e89b-42d3-a456-426614174100
+wop_id: WOP-123e4567-e89b-42d3-a456-426614174000
+payload_digest: 2548a72c8491f4a93a22828c3b46d60d3f85fe860f4cd5a895569206f2d03abf
+published_at: '2026-07-25T00:01:00+00:00'
+publisher_id: offline-test-publisher

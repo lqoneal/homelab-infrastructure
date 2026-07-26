@@ -1,0 +1,13 @@
+schema_version: 1
+title: WOP Revocation Record
+type: object
+required:
+  [revocation_id, wop_id, payload_digest, authority_node_id, revoked_at, reason]
+properties:
+  revocation_id: {type: string}
+  wop_id: {type: string}
+  payload_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+  authority_node_id: {type: string}
+  revoked_at: {type: string}
+  reason: {type: string}
+additionalProperties: false
