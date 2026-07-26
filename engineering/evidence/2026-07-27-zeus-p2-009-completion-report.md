@@ -1,7 +1,7 @@
 # ZEUS-P2-009 Completion Report
 
 Date: 2026-07-27
-Status: PASS — final publication pending
+Status: PASS — implementation and qualification published
 
 ## Outcome
 
@@ -65,6 +65,18 @@ No controlled approval or document lifecycle record was changed.
 - Controlled relationship tests: 3 passed
 - Aggregate repository verification: 15 passed, 0 warnings, 0 failures
 - `git diff --check`: passed
+
+## Publication
+
+The P2-009 implementation and qualification were published by non-force push:
+
+- `e9602dce70eec75a04c6b76a70736bc0c5d67ed4` — handler framework and runtime
+  integration
+- `46c80663f38fc23941c53c494179d57f6be6958d` — qualification, evidence, and
+  repository reconciliation
+
+After publication, local `main` and `origin/main` matched at `46c8066`,
+ahead/behind was zero, and the working tree was clean.
 
 ## Remaining blockers
 
