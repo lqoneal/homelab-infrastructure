@@ -25,6 +25,8 @@ from scripts.lib.emp.production_execution import (  # noqa: E402
     digest,
     dispatch_readiness,
     independently_qualify_evidence,
+    canonical_bytes,
+    sign_ssh,
 )
 from scripts.lib.emp.work_authority_lifecycle import (  # noqa: E402
     WorkAuthorityError,
@@ -97,6 +99,16 @@ class FoundationQualificationTests(unittest.TestCase):
         unsigned["registry_digest"] = digest(unsigned)
         self.registry_path = self.root / "registry.json"
         self.registry_path.write_text(json.dumps(unsigned))
+        sign_ssh(
+            canonical_bytes(self.activation), self.key,
+            "zeus-dispatcher-activation",
+            self.activation_path.with_suffix(".json.sig"),
+        )
+        sign_ssh(
+            canonical_bytes(unsigned), self.key,
+            "zeus-execution-agent-registry",
+            self.registry_path.with_suffix(".json.sig"),
+        )
         self.dependencies = [self.root / name for name in ("policy", "eens", "evidence")]
         for path in self.dependencies:
             path.touch()
@@ -109,6 +121,7 @@ class FoundationQualificationTests(unittest.TestCase):
             repository=REPOSITORY, baseline=BASELINE,
             activation_path=self.activation_path, registry_path=self.registry_path,
             mission_class="engineering", required_paths=self.dependencies,
+            allowed_signers=self.allowed,
         )
         self.assertTrue(ready["dispatch_permitted"])
         self.assertEqual(ready["eligible_agents"], ["prod-local-1"])
@@ -139,7 +152,6 @@ class FoundationQualificationTests(unittest.TestCase):
             "assignment_digest": digest(assignment), "invoking_principal": "loneal"
         }
         invocation_signature = self.root / "invocation.sig"
-        from scripts.lib.emp.production_execution import sign_ssh
         sign_ssh(
             json.dumps(token_payload, sort_keys=True, separators=(",", ":")).encode(),
             self.key, "zeus-agent-invocation", invocation_signature,

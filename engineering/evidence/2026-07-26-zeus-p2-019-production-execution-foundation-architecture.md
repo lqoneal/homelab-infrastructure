@@ -37,7 +37,7 @@ reference. Skipped transitions and purpose/state mismatches fail validation.
 SPEC-0012 and `dispatcher-policy.yaml` define purpose, authority, activation,
 eligibility, selection, no-automatic-retry behavior, interruption/resume,
 timeout, cancellation, failure, evidence, oversight, reconciliation, and
-closeout. Activation is independently digest-validated and bound to dispatcher
+closeout. Activation is independently signature- and digest-validated and bound to dispatcher
 identity, implementation and policy versions, exact repository and baseline,
 activating authority/time, supported mission/agent classes, required EENS,
 evidence and reconciliation configurations, and revocation/suspension.

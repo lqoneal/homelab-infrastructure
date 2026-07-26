@@ -400,17 +400,34 @@ def dispatch_readiness(
     *, repository: str, baseline: str, activation_path: Path | str,
     registry_path: Path | str, mission_class: str,
     required_paths: Iterable[Path | str],
+    allowed_signers: Path | str | None = None,
+    activation_signature: Path | str | None = None,
+    registry_signature: Path | str | None = None,
 ) -> dict[str, Any]:
     blockers: list[dict[str, str]] = []
     activation = None
     agents: list[dict[str, Any]] = []
     try:
+        activation_source = load_json(activation_path)
         activation = validate_activation(
-            load_json(activation_path), repository=repository, baseline=baseline
+            activation_source, repository=repository, baseline=baseline
         )
+        if allowed_signers is not None:
+            verify_ssh_signature(
+                canonical_bytes(activation_source), activation_signature or
+                (str(activation_path) + ".sig"), allowed_signers, "loneal",
+                "zeus-dispatcher-activation",
+            )
     except (ProductionExecutionError, OSError) as error:
         blockers.append({"code": "DISPATCHER_ACTIVATION_INVALID", "detail": str(error)})
     try:
+        registry_source = load_json(registry_path)
+        if allowed_signers is not None:
+            verify_ssh_signature(
+                canonical_bytes(registry_source), registry_signature or
+                (str(registry_path) + ".sig"), allowed_signers, "loneal",
+                "zeus-execution-agent-registry",
+            )
         for candidate in load_registry(registry_path):
             try:
                 agents.append(validate_agent(

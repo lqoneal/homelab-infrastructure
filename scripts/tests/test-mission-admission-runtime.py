@@ -82,7 +82,7 @@ class MissionAdmissionRuntimeTests(unittest.TestCase):
         replay = self.runtime.run(interrupted["admission_id"], at=AT)
         self.assertEqual(replay, resumed)
 
-    def test_production_operational_path_reaches_admission_decision(self):
+    def test_production_operational_path_respects_published_baseline(self):
         request = {
             "mode": "operational",
             "intent": "Prepare a supervised operational WOP",
@@ -92,6 +92,19 @@ class MissionAdmissionRuntimeTests(unittest.TestCase):
             "repository": str(ROOT),
         }
         state = self.runtime.start(request, at=AT)
+        source = yaml.safe_load(
+            (ROOT / "engineering/authority/operational-authority-state.yaml").read_text()
+        )
+        published = next(iter(source["repositories"].values()))["baseline_commit"]
+        head = subprocess.run(
+            ["git", "-C", str(ROOT), "rev-parse", "HEAD"],
+            capture_output=True, text=True, check=True,
+        ).stdout.strip()
+        if published != head:
+            self.assertEqual(state["status"], "BLOCKED")
+            self.assertEqual(state["failure"]["category"], "AUTHORITY_FAILURE")
+            self.assertIn("baseline mismatch", state["failure"]["message"])
+            return
         self.assertEqual(state["status"], "DECIDED")
         self.assertIsNone(state["current_stage"])
         self.assertEqual(

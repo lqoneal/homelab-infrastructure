@@ -158,7 +158,8 @@ def main(argv=None):
                     ROOT/"engineering/eens/production-eens-policy.yaml",
                     ROOT/"engineering/evidence/production-evidence-policy.yaml",
                     ROOT/"engineering/reconciliation/production-reconciliation-policy.yaml",
-                    ROOT/".zeus/runtime"))
+                    ROOT/".zeus/runtime"),
+                allowed_signers=ROOT/"engineering/authority/allowed-signers")
             execution_runtime=MissionExecutionRuntime(ROOT,execution_store,
                 AdmissionStateStore(admission_directory),
                 operational_dispatch_enabled=dispatch_state["dispatch_permitted"])
@@ -192,7 +193,8 @@ def main(argv=None):
                         ROOT/"engineering/eens/production-eens-policy.yaml",
                         ROOT/"engineering/evidence/production-evidence-policy.yaml",
                         ROOT/"engineering/reconciliation/production-reconciliation-policy.yaml",
-                        runtime)))
+                        runtime),
+                    allowed_signers=ROOT/"engineering/authority/allowed-signers"))
             elif a.action=="agents":
                 emit({"eligible_agents":[item["agent_id"] for item in load_registry(
                     ROOT/"engineering/dispatch/execution-agent-registry.json")

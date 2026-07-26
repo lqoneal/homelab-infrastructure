@@ -391,6 +391,7 @@ class MissionAdmissionRuntime:
                 self.root / "engineering/reconciliation/production-reconciliation-policy.yaml",
                 runtime,
             ),
+            allowed_signers=self.root / "engineering/authority/allowed-signers",
         )
 
     @staticmethod

@@ -76,7 +76,8 @@ repository baseline, active dispatcher activation, a matching active qualified
 agent, authenticated EENS, cryptographic evidence verification, and live
 reconciliation dependencies.
 
-Activation records bind dispatcher identity, implementation and policy
+Activation records are authenticated by a detached `loneal` SSH signature and
+bind dispatcher identity, implementation and policy
 versions, repository identity and baseline, activating authority and time,
 supported mission and agent classes, EENS/evidence/reconciliation
 configurations, and suspension/revocation state. Missing, prepared, stale,
@@ -92,7 +93,8 @@ an actionable reason.
 
 ## 4. Production execution-agent registry
 
-The version-2 registry schema records stable identity, agent and host type,
+The version-2 registry is authenticated by a detached `loneal` SSH signature.
+Its schema records stable identity, agent and host type,
 service identity, mission and tool capabilities, repository scope,
 constraints, qualification status and evidence, activation, last validation,
 trust, EENS and evidence-signing identities, resume capability, and concurrency
