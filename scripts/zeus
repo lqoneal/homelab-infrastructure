@@ -2,7 +2,7 @@
 """Minimal operator interface for supervised Zeus orchestration."""
 
 from __future__ import annotations
-import argparse, json, os, sys
+import argparse, json, os, subprocess, sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -17,6 +17,7 @@ from scripts.lib.emp.authority_resolution import AuthorityResolutionError, Autho
 from scripts.lib.emp.wop_service import OperationalWopService  # noqa: E402
 from scripts.lib.emp.mission_admission_runtime import AdmissionStateStore, MissionAdmissionError, MissionAdmissionRuntime  # noqa: E402
 from scripts.lib.emp.mission_execution_runtime import ExecutionStateStore, MissionExecutionError, MissionExecutionRuntime  # noqa: E402
+from scripts.lib.emp.production_execution import dispatch_readiness, load_json, load_registry  # noqa: E402
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -78,6 +79,7 @@ def main(argv=None):
     generate=sub.add_parser("generate-wop"); generate.add_argument("intent"); generate.add_argument("--mode", choices=("qualification","operational"), default="qualification"); generate.add_argument("--mission", required=True); generate.add_argument("--phase"); generate.add_argument("--repository", required=True); generate.add_argument("--submitter"); generate.add_argument("--approval-authority"); generate.add_argument("--approval-reference"); generate.add_argument("--approval-date"); generate.add_argument("--authority-node"); generate.add_argument("--adr"); generate.add_argument("--immutable-wop"); generate.add_argument("--work-item"); generate.add_argument("--principal"); generate.add_argument("--at")
     admit_mission=sub.add_parser("admit-mission"); admit_mission.add_argument("action", choices=("start","resume","status")); admit_mission.add_argument("--admission-id"); admit_mission.add_argument("--mode", choices=("qualification","operational")); admit_mission.add_argument("--intent"); admit_mission.add_argument("--mission"); admit_mission.add_argument("--phase"); admit_mission.add_argument("--work-item"); admit_mission.add_argument("--principal"); admit_mission.add_argument("--submitter"); admit_mission.add_argument("--repository", default=str(ROOT)); admit_mission.add_argument("--at"); admit_mission.add_argument("--max-stages", type=int)
     execute_mission=sub.add_parser("execute-mission"); execute_mission.add_argument("action", choices=("start","resume","status","suspend","cancel")); execute_mission.add_argument("--admission-id"); execute_mission.add_argument("--execution-id"); execute_mission.add_argument("--reason", default="OPERATOR"); execute_mission.add_argument("--at"); execute_mission.add_argument("--max-gates", type=int)
+    dispatcher=sub.add_parser("dispatcher"); dispatcher.add_argument("action", choices=("status","agents","assignment","execution","eens","evidence","reconciliation")); dispatcher.add_argument("--identifier")
     a=p.parse_args(arguments)
     if a.command is None:
         p.print_help()
@@ -146,7 +148,20 @@ def main(argv=None):
                 if os.environ.get("ZEUS_ADMISSION_STORE"): admission_directory=Path(os.environ["ZEUS_ADMISSION_STORE"])
                 if os.environ.get("ZEUS_EXECUTION_STORE"): execution_directory=Path(os.environ["ZEUS_EXECUTION_STORE"])
             execution_store=ExecutionStateStore(execution_directory)
-            execution_runtime=MissionExecutionRuntime(ROOT,execution_store,AdmissionStateStore(admission_directory))
+            baseline=subprocess.run(["git","-C",str(ROOT),"rev-parse","HEAD"],
+                capture_output=True,text=True,check=True).stdout.strip()
+            dispatch_state=dispatch_readiness(repository=str(ROOT),baseline=baseline,
+                activation_path=ROOT/"engineering/dispatch/dispatcher-activation.json",
+                registry_path=ROOT/"engineering/dispatch/execution-agent-registry.json",
+                mission_class="engineering",required_paths=(
+                    ROOT/"engineering/dispatch/dispatcher-policy.yaml",
+                    ROOT/"engineering/eens/production-eens-policy.yaml",
+                    ROOT/"engineering/evidence/production-evidence-policy.yaml",
+                    ROOT/"engineering/reconciliation/production-reconciliation-policy.yaml",
+                    ROOT/".zeus/runtime"))
+            execution_runtime=MissionExecutionRuntime(ROOT,execution_store,
+                AdmissionStateStore(admission_directory),
+                operational_dispatch_enabled=dispatch_state["dispatch_permitted"])
             if a.action=="start":
                 if not a.admission_id: raise MissionExecutionError("--admission-id is required")
                 result=execution_runtime.start(a.admission_id,at=now(a.at),max_gates=a.max_gates)
@@ -164,6 +179,30 @@ def main(argv=None):
                 result=execution_runtime.cancel(a.execution_id,at=now(a.at),reason=a.reason)
             emit(result)
             if result["state"] in ("Waiting","Failed"): return 78
+        elif a.command=="dispatcher":
+            baseline=subprocess.run(["git","-C",str(ROOT),"rev-parse","HEAD"],
+                capture_output=True,text=True,check=True).stdout.strip()
+            runtime=ROOT/".zeus/runtime"
+            if a.action=="status":
+                emit(dispatch_readiness(repository=str(ROOT),baseline=baseline,
+                    activation_path=ROOT/"engineering/dispatch/dispatcher-activation.json",
+                    registry_path=ROOT/"engineering/dispatch/execution-agent-registry.json",
+                    mission_class="engineering",required_paths=(
+                        ROOT/"engineering/dispatch/dispatcher-policy.yaml",
+                        ROOT/"engineering/eens/production-eens-policy.yaml",
+                        ROOT/"engineering/evidence/production-evidence-policy.yaml",
+                        ROOT/"engineering/reconciliation/production-reconciliation-policy.yaml",
+                        runtime)))
+            elif a.action=="agents":
+                emit({"eligible_agents":[item["agent_id"] for item in load_registry(
+                    ROOT/"engineering/dispatch/execution-agent-registry.json")
+                    if item["active"] and item["qualification_status"]=="QUALIFIED"]})
+            else:
+                if not a.identifier: raise ValueError("--identifier is required")
+                directories={"assignment":"assignments","execution":"mission-executions",
+                    "eens":"eens","evidence":"execution-evidence",
+                    "reconciliation":"reconciliation"}
+                emit(load_json(runtime/directories[a.action]/f"{a.identifier}.json"))
         elif a.command=="generate-wop":
             if a.mode=="qualification":
                 if any((a.work_item,a.principal,a.at)):

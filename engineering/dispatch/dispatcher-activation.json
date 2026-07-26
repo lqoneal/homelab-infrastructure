@@ -1,0 +1,25 @@
+{
+  "activated_at": null,
+  "activating_authority": "loneal",
+  "dispatcher_id": "ZEUS-PRODUCTION-DISPATCHER",
+  "eens_configuration": "engineering/eens/production-eens-policy.yaml",
+  "evidence_configuration": "engineering/evidence/production-evidence-policy.yaml",
+  "implementation_version": "zeus-production-execution/1",
+  "policy_version": 1,
+  "reconciliation_adapters": [
+    "engineering/reconciliation/production-reconciliation-policy.yaml"
+  ],
+  "record_digest": "460ad827342eeeb65ca5708522748260843ed4683ea2cd0822e955f6797c029a",
+  "repository_baseline": "POST-COMMIT-BASELINE-REQUIRED",
+  "repository_identity": "/data/engineering/repositories/homelab",
+  "revoked": false,
+  "schema_version": 1,
+  "status": "PREPARED",
+  "supported_agent_classes": [
+    "local-authenticated"
+  ],
+  "supported_mission_classes": [
+    "engineering"
+  ],
+  "suspended": false
+}

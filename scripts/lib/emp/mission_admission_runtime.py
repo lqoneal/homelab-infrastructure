@@ -21,6 +21,7 @@ from scripts.lib.emp.authority_resolution import (
     load_authority_state,
 )
 from scripts.lib.emp.owner_enrollment import enrollment_status
+from scripts.lib.emp.production_execution import dispatch_readiness
 from scripts.lib.emp.reasoning import WopGenerator
 from scripts.lib.emp.wop_admission import AdmissionController
 from scripts.lib.emp.wop_service import OperationalWopService
@@ -107,6 +108,7 @@ class MissionAdmissionRuntime:
         authority_state_path: Path | str | None = None,
         commissioning_probe=None,
         enrollment_probe=None,
+        dispatch_probe=None,
     ):
         self.root = Path(repository_root).resolve()
         self.store = store
@@ -117,6 +119,7 @@ class MissionAdmissionRuntime:
         )
         self.commissioning_probe = commissioning_probe or commissioning_status
         self.enrollment_probe = enrollment_probe or enrollment_status
+        self.dispatch_probe = dispatch_probe or self._production_dispatch_readiness
 
     def start(
         self,
@@ -363,9 +366,32 @@ class MissionAdmissionRuntime:
                 decision["admission_decision"] == "ACCEPTED"
             )
             decision["automatically_submitted"] = False
-            decision["dispatch_permitted"] = False
+            readiness = self.dispatch_probe(
+                repository=str(self.root),
+                baseline=state["artifacts"]["repository_baseline"],
+                mission_class=str(wop.get("mission_class", "engineering")),
+            )
+            decision["dispatch_permitted"] = readiness["dispatch_permitted"]
+            decision["dispatch_readiness"] = readiness
         state["artifacts"]["admission_decision"] = decision
         return decision
+
+    def _production_dispatch_readiness(self, *, repository, baseline, mission_class):
+        runtime = self.root / ".zeus/runtime"
+        return dispatch_readiness(
+            repository=repository,
+            baseline=baseline,
+            activation_path=self.root / "engineering/dispatch/dispatcher-activation.json",
+            registry_path=self.root / "engineering/dispatch/execution-agent-registry.json",
+            mission_class=mission_class,
+            required_paths=(
+                self.root / "engineering/dispatch/dispatcher-policy.yaml",
+                self.root / "engineering/eens/production-eens-policy.yaml",
+                self.root / "engineering/evidence/production-evidence-policy.yaml",
+                self.root / "engineering/reconciliation/production-reconciliation-policy.yaml",
+                runtime,
+            ),
+        )
 
     @staticmethod
     def _record_evidence(state, stage, outcome, payload, at):

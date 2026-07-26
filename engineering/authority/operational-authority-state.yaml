@@ -1,8 +1,8 @@
 activation:
-  activated_at: '2026-07-26T19:44:43.839269Z'
-  previous_state_digest: 259e4ed1fa1c4e4b4d0323ba10ea3767b9fa492d2c634533b9e172a586132c6f
-  readiness_digest: 7e4a151c58de5a2ac0d5081881f7a7b95d18ce708f7f8771eec9889e14a29d63
-  transaction_id: AUTHORITY-PUBLICATION-23d37b6d-40af-4241-88c3-9ecd62535faa
+  activated_at: '2026-07-26T20:26:02Z'
+  previous_state_digest: 43858d9225c77236e91188a2d0344ff94e725cbba92f354646423cd9e90524c1
+  readiness_digest: 1e675066de0099e04edf3b888c8ba541b237aef4b9be4f9f8db2a40630f9f628
+  transaction_id: AUTHORITY-PUBLICATION-f80ad1a6-fc98-45c4-b044-53b269311a3d
 approvals:
   ZEUS-P2-014-PRODUCTION-AUTHORITY-AUTHORIZATION:
     authority: Lawrence O'Neal
@@ -132,23 +132,23 @@ publication_record_types:
 repositories:
   homelab:
     assertion_id: REPOSITORY-ASSERTION-ZEUS-P2-014
-    baseline_commit: 8c861f5a94064e98a4ecd7a3178ca53b90c27fa4
+    baseline_commit: b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf
     canonical_locator: /data/engineering/repositories/homelab
     owner: Lawrence O'Neal
     publication_provenance:
-    - envelope_id: PUBLICATION-1468c1bf-d9b9-5dd4-9047-737d955cc933
-      publication_digest: ff8383adc6bfee1ba4bf4ed6de7b37d213d31ea8919760baf6a670c539ae445f
+    - envelope_id: PUBLICATION-c8d18710-7fcd-5340-85fb-e17e0f8d45a0
+      publication_digest: 97e933b65c1822573c1aaca49c3ae04e1217b1d1713e919099dd616ea9d4e7fd
       record_type: repository_baseline
       signer_principal: loneal
-    - envelope_id: PUBLICATION-4c3db802-c68f-540b-a8f8-c8d2566df7f8
-      publication_digest: 5dee4c9fd62f1adbaba556dea6232385e85ac15b2db30a851619b821eb042300
+    - envelope_id: PUBLICATION-51cb6b34-cbff-54d9-b352-ef9526ad5e56
+      publication_digest: c9afb78c1a7c75dcf45eec52955b899060e5b5af6634e6a9cba5f643726866a4
       record_type: repository_identity
       signer_principal: loneal
     record_id: homelab
-    record_revision: 1
+    record_revision: 2
     repository_id: REPOSITORY-HOMELAB
 schema_version: 1
-source_digest: 79c1eadece607ea3e7f558427e89e0cf3b90ae2b1ffe0edd18c75de958c05382
+source_digest: a1ba6a863c008e2ad70faa5ae0b19a930dbd105f637e73071afca942b5ef572f
 status: operational
 work_items:
   EMP-WORK-ZEUS-P2-014-COMMISSIONING:

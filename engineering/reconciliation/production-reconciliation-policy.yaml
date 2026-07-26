@@ -1,0 +1,24 @@
+schema_version: 1
+policy_id: ZEUS-PRODUCTION-RECONCILIATION
+required_adapters:
+  - mission_state
+  - work_item_state
+  - wop_state
+  - assignment_state
+  - execution_state
+  - evidence_state
+  - approval_state
+  - project_state
+  - work_registry
+  - completion_registry
+  - operational_resume
+  - controlled_documentation
+  - eens_checkpoint
+properties:
+  idempotent: true
+  restartable: true
+  auditable: true
+  scoped: true
+  validated: true
+  interruption_safe: true
+closeout_requires_completion: true

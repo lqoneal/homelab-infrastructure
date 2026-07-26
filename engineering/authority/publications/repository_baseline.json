@@ -1,1 +1,14 @@
-{"envelope_id":"PUBLICATION-1468c1bf-d9b9-5dd4-9047-737d955cc933","owner":"Lawrence O'Neal","payload":{"baseline_commit":"8c861f5a94064e98a4ecd7a3178ca53b90c27fa4"},"payload_digest":"3a1ac346c9eb36959376fcbb0a93453140f3f8b2784299924f423c10dca8e3c1","published_at":"2026-07-26T19:37:08Z","record_id":"homelab","record_revision":1,"record_type":"repository_baseline","schema_version":1,"signer_principal":"loneal"}
+{
+  "envelope_id": "PUBLICATION-c8d18710-7fcd-5340-85fb-e17e0f8d45a0",
+  "owner": "Lawrence O'Neal",
+  "payload": {
+    "baseline_commit": "b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf"
+  },
+  "payload_digest": "9e788becf67875e9c9b1e287cd8a7907cd1fcc15d9bd08205c0a66b363d91c42",
+  "published_at": "2026-07-26T20:18:56Z",
+  "record_id": "homelab",
+  "record_revision": 2,
+  "record_type": "repository_baseline",
+  "schema_version": 1,
+  "signer_principal": "loneal"
+}

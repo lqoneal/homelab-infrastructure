@@ -126,6 +126,8 @@ relationships:
   - type: indexes
     target: SPEC-0011
   - type: indexes
+    target: SPEC-0012
+  - type: indexes
     target: MILESTONE-0006
   - type: indexes
     target: EWO-000021-EVIDENCE
@@ -354,6 +356,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | SPEC-0009 | Notification Service Specification | Active | Engineering Platform | `docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md` |
 | SPEC-0010 | Engineering Knowledge Repository Architecture | Active | Engineering Platform | `docs/specifications/SPEC-0010-ENGINEERING-KNOWLEDGE-REPOSITORY-ARCHITECTURE.md` |
 | SPEC-0011 | Production Authority Restoration Specification | Active | Lawrence O'Neal | `docs/specifications/SPEC-0011-PRODUCTION-AUTHORITY-RESTORATION-SPECIFICATION.md` |
+| SPEC-0012 | Production Execution Foundation | Active | Lawrence O'Neal | `docs/specifications/SPEC-0012-PRODUCTION-EXECUTION-FOUNDATION.md` |
 | SERVICE-0001 | EOS Core Services Catalog | Draft | EOS Program | `docs/services/SERVICE-0001-EOS_CORE_SERVICES_CATALOG.md` |
 | SERVICE-0002 | EMP Management Services Catalog | Active | Engineering Management Platform | `docs/services/SERVICE-0002-EMP_MANAGEMENT_SERVICES_CATALOG.md` |
 | GEN-0001 | Engineering Operating System Genesis Record | Active | Engineering Governance | `docs/genesis/GEN-0001-GENESIS_GOVERNANCE_RECORD.md` |
@@ -779,3 +782,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.53 | 2026-07-24 | Removed the invalid non-controlled `discovers` relationship to the unresolved `EENS-OPERATIONAL-ALPHA` service label while preserving indexed SPEC-0009 authority and the EENS service-discovery record. |
 | 2.54 | 2026-07-25 | Indexed PHASE-0001 and reconciled repository discovery to the Zeus Operational Alpha authority baseline while preserving completed EENS history. |
 | 2.55 | 2026-07-26 | Published and indexed SPEC-0011 and reconciled the production authority hierarchy, controlled-document execution authority, Zeus CLI semantics, and Authority Restoration Principle. |
+| 2.56 | 2026-07-26 | Registered SPEC-0012 and the production execution foundation while preserving dispatcher activation, agent registration, baseline publication, and first operational execution qualification as separate controls. |

@@ -1,7 +1,7 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 7.3
+version: 7.4
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,7 +9,7 @@ last_updated: 2026-07-27
 mission: Zeus Operational Alpha
 phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@7.2
+predecessor_revision: PROJ-0001@7.3
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -338,20 +338,18 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-Complete ZEUS-P2-015 documentation reconciliation. Preserve Lawrence O'Neal as
-the sole ultimate engineering authority, principal `loneal` as the production
-identity, the Zeus CLI as the authoritative instruction interface, controlled
-documentation as normal execution authority, and SPEC-0011 as the authority
-restoration model. Operational dispatch remains disabled.
+Preserve the ZEUS-P2-016 commissioned authority and the qualified P2-019
+execution foundation. Repository record revision 2 still binds operational
+authority to `b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf`; after the P2-019 commit,
+normal authority resolution requires controlled baseline republication.
+Dispatcher activation and production-agent registration remain pending.
 
 **Next Immediate Step:**
 
-After this documentation commit changes the repository baseline, restore the
-published `repository_baseline` authority record through the controlled signed
-publication workflow. Re-run normal authority resolution before any
-operational WOP or mission action. Do not execute the accepted ZEUS-P2-014
-admission while its authoritative decision reports `dispatch_permitted:
-false`.
+Publish the P2-019 implementation baseline, then obtain authentic signatures
+for dispatcher activation and production-agent registration. Do not dispatch
+an operational WOP during those steps. First operational execution
+qualification remains a separate milestone.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -370,7 +368,7 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 
 | Domain | Reconciled state |
 | --- | --- |
-| Zeus Operational Alpha runtime | Operational authority commissioned by ZEUS-P2-014 at baseline `8c861f5a94064e98a4ecd7a3178ca53b90c27fa4`; commissioning `READY`; dispatch disabled |
+| Zeus Operational Alpha runtime | Authority commissioned at the P2-016 baseline; P2-019 execution foundation qualified but not published, activated, agent-registered, or operationally execution-qualified |
 | Zeus production authority | Lawrence O'Neal is the sole ultimate engineering authority; production principal `loneal`; the authenticated Zeus CLI is the authoritative interface through which he exercises engineering authority; controlled documentation is the normal operational source of execution authority |
 | Authority restoration | SPEC-0011 requires missing, stale, conflicting, incomplete, or invalid authority to be reconciled, validated, and normally re-resolved before execution; automated restoration coordination remains deferred |
 | First operational WOP | `WOP-3b67fcc0-8218-517f-8c45-5b0f291e0f74`; submission eligible; admission accepted; dispatch prohibited |
@@ -630,3 +628,5 @@ When resuming this project:
 | 6.9     | 2026-07-27 | Reconciled the published P2-002 through P2-009 Zeus runtime at qualified implementation baseline `7a2e3967a96e949dac0cab2b0c49b8cd61bacf0e` while preserving production commissioning, authority, approval, and dispatch blockers. |
 | 7.0     | 2026-07-27 | Reconciled the published P2-010 operational artifact handler and qualification at baseline `b93145fbe895a70325479232a3f3d8febb5f5d54` while preserving authentic commissioning and disabled production dispatch. |
 | 7.3     | 2026-07-26 | Published the production authority hierarchy and Authority Restoration Principle through SPEC-0011, reconciled controlled and operational documentation, and recorded the post-commit repository-baseline restoration requirement without changing runtime behavior. |
+| 7.4     | 2026-07-26 | Republished repository identity and baseline facets at revision 2, activated baseline `b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf`, restored normal Authority Resolution and admission eligibility, and preserved disabled dispatch. |
+| 7.5     | 2026-07-26 | Implemented and independently qualified the P2-019 production execution foundation in bounded qualification mode; production activation, agent registration, baseline republication, and first operational execution remain pending. |

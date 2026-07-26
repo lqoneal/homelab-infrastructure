@@ -1,0 +1,10 @@
+schema_version: 1
+policy_id: ZEUS-PRODUCTION-EENS
+authentication: ssh-signature
+namespace: zeus-eens
+durability: append-only-files
+idempotency: required
+replay: supported
+consumer_checkpoints: required
+correlation: [mission_id, assignment_id]
+failure_visibility: blocking_record

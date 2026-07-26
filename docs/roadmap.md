@@ -106,6 +106,19 @@ Remaining separately controlled work:
   for admission, but execution remains prohibited while
   `dispatch_permitted: false`.
 
+ZEUS-P2-019 implements the minimum production execution foundation under
+SPEC-0012: purpose-scoped first-qualification authority, policy-derived
+admission readiness, baseline-bound dispatcher activation, a production agent
+registry, authenticated local invocation, signed EENS lifecycle events,
+cryptographically verifiable execution evidence, independent qualification,
+and scoped live reconciliation adapters. The checked-in activation is
+`PREPARED` and the production registry is empty. This implementation does not
+commission the dispatcher or claim operational WOP execution capability.
+
+The next controlled sequence is implementation-baseline republication,
+authentic dispatcher activation, authentic production-agent registration and
+qualification, then a separate first operational WOP execution qualification.
+
 The current `generate-wop` qualification workflow remains review-only. This
 roadmap entry does not approve implementation, operational admission,
 submission, dispatch, or execution.

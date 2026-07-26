@@ -79,8 +79,11 @@ and owner-enrollment assessments, then invokes the Authority Resolution
 Runtime against the repository-fixed source. Missing enrollment, publication,
 operator approval, identity, baseline, or authority state produces a structured blocker
 and no WOP. An accepted result means only eligibility for separately
-controlled submission; `automatically_submitted` and `dispatch_permitted`
-remain false.
+controlled submission; `automatically_submitted` remains false.
+`dispatch_permitted` is resolved from the SPEC-0012 production policy,
+baseline-bound activation, qualified agent availability, EENS, evidence,
+reconciliation, WOP and authority dependencies. Every failed condition is
+retained as a reason-coded blocker.
 
 Production authority was commissioned by ZEUS-P2-014 through the separate
 publication interface. This admission implementation never changes any

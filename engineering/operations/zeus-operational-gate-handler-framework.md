@@ -5,11 +5,12 @@
 ZEUS-P2-009 separates execution orchestration from gate implementation.
 `MissionExecutionRuntime` continues to own admission/WOP binding, state,
 sequencing, checkpoints, evidence, waits, suspension, resume, cancellation, and
-operational dispatch denial. `GateHandlerFramework` owns only discovery,
+the execution boundary. `GateHandlerFramework` owns only discovery,
 compatibility negotiation, bounded invocation, and the verification-first
 handler contract.
 
-The framework does not provide a production dispatcher. P2-010 adds the
+The framework itself does not provide a dispatcher. P2-019 adds the separately
+controlled production execution foundation defined by SPEC-0012. P2-010 adds the
 operational-only artifact handler described in
 `engineering/operations/zeus-operational-artifact-gate-handler.md`; the
 existing reference handler remains non-mutating and qualification-only.

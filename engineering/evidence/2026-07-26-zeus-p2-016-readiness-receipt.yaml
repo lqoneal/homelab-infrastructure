@@ -1,0 +1,20 @@
+bundle_digest: d5d1a16f82bdca149a40154f103ef804345f54dbf3e752c614872ce0f216bb19
+candidate_digest: 273055ab1cd52b294b6d8f7ad9672a704178a16a806a734e407583a20034d847
+readiness: READY
+readiness_digest: 1e675066de0099e04edf3b888c8ba541b237aef4b9be4f9f8db2a40630f9f628
+record_type_count: 10
+required_record_types:
+- approval_authority
+- authority_node
+- governing_baseline
+- identity_record
+- mission_authority
+- operational_configuration
+- phase_authority
+- repository_baseline
+- repository_identity
+- work_item_authority
+resolution_id: ARB-d334047b-3efc-5157-bceb-d27a1b95816c
+schema_version: 1
+transaction_id: AUTHORITY-PUBLICATION-f80ad1a6-fc98-45c4-b044-53b269311a3d
+verified_at: '2026-07-26T20:26:02Z'

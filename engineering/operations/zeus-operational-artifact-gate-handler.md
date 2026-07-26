@@ -5,12 +5,14 @@
 ZEUS-P2-010 provides the first operational-grade handler implementation for the
 P2-009 Gate Handler Framework. It executes bounded, declarative artifact gates
 inside an isolated workspace. It does not execute shell commands, modify the
-repository, allocate authority, approve WOPs, commission production, or expose
-a production dispatcher.
+repository, allocate authority, approve WOPs, or commission production.
+P2-019 supplies a separate authenticated invocation boundary; the handler
+remains inactive until dispatcher activation and agent registration validate.
 
 The handler is operational-only. Qualification uses an isolated authoritative
-fixture, temporary workspace, and an explicitly injected runtime boundary that
-is unavailable from the Zeus CLI.
+fixture and temporary workspace. The P2-019 production contract preserves this
+handler's context requirements without treating qualification injection as
+production activation.
 
 ## Operational execution context
 

@@ -1,0 +1,51 @@
+{
+  "authorization_reference": "ZEUS-P2-019",
+  "history": [
+    {
+      "authorization_reference": "ZEUS-P2-019",
+      "evidence_reference": "authenticated-user-mission-handoff",
+      "from": null,
+      "occurred_at": "2026-07-26T00:00:00Z",
+      "to": "PLANNED"
+    },
+    {
+      "authorization_reference": "ZEUS-P2-019",
+      "evidence_reference": "authenticated-user-mission-handoff",
+      "from": "PLANNED",
+      "occurred_at": "2026-07-26T00:00:01Z",
+      "to": "AUTHORIZED_FOR_IMPLEMENTATION"
+    },
+    {
+      "authorization_reference": "ZEUS-P2-019",
+      "evidence_reference": "implementation-and-focused-tests",
+      "from": "AUTHORIZED_FOR_IMPLEMENTATION",
+      "occurred_at": "2026-07-26T00:00:02Z",
+      "to": "IMPLEMENTED"
+    },
+    {
+      "authorization_reference": "ZEUS-P2-019",
+      "evidence_reference": "authenticated-mission-qualification-scope",
+      "from": "IMPLEMENTED",
+      "occurred_at": "2026-07-26T00:00:03Z",
+      "to": "AUTHORIZED_FOR_QUALIFICATION"
+    },
+    {
+      "authorization_reference": "ZEUS-P2-019",
+      "evidence_reference": "2026-07-26-zeus-p2-019-integrated-qualification-report",
+      "from": "AUTHORIZED_FOR_QUALIFICATION",
+      "occurred_at": "2026-07-26T00:00:04Z",
+      "to": "QUALIFIED"
+    }
+  ],
+  "owner": "Lawrence O'Neal",
+  "principal": "loneal",
+  "record_digest": "3d8103d59978932b0251f1084f90f737e88f89f30fcb6f658c73e98e795d4c6e",
+  "schema_version": 1,
+  "scope": [
+    "production-execution-foundation",
+    "integrated-non-production-qualification",
+    "publication-preparation"
+  ],
+  "state": "QUALIFIED",
+  "work_id": "ZEUS-P2-019"
+}

@@ -1,8 +1,31 @@
-schema_version: 1
-title: EMP Qualified Execution Agent Registry
+schema_version: 2
+title: Zeus Production Execution-Agent Registry
 type: object
-required: [schema_version, agents]
+required: [schema_version, registry_id, agents, registry_digest]
 properties:
-  schema_version: {const: 1}
-  agents: {type: array}
+  schema_version: {const: 2}
+  registry_id: {type: string, minLength: 1}
+  registry_digest: {type: string, pattern: "^[0-9a-f]{64}$"}
+  agents:
+    type: array
+    items:
+      type: object
+      required:
+        - agent_id
+        - agent_type
+        - host_identity
+        - service_identity
+        - supported_mission_classes
+        - supported_tools
+        - repository_access_scope
+        - execution_constraints
+        - qualification_status
+        - qualification_evidence
+        - active
+        - last_validated_at
+        - trust_binding
+        - eens_identity
+        - evidence_signing_identity
+        - interruption_resume_capable
+        - concurrency_limit
 additionalProperties: false

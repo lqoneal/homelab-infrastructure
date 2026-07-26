@@ -1,0 +1,14 @@
+schema_version: 1
+policy_id: ZEUS-PRODUCTION-EXECUTION-EVIDENCE
+authentication: ssh-signature
+namespace: zeus-execution-evidence
+required_bindings:
+  - wop_id
+  - mission_id
+  - assignment_id
+  - agent_id
+  - repository_identity
+  - repository_baseline
+  - executed_gate
+independent_qualification: required
+fixture_evidence_prohibited: true
