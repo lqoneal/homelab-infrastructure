@@ -62,7 +62,8 @@ def authority_status(mission_status):
         "operational_state": {
             "oa01_verification": decision["oa01_lifecycle"]["operator_verification"],
             "oa01_acceptance": decision["oa01_lifecycle"]["operator_acceptance"],
-            "dispatcher": decision["operational_dispatch"],
+            "dispatcher": oa02["dispatcher_state"],
+            "operational_dispatch": oa02["operational_dispatch"],
             "oa02_verification": (
                 oa02["verification_record"]["result"]
                 if oa02["verification_record"]
@@ -105,6 +106,7 @@ def status_text(value):
         f"OA-01 Acceptance   : {gates['oa01_acceptance'].replace('_', ' ')}",
         f"OA-02 Verification : {gates['oa02_verification'].replace('_', ' ')}",
         f"Dispatcher          : {gates['dispatcher']}",
+        f"Operational Dispatch: {gates['operational_dispatch']}",
         f"OA-02               : {gates['oa02']}",
         f"Progressive WOP     : {gates['progressive_wop']}",
         f"Current Binding PMCT: {gates['current_binding_pmct']}",
