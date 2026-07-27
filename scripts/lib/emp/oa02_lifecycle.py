@@ -38,7 +38,8 @@ def resolve(repository: Path) -> dict:
             if candidate.name==authoritative_oa02_run
         ]
     activation=json.loads((root/"engineering/dispatch/dispatcher-activation.json").read_text())
-    registry=json.loads((root/"engineering/dispatch/execution-agent-registry.json").read_text())
+    from scripts.lib.emp.agent_qualification import registry as agent_registry
+    registry=agent_registry(root)
     agents=registry.get("agents",[]); qualified=[a for a in agents if a.get("active") is True and a.get("qualification_status")=="QUALIFIED"]
     blockers=[]
     if published!=head: blockers.append("RESTORE_PUBLISHED_BASELINE")

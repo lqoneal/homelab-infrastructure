@@ -184,6 +184,13 @@ semantic decision digest. A PASS does not verify OA-02 or authorize dispatch.
 With the production registry still empty, Zeus derives
 `QUALIFY_PRODUCTION_AGENT` as the next unmet prerequisite.
 
+ZEUS-P2-037 establishes append-only, binding-aware production-agent
+qualification beneath the runtime state boundary. The tracked empty registry
+remains the schema baseline; effective eligibility is derived from
+integrity-valid records matching repository HEAD, published baseline, active
+publication, and PMCT evidence. Qualification enables OA-02 verification but
+does not activate or authorize dispatch.
+
 The current `generate-wop` qualification workflow remains review-only. This
 roadmap entry does not approve implementation, operational admission,
 submission, dispatch, or execution.

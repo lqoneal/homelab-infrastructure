@@ -23,6 +23,7 @@ from scripts.lib.emp.next_action import NextActionError, human_text as next_acti
 from scripts.lib.emp.gate_approval import GateApprovalError, GateApprovalService, approve_command, verify_command  # noqa: E402
 from scripts.lib.emp.gate_decision import decide as decide_gate, review as review_gate  # noqa: E402
 from scripts.lib.emp.oa02_lifecycle import resolve as resolve_oa02, verify as verify_oa02  # noqa: E402
+from scripts.lib.emp.agent_qualification import AgentQualificationError, qualify as qualify_agent, registry as agent_registry, revoke as revoke_agent, runtime_registry_path  # noqa: E402
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -180,6 +181,7 @@ def main(argv=None):
     admit_mission=sub.add_parser("admit-mission"); admit_mission.add_argument("action", choices=("start","resume","status")); admit_mission.add_argument("--admission-id"); admit_mission.add_argument("--mode", choices=("qualification","operational")); admit_mission.add_argument("--intent"); admit_mission.add_argument("--mission"); admit_mission.add_argument("--phase"); admit_mission.add_argument("--work-item"); admit_mission.add_argument("--principal"); admit_mission.add_argument("--submitter"); admit_mission.add_argument("--repository", default=str(ROOT)); admit_mission.add_argument("--at"); admit_mission.add_argument("--max-stages", type=int)
     execute_mission=sub.add_parser("execute-mission"); execute_mission.add_argument("action", choices=("start","resume","status","suspend","cancel")); execute_mission.add_argument("--admission-id"); execute_mission.add_argument("--execution-id"); execute_mission.add_argument("--reason", default="OPERATOR"); execute_mission.add_argument("--at"); execute_mission.add_argument("--max-gates", type=int)
     dispatcher=sub.add_parser("dispatcher"); dispatcher.add_argument("action", choices=("status","agents","assignment","execution","eens","evidence","reconciliation")); dispatcher.add_argument("--identifier")
+    agent=sub.add_parser("agent"); agent.add_argument("action", choices=("registry","status","qualify","revoke")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--json", action="store_true")
     next_action=sub.add_parser("next-action"); next_action.add_argument("--json", action="store_true")
     a=p.parse_args(arguments)
     if a.command is None:
@@ -227,6 +229,31 @@ def main(argv=None):
                     "progressive_wop": lifecycle["progressive_wop"],
                     "next_authorized_action": lifecycle["next_action"],
                 })
+            return 0
+        if a.command == "agent":
+            if a.action == "qualify":
+                record, replay = qualify_agent(ROOT)
+                value = {
+                    "agent_id": record["agent"]["agent_id"],
+                    "qualification_status": record["status"],
+                    "qualification_digest": record["qualification_digest"],
+                    "idempotent_replay": replay,
+                    "registry": agent_registry(ROOT),
+                }
+            elif a.action == "revoke":
+                if not a.agent_id:
+                    raise AgentQualificationError("agent identity is required for revocation")
+                record, replay = revoke_agent(ROOT, a.agent_id)
+                value = {
+                    "agent_id": a.agent_id,
+                    "qualification_status": record["status"],
+                    "qualification_digest": record["qualification_digest"],
+                    "idempotent_replay": replay,
+                    "registry": agent_registry(ROOT),
+                }
+            else:
+                value = agent_registry(ROOT)
+            emit(value)
             return 0
         if a.command == "verify":
             if a.gate.upper() == "OA-02":
@@ -330,7 +357,7 @@ def main(argv=None):
                 capture_output=True,text=True,check=True).stdout.strip()
             dispatch_state=dispatch_readiness(repository=str(ROOT),baseline=baseline,
                 activation_path=ROOT/"engineering/dispatch/dispatcher-activation.json",
-                registry_path=ROOT/"engineering/dispatch/execution-agent-registry.json",
+                registry_path=runtime_registry_path(ROOT),
                 mission_class="engineering",required_paths=(
                     ROOT/"engineering/dispatch/dispatcher-policy.yaml",
                     ROOT/"engineering/eens/production-eens-policy.yaml",
@@ -365,7 +392,7 @@ def main(argv=None):
             if a.action=="status":
                 emit(dispatch_readiness(repository=str(ROOT),baseline=baseline,
                     activation_path=ROOT/"engineering/dispatch/dispatcher-activation.json",
-                    registry_path=ROOT/"engineering/dispatch/execution-agent-registry.json",
+                    registry_path=runtime_registry_path(ROOT),
                     mission_class="engineering",required_paths=(
                         ROOT/"engineering/dispatch/dispatcher-policy.yaml",
                         ROOT/"engineering/eens/production-eens-policy.yaml",
@@ -375,7 +402,7 @@ def main(argv=None):
                     allowed_signers=ROOT/"engineering/authority/allowed-signers"))
             elif a.action=="agents":
                 emit({"eligible_agents":[item["agent_id"] for item in load_registry(
-                    ROOT/"engineering/dispatch/execution-agent-registry.json")
+                    runtime_registry_path(ROOT))
                     if item["active"] and item["qualification_status"]=="QUALIFIED"]})
             else:
                 if not a.identifier: raise ValueError("--identifier is required")
@@ -416,6 +443,6 @@ def main(argv=None):
                     repository_root=repository,at=resolved_at))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (OrchestrationError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+    except (OrchestrationError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, AgentQualificationError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr); return 78
 if __name__ == "__main__": raise SystemExit(main())

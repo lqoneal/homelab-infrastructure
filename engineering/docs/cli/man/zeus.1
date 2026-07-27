@@ -22,6 +22,10 @@ Dispatch remains disabled until independently commissioned.
 Resume observes recorded state and never manufactures approval.
 .SH COMMANDS
 status, next-action, verify, accept, approve, dispatcher, resume, and additional commands shown by help.
+.br
+agent status, agent registry, agent qualify, and agent revoke manage the
+integrity-bound production-agent qualification lifecycle without authorizing
+dispatch.
 .SH EXAMPLES
 .B zeus next-action
 .br
@@ -30,6 +34,8 @@ status, next-action, verify, accept, approve, dispatcher, resume, and additional
 .B zeus accept OA-01 --reject --rationale "qualification incomplete"
 .br
 .B zeus verify OA-02
+.br
+.B zeus agent qualify
 .SH FILES
 .I .zeus/runtime
 and repository-controlled engineering records.

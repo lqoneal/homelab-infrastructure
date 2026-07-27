@@ -382,13 +382,17 @@ class MissionAdmissionRuntime:
         state["artifacts"]["admission_decision"] = decision
         return decision
 
+    def _effective_agent_registry(self):
+        from scripts.lib.emp.agent_qualification import runtime_registry_path
+        return runtime_registry_path(self.root)
+
     def _production_dispatch_readiness(self, *, repository, baseline, mission_class):
         runtime = self.root / ".zeus/runtime"
         return dispatch_readiness(
             repository=repository,
             baseline=baseline,
             activation_path=self.root / "engineering/dispatch/dispatcher-activation.json",
-            registry_path=self.root / "engineering/dispatch/execution-agent-registry.json",
+            registry_path=self._effective_agent_registry(),
             mission_class=mission_class,
             required_paths=(
                 self.root / "engineering/dispatch/dispatcher-policy.yaml",

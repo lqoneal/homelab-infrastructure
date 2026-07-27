@@ -2771,6 +2771,48 @@ entities:
       evidence and Zeus derives production-agent qualification as the next
       prerequisite without enabling dispatch.
     queue_ids: []
+  - registry_id: EMP-WORK-ZEUS-P2-037-PRODUCTION-AGENT
+    object_type: WorkItem
+    title: Zeus Production Agent Qualification
+    management_state: completed
+    owner: Lawrence O'Neal
+    scope: ZEUS-P2-037
+    authority_reference: Codex Handoff - P2-037
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ZEUS-P2-036-OA02-PMCT
+    created_at: 2026-07-27
+    updated_at: 2026-07-27
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-27T17:20:00+00:00'
+      actor: Codex
+      reason: Implement current-binding production-agent qualification without
+        authorizing dispatch or executing work.
+      authority_reference: Codex Handoff - P2-037
+    - from: active
+      to: completed
+      at: '2026-07-27T17:25:00+00:00'
+      actor: Codex
+      reason: Runtime qualification, deterministic registry, revocation, and
+        OA-02 lifecycle reconciliation qualified.
+      authority_reference: Codex Handoff - P2-037
+    project_id: EMP-PROJECT-HOMELAB
+    order: 41
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: capability-qualification
+    priority: 0
+    completion_criteria: One integrity-valid current-binding production agent
+      can satisfy OA-02 verification while dispatcher activation and operational
+      dispatch remain separately prohibited.
+    queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP
     object_type: Queue

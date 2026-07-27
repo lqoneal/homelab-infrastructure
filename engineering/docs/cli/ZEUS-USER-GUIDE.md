@@ -34,6 +34,23 @@ prepared and inactive and operational dispatch remains disabled.
 JSON surfaces used by PMCT to demonstrate publication and gate-lifecycle
 resolution. They never publish authority or record a gate decision.
 
+## Production agent qualification
+
+`zeus agent status` and `zeus agent registry` display the integrity-validated
+runtime registry. `zeus agent qualify` evaluates the authenticated local
+agent's identity, repository access, current published baseline and authority,
+OA-01 decision, OA-02 PMCT binding, runtime dependencies, security, EENS, and
+execution capabilities. Successful qualification is append-only and
+idempotent for the same binding. `zeus agent revoke AGENT-ID` appends a
+revocation linked to the preserved qualification; it never overwrites history.
+
+The tracked empty registry is the schema/bootstrap baseline. Mutable
+qualification and effective-registry records live beneath
+`.zeus/runtime/agents/` so qualification cannot change repository HEAD or
+create a publication loop. A stale qualification remains historical evidence
+but is ineligible when HEAD, published baseline, authority publication, or
+PMCT run changes. Qualification does not authorize dispatch.
+
 Authority baselines are managed by `scripts/authority-publishctl`. PMCT supplies
 gate evidence. Work Registry records controlled engineering work. EENS and
 dispatch remain unavailable until independently qualified. Resume commands
