@@ -83,10 +83,26 @@ instruction.
 `zeus next-action` is the read-only production-facing decision interface. It
 resolves repository identity and HEAD, published baseline, configured
 authority, dispatcher activation, production agent registration and
-qualification, PMCT state, current gate, active Zeus work authority, and
-blocking conditions. It selects the first unmet prerequisite; it does not
+qualification, PMCT state, current gate, current-binding operator verification
+and acceptance, active Zeus work authority, and blocking conditions. It
+selects the first unmet prerequisite; it does not
 activate, publish, qualify, register, dispatch, or otherwise perform the
 reported action.
+
+Lifecycle precedence is repository identity, operational authority, current
+published baseline, current-binding gate verification, matching operator
+acceptance, then the next gate's WOP pre-execution verification. Dispatcher
+state cannot outrank an unsatisfied operator gate boundary. For OA-01, the
+post-publication sequence is:
+
+```text
+verification absent -> RUN_OA-01_VERIFICATION
+verification PASS and acceptance absent -> RECORD_OA-01_OPERATOR_ACCEPTANCE
+verification and acceptance current -> RUN_OA-02_PRE_EXECUTION_VERIFICATION
+```
+
+The last result is conditional evaluation, not OA-02 execution or dispatcher
+commissioning authority.
 
 Here, read-only means that the command does not modify repository content,
 orchestration state, authority, publication, dispatcher, agent, qualification,

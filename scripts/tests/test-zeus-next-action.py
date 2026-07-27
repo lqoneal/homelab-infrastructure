@@ -9,6 +9,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import yaml
 
@@ -70,7 +71,7 @@ class NextActionTests(unittest.TestCase):
         )
         return temporary, root
 
-    def test_priority_changes_with_authoritative_state(self):
+    def test_publication_precedes_oa01_verification(self):
         temporary, root = self.repository()
         try:
             self.assertEqual(
@@ -83,20 +84,79 @@ class NextActionTests(unittest.TestCase):
         try:
             self.assertEqual(
                 resolve_next_action(root)["next_authorized_action"]["code"],
-                "COMMISSION_DISPATCHER",
-            )
-        finally:
-            temporary.cleanup()
-        temporary, root = self.repository(published_matches=True, active=True)
-        try:
-            self.assertEqual(
-                resolve_next_action(root)["next_authorized_action"]["code"],
-                "QUALIFY_PRODUCTION_AGENT",
+                "RUN_OA-01_VERIFICATION",
             )
         finally:
             temporary.cleanup()
 
+    def test_verification_precedes_acceptance(self):
+        temporary, root = self.repository(published_matches=True)
+        try:
+            with patch(
+                "scripts.lib.emp.next_action._oa01_lifecycle",
+                return_value={
+                    "verification_passed": True,
+                    "acceptance_recorded": False,
+                },
+            ):
+                self.assertEqual(
+                    resolve_next_action(root)["next_authorized_action"]["code"],
+                    "RECORD_OA-01_OPERATOR_ACCEPTANCE",
+                )
+        finally:
+            temporary.cleanup()
+
+    def test_matching_acceptance_reaches_oa02_preflight_not_dispatcher(self):
+        temporary, root = self.repository(published_matches=True)
+        try:
+            with patch(
+                "scripts.lib.emp.next_action._oa01_lifecycle",
+                return_value={
+                    "verification_passed": True,
+                    "acceptance_recorded": True,
+                },
+            ):
+                value = resolve_next_action(root)
+                self.assertEqual(
+                    value["next_authorized_action"]["code"],
+                    "RUN_OA-02_PRE_EXECUTION_VERIFICATION",
+                )
+                self.assertNotEqual(
+                    value["next_authorized_action"]["code"],
+                    "COMMISSION_DISPATCHER",
+                )
+        finally:
+            temporary.cleanup()
+
+    def test_stale_or_mismatched_evidence_cannot_advance(self):
+        temporary, root = self.repository(published_matches=True)
+        try:
+            for lifecycle in (
+                {"verification_passed": False, "acceptance_recorded": False},
+                {"verification_passed": False, "acceptance_recorded": True},
+            ):
+                with self.subTest(lifecycle=lifecycle), patch(
+                    "scripts.lib.emp.next_action._oa01_lifecycle",
+                    return_value=lifecycle,
+                ):
+                    self.assertEqual(
+                        resolve_next_action(root)["next_authorized_action"]["code"],
+                        "RUN_OA-01_VERIFICATION",
+                    )
+        finally:
+            temporary.cleanup()
+
     def test_current_cli_reports_beta_and_does_not_modify_worktree(self):
+        pointer = ROOT / ".zeus/runtime/authority/active-publication.json"
+        pointer_before = pointer.read_bytes()
+        publication = (
+            ROOT / ".zeus/runtime/authority/publications/"
+            "AUTHORITY-PUBLICATION-7dc94267-ab5e-4a7f-b962-f6ce3335f307"
+        )
+        artifact_before = {
+            path.relative_to(publication): path.read_bytes()
+            for path in publication.rglob("*") if path.is_file()
+        }
         before = subprocess.run(
             ["git", "-C", str(ROOT), "status", "--porcelain=v1"],
             text=True, capture_output=True, check=True,
@@ -112,13 +172,35 @@ class NextActionTests(unittest.TestCase):
         self.assertEqual(value["operational_dispatch"], "DISABLED")
         self.assertEqual(
             value["next_authorized_action"]["code"],
-            "PUBLISH_SIGNED_REPOSITORY_BASELINE",
+            "RUN_OA-01_VERIFICATION",
         )
+        self.assertEqual(value["oa01_lifecycle"]["operator_verification"], "ABSENT")
+        self.assertEqual(value["oa01_lifecycle"]["operator_acceptance"], "NOT_RECORDED")
         after = subprocess.run(
             ["git", "-C", str(ROOT), "status", "--porcelain=v1"],
             text=True, capture_output=True, check=True,
         ).stdout
         self.assertEqual(after, before)
+        self.assertEqual(pointer.read_bytes(), pointer_before)
+        self.assertEqual({
+            path.relative_to(publication): path.read_bytes()
+            for path in publication.rglob("*") if path.is_file()
+        }, artifact_before)
+        eligibility = subprocess.run(
+            [
+                "/data/engineering/wops/ZEUS-OA-PROGRESSIVE-WOP/"
+                "bin/check-gate-eligibility",
+                "OA-02",
+            ],
+            text=True, capture_output=True, check=False,
+        )
+        self.assertEqual(eligibility.returncode, 77)
+        eligibility_output = eligibility.stdout + eligibility.stderr
+        self.assertIn("OA-02_ELIGIBILITY=BLOCKED", eligibility_output)
+        self.assertIn(
+            "BLOCKING_REASON=OA-01_OPERATOR_ACCEPTANCE_REQUIRED",
+            eligibility_output,
+        )
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 
 Date: 2026-07-26
 Current completed implementation milestone: `ZEUS-P2-023`
-Current architecture correction: `ZEUS-P2-025`
+Current architecture correction: `ZEUS-P2-026`
 Resume status: historical OA-01 acceptance is bound to an older implementation; OA-02 is blocked until current-baseline verification and a governed successor receipt
 Production ownership model: Lawrence O'Neal / `loneal`
 Commissioning status: `READY`
@@ -34,6 +34,7 @@ Commissioning status: `READY`
 | ZEUS-P2-022 Runtime Telemetry Contract Clarification | Contract and exact-run proof completed; OA-01 awaits operator verification and OA-02 remains blocked | `engineering/evidence/2026-07-26-zeus-p2-022-completion-report.md` |
 | ZEUS-P2-023 Operator Approval UX | Complete and qualified for isolated commit; two-step verification-first approval passed 25 fixture tests; no live acceptance or gate transition performed by qualification | `engineering/evidence/2026-07-26-zeus-p2-023-operator-approval-ux-completion-report.md` |
 | ZEUS-P2-025 Publication and Receipt Lifecycle | Runtime publication store and append-only successor receipt lineage implemented; qualification preserves historical OA-01 evidence and blocks stale eligibility | `engineering/evidence/2026-07-26-zeus-p2-025-completion-report.md` |
+| ZEUS-P2-026 Post-Publication Lifecycle Reconciliation | Next-action, mission-admission scope, and PMCT verification-readiness semantics reconciled; production publication preserved and WOP paused | `engineering/evidence/2026-07-26-zeus-p2-026-completion-report.md` |
 
 ## Resume point
 
@@ -57,6 +58,9 @@ OA-01_OPERATOR_ACCEPTANCE=HISTORICAL_STALE_BINDING
 OA-01_GATE_STATUS=AWAITING_OPERATOR_VERIFICATION
 OA-02_ELIGIBILITY=BLOCKED
 BLOCKING_REASON=OA-01_OPERATOR_ACCEPTANCE_REQUIRED
+ZEUS_NEXT_ACTION=RUN_OA-01_VERIFICATION
+DISPATCHER_COMMISSIONING_AUTHORIZED=NO
+PROGRESSIVE_WOP=PAUSED
 ```
 
 ## Backlog
@@ -124,7 +128,7 @@ BLOCKING_REASON=OA-01_OPERATOR_ACCEPTANCE_REQUIRED
 - Consider platform-specific locking support only if Zeus is ported beyond
   the current POSIX platform.
 
-Recommended next Zeus mission: publish the P2-019 implementation baseline and
-commission its prepared production components through authentic signed
-records. Until that completes, accepted operational admissions remain
-non-dispatchable and must stop before execution.
+Recommended next Zeus action: independently verify OA-01 against the
+current-binding PMCT evidence, then request explicit operator acceptance.
+Dispatcher commissioning, OA-02 execution, and WOP resumption remain
+prohibited until the OA-01 boundary is satisfied.

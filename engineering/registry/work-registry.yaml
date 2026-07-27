@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 63
+revision: 64
 updated_at: '2026-07-26'
 serialization: yaml
 mutation_history:
@@ -421,6 +421,14 @@ mutation_history:
   reason: Move authority activation outside tracked Git content and establish
     immutable successor approvals without allowing stale receipts to advance a
     gate.
+- revision: 64
+  previous_revision: 63
+  at: '2026-07-27T02:30:00+00:00'
+  actor: ZEUS-P2-026 implementation agent
+  action: reconcile post-publication gate lifecycle precedence
+  reason: Make current-binding OA-01 verification and acceptance precede
+    dispatcher commissioning or OA-02 execution while preserving production
+    publication state.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -2628,6 +2636,48 @@ entities:
     completion_criteria: Publication leaves Git clean with published HEAD
       unchanged, and append-only successor receipts preserve historical
       evidence while stale bindings cannot authorize gate progression.
+    queue_ids: []
+  - registry_id: EMP-WORK-ZEUS-P2-026-LIFECYCLE-RECONCILIATION
+    object_type: WorkItem
+    title: Zeus Post-Publication Lifecycle Reconciliation
+    management_state: completed
+    owner: Lawrence O'Neal
+    scope: ZEUS-P2-026
+    authority_reference: ZEUS-P2-026 Post-Publication Lifecycle Reconciliation
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ZEUS-P2-025-PUBLICATION-RECEIPT-LIFECYCLE
+    created_at: 2026-07-26
+    updated_at: 2026-07-26
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-27T02:00:00+00:00'
+      actor: loneal through authenticated instruction
+      reason: Reconcile post-publication lifecycle decision paths without
+        advancing OA-01 or OA-02.
+      authority_reference: ZEUS-P2-026 Post-Publication Lifecycle Reconciliation
+    - from: active
+      to: completed
+      at: '2026-07-27T02:30:00+00:00'
+      actor: ZEUS-P2-026 implementation agent
+      reason: Corrected lifecycle precedence, admission scope, PMCT readiness
+        semantics, tests, and controlled records for review.
+      authority_reference: ZEUS-P2-026 Post-Publication Lifecycle Reconciliation
+    project_id: EMP-PROJECT-HOMELAB
+    order: 38
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: authority-lifecycle-correction
+    priority: 0
+    completion_criteria: All authoritative decision paths require current-binding
+      OA-01 verification and acceptance before dispatcher commissioning or OA-02,
+      while production publication and historical evidence remain unchanged.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP

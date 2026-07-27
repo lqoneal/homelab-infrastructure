@@ -1,4 +1,6 @@
 import importlib.util
+import hashlib
+import json
 import os
 import tempfile
 import unittest
@@ -27,8 +29,15 @@ class ProtectionTests(unittest.TestCase):
     def test_oa01_adapter_satisfies_current_observable_contract(self):
         state = pmct.inspect_state()
         checks = pmct.evaluate(pmct.matrix()["gates"][0], state)
-        result, _ = pmct.classify(pmct.matrix()["gates"][0], state, checks)
-        self.assertEqual(result, "PASS")
+        self.assertTrue(all(
+            item["passed"] for item in checks if item["mandatory"]
+        ))
+        self.assertEqual(
+            state["oa01_operator_verification_readiness"], "READY"
+        )
+        self.assertEqual(
+            state["oa01_operator_verification_evidence"], "ABSENT"
+        )
 
     def test_oa02_requires_recorded_oa01_operator_acceptance(self):
         state = pmct.inspect_state()
@@ -38,6 +47,28 @@ class ProtectionTests(unittest.TestCase):
         self.assertIn(
             "prerequisite gate operator acceptance is not recorded: OA-01",
             reasons,
+        )
+
+    def test_mismatched_oa01_verification_binding_is_not_ready(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            wop = Path(temporary)
+            record = wop / "operator-verifications/OA-01.verification.json"
+            record.parent.mkdir(parents=True)
+            record.write_text(json.dumps({
+                "gate": "OA-01",
+                "qualified_repository_head": "0" * 40,
+                "verification_result": "PASS",
+            }))
+            checksum = hashlib.sha256(record.read_bytes()).hexdigest()
+            record.with_suffix(record.suffix + ".sha256").write_text(
+                f"{checksum}  {record.name}\n"
+            )
+            with patch.dict(os.environ, {"ZEUS_GATE_WOP": str(wop)}):
+                state = pmct.oa01_verification_state(
+                    head="1" * 40, prerequisites_ready=True
+                )
+        self.assertEqual(
+            state, {"readiness": "NOT_READY", "evidence": "MISMATCHED"}
         )
 
 

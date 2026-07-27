@@ -359,8 +359,10 @@ The side mission does not replace the current phase or primary task. It shall no
 **Current Task:**
 
 Preserve the commissioned authority, P2-019 execution foundation, P2-020 PMCT,
-and P2-021 next-action resolver. The published baseline remains
-`b8d003a399cd4abc16a0c1a34a4e1d20e5ab8daf`; OA-01 implementation is
+and P2-026 lifecycle-corrected next-action resolver. The active runtime
+publication is `AUTHORITY-PUBLICATION-7dc94267-ab5e-4a7f-b962-f6ce3335f307`
+and publishes baseline `9337e305cad7230f70f6a492065a9789cea4de49`.
+OA-01 implementation is
 complete and its Codex PMCT demonstration is `PASS`, but independent operator
 verification is pending and operator acceptance is not recorded. OA-01 gate
 status is `AWAITING_OPERATOR_VERIFICATION`. Dispatcher activation is
@@ -369,8 +371,8 @@ remains incomplete.
 
 **Next Immediate Step:**
 
-Complete independent OA-01 operator verification and record operator
-acceptance. OA-02 eligibility is blocked by
+Run independent OA-01 operator verification, then record operator acceptance
+only after a matching verification passes. OA-02 eligibility is blocked by
 `OA-01_OPERATOR_ACCEPTANCE_REQUIRED`. Do not begin OA-02, publish, activate,
 qualify, register, or dispatch before that lifecycle prerequisite is
 reconciled.
@@ -659,3 +661,4 @@ When resuming this project:
 | 7.8     | 2026-07-26 | Clarified authoritative-state observation, bounded operator-interface presentation telemetry, and exact-run PMCT proof; recorded OA-01 Codex validation PASS with operator verification pending and OA-02 blocked. |
 | 7.9     | 2026-07-26 | Implemented verification-first `zeus verify OA-XX` and gate-aware `zeus approve OA-XX` UX with durable bindings, explicit confirmation, and isolated failure-mode qualification; no gate was executed. |
 | 8.0     | 2026-07-26 | Replaced tracked authority activation with create-only, read-only-after-publication runtime artifacts and established append-only approval receipt lineage; preserved the historical OA-01 receipt while blocking stale eligibility. |
+| 8.1     | 2026-07-26 | Reconciled post-publication lifecycle precedence so current-binding OA-01 verification and acceptance precede OA-02 evaluation or dispatcher commissioning; preserved the activated publication and paused WOP. |

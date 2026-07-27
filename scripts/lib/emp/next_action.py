@@ -12,6 +12,7 @@ from typing import Any, Mapping
 import yaml
 
 from scripts.lib.emp.authority_resolution import authoritative_source_path
+from scripts.lib.emp.gate_approval import GateApprovalError, GateApprovalService
 
 
 class NextActionError(ValueError):
@@ -69,6 +70,19 @@ def _active_work(registry: Mapping[str, Any]) -> list[str]:
     )
 
 
+def _oa01_lifecycle(root: Path) -> dict[str, bool]:
+    """Resolve only integrity-valid, current-binding OA-01 lifecycle evidence."""
+    service = GateApprovalService.configured(root)
+    try:
+        binding = service.binding("OA-01", require_clean=False)
+    except GateApprovalError:
+        return {"verification_passed": False, "acceptance_recorded": False}
+    return {
+        "verification_passed": service.verification_record(binding) is not None,
+        "acceptance_recorded": service._matching_receipt(binding) is not None,
+    }
+
+
 def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
     root = Path(repository_root).resolve()
     discovered = Path(_git(root, "rev-parse", "--show-toplevel")).resolve()
@@ -94,6 +108,7 @@ def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
     )
 
     published = _published_baseline(authority, root)
+    oa01 = _oa01_lifecycle(root)
     gate = pmct.get("last_evaluated_gate") or "OA-01"
     qualified = [
         item for item in agents.get("agents", [])
@@ -110,6 +125,16 @@ def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
         blockers.append({
             "code": "REPOSITORY_BASELINE_MISMATCH",
             "detail": f"published={published} implementation={head}",
+        })
+    if not oa01["verification_passed"]:
+        blockers.append({
+            "code": "OA-01_OPERATOR_VERIFICATION_REQUIRED",
+            "detail": "no integrity-valid verification matches the current binding",
+        })
+    elif not oa01["acceptance_recorded"]:
+        blockers.append({
+            "code": "OA-01_OPERATOR_ACCEPTANCE_REQUIRED",
+            "detail": "no integrity-valid acceptance matches the current binding",
         })
     if activation.get("status") != "ACTIVE":
         blockers.append({
@@ -136,9 +161,15 @@ def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
     elif published != head:
         next_action = "Publish signed repository baseline for current implementation HEAD"
         action_code = "PUBLISH_SIGNED_REPOSITORY_BASELINE"
+    elif not oa01["verification_passed"]:
+        next_action = "Run independent OA-01 operator verification"
+        action_code = "RUN_OA-01_VERIFICATION"
+    elif not oa01["acceptance_recorded"]:
+        next_action = "Record explicit OA-01 operator acceptance"
+        action_code = "RECORD_OA-01_OPERATOR_ACCEPTANCE"
     elif activation.get("status") != "ACTIVE":
-        next_action = "Commission dispatcher through controlled activation"
-        action_code = "COMMISSION_DISPATCHER"
+        next_action = "Run OA-02 pre-execution verification"
+        action_code = "RUN_OA-02_PRE_EXECUTION_VERIFICATION"
     elif not qualified:
         next_action = "Qualify first production execution agent"
         action_code = "QUALIFY_PRODUCTION_AGENT"
@@ -193,6 +224,14 @@ def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
         "pmct": {
             "status": str(pmct.get("overall_result", "UNKNOWN")),
             "last_evaluated_gate": pmct.get("last_evaluated_gate"),
+        },
+        "oa01_lifecycle": {
+            "operator_verification": (
+                "PASS" if oa01["verification_passed"] else "ABSENT"
+            ),
+            "operator_acceptance": (
+                "RECORDED" if oa01["acceptance_recorded"] else "NOT_RECORDED"
+            ),
         },
         "operational_dispatch": "ENABLED" if production_ready else "DISABLED",
         "blocking_conditions": blockers,

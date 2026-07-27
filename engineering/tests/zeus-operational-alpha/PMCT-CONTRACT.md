@@ -45,6 +45,23 @@ Controlled states are:
 - `EXPECTED_NOT_YET_IMPLEMENTED`: discovery classification for a future command.
 - `NOT_APPLICABLE`: a test dimension does not apply to the gate.
 
+Operator-verification lifecycle uses a separate, non-terminal readiness
+vocabulary and must not be confused with PMCT demonstration results:
+
+- `READY`: publication, authority, repository identity, and current HEAD
+  prerequisites permit independent verification, but no matching evidence
+  exists;
+- `NOT_READY`: verification prerequisites are unsatisfied or existing evidence
+  is malformed or bound elsewhere;
+- `PASS`: independent verification executed and produced an integrity-valid
+  record for the current binding;
+- `FAIL`: independent verification executed and failed;
+- `ABSENT`: the evidence-presence value when no verification record exists.
+
+At the post-P2-025 publication boundary, OA-01 operator verification is
+`READY` with evidence `ABSENT`. The earlier Codex demonstration remains a
+separate `PASS`; neither value records operator acceptance.
+
 Final run output includes `PMCT_RUN_ID`, `PMCT_GATE`, `PMCT_RESULT`,
 `ZEUS_PROGRESSIVE_TEST_RESULT`, `PMCT_REPORT`, `PMCT_EVIDENCE`, and
 `PMCT_COMPLETION_MARKER=COMPLETE`. Exit zero is reserved for a demonstrated
@@ -105,6 +122,11 @@ Activation therefore cannot change the HEAD being published. Gate acceptance
 history is append-only: successor receipts bind the exact predecessor digest,
 and a historical receipt never authorizes a different repository HEAD,
 PMCT run, or evidence binding.
+
+Lifecycle precedence is publication, current-binding gate verification,
+explicit matching acceptance, and only then next-gate pre-execution
+eligibility. Dispatcher commissioning cannot be selected while the current
+gate still awaits verification or acceptance.
 
 Runtime presentation telemetry is permitted only when it is explicitly
 documented, deterministic, bounded, non-authoritative, and never consumed by

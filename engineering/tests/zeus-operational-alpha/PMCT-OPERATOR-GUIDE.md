@@ -32,6 +32,13 @@ The lifecycle is implementation complete, Codex validation PASS, operator
 verification pending, operator acceptance not recorded, and gate awaiting
 operator verification until the WOP receipt is created and reconciled.
 
+Operator-verification readiness is reported separately. `READY` means the
+repository, authority, publication, and current HEAD prerequisites permit the
+operator to run verification while evidence remains `ABSENT`. It is not a
+PMCT demonstration `PASS`, operator verification `PASS`, or acceptance.
+`NOT_READY` means those prerequisites are unsatisfied or an existing record is
+invalid for the current binding.
+
 Return failed work to Codex with the run ID, report path, evidence directory,
 failed assertions, and unchanged repository status. Do not paste secrets.
 
@@ -76,14 +83,15 @@ engineering/tests/zeus-operational-alpha/bin/pmct run OA-01
 engineering/tests/zeus-operational-alpha/bin/pmct report OA-01
 ```
 
-ZEUS-P2-021 implements the locked `zeus next-action` acceptance interface.
-OA-01 has a Codex PMCT demonstration result of `PASS` while still recording the stale published
-baseline, inactive dispatcher, empty agent registry, BETA mode, disabled
-dispatch, and the correctly prioritized baseline-republication action.
-Independent operator verification is pending and operator acceptance is not
-recorded. The OA-01 gate status is `AWAITING_OPERATOR_VERIFICATION`; OA-02 is
-blocked by `OA-01_OPERATOR_ACCEPTANCE_REQUIRED`. The overall PMCT remains
-`NOT_READY`; OA-02 through OA-30 have not been accepted.
+ZEUS-P2-021 implements the locked `zeus next-action` acceptance interface, and
+ZEUS-P2-026 reconciles its post-publication precedence. OA-01 retains a Codex
+PMCT demonstration result of `PASS`; the current publication matches
+repository HEAD, operator-verification readiness is `READY`, verification
+evidence is `ABSENT`, and operator acceptance is not recorded. The
+authoritative next action is `RUN_OA-01_VERIFICATION`. Dispatcher commissioning
+and OA-02 execution remain prohibited. OA-02 is blocked by
+`OA-01_OPERATOR_ACCEPTANCE_REQUIRED`, overall PMCT remains `NOT_READY`, and
+OA-02 through OA-30 have not been accepted.
 
 OA-30 can pass only after OA-01 through OA-29 have passed and a separate
 authorized declaration is observably performed and evidenced. Any earlier

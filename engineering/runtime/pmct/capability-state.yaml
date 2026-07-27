@@ -11,6 +11,8 @@ gates:
     implementation_status: COMPLETE
     codex_validation: PASS
     operator_verification: PENDING
+    operator_verification_readiness: READY
+    operator_verification_evidence: ABSENT
     operator_acceptance: NOT_RECORDED
     gate_status: AWAITING_OPERATOR_VERIFICATION
   OA-02: {status: NOT_READY, reason: manual capability demonstration not yet executed}

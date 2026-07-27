@@ -24,6 +24,7 @@ from scripts.lib.emp.mission_admission_runtime import (  # noqa: E402
     MissionAdmissionError,
     MissionAdmissionRuntime,
 )
+from scripts.lib.emp.authority_resolution import authoritative_source_path  # noqa: E402
 
 AT = datetime(2026, 7, 26, 23, 0, tzinfo=timezone.utc)
 
@@ -92,9 +93,7 @@ class MissionAdmissionRuntimeTests(unittest.TestCase):
             "repository": str(ROOT),
         }
         state = self.runtime.start(request, at=AT)
-        source = yaml.safe_load(
-            (ROOT / "engineering/authority/operational-authority-state.yaml").read_text()
-        )
+        source = yaml.safe_load(authoritative_source_path(ROOT).read_text())
         published = next(iter(source["repositories"].values()))["baseline_commit"]
         head = subprocess.run(
             ["git", "-C", str(ROOT), "rev-parse", "HEAD"],
@@ -117,6 +116,14 @@ class MissionAdmissionRuntimeTests(unittest.TestCase):
         self.assertFalse(
             state["artifacts"]["admission_decision"]["dispatch_permitted"]
         )
+        decision = state["artifacts"]["admission_decision"]
+        self.assertEqual(
+            decision["decision_scope"], "AUTHORITY_BASELINE_ADMISSION_ONLY"
+        )
+        self.assertFalse(decision["oa01_operator_verification_satisfied"])
+        self.assertFalse(decision["oa01_operator_acceptance_satisfied"])
+        self.assertFalse(decision["dispatcher_commissioning_authorized"])
+        self.assertFalse(decision["oa02_execution_eligible"])
 
     def test_simulated_commissioned_source_reaches_admission_decision(self):
         fixture = runpy.run_path(

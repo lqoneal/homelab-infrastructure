@@ -374,6 +374,11 @@ class MissionAdmissionRuntime:
             )
             decision["dispatch_permitted"] = readiness["dispatch_permitted"]
             decision["dispatch_readiness"] = readiness
+            decision["decision_scope"] = "AUTHORITY_BASELINE_ADMISSION_ONLY"
+            decision["oa01_operator_verification_satisfied"] = False
+            decision["oa01_operator_acceptance_satisfied"] = False
+            decision["dispatcher_commissioning_authorized"] = False
+            decision["oa02_execution_eligible"] = False
         state["artifacts"]["admission_decision"] = decision
         return decision
 

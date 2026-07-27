@@ -27,6 +27,10 @@ REPOSITORY = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(REPOSITORY))
 
 from scripts.lib.emp.authority_resolution import authoritative_source_path  # noqa: E402
+from scripts.lib.emp.gate_approval import (  # noqa: E402
+    GateApprovalError,
+    GateApprovalService,
+)
 
 PMCT_ROOT = REPOSITORY / "engineering/tests/zeus-operational-alpha"
 MATRIX_PATH = PMCT_ROOT / "PMCT-CAPABILITY-MATRIX.yaml"
@@ -161,6 +165,31 @@ def published_baseline() -> str | None:
     return None
 
 
+def oa01_verification_state(*, head: str, prerequisites_ready: bool) -> dict[str, str]:
+    wop = Path(os.environ.get(
+        "ZEUS_GATE_WOP", "/data/engineering/wops/ZEUS-OA-PROGRESSIVE-WOP"
+    )).resolve()
+    record = wop / "operator-verifications/OA-01.verification.json"
+    checksum = record.with_suffix(record.suffix + ".sha256")
+    if record.is_file() or checksum.is_file():
+        try:
+            service = GateApprovalService.configured(REPOSITORY)
+            binding = service.binding("OA-01", require_clean=False)
+        except GateApprovalError:
+            binding = None
+        if (
+            binding is not None
+            and binding.qualified_head == head
+            and service.verification_record(binding) is not None
+        ):
+            return {"readiness": "PASS", "evidence": "PRESENT"}
+        return {"readiness": "NOT_READY", "evidence": "MISMATCHED"}
+    return {
+        "readiness": "READY" if prerequisites_ready else "NOT_READY",
+        "evidence": "ABSENT",
+    }
+
+
 def inspect_state() -> dict[str, Any]:
     head = git("rev-parse", "HEAD")
     branch = git("branch", "--show-current")
@@ -181,16 +210,26 @@ def inspect_state() -> dict[str, Any]:
                 next_probe_error = f"invalid JSON: {error}"
         else:
             next_probe_error = probe["stderr"].strip() or "command failed"
+    authority_configured = bool(
+        yaml.safe_load(authoritative_source_path(REPOSITORY).read_text()).get(
+            "operationally_configured", False
+        )
+    )
+    baseline_matches = published_baseline() == head
+    verification = oa01_verification_state(
+        head=head,
+        prerequisites_ready=(
+            root == EXPECTED_REPOSITORY and authority_configured and baseline_matches
+        ),
+    )
     return {
         "repository": str(root), "repository_identity_valid": root == EXPECTED_REPOSITORY,
         "branch": branch, "head": head, "published_baseline": published_baseline(),
-        "baseline_matches": published_baseline() == head,
+        "baseline_matches": baseline_matches,
         "working_tree": git("status", "--short"),
-        "authority_operationally_configured": bool(
-            yaml.safe_load(authoritative_source_path(REPOSITORY).read_text()).get(
-                "operationally_configured", False
-            )
-        ),
+        "authority_operationally_configured": authority_configured,
+        "oa01_operator_verification_readiness": verification["readiness"],
+        "oa01_operator_verification_evidence": verification["evidence"],
         "dispatcher_status": activation.get("status", "MISSING"),
         "dispatcher_active": activation.get("status") == "ACTIVE",
         "production_agent_count": len(registry.get("agents", [])),
@@ -324,7 +363,7 @@ def evaluate(gate: dict[str, Any], state: dict[str, Any]) -> list[dict[str, Any]
         checks.extend([
             assertion("implementation_baseline_observed", bool(state["head"]),
                       f"HEAD={state['head']}"),
-            assertion("published_baseline_mismatch_observed", not state["baseline_matches"],
+            assertion("published_baseline_current", state["baseline_matches"],
                       f"published={state['published_baseline']} HEAD={state['head']}"),
             assertion("dispatcher_inactive", not state["dispatcher_active"],
                       f"dispatcher={state['dispatcher_status']}"),
@@ -348,12 +387,18 @@ def evaluate(gate: dict[str, Any], state: dict[str, Any]) -> list[dict[str, Any]
                 "current incomplete capability set must remain BETA",
             ),
             assertion(
-                "next_action_prioritizes_baseline",
+                "next_action_prioritizes_oa01_verification",
                 isinstance(state["next_action_probe"], dict)
                 and state["next_action_probe"].get(
                     "next_authorized_action", {}
-                ).get("code") == "PUBLISH_SIGNED_REPOSITORY_BASELINE",
-                "repository baseline reconciliation precedes dispatcher and agent work",
+                ).get("code") == "RUN_OA-01_VERIFICATION",
+                "current-baseline OA-01 verification precedes dispatcher and agent work",
+            ),
+            assertion(
+                "oa01_verification_ready_not_executed",
+                state["oa01_operator_verification_readiness"] == "READY"
+                and state["oa01_operator_verification_evidence"] == "ABSENT",
+                "OA-01 verification prerequisites are satisfied and evidence is absent",
             ),
             assertion(
                 "dispatch_remains_disabled",

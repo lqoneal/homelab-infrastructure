@@ -159,6 +159,16 @@ digest of the preserved predecessor. Eligibility requires an integrity-valid
 receipt for the current HEAD, so the historical OA-01 receipt no longer makes
 OA-02 conditionally eligible after implementation changes.
 
+ZEUS-P2-026 reconciles the resulting post-publication decision boundary. The
+published baseline now matches implementation HEAD, but no current-binding
+OA-01 verification or successor acceptance exists. The authoritative next
+action is therefore `RUN_OA-01_VERIFICATION`; dispatcher commissioning and
+OA-02 execution remain prohibited. After verification passes, explicit OA-01
+acceptance is next. Only then may OA-02 pre-execution eligibility be evaluated
+through the Progressive WOP. Mission admission `DECIDED` means that baseline
+admission reached a decision, not that dispatch or a capability gate is
+authorized.
+
 The current `generate-wop` qualification workflow remains review-only. This
 roadmap entry does not approve implementation, operational admission,
 submission, dispatch, or execution.
