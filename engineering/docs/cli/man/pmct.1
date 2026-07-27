@@ -1,0 +1,30 @@
+.TH PMCT 1 "July 2026" "Zeus Engineering Platform"
+.SH NAME
+pmct \- Progressive Manual Capability Test interface
+.SH SYNOPSIS
+.B pmct
+[\-\-help] {inspect,list,show,run,report}
+.SH DESCRIPTION
+Executes and inspects evidence-producing Operational Alpha capability tests.
+.SH QUALIFICATION MODEL
+Sealed PMCT PASS evidence remains distinct from verification and acceptance.
+.SH GATES
+Exactly one OA-NN gate is selected for a run.
+.SH COMMANDS
+run, inspect, report, list, and show.
+.SH REPORTS
+Reports may select an exact completed run identifier.
+.SH EVIDENCE
+Runs contain results, reports, manifests, hashes, and a COMPLETE marker.
+.SH FILES
+.I engineering/runtime/pmct/runs
+and
+.I engineering/runtime/pmct/capability-state.yaml
+.SH EXAMPLES
+.B pmct run OA-01
+.br
+.B pmct help inspect
+.SH EXIT STATUS
+0 successful command or PASS run; nonzero for invalid invocation or non-PASS result.
+.SH SEE ALSO
+.BR zeus (1)

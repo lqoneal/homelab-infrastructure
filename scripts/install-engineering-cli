@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+"""Install or verify per-user engineering CLI launchers and manual pages."""
+from __future__ import annotations
+import os, sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+BIN = Path.home() / ".local/bin"
+MAN = Path.home() / ".local/share/man/man1"
+ITEMS = {
+    "zeus": (ROOT / "scripts/zeus", ROOT / "engineering/docs/cli/man/zeus.1"),
+    "pmct": (
+        ROOT / "engineering/tests/zeus-operational-alpha/bin/pmct",
+        ROOT / "engineering/docs/cli/man/pmct.1",
+    ),
+}
+
+def correct(link: Path, source: Path) -> bool:
+    return link.is_symlink() and link.resolve() == source.resolve()
+
+def main(argv: list[str]) -> int:
+    if len(argv) != 2 or argv[1] not in {"install", "verify"}:
+        print("usage: install-engineering-cli {install|verify}", file=sys.stderr)
+        return 64
+    if BIN not in [Path(p).expanduser() for p in os.environ.get("PATH", "").split(":")]:
+        print(f"FAIL: {BIN} is not present in PATH", file=sys.stderr)
+        return 78
+    if argv[1] == "install":
+        BIN.mkdir(parents=True, exist_ok=True)
+        MAN.mkdir(parents=True, exist_ok=True)
+    for name, (command, manual) in ITEMS.items():
+        for link, source in ((BIN / name, command), (MAN / f"{name}.1", manual)):
+            if correct(link, source):
+                continue
+            if link.exists() or link.is_symlink():
+                print(f"FAIL: refusing to replace {link}", file=sys.stderr)
+                return 78
+            if argv[1] == "verify":
+                print(f"FAIL: missing launcher: {link}", file=sys.stderr)
+                return 78
+            link.symlink_to(source.resolve())
+        print(f"{'verified' if argv[1] == 'verify' else 'installed'}: {name}")
+    return 0
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv))

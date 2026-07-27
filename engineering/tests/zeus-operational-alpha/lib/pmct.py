@@ -602,6 +602,9 @@ def emit_run(result: dict[str, Any], directory: Path) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == "help":
+        argv = ["--help"] if len(argv) == 1 else [argv[1], "--help"]
     parser = argparse.ArgumentParser(prog="pmct")
     sub = parser.add_subparsers(dest="command", required=True)
     inspect = sub.add_parser("inspect")

@@ -1,0 +1,35 @@
+.TH ZEUS 1 "July 2026" "Zeus Engineering Platform"
+.SH NAME
+zeus \- supervised Zeus engineering operator interface
+.SH SYNOPSIS
+.B zeus
+[\-\-help] [command] [options]
+.SH DESCRIPTION
+Provides repository-independent access to Zeus engineering lifecycle state.
+.SH MISSION MODEL
+Missions remain supervised and authority-bound.
+.SH ENGINEERING LIFECYCLE
+Publication, PMCT, independent verification, acceptance, and execution are distinct.
+.SH WORK ORDERS
+Engineering Work Orders remain controlled records and are not implied by CLI use.
+.SH OA GATES
+Use verify and approve as separate governed boundaries.
+.SH AUTHORITY PUBLICATION
+Signed baselines are managed by authority-publishctl.
+.SH DISPATCH
+Dispatch remains disabled until independently commissioned.
+.SH RESUME
+Resume observes recorded state and never manufactures approval.
+.SH COMMANDS
+status, next-action, verify, approve, dispatcher, resume, and additional commands shown by help.
+.SH EXAMPLES
+.B zeus next-action
+.br
+.B zeus help verify
+.SH FILES
+.I .zeus/runtime
+and repository-controlled engineering records.
+.SH EXIT STATUS
+0 success; 2 invalid invocation; 78 failed prerequisite or governed-state error.
+.SH SEE ALSO
+.BR pmct (1)
