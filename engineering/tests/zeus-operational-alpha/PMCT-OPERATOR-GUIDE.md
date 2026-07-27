@@ -93,6 +93,14 @@ Gate-based `pmct report OA-NN` remains a latest-run convenience and shall not
 be used when an exact run ID is available. Bare `pmct inspect` reports current
 live state.
 
+For OA-02, run `pmct run OA-02` only after the current-binding OA-01
+verification and acceptance are integrity-valid. The OA-02 output reports its
+own readiness independently of the retained current-binding OA-01 PMCT PASS.
+After an OA-02 PMCT PASS, Zeus derives the next unmet prerequisite
+automatically. With an empty production agent registry that action is
+`QUALIFY_PRODUCTION_AGENT`; PMCT does not perform that action and leaves the
+dispatcher inactive.
+
 During successor publication, activation recognizes that same exact
 authenticated reconciliation when the sealed run binds to the candidate HEAD
 and the active predecessor publication. Arbitrary or staged tracked changes

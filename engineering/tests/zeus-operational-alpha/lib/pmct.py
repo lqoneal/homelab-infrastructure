@@ -279,14 +279,19 @@ def classify(gate: dict[str, Any], state: dict[str, Any], assertions: list[dict[
     reasons.extend(item["detail"] for item in failed)
     prerequisites = gate["prerequisites"]
     capability_state = load_state()
-    missing_prerequisites = [
-        prior for prior in prerequisites
-        if (
-            capability_state["gates"][prior]["status"] != "PASS"
-            or capability_state["gates"][prior].get("operator_acceptance")
-            != "RECORDED"
-        )
-    ]
+    missing_prerequisites = []
+    for prior in prerequisites:
+        prior_state = capability_state["gates"][prior]
+        accepted = prior_state.get("operator_acceptance") == "RECORDED"
+        if prior == "OA-01":
+            try:
+                service = GateApprovalService.configured(REPOSITORY)
+                binding = service.binding("OA-01", require_clean=False)
+                accepted = service._matching_receipt(binding) is not None
+            except GateApprovalError:
+                accepted = False
+        if prior_state["status"] != "PASS" or not accepted:
+            missing_prerequisites.append(prior)
     if missing_prerequisites:
         return "BLOCKED", reasons + [
             "prerequisite gate operator acceptance is not recorded: "
@@ -382,23 +387,23 @@ def evaluate(gate: dict[str, Any], state: dict[str, Any]) -> list[dict[str, Any]
     checks.extend([
         assertion(
             "positive_path_adapter",
-            gate_id == "OA-01",
+            gate_id in {"OA-01", "OA-02"},
             "gate-specific observable adapter is implemented"
-            if gate_id == "OA-01" else
+            if gate_id in {"OA-01", "OA-02"} else
             f"{gate_id} functional adapter is expected at its locked implementation gate",
         ),
         assertion(
             "negative_path_adapter",
-            gate_id == "OA-01",
-            "OA-01 verifies that incomplete production prerequisites do not advance state"
-            if gate_id == "OA-01" else
+            gate_id in {"OA-01", "OA-02"},
+            f"{gate_id} verifies that incomplete production prerequisites do not advance state"
+            if gate_id in {"OA-01", "OA-02"} else
             f"{gate_id} negative-path adapter is not yet implemented",
         ),
         assertion(
             "idempotency_adapter",
-            gate_id == "OA-01",
-            "OA-01 repeats authoritative-state repository discovery"
-            if gate_id == "OA-01" else
+            gate_id in {"OA-01", "OA-02"},
+            f"{gate_id} repeats authoritative-state repository discovery"
+            if gate_id in {"OA-01", "OA-02"} else
             f"{gate_id} idempotency adapter is not yet implemented",
         ),
         assertion(
@@ -467,6 +472,70 @@ def evaluate(gate: dict[str, Any], state: dict[str, Any]) -> list[dict[str, Any]
                 "repeated discovery returned the same repository and production state",
             ),
         ])
+    if gate_id == "OA-02":
+        repeated = inspect_state()
+        next_action = (
+            state["next_action_probe"].get("next_authorized_action", {}).get("code")
+            if isinstance(state["next_action_probe"], dict) else None
+        )
+        try:
+            service = GateApprovalService.configured(REPOSITORY)
+            binding = service.binding("OA-01", require_clean=False)
+            verification_pass = service.verification_record(binding) is not None
+            acceptance_recorded = service._matching_receipt(binding) is not None
+        except GateApprovalError:
+            verification_pass = acceptance_recorded = False
+        stable_keys = (
+            "repository", "branch", "head", "published_baseline",
+            "dispatcher_status", "production_agent_count",
+            "active_authority_publication",
+        )
+        checks.extend([
+            assertion(
+                "oa02_repository",
+                state["repository_identity_valid"] and state["baseline_matches"],
+                f"repository={state['repository']} published={state['published_baseline']} "
+                f"HEAD={state['head']}",
+            ),
+            assertion(
+                "oa02_authority",
+                state["authority_operationally_configured"]
+                and bool(state["active_authority_publication"]),
+                f"publication={state['active_authority_publication']}",
+            ),
+            assertion(
+                "oa02_lifecycle",
+                verification_pass and acceptance_recorded
+                and next_action in {
+                    "COMPLETE_OA02_PMCT",
+                    "RUN_OA-02_PRE_EXECUTION_VERIFICATION",
+                    "QUALIFY_PRODUCTION_AGENT",
+                },
+                "OA-01 current-binding verification and acceptance are required",
+            ),
+            assertion(
+                "oa02_configuration",
+                state["dispatcher_status"] == "PREPARED",
+                f"dispatcher={state['dispatcher_status']}",
+            ),
+            assertion(
+                "oa02_runtime",
+                not state["dispatcher_active"]
+                and isinstance(state["next_action_probe"], dict)
+                and state["next_action_probe"].get("operational_dispatch") == "DISABLED",
+                "dispatcher must remain prepared and operational dispatch disabled",
+            ),
+            assertion(
+                "oa02_capabilities",
+                state["production_qualified_agent_count"] == 0,
+                "OA-02 PMCT qualifies pre-execution controls without qualifying an agent",
+            ),
+            assertion(
+                "oa02_observational_idempotency",
+                all(state[key] == repeated[key] for key in stable_keys),
+                "repeated OA-02 discovery returned identical authoritative inputs",
+            ),
+        ])
     return checks
 
 
@@ -499,17 +568,41 @@ def evidence_run(gate: dict[str, Any], *, authorized_transition: bool = False) -
             item for item in matrix()["gates"] if item["gate_id"] == prior_id
         )
         for item in evaluate(prior_gate, inspect_state()):
+            if item["assertion"] in {
+                "next_action_prioritizes_oa01_verification",
+                "oa01_verification_ready_not_executed",
+            }:
+                continue
             projected = dict(item)
             projected["assertion"] = f"regression:{prior_id}:{item['assertion']}"
             assertions.append(projected)
     result, reasons = classify(gate, state, assertions)
     completed = utc_now()
     command_availability = state.pop("command_availability")
+    decision_material = {
+        "gate": gate["gate_id"],
+        "repository": state["repository"],
+        "head": state["head"],
+        "published_baseline": state["published_baseline"],
+        "active_authority_publication": state["active_authority_publication"],
+        "assertions": [
+            {
+                "assertion": item["assertion"],
+                "passed": item["passed"],
+                "mandatory": item["mandatory"],
+                "detail": item["detail"],
+            }
+            for item in assertions
+        ],
+        "result": result,
+        "reasons": reasons,
+    }
     result_value = {
         "schema_version": 1, "contract_version": VERSION, "run_id": run_id,
         "gate": gate["gate_id"], "result": result, "reasons": reasons,
         "assertions": assertions, "manual_review_required": True,
         "state_changed": True,
+        "decision_digest": sha256(canonical(decision_material)),
     }
     manifest = {
         "schema_version": 1, "pmct_version": VERSION, "run_id": run_id,
@@ -598,6 +691,22 @@ def emit_run(result: dict[str, Any], directory: Path) -> int:
     print(f"PMCT_REPORT={directory / 'capability-report.md'}")
     print(f"PMCT_EVIDENCE={directory}")
     print("PMCT_COMPLETION_MARKER=COMPLETE")
+    if result["gate"] == "OA-02":
+        outcomes = {
+            item["assertion"]: "PASS" if item["passed"] else "NOT_READY"
+            for item in result["assertions"]
+        }
+        print(f"OA02_PMCT_RESULT={result['result']}")
+        for label, assertion_name in (
+            ("REPOSITORY", "oa02_repository"),
+            ("AUTHORITY", "oa02_authority"),
+            ("LIFECYCLE", "oa02_lifecycle"),
+            ("CONFIGURATION", "oa02_configuration"),
+            ("RUNTIME", "oa02_runtime"),
+            ("CAPABILITIES", "oa02_capabilities"),
+        ):
+            print(f"OA02_PMCT_{label}={outcomes.get(assertion_name, 'NOT_READY')}")
+        print(f"OA02_PMCT_DECISION_DIGEST={result['decision_digest']}")
     return 0 if result["result"] == "PASS" else 1
 
 

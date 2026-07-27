@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from scripts.lib.emp.next_action import resolve_next_action  # noqa: E402
+from scripts.lib.emp.oa02_lifecycle import resolve as resolve_oa02  # noqa: E402
 
 
 class NextActionTests(unittest.TestCase):
@@ -177,7 +178,7 @@ class NextActionTests(unittest.TestCase):
             != repository["published_baseline"]
             else (
                 (
-                    "RUN_OA-02_PRE_EXECUTION_VERIFICATION"
+                    resolve_oa02(ROOT)["next_action"]
                     if value["oa01_lifecycle"]["operator_acceptance"] == "RECORDED"
                     else "RECORD_OA-01_OPERATOR_ACCEPTANCE"
                 )

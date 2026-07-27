@@ -2729,6 +2729,48 @@ entities:
       READY, completed PMCT runs atomically update capability state, and only
       PASS evidence matching current repository authority can be verified.
     queue_ids: []
+  - registry_id: EMP-WORK-ZEUS-P2-036-OA02-PMCT
+    object_type: WorkItem
+    title: Zeus OA-02 PMCT Qualification
+    management_state: completed
+    owner: Lawrence O'Neal
+    scope: ZEUS-P2-036
+    authority_reference: Codex Handoff - P2-036
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ZEUS-P2-027-OA01-VERIFICATION-DEADLOCK
+    created_at: 2026-07-27
+    updated_at: 2026-07-27
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-27T17:00:00+00:00'
+      actor: Codex
+      reason: Implement the OA-02-specific PMCT demonstration without qualifying
+        an agent or enabling dispatch.
+      authority_reference: Codex Handoff - P2-036
+    - from: active
+      to: completed
+      at: '2026-07-27T17:05:19+00:00'
+      actor: Codex
+      reason: Deterministic OA-02 PMCT qualification and automatic lifecycle
+        reconciliation passed while operational interlocks remained engaged.
+      authority_reference: Codex Handoff - P2-036
+    project_id: EMP-PROJECT-HOMELAB
+    order: 40
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: capability-qualification
+    priority: 0
+    completion_criteria: OA-02 PMCT produces current-binding deterministic PASS
+      evidence and Zeus derives production-agent qualification as the next
+      prerequisite without enabling dispatch.
+    queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP
     object_type: Queue

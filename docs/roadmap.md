@@ -177,6 +177,13 @@ baseline, and active authority publication all match. The fresh current-binding
 Codex PMCT run is `PMCT-20260727T034015Z-cf24ac087e20`; independent operator
 verification and acceptance have not occurred.
 
+ZEUS-P2-036 implements the distinct OA-02 PMCT demonstration. It preserves
+the current-binding PMCT PASS, evaluates OA-02 repository, authority,
+lifecycle, configuration, runtime, and safety inputs, and publishes a stable
+semantic decision digest. A PASS does not verify OA-02 or authorize dispatch.
+With the production registry still empty, Zeus derives
+`QUALIFY_PRODUCTION_AGENT` as the next unmet prerequisite.
+
 The current `generate-wop` qualification workflow remains review-only. This
 roadmap entry does not approve implementation, operational admission,
 submission, dispatch, or execution.

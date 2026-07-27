@@ -64,7 +64,7 @@ def authority_status(mission_status):
             "dispatcher": decision["operational_dispatch"],
             "oa02_verification": (
                 oa02["verification_record"]["result"]
-                if oa02["verification_record"] else "NOT_RUN"
+                if oa02["verification_record"] else oa02["result"]
             ),
             "oa02": oa02["oa02_state"],
             "progressive_wop": oa02["progressive_wop"],
@@ -155,6 +155,8 @@ def main(argv=None):
     sub.add_parser("bootstrap")
     status_parser = sub.add_parser("status")
     status_parser.add_argument("--json", action="store_true")
+    authority = sub.add_parser("authority")
+    authority.add_argument("action", choices=("status", "work-lifecycle"))
     intro = sub.add_parser("intro", help="review operator orientation")
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
     submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository", required=True); submit.add_argument("--baseline", required=True); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append", required=True); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact", required=True); submit.add_argument("--affected-repository", action="append", required=True); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
@@ -199,6 +201,32 @@ def main(argv=None):
             decision=resolve_next_action(ROOT)
             if a.json: emit(decision)
             else: print(next_action_text(decision), end="")
+            return 0
+        if a.command == "authority":
+            decision = resolve_next_action(ROOT)
+            lifecycle = resolve_oa02(ROOT)
+            if a.action == "status":
+                emit({
+                    "repository_head": decision["repository"]["implementation_baseline"],
+                    "published_baseline": decision["repository"]["published_baseline"],
+                    "baseline_matches": decision["repository"]["baseline_matches"],
+                    "active_publication": lifecycle["active_publication"],
+                    "authority_status": decision["authority"]["status"],
+                    "trust_status": (
+                        "VALID"
+                        if decision["authority"]["operationally_configured"]
+                        else "INVALID"
+                    ),
+                })
+            else:
+                emit({
+                    "oa01_verification": lifecycle["oa01_verification"],
+                    "oa01_acceptance": lifecycle["oa01_acceptance"],
+                    "oa02_state": lifecycle["oa02_state"],
+                    "oa02_pmct_readiness": lifecycle["oa02_pmct_readiness"],
+                    "progressive_wop": lifecycle["progressive_wop"],
+                    "next_authorized_action": lifecycle["next_action"],
+                })
             return 0
         if a.command == "verify":
             if a.gate.upper() == "OA-02":

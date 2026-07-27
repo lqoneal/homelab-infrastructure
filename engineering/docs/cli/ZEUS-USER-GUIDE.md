@@ -24,6 +24,16 @@ separately from OA-02-specific PMCT readiness; `NOT_READY` therefore identifies
 the missing OA-02 demonstration or another ordered prerequisite without
 invalidating the accepted OA-01 PMCT PASS.
 
+Complete the separate OA-02 demonstration with `pmct run OA-02`. `zeus status`
+and `zeus next-action` resolve its integrity-valid current-binding evidence
+automatically. With no qualified production agent, a PASS advances only the
+derived next action to `QUALIFY_PRODUCTION_AGENT`; the dispatcher remains
+prepared and inactive and operational dispatch remains disabled.
+
+`zeus authority status` and `zeus authority work-lifecycle` are observational
+JSON surfaces used by PMCT to demonstrate publication and gate-lifecycle
+resolution. They never publish authority or record a gate decision.
+
 Authority baselines are managed by `scripts/authority-publishctl`. PMCT supplies
 gate evidence. Work Registry records controlled engineering work. EENS and
 dispatch remain unavailable until independently qualified. Resume commands

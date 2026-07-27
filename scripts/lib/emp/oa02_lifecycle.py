@@ -24,6 +24,19 @@ def resolve(repository: Path) -> dict:
     except GateApprovalError:
         verification=acceptance=False; oa01_run="NONE"
     oa02_candidates=service._candidate_directories("OA-02")
+    capability_state=yaml.safe_load(
+        (root/"engineering/runtime/pmct/capability-state.yaml").read_text()
+    )
+    authoritative_oa02_run=(
+        capability_state.get("last_run_id")
+        if capability_state.get("last_evaluated_gate")=="OA-02"
+        else None
+    )
+    if authoritative_oa02_run:
+        oa02_candidates=[
+            candidate for candidate in oa02_candidates
+            if candidate.name==authoritative_oa02_run
+        ]
     activation=json.loads((root/"engineering/dispatch/dispatcher-activation.json").read_text())
     registry=json.loads((root/"engineering/dispatch/execution-agent-registry.json").read_text())
     agents=registry.get("agents",[]); qualified=[a for a in agents if a.get("active") is True and a.get("qualification_status")=="QUALIFIED"]
@@ -58,7 +71,12 @@ def resolve(repository: Path) -> dict:
     material["verification_record"]=record
     material["oa02_state"]="VERIFIED" if record and record["result"]=="PASS" else ("BLOCKED" if record else "CONDITIONALLY_ELIGIBLE")
     material["progressive_wop"]="AWAITING_DISPATCH_AUTHORIZATION" if material["oa02_state"]=="VERIFIED" else "AWAITING_PRE_EXECUTION_VERIFICATION"
-    material["next_action"]="AUTHORIZE_DISPATCH" if material["oa02_state"]=="VERIFIED" else (blockers[0] if record and blockers else "RUN_OA-02_PRE_EXECUTION_VERIFICATION")
+    material["next_action"]=(
+        "AUTHORIZE_DISPATCH"
+        if material["oa02_state"]=="VERIFIED"
+        else blockers[0] if blockers
+        else "RUN_OA-02_PRE_EXECUTION_VERIFICATION"
+    )
     return material
 
 def verify(repository: Path, record_path: Path | None = None) -> tuple[dict,bool]:

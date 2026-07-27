@@ -14,6 +14,14 @@ Use `pmct --help`, `pmct help`, or `pmct help <command>`.
 exact evidence, `pmct report RUN-ID` renders a report, `pmct list` lists gates,
 and `pmct show OA-NN` shows a matrix entry.
 
+`pmct run OA-02` performs the OA-02-specific capability demonstration after
+the current-binding OA-01 verification and acceptance. It reports
+`OA02_PMCT_RESULT`, component results, and a deterministic decision digest.
+This result is distinct from the current-binding OA-01 PMCT result. A PASS
+allows Zeus to derive the next unmet prerequisite, such as production-agent
+qualification; it does not qualify an agent, activate dispatch, or verify
+OA-02.
+
 Run evidence is stored at `engineering/runtime/pmct/runs/<RUN-ID>` with a
 completion marker and `artifacts.sha256`. Zeus gate verification selects only
 evidence matching repository HEAD, active publication, and WOP identity.

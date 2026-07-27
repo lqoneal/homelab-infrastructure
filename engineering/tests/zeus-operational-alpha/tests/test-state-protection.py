@@ -62,15 +62,66 @@ class ProtectionTests(unittest.TestCase):
             state["oa01_operator_verification_evidence"], expected_evidence
         )
 
-    def test_oa02_requires_recorded_oa01_operator_acceptance(self):
-        state = pmct.inspect_state()
-        checks = pmct.evaluate(pmct.matrix()["gates"][1], state)
-        result, reasons = pmct.classify(pmct.matrix()["gates"][1], state, checks)
+    def test_oa02_requires_current_binding_oa01_operator_acceptance(self):
+        gate = pmct.matrix()["gates"][1]
+        state = {"repository_identity_valid": True, "command_availability": {
+            command: {"available": True} for command in gate["required_commands"]
+        }}
+        checks = []
+        service = unittest.mock.Mock()
+        service.binding.return_value = object()
+        service._matching_receipt.return_value = None
+        capability = {"gates": {"OA-01": {
+            "status": "PASS", "operator_acceptance": "RECORDED"
+        }}}
+        with patch.object(pmct, "load_state", return_value=capability), patch.object(
+            pmct.GateApprovalService, "configured", return_value=service
+        ):
+            result, reasons = pmct.classify(gate, state, checks)
         self.assertEqual(result, "BLOCKED")
         self.assertIn(
             "prerequisite gate operator acceptance is not recorded: OA-01",
             reasons,
         )
+
+    def test_oa02_current_binding_receipt_overrides_stale_runtime_ledger(self):
+        gate = pmct.matrix()["gates"][1]
+        state = {"repository_identity_valid": True, "command_availability": {
+            command: {"available": True} for command in gate["required_commands"]
+        }}
+        service = unittest.mock.Mock()
+        service.binding.return_value = object()
+        service._matching_receipt.return_value = {"decision": "ACCEPT"}
+        capability = {"gates": {"OA-01": {
+            "status": "PASS", "operator_acceptance": "NOT_RECORDED"
+        }}}
+        with patch.object(pmct, "load_state", return_value=capability), patch.object(
+            pmct.GateApprovalService, "configured", return_value=service
+        ):
+            result, _ = pmct.classify(gate, state, [])
+        self.assertEqual(result, "PASS")
+
+    def test_oa02_adapter_and_decision_inputs_are_deterministic(self):
+        gate = pmct.matrix()["gates"][1]
+        first = pmct.evaluate(gate, pmct.inspect_state())
+        second = pmct.evaluate(gate, pmct.inspect_state())
+        normalized = lambda checks: pmct.sha256(pmct.canonical([
+            {
+                "assertion": item["assertion"],
+                "passed": item["passed"],
+                "mandatory": item["mandatory"],
+                "detail": item["detail"],
+            }
+            for item in checks
+        ]))
+        self.assertEqual(normalized(first), normalized(second))
+        mandatory = {
+            item["assertion"]: item["passed"]
+            for item in first if item["mandatory"]
+        }
+        self.assertTrue(mandatory["positive_path_adapter"])
+        self.assertTrue(mandatory["negative_path_adapter"])
+        self.assertTrue(mandatory["idempotency_adapter"])
 
     def test_stale_verification_does_not_block_ready_current_binding(self):
         with tempfile.TemporaryDirectory() as temporary:

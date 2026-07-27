@@ -77,6 +77,16 @@ use `set -e`, so diagnostic collection continues after individual failures.
 completed run. Gate-based `pmct report OA-NN` is retained as an interactive
 latest-run convenience and is not sufficient for exact-run evidence proof.
 
+OA-02 has a separate PMCT demonstration bound to the same repository HEAD,
+published baseline, active publication, and current OA-01 decision lineage.
+`OA02_PMCT_RESULT=PASS` means its repository, authority, lifecycle,
+configuration, runtime, and pre-execution safety assertions passed. It does
+not overwrite the current-binding OA-01 PMCT result, qualify an agent, verify
+OA-02, activate dispatch, or execute a mission. The OA-02 result includes a
+stable digest of canonical decision inputs; repeated unchanged evaluations
+may create distinct historical run directories while retaining the same
+semantic decision digest.
+
 ## Fixed production CLI acceptance contract
 
 ```text
