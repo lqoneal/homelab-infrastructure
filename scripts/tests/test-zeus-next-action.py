@@ -146,7 +146,7 @@ class NextActionTests(unittest.TestCase):
         finally:
             temporary.cleanup()
 
-    def test_current_cli_reports_beta_and_does_not_modify_worktree(self):
+    def test_current_cli_reports_lifecycle_phase_and_does_not_modify_worktree(self):
         pointer = ROOT / ".zeus/runtime/authority/active-publication.json"
         pointer_before = pointer.read_bytes()
         publication = (
@@ -170,10 +170,14 @@ class NextActionTests(unittest.TestCase):
         value = json.loads(result.stdout)
         self.assertEqual(value["zeus_mode"], "BETA")
         self.assertEqual(value["operational_dispatch"], "DISABLED")
-        self.assertEqual(
-            value["next_authorized_action"]["code"],
-            "RUN_OA-01_VERIFICATION",
+        repository = value["repository"]
+        expected_action = (
+            "RUN_OA-01_VERIFICATION"
+            if repository["implementation_baseline"]
+            == repository["published_baseline"]
+            else "PUBLISH_SIGNED_REPOSITORY_BASELINE"
         )
+        self.assertEqual(value["next_authorized_action"]["code"], expected_action)
         self.assertEqual(value["oa01_lifecycle"]["operator_verification"], "ABSENT")
         self.assertEqual(value["oa01_lifecycle"]["operator_acceptance"], "NOT_RECORDED")
         after = subprocess.run(

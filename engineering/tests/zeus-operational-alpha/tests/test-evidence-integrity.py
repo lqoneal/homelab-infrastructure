@@ -15,8 +15,14 @@ pmct = importlib.util.module_from_spec(spec); spec.loader.exec_module(pmct)
 class EvidenceTests(unittest.TestCase):
     def test_complete_run_has_integrity_manifest_and_no_secret_environment(self):
         with tempfile.TemporaryDirectory(dir=pmct.REPOSITORY) as temporary:
-            runtime = Path(temporary) / "runtime"
-            with patch.dict(os.environ, {"PMCT_RUNTIME_ROOT": str(runtime), "SECRET_TOKEN": "do-not-copy"}):
+            root = Path(temporary)
+            runtime = root / "runtime"
+            state_path = root / "capability-state.yaml"
+            state_path.write_bytes(pmct.STATE_PATH.read_bytes())
+            with (
+                patch.object(pmct, "STATE_PATH", state_path),
+                patch.dict(os.environ, {"PMCT_RUNTIME_ROOT": str(runtime), "SECRET_TOKEN": "do-not-copy"}),
+            ):
                 result, directory = pmct.evidence_run(pmct.matrix()["gates"][0])
             self.assertIn(result["result"], pmct.TERMINAL_RESULTS)
             self.assertTrue((directory / "COMPLETE").is_file())
@@ -33,8 +39,14 @@ class EvidenceTests(unittest.TestCase):
 
     def test_exact_completed_run_selection(self):
         with tempfile.TemporaryDirectory(dir=pmct.REPOSITORY) as temporary:
-            runtime = Path(temporary) / "runtime"
-            with patch.dict(os.environ, {"PMCT_RUNTIME_ROOT": str(runtime)}):
+            root = Path(temporary)
+            runtime = root / "runtime"
+            state_path = root / "capability-state.yaml"
+            state_path.write_bytes(pmct.STATE_PATH.read_bytes())
+            with (
+                patch.object(pmct, "STATE_PATH", state_path),
+                patch.dict(os.environ, {"PMCT_RUNTIME_ROOT": str(runtime)}),
+            ):
                 result, directory = pmct.evidence_run(pmct.matrix()["gates"][0])
                 self.assertEqual(pmct.completed_run(result["run_id"]), directory)
                 with self.assertRaisesRegex(pmct.PmctError, "invalid PMCT run ID"):

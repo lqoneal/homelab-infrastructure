@@ -47,8 +47,22 @@ class ResultTests(unittest.TestCase):
             state_path = root / "capability-state.yaml"
             state_path.write_bytes(pmct.STATE_PATH.read_bytes())
             runtime = root / "runtime"
+            isolated_state = pmct.inspect_state()
+            isolated_state.update({
+                "published_baseline": isolated_state["head"],
+                "baseline_matches": True,
+                "oa01_operator_verification_readiness": "READY",
+                "oa01_operator_verification_evidence": "ABSENT",
+            })
+            isolated_state["next_action_probe"] = {
+                **isolated_state["next_action_probe"],
+                "next_authorized_action": {
+                    "code": "RUN_OA-01_VERIFICATION",
+                },
+            }
             with (
                 patch.object(pmct, "STATE_PATH", state_path),
+                patch.object(pmct, "inspect_state", return_value=isolated_state),
                 patch.dict(
                     os.environ, {"PMCT_RUNTIME_ROOT": str(runtime)}, clear=False
                 ),

@@ -1,5 +1,11 @@
 # PMCT Operator Guide
 
+Qualification sequencing for commit and publication boundaries is defined in
+`QUALIFICATION-PHASES.md`. In particular, a committed HEAD that has not yet
+been published is expected to report a baseline mismatch and OA-01
+`NOT_READY`; publication-dependent OA-01 qualification runs only after the
+successor publication is activated.
+
 ## Purpose and timing
 
 Run the PMCT in a separate Bash shell after each locked Operational Alpha gate

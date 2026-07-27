@@ -29,14 +29,20 @@ class ProtectionTests(unittest.TestCase):
     def test_oa01_adapter_satisfies_current_observable_contract(self):
         state = pmct.inspect_state()
         checks = pmct.evaluate(pmct.matrix()["gates"][0], state)
-        self.assertTrue(all(
-            item["passed"] for item in checks if item["mandatory"]
-        ))
+        mandatory = {item["assertion"]: item["passed"] for item in checks if item["mandatory"]}
+        if state["baseline_matches"]:
+            self.assertTrue(all(mandatory.values()))
+            self.assertEqual(
+                state["oa01_operator_verification_readiness"], "READY"
+            )
+        else:
+            self.assertFalse(mandatory["published_baseline_current"])
+            self.assertEqual(
+                state["oa01_operator_verification_readiness"], "NOT_READY"
+            )
+        expected_evidence = "ABSENT" if state["baseline_matches"] else "MISMATCHED"
         self.assertEqual(
-            state["oa01_operator_verification_readiness"], "READY"
-        )
-        self.assertEqual(
-            state["oa01_operator_verification_evidence"], "ABSENT"
+            state["oa01_operator_verification_evidence"], expected_evidence
         )
 
     def test_oa02_requires_recorded_oa01_operator_acceptance(self):
