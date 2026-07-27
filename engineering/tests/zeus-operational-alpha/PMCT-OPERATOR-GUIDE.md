@@ -78,6 +78,10 @@ for current verification.
 Evidence is stored at `engineering/runtime/pmct/runs/<run-id>/`. Each completed
 run atomically reconciles `engineering/runtime/pmct/capability-state.yaml`
 with its run ID, completion time, result, overall result, and gate status.
+Do not commit those routine run values as a cleanliness workaround. The
+working ledger remains an authenticated unstaged runtime reconciliation until
+the next run replaces it; only schema or intentionally reviewed baseline
+migrations are repository changes.
 Repository authority, project, qualification, dispatcher, execution, mission,
 and operational decision state remain unchanged. Documented bounded
 presentation telemetry such as operator-interface `invocation_count` may
@@ -89,6 +93,10 @@ Gate-based `pmct report OA-NN` remains a latest-run convenience and shall not
 be used when an exact run ID is available. Bare `pmct inspect` reports current
 live state.
 
+During successor publication, activation recognizes that same exact
+authenticated reconciliation when the sealed run binds to the candidate HEAD
+and the active predecessor publication. Arbitrary or staged tracked changes
+remain publication blockers.
 State-changing gates remain observation-only unless the matrix marks the gate
 as a state transition and the operator supplies `--authorized-transition`.
 The framework then still requires separately resolved authority. P2-020

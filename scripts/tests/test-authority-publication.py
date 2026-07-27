@@ -449,7 +449,29 @@ class PublicationQualificationTests(unittest.TestCase):
             check=True,
         )
         (repository / "baseline").write_text("qualified\n")
-        subprocess.run(["git", "-C", repository, "add", "baseline"], check=True)
+        state = repository / "engineering/runtime/pmct/capability-state.yaml"
+        state.parent.mkdir(parents=True)
+        state.write_text(yaml.safe_dump({
+            "schema_version": 1,
+            "last_run_id": "PMCT-OLD",
+            "last_evaluated_gate": "OA-01",
+            "updated_at": "2026-07-26T19:00:00Z",
+            "overall_result": "NOT_READY",
+            "gates": {
+                "OA-01": {
+                    "status": "NOT_READY",
+                    "reason": "not evaluated",
+                    "codex_validation": "NOT_RUN",
+                    "operator_acceptance": "NOT_RECORDED",
+                    "gate_status": "AWAITING_OPERATOR_VERIFICATION",
+                },
+                "OA-02": {"status": "NOT_PASSED"},
+            },
+        }, sort_keys=False))
+        subprocess.run(
+            ["git", "-C", repository, "add", "baseline", str(state.relative_to(repository))],
+            check=True,
+        )
         subprocess.run(
             ["git", "-C", repository, "commit", "-qm", "qualified baseline"],
             check=True,
@@ -481,6 +503,54 @@ class PublicationQualificationTests(unittest.TestCase):
         }
         target = authority_activation_target(repository)
         return repository, framework, transaction, candidate, readiness, target, head
+
+    def write_qualified_pmct_reconciliation(
+        self, fixture, *, tamper=False,
+        run_id="PMCT-20260727T052115Z-6358c02c2fa6",
+        completed_at="2026-07-27T05:21:18Z",
+    ):
+        repository, _, _, _, _, _, head = fixture
+        state_path = repository / "engineering/runtime/pmct/capability-state.yaml"
+        committed = yaml.safe_load(state_path.read_text())
+        run = repository / "engineering/runtime/pmct/runs" / run_id
+        run.mkdir(parents=True)
+        result = {
+            "schema_version": 1,
+            "run_id": run_id,
+            "gate": "OA-01",
+            "result": "NOT_READY",
+            "reasons": ["publication gap"],
+        }
+        manifest = {
+            "schema_version": 1,
+            "run_id": run_id,
+            "gate": "OA-01",
+            "result": "NOT_READY",
+            "repository": str(repository),
+            "head": head,
+            "implementation_baseline": head,
+            "published_baseline": "",
+            "active_authority_publication": "",
+            "completed_at": completed_at,
+        }
+        (run / "capability-result.json").write_text(json.dumps(result))
+        (run / "run-manifest.json").write_text(json.dumps(manifest))
+        (run / "evidence.txt").write_text("qualified publication gap\n")
+        (run / "artifacts.sha256").write_text(
+            f"{hashlib_sha256((run / 'evidence.txt').read_bytes())}  evidence.txt\n"
+        )
+        (run / "COMPLETE").write_text("PMCT_COMPLETION_MARKER=COMPLETE\n")
+        current = json.loads(json.dumps(committed))
+        current["gates"]["OA-01"]["status"] = "NOT_READY"
+        current["gates"]["OA-01"]["reason"] = "publication gap"
+        current["last_run_id"] = run_id
+        current["last_evaluated_gate"] = "OA-01"
+        current["updated_at"] = manifest["completed_at"]
+        current["overall_result"] = "NOT_READY"
+        if tamper:
+            current["gates"]["OA-01"]["reason"] = "untrusted"
+        state_path.write_text(yaml.safe_dump(current, sort_keys=False))
+        return state_path
 
     def activate_runtime_fixture(self, fixture):
         repository, framework, transaction, candidate, readiness, target, head = fixture
@@ -570,6 +640,83 @@ class PublicationQualificationTests(unittest.TestCase):
         fixture = self.runtime_activation_fixture()
         repository, framework, transaction, candidate, readiness, target, head = fixture
         (repository / "baseline").write_text("dirty\n")
+        with (
+            unittest.mock.patch.object(framework, "verify_readiness", return_value=readiness),
+            unittest.mock.patch.object(framework, "build_candidate", return_value=candidate),
+            self.assertRaisesRegex(AuthorityPublicationError, "must be clean"),
+        ):
+            framework.activate(transaction, target=target, at=AT)
+        self.assertFalse(target.exists())
+
+    def test_runtime_publication_accepts_authenticated_pmct_reconciliation(self):
+        fixture = self.runtime_activation_fixture()
+        repository, framework, transaction, candidate, readiness, target, head = fixture
+        state = self.write_qualified_pmct_reconciliation(fixture)
+        receipt = self.activate_runtime_fixture(fixture)
+        self.assertEqual(receipt["state"], "ACTIVATED")
+        self.assertEqual(
+            subprocess.run(
+                ["git", "-C", repository, "rev-parse", "HEAD"],
+                text=True, capture_output=True, check=True,
+            ).stdout.strip(),
+            head,
+        )
+        self.assertEqual(
+            subprocess.run(
+                ["git", "-C", repository, "status", "--porcelain=v1",
+                 "--untracked-files=no"],
+                text=True, capture_output=True, check=True,
+            ).stdout.strip(),
+            f"M {state.relative_to(repository)}",
+        )
+
+    def test_successive_pmct_runs_do_not_require_ledger_commit_before_activation(self):
+        fixture = self.runtime_activation_fixture()
+        repository, framework, transaction, candidate, readiness, target, head = fixture
+        self.write_qualified_pmct_reconciliation(fixture)
+        state = self.write_qualified_pmct_reconciliation(
+            fixture,
+            run_id="PMCT-20260727T052215Z-7358c02c2fa6",
+            completed_at="2026-07-27T05:22:18Z",
+        )
+        receipt = self.activate_runtime_fixture(fixture)
+        self.assertEqual(receipt["state"], "ACTIVATED")
+        self.assertEqual(
+            subprocess.run(
+                ["git", "-C", repository, "rev-parse", "HEAD"],
+                text=True, capture_output=True, check=True,
+            ).stdout.strip(),
+            head,
+        )
+        self.assertEqual(
+            subprocess.run(
+                ["git", "-C", repository, "status", "--porcelain=v1",
+                 "--untracked-files=no"],
+                text=True, capture_output=True, check=True,
+            ).stdout.strip(),
+            f"M {state.relative_to(repository)}",
+        )
+
+    def test_runtime_publication_rejects_tampered_pmct_reconciliation(self):
+        fixture = self.runtime_activation_fixture()
+        repository, framework, transaction, candidate, readiness, target, head = fixture
+        self.write_qualified_pmct_reconciliation(fixture, tamper=True)
+        with (
+            unittest.mock.patch.object(framework, "verify_readiness", return_value=readiness),
+            unittest.mock.patch.object(framework, "build_candidate", return_value=candidate),
+            self.assertRaisesRegex(AuthorityPublicationError, "must be clean"),
+        ):
+            framework.activate(transaction, target=target, at=AT)
+        self.assertFalse(target.exists())
+
+    def test_runtime_publication_rejects_staged_pmct_reconciliation(self):
+        fixture = self.runtime_activation_fixture()
+        repository, framework, transaction, candidate, readiness, target, head = fixture
+        state = self.write_qualified_pmct_reconciliation(fixture)
+        subprocess.run(
+            ["git", "-C", repository, "add", str(state.relative_to(repository))],
+            check=True,
+        )
         with (
             unittest.mock.patch.object(framework, "verify_readiness", return_value=readiness),
             unittest.mock.patch.object(framework, "build_candidate", return_value=candidate),

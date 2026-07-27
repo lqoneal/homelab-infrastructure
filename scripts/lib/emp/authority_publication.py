@@ -740,9 +740,10 @@ class AuthorityPublicationFramework:
         )
         if starting_snapshot and (
             starting_snapshot["tracked"] or starting_snapshot["staged"]
-        ):
+        ) and not self._qualified_pmct_reconciliation(starting_snapshot):
             raise AuthorityPublicationError(
-                "repository tracked or staged state must be clean before activation"
+                "repository tracked or staged state must be clean or an exact "
+                "authenticated PMCT capability-state reconciliation before activation"
             )
         if starting_snapshot:
             published_head = self._candidate_repository_baseline(candidate)
@@ -845,6 +846,115 @@ class AuthorityPublicationFramework:
             "tracked": git("status", "--porcelain=v1", "--untracked-files=no"),
             "staged": git("diff", "--cached", "--name-only"),
         }
+
+    def _qualified_pmct_reconciliation(self, snapshot: Mapping[str, str]) -> bool:
+        """Accept only the exact sealed PMCT ledger delta produced before publication."""
+        if snapshot.get("staged"):
+            return False
+        relative = Path("engineering/runtime/pmct/capability-state.yaml")
+        if snapshot.get("tracked", "").splitlines() != [f"M {relative.as_posix()}"]:
+            return False
+        state_path = self.root / relative
+        try:
+            committed = yaml.safe_load(
+                subprocess.run(
+                    ["git", "-C", str(self.root), "show", f"HEAD:{relative.as_posix()}"],
+                    text=True, capture_output=True, check=True,
+                ).stdout
+            )
+            current = yaml.safe_load(state_path.read_text(encoding="utf-8"))
+        except (OSError, subprocess.CalledProcessError, yaml.YAMLError):
+            return False
+        if not isinstance(committed, dict) or not isinstance(current, dict):
+            return False
+        run_id = current.get("last_run_id")
+        if not isinstance(run_id, str) or not re.fullmatch(
+            r"PMCT-\d{8}T\d{6}Z-[0-9a-f]{12}", run_id
+        ):
+            return False
+        run = self.root / "engineering/runtime/pmct/runs" / run_id
+        try:
+            marker = (run / "COMPLETE").read_text(encoding="utf-8").strip()
+            manifest = json.loads((run / "run-manifest.json").read_text())
+            result = json.loads((run / "capability-result.json").read_text())
+            artifact_lines = (run / "artifacts.sha256").read_text().splitlines()
+        except (OSError, json.JSONDecodeError):
+            return False
+        if marker != "PMCT_COMPLETION_MARKER=COMPLETE":
+            return False
+        for line in artifact_lines:
+            expected, separator, name = line.partition("  ")
+            artifact = run / name.removeprefix("./")
+            if (
+                not separator
+                or not DIGEST_PATTERN.fullmatch(expected)
+                or not artifact.is_file()
+                or hashlib_sha256(artifact.read_bytes()) != expected
+            ):
+                return False
+        head = snapshot.get("head")
+        if (
+            manifest.get("run_id") != run_id
+            or result.get("run_id") != run_id
+            or manifest.get("repository") != str(self.root)
+            or manifest.get("head") != head
+            or manifest.get("implementation_baseline") != head
+            or manifest.get("gate") != result.get("gate")
+            or manifest.get("result") != result.get("result")
+        ):
+            return False
+        pointer_path = (
+            self.root / AUTHORITY_RUNTIME_RELATIVE_PATH / ACTIVE_PUBLICATION_POINTER
+        )
+        if pointer_path.is_file():
+            try:
+                pointer = json.loads(pointer_path.read_text(encoding="utf-8"))
+                active = yaml.safe_load(
+                    authoritative_source_path(self.root).read_text(encoding="utf-8")
+                )
+                baselines = [
+                    value.get("baseline_commit")
+                    for value in active.get("repositories", {}).values()
+                    if Path(str(value.get("canonical_locator", ""))).resolve()
+                    == self.root
+                ]
+            except (OSError, json.JSONDecodeError, yaml.YAMLError, AuthorityResolutionError):
+                return False
+            if (
+                len(baselines) != 1
+                or manifest.get("published_baseline") != baselines[0]
+                or manifest.get("active_authority_publication")
+                != pointer.get("transaction_id")
+            ):
+                return False
+        gate = str(result.get("gate", ""))
+        reasons = result.get("reasons")
+        completed_at = manifest.get("completed_at")
+        if (
+            gate not in committed.get("gates", {})
+            or not isinstance(reasons, list)
+            or not all(isinstance(reason, str) for reason in reasons)
+            or not completed_at
+        ):
+            return False
+        expected = json.loads(json.dumps(committed))
+        gate_state = expected["gates"][gate]
+        run_result = str(result.get("result", ""))
+        gate_state["status"] = run_result
+        gate_state["reason"] = "; ".join(reasons)
+        if run_result == "PASS":
+            gate_state["codex_validation"] = "PASS"
+            if gate_state.get("operator_acceptance") != "RECORDED":
+                gate_state["gate_status"] = "AWAITING_OPERATOR_VERIFICATION"
+        expected["last_run_id"] = run_id
+        expected["last_evaluated_gate"] = gate
+        expected["updated_at"] = completed_at
+        expected["overall_result"] = (
+            "PASS"
+            if all(value.get("status") == "PASS" for value in expected["gates"].values())
+            else "NOT_READY"
+        )
+        return current == expected
 
     def _candidate_repository_baseline(self, candidate: Mapping[str, Any]) -> str:
         matches = [

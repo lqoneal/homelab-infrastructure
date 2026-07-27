@@ -161,6 +161,18 @@ and manifest, and accepts it only when:
 
 Any staged capability-state change, additional tracked path, malformed state,
 or field not derived from the selected run fails the clean-worktree gate.
+Routine run values (`last_run_id`, `updated_at`, results, reasons, and derived
+gate status) are mutable runtime output and shall not be committed merely to
+make the worktree clean. Only an intentional reviewed schema or controlled
+baseline migration belongs in a repository commit.
+
+The authority-publication activation boundary applies the same narrow rule
+during a publication gap. The sealed run must bind to the current repository
+HEAD and implementation baseline, and to the active predecessor publication
+and published baseline. This permits publication of the candidate HEAD without
+committing the PMCT output and creating another HEAD. It does not admit staged
+content, another tracked path, or an unsealed, tampered, or differently bound
+PMCT state delta.
 Thus PMCT runtime output does not force a commit/publication loop and cannot
 mask an arbitrary source modification.
 
