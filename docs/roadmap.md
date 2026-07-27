@@ -145,6 +145,13 @@ PMCT now supports exact run-ID inspection and reporting for reproducible
 second-window verification. This correction does not resume the Progressive
 WOP or advance any OA gate.
 
+ZEUS-P2-023 adds verification-first gate acceptance. Operators use
+`zeus approve OA-XX`, `zeus verify OA-XX`, then `zeus approve OA-XX`; Zeus
+resolves the run, evidence, baseline, WOP, and receipt identifiers. Isolated
+qualification covers refusal, stale bindings, cancellation, duplicate
+receipts, and conditional next-gate output. It does not execute OA-02 or
+resume the Progressive WOP.
+
 The current `generate-wop` qualification workflow remains review-only. This
 roadmap entry does not approve implementation, operational admission,
 submission, dispatch, or execution.

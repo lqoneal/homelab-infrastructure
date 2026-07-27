@@ -122,6 +122,36 @@ published baseline matches, dispatcher is active, a qualified production
 agent exists, every PMCT gate passes, and no blocker remains. This interface
 cannot promote the operating mode.
 
+## Gate verification and approval
+
+The normal human gate lifecycle is:
+
+```text
+zeus approve OA-XX
+zeus verify OA-XX
+zeus approve OA-XX
+```
+
+The first approval invocation resolves the authoritative PMCT PASS run,
+qualified repository HEAD, evidence digest, and WOP manifest digest. It prints
+the exact verification command and exits without requesting approval.
+
+Verification checks repository identity and tracked cleanliness, the exact
+PMCT result and manual-review contract, evidence integrity and completion,
+WOP integrity and resume status, and the next-gate acceptance blocker. It
+creates a checksummed verification record but never records acceptance or
+executes another gate.
+
+The second approval invocation accepts only a matching verification record,
+prints the bound gate, run, HEAD, verification, and acceptance state, then
+requests `Approve OA-XX? [y/N]:`. Only `y` or `yes` records acceptance.
+`--yes` is reserved for controlled automation and retains every integrity and
+binding check.
+
+`bin/record-operator-approval` is an internal persistence primitive. Operators
+do not locate or provide run IDs, evidence paths, repository hashes, or
+receipt paths manually.
+
 ## Corruption recovery
 
 Read, validation, lock, or write failure stops the invocation with exit 78.

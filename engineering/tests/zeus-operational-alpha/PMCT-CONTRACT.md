@@ -24,6 +24,18 @@ capability-state record, record operator acceptance, or self-approve a gate.
 No later gate is eligible until the preceding gate has both a `PASS`
 demonstration and separately recorded operator acceptance.
 
+Independent verification is a checksummed durable record distinct from Codex
+validation and operator acceptance. It binds the gate, exact PMCT run,
+repository and qualified HEAD, evidence and evidence-manifest digests,
+operator identity and timestamp, WOP identity, and WOP manifest digest.
+`zeus approve OA-NN` cannot prompt until a matching `zeus verify OA-NN` record
+exists. After explicit confirmation it revalidates the complete binding before
+calling the internal persistence primitive.
+
+The immutable acceptance receipt additionally binds the verification record
+and its digest, approval time, and interactive or noninteractive confirmation
+mode. Duplicate receipt creation is rejected.
+
 Controlled states are:
 
 - `PASS`: every mandatory observable assertion passed and evidence is complete.

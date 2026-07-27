@@ -1,7 +1,7 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 7.8
+version: 7.9
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,7 +9,7 @@ last_updated: 2026-07-27
 mission: Zeus Operational Alpha
 phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@7.7
+predecessor_revision: PROJ-0001@7.8
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -157,6 +157,13 @@ ZEUS-P2-022 distinguishes immutable authoritative engineering, repository,
 and operational decision state from explicitly documented bounded runtime
 presentation telemetry. Operator-interface `invocation_count` remains
 non-authoritative and cannot participate in PMCT or engineering decisions.
+
+ZEUS-P2-023 implements verification-first human gate acceptance. The first
+`zeus approve OA-XX` invocation prints a dynamically resolved verification
+command and stops. `zeus verify OA-XX` creates checksummed, fully bound proof
+without acceptance. A second approval invocation revalidates the binding and
+requires explicit confirmation before the internal receipt primitive may
+persist acceptance.
 
 ---
 
@@ -642,3 +649,4 @@ When resuming this project:
 | 7.6     | 2026-07-26 | Established the authoritative-state-preserving Progressive Manual Capability Test with a locked cumulative OA-01 through OA-30 sequence, durable evidence, controlled result vocabulary, and an honest initial OA-01 `NOT_READY` result. |
 | 7.7     | 2026-07-26 | Implemented the authoritative-state-observation `zeus next-action` BETA interface and produced an OA-01 Codex PMCT demonstration result of `PASS` without operator acceptance; overall PMCT remains `NOT_READY`. |
 | 7.8     | 2026-07-26 | Clarified authoritative-state observation, bounded operator-interface presentation telemetry, and exact-run PMCT proof; recorded OA-01 Codex validation PASS with operator verification pending and OA-02 blocked. |
+| 7.9     | 2026-07-26 | Implemented verification-first `zeus verify OA-XX` and gate-aware `zeus approve OA-XX` UX with durable bindings, explicit confirmation, and isolated failure-mode qualification; no gate was executed. |

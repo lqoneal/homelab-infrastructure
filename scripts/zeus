@@ -19,6 +19,7 @@ from scripts.lib.emp.mission_admission_runtime import AdmissionStateStore, Missi
 from scripts.lib.emp.mission_execution_runtime import ExecutionStateStore, MissionExecutionError, MissionExecutionRuntime  # noqa: E402
 from scripts.lib.emp.production_execution import dispatch_readiness, load_json, load_registry  # noqa: E402
 from scripts.lib.emp.next_action import NextActionError, human_text as next_action_text, resolve_next_action  # noqa: E402
+from scripts.lib.emp.gate_approval import GateApprovalError, GateApprovalService, approve_command, verify_command  # noqa: E402
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -65,8 +66,9 @@ def main(argv=None):
     submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository", required=True); submit.add_argument("--baseline", required=True); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append", required=True); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact", required=True); submit.add_argument("--affected-repository", action="append", required=True); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
     show = sub.add_parser("mission"); show.add_argument("action", choices=("show",)); show.add_argument("mission_id")
-    for decision in ("approve", "decline"):
-        q=sub.add_parser(decision); q.add_argument("approval_id"); q.add_argument("--operator", required=True); q.add_argument("--at")
+    approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
+    decline=sub.add_parser("decline"); decline.add_argument("approval_id"); decline.add_argument("--operator", required=True); decline.add_argument("--at")
+    verify=sub.add_parser("verify"); verify.add_argument("gate")
     execution=sub.add_parser("execution"); execution.add_argument("action", choices=("status",)); execution.add_argument("identifier")
     evidence=sub.add_parser("evidence"); evidence.add_argument("action", choices=("show",)); evidence.add_argument("identifier")
     qualification=sub.add_parser("qualification"); qualification.add_argument("action", choices=("show",)); qualification.add_argument("identifier")
@@ -103,6 +105,18 @@ def main(argv=None):
             if a.json: emit(decision)
             else: print(next_action_text(decision), end="")
             return 0
+        if a.command == "verify":
+            return verify_command(GateApprovalService.configured(ROOT), a.gate)
+        if a.command == "approve" and a.approval_id.upper().startswith("OA-"):
+            if a.operator:
+                raise GateApprovalError(
+                    "--operator is not accepted for gate approval; operator identity is resolved"
+                )
+            return approve_command(
+                GateApprovalService.configured(ROOT),
+                a.approval_id,
+                assume_yes=a.yes,
+            )
         state = requested_state or verify_authoritative_path(ROOT)
         if requested_state is None and not state.exists():
             raise OrchestrationError(
@@ -116,7 +130,10 @@ def main(argv=None):
             emit(o.data["missions"])
         elif a.command=="missions": emit(o.select(policy_id=a.policy, timestamp=now(a.at)).data)
         elif a.command=="mission": emit(o.data["missions"][a.mission_id])
-        elif a.command in ("approve","decline"): emit(o.decide(a.approval_id, a.command.upper(), operator=a.operator, timestamp=now(a.at)))
+        elif a.command in ("approve","decline"):
+            if not a.operator:
+                raise OrchestrationError("--operator is required for mission approval")
+            emit(o.decide(a.approval_id, a.command.upper(), operator=a.operator, timestamp=now(a.at)))
         elif a.command=="policy": o.configure_policy(a.policy_id); emit({"policy_id":a.policy_id})
         elif a.command=="show":
             guidance=WopGuidanceService()
@@ -245,6 +262,6 @@ def main(argv=None):
                     repository_root=repository,at=resolved_at))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (OrchestrationError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+    except (OrchestrationError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr); return 78
 if __name__ == "__main__": raise SystemExit(main())

@@ -15,8 +15,10 @@ demonstration, not a source inspection or automatic approval mechanism.
 5. Execute `.../bin/pmct run OA-NN`.
 6. Read the terminal result and generated capability report.
 7. Verify `artifacts.sha256` and the `COMPLETE` marker.
-8. Approve or reject the gate through the separately controlled closeout
-   process. PMCT never edits capability state automatically.
+8. Run `zeus approve OA-NN`; it prints the exact verification command and
+   stops without requesting approval.
+9. Run `zeus verify OA-NN`; retain its checksummed verification record.
+10. Run `zeus approve OA-NN` again and explicitly confirm acceptance.
 
 `PASS` means the observable demonstration and evidence completed. `FAIL`
 means implemented behavior was wrong or unsafe. `BLOCKED` means identity,
@@ -32,6 +34,15 @@ operator verification until the WOP receipt is created and reconciled.
 
 Return failed work to Codex with the run ID, report path, evidence directory,
 failed assertions, and unchanged repository status. Do not paste secrets.
+
+Normal operators do not manually supply those identifiers during successful
+closeout. Zeus resolves them from authoritative PMCT and WOP state.
+`bin/record-operator-approval` is an internal persistence primitive.
+
+A verification remains valid only while gate, PMCT run ID, evidence and
+evidence-manifest digests, qualified repository HEAD, operator identity, WOP
+identity, WOP manifest digest, verification checksum, and clean tracked state
+all match. Any mismatch requires a fresh `zeus verify OA-NN`.
 
 Evidence is stored at `engineering/runtime/pmct/runs/<run-id>/`. Repeating
 authoritative-state observation is safe: tracked repository, authority,
