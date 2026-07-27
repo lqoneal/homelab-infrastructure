@@ -359,9 +359,9 @@ The side mission does not replace the current phase or primary task. It shall no
 **Current Task:**
 
 Preserve the commissioned authority, P2-019 execution foundation, P2-020 PMCT,
-and P2-026 lifecycle-corrected next-action resolver. The active runtime
-publication is `AUTHORITY-PUBLICATION-7dc94267-ab5e-4a7f-b962-f6ce3335f307`
-and publishes baseline `9337e305cad7230f70f6a492065a9789cea4de49`.
+and P2-027 OA-01 verification-deadlock correction. The active runtime
+publication is `AUTHORITY-PUBLICATION-50d661ec-2776-4d7c-8ea4-f34db35367d5`
+and publishes baseline `787367bf82976e28cf929878cd30eacfffcba7ff`.
 OA-01 implementation is
 complete and its Codex PMCT demonstration is `PASS`, but independent operator
 verification is pending and operator acceptance is not recorded. OA-01 gate
@@ -662,3 +662,4 @@ When resuming this project:
 | 7.9     | 2026-07-26 | Implemented verification-first `zeus verify OA-XX` and gate-aware `zeus approve OA-XX` UX with durable bindings, explicit confirmation, and isolated failure-mode qualification; no gate was executed. |
 | 8.0     | 2026-07-26 | Replaced tracked authority activation with create-only, read-only-after-publication runtime artifacts and established append-only approval receipt lineage; preserved the historical OA-01 receipt while blocking stale eligibility. |
 | 8.1     | 2026-07-26 | Reconciled post-publication lifecycle precedence so current-binding OA-01 verification and acceptance precede OA-02 evaluation or dispatcher commissioning; preserved the activated publication and paused WOP. |
+| 8.2     | 2026-07-26 | Corrected OA-01 readiness evaluation, atomic completed-run capability-state persistence, and current-authority PMCT candidate selection without performing operator verification or acceptance. |

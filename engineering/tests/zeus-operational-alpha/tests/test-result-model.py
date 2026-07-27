@@ -1,7 +1,9 @@
 import importlib.util
+import os
+import tempfile
 import unittest
 from pathlib import Path
-
+from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("pmct", ROOT / "lib/pmct.py")
 pmct = importlib.util.module_from_spec(spec); spec.loader.exec_module(pmct)
@@ -38,6 +40,33 @@ class ResultTests(unittest.TestCase):
             if item["status"] == "PASS"
         ]
         self.assertEqual(passed, ["OA-01"])
+
+    def test_completed_run_atomically_updates_capability_state(self):
+        with tempfile.TemporaryDirectory(dir=pmct.REPOSITORY) as temporary:
+            root = Path(temporary)
+            state_path = root / "capability-state.yaml"
+            state_path.write_bytes(pmct.STATE_PATH.read_bytes())
+            runtime = root / "runtime"
+            with (
+                patch.object(pmct, "STATE_PATH", state_path),
+                patch.dict(
+                    os.environ, {"PMCT_RUNTIME_ROOT": str(runtime)}, clear=False
+                ),
+            ):
+                result, _ = pmct.evidence_run(pmct.matrix()["gates"][0])
+                state = pmct.load_state()
+        self.assertEqual(result["result"], "PASS")
+        self.assertEqual(state["last_run_id"], result["run_id"])
+        self.assertEqual(state["last_evaluated_gate"], "OA-01")
+        self.assertEqual(state["gates"]["OA-01"]["status"], "PASS")
+        self.assertEqual(
+            state["gates"]["OA-01"]["gate_status"],
+            "AWAITING_OPERATOR_VERIFICATION",
+        )
+        self.assertEqual(state["gates"]["OA-01"]["operator_verification"], "PENDING")
+        self.assertEqual(state["gates"]["OA-01"]["operator_acceptance"], "NOT_RECORDED")
+        self.assertEqual(state["overall_result"], "NOT_READY")
+        self.assertEqual(state["updated_at"][-1], "Z")
 
 
 if __name__ == "__main__":

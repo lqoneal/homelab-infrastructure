@@ -19,8 +19,10 @@ authoritative interface, rejects an invalid case safely, proves idempotency,
 proves interruption/resume where applicable, produces complete durable
 evidence, and retains all eligible earlier capabilities. Manual review remains
 mandatory. A PMCT `PASS` is a Codex demonstration result, not operator
-verification or gate acceptance. A run does not mutate the controlled
-capability-state record, record operator acceptance, or self-approve a gate.
+verification or gate acceptance. A completed run atomically reconciles the
+controlled capability-state ledger with its run ID, completion time, result,
+and evaluated gate. It does not record operator verification, record operator
+acceptance, or self-approve a gate.
 No later gate is eligible until the preceding gate has both a `PASS`
 demonstration and separately recorded operator acceptance.
 
@@ -51,12 +53,16 @@ vocabulary and must not be confused with PMCT demonstration results:
 - `READY`: publication, authority, repository identity, and current HEAD
   prerequisites permit independent verification, but no matching evidence
   exists;
-- `NOT_READY`: verification prerequisites are unsatisfied or existing evidence
-  is malformed or bound elsewhere;
+- `NOT_READY`: verification prerequisites are unsatisfied;
 - `PASS`: independent verification executed and produced an integrity-valid
   record for the current binding;
 - `FAIL`: independent verification executed and failed;
 - `ABSENT`: the evidence-presence value when no verification record exists.
+
+A stale, failed, malformed, or differently bound verification record remains
+historical evidence but is treated as absent for a current binding whose
+prerequisites are satisfied. It cannot suppress current readiness or satisfy
+verification.
 
 At the post-P2-025 publication boundary, OA-01 operator verification is
 `READY` with evidence `ABSENT`. The earlier Codex demonstration remains a
@@ -103,9 +109,12 @@ not faked. A command absent before its gate is eligible is
 
 ## State protection
 
-Authoritative-state observation is the default. Inspection commands and PMCT
-runs shall not modify authoritative engineering state, tracked repository
-content, or operational decision state:
+Authoritative-state observation is the default. Inspection commands shall not
+modify authoritative engineering state, tracked repository content, or
+operational decision state. A PMCT run has one explicit controlled-write
+exception: after sealing its evidence, it atomically updates the PMCT
+capability-state ledger with the exact completed run. It shall not modify any
+other authoritative or operational decision state:
 
 - authoritative engineering state includes published baselines, authority,
   project state, PMCT capability state, qualification state, dispatcher state,
@@ -134,7 +143,13 @@ engineering decisions, PMCT qualification, authority resolution, dispatcher
 logic, or promotion decisions. The currently approved example is the
 operator-interface `invocation_count`. PMCT evidence creation beneath
 `engineering/runtime/pmct/runs/` is separately required test output, not
-presentation telemetry or authoritative state.
+presentation telemetry. The corresponding capability-state reconciliation is
+authoritative PMCT metadata and is never verification or acceptance.
+
+Gate verification selects only a PMCT `PASS` whose manifest matches the
+current repository path, HEAD, implementation baseline, published baseline,
+and active authority publication. Historical runs remain preserved but are
+ineligible after any of those bindings changes.
 
 A state-changing gate must be named as such in the matrix and requires
 `--authorized-transition`, active scoped authority, visible preflight, request

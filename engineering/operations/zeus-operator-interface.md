@@ -151,6 +151,10 @@ zeus approve OA-XX
 The first approval invocation resolves the authoritative PMCT PASS run,
 qualified repository HEAD, evidence digest, and WOP manifest digest. It prints
 the exact verification command and exits without requesting approval.
+Candidate resolution requires the run manifest to match the current repository
+HEAD, implementation baseline, published baseline, and active authority
+publication. Historical PASS runs remain preserved but cannot become
+ambiguous candidates for a newer authority binding.
 
 Verification checks repository identity and tracked cleanliness, the exact
 PMCT result and manual-review contract, evidence integrity and completion,

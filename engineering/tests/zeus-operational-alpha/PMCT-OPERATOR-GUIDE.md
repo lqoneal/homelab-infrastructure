@@ -36,8 +36,10 @@ Operator-verification readiness is reported separately. `READY` means the
 repository, authority, publication, and current HEAD prerequisites permit the
 operator to run verification while evidence remains `ABSENT`. It is not a
 PMCT demonstration `PASS`, operator verification `PASS`, or acceptance.
-`NOT_READY` means those prerequisites are unsatisfied or an existing record is
-invalid for the current binding.
+`NOT_READY` means those prerequisites are unsatisfied. A stale, failed,
+malformed, or differently bound record is preserved but cannot suppress
+`READY` when the current prerequisites are satisfied; it is treated as absent
+for the current binding.
 
 Return failed work to Codex with the run ID, report path, evidence directory,
 failed assertions, and unchanged repository status. Do not paste secrets.
@@ -55,12 +57,18 @@ evidence-manifest digests, qualified repository HEAD, operator identity, WOP
 identity, WOP manifest digest, verification checksum, and clean tracked state
 all match. Any mismatch requires a fresh `zeus verify OA-NN`.
 
-Evidence is stored at `engineering/runtime/pmct/runs/<run-id>/`. Repeating
-authoritative-state observation is safe: tracked repository, authority,
-project, PMCT capability, qualification, dispatcher, execution, mission, and
-operational decision state remain unchanged. Documented bounded presentation
-telemetry such as operator-interface `invocation_count` may advance, and each
-PMCT run creates a new evidence directory. An interrupted run without
+Zeus considers only PMCT `PASS` runs whose repository, HEAD, implementation
+baseline, published baseline, and active authority publication all match the
+current binding. Older PASS evidence remains auditable but is not a candidate
+for current verification.
+
+Evidence is stored at `engineering/runtime/pmct/runs/<run-id>/`. Each completed
+run atomically reconciles `engineering/runtime/pmct/capability-state.yaml`
+with its run ID, completion time, result, overall result, and gate status.
+Repository authority, project, qualification, dispatcher, execution, mission,
+and operational decision state remain unchanged. Documented bounded
+presentation telemetry such as operator-interface `invocation_count` may
+advance. An interrupted run without
 `COMPLETE` is incomplete; rerun the same gate to create a new run and retain
 the interrupted directory as evidence. Inspect and report an exact completed
 run with `pmct inspect <PMCT-RUN-ID>` and `pmct report <PMCT-RUN-ID>`.

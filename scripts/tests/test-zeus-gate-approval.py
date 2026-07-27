@@ -20,6 +20,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 MODULE_PATH = ROOT / "scripts/lib/emp/gate_approval.py"
+sys.path.insert(0, str(ROOT))
 SPEC = importlib.util.spec_from_file_location("gate_approval", MODULE_PATH)
 gate_approval = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader
@@ -105,6 +106,9 @@ class GateApprovalTests(unittest.TestCase):
             "result": "PASS",
             "repository": str(self.repository),
             "head": self.head,
+            "implementation_baseline": self.head,
+            "published_baseline": self.head,
+            "active_authority_publication": "AUTHORITY-PUBLICATION-FIXTURE",
             "evidence_digest": "b" * 64,
         }
         (self.run / "capability-result.json").write_text(json.dumps(result))
@@ -136,6 +140,11 @@ class GateApprovalTests(unittest.TestCase):
             capability_state=self.state,
             operator="fixture-operator",
             clock=lambda: datetime(2026, 7, 26, tzinfo=timezone.utc),
+            authority_binding={
+                "head": self.head,
+                "published_baseline": self.head,
+                "active_authority_publication": "AUTHORITY-PUBLICATION-FIXTURE",
+            },
         )
 
     def receipt(self) -> Path:
@@ -307,6 +316,42 @@ class GateApprovalTests(unittest.TestCase):
         with self.assertRaisesRegex(gate_approval.GateApprovalError, "ambiguous"):
             self.service.resolve_run("OA-01")
 
+    def test_obsolete_pass_runs_are_ignored_for_current_authority_binding(self):
+        obsolete = self.runtime / "PMCT-20260726T220149Z-042c4ea4c6a4"
+        shutil.copytree(self.run, obsolete)
+        result = json.loads((obsolete / "capability-result.json").read_text())
+        result["run_id"] = obsolete.name
+        (obsolete / "capability-result.json").write_text(json.dumps(result))
+        manifest = json.loads((obsolete / "run-manifest.json").read_text())
+        manifest.update({
+            "run_id": obsolete.name,
+            "head": "0" * 40,
+            "implementation_baseline": "0" * 40,
+            "published_baseline": "1" * 40,
+            "active_authority_publication": "AUTHORITY-PUBLICATION-OBSOLETE",
+        })
+        (obsolete / "run-manifest.json").write_text(json.dumps(manifest))
+        self.state.write_text(yaml.safe_dump({
+            "last_run_id": obsolete.name,
+            "gates": {"OA-01": {"status": "PASS"}},
+        }))
+        self.assertEqual(self.service.resolve_run("OA-01"), self.run)
+        verified = self.service.verify("OA-01")
+        self.assertEqual(verified.run_id, self.run.name)
+        record = json.loads(
+            self.service._verification_path("OA-01").read_text(encoding="utf-8")
+        )
+        self.assertEqual(record["verification_result"], "PASS")
+        self.assertEqual(record["pmct_run_id"], self.run.name)
+        self.assertEqual(self.service._receipt_paths("OA-01"), [])
+
+    def test_only_obsolete_pass_runs_produce_no_current_candidate(self):
+        manifest = json.loads((self.run / "run-manifest.json").read_text())
+        manifest["active_authority_publication"] = "AUTHORITY-PUBLICATION-OBSOLETE"
+        (self.run / "run-manifest.json").write_text(json.dumps(manifest))
+        with self.assertRaisesRegex(gate_approval.GateApprovalError, "no PMCT PASS"):
+            self.service.resolve_run("OA-01")
+
     def test_yes_mode_requires_verification_and_records_mode(self):
         result, _ = self.service.approve("OA-01", assume_yes=True)
         self.assertEqual(result, "VERIFICATION_REQUIRED")
@@ -379,6 +424,11 @@ class GateApprovalTests(unittest.TestCase):
             capability_state=self.state,
             operator="different-operator",
             clock=lambda: datetime(2026, 7, 26, tzinfo=timezone.utc),
+            authority_binding={
+                "head": self.head,
+                "published_baseline": self.head,
+                "active_authority_publication": "AUTHORITY-PUBLICATION-FIXTURE",
+            },
         )
         binding = other.binding("OA-01")
         self.assertIsNone(other.verification_record(binding))

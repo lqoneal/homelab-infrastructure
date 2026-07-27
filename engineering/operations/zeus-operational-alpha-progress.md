@@ -2,7 +2,7 @@
 
 Date: 2026-07-26
 Current completed implementation milestone: `ZEUS-P2-023`
-Current architecture correction: `ZEUS-P2-026`
+Current implementation correction: `ZEUS-P2-027`
 Resume status: historical OA-01 acceptance is bound to an older implementation; OA-02 is blocked until current-baseline verification and a governed successor receipt
 Production ownership model: Lawrence O'Neal / `loneal`
 Commissioning status: `READY`
@@ -35,6 +35,7 @@ Commissioning status: `READY`
 | ZEUS-P2-023 Operator Approval UX | Complete and qualified for isolated commit; two-step verification-first approval passed 25 fixture tests; no live acceptance or gate transition performed by qualification | `engineering/evidence/2026-07-26-zeus-p2-023-operator-approval-ux-completion-report.md` |
 | ZEUS-P2-025 Publication and Receipt Lifecycle | Runtime publication store and append-only successor receipt lineage implemented; qualification preserves historical OA-01 evidence and blocks stale eligibility | `engineering/evidence/2026-07-26-zeus-p2-025-completion-report.md` |
 | ZEUS-P2-026 Post-Publication Lifecycle Reconciliation | Next-action, mission-admission scope, and PMCT verification-readiness semantics reconciled; production publication preserved and WOP paused | `engineering/evidence/2026-07-26-zeus-p2-026-completion-report.md` |
+| ZEUS-P2-027 OA-01 Verification Deadlock Correction | Current-binding readiness, completed-run state persistence, and PMCT candidate selection corrected; production operator verification remains unexecuted | `engineering/evidence/2026-07-26-zeus-p2-027-completion-report.md` |
 
 ## Resume point
 
@@ -53,6 +54,7 @@ OA-01 lifecycle:
 ```text
 OA-01_IMPLEMENTATION=COMPLETE
 OA-01_CODEX_VALIDATION=PASS
+OA-01_PMCT_RUN=PMCT-20260727T034015Z-cf24ac087e20
 OA-01_OPERATOR_VERIFICATION=PENDING
 OA-01_OPERATOR_ACCEPTANCE=HISTORICAL_STALE_BINDING
 OA-01_GATE_STATUS=AWAITING_OPERATOR_VERIFICATION

@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
+    "active_authority_publication": {"type": "string", "minLength": 1},
     "branch": {"type": "string"},
     "command_availability": {"type": "object"},
     "completed_at": {"type": "string"},
@@ -9,6 +10,7 @@
     "gate": {"pattern": "^OA-[0-9]{2}$", "type": "string"},
     "head": {"pattern": "^[0-9a-f]{40}$", "type": "string"},
     "host_identity": {"type": "string"},
+    "implementation_baseline": {"pattern": "^[0-9a-f]{40}$", "type": "string"},
     "operator_identity": {"type": "string"},
     "pmct_version": {"const": "1.0"},
     "published_baseline": {"type": ["string", "null"]},
@@ -19,7 +21,7 @@
     "schema_version": {"const": 1},
     "started_at": {"type": "string"}
   },
-  "required": ["schema_version", "pmct_version", "run_id", "gate", "started_at", "completed_at", "repository", "repository_identity", "branch", "head", "published_baseline", "operator_identity", "host_identity", "command_availability", "result", "evidence_digest"],
+  "required": ["schema_version", "pmct_version", "run_id", "gate", "started_at", "completed_at", "repository", "repository_identity", "branch", "head", "implementation_baseline", "published_baseline", "active_authority_publication", "operator_identity", "host_identity", "command_availability", "result", "evidence_digest"],
   "title": "Zeus PMCT Run Manifest",
   "type": "object"
 }

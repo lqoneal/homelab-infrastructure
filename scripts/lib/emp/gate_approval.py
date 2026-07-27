@@ -16,6 +16,8 @@ from typing import Any, Callable
 
 import yaml
 
+from scripts.lib.emp.authority_resolution import AuthorityResolutionError, authoritative_source_path
+
 
 GATE_PATTERN = re.compile(r"OA-(0[1-9]|[12][0-9]|30)")
 RUN_PATTERN = re.compile(r"PMCT-\d{8}T\d{6}Z-[0-9a-f]{12}")
@@ -106,6 +108,7 @@ class GateApprovalService:
         capability_state: Path | None = None,
         operator: str | None = None,
         clock: Callable[[], datetime] | None = None,
+        authority_binding: dict[str, str] | None = None,
     ):
         self.repository = repository.resolve()
         self.wop = wop.resolve()
@@ -119,6 +122,7 @@ class GateApprovalService:
         ).resolve()
         self.operator = operator or getpass.getuser()
         self.clock = clock or (lambda: datetime.now(timezone.utc))
+        self.authority_binding = authority_binding
 
     @classmethod
     def configured(cls, repository: Path) -> "GateApprovalService":
@@ -230,16 +234,72 @@ class GateApprovalService:
         return target, (history[-1] if history else None)
 
     def _candidate_directories(self, gate: str) -> list[Path]:
+        current = self._current_authority_binding()
         candidates: list[Path] = []
         if self.runtime.is_dir():
             for directory in sorted(self.runtime.glob("PMCT-*")):
                 result_path = directory / "capability-result.json"
-                if not result_path.is_file():
+                manifest_path = directory / "run-manifest.json"
+                if not result_path.is_file() or not manifest_path.is_file():
                     continue
                 result = _json(result_path)
-                if result.get("gate") == gate and result.get("result") == "PASS":
+                manifest = _json(manifest_path)
+                if (
+                    result.get("gate") == gate
+                    and result.get("result") == "PASS"
+                    and Path(str(manifest.get("repository", ""))).resolve()
+                    == self.repository
+                    and manifest.get("head") == current["head"]
+                    and manifest.get("implementation_baseline") == current["head"]
+                    and manifest.get("published_baseline")
+                    == current["published_baseline"]
+                    and manifest.get("active_authority_publication")
+                    == current["active_authority_publication"]
+                ):
                     candidates.append(directory)
         return candidates
+
+    def _current_authority_binding(self) -> dict[str, str]:
+        if self.authority_binding is not None:
+            return dict(self.authority_binding)
+        head = _git(self.repository, "rev-parse", "HEAD")
+        try:
+            source = authoritative_source_path(self.repository)
+        except AuthorityResolutionError as error:
+            raise GateApprovalError(
+                f"cannot resolve current authority publication: {error}"
+            ) from error
+        try:
+            authority = yaml.safe_load(source.read_text(encoding="utf-8"))
+            repositories = authority["repositories"]
+        except (OSError, yaml.YAMLError, KeyError, TypeError) as error:
+            raise GateApprovalError(
+                "current authority publication is unavailable"
+            ) from error
+        matching = [
+            value for value in repositories.values()
+            if isinstance(value, dict)
+            and Path(str(value.get("canonical_locator", ""))).resolve()
+            == self.repository
+        ]
+        if len(matching) != 1:
+            raise GateApprovalError(
+                "current authority publication repository binding is ambiguous"
+            )
+        published = str(matching[0].get("baseline_commit", ""))
+        pointer = self.repository / ".zeus/runtime/authority/active-publication.json"
+        active = (
+            str(_json(pointer).get("transaction_id", ""))
+            if pointer.is_file()
+            else "TRACKED-AUTHORITY-FALLBACK"
+        )
+        if not re.fullmatch(r"[0-9a-f]{40}", published) or not active:
+            raise GateApprovalError("current authority publication binding is invalid")
+        return {
+            "head": head,
+            "published_baseline": published,
+            "active_authority_publication": active,
+        }
 
     def _state_run_id(self, gate: str) -> str | None:
         try:

@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 64
+revision: 65
 updated_at: '2026-07-26'
 serialization: yaml
 mutation_history:
@@ -429,6 +429,14 @@ mutation_history:
   reason: Make current-binding OA-01 verification and acceptance precede
     dispatcher commissioning or OA-02 execution while preserving production
     publication state.
+- revision: 65
+  previous_revision: 64
+  at: '2026-07-27T03:45:00+00:00'
+  actor: ZEUS-P2-027 implementation agent
+  action: correct OA-01 verification readiness and PMCT authority binding
+  reason: Persist completed PMCT results, treat current prerequisites with
+    absent evidence as READY, and exclude historical PASS runs from a different
+    repository-authority binding.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -2678,6 +2686,48 @@ entities:
     completion_criteria: All authoritative decision paths require current-binding
       OA-01 verification and acceptance before dispatcher commissioning or OA-02,
       while production publication and historical evidence remain unchanged.
+    queue_ids: []
+  - registry_id: EMP-WORK-ZEUS-P2-027-OA01-VERIFICATION-DEADLOCK
+    object_type: WorkItem
+    title: Zeus OA-01 Verification Deadlock Correction
+    management_state: completed
+    owner: Lawrence O'Neal
+    scope: ZEUS-P2-027
+    authority_reference: Zeus Engineering Handoff - P2-027
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ZEUS-P2-026-LIFECYCLE-RECONCILIATION
+    created_at: 2026-07-26
+    updated_at: 2026-07-26
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-27T03:25:45+00:00'
+      actor: loneal through authenticated instruction
+      reason: Correct the PMCT readiness, state-persistence, and current-binding
+        candidate-selection defects without crossing the operator boundary.
+      authority_reference: Zeus Engineering Handoff - P2-027
+    - from: active
+      to: completed
+      at: '2026-07-27T03:45:00+00:00'
+      actor: ZEUS-P2-027 implementation agent
+      reason: Corrective implementation, fresh PMCT qualification, isolated
+        operator-boundary regression, and controlled reconciliation completed.
+      authority_reference: Zeus Engineering Handoff - P2-027
+    project_id: EMP-PROJECT-HOMELAB
+    order: 39
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: verification-lifecycle-correction
+    priority: 0
+    completion_criteria: Current prerequisites with absent evidence resolve
+      READY, completed PMCT runs atomically update capability state, and only
+      PASS evidence matching current repository authority can be verified.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP

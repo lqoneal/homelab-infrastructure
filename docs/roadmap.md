@@ -169,6 +169,14 @@ through the Progressive WOP. Mission admission `DECIDED` means that baseline
 admission reached a decision, not that dispatch or a capability gate is
 authorized.
 
+ZEUS-P2-027 corrects the implementation deadlock at that boundary. Completed
+PMCT runs now reconcile the capability-state ledger, OA-01 prerequisites with
+absent evidence resolve `READY`, and historical PASS runs remain audit evidence
+but are ineligible unless repository HEAD, implementation baseline, published
+baseline, and active authority publication all match. The fresh current-binding
+Codex PMCT run is `PMCT-20260727T034015Z-cf24ac087e20`; independent operator
+verification and acceptance have not occurred.
+
 The current `generate-wop` qualification workflow remains review-only. This
 roadmap entry does not approve implementation, operational admission,
 submission, dispatch, or execution.

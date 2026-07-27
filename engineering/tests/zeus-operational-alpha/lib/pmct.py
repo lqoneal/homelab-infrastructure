@@ -11,6 +11,7 @@ import re
 import socket
 import subprocess
 import sys
+import tempfile
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -183,7 +184,10 @@ def oa01_verification_state(*, head: str, prerequisites_ready: bool) -> dict[str
             and service.verification_record(binding) is not None
         ):
             return {"readiness": "PASS", "evidence": "PRESENT"}
-        return {"readiness": "NOT_READY", "evidence": "MISMATCHED"}
+        return {
+            "readiness": "READY" if prerequisites_ready else "NOT_READY",
+            "evidence": "ABSENT" if prerequisites_ready else "MISMATCHED",
+        }
     return {
         "readiness": "READY" if prerequisites_ready else "NOT_READY",
         "evidence": "ABSENT",
@@ -222,10 +226,21 @@ def inspect_state() -> dict[str, Any]:
             root == EXPECTED_REPOSITORY and authority_configured and baseline_matches
         ),
     )
+    pointer = REPOSITORY / ".zeus/runtime/authority/active-publication.json"
+    if pointer.is_file():
+        active_authority_publication = str(
+            json.loads(pointer.read_text(encoding="utf-8")).get(
+                "transaction_id", ""
+            )
+        )
+    else:
+        active_authority_publication = "TRACKED-AUTHORITY-FALLBACK"
     return {
         "repository": str(root), "repository_identity_valid": root == EXPECTED_REPOSITORY,
         "branch": branch, "head": head, "published_baseline": published_baseline(),
         "baseline_matches": baseline_matches,
+        "implementation_baseline": head,
+        "active_authority_publication": active_authority_publication,
         "working_tree": git("status", "--short"),
         "authority_operationally_configured": authority_configured,
         "oa01_operator_verification_readiness": verification["readiness"],
@@ -277,9 +292,9 @@ def classify(gate: dict[str, Any], state: dict[str, Any], assertions: list[dict[
             "prerequisite gate operator acceptance is not recorded: "
             + ", ".join(missing_prerequisites)
         ]
-    # Manual review is always required before persistent PASS. A run may only
-    # demonstrate PASS when every mandatory assertion succeeds and the command
-    # interface exists; it never mutates capability-state automatically.
+    # Manual review is always required after a demonstrated PASS. The sealed
+    # run updates capability-state with its result but never records operator
+    # verification or acceptance.
     if missing_required or failed:
         return "NOT_READY", reasons or ["capability demonstration incomplete"]
     return "PASS", ["observable demonstration completed; manual approval remains required"]
@@ -290,6 +305,46 @@ def load_state() -> dict[str, Any]:
     if not isinstance(value, dict):
         raise PmctError("capability state is invalid")
     return value
+
+
+def persist_capability_state(
+    *, gate: str, run_id: str, result: str, reasons: list[str], updated_at: str
+) -> None:
+    state = load_state()
+    gate_state = state["gates"].get(gate)
+    if not isinstance(gate_state, dict):
+        raise PmctError(f"capability state gate is unavailable: {gate}")
+    gate_state["status"] = result
+    gate_state["reason"] = "; ".join(reasons)
+    if result == "PASS":
+        gate_state["codex_validation"] = "PASS"
+        if gate_state.get("operator_acceptance") != "RECORDED":
+            gate_state["gate_status"] = "AWAITING_OPERATOR_VERIFICATION"
+    state["last_run_id"] = run_id
+    state["last_evaluated_gate"] = gate
+    state["updated_at"] = updated_at
+    state["overall_result"] = (
+        "PASS"
+        if all(
+            value.get("status") == "PASS"
+            for value in state["gates"].values()
+        )
+        else "NOT_READY"
+    )
+    STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        dir=STATE_PATH.parent, prefix=".capability-state.", suffix=".yaml"
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+            yaml.safe_dump(state, stream, sort_keys=False)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, STATE_PATH)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
 
 
 def safe_runtime() -> Path:
@@ -454,7 +509,7 @@ def evidence_run(gate: dict[str, Any], *, authorized_transition: bool = False) -
         "schema_version": 1, "contract_version": VERSION, "run_id": run_id,
         "gate": gate["gate_id"], "result": result, "reasons": reasons,
         "assertions": assertions, "manual_review_required": True,
-        "state_changed": False,
+        "state_changed": True,
     }
     manifest = {
         "schema_version": 1, "pmct_version": VERSION, "run_id": run_id,
@@ -462,6 +517,8 @@ def evidence_run(gate: dict[str, Any], *, authorized_transition: bool = False) -
         "completed_at": time_text(completed), "repository": str(REPOSITORY),
         "repository_identity": state["repository"], "branch": state["branch"],
         "head": state["head"], "published_baseline": state["published_baseline"],
+        "implementation_baseline": state["implementation_baseline"],
+        "active_authority_publication": state["active_authority_publication"],
         "operator_identity": os.environ.get("USER", "unavailable"),
         "host_identity": socket.gethostname(), "command_availability": command_availability,
         "result": result, "evidence_digest": None,
@@ -522,6 +579,13 @@ def evidence_run(gate: dict[str, Any], *, authorized_transition: bool = False) -
     (directory / "artifacts.sha256").write_text(hashes, encoding="utf-8")
     manifest["evidence_digest"] = sha256(hashes.encode())
     write_json(directory / "run-manifest.json", manifest)
+    persist_capability_state(
+        gate=gate["gate_id"],
+        run_id=run_id,
+        result=result,
+        reasons=reasons,
+        updated_at=time_text(completed),
+    )
     (directory / "COMPLETE").write_text("PMCT_COMPLETION_MARKER=COMPLETE\n", encoding="utf-8")
     return result_value, directory
 

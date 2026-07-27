@@ -49,7 +49,7 @@ class ProtectionTests(unittest.TestCase):
             reasons,
         )
 
-    def test_mismatched_oa01_verification_binding_is_not_ready(self):
+    def test_stale_verification_does_not_block_ready_current_binding(self):
         with tempfile.TemporaryDirectory() as temporary:
             wop = Path(temporary)
             record = wop / "operator-verifications/OA-01.verification.json"
@@ -66,6 +66,28 @@ class ProtectionTests(unittest.TestCase):
             with patch.dict(os.environ, {"ZEUS_GATE_WOP": str(wop)}):
                 state = pmct.oa01_verification_state(
                     head="1" * 40, prerequisites_ready=True
+                )
+        self.assertEqual(
+            state, {"readiness": "READY", "evidence": "ABSENT"}
+        )
+
+    def test_mismatched_verification_remains_not_ready_without_prerequisites(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            wop = Path(temporary)
+            record = wop / "operator-verifications/OA-01.verification.json"
+            record.parent.mkdir(parents=True)
+            record.write_text(json.dumps({
+                "gate": "OA-01",
+                "qualified_repository_head": "0" * 40,
+                "verification_result": "PASS",
+            }))
+            checksum = hashlib.sha256(record.read_bytes()).hexdigest()
+            record.with_suffix(record.suffix + ".sha256").write_text(
+                f"{checksum}  {record.name}\n"
+            )
+            with patch.dict(os.environ, {"ZEUS_GATE_WOP": str(wop)}):
+                state = pmct.oa01_verification_state(
+                    head="1" * 40, prerequisites_ready=False
                 )
         self.assertEqual(
             state, {"readiness": "NOT_READY", "evidence": "MISMATCHED"}
