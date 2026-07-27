@@ -110,6 +110,33 @@ class CliTests(unittest.TestCase):
             self.assertEqual(help_result.returncode, 0, help_result.stderr)
             self.assertIn("intro", help_result.stdout)
 
+    def test_status_json_preserves_mission_fields_and_adds_authority_fields(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            state = Path(temporary) / "state.json"
+            result = run_zeus(state, "status", "--json", suppress=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            value = json.loads(result.stdout)
+            for key in (
+                "active_execution", "staged_missions", "eligible_missions",
+                "blocked_missions", "outstanding_approvals", "completed_missions",
+                "repository", "authority", "pmct", "operational_state",
+            ):
+                self.assertIn(key, value)
+
+    def test_status_human_surface_contains_required_sections(self):
+        result = subprocess.run(
+            [str(ZEUS), "status"],
+            text=True,
+            capture_output=True,
+            env={**os.environ, "ZEUS_NO_INTRO": "1"},
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        for section in (
+            "Repository", "Authority", "PMCT", "Operational Gates",
+            "Mission Engine",
+        ):
+            self.assertIn(section, result.stdout)
+
     def test_automatic_orientation_boundaries_and_stderr_separation(self):
         with tempfile.TemporaryDirectory() as temporary:
             state = Path(temporary) / "state.json"

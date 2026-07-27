@@ -13,7 +13,9 @@ separate contracts.
 Use `zeus --help`, `zeus help`, or `zeus help <command>`. Common observational
 commands are `zeus status`, `zeus next-action`, and `zeus dispatcher status`.
 The governed gate workflow is `zeus verify OA-NN` followed later by
-`zeus approve OA-NN`; verification never implies acceptance.
+`zeus accept OA-NN`; verification never implies acceptance. Use
+`zeus accept OA-NN --reject` for the alternate explicit decision. Operator
+identity is derived from the authenticated account; no operator option exists.
 
 Authority baselines are managed by `scripts/authority-publishctl`. PMCT supplies
 gate evidence. Work Registry records controlled engineering work. EENS and

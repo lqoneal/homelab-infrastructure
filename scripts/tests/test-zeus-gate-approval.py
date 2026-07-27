@@ -21,6 +21,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[2]
 MODULE_PATH = ROOT / "scripts/lib/emp/gate_approval.py"
 sys.path.insert(0, str(ROOT))
+from scripts.lib.emp import gate_decision  # noqa: E402
 SPEC = importlib.util.spec_from_file_location("gate_approval", MODULE_PATH)
 gate_approval = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader
@@ -206,6 +207,21 @@ class GateApprovalTests(unittest.TestCase):
         state["overall_result"] = "NOT_READY"
         self.state.write_text(yaml.safe_dump(state, sort_keys=False))
 
+    def decision_summary(self):
+        return {
+            "gate": "OA-01", "verification_status": "PASS",
+            "verification_work_package": "P2-032",
+            "repository_head": self.head, "published_baseline": self.head,
+            "baseline_match": True,
+            "active_publication": "AUTHORITY-PUBLICATION-FIXTURE",
+            "pmct_result": "PASS", "pmct_run": RUN_ID,
+            "current_binding_count": 1, "evidence_digest": "b" * 64,
+            "dispatcher_state": "DISABLED", "oa02_state": "BLOCKED",
+            "progressive_wop_state": "PAUSED",
+            "current_lifecycle_next_action": "RECORD_OA-01_OPERATOR_ACCEPTANCE",
+            "operator": "fixture-operator",
+        }
+
     def tearDown(self):
         self.temporary.cleanup()
 
@@ -238,6 +254,43 @@ class GateApprovalTests(unittest.TestCase):
         self.assertEqual(fields["evidence_digest"], "b" * 64)
         self.assertIn("operator_verification_record", fields)
         self.assertTrue(receipt.with_suffix(".approved.sha256").is_file())
+
+    def test_rejection_is_integrity_protected_idempotent_and_not_acceptance(self):
+        self.service.verify("OA-01")
+        with patch.object(gate_decision, "review", return_value=self.decision_summary()):
+            first, replay = gate_decision.decide(
+                self.service, "OA-01", reject=True, rationale="not ready",
+                at=None, assume_yes=True,
+            )
+            second, replay_second = gate_decision.decide(
+                self.service, "OA-01", reject=True, rationale="not ready",
+                at=None, assume_yes=True,
+            )
+        self.assertEqual(first["decision"], "REJECT")
+        self.assertFalse(replay)
+        self.assertTrue(replay_second)
+        self.assertEqual(first, second)
+        self.assertFalse(self.service.receipt_exists("OA-01"))
+        decision = next((self.wop / "operator-decisions/OA-01").glob("*.json"))
+        self.assertTrue(decision.with_suffix(".json.sha256").is_file())
+
+    def test_acceptance_reuses_receipt_and_conflicting_reject_fails(self):
+        self.service.verify("OA-01")
+        with patch.object(gate_decision, "review", return_value=self.decision_summary()):
+            accepted, replay = gate_decision.decide(
+                self.service, "OA-01", reject=False, rationale="qualified",
+                at=None, assume_yes=True,
+            )
+            self.assertEqual(accepted["decision"], "ACCEPT")
+            self.assertFalse(replay)
+            self.assertTrue(self.service.receipt_exists("OA-01"))
+            with self.assertRaisesRegex(
+                gate_decision.GateApprovalError, "conflicting"
+            ):
+                gate_decision.decide(
+                    self.service, "OA-01", reject=True, rationale="changed",
+                    at=None, assume_yes=True,
+                )
 
     def test_second_invocation_displays_confirmation_boundary_before_prompt(self):
         self.service.verify("OA-01")

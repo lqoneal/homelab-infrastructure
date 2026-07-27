@@ -31,16 +31,33 @@ class ProtectionTests(unittest.TestCase):
         checks = pmct.evaluate(pmct.matrix()["gates"][0], state)
         mandatory = {item["assertion"]: item["passed"] for item in checks if item["mandatory"]}
         if state["baseline_matches"]:
-            self.assertTrue(all(mandatory.values()))
-            self.assertEqual(
-                state["oa01_operator_verification_readiness"], "READY"
-            )
+            if state["oa01_operator_verification_evidence"] == "PRESENT":
+                self.assertEqual(
+                    {
+                        key for key, passed in mandatory.items() if not passed
+                    },
+                    {
+                        "next_action_prioritizes_oa01_verification",
+                        "oa01_verification_ready_not_executed",
+                    },
+                )
+                self.assertEqual(
+                    state["oa01_operator_verification_readiness"], "PASS"
+                )
+            else:
+                self.assertTrue(all(mandatory.values()))
+                self.assertEqual(
+                    state["oa01_operator_verification_readiness"], "READY"
+                )
         else:
             self.assertFalse(mandatory["published_baseline_current"])
             self.assertEqual(
                 state["oa01_operator_verification_readiness"], "NOT_READY"
             )
-        expected_evidence = "ABSENT" if state["baseline_matches"] else "MISMATCHED"
+        expected_evidence = (
+            state["oa01_operator_verification_evidence"]
+            if state["baseline_matches"] else "MISMATCHED"
+        )
         self.assertEqual(
             state["oa01_operator_verification_evidence"], expected_evidence
         )

@@ -21,11 +21,13 @@ Dispatch remains disabled until independently commissioned.
 .SH RESUME
 Resume observes recorded state and never manufactures approval.
 .SH COMMANDS
-status, next-action, verify, approve, dispatcher, resume, and additional commands shown by help.
+status, next-action, verify, accept, approve, dispatcher, resume, and additional commands shown by help.
 .SH EXAMPLES
 .B zeus next-action
 .br
 .B zeus help verify
+.br
+.B zeus accept OA-01 --reject --rationale "qualification incomplete"
 .SH FILES
 .I .zeus/runtime
 and repository-controlled engineering records.

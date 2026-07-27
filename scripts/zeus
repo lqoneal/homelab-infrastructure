@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse, json, os, subprocess, sys
 from datetime import datetime, timezone
 from pathlib import Path
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -20,9 +21,94 @@ from scripts.lib.emp.mission_execution_runtime import ExecutionStateStore, Missi
 from scripts.lib.emp.production_execution import dispatch_readiness, load_json, load_registry  # noqa: E402
 from scripts.lib.emp.next_action import NextActionError, human_text as next_action_text, resolve_next_action  # noqa: E402
 from scripts.lib.emp.gate_approval import GateApprovalError, GateApprovalService, approve_command, verify_command  # noqa: E402
+from scripts.lib.emp.gate_decision import decide as decide_gate, review as review_gate  # noqa: E402
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
+
+def authority_status(mission_status):
+    decision = resolve_next_action(ROOT)
+    pointer = json.loads(
+        (ROOT / ".zeus/runtime/authority/active-publication.json").read_text()
+    )
+    pmct_state = yaml.safe_load(
+        (ROOT / "engineering/runtime/pmct/capability-state.yaml").read_text()
+    )
+    candidates = GateApprovalService.configured(ROOT)._candidate_directories("OA-01")
+    repository = decision["repository"]
+    return {
+        **mission_status,
+        "repository": {
+            "head": repository["implementation_baseline"],
+            "published_baseline": repository["published_baseline"],
+            "head_equals_published_baseline": repository["baseline_matches"],
+        },
+        "authority": {
+            "active_publication": pointer["transaction_id"],
+            "publication_status": decision["authority"]["status"],
+            "trust_status": (
+                "VALID" if decision["authority"]["operationally_configured"]
+                else "INVALID"
+            ),
+        },
+        "pmct": {
+            "latest_result": pmct_state["gates"]["OA-01"]["status"],
+            "latest_run_id": pmct_state["last_run_id"],
+            "current_binding_candidate_count": len(candidates),
+        },
+        "operational_state": {
+            "oa01_verification": decision["oa01_lifecycle"]["operator_verification"],
+            "oa01_acceptance": decision["oa01_lifecycle"]["operator_acceptance"],
+            "dispatcher": decision["operational_dispatch"],
+            "oa02": (
+                "BLOCKED"
+                if decision["oa01_lifecycle"]["operator_acceptance"] != "RECORDED"
+                else "CONDITIONALLY_ELIGIBLE"
+            ),
+            "progressive_wop": (
+                "PAUSED"
+                if decision["oa01_lifecycle"]["operator_acceptance"] != "RECORDED"
+                else "AWAITING_PRE_EXECUTION_VERIFICATION"
+            ),
+        },
+    }
+
+def status_text(value):
+    repo, authority, pmct, gates = (
+        value["repository"], value["authority"], value["pmct"],
+        value["operational_state"],
+    )
+    mission_keys = (
+        "active_execution", "eligible_missions", "blocked_missions",
+        "outstanding_approvals", "staged_missions", "completed_missions",
+    )
+    lines = [
+        "Repository", "----------",
+        f"Repository HEAD                 : {repo['head']}",
+        f"Published Baseline              : {repo['published_baseline']}",
+        "HEAD equals Published Baseline : "
+        + ("YES" if repo["head_equals_published_baseline"] else "NO"),
+        "", "Authority", "---------",
+        f"Active Publication  : {authority['active_publication']}",
+        f"Publication Status  : {authority['publication_status']}",
+        f"Trust Status        : {authority['trust_status']}",
+        "", "PMCT", "----",
+        f"Latest PMCT Result             : {pmct['latest_result']}",
+        f"Latest PMCT Run ID             : {pmct['latest_run_id']}",
+        f"Current Binding Candidate Count: {pmct['current_binding_candidate_count']}",
+        "", "Operational Gates", "-----------------",
+        f"OA-01 Verification : {gates['oa01_verification']}",
+        f"OA-01 Acceptance   : {gates['oa01_acceptance'].replace('_', ' ')}",
+        f"Dispatcher          : {gates['dispatcher']}",
+        f"OA-02               : {gates['oa02']}",
+        f"Progressive WOP     : {gates['progressive_wop']}",
+        "", "Mission Engine", "--------------",
+    ]
+    lines.extend(
+        f"{key.replace('_', ' ').title():22}: {json.dumps(value.get(key, []), sort_keys=True)}"
+        for key in mission_keys
+    )
+    return "\n".join(lines) + "\n"
 
 def main(argv=None):
     arguments = list(sys.argv[1:] if argv is None else argv)
@@ -62,13 +148,15 @@ def main(argv=None):
     p.add_argument("--state", type=Path, help="engineering/test state override")
     sub = p.add_subparsers(dest="command")
     sub.add_parser("bootstrap")
-    sub.add_parser("status")
+    status_parser = sub.add_parser("status")
+    status_parser.add_argument("--json", action="store_true")
     intro = sub.add_parser("intro", help="review operator orientation")
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
     submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository", required=True); submit.add_argument("--baseline", required=True); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append", required=True); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact", required=True); submit.add_argument("--affected-repository", action="append", required=True); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
     show = sub.add_parser("mission"); show.add_argument("action", choices=("show",)); show.add_argument("mission_id")
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
+    accept=sub.add_parser("accept"); accept.add_argument("gate"); accept.add_argument("--reject", action="store_true"); accept.add_argument("--rationale", default=""); accept.add_argument("--at"); accept.add_argument("--yes", action="store_true"); accept.add_argument("--json", action="store_true")
     decline=sub.add_parser("decline"); decline.add_argument("approval_id"); decline.add_argument("--operator", required=True); decline.add_argument("--at")
     verify=sub.add_parser("verify"); verify.add_argument("gate")
     execution=sub.add_parser("execution"); execution.add_argument("action", choices=("status",)); execution.add_argument("identifier")
@@ -109,6 +197,25 @@ def main(argv=None):
             return 0
         if a.command == "verify":
             return verify_command(GateApprovalService.configured(ROOT), a.gate)
+        if a.command == "accept":
+            service = GateApprovalService.configured(ROOT)
+            summary = review_gate(service, a.gate)
+            if not a.json:
+                for key, value in summary.items():
+                    print(f"{key.replace('_', ' ').title()}: {value}")
+            record, replay = decide_gate(
+                service, a.gate, reject=a.reject, rationale=a.rationale,
+                at=now(a.at) if a.at else None, assume_yes=a.yes,
+            )
+            result = {
+                "review": summary, "decision": record,
+                "idempotent_replay": replay,
+            }
+            if a.json: emit(result)
+            else:
+                print(f"{a.gate}_OPERATOR_DECISION={record['decision']}")
+                print("DECISION_INTEGRITY=PASS")
+            return 0
         if a.command == "approve" and a.approval_id.upper().startswith("OA-"):
             if a.operator:
                 raise GateApprovalError(
@@ -125,7 +232,13 @@ def main(argv=None):
                 f"operational state does not exist at {state}; run 'zeus bootstrap'"
             )
         o=MissionOrchestrator(OrchestrationStore(state))
-        if a.command=="status" or a.command=="resume": emit(o.status())
+        if a.command=="status":
+            value = authority_status(o.status())
+            if a.json or testing or override:
+                emit(value)
+            else:
+                print(status_text(value), end="")
+        elif a.command=="resume": emit(o.status())
         elif a.command=="submit": emit(o.submit(admission_record=a.wop_package, repository_identity=a.repository, baseline_commit=a.baseline, priority=a.priority, staging_order=a.order, dependencies=a.dependency, required_approvals=a.approval, resources_available=a.resources_available, blocking_conditions=a.blocking_condition, estimated_impact=a.impact, affected_repositories=a.affected_repository, queue_timestamp=now(a.at)))
         elif a.command=="missions" and a.action=="list":
             if a.repository and a.baseline: o.evaluate(observed_repository=a.repository, observed_baseline=a.baseline, completed_missions=a.completed)
