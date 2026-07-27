@@ -13,6 +13,7 @@ import yaml
 
 from scripts.lib.emp.authority_resolution import authoritative_source_path
 from scripts.lib.emp.gate_approval import GateApprovalError, GateApprovalService
+from scripts.lib.emp.oa02_lifecycle import resolve as resolve_oa02
 
 
 class NextActionError(ValueError):
@@ -168,8 +169,13 @@ def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
         next_action = "Record explicit OA-01 operator acceptance"
         action_code = "RECORD_OA-01_OPERATOR_ACCEPTANCE"
     elif activation.get("status") != "ACTIVE":
-        next_action = "Run OA-02 pre-execution verification"
-        action_code = "RUN_OA-02_PRE_EXECUTION_VERIFICATION"
+        try:
+            oa02 = resolve_oa02(root)
+            action_code = oa02["next_action"]
+            next_action = action_code.replace("_", " ").title()
+        except (OSError, ValueError, KeyError):
+            next_action = "Run OA-02 pre-execution verification"
+            action_code = "RUN_OA-02_PRE_EXECUTION_VERIFICATION"
     elif not qualified:
         next_action = "Qualify first production execution agent"
         action_code = "QUALIFY_PRODUCTION_AGENT"

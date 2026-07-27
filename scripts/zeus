@@ -22,6 +22,7 @@ from scripts.lib.emp.production_execution import dispatch_readiness, load_json, 
 from scripts.lib.emp.next_action import NextActionError, human_text as next_action_text, resolve_next_action  # noqa: E402
 from scripts.lib.emp.gate_approval import GateApprovalError, GateApprovalService, approve_command, verify_command  # noqa: E402
 from scripts.lib.emp.gate_decision import decide as decide_gate, review as review_gate  # noqa: E402
+from scripts.lib.emp.oa02_lifecycle import resolve as resolve_oa02, verify as verify_oa02  # noqa: E402
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -35,6 +36,7 @@ def authority_status(mission_status):
         (ROOT / "engineering/runtime/pmct/capability-state.yaml").read_text()
     )
     candidates = GateApprovalService.configured(ROOT)._candidate_directories("OA-01")
+    oa02 = resolve_oa02(ROOT)
     repository = decision["repository"]
     return {
         **mission_status,
@@ -60,16 +62,15 @@ def authority_status(mission_status):
             "oa01_verification": decision["oa01_lifecycle"]["operator_verification"],
             "oa01_acceptance": decision["oa01_lifecycle"]["operator_acceptance"],
             "dispatcher": decision["operational_dispatch"],
-            "oa02": (
-                "BLOCKED"
-                if decision["oa01_lifecycle"]["operator_acceptance"] != "RECORDED"
-                else "CONDITIONALLY_ELIGIBLE"
+            "oa02_verification": (
+                oa02["verification_record"]["result"]
+                if oa02["verification_record"] else "NOT_RUN"
             ),
-            "progressive_wop": (
-                "PAUSED"
-                if decision["oa01_lifecycle"]["operator_acceptance"] != "RECORDED"
-                else "AWAITING_PRE_EXECUTION_VERIFICATION"
-            ),
+            "oa02": oa02["oa02_state"],
+            "progressive_wop": oa02["progressive_wop"],
+            "current_binding_pmct": oa02["current_binding_pmct_result"],
+            "oa02_pmct_readiness": oa02["oa02_pmct_readiness"],
+            "qualified_agents": oa02["qualified_production_agents"],
         },
     }
 
@@ -99,9 +100,13 @@ def status_text(value):
         "", "Operational Gates", "-----------------",
         f"OA-01 Verification : {gates['oa01_verification']}",
         f"OA-01 Acceptance   : {gates['oa01_acceptance'].replace('_', ' ')}",
+        f"OA-02 Verification : {gates['oa02_verification'].replace('_', ' ')}",
         f"Dispatcher          : {gates['dispatcher']}",
         f"OA-02               : {gates['oa02']}",
         f"Progressive WOP     : {gates['progressive_wop']}",
+        f"Current Binding PMCT: {gates['current_binding_pmct']}",
+        f"OA-02 PMCT Readiness: {gates['oa02_pmct_readiness'].replace('_', ' ')}",
+        f"Qualified Agents    : {gates['qualified_agents']}",
         "", "Mission Engine", "--------------",
     ]
     lines.extend(
@@ -196,6 +201,12 @@ def main(argv=None):
             else: print(next_action_text(decision), end="")
             return 0
         if a.command == "verify":
+            if a.gate.upper() == "OA-02":
+                record,replay=verify_oa02(ROOT)
+                for key in ("result","repository_head","published_baseline","current_binding_pmct_result","oa02_pmct_readiness","dispatcher_state","production_agent_readiness","blocking_conditions","decision_digest"):
+                    print(f"OA02_{key.upper()}={record[key]}")
+                print(f"OA02_IDEMPOTENT_REPLAY={'YES' if replay else 'NO'}")
+                return 0 if record["result"]=="PASS" else 77
             return verify_command(GateApprovalService.configured(ROOT), a.gate)
         if a.command == "accept":
             service = GateApprovalService.configured(ROOT)

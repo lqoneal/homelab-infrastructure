@@ -17,6 +17,13 @@ The governed gate workflow is `zeus verify OA-NN` followed later by
 `zeus accept OA-NN --reject` for the alternate explicit decision. Operator
 identity is derived from the authenticated account; no operator option exists.
 
+`zeus verify OA-02` performs the pre-execution readiness evaluation without
+authorizing dispatch. Status and next-action resolve the integrity-protected
+OA-02 record automatically. Current-binding PMCT qualification is reported
+separately from OA-02-specific PMCT readiness; `NOT_READY` therefore identifies
+the missing OA-02 demonstration or another ordered prerequisite without
+invalidating the accepted OA-01 PMCT PASS.
+
 Authority baselines are managed by `scripts/authority-publishctl`. PMCT supplies
 gate evidence. Work Registry records controlled engineering work. EENS and
 dispatch remain unavailable until independently qualified. Resume commands

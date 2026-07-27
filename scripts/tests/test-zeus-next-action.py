@@ -176,7 +176,11 @@ class NextActionTests(unittest.TestCase):
             if repository["implementation_baseline"]
             != repository["published_baseline"]
             else (
-                "RECORD_OA-01_OPERATOR_ACCEPTANCE"
+                (
+                    "RUN_OA-02_PRE_EXECUTION_VERIFICATION"
+                    if value["oa01_lifecycle"]["operator_acceptance"] == "RECORDED"
+                    else "RECORD_OA-01_OPERATOR_ACCEPTANCE"
+                )
                 if value["oa01_lifecycle"]["operator_verification"] == "PASS"
                 else "RUN_OA-01_VERIFICATION"
             )
@@ -185,7 +189,10 @@ class NextActionTests(unittest.TestCase):
         self.assertIn(
             value["oa01_lifecycle"]["operator_verification"], {"ABSENT", "PASS"}
         )
-        self.assertEqual(value["oa01_lifecycle"]["operator_acceptance"], "NOT_RECORDED")
+        self.assertIn(
+            value["oa01_lifecycle"]["operator_acceptance"],
+            {"NOT_RECORDED", "RECORDED"},
+        )
         after = subprocess.run(
             ["git", "-C", str(ROOT), "status", "--porcelain=v1"],
             text=True, capture_output=True, check=True,
@@ -204,13 +211,17 @@ class NextActionTests(unittest.TestCase):
             ],
             text=True, capture_output=True, check=False,
         )
-        self.assertEqual(eligibility.returncode, 77)
         eligibility_output = eligibility.stdout + eligibility.stderr
-        self.assertIn("OA-02_ELIGIBILITY=BLOCKED", eligibility_output)
-        self.assertIn(
-            "BLOCKING_REASON=OA-01_OPERATOR_ACCEPTANCE_REQUIRED",
-            eligibility_output,
-        )
+        if value["oa01_lifecycle"]["operator_acceptance"] == "RECORDED":
+            self.assertEqual(eligibility.returncode, 0)
+            self.assertIn("ELIGIBILITY=CONDITIONALLY_ELIGIBLE", eligibility_output)
+        else:
+            self.assertEqual(eligibility.returncode, 77)
+            self.assertIn("OA-02_ELIGIBILITY=BLOCKED", eligibility_output)
+            self.assertIn(
+                "BLOCKING_REASON=OA-01_OPERATOR_ACCEPTANCE_REQUIRED",
+                eligibility_output,
+            )
 
 
 if __name__ == "__main__":
