@@ -146,6 +146,24 @@ operator-interface `invocation_count`. PMCT evidence creation beneath
 presentation telemetry. The corresponding capability-state reconciliation is
 authoritative PMCT metadata and is never verification or acceptance.
 
+The capability-state file has a dual persistence contract: the committed copy
+is the version-controlled schema and last reconciled baseline, while the
+working-tree copy may contain exactly one completed-run reconciliation. Gate
+verification does not ignore that tracked delta. It reconstructs the expected
+file from the committed copy plus the selected integrity-verified PMCT result
+and manifest, and accepts it only when:
+
+- it is the sole tracked modification;
+- it is unstaged;
+- every resulting field equals the deterministic reconciliation;
+- the run matches repository, HEAD, implementation baseline, published
+  baseline, and active authority publication.
+
+Any staged capability-state change, additional tracked path, malformed state,
+or field not derived from the selected run fails the clean-worktree gate.
+Thus PMCT runtime output does not force a commit/publication loop and cannot
+mask an arbitrary source modification.
+
 Gate verification selects only a PMCT `PASS` whose manifest matches the
 current repository path, HEAD, implementation baseline, published baseline,
 and active authority publication. Historical runs remain preserved but are

@@ -341,6 +341,81 @@ class GateApprovalService:
             if not artifact.is_file() or _sha256(artifact) != expected:
                 raise GateApprovalError(f"PMCT evidence integrity failure: {name}")
 
+    def _tracked_state_is_qualified(
+        self,
+        *,
+        directory: Path,
+        result: dict[str, Any],
+        manifest: dict[str, Any],
+    ) -> bool:
+        status = _git(
+            self.repository, "status", "--porcelain=v1", "--untracked-files=no"
+        ).splitlines()
+        if not status:
+            return True
+        try:
+            relative_state = self.capability_state.relative_to(self.repository)
+        except ValueError as error:
+            raise GateApprovalError(
+                "PMCT capability state is outside the repository"
+            ) from error
+        # _git() strips outer whitespace, including porcelain's leading
+        # unstaged-column space. A staged change retains its second separator.
+        expected_status = f"M {relative_state.as_posix()}"
+        if status != [expected_status]:
+            return False
+        try:
+            committed = yaml.safe_load(
+                _git(
+                    self.repository,
+                    "show",
+                    f"HEAD:{relative_state.as_posix()}",
+                )
+            )
+            current = yaml.safe_load(
+                self.capability_state.read_text(encoding="utf-8")
+            )
+        except (OSError, yaml.YAMLError) as error:
+            raise GateApprovalError(
+                "PMCT capability-state reconciliation is unreadable"
+            ) from error
+        if not isinstance(committed, dict) or not isinstance(current, dict):
+            raise GateApprovalError(
+                "PMCT capability-state reconciliation is malformed"
+            )
+        gate = str(result.get("gate", ""))
+        run_result = str(result.get("result", ""))
+        run_id = directory.name
+        reasons = result.get("reasons", [])
+        if (
+            gate not in committed.get("gates", {})
+            or not isinstance(reasons, list)
+            or not all(isinstance(reason, str) for reason in reasons)
+            or manifest.get("run_id") != run_id
+            or manifest.get("completed_at") in (None, "")
+        ):
+            return False
+        expected = json.loads(json.dumps(committed))
+        gate_state = expected["gates"][gate]
+        gate_state["status"] = run_result
+        gate_state["reason"] = "; ".join(reasons)
+        if run_result == "PASS":
+            gate_state["codex_validation"] = "PASS"
+            if gate_state.get("operator_acceptance") != "RECORDED":
+                gate_state["gate_status"] = "AWAITING_OPERATOR_VERIFICATION"
+        expected["last_run_id"] = run_id
+        expected["last_evaluated_gate"] = gate
+        expected["updated_at"] = manifest["completed_at"]
+        expected["overall_result"] = (
+            "PASS"
+            if all(
+                value.get("status") == "PASS"
+                for value in expected["gates"].values()
+            )
+            else "NOT_READY"
+        )
+        return current == expected
+
     def _wop_digest(self) -> str:
         manifest = self.wop / "MANIFEST.sha256"
         if not manifest.is_file():
@@ -412,10 +487,13 @@ class GateApprovalService:
                 f"qualified repository HEAD mismatch: expected={qualified_head} "
                 f"actual={current_head}"
             )
-        if require_clean and _git(
-            self.repository, "status", "--porcelain=v1", "--untracked-files=no"
+        if require_clean and not self._tracked_state_is_qualified(
+            directory=directory, result=result, manifest=manifest
         ):
-            raise GateApprovalError("tracked repository worktree is not clean")
+            raise GateApprovalError(
+                "tracked repository worktree is neither clean nor an exact "
+                "authenticated PMCT capability-state reconciliation"
+            )
         evidence_digest = str(manifest.get("evidence_digest", ""))
         if not re.fullmatch(r"[0-9a-f]{64}", evidence_digest):
             raise GateApprovalError("PMCT evidence digest is invalid")

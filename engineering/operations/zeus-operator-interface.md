@@ -104,6 +104,13 @@ verification and acceptance current -> RUN_OA-02_PRE_EXECUTION_VERIFICATION
 The last result is conditional evaluation, not OA-02 execution or dispatcher
 commissioning authority.
 
+Gate verification normally requires a clean tracked worktree. The sole
+permitted tracked runtime reconciliation is an unstaged
+`engineering/runtime/pmct/capability-state.yaml` delta that is reconstructed
+field-for-field from the selected integrity-verified current-binding PMCT run.
+This is authenticated lifecycle output, not a general dirty-tree exception;
+all additional, staged, or non-derived tracked changes remain prohibited.
+
 Here, read-only means that the command does not modify repository content,
 orchestration state, authority, publication, dispatcher, agent, qualification,
 PMCT capability, dispatch, promotion, or resume state. Like every normal Zeus

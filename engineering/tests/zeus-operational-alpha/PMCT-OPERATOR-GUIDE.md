@@ -63,6 +63,13 @@ evidence-manifest digests, qualified repository HEAD, operator identity, WOP
 identity, WOP manifest digest, verification checksum, and clean tracked state
 all match. Any mismatch requires a fresh `zeus verify OA-NN`.
 
+For this check, “clean tracked state” includes one narrow authenticated
+condition: the sole unstaged tracked delta may be
+`engineering/runtime/pmct/capability-state.yaml` when Zeus reconstructs it
+exactly from the selected integrity-valid PMCT run and the committed ledger
+baseline. The file is not ignored. Staged changes, extra tracked changes, or
+any non-derived ledger field fail verification.
+
 Zeus considers only PMCT `PASS` runs whose repository, HEAD, implementation
 baseline, published baseline, and active authority publication all match the
 current binding. Older PASS evidence remains auditable but is not a candidate

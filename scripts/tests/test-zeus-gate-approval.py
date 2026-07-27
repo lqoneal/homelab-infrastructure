@@ -97,6 +97,9 @@ class GateApprovalTests(unittest.TestCase):
             "gate": "OA-01",
             "run_id": RUN_ID,
             "result": "PASS",
+            "reasons": [
+                "observable demonstration completed; manual approval remains required"
+            ],
             "manual_review_required": True,
         }
         manifest = {
@@ -110,6 +113,7 @@ class GateApprovalTests(unittest.TestCase):
             "published_baseline": self.head,
             "active_authority_publication": "AUTHORITY-PUBLICATION-FIXTURE",
             "evidence_digest": "b" * 64,
+            "completed_at": "2026-07-26T00:00:00Z",
         }
         (self.run / "capability-result.json").write_text(json.dumps(result))
         (self.run / "run-manifest.json").write_text(json.dumps(manifest))
@@ -118,17 +122,52 @@ class GateApprovalTests(unittest.TestCase):
         (self.run / "artifacts.sha256").write_text(
             "".join(f"{digest(self.run / name)}  {name}\n" for name in artifacts)
         )
-        self.state = self.repository / "capability-state.yaml"
+        self.state = (
+            self.repository
+            / "engineering/runtime/pmct/capability-state.yaml"
+        )
+        self.state.parent.mkdir(parents=True)
         self.state.write_text(yaml.safe_dump({
-            "last_run_id": RUN_ID,
-            "gates": {"OA-01": {
-                "status": "PASS",
-                "implementation_status": "COMPLETE",
-                "codex_validation": "PASS",
-                "operator_verification": "PENDING",
-                "operator_acceptance": "NOT_RECORDED",
-            }},
+            "overall_result": "NOT_READY",
+            "last_evaluated_gate": "OA-01",
+            "last_run_id": "PMCT-20260725T000000Z-000000000000",
+            "updated_at": "2026-07-25T00:00:00Z",
+            "gates": {
+                "OA-01": {
+                    "status": "PASS",
+                    "reason": "prior qualified run",
+                    "implementation_status": "COMPLETE",
+                    "codex_validation": "PASS",
+                    "operator_verification": "PENDING",
+                    "operator_acceptance": "NOT_RECORDED",
+                    "gate_status": "AWAITING_OPERATOR_VERIFICATION",
+                },
+                "OA-02": {
+                    "status": "NOT_READY",
+                    "reason": "not yet evaluated",
+                },
+            },
         }))
+        subprocess.run(
+            ["git", "-C", self.repository, "add", "baseline",
+             "engineering/runtime/pmct/capability-state.yaml"],
+            check=True,
+        )
+        subprocess.run(
+            ["git", "-C", self.repository, "commit", "-qm", "baseline"],
+            check=True,
+        )
+        self.head = subprocess.run(
+            ["git", "-C", self.repository, "rev-parse", "HEAD"],
+            text=True, capture_output=True, check=True,
+        ).stdout.strip()
+        manifest["head"] = self.head
+        manifest["implementation_baseline"] = self.head
+        manifest["published_baseline"] = self.head
+        (self.run / "run-manifest.json").write_text(json.dumps(manifest))
+        (self.run / "artifacts.sha256").write_text(
+            "".join(f"{digest(self.run / name)}  {name}\n" for name in artifacts)
+        )
         (self.wop / "README.md").write_text("fixture\n")
         (self.wop / "MANIFEST.sha256").write_text(
             f"{digest(self.wop / 'README.md')}  README.md\n"
@@ -151,6 +190,21 @@ class GateApprovalTests(unittest.TestCase):
         receipts = self.service._receipt_paths("OA-01")
         self.assertEqual(len(receipts), 1)
         return receipts[0]
+
+    def write_qualified_capability_reconciliation(self) -> None:
+        state = yaml.safe_load(self.state.read_text())
+        result = json.loads((self.run / "capability-result.json").read_text())
+        manifest = json.loads((self.run / "run-manifest.json").read_text())
+        gate = state["gates"]["OA-01"]
+        gate["status"] = result["result"]
+        gate["reason"] = "; ".join(result["reasons"])
+        gate["codex_validation"] = "PASS"
+        gate["gate_status"] = "AWAITING_OPERATOR_VERIFICATION"
+        state["last_run_id"] = RUN_ID
+        state["last_evaluated_gate"] = "OA-01"
+        state["updated_at"] = manifest["completed_at"]
+        state["overall_result"] = "NOT_READY"
+        self.state.write_text(yaml.safe_dump(state, sort_keys=False))
 
     def tearDown(self):
         self.temporary.cleanup()
@@ -276,8 +330,37 @@ class GateApprovalTests(unittest.TestCase):
 
     def test_dirty_tracked_worktree_is_rejected(self):
         (self.repository / "baseline").write_text("dirty\n")
-        with self.assertRaisesRegex(gate_approval.GateApprovalError, "not clean"):
+        with self.assertRaisesRegex(gate_approval.GateApprovalError, "worktree"):
             self.service.verify("OA-01")
+
+    def test_exact_pmct_capability_reconciliation_is_accepted(self):
+        self.write_qualified_capability_reconciliation()
+        binding = self.service.binding("OA-01")
+        self.assertEqual(binding.run_id, RUN_ID)
+
+    def test_tampered_pmct_capability_reconciliation_is_rejected(self):
+        self.write_qualified_capability_reconciliation()
+        state = yaml.safe_load(self.state.read_text())
+        state["last_run_id"] = "PMCT-20260726T000000Z-ffffffffffff"
+        self.state.write_text(yaml.safe_dump(state, sort_keys=False))
+        with self.assertRaisesRegex(
+            gate_approval.GateApprovalError, "authenticated PMCT"
+        ):
+            self.service.binding("OA-01")
+
+    def test_staged_pmct_capability_reconciliation_is_rejected(self):
+        self.write_qualified_capability_reconciliation()
+        subprocess.run(
+            [
+                "git", "-C", self.repository, "add",
+                "engineering/runtime/pmct/capability-state.yaml",
+            ],
+            check=True,
+        )
+        with self.assertRaisesRegex(
+            gate_approval.GateApprovalError, "authenticated PMCT"
+        ):
+            self.service.binding("OA-01")
 
     def test_invalid_gate_is_rejected(self):
         with self.assertRaisesRegex(gate_approval.GateApprovalError, "invalid gate"):
@@ -331,10 +414,6 @@ class GateApprovalTests(unittest.TestCase):
             "active_authority_publication": "AUTHORITY-PUBLICATION-OBSOLETE",
         })
         (obsolete / "run-manifest.json").write_text(json.dumps(manifest))
-        self.state.write_text(yaml.safe_dump({
-            "last_run_id": obsolete.name,
-            "gates": {"OA-01": {"status": "PASS"}},
-        }))
         self.assertEqual(self.service.resolve_run("OA-01"), self.run)
         verified = self.service.verify("OA-01")
         self.assertEqual(verified.run_id, self.run.name)
