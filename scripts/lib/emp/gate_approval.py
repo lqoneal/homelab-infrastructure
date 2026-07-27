@@ -143,11 +143,49 @@ class GateApprovalService:
             operator=os.environ.get("ZEUS_GATE_OPERATOR"),
         )
 
-    def _receipt_path(self, gate: str) -> Path:
+    def _legacy_receipt_path(self, gate: str) -> Path:
         return self.wop / "operator-approvals" / f"{gate}.approved"
 
     def receipt_exists(self, gate: str) -> bool:
-        return self._receipt_path(validate_gate(gate)).exists()
+        return bool(self._receipt_paths(validate_gate(gate)))
+
+    def _receipt_paths(self, gate: str) -> list[Path]:
+        gate = validate_gate(gate)
+        paths: list[Path] = []
+        legacy = self._legacy_receipt_path(gate)
+        if legacy.is_file():
+            paths.append(legacy)
+        directory = self.wop / "operator-approvals" / gate
+        if directory.is_dir():
+            paths.extend(sorted(directory.glob("*.approved")))
+        return paths
+
+    def _valid_receipts(self, gate: str) -> list[tuple[Path, dict[str, str]]]:
+        receipts: list[tuple[Path, dict[str, str]]] = []
+        for path in self._receipt_paths(gate):
+            checksum = path.with_suffix(path.suffix + ".sha256")
+            if not checksum.is_file():
+                continue
+            words = checksum.read_text(encoding="utf-8").split()
+            if not words or words[0] != _sha256(path):
+                continue
+            fields = self._receipt_fields_from(path)
+            if path != self._legacy_receipt_path(gate):
+                predecessor = receipts[-1][0] if receipts else None
+                lineage_valid = (
+                    fields.get("predecessor_receipt") == "NONE"
+                    and fields.get("predecessor_receipt_digest") == "NONE"
+                    if predecessor is None
+                    else (
+                        fields.get("predecessor_receipt") == str(predecessor)
+                        and fields.get("predecessor_receipt_digest")
+                        == _sha256(predecessor)
+                    )
+                )
+                if not lineage_valid:
+                    continue
+            receipts.append((path, fields))
+        return receipts
 
     def _verification_path(self, gate: str) -> Path:
         return self.wop / "operator-verifications" / f"{gate}.verification.json"
@@ -155,16 +193,41 @@ class GateApprovalService:
     def verification_command(self, gate: str) -> str:
         return f"zeus verify {validate_gate(gate)}"
 
-    def _receipt_fields(self, gate: str) -> dict[str, str]:
-        path = self._receipt_path(gate)
-        if not path.is_file():
-            return {}
+    @staticmethod
+    def _receipt_fields_from(path: Path) -> dict[str, str]:
         fields: dict[str, str] = {}
         for line in path.read_text(encoding="utf-8").splitlines():
             key, separator, value = line.partition("=")
             if separator:
                 fields[key] = value
         return fields
+
+    def _matching_receipt(
+        self, binding: GateBinding
+    ) -> tuple[Path, dict[str, str]] | None:
+        for path, fields in self._valid_receipts(binding.gate):
+            if (
+                fields.get("pmct_run_id") == binding.run_id
+                and fields.get("approved_head") == binding.qualified_head
+                and fields.get("evidence_digest") == binding.evidence_digest
+                and fields.get("repository") == str(binding.repository)
+            ):
+                return path, fields
+        return None
+
+    def _successor_receipt_path(
+        self, binding: GateBinding
+    ) -> tuple[Path, tuple[Path, dict[str, str]] | None]:
+        history = self._valid_receipts(binding.gate)
+        sequence = len(history) + 1
+        receipt_id = (
+            f"{binding.gate}-R{sequence:04d}-"
+            f"{binding.qualified_head[:12]}-{binding.run_id[-12:]}"
+        )
+        target = (
+            self.wop / "operator-approvals" / binding.gate / f"{receipt_id}.approved"
+        )
+        return target, (history[-1] if history else None)
 
     def _candidate_directories(self, gate: str) -> list[Path]:
         candidates: list[Path] = []
@@ -195,14 +258,6 @@ class GateApprovalService:
 
     def resolve_run(self, gate: str) -> Path:
         gate = validate_gate(gate)
-        receipt_run = self._receipt_fields(gate).get("pmct_run_id")
-        if receipt_run:
-            directory = self.runtime / receipt_run
-            if directory.is_dir():
-                return directory
-            raise GateApprovalError(
-                f"accepted PMCT run is unavailable: {receipt_run}"
-            )
         state_run = self._state_run_id(gate)
         if state_run:
             return self.runtime / state_run
@@ -291,8 +346,7 @@ class GateApprovalService:
             raise GateApprovalError("PMCT completion marker is missing or invalid")
         self._verify_artifacts(directory)
         current_head = _git(self.repository, "rev-parse", "HEAD")
-        receipt_head = self._receipt_fields(gate).get("approved_head")
-        qualified_head = receipt_head or str(manifest.get("head", ""))
+        qualified_head = str(manifest.get("head", ""))
         if current_head != qualified_head:
             raise GateApprovalError(
                 f"qualified repository HEAD mismatch: expected={qualified_head} "
@@ -356,9 +410,9 @@ class GateApprovalService:
 
     def verify(self, gate: str) -> GateBinding:
         binding = self.binding(gate)
-        if self._receipt_path(binding.gate).exists():
+        if self._matching_receipt(binding):
             raise GateApprovalError(
-                f"approval receipt already exists for {binding.gate}"
+                f"approval receipt already exists for this {binding.gate} binding"
             )
         self._verify_resume_and_blocker(binding.gate)
         before = _git(self.repository, "rev-parse", "HEAD")
@@ -383,8 +437,6 @@ class GateApprovalService:
 
     def record_verification_failure(self, gate: str, error: Exception) -> None:
         gate = validate_gate(gate)
-        if self._receipt_path(gate).exists():
-            return
         path = self._verification_path(gate)
         path.parent.mkdir(parents=True, exist_ok=True)
         record = {
@@ -421,8 +473,10 @@ class GateApprovalService:
     ) -> tuple[str, GateBinding]:
         gate = validate_gate(gate)
         binding = self.binding(gate)
-        if self._receipt_path(gate).exists():
-            raise GateApprovalError(f"approval receipt already exists for {gate}")
+        if self._matching_receipt(binding):
+            raise GateApprovalError(
+                f"approval receipt already exists for this {gate} binding"
+            )
         if self.verification_record(binding) is None:
             return "VERIFICATION_REQUIRED", binding
         if not assume_yes:
@@ -438,6 +492,9 @@ class GateApprovalService:
                 "approval binding changed after confirmation; verification must be rerun"
             )
         primitive = self.wop / "bin/record-operator-approval"
+        receipt, predecessor = self._successor_receipt_path(binding)
+        predecessor_path = predecessor[0] if predecessor else None
+        predecessor_digest = _sha256(predecessor_path) if predecessor_path else "NONE"
         result = subprocess.run(
             [
                 str(primitive),
@@ -450,6 +507,11 @@ class GateApprovalService:
                 **os.environ,
                 "ZEUS_APPROVAL_REPOSITORY": str(self.repository),
                 "ZEUS_APPROVAL_OPERATOR": self.operator,
+                "ZEUS_APPROVAL_RECEIPT": str(receipt),
+                "ZEUS_APPROVAL_PREDECESSOR": (
+                    str(predecessor_path) if predecessor_path else "NONE"
+                ),
+                "ZEUS_APPROVAL_PREDECESSOR_DIGEST": predecessor_digest,
             },
             text=True,
             capture_output=True,
@@ -457,14 +519,13 @@ class GateApprovalService:
         )
         if result.returncode:
             raise GateApprovalError(result.stderr.strip() or "approval primitive failed")
-        receipt = self._receipt_path(gate)
         checksum = receipt.with_suffix(receipt.suffix + ".sha256")
         if not receipt.is_file() or not checksum.is_file():
             raise GateApprovalError("approval primitive did not create a receipt")
         expected = checksum.read_text(encoding="utf-8").split()[0]
         if expected != _sha256(receipt):
             raise GateApprovalError("approval receipt checksum verification failed")
-        fields = self._receipt_fields(gate)
+        fields = self._receipt_fields_from(receipt)
         expected_fields = {
             "gate": gate,
             "pmct_run_id": binding.run_id,
@@ -475,6 +536,10 @@ class GateApprovalService:
             "operator_verification_record": str(self._verification_path(gate)),
             "operator_verification_digest": _sha256(self._verification_path(gate)),
             "confirmation_mode": "NONINTERACTIVE" if assume_yes else "INTERACTIVE",
+            "predecessor_receipt": (
+                str(predecessor_path) if predecessor_path else "NONE"
+            ),
+            "predecessor_receipt_digest": predecessor_digest,
         }
         if any(fields.get(key) != value for key, value in expected_fields.items()):
             raise GateApprovalError("approval receipt binding verification failed")
@@ -522,9 +587,11 @@ def approve_command(
 ) -> int:
     gate = validate_gate(gate)
     lifecycle = service.lifecycle(gate)
-    if service.receipt_exists(gate):
-        raise GateApprovalError(f"approval receipt already exists for {gate}")
     binding = service.binding(gate)
+    if service._matching_receipt(binding):
+        raise GateApprovalError(
+            f"approval receipt already exists for this {gate} binding"
+        )
     print(f"Gate: {gate}")
     print(f"Implementation: {lifecycle['implementation']}")
     print(f"Codex validation: {lifecycle['codex_validation']}")

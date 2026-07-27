@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from scripts.lib.emp.authority_publication import commissioning_status
+from scripts.lib.emp.authority_resolution import authoritative_source_path
 from scripts.lib.emp.authority_resolution import (
     AuthorityResolutionRuntime,
     canonical_json,
@@ -115,7 +116,7 @@ class MissionAdmissionRuntime:
         self.authority_state_path = (
             Path(authority_state_path)
             if authority_state_path is not None
-            else self.root / "engineering/authority/operational-authority-state.yaml"
+            else authoritative_source_path(self.root)
         )
         self.commissioning_probe = commissioning_probe or commissioning_status
         self.enrollment_probe = enrollment_probe or enrollment_status

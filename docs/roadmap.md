@@ -152,6 +152,13 @@ qualification covers refusal, stale bindings, cancellation, duplicate
 receipts, and conditional next-gate output. It does not execute OA-02 or
 resume the Progressive WOP.
 
+ZEUS-P2-025 resolves the publication/HEAD fixed point with create-only,
+read-only-after-publication runtime artifacts and an integrity-bound active pointer. Gate
+acceptance is now append-only and versioned: a successor receipt binds the
+digest of the preserved predecessor. Eligibility requires an integrity-valid
+receipt for the current HEAD, so the historical OA-01 receipt no longer makes
+OA-02 conditionally eligible after implementation changes.
+
 The current `generate-wop` qualification workflow remains review-only. This
 roadmap entry does not approve implementation, operational admission,
 submission, dispatch, or execution.

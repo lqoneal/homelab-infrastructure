@@ -2,7 +2,8 @@
 
 Date: 2026-07-26
 Current completed implementation milestone: `ZEUS-P2-023`
-Resume status: OA-01 implementation complete and Codex validation PASS; operator verification pending; acceptance not recorded; OA-02 blocked
+Current architecture correction: `ZEUS-P2-025`
+Resume status: historical OA-01 acceptance is bound to an older implementation; OA-02 is blocked until current-baseline verification and a governed successor receipt
 Production ownership model: Lawrence O'Neal / `loneal`
 Commissioning status: `READY`
 
@@ -32,6 +33,7 @@ Commissioning status: `READY`
 | ZEUS-P2-021 Next Action Acceptance Interface | BETA resolver implemented; OA-01 Codex demonstration PASS; operator verification pending and acceptance not recorded | `engineering/evidence/pmct/OA-01-PASS/` |
 | ZEUS-P2-022 Runtime Telemetry Contract Clarification | Contract and exact-run proof completed; OA-01 awaits operator verification and OA-02 remains blocked | `engineering/evidence/2026-07-26-zeus-p2-022-completion-report.md` |
 | ZEUS-P2-023 Operator Approval UX | Complete and qualified for isolated commit; two-step verification-first approval passed 25 fixture tests; no live acceptance or gate transition performed by qualification | `engineering/evidence/2026-07-26-zeus-p2-023-operator-approval-ux-completion-report.md` |
+| ZEUS-P2-025 Publication and Receipt Lifecycle | Runtime publication store and append-only successor receipt lineage implemented; qualification preserves historical OA-01 evidence and blocks stale eligibility | `engineering/evidence/2026-07-26-zeus-p2-025-completion-report.md` |
 
 ## Resume point
 
@@ -51,7 +53,7 @@ OA-01 lifecycle:
 OA-01_IMPLEMENTATION=COMPLETE
 OA-01_CODEX_VALIDATION=PASS
 OA-01_OPERATOR_VERIFICATION=PENDING
-OA-01_OPERATOR_ACCEPTANCE=NOT_RECORDED
+OA-01_OPERATOR_ACCEPTANCE=HISTORICAL_STALE_BINDING
 OA-01_GATE_STATUS=AWAITING_OPERATOR_VERIFICATION
 OA-02_ELIGIBILITY=BLOCKED
 BLOCKING_REASON=OA-01_OPERATOR_ACCEPTANCE_REQUIRED
@@ -95,6 +97,8 @@ BLOCKING_REASON=OA-01_OPERATOR_ACCEPTANCE_REQUIRED
   then perform the separately controlled first operational WOP qualification.
 - P0: resolve the repository-baseline and closeout-publication lifecycle so
   commit-able receipts do not force an immediate operational-authority loop.
+  Completed by ZEUS-P2-025 through ignored create-only,
+  read-only-after-publication artifacts and an integrity-bound active pointer.
 - P1: enhance dispatcher scheduling, queues, concurrency, retry, recovery,
   failover, analytics, multi-agent routing, and authenticated remote transport.
 - P1: harden production EENS and long-term evidence storage.

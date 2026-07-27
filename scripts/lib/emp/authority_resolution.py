@@ -35,6 +35,8 @@ OWNER = {
 AUTHORITY_STATE_RELATIVE_PATH = Path(
     "engineering/authority/operational-authority-state.yaml"
 )
+AUTHORITY_RUNTIME_RELATIVE_PATH = Path(".zeus/runtime/authority")
+ACTIVE_PUBLICATION_POINTER = "active-publication.json"
 PLACEHOLDER = re.compile(r"(?:placeholder|example|test|tbd|unknown)", re.IGNORECASE)
 COMMIT = re.compile(r"^[0-9a-f]{40}$")
 DIGEST = re.compile(r"^[0-9a-f]{64}$")
@@ -69,12 +71,72 @@ def load_authority_state(path: Path | str) -> Mapping[str, Any]:
 
 
 def authoritative_source_path(repository_root: Path | str) -> Path:
-    """Return the repository-fixed production authority source path."""
+    """Return the integrity-qualified production authority source path.
+
+    New publications live in an ignored, append-only operational store so
+    activation cannot modify the Git baseline it authorizes.  The tracked
+    source remains a migration fallback until the first runtime publication.
+    """
     root = Path(repository_root).resolve()
+    runtime = root / AUTHORITY_RUNTIME_RELATIVE_PATH
+    pointer = runtime / ACTIVE_PUBLICATION_POINTER
+    if pointer.is_file():
+        try:
+            value = json.loads(pointer.read_text(encoding="utf-8"))
+            relative = Path(str(value["authority_state"]))
+            expected = str(value["authority_state_digest"])
+            manifest_relative = Path(str(value["artifact_manifest"]))
+            manifest_expected = str(value["artifact_manifest_digest"])
+        except (OSError, KeyError, TypeError, json.JSONDecodeError) as error:
+            raise AuthorityResolutionError(
+                f"invalid active authority publication pointer: {error}"
+            ) from error
+        if relative.is_absolute() or ".." in relative.parts:
+            raise AuthorityResolutionError("authority publication path is not bounded")
+        path = (runtime / relative).resolve()
+        if runtime not in path.parents:
+            raise AuthorityResolutionError("authority publication escapes runtime store")
+        if path.is_symlink() or not path.is_file():
+            raise AuthorityResolutionError("active authority publication is unavailable")
+        actual = hashlib.sha256(path.read_bytes()).hexdigest()
+        if actual != expected:
+            raise AuthorityResolutionError(
+                "active authority publication digest mismatch"
+            )
+        manifest = (runtime / manifest_relative).resolve()
+        if (
+            runtime not in manifest.parents
+            or manifest.is_symlink()
+            or not manifest.is_file()
+            or hashlib.sha256(manifest.read_bytes()).hexdigest() != manifest_expected
+        ):
+            raise AuthorityResolutionError(
+                "active authority publication manifest mismatch"
+            )
+        for line in manifest.read_text(encoding="utf-8").splitlines():
+            artifact_digest, separator, artifact_name = line.partition("  ")
+            artifact = (manifest.parent / artifact_name).resolve()
+            if (
+                not separator
+                or manifest.parent not in artifact.parents
+                or not artifact.is_file()
+                or hashlib.sha256(artifact.read_bytes()).hexdigest()
+                != artifact_digest
+            ):
+                raise AuthorityResolutionError(
+                    "active authority publication artifact integrity failure"
+                )
+        return path
     path = root / AUTHORITY_STATE_RELATIVE_PATH
     if path.is_symlink() or (path.parent.exists() and path.parent.resolve() != path.parent):
         raise AuthorityResolutionError("authority source path may not use symbolic links")
     return path
+
+
+def authority_activation_target(repository_root: Path | str) -> Path:
+    """Return the fixed pointer updated by production activation."""
+    root = Path(repository_root).resolve()
+    return root / AUTHORITY_RUNTIME_RELATIVE_PATH / ACTIVE_PUBLICATION_POINTER
 
 
 class AuthorityResolutionRuntime:

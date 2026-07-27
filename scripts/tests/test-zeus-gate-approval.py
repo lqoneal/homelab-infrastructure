@@ -55,7 +55,18 @@ class GateApprovalTests(unittest.TestCase):
         (self.wop / "bin/check-gate-eligibility").write_text(
             "#!/usr/bin/env bash\n"
             "prev=$(printf '%02d' $((10#${1#OA-} - 1)))\n"
-            "if test -f \"$(dirname \"$0\")/../operator-approvals/OA-${prev}.approved\"; then\n"
+            "root=$(dirname \"$0\")/../operator-approvals\n"
+            "repo=$(cd \"$root/../../repository\" && pwd)\n"
+            "head=$(git -C \"$repo\" rev-parse HEAD)\n"
+            "receipt=\n"
+            "for candidate in \"$root/OA-${prev}.approved\" "
+            "\"$root/OA-${prev}\"/*.approved; do\n"
+            "  test -f \"$candidate\" || continue\n"
+            "  test \"$(sed -n 's/^approved_head=//p' \"$candidate\")\" = \"$head\" "
+            "|| continue\n"
+            "  receipt=$candidate\n"
+            "done\n"
+            "if test -n \"$receipt\"; then\n"
             "  printf 'ELIGIBILITY=CONDITIONALLY_ELIGIBLE\\n'\n"
             "  exit 0\n"
             "fi\n"
@@ -127,6 +138,11 @@ class GateApprovalTests(unittest.TestCase):
             clock=lambda: datetime(2026, 7, 26, tzinfo=timezone.utc),
         )
 
+    def receipt(self) -> Path:
+        receipts = self.service._receipt_paths("OA-01")
+        self.assertEqual(len(receipts), 1)
+        return receipts[0]
+
     def tearDown(self):
         self.temporary.cleanup()
 
@@ -153,7 +169,7 @@ class GateApprovalTests(unittest.TestCase):
             "OA-01", assume_yes=False, confirmation=lambda _: "y"
         )
         self.assertEqual(result, "RECORDED")
-        receipt = self.wop / "operator-approvals/OA-01.approved"
+        receipt = self.receipt()
         fields = dict(line.split("=", 1) for line in receipt.read_text().splitlines())
         self.assertEqual(fields["confirmation_mode"], "INTERACTIVE")
         self.assertEqual(fields["evidence_digest"], "b" * 64)
@@ -297,8 +313,54 @@ class GateApprovalTests(unittest.TestCase):
         self.service.verify("OA-01")
         result, _ = self.service.approve("OA-01", assume_yes=True)
         self.assertEqual(result, "RECORDED")
-        receipt = (self.wop / "operator-approvals/OA-01.approved").read_text()
+        receipt = self.receipt().read_text()
         self.assertIn("confirmation_mode=NONINTERACTIVE", receipt)
+
+    def test_successor_preserves_historical_receipt_and_binds_lineage(self):
+        historical = self.wop / "operator-approvals/OA-01.approved"
+        historical.write_text(
+            "gate=OA-01\npmct_run_id=PMCT-20260101T000000Z-000000000000\n"
+            f"repository={self.repository}\napproved_head={'0' * 40}\n"
+            f"evidence_digest={'1' * 64}\n"
+        )
+        historical.with_suffix(".approved.sha256").write_text(
+            f"{digest(historical)}  {historical.name}\n"
+        )
+        before = historical.read_bytes()
+        self.service.verify("OA-01")
+        result, _ = self.service.approve("OA-01", assume_yes=True)
+        self.assertEqual(result, "RECORDED")
+        self.assertEqual(historical.read_bytes(), before)
+        receipts = self.service._receipt_paths("OA-01")
+        self.assertEqual(len(receipts), 2)
+        successor = receipts[-1].read_text()
+        self.assertIn(f"predecessor_receipt={historical}", successor)
+        self.assertIn(f"predecessor_receipt_digest={digest(historical)}", successor)
+
+    def test_duplicate_current_binding_rejected_with_historical_preserved(self):
+        self.service.verify("OA-01")
+        self.service.approve("OA-01", assume_yes=True)
+        receipt = self.receipt()
+        before = receipt.read_bytes()
+        with self.assertRaisesRegex(gate_approval.GateApprovalError, "already exists"):
+            self.service.approve("OA-01", assume_yes=True)
+        self.assertEqual(receipt.read_bytes(), before)
+
+    def test_broken_successor_lineage_is_not_authoritative(self):
+        self.service.verify("OA-01")
+        self.service.approve("OA-01", assume_yes=True)
+        receipt = self.receipt()
+        fields = receipt.read_text().replace(
+            "predecessor_receipt=NONE", "predecessor_receipt=/wrong"
+        )
+        receipt.chmod(0o644)
+        receipt.write_text(fields)
+        checksum = receipt.with_suffix(".approved.sha256")
+        checksum.chmod(0o644)
+        checksum.write_text(
+            f"{digest(receipt)}  {receipt.name}\n"
+        )
+        self.assertEqual(self.service._valid_receipts("OA-01"), [])
 
     def test_verification_checksum_tamper_invalidates_record(self):
         binding = self.service.verify("OA-01")

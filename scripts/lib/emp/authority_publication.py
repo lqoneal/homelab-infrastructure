@@ -18,8 +18,11 @@ from typing import Any, Mapping
 import yaml
 
 from scripts.lib.emp.authority_resolution import (
+    ACTIVE_PUBLICATION_POINTER,
+    AUTHORITY_RUNTIME_RELATIVE_PATH,
     AuthorityResolutionError,
     AuthorityResolutionRuntime,
+    authoritative_source_path,
     canonical_json,
     digest,
     utc_text,
@@ -265,7 +268,7 @@ def commissioning_status(repository_root: Path | str) -> dict[str, Any]:
         blockers.append({"code": "OWNER_ENROLLMENT_MISSING", "detail": owner})
     try:
         source = load_mapping(
-            root / "engineering/authority/operational-authority-state.yaml",
+            authoritative_source_path(root),
             "operational authority source",
         )
     except AuthorityPublicationError as error:
@@ -645,14 +648,56 @@ class AuthorityPublicationFramework:
         revoked.pop("source_digest", None)
         revoked["source_digest"] = digest(revoked)
         previous_digest = hashlib_sha256(target_path.read_bytes())
-        self._atomic_yaml(target_path, revoked)
+        runtime = (self.root / AUTHORITY_RUNTIME_RELATIVE_PATH).resolve()
+        if runtime in target_path.parents and os.environ.get("ZEUS_TESTING") != "1":
+            publication = (
+                runtime / "publications" / f"REVOCATION-{envelope['envelope_id']}"
+            )
+            publication.mkdir(parents=True, exist_ok=False)
+            state_path = publication / "authority-state.yaml"
+            self._create_only(
+                state_path, yaml.safe_dump(revoked, sort_keys=True).encode("utf-8")
+            )
+            envelope_path_copy = publication / "revocation-envelope.json"
+            signature_path_copy = publication / "revocation-envelope.sig"
+            self._create_only(
+                envelope_path_copy,
+                (json.dumps(envelope, indent=2, sort_keys=True) + "\n").encode("utf-8"),
+            )
+            self._create_only(signature_path_copy, Path(signature_path).read_bytes())
+            artifacts = publication / "artifacts.sha256"
+            self._create_only(
+                artifacts,
+                "".join(
+                    f"{hashlib_sha256(path.read_bytes())}  {path.name}\n"
+                    for path in (state_path, envelope_path_copy, signature_path_copy)
+                ).encode("utf-8"),
+            )
+            pointer = runtime / ACTIVE_PUBLICATION_POINTER
+            pointer_value = {
+                "schema_version": 1,
+                "transaction_id": f"REVOCATION-{envelope['envelope_id']}",
+                "authority_state": str(state_path.relative_to(runtime)),
+                "authority_state_digest": hashlib_sha256(state_path.read_bytes()),
+                "artifact_manifest": str(artifacts.relative_to(runtime)),
+                "artifact_manifest_digest": hashlib_sha256(artifacts.read_bytes()),
+                "activated_at": utc_text(at),
+            }
+            self._atomic_bytes(
+                pointer,
+                (json.dumps(pointer_value, indent=2, sort_keys=True) + "\n").encode(),
+            )
+            revoked_state_digest = hashlib_sha256(state_path.read_bytes())
+        else:
+            self._atomic_yaml(target_path, revoked)
+            revoked_state_digest = hashlib_sha256(target_path.read_bytes())
         receipt = {
             "schema_version": 1,
             "revocation_id": envelope["record_id"],
             "activation_transaction_id": activation["transaction_id"],
             "revoked_at": utc_text(at),
             "previous_state_digest": previous_digest,
-            "revoked_state_digest": hashlib_sha256(target_path.read_bytes()),
+            "revoked_state_digest": revoked_state_digest,
             "state": "REVOKED",
         }
         receipt["receipt_digest"] = digest(receipt)
@@ -669,22 +714,51 @@ class AuthorityPublicationFramework:
         target: Path | str,
         at: datetime,
     ) -> dict[str, Any]:
-        directory = self._transaction(transaction, required_state="STAGING")
+        directory = self._transaction(transaction)
+        metadata = self._metadata(directory)
+        if metadata.get("state") == "ACTIVATED":
+            return self._verify_idempotent_activation(directory, Path(target))
+        if metadata.get("state") != "STAGING":
+            raise AuthorityPublicationError(
+                f"transaction must be STAGING, found {metadata.get('state')}"
+            )
         readiness = self.verify_readiness(directory, at=at)
         candidate = self.build_candidate(directory)
         if candidate["candidate_digest"] != readiness["candidate_digest"]:
             raise AuthorityPublicationError("candidate changed after readiness validation")
         target_path = Path(target).resolve()
         expected = (
-            self.root / "engineering/authority/operational-authority-state.yaml"
+            self.root / AUTHORITY_RUNTIME_RELATIVE_PATH / ACTIVE_PUBLICATION_POINTER
         ).resolve()
         if target_path != expected and os.environ.get("ZEUS_TESTING") != "1":
             raise AuthorityPublicationError(
-                "production activation target must be the repository-fixed authority source"
+                "production activation target must be the repository-fixed runtime pointer"
             )
+        runtime_activation = target_path == expected
+        starting_snapshot = (
+            self._repository_snapshot() if runtime_activation else None
+        )
+        if starting_snapshot and (
+            starting_snapshot["tracked"] or starting_snapshot["staged"]
+        ):
+            raise AuthorityPublicationError(
+                "repository tracked or staged state must be clean before activation"
+            )
+        if starting_snapshot:
+            published_head = self._candidate_repository_baseline(candidate)
+            if published_head != starting_snapshot["head"]:
+                raise AuthorityPublicationError(
+                    "publication baseline does not match repository HEAD"
+                )
         previous = target_path.read_bytes() if target_path.exists() else b""
         backup = directory / "previous-authority-state.yaml"
-        self._create_only(backup, previous)
+        if backup.exists():
+            if backup.read_bytes() != previous:
+                raise AuthorityPublicationError(
+                    "activation retry previous-pointer binding mismatch"
+                )
+        else:
+            self._create_only(backup, previous)
         activated = deepcopy(candidate)
         activated.pop("candidate_digest", None)
         activated["operationally_configured"] = True
@@ -696,14 +770,51 @@ class AuthorityPublicationFramework:
             "previous_state_digest": hashlib_sha256(previous),
         }
         activated["source_digest"] = digest(activated)
-        self._atomic_yaml(target_path, activated)
+        if not runtime_activation:
+            self._atomic_yaml(target_path, activated)
+            activated_state_digest = hashlib_sha256(target_path.read_bytes())
+        else:
+            store = expected.parent
+            publication, state_path, artifact_manifest = (
+                self._create_runtime_publication(
+                    store=store,
+                    transaction=directory,
+                    transaction_id=readiness["transaction_id"],
+                    activated=activated,
+                )
+            )
+            activated_state_digest = hashlib_sha256(state_path.read_bytes())
+            pointer = {
+                "schema_version": 1,
+                "transaction_id": readiness["transaction_id"],
+                "authority_state": str(state_path.relative_to(store)),
+                "authority_state_digest": activated_state_digest,
+                "artifact_manifest": str(artifact_manifest.relative_to(store)),
+                "artifact_manifest_digest": hashlib_sha256(
+                    artifact_manifest.read_bytes()
+                ),
+                "activated_at": utc_text(at),
+            }
+            ending_snapshot = self._repository_snapshot()
+            if ending_snapshot != starting_snapshot:
+                raise AuthorityPublicationError(
+                    "repository HEAD or tracked state changed during activation"
+                )
+            self._atomic_bytes(
+                target_path,
+                (json.dumps(pointer, indent=2, sort_keys=True) + "\n").encode("utf-8"),
+            )
+            if authoritative_source_path(self.root) != state_path:
+                raise AuthorityPublicationError(
+                    "active publication pointer did not resolve to the new artifact"
+                )
         receipt = {
             "schema_version": 1,
             "transaction_id": readiness["transaction_id"],
             "target": str(target_path),
             "activated_at": utc_text(at),
             "previous_state_digest": hashlib_sha256(previous),
-            "activated_state_digest": hashlib_sha256(target_path.read_bytes()),
+            "activated_state_digest": activated_state_digest,
             "readiness_digest": readiness["readiness_digest"],
             "state": "ACTIVATED",
         }
@@ -713,6 +824,181 @@ class AuthorityPublicationFramework:
         metadata["state"] = "ACTIVATED"
         metadata["activated_at"] = utc_text(at)
         self._atomic_yaml(directory / "transaction.yaml", metadata)
+        return receipt
+
+    def _repository_snapshot(self) -> dict[str, str]:
+        def git(*arguments: str) -> str:
+            result = subprocess.run(
+                ["git", "-C", str(self.root), *arguments],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            if result.returncode:
+                raise AuthorityPublicationError(
+                    result.stderr.strip() or "repository inspection failed"
+                )
+            return result.stdout.strip()
+
+        return {
+            "head": git("rev-parse", "HEAD"),
+            "tracked": git("status", "--porcelain=v1", "--untracked-files=no"),
+            "staged": git("diff", "--cached", "--name-only"),
+        }
+
+    def _candidate_repository_baseline(self, candidate: Mapping[str, Any]) -> str:
+        matches = [
+            str(record.get("baseline_commit", ""))
+            for record in candidate.get("repositories", {}).values()
+            if isinstance(record, Mapping)
+            and Path(str(record.get("canonical_locator", ""))).resolve() == self.root
+        ]
+        if len(matches) != 1 or not re.fullmatch(r"[0-9a-f]{40}", matches[0]):
+            raise AuthorityPublicationError(
+                "candidate must contain exactly one repository baseline"
+            )
+        return matches[0]
+
+    def _create_runtime_publication(
+        self,
+        *,
+        store: Path,
+        transaction: Path,
+        transaction_id: str,
+        activated: Mapping[str, Any],
+    ) -> tuple[Path, Path, Path]:
+        publications = store / "publications"
+        publications.mkdir(parents=True, exist_ok=True, mode=0o700)
+        publication = publications / transaction_id
+        if publication.exists():
+            return self._verify_existing_runtime_publication(
+                publication=publication,
+                transaction=transaction,
+                activated=activated,
+            )
+        staging = publications / f".staging-{transaction_id}-{uuid.uuid4().hex}"
+        quarantine = store / "quarantine"
+        try:
+            staging.mkdir(mode=0o700)
+            state_path = staging / "authority-state.yaml"
+            self._create_only(
+                state_path,
+                yaml.safe_dump(dict(activated), sort_keys=True).encode("utf-8"),
+            )
+            artifact_lines = [
+                f"{hashlib_sha256(state_path.read_bytes())}  authority-state.yaml\n"
+            ]
+            for source_directory in ("envelopes", "signatures"):
+                destination = staging / source_directory
+                destination.mkdir(mode=0o700)
+                for source in sorted((transaction / source_directory).iterdir()):
+                    copied = destination / source.name
+                    self._create_only(copied, source.read_bytes())
+                    artifact_lines.append(
+                        f"{hashlib_sha256(copied.read_bytes())}  "
+                        f"{source_directory}/{source.name}\n"
+                    )
+            artifact_manifest = staging / "artifacts.sha256"
+            self._create_only(
+                artifact_manifest, "".join(artifact_lines).encode("utf-8")
+            )
+            self._seal_publication(staging)
+            os.replace(staging, publication)
+            return (
+                publication,
+                publication / "authority-state.yaml",
+                publication / "artifacts.sha256",
+            )
+        except Exception:
+            if staging.exists():
+                quarantine.mkdir(parents=True, exist_ok=True, mode=0o700)
+                diagnostic = quarantine / (
+                    f"{transaction_id}-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
+                    f"-{uuid.uuid4().hex}"
+                )
+                os.replace(staging, diagnostic)
+            raise
+
+    def _verify_existing_runtime_publication(
+        self,
+        *,
+        publication: Path,
+        transaction: Path,
+        activated: Mapping[str, Any],
+    ) -> tuple[Path, Path, Path]:
+        state_path = publication / "authority-state.yaml"
+        artifact_manifest = publication / "artifacts.sha256"
+        expected_state = yaml.safe_dump(dict(activated), sort_keys=True).encode("utf-8")
+        expected_artifacts: dict[str, str] = {
+            "authority-state.yaml": hashlib_sha256(expected_state)
+        }
+        for source_directory in ("envelopes", "signatures"):
+            for source in sorted((transaction / source_directory).iterdir()):
+                expected_artifacts[f"{source_directory}/{source.name}"] = (
+                    hashlib_sha256(source.read_bytes())
+                )
+        try:
+            actual_artifacts = {}
+            for line in artifact_manifest.read_text(encoding="utf-8").splitlines():
+                artifact_digest, separator, artifact_name = line.partition("  ")
+                if not separator:
+                    raise ValueError("malformed artifact manifest")
+                actual_artifacts[artifact_name] = artifact_digest
+            protected = [state_path, artifact_manifest]
+            protected.extend(
+                path for path in publication.rglob("*") if path.is_file()
+            )
+            protection_valid = (
+                publication.stat().st_mode & 0o222 == 0
+                and all(path.stat().st_mode & 0o222 == 0 for path in protected)
+            )
+        except (OSError, ValueError):
+            protection_valid = False
+            actual_artifacts = {}
+        if (
+            not state_path.is_file()
+            or not artifact_manifest.is_file()
+            or hashlib_sha256(state_path.read_bytes()) != expected_artifacts[
+                "authority-state.yaml"
+            ]
+            or actual_artifacts != expected_artifacts
+            or any(
+                hashlib_sha256((publication / name).read_bytes()) != expected_digest
+                for name, expected_digest in expected_artifacts.items()
+            )
+            or not protection_valid
+        ):
+            raise AuthorityPublicationError(
+                "conflicting runtime publication already exists"
+            )
+        return publication, state_path, artifact_manifest
+
+    @staticmethod
+    def _seal_publication(publication: Path) -> None:
+        for path in sorted(publication.rglob("*"), reverse=True):
+            if path.is_file():
+                path.chmod(0o444)
+            elif path.is_dir():
+                path.chmod(0o555)
+        publication.chmod(0o555)
+
+    def _verify_idempotent_activation(
+        self, directory: Path, target: Path
+    ) -> dict[str, Any]:
+        receipt = load_mapping(
+            directory / "activation-receipt.yaml", "activation receipt"
+        )
+        receipt_digest = receipt.pop("receipt_digest", None)
+        if receipt_digest != digest(receipt):
+            raise AuthorityPublicationError("activation receipt digest mismatch")
+        receipt["receipt_digest"] = receipt_digest
+        if str(Path(target).resolve()) != receipt.get("target"):
+            raise AuthorityPublicationError("idempotent activation target mismatch")
+        active = authoritative_source_path(self.root)
+        if hashlib_sha256(active.read_bytes()) != receipt["activated_state_digest"]:
+            raise AuthorityPublicationError(
+                "idempotent activation artifact digest mismatch"
+            )
         return receipt
 
     def rollback(
@@ -726,7 +1012,16 @@ class AuthorityPublicationFramework:
         target_path = Path(target).resolve()
         if str(target_path) != receipt.get("target"):
             raise AuthorityPublicationError("rollback target mismatch")
-        if hashlib_sha256(target_path.read_bytes()) != receipt["activated_state_digest"]:
+        expected_pointer = (
+            self.root / AUTHORITY_RUNTIME_RELATIVE_PATH / ACTIVE_PUBLICATION_POINTER
+        ).resolve()
+        if target_path == expected_pointer:
+            active = authoritative_source_path(self.root)
+            if hashlib_sha256(active.read_bytes()) != receipt["activated_state_digest"]:
+                raise AuthorityPublicationError(
+                    "active authority state changed after activation"
+                )
+        elif hashlib_sha256(target_path.read_bytes()) != receipt["activated_state_digest"]:
             raise AuthorityPublicationError("active authority state changed after activation")
         previous = (directory / "previous-authority-state.yaml").read_bytes()
         if hashlib_sha256(previous) != receipt["previous_state_digest"]:

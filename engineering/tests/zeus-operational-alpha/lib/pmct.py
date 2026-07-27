@@ -24,6 +24,10 @@ CONTROLLED_RESULTS = {
 }
 TERMINAL_RESULTS = {"PASS", "FAIL", "BLOCKED", "NOT_READY"}
 REPOSITORY = Path(__file__).resolve().parents[4]
+sys.path.insert(0, str(REPOSITORY))
+
+from scripts.lib.emp.authority_resolution import authoritative_source_path  # noqa: E402
+
 PMCT_ROOT = REPOSITORY / "engineering/tests/zeus-operational-alpha"
 MATRIX_PATH = PMCT_ROOT / "PMCT-CAPABILITY-MATRIX.yaml"
 STATE_PATH = REPOSITORY / "engineering/runtime/pmct/capability-state.yaml"
@@ -145,7 +149,7 @@ def command_surface() -> dict[str, dict[str, Any]]:
 
 
 def published_baseline() -> str | None:
-    source = REPOSITORY / "engineering/authority/operational-authority-state.yaml"
+    source = authoritative_source_path(REPOSITORY)
     try:
         value = yaml.safe_load(source.read_text(encoding="utf-8"))
         repositories = value.get("repositories", {})
@@ -183,7 +187,7 @@ def inspect_state() -> dict[str, Any]:
         "baseline_matches": published_baseline() == head,
         "working_tree": git("status", "--short"),
         "authority_operationally_configured": bool(
-            yaml.safe_load((REPOSITORY / "engineering/authority/operational-authority-state.yaml").read_text()).get(
+            yaml.safe_load(authoritative_source_path(REPOSITORY).read_text()).get(
                 "operationally_configured", False
             )
         ),

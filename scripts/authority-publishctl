@@ -18,7 +18,10 @@ from scripts.lib.emp.authority_publication import (  # noqa: E402
     AuthorityPublicationFramework,
     commissioning_status,
 )
-from scripts.lib.emp.authority_resolution import authoritative_source_path  # noqa: E402
+from scripts.lib.emp.authority_resolution import (  # noqa: E402
+    authority_activation_target,
+    authoritative_source_path,
+)
 
 
 def at(value: str | None) -> datetime:
@@ -72,7 +75,11 @@ def main(argv=None) -> int:
         framework = AuthorityPublicationFramework(
             args.repository, policy_path=policy
         )
-        target = authoritative_source_path(args.repository)
+        target = (
+            authority_activation_target(args.repository)
+            if args.command in {"activate", "rollback"}
+            else authoritative_source_path(args.repository)
+        )
         if args.command == "initialize":
             emit({"transaction": str(framework.initialize(args.transaction))})
         elif args.command == "stage":

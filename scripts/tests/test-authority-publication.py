@@ -25,9 +25,13 @@ from scripts.lib.emp.authority_publication import (  # noqa: E402
     SIGNATURE_NAMESPACE,
     commissioning_status,
     envelope_identifier,
+    hashlib_sha256,
 )
 from scripts.lib.emp.authority_resolution import (  # noqa: E402
     AuthorityResolutionRuntime,
+    AuthorityResolutionError,
+    authority_activation_target,
+    authoritative_source_path,
     digest,
     load_authority_state,
 )
@@ -401,6 +405,334 @@ class PublicationQualificationTests(unittest.TestCase):
         self.assertTrue(status["authority_source_configured"])
         self.assertEqual(status["allowed_signer_count"], 1)
         self.assertEqual(status["blockers"], [])
+
+    def test_runtime_publication_pointer_is_integrity_checked(self):
+        root = self.directory / "runtime-repository"
+        publication = (
+            root / ".zeus/runtime/authority/publications/AUTHORITY-PUBLICATION-1"
+        )
+        publication.mkdir(parents=True)
+        state = publication / "authority-state.yaml"
+        state.write_text("schema_version: 1\noperationally_configured: true\n")
+        manifest = publication / "artifacts.sha256"
+        manifest.write_text(f"{hashlib_sha256(state.read_bytes())}  authority-state.yaml\n")
+        pointer = root / ".zeus/runtime/authority/active-publication.json"
+        pointer.write_text(json.dumps({
+            "schema_version": 1,
+            "transaction_id": "AUTHORITY-PUBLICATION-1",
+            "authority_state": str(
+                state.relative_to(root / ".zeus/runtime/authority")
+            ),
+            "authority_state_digest": hashlib_sha256(state.read_bytes()),
+            "artifact_manifest": str(
+                manifest.relative_to(root / ".zeus/runtime/authority")
+            ),
+            "artifact_manifest_digest": hashlib_sha256(manifest.read_bytes()),
+        }))
+        self.assertEqual(authoritative_source_path(root), state)
+        state.write_text("schema_version: 1\noperationally_configured: false\n")
+        with self.assertRaisesRegex(
+            AuthorityResolutionError, "digest mismatch"
+        ):
+            authoritative_source_path(root)
+
+    def runtime_activation_fixture(self):
+        repository = self.directory / f"runtime-repository-{self.sequence}"
+        repository.mkdir()
+        subprocess.run(["git", "init", "-q", repository], check=True)
+        subprocess.run(
+            ["git", "-C", repository, "config", "user.email", "test@example.invalid"],
+            check=True,
+        )
+        subprocess.run(
+            ["git", "-C", repository, "config", "user.name", "Test"],
+            check=True,
+        )
+        (repository / "baseline").write_text("qualified\n")
+        subprocess.run(["git", "-C", repository, "add", "baseline"], check=True)
+        subprocess.run(
+            ["git", "-C", repository, "commit", "-qm", "qualified baseline"],
+            check=True,
+        )
+        head = subprocess.run(
+            ["git", "-C", repository, "rev-parse", "HEAD"],
+            text=True,
+            capture_output=True,
+            check=True,
+        ).stdout.strip()
+        framework = AuthorityPublicationFramework(repository, policy_path=self.policy)
+        transaction = framework.initialize(self.directory / f"runtime-tx-{self.sequence}")
+        candidate = {
+            "schema_version": 1,
+            "candidate_digest": "fixture-candidate",
+            "operationally_configured": False,
+            "status": "staged-authority-publication",
+            "repositories": {
+                "homelab": {
+                    "canonical_locator": str(repository),
+                    "baseline_commit": head,
+                }
+            },
+        }
+        readiness = {
+            "transaction_id": framework._metadata(transaction)["transaction_id"],
+            "candidate_digest": "fixture-candidate",
+            "readiness_digest": "a" * 64,
+        }
+        target = authority_activation_target(repository)
+        return repository, framework, transaction, candidate, readiness, target, head
+
+    def activate_runtime_fixture(self, fixture):
+        repository, framework, transaction, candidate, readiness, target, head = fixture
+        with (
+            unittest.mock.patch.object(
+                framework, "verify_readiness", return_value=readiness
+            ),
+            unittest.mock.patch.object(
+                framework, "build_candidate", return_value=candidate
+            ),
+        ):
+            receipt = framework.activate(transaction, target=target, at=AT)
+        return receipt
+
+    def test_runtime_store_activation_preserves_git_and_seals_artifacts(self):
+        fixture = self.runtime_activation_fixture()
+        repository, framework, transaction, candidate, readiness, target, head = fixture
+        before_tracked = subprocess.run(
+            ["git", "-C", repository, "status", "--porcelain=v1", "--untracked-files=no"],
+            text=True, capture_output=True, check=True,
+        ).stdout
+        before_staged = subprocess.run(
+            ["git", "-C", repository, "diff", "--cached", "--name-only"],
+            text=True, capture_output=True, check=True,
+        ).stdout
+        receipt = self.activate_runtime_fixture(fixture)
+        pointer = json.loads(target.read_text())
+        publication = target.parent / "publications" / readiness["transaction_id"]
+        state = authoritative_source_path(repository)
+        active = yaml.safe_load(state.read_text())
+        after_head = subprocess.run(
+            ["git", "-C", repository, "rev-parse", "HEAD"],
+            text=True, capture_output=True, check=True,
+        ).stdout.strip()
+        after_tracked = subprocess.run(
+            ["git", "-C", repository, "status", "--porcelain=v1", "--untracked-files=no"],
+            text=True, capture_output=True, check=True,
+        ).stdout
+        after_staged = subprocess.run(
+            ["git", "-C", repository, "diff", "--cached", "--name-only"],
+            text=True, capture_output=True, check=True,
+        ).stdout
+        self.assertTrue(publication.is_dir())
+        self.assertEqual(pointer["authority_state_digest"], hashlib_sha256(state.read_bytes()))
+        self.assertEqual(active["repositories"]["homelab"]["baseline_commit"], head)
+        self.assertEqual(after_head, head)
+        self.assertEqual(after_tracked, before_tracked)
+        self.assertEqual(after_staged, before_staged)
+        self.assertEqual(publication.stat().st_mode & 0o777, 0o555)
+        self.assertTrue(
+            all(path.stat().st_mode & 0o222 == 0 for path in publication.rglob("*"))
+        )
+        with self.assertRaises(PermissionError):
+            (publication / "replacement").write_text("forbidden\n")
+        with self.assertRaises(PermissionError):
+            state.write_text("tampered\n")
+        replay = self.activate_runtime_fixture(fixture)
+        self.assertEqual(replay, receipt)
+        self.assertEqual(authoritative_source_path(repository), state)
+        print("PUBLICATION_RUNTIME_PATH_EXECUTED=PASS")
+        print("PUBLICATION_ARTIFACT_CREATED=PASS")
+        print("ACTIVE_POINTER_INTEGRITY=PASS")
+        print("PUBLISHED_HEAD_MATCH=PASS")
+        print("REPOSITORY_HEAD_UNCHANGED=PASS")
+        print("TRACKED_WORKTREE_UNCHANGED=PASS")
+        print("STAGED_CONTENT_UNCHANGED=PASS")
+        print("REPEAT_ACTIVATION_IDEMPOTENT=PASS")
+        print("CONFLICTING_OVERWRITE_REJECTED=PASS")
+
+    def test_conflicting_runtime_publication_is_rejected(self):
+        fixture = self.runtime_activation_fixture()
+        repository, framework, transaction, candidate, readiness, target, head = fixture
+        conflict = target.parent / "publications" / readiness["transaction_id"]
+        conflict.mkdir(parents=True)
+        (conflict / "foreign").write_text("conflict\n")
+        with (
+            unittest.mock.patch.object(framework, "verify_readiness", return_value=readiness),
+            unittest.mock.patch.object(framework, "build_candidate", return_value=candidate),
+            self.assertRaisesRegex(
+                AuthorityPublicationError, "conflicting runtime publication"
+            ),
+        ):
+            framework.activate(transaction, target=target, at=AT)
+        self.assertFalse(target.exists())
+
+    def test_runtime_publication_rejects_dirty_tracked_state(self):
+        fixture = self.runtime_activation_fixture()
+        repository, framework, transaction, candidate, readiness, target, head = fixture
+        (repository / "baseline").write_text("dirty\n")
+        with (
+            unittest.mock.patch.object(framework, "verify_readiness", return_value=readiness),
+            unittest.mock.patch.object(framework, "build_candidate", return_value=candidate),
+            self.assertRaisesRegex(AuthorityPublicationError, "must be clean"),
+        ):
+            framework.activate(transaction, target=target, at=AT)
+        self.assertFalse(target.exists())
+
+    def test_runtime_publication_rejects_baseline_head_mismatch(self):
+        fixture = self.runtime_activation_fixture()
+        repository, framework, transaction, candidate, readiness, target, head = fixture
+        candidate["repositories"]["homelab"]["baseline_commit"] = "0" * 40
+        with (
+            unittest.mock.patch.object(framework, "verify_readiness", return_value=readiness),
+            unittest.mock.patch.object(framework, "build_candidate", return_value=candidate),
+            self.assertRaisesRegex(AuthorityPublicationError, "does not match"),
+        ):
+            framework.activate(transaction, target=target, at=AT)
+        self.assertFalse(target.exists())
+
+    def test_repository_change_during_activation_preserves_pointer(self):
+        fixture = self.runtime_activation_fixture()
+        repository, framework, transaction, candidate, readiness, target, head = fixture
+        snapshot = framework._repository_snapshot()
+        changed = {**snapshot, "head": "f" * 40}
+        with (
+            unittest.mock.patch.object(framework, "verify_readiness", return_value=readiness),
+            unittest.mock.patch.object(framework, "build_candidate", return_value=candidate),
+            unittest.mock.patch.object(
+                framework, "_repository_snapshot", side_effect=[snapshot, changed]
+            ),
+            self.assertRaisesRegex(AuthorityPublicationError, "changed during"),
+        ):
+            framework.activate(transaction, target=target, at=AT)
+        self.assertFalse(target.exists())
+        self.assertEqual(
+            subprocess.run(
+                ["git", "-C", repository, "rev-parse", "HEAD"],
+                text=True, capture_output=True, check=True,
+            ).stdout.strip(),
+            head,
+        )
+
+    def test_pointer_replace_interruption_preserves_previous_pointer(self):
+        first = self.runtime_activation_fixture()
+        repository, framework, transaction, candidate, readiness, target, head = first
+        self.activate_runtime_fixture(first)
+        previous = target.read_bytes()
+        second_transaction = framework.initialize(self.directory / "runtime-tx-second")
+        second_readiness = {
+            **readiness,
+            "transaction_id": framework._metadata(second_transaction)["transaction_id"],
+        }
+        real_atomic = framework._atomic_bytes
+
+        def interrupt(path, value):
+            if Path(path).resolve() == target.resolve():
+                raise OSError("simulated pointer replacement interruption")
+            return real_atomic(path, value)
+
+        with (
+            unittest.mock.patch.object(
+                framework, "verify_readiness", return_value=second_readiness
+            ),
+            unittest.mock.patch.object(framework, "build_candidate", return_value=candidate),
+            unittest.mock.patch.object(framework, "_atomic_bytes", side_effect=interrupt),
+            self.assertRaisesRegex(OSError, "simulated pointer"),
+        ):
+            framework.activate(second_transaction, target=target, at=AT)
+        self.assertEqual(target.read_bytes(), previous)
+        self.assertEqual(authoritative_source_path(repository).name, "authority-state.yaml")
+        with (
+            unittest.mock.patch.object(
+                framework, "verify_readiness", return_value=second_readiness
+            ),
+            unittest.mock.patch.object(framework, "build_candidate", return_value=candidate),
+        ):
+            framework.activate(second_transaction, target=target, at=AT)
+        self.assertEqual(
+            json.loads(target.read_text())["transaction_id"],
+            second_readiness["transaction_id"],
+        )
+
+    def test_runtime_publication_failure_quarantines_partial_artifacts(self):
+        fixture = self.runtime_activation_fixture()
+        repository, framework, transaction, candidate, readiness, target, head = fixture
+        real_create = framework._create_only
+        calls = 0
+
+        def fail_after_state(path, value):
+            nonlocal calls
+            calls += 1
+            if calls == 2:
+                raise OSError("simulated artifact write failure")
+            return real_create(path, value)
+
+        with (
+            unittest.mock.patch.object(framework, "verify_readiness", return_value=readiness),
+            unittest.mock.patch.object(framework, "build_candidate", return_value=candidate),
+            unittest.mock.patch.object(framework, "_create_only", side_effect=fail_after_state),
+            self.assertRaisesRegex(OSError, "simulated artifact"),
+        ):
+            framework.activate(transaction, target=target, at=AT)
+        self.assertFalse(target.exists())
+        self.assertTrue(any((target.parent / "quarantine").iterdir()))
+
+    def test_runtime_publication_directory_unavailable_fails_closed(self):
+        fixture = self.runtime_activation_fixture()
+        repository, framework, transaction, candidate, readiness, target, head = fixture
+        target.parent.mkdir(parents=True)
+        target.parent.chmod(0o500)
+        try:
+            with (
+                unittest.mock.patch.object(framework, "verify_readiness", return_value=readiness),
+                unittest.mock.patch.object(framework, "build_candidate", return_value=candidate),
+                self.assertRaises(PermissionError),
+            ):
+                framework.activate(transaction, target=target, at=AT)
+        finally:
+            target.parent.chmod(0o700)
+        self.assertFalse(target.exists())
+
+    def test_active_pointer_failure_modes_reject_invalid_state(self):
+        root = self.directory / "pointer-failures"
+        runtime = root / ".zeus/runtime/authority"
+        runtime.mkdir(parents=True)
+        pointer = runtime / "active-publication.json"
+        pointer.write_text("{malformed")
+        with self.assertRaisesRegex(AuthorityResolutionError, "invalid active"):
+            authoritative_source_path(root)
+        pointer.write_text(json.dumps({
+            "authority_state": "publications/missing/authority-state.yaml",
+            "authority_state_digest": "0" * 64,
+            "artifact_manifest": "publications/missing/artifacts.sha256",
+            "artifact_manifest_digest": "0" * 64,
+        }))
+        with self.assertRaisesRegex(AuthorityResolutionError, "unavailable"):
+            authoritative_source_path(root)
+
+    def test_artifact_manifest_and_state_tampering_are_rejected(self):
+        fixture = self.runtime_activation_fixture()
+        repository, framework, transaction, candidate, readiness, target, head = fixture
+        self.activate_runtime_fixture(fixture)
+        state = authoritative_source_path(repository)
+        manifest = state.parent / "artifacts.sha256"
+        state.chmod(0o644)
+        state.write_text(state.read_text() + "tamper: true\n")
+        with self.assertRaisesRegex(AuthorityResolutionError, "digest mismatch"):
+            authoritative_source_path(repository)
+        state.write_text(yaml.safe_dump({
+            **yaml.safe_load(state.read_text().replace("tamper: true\n", "")),
+        }))
+        pointer = json.loads(target.read_text())
+        pointer["authority_state_digest"] = hashlib_sha256(state.read_bytes())
+        target.write_text(json.dumps(pointer))
+        manifest.chmod(0o644)
+        manifest.write_text("0" * 64 + "  authority-state.yaml\n")
+        pointer["artifact_manifest_digest"] = hashlib_sha256(manifest.read_bytes())
+        target.write_text(json.dumps(pointer))
+        with self.assertRaisesRegex(
+            AuthorityResolutionError, "artifact integrity failure"
+        ):
+            authoritative_source_path(repository)
 
 
 if __name__ == "__main__":

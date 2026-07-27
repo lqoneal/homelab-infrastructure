@@ -38,6 +38,10 @@ failed assertions, and unchanged repository status. Do not paste secrets.
 Normal operators do not manually supply those identifiers during successful
 closeout. Zeus resolves them from authoritative PMCT and WOP state.
 `bin/record-operator-approval` is an internal persistence primitive.
+It creates a new versioned receipt for the binding resolved by Zeus and never
+overwrites the legacy receipt or a prior successor. Gate eligibility verifies
+the receipt checksum and requires its approved HEAD to equal the current
+repository HEAD; mere receipt-file existence is not acceptance.
 
 A verification remains valid only while gate, PMCT run ID, evidence and
 evidence-manifest digests, qualified repository HEAD, operator identity, WOP

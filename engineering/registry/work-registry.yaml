@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 62
+revision: 63
 updated_at: '2026-07-26'
 serialization: yaml
 mutation_history:
@@ -413,6 +413,14 @@ mutation_history:
   reason: Complete implementation, failure-mode qualification, controlled
     reconciliation, and external WOP integrity verification while excluding
     ZEUS-P2-019 artifacts.
+- revision: 63
+  previous_revision: 62
+  at: '2026-07-27T01:00:00+00:00'
+  actor: ZEUS-P2-025 implementation agent
+  action: resolve publication fixed point and receipt lineage
+  reason: Move authority activation outside tracked Git content and establish
+    immutable successor approvals without allowing stale receipts to advance a
+    gate.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -2578,6 +2586,48 @@ entities:
       requires a matching durable verification, requests explicit confirmation,
       writes a bound immutable receipt, and reports only conditional next-gate
       eligibility without executing that gate.
+    queue_ids: []
+  - registry_id: EMP-WORK-ZEUS-P2-025-PUBLICATION-RECEIPT-LIFECYCLE
+    object_type: WorkItem
+    title: Zeus Publication and Receipt Lifecycle Correction
+    management_state: completed
+    owner: Lawrence O'Neal
+    scope: ZEUS-P2-025
+    authority_reference: ZEUS-P2-025 Mission Instruction
+    source_records:
+    - PHASE-0001
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-ZEUS-P2-023-OPERATOR-APPROVAL-UX
+    created_at: 2026-07-26
+    updated_at: 2026-07-26
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-07-27T00:30:00+00:00'
+      actor: loneal through authenticated instruction
+      reason: Resolve the publication fixed point and incomplete approval
+        receipt lifecycle without weakening qualification.
+      authority_reference: ZEUS-P2-025 Mission Instruction
+    - from: active
+      to: completed
+      at: '2026-07-27T01:00:00+00:00'
+      actor: ZEUS-P2-025 implementation agent
+      reason: Architecture, implementation, isolated qualification, and
+        controlled-record reconciliation completed.
+      authority_reference: ZEUS-P2-025 Mission Instruction
+    project_id: EMP-PROJECT-HOMELAB
+    order: 37
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: authority-lifecycle-correction
+    priority: 0
+    completion_criteria: Publication leaves Git clean with published HEAD
+      unchanged, and append-only successor receipts preserve historical
+      evidence while stale bindings cannot authorize gate progression.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP

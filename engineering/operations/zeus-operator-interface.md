@@ -152,6 +152,13 @@ binding check.
 do not locate or provide run IDs, evidence paths, repository hashes, or
 receipt paths manually.
 
+Approval receipts are append-only and versioned by gate and binding. The first
+receipt for a gate may remain at the legacy flat path; successors are created
+under `operator-approvals/OA-XX/`. Every successor records the exact path and
+SHA-256 digest of its predecessor. Historical receipts remain append-only,
+read-only audit evidence and never authorize a different HEAD, PMCT run, or evidence digest.
+Eligibility accepts only a checksummed receipt bound to the current HEAD.
+
 ## Corruption recovery
 
 Read, validation, lock, or write failure stops the invocation with exit 78.

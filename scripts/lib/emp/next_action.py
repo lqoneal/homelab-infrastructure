@@ -11,6 +11,8 @@ from typing import Any, Mapping
 
 import yaml
 
+from scripts.lib.emp.authority_resolution import authoritative_source_path
+
 
 class NextActionError(ValueError):
     """Authoritative state cannot be inspected safely."""
@@ -73,7 +75,7 @@ def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
     head = _git(root, "rev-parse", "HEAD")
     branch = _git(root, "branch", "--show-current")
     authority = _mapping(
-        root / "engineering/authority/operational-authority-state.yaml",
+        authoritative_source_path(root),
         "operational authority state",
     )
     activation = _mapping(

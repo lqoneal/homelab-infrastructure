@@ -137,9 +137,13 @@ scripts/zeus generate-wop "Bounded operational intent" \
 Operational mode rejects `--phase`, `--submitter`, `--approval-authority`,
 `--approval-reference`, `--approval-date`, `--authority-node`, `--adr`, and
 `--immutable-wop`. The Authority Resolution Runtime reads only the
-repository-fixed source:
-
-`engineering/authority/operational-authority-state.yaml`
+integrity-qualified active publication selected by the repository-fixed
+runtime contract. New publications are create-only directories below
+`.zeus/runtime/authority/publications/`; the atomic
+`.zeus/runtime/authority/active-publication.json` pointer binds the selected
+state and artifact-manifest digests. The tracked
+`engineering/authority/operational-authority-state.yaml` is a migration
+fallback until the first runtime-store publication, not an activation target.
 
 ZEUS-P2-014 commissioned the repository-fixed source through controlled
 enrollment, signing, readiness, and activation. Operational resolution still
@@ -154,6 +158,14 @@ resolution, governing-manifest digest, authentication state, placeholders,
 provenance completeness, expiry, and the ARB seal. WOP rendering still requires
 explicit review and performs no submission, admission, dispatch, approval, or
 execution.
+
+Because activation writes only ignored operational runtime state, publishing a
+baseline does not modify the commit being published. Files are sealed `0444`
+and directories `0555` after atomic promotion. The artifact set is create-only,
+read-only after publication, integrity verified, and prohibited from
+replacement by the publication runtime. It retains the signed envelopes,
+detached signatures, activated state, and SHA-256 manifest, preserving
+clean-worktree, reproducibility, auditability, and independent verification.
 
 When authority is missing, stale, conflicting, incomplete, or invalid, Zeus
 stops execution safely and reports an authority-resolution failure. Under

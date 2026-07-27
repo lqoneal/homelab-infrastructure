@@ -98,6 +98,14 @@ content, or operational decision state:
   qualification, Operational Alpha progression, dispatcher authorization, and
   production eligibility.
 
+Authority activation is operational state, but it is stored as create-only,
+read-only-after-publication, integrity-verified artifacts plus an
+integrity-bound active pointer outside tracked Git content.
+Activation therefore cannot change the HEAD being published. Gate acceptance
+history is append-only: successor receipts bind the exact predecessor digest,
+and a historical receipt never authorizes a different repository HEAD,
+PMCT run, or evidence binding.
+
 Runtime presentation telemetry is permitted only when it is explicitly
 documented, deterministic, bounded, non-authoritative, and never consumed by
 engineering decisions, PMCT qualification, authority resolution, dispatcher
