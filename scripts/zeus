@@ -65,7 +65,9 @@ def authority_status(mission_status):
             "dispatcher": decision["operational_dispatch"],
             "oa02_verification": (
                 oa02["verification_record"]["result"]
-                if oa02["verification_record"] else oa02["result"]
+                if oa02["verification_record"]
+                else "READY" if oa02["result"] == "PASS"
+                else oa02["result"]
             ),
             "oa02": oa02["oa02_state"],
             "progressive_wop": oa02["progressive_wop"],
