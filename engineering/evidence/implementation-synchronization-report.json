@@ -260,8 +260,8 @@
       "implementation_changed": false,
       "implementation_fingerprints": [
         {
-          "actual": "e806e70345a36495c76c36989c95c3137bbbc04d194621df14875ab2d5a6b557",
-          "expected": "e806e70345a36495c76c36989c95c3137bbbc04d194621df14875ab2d5a6b557",
+          "actual": "2a9b3185533daf3aeeabb85a88a6c9da5478c992517fb4eb8fa36632a14d28ab",
+          "expected": "2a9b3185533daf3aeeabb85a88a6c9da5478c992517fb4eb8fa36632a14d28ab",
           "matches": true,
           "strategy": "repository_inventory"
         }
@@ -572,14 +572,14 @@
       "implementation_changed": false,
       "implementation_fingerprints": [
         {
-          "actual": "0596c4df8ad56dcced8ade296e552e676f1203eabc86d3fe7720a23cfed480f1",
-          "expected": "0596c4df8ad56dcced8ade296e552e676f1203eabc86d3fe7720a23cfed480f1",
+          "actual": "6c79cef89d2226d2af1e8b06185c25a2b46290b8d98ffe491b8a4e4f328402a2",
+          "expected": "6c79cef89d2226d2af1e8b06185c25a2b46290b8d98ffe491b8a4e4f328402a2",
           "matches": true,
           "strategy": "sha256"
         },
         {
-          "actual": "efc9b31908ea757e1ffba5e4bacba13375112105",
-          "expected": "efc9b31908ea757e1ffba5e4bacba13375112105",
+          "actual": "c135da5cf6e2808a5dfc7e15330dbfbab74e1711",
+          "expected": "c135da5cf6e2808a5dfc7e15330dbfbab74e1711",
           "matches": true,
           "strategy": "git_object"
         }
@@ -636,7 +636,7 @@
           "strategy": "sha256"
         },
         {
-          "actual": "9c4262ebccbd16b1f4ac00f847a72b5916b6dca7",
+          "actual": "fc4ed39ad59a73e8a9a8cba18ae4cf70c3d31f61",
           "expected": "bcdd0b1a19045654d470bc65383c05a976bae2a6",
           "matches": true,
           "strategy": "repository_commit"

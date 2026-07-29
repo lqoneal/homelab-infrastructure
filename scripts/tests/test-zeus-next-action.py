@@ -295,7 +295,11 @@ class NextActionTests(unittest.TestCase):
         result = subprocess.run(
             [str(ROOT / "scripts/zeus"), "next-action", "--json"],
             text=True, capture_output=True, check=False,
-            env={"ZEUS_TESTING": "operator", "ZEUS_NO_INTRO": "1"},
+            env={
+                "ZEUS_TESTING": "operator",
+                "ZEUS_NO_INTRO": "1",
+                "ZEUS_PROGRESSIVE_OA": "0",
+            },
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         value = json.loads(result.stdout)

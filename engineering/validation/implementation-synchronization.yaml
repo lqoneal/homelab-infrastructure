@@ -16,7 +16,7 @@ synchronizations:
       object_type: directory
       coverage_scope: recursive
       fingerprints:
-        - {strategy: repository_inventory, value: e806e70345a36495c76c36989c95c3137bbbc04d194621df14875ab2d5a6b557}
+        - {strategy: repository_inventory, value: 2a9b3185533daf3aeeabb85a88a6c9da5478c992517fb4eb8fa36632a14d28ab}
     ownership: {documentation: Engineering Governance, implementation: Engineering Platform}
     validation_scope: repository engineering controllers, execution engines, libraries, interfaces, and verification
     synchronization_strategy: recursive_artifact_coverage
@@ -133,8 +133,8 @@ synchronizations:
       repository_locator: scripts/zeus
       object_type: executable
       fingerprints:
-        - {strategy: sha256, value: 0596c4df8ad56dcced8ade296e552e676f1203eabc86d3fe7720a23cfed480f1}
-        - {strategy: git_object, value: efc9b31908ea757e1ffba5e4bacba13375112105}
+        - {strategy: sha256, value: 6c79cef89d2226d2af1e8b06185c25a2b46290b8d98ffe491b8a4e4f328402a2}
+        - {strategy: git_object, value: c135da5cf6e2808a5dfc7e15330dbfbab74e1711}
     ownership: {documentation: Zeus Operational Alpha, implementation: Zeus Operator Interface}
     validation_scope: operator verification command interface
     synchronization_strategy: command_interface

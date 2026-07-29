@@ -61,6 +61,10 @@ class OperationalGateHandlerTests(unittest.TestCase):
                 "trust_compilation_ready": True,
                 "missing_owners": [],
             },
+            dispatch_probe=lambda **kwargs: {
+                "dispatch_permitted": False,
+                "reason": "SIMULATED_ADMISSION_ONLY",
+            },
         ).start(
             {
                 "mode": "operational",

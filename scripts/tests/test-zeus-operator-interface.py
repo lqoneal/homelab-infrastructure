@@ -128,7 +128,11 @@ class CliTests(unittest.TestCase):
             [str(ZEUS), "status"],
             text=True,
             capture_output=True,
-            env={**os.environ, "ZEUS_NO_INTRO": "1"},
+            env={
+                **os.environ,
+                "ZEUS_NO_INTRO": "1",
+                "ZEUS_PROGRESSIVE_OA": "0",
+            },
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         for section in (

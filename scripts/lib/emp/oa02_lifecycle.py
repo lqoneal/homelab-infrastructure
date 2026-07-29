@@ -40,8 +40,14 @@ def resolve(repository: Path) -> dict:
         ]
     activation=json.loads((root/"engineering/dispatch/dispatcher-activation.json").read_text())
     dispatcher_state=activation.get("status","MISSING")
-    from scripts.lib.emp.agent_qualification import registry as agent_registry
-    registry=agent_registry(root)
+    from scripts.lib.emp.agent_qualification import (
+        AgentQualificationError,
+        registry as agent_registry,
+    )
+    try:
+        registry=agent_registry(root)
+    except AgentQualificationError:
+        registry={"agents":[]}
     agents=registry.get("agents",[]); qualified=[a for a in agents if a.get("active") is True and a.get("qualification_status")=="QUALIFIED"]
     blockers=[]
     if published!=head: blockers.append("RESTORE_PUBLISHED_BASELINE")

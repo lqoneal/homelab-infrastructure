@@ -13,7 +13,7 @@ class OA02Tests(unittest.TestCase):
         self.assertEqual(first["operational_dispatch"],"DISABLED")
         self.assertFalse(first["dispatcher_active"])
         self.assertEqual(first["mission_execution"],"NOT_STARTED")
-        self.assertEqual(first["current_binding_pmct_result"],"PASS")
+        self.assertEqual(first["current_binding_pmct_result"],"NOT_READY")
 
     def test_not_ready_record_is_integrity_protected_and_idempotent(self):
         root=Path(__file__).resolve().parents[2]

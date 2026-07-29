@@ -199,6 +199,10 @@ def main(argv=None):
     if a.command is None:
         p.print_help()
         return 0
+    progressive_mode = os.environ.get("ZEUS_PROGRESSIVE_OA")
+    progressive_enabled = progressive_mode != "0" and (
+        progressive_oa.state_path(ROOT).exists() or progressive_mode == "1"
+    )
     try:
         environment_state = os.environ.get("ZEUS_STATE")
         requested_state = a.state or (Path(environment_state) if environment_state else None)
@@ -212,7 +216,7 @@ def main(argv=None):
                 print(ORIENTATION)
             return 0
         if a.command == "next-action":
-            if progressive_oa.state_path(ROOT).exists():
+            if progressive_enabled:
                 decision = progressive_oa.next_action(ROOT)
                 if a.json: emit(decision)
                 else:
@@ -316,8 +320,7 @@ def main(argv=None):
             })
             return 0
         if a.command == "verify":
-            if (progressive_oa.state_path(ROOT).exists()
-                    or os.environ.get("ZEUS_PROGRESSIVE_OA") == "1"):
+            if progressive_enabled:
                 item = progressive_oa.show(ROOT, a.gate)
                 emit({"gate_id": item["gate_id"], "result": "IMPLEMENTATION_REQUIRED",
                       "verification_guide": item["verification_guide"]})
@@ -349,16 +352,14 @@ def main(argv=None):
                 print("DECISION_INTEGRITY=PASS")
             return 0
         if (a.command == "approve" and a.approval_id.upper().startswith("OA-")
-                and (progressive_oa.state_path(ROOT).exists()
-                     or os.environ.get("ZEUS_PROGRESSIVE_OA") == "1")):
+                and progressive_enabled):
             record, replay = progressive_oa.decide(
                 ROOT, a.approval_id, "ACCEPTED", a.operator, a.at
             )
             emit({"decision": record, "idempotent_replay": replay})
             return 0
         if (a.command == "decline" and a.approval_id.upper().startswith("OA-")
-                and (progressive_oa.state_path(ROOT).exists()
-                     or os.environ.get("ZEUS_PROGRESSIVE_OA") == "1")):
+                and progressive_enabled):
             record, replay = progressive_oa.decide(
                 ROOT, a.approval_id, "REJECTED", a.operator, a.at
             )
@@ -381,7 +382,7 @@ def main(argv=None):
             )
         o=MissionOrchestrator(OrchestrationStore(state))
         if a.command=="status":
-            if progressive_oa.state_path(ROOT).exists() and not (testing or override):
+            if progressive_enabled and not (testing or override):
                 emit(progressive_oa.status(ROOT))
                 return 0
             value = authority_status(o.status())
@@ -390,7 +391,7 @@ def main(argv=None):
             else:
                 print(status_text(value), end="")
         elif a.command=="resume":
-            if progressive_oa.state_path(ROOT).exists():
+            if progressive_enabled:
                 emit(progressive_oa.controller(ROOT))
             else:
                 emit(o.status())

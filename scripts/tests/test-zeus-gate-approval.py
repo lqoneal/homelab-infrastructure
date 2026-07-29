@@ -604,6 +604,7 @@ class GateApprovalTests(unittest.TestCase):
             "ZEUS_GATE_PMCT_RUNTIME": str(self.runtime / "missing"),
             "ZEUS_GATE_CAPABILITY_STATE": str(self.state),
             "ZEUS_OPERATOR_STATE": str(self.repository / "operator.json"),
+            "ZEUS_PROGRESSIVE_OA": "0",
         })
         result = subprocess.run(
             [str(ROOT / "scripts/zeus"), "verify", "OA-01"],
