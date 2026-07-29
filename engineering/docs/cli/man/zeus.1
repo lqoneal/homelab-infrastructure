@@ -23,6 +23,18 @@ Resume observes recorded state and never manufactures approval.
 .SH COMMANDS
 status, next-action, verify, accept, approve, dispatcher, resume, and additional commands shown by help.
 .br
+mission snapshot, mission qualify, and execution resolve consume the canonical
+Engineering Execution Interface for mission discovery and qualification.
+.br
+assurance capabilities, mission requirements, mission preflight, mission
+verify, and mission synchronization provide read-only, fail-closed mission
+assurance from authoritative operational state.
+.br
+Mission assurance validates declarations against the independently versioned
+Controlled Mission Assurance Language revision bound by the Engineering
+Execution Interface. Unsupported operators, selectors, expression structures,
+and declaration versions fail closed.
+.br
 agent status, agent registry, agent qualify, and agent revoke manage the
 integrity-bound production-agent qualification lifecycle without authorizing
 dispatch.
@@ -36,6 +48,10 @@ dispatch.
 .B zeus verify OA-02
 .br
 .B zeus agent qualify
+.br
+.B zeus mission qualify P2-038-CORRECTIVE
+.br
+.B zeus mission verify P2-038-CORRECTIVE
 .SH FILES
 .I .zeus/runtime
 and repository-controlled engineering records.

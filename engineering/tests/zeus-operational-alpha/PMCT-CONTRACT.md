@@ -87,6 +87,16 @@ stable digest of canonical decision inputs; repeated unchanged evaluations
 may create distinct historical run directories while retaining the same
 semantic decision digest.
 
+OA-02 operator verification and dispatch authorization are distinct
+transitions. An integrity-valid OA-02 verification makes
+`AUTHORIZE_DISPATCH` ready while the dispatcher remains `PREPARED` and
+operational dispatch remains `DISABLED`. Only an explicit authorization
+record may make the dispatcher `ACTIVE` and operational dispatch `ENABLED`,
+and only while all PMCT, authority, publication, agent, and OA-02 bindings
+remain valid. The authorization transition is outside the immutable OA-02
+verification decision material, so it does not rewrite or invalidate the
+preserved verification digest.
+
 ## Fixed production CLI acceptance contract
 
 ```text
@@ -190,6 +200,18 @@ Gate verification selects only a PMCT `PASS` whose manifest matches the
 current repository path, HEAD, implementation baseline, published baseline,
 and active authority publication. Historical runs remain preserved but are
 ineligible after any of those bindings changes.
+
+An accepted gate is a durable mission-level milestone, not a requirement to
+repeat human approval after every implementation commit. For a successor
+publication, the gate remains satisfied only through an integrity-protected
+carry-forward record that binds the accepted predecessor receipt and digest,
+predecessor publication/baseline, successor publication/baseline, successor
+PMCT evidence, complete change scope, affected-criterion analysis, and
+decision. Carry-forward requires valid provenance, a current successor PMCT
+PASS, and an automated `UNAFFECTED` assessment. Any change affecting an OA-01
+authority, qualification, evidence, decision, or safety criterion produces
+`OA01_REVALIDATION_REQUIRED=YES` and names the criteria; it cannot be treated
+as verification or acceptance. Historical evidence remains immutable.
 
 A state-changing gate must be named as such in the matrix and requires
 `--authorized-transition`, active scoped authority, visible preflight, request

@@ -19,6 +19,7 @@ source "$SCRIPT_DIR/lib/emp/management.sh"
 source "$SCRIPT_DIR/lib/eos/state.sh"
 source "$SCRIPT_DIR/lib/eos/checkpoint.sh"
 source "$SCRIPT_DIR/lib/eos/operations.sh"
+source "$SCRIPT_DIR/lib/eos/synchronization.sh"
 source "$SCRIPT_DIR/lib/eos/platform.sh"
 source "$SCRIPT_DIR/lib/notifications/ntfy.sh"
 source "$SCRIPT_DIR/lib/eos/codex.sh"
@@ -31,7 +32,7 @@ Usage:
   engctl doctor
   engctl ssh {status|environment|load [key ...]}
   engctl checkpoint {latest|active|list|create <title>|restore [checkpoint]|validate|retention [count]}
-  engctl eos {status|validate|sync-status|refresh|operational|persistence} [project]
+  engctl eos {status|validate|synchronize|sync-validate|sync-status|refresh|operational|persistence} [project]
   engctl repository {discover|health|sync-status|readiness|refresh} [project]
   engctl registry {path|validate|show|list|get|context|create|update|archive|transition}
   engctl portfolio {summary|status|order}
@@ -43,6 +44,7 @@ Usage:
   engctl context [project]
   engctl validate [project]
   engctl platform {status|validate|qualify} [project]
+  engctl execution {inventory|snapshot [--mission ID]|validate-handoff FILE}
   engctl codex [--ewo EWO-XXXXXX] [--timeout SECONDS] [--] [codex arguments ...]
   engctl version
 EOF
@@ -55,7 +57,26 @@ case "$cmd" in
     resume)
         eos_codex_wrapper_gate "Engineering Work Initiation resume" || exit $?
         project="${1:-$EOS_PROJECT}"
+        echo "REPOSITORY–EOS INTEGRATED VERIFICATION"
+        echo "------------------------------------"
+        if ! eos_synchronization_validate "$project" >/dev/null; then
+            eos_synchronize "$project"
+        fi
+        eos_synchronization_validate "$project"
+        eos_validate_state "$project" >/dev/null
+        if ! eos_operational_validate "$project" >/dev/null; then
+            eos_operational_refresh "$project" >/dev/null
+        fi
+        eos_operational_validate "$project" >/dev/null
+        echo "Integrated repository, synchronization, and EOS runtime verification passed."
+        echo
         eos_render_resume "$project"
+        echo
+        echo "ENGINEERING EXECUTION MISSION SNAPSHOT"
+        echo "------------------------------------"
+        if ! "$SCRIPT_DIR/engineering-executionctl" snapshot 2>/dev/null; then
+            echo "No unique active repository Mission Contract is currently resolvable."
+        fi
         ;;
     status)
         project="${1:-$EOS_PROJECT}"
@@ -87,6 +108,8 @@ case "$cmd" in
         case "$action" in
             status) eos_render_state ;;
             validate) eos_validate_state "$project" ;;
+            synchronize) eos_synchronize "$project" ;;
+            sync-validate) eos_synchronization_validate "$project" ;;
             sync-status) eos_checkpoint_sync_status "$project" ;;
             refresh) eos_operational_refresh "$project" ;;
             operational) cat "$(eos_operational_state_path)" ;;
@@ -118,6 +141,9 @@ case "$cmd" in
             qualify) eos_codex_wrapper_gate "Engineering Work Initiation qualification" || exit $?; eos_platform_qualify "$project" ;;
             *) echo "ERROR: unknown platform action: $action" >&2; usage; exit 1 ;;
         esac
+        ;;
+    execution)
+        exec "$SCRIPT_DIR/engineering-executionctl" "$@"
         ;;
     codex)
         export NOTIFY_REPOSITORY_ROOT="$(eos_project_root homelab)"

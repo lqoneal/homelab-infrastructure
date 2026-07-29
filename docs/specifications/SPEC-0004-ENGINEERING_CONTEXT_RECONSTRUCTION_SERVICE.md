@@ -1,11 +1,11 @@
 ---
 document_id: SPEC-0004
 title: Engineering Context Reconstruction Service
-version: 1.3
+version: 1.5
 status: Draft
 owner: EOS Program
 created: 2026-07-08
-last_updated: 2026-07-19
+last_updated: 2026-07-28
 governed_by: EOS-0001
 implements:
   - EDR-0002
@@ -96,8 +96,15 @@ The service produces derived engineering views, including:
 - AI engineering briefings
 - Daily engineering reports
 - Program summaries
+- Mission Snapshots
 
 Outputs remain non-authoritative.
+
+A Mission Snapshot is the standard execution and resume view. It includes
+repository identity, mission, phase, authority reference, objectives,
+completion criteria, lifecycle state, next action, blockers, and authoritative
+source locators. `engctl execution snapshot` is its canonical controller
+surface.
 
 ---
 
@@ -132,6 +139,9 @@ The service SHALL:
 6. Identify blockers.
 7. Determine next approved action.
 8. Generate a derived engineering context view.
+
+For a Mission Snapshot, resolution fails closed unless exactly one current
+repository Mission Contract matches the requested mission.
 
 ---
 
@@ -190,3 +200,4 @@ reconciliation triggers, and source precedence established by STD-0004.
 | 1.1 | 2026-07-15 | Integrated STD-0004 freshness, source precedence, and stale-objective rejection. |
 | 1.2 | 2026-07-15 | Defined repository-aware checkpoint identity, applicability, strict commit verification, and not-applicable resume semantics. |
 | 1.3 | 2026-07-19 | Recorded future consumption of persisted Qualification Reports and qualification state, with freshness and rediscovery gates, without changing current resume implementation. |
+| 1.4 | 2026-07-28 | Standardized the Mission Snapshot as the repository-only execution and resume view exposed through engctl. |

@@ -177,8 +177,8 @@ PY
 
 source "$ROOT/scripts/lib/eos/codex.sh"
 governed_contract="$(eos_codex_completion_contract EWO-000019)"
-grep -Fq 'TPL-0002@1.2' <<<"$governed_contract"
-grep -Fq "begin the final response exactly with '# Completion Report'" <<<"$governed_contract"
+grep -Fq 'candidate revisions through engineering/execution/execution-interface.yaml' <<<"$governed_contract"
+grep -Fq 'mission-delta Completion Report' <<<"$governed_contract"
 
 # Three handoffs in one governed session, including concise, FAIL, and BLOCKED
 # outcomes, consume the same durable contract and qualify independently.

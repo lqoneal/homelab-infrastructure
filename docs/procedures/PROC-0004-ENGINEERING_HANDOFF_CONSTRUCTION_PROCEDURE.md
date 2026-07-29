@@ -1,17 +1,17 @@
 ---
 document_id: PROC-0004
 title: Engineering Handoff Construction Procedure
-version: 1.4
-status: Active
+version: 1.6
+status: Draft
 owner: Engineering Governance
 created: 2026-07-18
-last_updated: 2026-07-18
-phase: Governance Stabilization Procedure Integration
+last_updated: 2026-07-28
+phase: Engineering Execution Interface Standardization
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: PROC-0004@1.3
+predecessor_revision: PROC-0004@1.5
 successor_revision: null
-approval_status: Approved
+approval_status: Candidate
 approval_authority: Engineering Governance
 approval_reference: EGR-000006
 approval_date: 2026-07-18
@@ -78,6 +78,24 @@ it is not a separate constitutional prerequisite.
 Construction preserves Governance authority; it does not originate, expand, or
 activate that authority. PROC-0001 governs execution only after Engineering
 Governance has approved and activated the completed Engineering Work Order.
+
+## Minimal Repository-Driven Handoff
+
+A handoff that invokes a repository-recorded mission contains only:
+
+1. mission identifier;
+2. `Execute under the Engineering Work Initiation Procedure.`;
+3. `Complete the mission.`; and
+4. `Produce the completion report.`
+
+It shall not copy discovery steps, execution phases, command classifications,
+validation procedures, resume rules, or Completion Report structure.
+PROC-0001 and the Mission Snapshot supply that knowledge. Transaction-specific
+authority and constraints must reside in the repository Mission Contract or
+WOP before execution; conversation text is not a substitute authority record.
+
+`engctl execution validate-handoff <file>` validates this concise form and
+proves that the repository supplies the remaining execution context.
 
 ## Scope
 
@@ -470,3 +488,4 @@ lifecycle state under STD-0001 and STD-0003.
 | 1.2 | 2026-07-18 | Integrated conditional PROC-0005 resolution for publication-capable handoffs while preserving Authorization Kernel, PROC-0001 execution, ETP, lifecycle, and Governance authority ownership. |
 | 1.3 | 2026-07-18 | Integrated conditional Active PROC-0006 resolution for Governance qualification handoffs while preserving Authorization Kernel and external Governance decision authority. |
 | 1.4 | 2026-07-18 | Integrated conditional Active PROC-0007 resolution for Governance stabilization handoffs while preserving Authorization Kernel and all external operational and decision owners. |
+| 1.5 | 2026-07-28 | Standardized minimal repository-driven handoffs that invoke PROC-0001 and obtain reusable execution knowledge from the Mission Snapshot. |

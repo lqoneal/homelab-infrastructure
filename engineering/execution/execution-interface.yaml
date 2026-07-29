@@ -1,0 +1,45 @@
+schema_version: 2
+interface_id: ENGINEERING-EXECUTION-INTERFACE
+operational_owner: engctl
+mission_contracts:
+  search_paths:
+    - engineering/execution/missions/*.yaml
+semantic_bindings:
+  assurance_language:
+    owner: SPEC-0013
+    revision: '1.0'
+  execution_contract:
+    owner: SPEC-0005
+    revision: '1.2'
+  execution_lifecycle:
+    owner: PROC-0001
+    revision: '1.14'
+  handoff_construction:
+    owner: PROC-0004
+    revision: '1.6'
+  mission_contract:
+    owner: STD-0003
+    revision: '1.5'
+  mission_contract_structure:
+    owner: TPL-0001
+    revision: '1.9'
+  completion_report:
+    owner: TPL-0002
+    revision: '1.4'
+  repository_context:
+    owner: SPEC-0004
+    revision: '1.5'
+  command_control:
+    owner: SPEC-0005
+    revision: '1.2'
+  progressive_verification:
+    owner: PMCT-CONTRACT
+    revision: '1.0'
+routes:
+  inventory: scripts/lib/eos/execution_interface.py
+  repository_discovery: scripts/lib/eos/execution_interface.py
+  snapshot: scripts/lib/eos/execution_interface.py
+  qualification: scripts/lib/eos/execution_interface.py
+  authority_resolution: scripts/lib/eos/execution_interface.py
+  handoff_validation: scripts/lib/eos/execution_interface.py
+  controller: scripts/engineering-executionctl

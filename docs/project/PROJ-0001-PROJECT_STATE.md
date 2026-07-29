@@ -1,15 +1,15 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 8.0
+version: 9.0
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-27
+last_updated: 2026-07-28
 mission: Zeus Operational Alpha
 phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@7.9
+predecessor_revision: PROJ-0001@8.9
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -197,6 +197,14 @@ launcher reconciliation, orientation state, regression qualification,
 operational documentation, and closeout evidence are present. The next mission
 must remain separately authorized and must not infer approval or execution
 authority from this interface.
+
+GH-EOS-INTEGRATION-001 resolved the final GH-ZEUS-CLOSEOUT-001 validation
+blocker by making repository records the sole engineering authority and EOS
+state a deterministic projection. Repository, synchronization, EOS runtime,
+integrated platform, and resume qualification pass. Zeus Assurance and the
+Engineering Execution Interface are the reconciled baseline; mission assurance
+remains deterministic and read-only, all revised controlled documents remain
+Draft, and EENS implementation has not begun.
 
 ---
 
@@ -555,22 +563,24 @@ None. Mission 0 is complete.
 
    `/data/engineering/repositories/homelab/scripts/homelabctl resume`
 
-2. Review this document.
-3. Confirm the working tree status.
-4. Verify Governance Foundation 1.0 remains the governing baseline.
-5. Treat Mission 0 and MILESTONE-0003 as the completed Engineering Platform operational foundation.
-6. Treat EMP-0001, SPEC-0006, SERVICE-0002, and MILESTONE-0004 as the active EMP Foundation 1.0 baseline.
-7. Treat MILESTONE-0005 and tag `engineering-platform-foundation-1.0`, once
+2. Run `engctl execution snapshot --mission <MISSION-ID>` and treat its
+   repository-derived Mission Snapshot as the execution/resume view.
+3. Review this document for project history and unresolved project-wide facts.
+4. Confirm the working tree status.
+5. Verify Governance Foundation 1.0 remains the governing baseline.
+6. Treat Mission 0 and MILESTONE-0003 as the completed Engineering Platform operational foundation.
+7. Treat EMP-0001, SPEC-0006, SERVICE-0002, and MILESTONE-0004 as the active EMP Foundation 1.0 baseline.
+8. Treat MILESTONE-0005 and tag `engineering-platform-foundation-1.0`, once
    created, as the Engineering Platform Foundation 1.0 operational baseline.
-8. Validate and inspect the operational registry through `engctl registry validate` and `engctl registry list`.
-9. Confirm PHASE-0001, this Project State, registry context, and `engctl resume`
+9. Validate and inspect the operational registry through `engctl registry validate` and `engctl registry list`.
+10. Confirm PHASE-0001, this Project State, registry context, and `engctl resume`
    all identify Zeus Operational Alpha as the current mission and phase.
-10. Treat Mission C as planned read-only work, not active implementation
+11. Treat Mission C as planned read-only work, not active implementation
     authority.
-11. Do not resume the persistent MMC storage I/O investigation until an approved
+12. Do not resume the persistent MMC storage I/O investigation until an approved
    Active EWO establishes its diagnostic scope and execution controls.
-12. When EWO-000016 is selected for execution, begin at Stage A backup re-verification and honor every sequential gate.
-13. After EWO-000016 completes or stops, return to the current primary project task recorded above.
+13. When EWO-000016 is selected for execution, begin at Stage A backup re-verification and honor every sequential gate.
+14. After EWO-000016 completes or stops, return to the current primary project task recorded above.
 
 ---
 
@@ -663,5 +673,12 @@ When resuming this project:
 | 8.0     | 2026-07-26 | Replaced tracked authority activation with create-only, read-only-after-publication runtime artifacts and established append-only approval receipt lineage; preserved the historical OA-01 receipt while blocking stale eligibility. |
 | 8.1     | 2026-07-26 | Reconciled post-publication lifecycle precedence so current-binding OA-01 verification and acceptance precede OA-02 evaluation or dispatcher commissioning; preserved the activated publication and paused WOP. |
 | 8.2     | 2026-07-26 | Corrected OA-01 readiness evaluation, atomic completed-run capability-state persistence, and current-authority PMCT candidate selection without performing operator verification or acceptance. |
+| 8.3     | 2026-07-27 | Established integrity-protected accepted-gate carry-forward: unaffected, provenance-valid and PMCT-qualified successors retain OA-01 as a durable mission milestone; material impact explicitly reopens named OA-01 criteria. |
 | 8.3     | 2026-07-27 | Implemented the OA-02-specific PMCT qualification surface with deterministic current-binding evidence and automatic status/next-action reconciliation; dispatcher and mission execution remain disabled and production-agent qualification is the next unmet prerequisite. |
 | 8.4     | 2026-07-27 | Implemented integrity-bound production-agent qualification and a runtime effective registry that preserves repository identity; OA-02 verification may complete while dispatch remains separately disabled. |
+| 8.5     | 2026-07-28 | Reconciled OA-02 post-verification lifecycle presentation: status and next-action share authoritative readiness, dispatch remains disabled before explicit authorization, and all binding regressions fail closed. |
+| 8.6     | 2026-07-28 | Standardized the repository-authoritative Engineering Execution Interface, Mission Contracts and Snapshots, minimal handoffs, command authority, repository-only resume, and mission-delta Completion Reports. |
+| 8.7     | 2026-07-28 | Corrected P2-038's premature self-certified completion: retained its implementation as unaccepted working-tree work and established the P2-038-CORRECTIVE Mission Contract, binding-only manifest, exact-owner discovery, derived snapshot blockers, and eligibility-aware handoff pipeline. |
+| 8.8     | 2026-07-28 | Reconciled the Engineering Execution Interface and Zeus Assurance publication candidate, preserved all revised controlled documents as Draft, and recorded the external EOS state/checkpoint validation blocker without publishing or beginning EENS work. |
+| 8.9     | 2026-07-28 | Established repository-authoritative EOS state projection, deterministic one-way synchronization, layered platform validation, and integrated resume; preserved checkpoint runtime evidence, Draft status, and the EENS implementation boundary. |
+| 9.0     | 2026-07-28 | Completed integrated qualification, resolved the Zeus closeout publication blocker, and established the synchronized Zeus Assurance baseline for the next separately authorized EENS integration mission. |

@@ -50,11 +50,11 @@ def resolve(candidates: list[dict], classification: str, additions: set[str], ov
 
 baseline = load_baseline()
 required_components = {
-    "construction": "PROC-0004@1.1",
-    "execution": "PROC-0001@1.8",
-    "handoff_structure": "TPL-0001@1.6",
-    "completion_report_structure": "TPL-0002@1.2",
-    "normative_ewo_semantics": "STD-0003@1.3",
+    "construction": "PROC-0004@1.6",
+    "execution": "PROC-0001@1.14",
+    "handoff_structure": "TPL-0001@1.9",
+    "completion_report_structure": "TPL-0002@1.4",
+    "normative_ewo_semantics": "STD-0003@1.5",
     "automation": "deferred",
 }
 for component, expected in required_components.items():

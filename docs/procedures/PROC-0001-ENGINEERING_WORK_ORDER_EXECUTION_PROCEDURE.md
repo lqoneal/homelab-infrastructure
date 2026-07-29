@@ -1,16 +1,16 @@
 ---
 document_id: PROC-0001
 title: Engineering Work Order Execution Procedure
-version: 1.11
-status: Active
+version: 1.14
+status: Draft
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-18
-phase: Governance Stabilization Procedure Integration
+last_updated: 2026-07-28
+phase: Engineering Execution Interface Standardization
 domain: Engineering Governance
 classification: Engineering Procedure
 source_of_truth: true
-predecessor_revision: PROC-0001@1.10
+predecessor_revision: PROC-0001@1.13
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -42,6 +42,10 @@ relationships:
   - type: related_to
     target: PROC-0007
   - type: related_to
+    target: SPEC-0004
+  - type: related_to
+    target: SPEC-0005
+  - type: related_to
     target: EGR-000002
   - type: related_to
     target: EWO-000018
@@ -55,6 +59,112 @@ tags:
   - work-order
   - execution
   - engineering-operating-system
+mission_assurance_requirements:
+  - id: MA-GATES-001
+    language_version: '1.0'
+    phase: preflight
+    description: All required pre-execution review gates are approved.
+    assertion:
+      selector: state.review_gates
+      operator: required_map_values_equal
+      value: approved
+      exclude:
+        - operator_acceptance
+  - id: MA-LIFECYCLE-001
+    language_version: '1.0'
+    phase: execution
+    description: Mission lifecycle is eligible for execution.
+    assertion:
+      all:
+        - selector: state.mission.status
+          operator: equals
+          value: ACTIVE
+        - selector: state.lifecycle.state
+          operator: equals
+          value: active
+        - selector: state.lifecycle.implementation_status
+          operator: not_equals
+          value: complete
+  - id: MA-SOURCES-001
+    language_version: '1.0'
+    phase: synchronization
+    description: All authoritative source records resolve.
+    applicability: &post_implementation
+      any:
+        - selector: state.lifecycle.implementation_status
+          operator: equals
+          value: complete
+        - selector: state.mission.status
+          operator: equals
+          value: COMPLETED
+    assertion:
+      selector: state.sources
+      operator: all_paths_exist
+  - id: MA-RECONCILIATION-001
+    language_version: '1.0'
+    phase: synchronization
+    description: Mission Contract and Work Registry lifecycle agree.
+    applicability: *post_implementation
+    assertion:
+      selector: state.blockers
+      operator: not_contains
+      value: MISSION_REGISTRY_LIFECYCLE_CONFLICT
+  - id: MA-COMPLETION-EVIDENCE-001
+    language_version: '1.0'
+    phase: synchronization
+    description: Completion report resolves after implementation.
+    applicability: *post_implementation
+    assertion:
+      selector: state.lifecycle.completion_report
+      operator: path_exists
+  - id: MA-IMPLEMENTATION-001
+    language_version: '1.0'
+    phase: closeout
+    description: Implementation is complete.
+    applicability: *post_implementation
+    assertion:
+      selector: state.lifecycle.implementation_status
+      operator: equals
+      value: complete
+  - id: MA-ACCEPTANCE-001
+    language_version: '1.0'
+    phase: closeout
+    description: Required operator acceptance is recorded.
+    applicability: *post_implementation
+    assertion:
+      selector: state.lifecycle.acceptance_status
+      operator: one_of
+      value:
+        - approved
+        - accepted
+        - complete
+  - id: MA-SYNCHRONIZATION-001
+    language_version: '1.0'
+    phase: closeout
+    description: Post-mission synchronization requirements are satisfied.
+    applicability: *post_implementation
+    assertion:
+      all:
+        - selector: state.sources
+          operator: all_paths_exist
+        - selector: state.blockers
+          operator: not_contains
+          value: MISSION_REGISTRY_LIFECYCLE_CONFLICT
+        - selector: state.lifecycle.completion_report
+          operator: path_exists
+  - id: MA-CLOSEOUT-001
+    language_version: '1.0'
+    phase: closeout
+    description: Mission lifecycle records completion.
+    applicability: *post_implementation
+    assertion:
+      all:
+        - selector: state.mission.status
+          operator: equals
+          value: COMPLETED
+        - selector: state.lifecycle.state
+          operator: equals
+          value: completed
 ---
 
 # Engineering Work Order Execution Procedure
@@ -127,6 +237,73 @@ Completion Report
         ↓
 Engineering Governance Review
 ```
+
+## Repository-Authoritative Engineering Execution Interface
+
+This procedure owns the canonical lifecycle:
+
+```text
+Repository Discovery
+        ↓
+Mission Contract
+        ↓
+Execution Authority
+        ↓
+Execution
+        ↓
+Verification
+        ↓
+Reconciliation
+        ↓
+Completion Report
+        ↓
+Resume
+```
+
+The machine-readable index at
+`engineering/execution/execution-interface.yaml` binds each capability to its
+existing semantic owner and is consumed through `engctl execution`. The index
+is operational routing data; it does not replace controlled authority.
+
+Every execution agent shall begin with repository discovery and a mission
+snapshot. The snapshot resolves repository identity, current mission, phase,
+authority reference, objectives, completion criteria, lifecycle state, next
+action, blockers, and source records without prompt history. Conversational
+context may identify the requested mission but shall not supply missing
+procedure, authority, state, or completion semantics.
+
+The Mission Contract is the current Work Registry work item plus any applicable
+WOP. The Work Registry identifies objective and lifecycle; a WOP supplies
+bounded effect authority when required. Neither substitutes for the other.
+Future handoffs invoke this interface and shall not reproduce its procedures.
+
+## Mission-Assurance Verification
+
+The execution workflow and its lifecycle transitions remain owned by this
+procedure and the controlled authorities it references. Zeus independently
+verifies their operational results; Zeus does not perform, waive, approve, or
+take ownership of those requirements.
+
+Before execution, Zeus shall derive the applicable Mission Contract and
+pre-mission requirements from the canonical Engineering Execution Interface.
+Discovery cardinality is evidence: execution fails closed unless exactly one
+Mission Contract resolves. Zeus shall verify repository identity,
+mission-scoped authority, required review gates, WOP applicability, canonical
+blockers, and lifecycle eligibility from authoritative operational state.
+
+During execution, the same verification shall remain available so that a
+regression makes continued execution ineligible. After implementation, Zeus
+shall verify source-record resolution, Mission Contract and Work Registry
+lifecycle agreement, and required Completion Report evidence before reporting
+synchronization complete. Closeout eligibility additionally requires completed
+implementation, recorded required acceptance, completed lifecycle state, and
+successful synchronization.
+
+Each assurance result shall identify the mission, phase, applicable
+requirements, authoritative sources, observed values, unsatisfied requirement
+identifiers, eligibility disposition, and a deterministic evidence digest.
+An observation command does not create approval, acceptance, execution
+authority, synchronization, or a lifecycle transition.
 
 ---
 
@@ -287,6 +464,17 @@ Engineering State Reconciliation before additional implementation.
 
 Do not modify the environment.
 
+Repository discovery shall include:
+
+```bash
+engctl repository discover homelab
+engctl repository health homelab
+engctl registry validate
+engctl execution snapshot --mission <MISSION-ID>
+```
+
+A missing, ambiguous, stale, or conflicting Mission Contract blocks execution.
+
 ---
 
 ## Step 4 — Operational Preparation
@@ -415,6 +603,11 @@ required follow-up authority.
 
 Engineering Governance Notes remain blank.
 
+Completion Reports record mission delta only: relevant starting state, actions
+performed, changed artifacts, terminal verification results, reconciliation,
+remaining work, and final status. They reference rather than restate reusable
+procedures, standards, inventories, or unchanged repository history.
+
 ---
 
 ## Resume After Interruption
@@ -437,6 +630,20 @@ older checkpoint. A checkpoint conflict or obsolete resume objective blocks
 implementation pending reconciliation.
 
 Completed phases remain complete unless Engineering Governance authorizes repetition.
+
+Resume regenerates the Mission Snapshot from repository records and continues
+at the first incomplete lifecycle step. Prompt history and agent memory are
+never resume inputs. Completed evidence remains complete unless its binding
+regresses or the Mission Contract requires revalidation.
+
+## Command Authority Integration
+
+All operations shall be classified under SPEC-0005. Automatic and
+mission-pre-authorized operations proceed without repeated confirmation when
+their classification and scope match. Explicit-approval operations require a
+separate recorded operator decision. Emergency-stop operations shall not
+execute automatically. Ambiguity escalates to the more restrictive class and
+fails closed when authority cannot be resolved.
 
 ---
 
@@ -812,3 +1019,6 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.9 | 2026-07-18 | Integrated PROC-0005 for controlled publication missions while preserving PROC-0001 ownership of Work Order execution, evidence, Completion Reports, Commit Classification, Commit Reconstruction Planning, and milestone sequencing. |
 | 1.10 | 2026-07-18 | Integrated Active PROC-0006 for Governance qualification missions while preserving PROC-0001 ownership of bounded Engineering Work Order execution, evidence, and Completion Reports. |
 | 1.11 | 2026-07-18 | Integrated Active PROC-0007 for Governance stabilization missions while preserving PROC-0001 bounded-execution ownership and PROC-0007 orchestration-only responsibility. |
+| 1.12 | 2026-07-28 | Standardized the repository-authoritative Engineering Execution Interface, Mission Snapshot, minimal handoff consumption, mission-delta reporting, repository-only resume, and command-authority integration. |
+| 1.13 | 2026-07-28 | Candidate: routed canonical discovery, authority, snapshot, and handoff validation through the SPEC-0005 Engineering Execution Contract with mandatory framework review gates. |
+| 1.14 | 2026-07-28 | Candidate: defined independent Zeus mission-assurance verification across preflight, execution, synchronization, and closeout while preserving this procedure's process ownership. |

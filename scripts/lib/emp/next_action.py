@@ -77,10 +77,17 @@ def _oa01_lifecycle(root: Path) -> dict[str, bool]:
     try:
         binding = service.binding("OA-01", require_clean=False)
     except GateApprovalError:
-        return {"verification_passed": False, "acceptance_recorded": False}
+        return {
+            "verification_passed": False,
+            "acceptance_recorded": False,
+            "revalidation_required": False,
+        }
+    milestone = service.gate_milestone(binding)
+    carry = milestone.get("carry_forward") or {}
     return {
-        "verification_passed": service.verification_record(binding) is not None,
-        "acceptance_recorded": service._matching_receipt(binding) is not None,
+        "verification_passed": milestone["verification"] == "PASS",
+        "acceptance_recorded": milestone["acceptance"] == "RECORDED",
+        "revalidation_required": bool(carry.get("oa01_revalidation_required")),
     }
 
 
@@ -97,10 +104,22 @@ def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
         root / "engineering/dispatch/dispatcher-activation.json",
         "dispatcher activation",
     )
-    agents = _mapping(
-        root / "engineering/dispatch/execution-agent-registry.json",
-        "execution-agent registry",
+    # Qualification records are the authoritative registry.  The dispatcher
+    # projection is intentionally derived lazily and must not be required for
+    # a pre-dispatch lifecycle decision.
+    from scripts.lib.emp.agent_qualification import (
+        AgentQualificationError,
+        registry as agent_registry,
     )
+    try:
+        agents = agent_registry(root)
+    except (AgentQualificationError, GateApprovalError, OSError, ValueError):
+        # Before OA-01 is bindable there can be no valid qualified agent.  A
+        # legacy projection is diagnostic-only in that early lifecycle phase.
+        agents = _mapping(
+            root / "engineering/dispatch/execution-agent-registry.json",
+            "execution-agent registry",
+        )
     pmct = _mapping(
         root / "engineering/runtime/pmct/capability-state.yaml", "PMCT state"
     )
@@ -137,21 +156,17 @@ def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
             "code": "OA-01_OPERATOR_ACCEPTANCE_REQUIRED",
             "detail": "no integrity-valid acceptance matches the current binding",
         })
-    if activation.get("status") != "ACTIVE":
-        blockers.append({
-            "code": "DISPATCHER_INACTIVE",
-            "detail": f"status={activation.get('status', 'MISSING')}",
-        })
-    if not qualified:
-        blockers.append({
-            "code": "NO_QUALIFIED_PRODUCTION_AGENT",
-            "detail": f"registered={len(agents.get('agents', []))}",
-        })
-    if pmct.get("overall_result") != "PASS":
-        blockers.append({
-            "code": "PMCT_INCOMPLETE",
-            "detail": f"overall={pmct.get('overall_result', 'UNKNOWN')}",
-        })
+    oa02 = None
+    if published == head and oa01["verification_passed"] and oa01["acceptance_recorded"]:
+        try:
+            oa02 = resolve_oa02(root)
+        except (OSError, ValueError, KeyError, json.JSONDecodeError, yaml.YAMLError):
+            oa02 = None
+        if oa02 is not None:
+            blockers.extend(
+                {"code": code, "detail": "OA-02 lifecycle prerequisite"}
+                for code in oa02["blocking_conditions"]
+            )
 
     if discovered != root:
         next_action = "Restore authoritative repository identity"
@@ -168,33 +183,25 @@ def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
     elif not oa01["acceptance_recorded"]:
         next_action = "Record explicit OA-01 operator acceptance"
         action_code = "RECORD_OA-01_OPERATOR_ACCEPTANCE"
-    elif activation.get("status") != "ACTIVE":
-        try:
-            oa02 = resolve_oa02(root)
-            action_code = oa02["next_action"]
-            next_action = action_code.replace("_", " ").title()
-        except (OSError, ValueError, KeyError):
-            next_action = "Run OA-02 pre-execution verification"
-            action_code = "RUN_OA-02_PRE_EXECUTION_VERIFICATION"
-    elif not qualified:
-        next_action = "Qualify first production execution agent"
-        action_code = "QUALIFY_PRODUCTION_AGENT"
-    elif pmct.get("overall_result") != "PASS":
-        next_action = f"Execute and reconcile PMCT gate {gate}"
-        action_code = "EXECUTE_PMCT_GATE"
+    elif oa02 is not None:
+        action_code = oa02["next_action"]
+        next_action = action_code.replace("_", " ").title()
     else:
-        next_action = "Request Operational Alpha production-promotion decision"
-        action_code = "REQUEST_PRODUCTION_PROMOTION"
+        next_action = "Run OA-02 pre-execution verification"
+        action_code = "RUN_OA-02_PRE_EXECUTION_VERIFICATION"
 
-    production_ready = (
-        not blockers
-        and all(
-            item.get("status") == "PASS"
-            for item in pmct.get("gates", {}).values()
-        )
+    # OA-02 owns the shared lifecycle projection.  Readiness to authorize and
+    # actual dispatch enablement are deliberately separate states.
+    authorization_ready = bool(oa02 and oa02["authorization_ready"] and not blockers)
+    operational_dispatch = (
+        "ENABLED"
+        if oa02 is not None
+        and oa02["operational_dispatch"] == "ENABLED"
+        and not blockers
+        else "DISABLED"
     )
-    mode = "PRODUCTION" if production_ready else "BETA"
-    result = "READY" if production_ready else "NOT_READY"
+    mode = "BETA"
+    result = "READY" if authorization_ready else "NOT_READY"
     value = {
         "schema_version": 1,
         "zeus_mode": mode,
@@ -219,8 +226,12 @@ def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
             "active_work_authority": _active_work(registry),
         },
         "dispatcher": {
-            "status": str(activation.get("status", "MISSING")),
-            "active": activation.get("status") == "ACTIVE",
+            "status": (
+                oa02["dispatcher_state"]
+                if oa02 is not None
+                else str(activation.get("status", "MISSING"))
+            ),
+            "active": bool(oa02 and oa02["dispatcher_active"]),
         },
         "production_agent_registry": {
             "status": "EMPTY" if not agents.get("agents") else "POPULATED",
@@ -228,8 +239,15 @@ def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
             "qualified_active_count": len(qualified),
         },
         "pmct": {
-            "status": str(pmct.get("overall_result", "UNKNOWN")),
+            "status": (
+                oa02["current_binding_pmct_result"]
+                if oa02 is not None
+                else str(pmct.get("overall_result", "UNKNOWN"))
+            ),
             "last_evaluated_gate": pmct.get("last_evaluated_gate"),
+            "oa02_readiness": (
+                oa02["oa02_pmct_readiness"] if oa02 is not None else "NOT_READY"
+            ),
         },
         "oa01_lifecycle": {
             "operator_verification": (
@@ -238,8 +256,11 @@ def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
             "operator_acceptance": (
                 "RECORDED" if oa01["acceptance_recorded"] else "NOT_RECORDED"
             ),
+            "revalidation_required": (
+                "YES" if oa01.get("revalidation_required", False) else "NO"
+            ),
         },
-        "operational_dispatch": "ENABLED" if production_ready else "DISABLED",
+        "operational_dispatch": operational_dispatch,
         "blocking_conditions": blockers,
         "next_authorized_action": {
             "code": action_code,

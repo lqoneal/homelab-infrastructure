@@ -1,0 +1,22 @@
+schema_version: 1
+transaction_id: ZEUS-P2-019-BASELINE-REPUBLICATION-PREPARED
+state: AWAITING_SIGNATURES
+repository_baseline: 1015ff709656a59e096f1e4b6107f9fa17371e5f
+new_envelopes:
+  - envelope: repository_baseline-v3.json
+    signature: repository_baseline-v3.json.sig
+    required: true
+  - envelope: repository_identity-v3.json
+    signature: repository_identity-v3.json.sig
+    required: true
+reused_active_envelopes:
+  - engineering/authority/publications/approval_authority.json
+  - engineering/authority/publications/authority_node.json
+  - engineering/authority/publications/governing_baseline.json
+  - engineering/authority/publications/identity_record.json
+  - engineering/authority/publications/mission_authority.json
+  - engineering/authority/publications/operational_configuration.json
+  - engineering/authority/publications/phase_authority.json
+  - engineering/authority/publications/work_item_authority.json
+activation_permitted: false
+blocking_condition: AUTHENTIC_SIGNATURES_REQUIRED

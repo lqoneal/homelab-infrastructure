@@ -24,6 +24,9 @@ from scripts.lib.emp.gate_approval import GateApprovalError, GateApprovalService
 from scripts.lib.emp.gate_decision import decide as decide_gate, review as review_gate  # noqa: E402
 from scripts.lib.emp.oa02_lifecycle import resolve as resolve_oa02, verify as verify_oa02  # noqa: E402
 from scripts.lib.emp.agent_qualification import AgentQualificationError, qualify as qualify_agent, registry as agent_registry, revoke as revoke_agent, runtime_registry_path  # noqa: E402
+from scripts.lib.emp.gate_carry_forward import GateCarryForwardError, create_record as carry_gate  # noqa: E402
+from scripts.lib.eos.execution_interface import ExecutionInterface, ExecutionInterfaceError  # noqa: E402
+from scripts.lib.eos.mission_assurance import MissionAssurance, MissionAssuranceError  # noqa: E402
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -62,6 +65,7 @@ def authority_status(mission_status):
         "operational_state": {
             "oa01_verification": decision["oa01_lifecycle"]["operator_verification"],
             "oa01_acceptance": decision["oa01_lifecycle"]["operator_acceptance"],
+            "oa01_revalidation_required": decision["oa01_lifecycle"]["revalidation_required"],
             "dispatcher": oa02["dispatcher_state"],
             "operational_dispatch": oa02["operational_dispatch"],
             "oa02_verification": (
@@ -104,6 +108,7 @@ def status_text(value):
         "", "Operational Gates", "-----------------",
         f"OA-01 Verification : {gates['oa01_verification']}",
         f"OA-01 Acceptance   : {gates['oa01_acceptance'].replace('_', ' ')}",
+        f"OA-01 Revalidation : {gates['oa01_revalidation_required']}",
         f"OA-02 Verification : {gates['oa02_verification'].replace('_', ' ')}",
         f"Dispatcher          : {gates['dispatcher']}",
         f"Operational Dispatch: {gates['operational_dispatch']}",
@@ -166,12 +171,13 @@ def main(argv=None):
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
     submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository", required=True); submit.add_argument("--baseline", required=True); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append", required=True); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact", required=True); submit.add_argument("--affected-repository", action="append", required=True); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
-    show = sub.add_parser("mission"); show.add_argument("action", choices=("show",)); show.add_argument("mission_id")
+    show = sub.add_parser("mission"); show.add_argument("action", choices=("show","snapshot","qualify","requirements","preflight","verify","synchronization")); show.add_argument("mission_id")
+    assurance = sub.add_parser("assurance"); assurance.add_argument("action", choices=("capabilities",))
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
     accept=sub.add_parser("accept"); accept.add_argument("gate"); accept.add_argument("--reject", action="store_true"); accept.add_argument("--rationale", default=""); accept.add_argument("--at"); accept.add_argument("--yes", action="store_true"); accept.add_argument("--json", action="store_true")
     decline=sub.add_parser("decline"); decline.add_argument("approval_id"); decline.add_argument("--operator", required=True); decline.add_argument("--at")
     verify=sub.add_parser("verify"); verify.add_argument("gate")
-    execution=sub.add_parser("execution"); execution.add_argument("action", choices=("status",)); execution.add_argument("identifier")
+    execution=sub.add_parser("execution"); execution.add_argument("action", choices=("status","resolve")); execution.add_argument("identifier")
     evidence=sub.add_parser("evidence"); evidence.add_argument("action", choices=("show",)); evidence.add_argument("identifier")
     qualification=sub.add_parser("qualification"); qualification.add_argument("action", choices=("show",)); qualification.add_argument("identifier")
     completion=sub.add_parser("completion"); completion.add_argument("action", choices=("show",)); completion.add_argument("identifier")
@@ -186,6 +192,7 @@ def main(argv=None):
     execute_mission=sub.add_parser("execute-mission"); execute_mission.add_argument("action", choices=("start","resume","status","suspend","cancel")); execute_mission.add_argument("--admission-id"); execute_mission.add_argument("--execution-id"); execute_mission.add_argument("--reason", default="OPERATOR"); execute_mission.add_argument("--at"); execute_mission.add_argument("--max-gates", type=int)
     dispatcher=sub.add_parser("dispatcher"); dispatcher.add_argument("action", choices=("status","agents","assignment","execution","eens","evidence","reconciliation")); dispatcher.add_argument("--identifier")
     agent=sub.add_parser("agent"); agent.add_argument("action", choices=("registry","status","qualify","revoke")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--json", action="store_true")
+    gate=sub.add_parser("gate"); gate.add_argument("action", choices=("carry-forward", "validate-carry-forward")); gate.add_argument("gate_id")
     next_action=sub.add_parser("next-action"); next_action.add_argument("--json", action="store_true")
     a=p.parse_args(arguments)
     if a.command is None:
@@ -207,6 +214,9 @@ def main(argv=None):
             decision=resolve_next_action(ROOT)
             if a.json: emit(decision)
             else: print(next_action_text(decision), end="")
+            return 0
+        if a.command == "assurance":
+            emit(MissionAssurance(ROOT).capabilities())
             return 0
         if a.command == "authority":
             decision = resolve_next_action(ROOT)
@@ -258,6 +268,33 @@ def main(argv=None):
             else:
                 value = agent_registry(ROOT)
             emit(value)
+            return 0
+        if a.command == "gate":
+            if a.gate_id != "OA-01":
+                raise GateCarryForwardError("carry-forward is currently governed for OA-01 only")
+            service = GateApprovalService.configured(ROOT)
+            if a.action == "validate-carry-forward":
+                record = service.validate_carry_forward("OA-01")
+                emit({
+                    "gate": "OA-01",
+                    "validation": "PASS",
+                    "carry_forward_decision": record["carry_forward_decision"],
+                    "oa01_revalidation_required": "NO",
+                    "integrity_digest": record["integrity_digest"],
+                })
+                return 0
+            binding = service.binding("OA-01", require_clean=False)
+            record, replay = carry_gate(ROOT, service, binding)
+            emit({
+                "gate": "OA-01",
+                "carry_forward_decision": record["carry_forward_decision"],
+                "oa01_revalidation_required": (
+                    "YES" if record["oa01_revalidation_required"] else "NO"
+                ),
+                "affected_criteria": record["affected_gate_analysis"],
+                "integrity_digest": record["integrity_digest"],
+                "idempotent_replay": replay,
+            })
             return 0
         if a.command == "verify":
             if a.gate.upper() == "OA-02":
@@ -314,7 +351,29 @@ def main(argv=None):
             if a.repository and a.baseline: o.evaluate(observed_repository=a.repository, observed_baseline=a.baseline, completed_missions=a.completed)
             emit(o.data["missions"])
         elif a.command=="missions": emit(o.select(policy_id=a.policy, timestamp=now(a.at)).data)
-        elif a.command=="mission": emit(o.data["missions"][a.mission_id])
+        elif a.command=="mission":
+            assurance = MissionAssurance(ROOT)
+            interface = assurance.interface
+            if a.action == "requirements":
+                emit(assurance.requirements(a.mission_id))
+            elif a.action == "preflight":
+                value = assurance.evaluate(a.mission_id, "preflight")
+                emit(value)
+                return 0 if value["result"] == "PASS" else 78
+            elif a.action == "synchronization":
+                value = assurance.evaluate(a.mission_id, "synchronization")
+                emit(value)
+                return 0 if value["result"] == "PASS" else 78
+            elif a.action == "verify":
+                value = assurance.verify(a.mission_id)
+                emit(value)
+                return 0 if value["result"] == "PASS" else 78
+            elif a.action == "qualify":
+                emit(interface.qualify(a.mission_id))
+            else:
+                emit(interface.snapshot(a.mission_id))
+        elif a.command=="execution":
+            emit(ExecutionInterface(ROOT).resolve(a.identifier))
         elif a.command in ("approve","decline"):
             if not a.operator:
                 raise OrchestrationError("--operator is required for mission approval")
@@ -447,6 +506,6 @@ def main(argv=None):
                     repository_root=repository,at=resolved_at))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (OrchestrationError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, AgentQualificationError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+    except (OrchestrationError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr); return 78
 if __name__ == "__main__": raise SystemExit(main())

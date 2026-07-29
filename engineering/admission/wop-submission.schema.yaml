@@ -37,6 +37,8 @@ additionalProperties: false
 x-zeus-authoritative-contract:
   procedure: PROC-0001@1.11
   template: TPL-0001@1.7
+  execution_interface: engineering/execution/execution-interface.yaml
+  mission_contract: engineering/registry/work-registry.yaml
   standards: [STD-0000, STD-0001, STD-0002, STD-0003, STD-0004]
   execution_package_references:
     - authority_node_id

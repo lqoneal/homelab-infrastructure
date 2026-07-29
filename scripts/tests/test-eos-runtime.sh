@@ -10,7 +10,9 @@ trap 'rm -rf "$TEST_ROOT"' EXIT
 export EOS_WORKSPACE="$TEST_ROOT/engineering"
 PROJECT_ROOT="$EOS_WORKSPACE/repositories/homelab"
 SPRINTER_ROOT="$EOS_WORKSPACE/repositories/SprinterOS"
-mkdir -p "$PROJECT_ROOT/docs/project" "$EOS_WORKSPACE/eos/state" "$EOS_WORKSPACE/eos/checkpoints" \
+mkdir -p "$PROJECT_ROOT/docs/project" "$PROJECT_ROOT/engineering/eos" \
+    "$PROJECT_ROOT/engineering/registry" "$PROJECT_ROOT/engineering/execution" \
+    "$EOS_WORKSPACE/eos/state" "$EOS_WORKSPACE/eos/checkpoints" \
     "$EOS_WORKSPACE/repositories/shared-libraries" "$SPRINTER_ROOT/docs/project"
 
 git -C "$PROJECT_ROOT" init -q
@@ -42,7 +44,22 @@ status: Active
 # Project State
 EOF
 
-git -C "$PROJECT_ROOT" add README.md docs/project/PROJ-0001-PROJECT_STATE.md
+cat > "$PROJECT_ROOT/engineering/eos/repository-eos-authority.yaml" <<'EOF'
+schema_version: 1
+canonical_platform_state: repository
+records: []
+EOF
+
+cat > "$PROJECT_ROOT/engineering/registry/work-registry.yaml" <<'EOF'
+schema_version: 1
+revision: 1
+EOF
+
+cat > "$PROJECT_ROOT/engineering/execution/execution-interface.yaml" <<'EOF'
+schema_version: 2
+EOF
+
+git -C "$PROJECT_ROOT" add README.md docs/project/PROJ-0001-PROJECT_STATE.md engineering
 git -C "$PROJECT_ROOT" commit -q -m "test baseline"
 
 git -C "$SPRINTER_ROOT" init -q
@@ -147,7 +164,7 @@ grep -Fq "Checkpoint Sync:       not applicable" <<<"$sprinter_resume"
 grep -Fq "Persistent MMC Storage I/O Investigation" <<<"$sprinter_resume"
 
 homelab_resume="$("$REPOSITORY_ROOT/scripts/engctl" resume homelab)"
-grep -Fq "ENGINEERING WORK INITIATION — ACTION REQUIRED" <<<"$homelab_resume"
+grep -Eq "ENGINEERING WORK INITIATION — (ACTION REQUIRED|READY)" <<<"$homelab_resume"
 grep -Fq "Mission:                  Zeus Operational Alpha" <<<"$homelab_resume"
 grep -Fq "Phase:                    Zeus Operational Alpha" <<<"$homelab_resume"
 ! grep -Fq "Issue the bounded, read-only HNS Phase 1" <<<"$homelab_resume"

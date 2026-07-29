@@ -1,12 +1,12 @@
 ---
 document_id: TPL-0002
 title: Completion Report Template
-version: 1.2
-status: Active
+version: 1.4
+status: Draft
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-18
-phase: Engineering Reporting Standard Institutionalization
+last_updated: 2026-07-28
+phase: Engineering Execution Interface Standardization
 domain: Engineering Governance
 classification: Engineering Template
 source_of_truth: true
@@ -42,6 +42,11 @@ Complete sections in the order defined below. Use `Not Applicable` with a
 short rationale where a mandatory section does not apply. Do not omit the
 section. Historical Completion Reports remain valid under their originating
 template revision.
+
+The report contains mission delta only. Reference governing procedures and
+unchanged baselines; do not reproduce them. Include only the starting context
+needed to explain the delta, actions performed, artifacts changed or reviewed,
+terminal verification, reconciliation, remaining work, and disposition.
 
 ## Transaction Identification
 
@@ -288,3 +293,4 @@ Applicable Engineering Records:
 | 1.0 | 2026-07-09 | Initial Engineering Completion Report Template established. |
 | 1.1 | 2026-07-17 | Standardized the exact Completion Report title and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
 | 1.2 | 2026-07-18 | Institutionalized the execution-first report structure, ordered results and certification sections, repository and validation evidence capture, applicability handling, and authoritative reusable reporting terminology. |
+| 1.3 | 2026-07-28 | Required mission-delta-only reports that reference rather than duplicate reusable repository execution knowledge. |

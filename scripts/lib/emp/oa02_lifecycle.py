@@ -18,8 +18,9 @@ def resolve(repository: Path) -> dict:
     service=GateApprovalService.configured(root)
     try:
         oa01=service.binding("OA-01",require_clean=False)
-        verification=service.verification_record(oa01) is not None
-        acceptance=service._matching_receipt(oa01) is not None
+        milestone=service.gate_milestone(oa01)
+        verification=milestone["verification"]=="PASS"
+        acceptance=milestone["acceptance"]=="RECORDED"
         oa01_run=oa01.run_id
     except GateApprovalError:
         verification=acceptance=False; oa01_run="NONE"
@@ -38,6 +39,7 @@ def resolve(repository: Path) -> dict:
             if candidate.name==authoritative_oa02_run
         ]
     activation=json.loads((root/"engineering/dispatch/dispatcher-activation.json").read_text())
+    dispatcher_state=activation.get("status","MISSING")
     from scripts.lib.emp.agent_qualification import registry as agent_registry
     registry=agent_registry(root)
     agents=registry.get("agents",[]); qualified=[a for a in agents if a.get("active") is True and a.get("qualification_status")=="QUALIFIED"]
@@ -47,7 +49,7 @@ def resolve(repository: Path) -> dict:
     if not acceptance: blockers.append("RECORD_OA-01_OPERATOR_ACCEPTANCE")
     if len(oa02_candidates)!=1: blockers.append("COMPLETE_OA02_PMCT")
     if not qualified: blockers.append("QUALIFY_PRODUCTION_AGENT")
-    if activation.get("status") not in {"PREPARED","ACTIVE"}: blockers.append("RECONCILE_DISPATCHER_CONFIGURATION")
+    if dispatcher_state not in {"PREPARED","ACTIVE"}: blockers.append("RECONCILE_DISPATCHER_CONFIGURATION")
     blockers=list(dict.fromkeys(blockers))
     result="PASS" if not blockers else "NOT_READY"
     material={
@@ -56,7 +58,10 @@ def resolve(repository: Path) -> dict:
       "current_binding_pmct_result":"PASS" if oa01_run!="NONE" else "NOT_READY","current_binding_pmct_run_id":oa01_run,
       "oa02_pmct_readiness":"PASS" if len(oa02_candidates)==1 else "NOT_READY",
       "oa02_pmct_run_id":oa02_candidates[0].name if len(oa02_candidates)==1 else "NONE",
-      "dispatcher_configuration":"VALID","dispatcher_state":activation.get("status","MISSING"),"dispatcher_active":activation.get("status")=="ACTIVE",
+      # ACTIVE is a post-verification operator transition.  Normalize it to
+      # PREPARED in the verification material so recording authorization does
+      # not invalidate the preserved OA-02 decision digest.
+      "dispatcher_configuration":"VALID","dispatcher_state":"PREPARED" if dispatcher_state=="ACTIVE" else dispatcher_state,"dispatcher_active":False,
       "operational_dispatch":"DISABLED","registered_production_agents":len(agents),"qualified_production_agents":len(qualified),
       "production_agent_readiness":"PASS" if qualified else "NOT_READY","mission_execution":"NOT_STARTED",
       "runtime_configuration":"PASS","state_schema":"PASS","required_paths":"PASS","required_permissions":"PASS","integrity_controls":"PASS",
@@ -71,10 +76,26 @@ def resolve(repository: Path) -> dict:
             record=candidate
     material["verification_record"]=record
     material["oa02_state"]="VERIFIED" if record and record["result"]=="PASS" else ("BLOCKED" if record else "CONDITIONALLY_ELIGIBLE")
-    material["progressive_wop"]="AWAITING_DISPATCH_AUTHORIZATION" if material["oa02_state"]=="VERIFIED" else "AWAITING_PRE_EXECUTION_VERIFICATION"
+    authorization_ready=material["oa02_state"]=="VERIFIED" and not blockers
+    authorization_recorded=dispatcher_state=="ACTIVE"
+    dispatch_enabled=authorization_recorded and authorization_ready
+    material["dispatcher_state"]=dispatcher_state
+    material["dispatcher_active"]=authorization_recorded
+    material["dispatch_authorization"]="RECORDED" if authorization_recorded else "NOT_RECORDED"
+    material["authorization_ready"]=authorization_ready
+    material["operational_dispatch"]="ENABLED" if dispatch_enabled else "DISABLED"
+    material["progressive_wop"]=(
+        "DISPATCH_AUTHORIZED"
+        if dispatch_enabled
+        else "AWAITING_DISPATCH_AUTHORIZATION"
+        if authorization_ready
+        else "AWAITING_PRE_EXECUTION_VERIFICATION"
+    )
     material["next_action"]=(
-        "AUTHORIZE_DISPATCH"
-        if material["oa02_state"]=="VERIFIED"
+        "DISPATCH_AUTHORIZED"
+        if dispatch_enabled
+        else "AUTHORIZE_DISPATCH"
+        if authorization_ready
         else blockers[0] if blockers
         else "RUN_OA-02_PRE_EXECUTION_VERIFICATION"
     )

@@ -1,19 +1,19 @@
 ---
 document_id: EOS-0003
 title: EOS Operational Persistence Profile
-version: 1.2
-status: Active
+version: 1.3
+status: Draft
 owner: Homelab Infrastructure
 created: 2026-07-13
-last_updated: 2026-07-15
-phase: Mission 0.4 - Engineering Platform Persistence and Mission 0 Closeout
+last_updated: 2026-07-28
+phase: Repository–EOS State Integration
 classification: EOS Operational Record
-predecessor_revision: EOS-0003@1.0
+predecessor_revision: EOS-0003@1.2
 successor_revision: null
-approval_status: Approved
+approval_status: Pending
 approval_authority: Engineering Governance
 approval_reference: Codex Handoff Procedure - Engineering State Freshness Standard Implementation
-approval_date: 2026-07-15
+approval_date: null
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -40,7 +40,7 @@ tags:
 
 ## Purpose
 
-This operational profile records the persistence treatment implemented by the Engineering Platform for EOS runtime views, checkpoint selection, retention configuration, and checkpoint evidence.
+This operational profile records the persistence treatment implemented by the Engineering Platform for repository-authoritative EOS projections, runtime views, checkpoint selection, retention configuration, and checkpoint evidence.
 
 It applies the existing EOS architecture and Engineering Document Persistence Standard. It introduces no governance authority and does not change the controlled-document persistence model.
 
@@ -50,7 +50,10 @@ It applies the existing EOS architecture and Engineering Document Persistence St
 
 | Record | Source of Truth | Persistence Policy | Regeneration | Synchronization | Repository Publication |
 | ------ | --------------- | ------------------ | ------------ | --------------- | ---------------------- |
-| `operational-state.json` | The referenced project state, EOS state, active checkpoint, and observed Git state | Atomic derived runtime view under `/data/engineering/eos/runtime` | Fully regenerable with `engctl eos refresh` | Refresh after repository publication, checkpoint restoration, or material repository-state change | Not published; repository records may cite its qualification result |
+| `EOS-ID.md` | Repository identity and canonical locator | Deterministic derived projection under `/data/engineering/eos/state` | Fully regenerable with `engctl eos synchronize` | Repository to EOS only; exact-byte drift is replaced automatically | Not published and never an independent authority |
+| `EOS-STATE.md` | `PROJ-0001`, Work Registry revision, Engineering Execution Interface schema, and repository identity | Deterministic derived projection under `/data/engineering/eos/state` | Fully regenerable with `engctl eos synchronize` | Repository to EOS only; exact-byte drift is replaced automatically | Not published and never an independent engineering-state authority |
+| `EOS-MANIFEST.md` | Repository–EOS Authority Matrix and exact canonical-source bytes | Deterministic digest manifest under `/data/engineering/eos/state` | Fully regenerable with `engctl eos synchronize` | Repository to EOS only; validation compares exact source and projection digests | Not published; records synchronization evidence only |
+| `operational-state.json` | The referenced project state, projected EOS state, active checkpoint, and observed Git state | Atomic derived runtime view under `/data/engineering/eos/runtime` | Fully regenerable with `engctl eos refresh` | Refresh after repository publication, synchronization, checkpoint restoration, or material repository-state change | Not published; repository records may cite its qualification result |
 | `repositories.tsv` | Registered infrastructure facts plus observed directories and Git repositories | Atomic derived inventory view under `/data/engineering/eos/runtime` | Fully regenerable with `engctl repository refresh` or `engctl eos refresh` | Refresh when repository presence or Git state changes | Not published; factual repository inventory remains controlled by `INF-0001` |
 | `ACTIVE-CHECKPOINT` | The operator-selected current resume checkpoint | Single-line mutable operational pointer under `/data/engineering/eos/state` | May fall back to the latest checkpoint, but a deliberate historical selection cannot be inferred after loss | Update atomically through `engctl checkpoint restore`; the target must resolve inside the checkpoint store | Not published; the selected closeout checkpoint is summarized in project and EOS state |
 | `CHECKPOINT-RETENTION` | The configured recent-set size | Single-line mutable operational configuration under `/data/engineering/eos/state`; valid range is 1 through 1000 | Defaults to 10 when absent, but the previously selected value cannot be inferred after loss | Update atomically through `engctl checkpoint retention`; validation rejects malformed persisted values | Not published; the append-only preservation rule is documented here |
@@ -62,15 +65,35 @@ It applies the existing EOS architecture and Engineering Document Persistence St
 
 The EOS state and checkpoint directories are durable operational data and shall be included in Engineering Workspace backup and recovery operations. The runtime directory is a cache and may be rebuilt after recovery.
 
-Recovery order is:
+Recovery and synchronization order is:
 
-1. restore EOS state and append-only checkpoint metadata;
-2. verify `ACTIVE-CHECKPOINT` and `CHECKPOINT-RETENTION`;
-3. restore or discover project repositories;
-4. run `engctl eos refresh`;
+1. restore or discover project repositories;
+2. restore append-only checkpoint metadata and runtime configuration when
+   available;
+3. run `engctl eos synchronize` to regenerate EOS projections;
+4. verify `ACTIVE-CHECKPOINT` and `CHECKPOINT-RETENTION`;
 5. run `engctl eos persistence` and `engctl validate`.
 
-No derived runtime view may override a controlled record, observed repository fact, or checkpoint record.
+No derived EOS projection or runtime view may override a controlled record,
+Project State, Work Registry record, execution-interface binding, observed
+repository fact, or checkpoint record. Independently authored EOS engineering
+state is obsolete and prohibited.
+
+# Repository–EOS Synchronization
+
+The Repository–EOS Authority Matrix at
+`engineering/eos/repository-eos-authority.yaml` assigns one classification,
+owner, direction, and lifecycle to every integrated record.
+
+Synchronization is one-way from repository authority to EOS derived
+projections. It is version-aware, idempotent, resumable, and interruption-safe.
+Temporary sibling files are fully rendered and flushed before atomic
+replacement. Unsupported schemas and missing or ambiguous sources fail before
+mutation.
+
+Derived and cache drift may be repaired automatically. Runtime checkpoint
+records are validated and preserved. Any attempted EOS-to-repository authority
+flow fails closed.
 
 # Engineering State Freshness
 
@@ -111,6 +134,11 @@ precedence regardless of checkpoint applicability.
 
 The aggregate Engineering Platform validator invokes this control.
 
+The integrated validator executes repository validation, synchronization
+validation, EOS runtime validation, and integrated platform validation in that
+order. Resume performs synchronization and the same verification chain before
+rendering mission context.
+
 ---
 
 # Revision History
@@ -120,3 +148,4 @@ The aggregate Engineering Platform validator invokes this control.
 | 1.0 | 2026-07-13 | Established the Mission 0 closeout persistence treatment for EOS runtime and checkpoint records. |
 | 1.1 | 2026-07-15 | Applied STD-0004 freshness, authoritative-state precedence, reconciliation-before-checkpoint, and resume-conflict requirements. |
 | 1.2 | 2026-07-15 | Defined checkpoint identity, selected-repository applicability, strict commit verification, and not-applicable multi-repository resume behavior. |
+| 1.3 | 2026-07-28 | Established repository-authoritative deterministic EOS projections, the authority matrix, one-way atomic synchronization, layered validation, and integrated resume while retaining checkpoints as runtime evidence. |

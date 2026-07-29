@@ -21,6 +21,36 @@ from scripts.lib.emp.oa02_lifecycle import resolve as resolve_oa02  # noqa: E402
 
 
 class NextActionTests(unittest.TestCase):
+    @staticmethod
+    def oa02_state(
+        *,
+        verified=True,
+        authorized=False,
+        blockers=None,
+        pmct="PASS",
+    ):
+        blockers = list(blockers or [])
+        ready = verified and not blockers
+        enabled = authorized and ready
+        return {
+            "oa02_state": "VERIFIED" if verified else "CONDITIONALLY_ELIGIBLE",
+            "next_action": (
+                "DISPATCH_AUTHORIZED"
+                if enabled
+                else "AUTHORIZE_DISPATCH"
+                if ready
+                else blockers[0] if blockers
+                else "RUN_OA-02_PRE_EXECUTION_VERIFICATION"
+            ),
+            "blocking_conditions": blockers,
+            "authorization_ready": ready,
+            "operational_dispatch": "ENABLED" if enabled else "DISABLED",
+            "dispatcher_state": "ACTIVE" if authorized else "PREPARED",
+            "dispatcher_active": authorized,
+            "current_binding_pmct_result": pmct,
+            "oa02_pmct_readiness": pmct,
+        }
+
     def repository(self, *, published_matches=False, active=False, qualified=False):
         temporary = tempfile.TemporaryDirectory()
         root = Path(temporary.name)
@@ -144,6 +174,106 @@ class NextActionTests(unittest.TestCase):
                         resolve_next_action(root)["next_authorized_action"]["code"],
                         "RUN_OA-01_VERIFICATION",
                     )
+        finally:
+            temporary.cleanup()
+
+    def test_before_oa02_verification_dispatch_and_authorization_are_blocked(self):
+        temporary, root = self.repository(published_matches=True, qualified=True)
+        try:
+            with patch(
+                "scripts.lib.emp.next_action._oa01_lifecycle",
+                return_value={
+                    "verification_passed": True,
+                    "acceptance_recorded": True,
+                },
+            ), patch(
+                "scripts.lib.emp.next_action.resolve_oa02",
+                return_value=self.oa02_state(verified=False, pmct="NOT_READY"),
+            ):
+                value = resolve_next_action(root)
+            self.assertEqual(value["operational_dispatch"], "DISABLED")
+            self.assertEqual(value["result"], "NOT_READY")
+            self.assertEqual(
+                value["next_authorized_action"]["code"],
+                "RUN_OA-02_PRE_EXECUTION_VERIFICATION",
+            )
+        finally:
+            temporary.cleanup()
+
+    def test_verified_oa02_is_ready_to_authorize_but_dispatch_stays_disabled(self):
+        temporary, root = self.repository(published_matches=True, qualified=True)
+        try:
+            with patch(
+                "scripts.lib.emp.next_action._oa01_lifecycle",
+                return_value={
+                    "verification_passed": True,
+                    "acceptance_recorded": True,
+                },
+            ), patch(
+                "scripts.lib.emp.next_action.resolve_oa02",
+                return_value=self.oa02_state(),
+            ):
+                value = resolve_next_action(root)
+            self.assertEqual(value["dispatcher"]["status"], "PREPARED")
+            self.assertEqual(value["operational_dispatch"], "DISABLED")
+            self.assertEqual(value["pmct"]["status"], "PASS")
+            self.assertEqual(
+                value["next_authorized_action"]["code"], "AUTHORIZE_DISPATCH"
+            )
+            self.assertEqual(value["result"], "READY")
+        finally:
+            temporary.cleanup()
+
+    def test_explicit_authorization_enables_dispatch_when_bindings_are_valid(self):
+        temporary, root = self.repository(published_matches=True, qualified=True)
+        try:
+            with patch(
+                "scripts.lib.emp.next_action._oa01_lifecycle",
+                return_value={
+                    "verification_passed": True,
+                    "acceptance_recorded": True,
+                },
+            ), patch(
+                "scripts.lib.emp.next_action.resolve_oa02",
+                return_value=self.oa02_state(authorized=True),
+            ):
+                value = resolve_next_action(root)
+            self.assertEqual(value["dispatcher"]["status"], "ACTIVE")
+            self.assertEqual(value["operational_dispatch"], "ENABLED")
+        finally:
+            temporary.cleanup()
+
+    def test_any_post_verification_regression_disables_dispatch_and_blocks_authorization(self):
+        temporary, root = self.repository(published_matches=True, qualified=True)
+        regressions = (
+            "PMCT_REGRESSION",
+            "AUTHORITY_REGRESSION",
+            "PUBLICATION_REGRESSION",
+            "AGENT_REGRESSION",
+            "OA02_REGRESSION",
+        )
+        try:
+            for regression in regressions:
+                with self.subTest(regression=regression), patch(
+                    "scripts.lib.emp.next_action._oa01_lifecycle",
+                    return_value={
+                        "verification_passed": True,
+                        "acceptance_recorded": True,
+                    },
+                ), patch(
+                    "scripts.lib.emp.next_action.resolve_oa02",
+                    return_value=self.oa02_state(
+                        authorized=True,
+                        blockers=[regression],
+                        pmct="NOT_READY" if regression == "PMCT_REGRESSION" else "PASS",
+                    ),
+                ):
+                    value = resolve_next_action(root)
+                self.assertEqual(value["operational_dispatch"], "DISABLED")
+                self.assertEqual(value["result"], "NOT_READY")
+                self.assertNotEqual(
+                    value["next_authorized_action"]["code"], "AUTHORIZE_DISPATCH"
+                )
         finally:
             temporary.cleanup()
 

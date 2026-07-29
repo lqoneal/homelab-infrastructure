@@ -1,0 +1,81 @@
+schema_version: 1
+document_type: MissionContract
+mission_id: P2-038-CORRECTIVE
+registry_id: EMP-WORK-P2-038-CORRECTIVE
+title: P2-038 Engineering Execution Interface Corrective Implementation
+revision: 2
+status: completed
+repository_identity: /data/engineering/repositories/homelab
+project_id: EMP-PROJECT-HOMELAB
+mission_record_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+classification: framework-corrective
+objective: Correct the unaccepted P2-038 implementation and qualify a repository-complete execution interface.
+completion_criteria:
+  - The execution manifest contains operational bindings and routing metadata only.
+  - Semantic owners and exact candidate revisions resolve uniquely from controlled records.
+  - Repository discovery, snapshot, authority resolution, and handoff validation use one canonical pipeline.
+  - Framework review, corrective approval, WOP applicability, lifecycle, blockers, and next action fail closed.
+  - Implementation completion remains separate from operator acceptance, publication, and dispatch.
+scope:
+  include:
+    - P2-038 execution-interface implementation and controlled-document candidates
+    - P2-038 lifecycle, evidence, registry, project, roadmap, and resume reconciliation
+    - focused and relevant regression verification
+  preserve:
+    - P2-037
+    - P2-019
+  exclude:
+    - controlled-authority publication
+    - dispatch authorization
+    - operator acceptance
+    - destructive operations
+    - commits, tags, merges, and pushes
+authority:
+  kind: operator-decision-input
+  reference: P2-038 Corrective Implementation Approval (2026-07-28)
+  applies_to: P2-038-CORRECTIVE
+  reusable_for_other_missions: false
+  engineering_decisions:
+    corrective_implementation: approved
+    controlled_document_activation: prohibited
+    operator_acceptance: not_recorded
+    publication: prohibited
+    dispatch: prohibited
+command_permissions:
+  automatic:
+    - read
+    - discover
+    - validate
+    - test
+    - generate_evidence
+  mission_scoped:
+    - edit_in_scope_working_tree_candidates
+    - reconcile_in_scope_records
+  note: Command permission never grants an engineering decision.
+review_gates:
+  corrective_assessment:
+    required: true
+    state: approved
+    approval_reference: Approved P2-038 Mission State Snapshot and corrective plan
+  corrective_implementation:
+    required: true
+    state: approved
+    approval_reference: P2-038 Corrective Implementation Approval (2026-07-28)
+  operator_acceptance:
+    required: true
+    state: not_recorded
+wop:
+  applicability: not_applicable
+  reason: This corrective mission records bounded operator-decision input and does not activate or publish an Engineering Work Order.
+  references: []
+lifecycle:
+  state: completed
+  implementation_status: complete
+  acceptance_status: not_recorded
+  completion_report: engineering/evidence/2026-07-28-p2-038-corrective-completion-report.md
+next_authorized_action: REQUEST_P2_038_CORRECTIVE_ACCEPTANCE
+source_records:
+  - engineering/registry/work-registry.yaml
+  - engineering/evidence/2026-07-28-p2-038-completion-report.md
+  - docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md

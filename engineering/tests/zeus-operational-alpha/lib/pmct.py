@@ -287,7 +287,7 @@ def classify(gate: dict[str, Any], state: dict[str, Any], assertions: list[dict[
             try:
                 service = GateApprovalService.configured(REPOSITORY)
                 binding = service.binding("OA-01", require_clean=False)
-                accepted = service._matching_receipt(binding) is not None
+                accepted = service.gate_milestone(binding)["acceptance"] == "RECORDED"
             except GateApprovalError:
                 accepted = False
         if prior_state["status"] != "PASS" or not accepted:
@@ -481,8 +481,9 @@ def evaluate(gate: dict[str, Any], state: dict[str, Any]) -> list[dict[str, Any]
         try:
             service = GateApprovalService.configured(REPOSITORY)
             binding = service.binding("OA-01", require_clean=False)
-            verification_pass = service.verification_record(binding) is not None
-            acceptance_recorded = service._matching_receipt(binding) is not None
+            milestone = service.gate_milestone(binding)
+            verification_pass = milestone["verification"] == "PASS"
+            acceptance_recorded = milestone["acceptance"] == "RECORDED"
         except GateApprovalError:
             verification_pass = acceptance_recorded = False
         stable_keys = (

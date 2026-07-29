@@ -96,10 +96,23 @@ live state.
 For OA-02, run `pmct run OA-02` only after the current-binding OA-01
 verification and acceptance are integrity-valid. The OA-02 output reports its
 own readiness independently of the retained current-binding OA-01 PMCT PASS.
+An unaffected successor binding may satisfy that prerequisite through
+`zeus gate carry-forward OA-01` after publication and current-binding PMCT
+PASS. Inspect the command's affected-criteria list and digest. Do not repeat
+OA-01 verification merely because HEAD advanced. If it reports
+`OA01_REVALIDATION_REQUIRED=YES`, stop and review the named criteria.
 After an OA-02 PMCT PASS, Zeus derives the next unmet prerequisite
 automatically. With an empty production agent registry that action is
 `QUALIFY_PRODUCTION_AGENT`; PMCT does not perform that action and leaves the
 dispatcher inactive.
+
+After agent qualification and OA-02 operator verification, both `zeus status`
+and `zeus next-action` must show dispatch `DISABLED`, PMCT `PASS`, next action
+`AUTHORIZE_DISPATCH`, and result `READY`. Do not interpret `READY` as
+authorization and do not activate the dispatcher during verification.
+Activation requires a separate explicit operator action. Before and after that
+action, any invalid PMCT, authority, publication, agent, or OA-02 binding
+forces dispatch back to `DISABLED` and blocks authorization.
 
 During successor publication, activation recognizes that same exact
 authenticated reconciliation when the sealed run binds to the candidate HEAD

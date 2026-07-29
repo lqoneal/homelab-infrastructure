@@ -194,17 +194,42 @@ eos_platform_validate() {
     management_test="$platform_root/scripts/tests/test-emp-management.py"
     etp_test="$platform_root/scripts/tests/test-etp-profiles.py"
 
-    if eos_validate_state "$project"; then
-        echo "PASS: EOS operational state"
-    else
-        echo "FAIL: EOS operational state"
-        ((failures++)) || true
-    fi
+    echo "VALIDATION STAGE 1 — REPOSITORY"
+    echo "--------------------------------"
 
     if git -C "$root" fsck --no-dangling --no-reflogs >/dev/null 2>&1; then
         echo "PASS: repository integrity"
     else
         echo "FAIL: repository integrity"
+        ((failures++)) || true
+    fi
+
+    if [[ -f "$validator" ]] && PYTHONDONTWRITEBYTECODE=1 python3 "$validator" >/dev/null; then
+        echo "PASS: repository controlled-document validation"
+    else
+        echo "FAIL: repository controlled-document validation"
+        ((failures++)) || true
+    fi
+
+    echo
+    echo "VALIDATION STAGE 2 — SYNCHRONIZATION"
+    echo "-------------------------------------"
+
+    if eos_synchronization_validate "$project" >/dev/null; then
+        echo "PASS: repository–EOS synchronization"
+    else
+        echo "FAIL: repository–EOS synchronization"
+        ((failures++)) || true
+    fi
+
+    echo
+    echo "VALIDATION STAGE 3 — EOS RUNTIME"
+    echo "--------------------------------"
+
+    if eos_validate_state "$project"; then
+        echo "PASS: EOS projected state"
+    else
+        echo "FAIL: EOS projected state"
         ((failures++)) || true
     fi
 
@@ -215,12 +240,9 @@ eos_platform_validate() {
         ((failures++)) || true
     fi
 
-    if [[ -f "$validator" ]] && PYTHONDONTWRITEBYTECODE=1 python3 "$validator" >/dev/null; then
-        echo "PASS: controlled-document validation"
-    else
-        echo "FAIL: controlled-document validation"
-        ((failures++)) || true
-    fi
+    echo
+    echo "VALIDATION STAGE 4 — INTEGRATED PLATFORM"
+    echo "-----------------------------------------"
 
     if [[ -f "$runtime_test" ]] && bash "$runtime_test" >/dev/null; then
         echo "PASS: EOS runtime regression tests"

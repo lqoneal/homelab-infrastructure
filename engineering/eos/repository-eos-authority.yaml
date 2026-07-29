@@ -1,0 +1,77 @@
+schema_version: 1
+authority_id: REPOSITORY-EOS-AUTHORITY-MATRIX
+canonical_platform_state: repository
+records:
+  - record: project_state
+    repository_source: docs/project/PROJ-0001-PROJECT_STATE.md
+    classification: Authoritative
+    owner: Homelab Infrastructure
+    eos_projection: eos/state/EOS-STATE.md
+    synchronization: repository_to_eos
+  - record: work_registry
+    repository_source: engineering/registry/work-registry.yaml
+    classification: Authoritative
+    owner: Engineering Management Platform
+    eos_projection: null
+    synchronization: read_directly_from_repository
+  - record: execution_interface
+    repository_source: engineering/execution/execution-interface.yaml
+    classification: Authoritative
+    owner: engctl
+    eos_projection: null
+    synchronization: read_directly_from_repository
+  - record: repository_identity
+    repository_source: .git
+    classification: Authoritative
+    owner: Git repository
+    eos_projection: eos/state/EOS-ID.md
+    synchronization: repository_to_eos
+  - record: eos_projection_manifest
+    repository_source: engineering/eos/repository-eos-authority.yaml
+    classification: Derived
+    owner: engctl synchronization
+    eos_projection: eos/state/EOS-MANIFEST.md
+    synchronization: regenerate
+  - record: operational_state
+    repository_source: repository and synchronized EOS projections
+    classification: Cache
+    owner: engctl runtime
+    eos_projection: eos/runtime/operational-state.json
+    synchronization: regenerate
+  - record: repository_inventory
+    repository_source: observed engineering workspace repositories
+    classification: Cache
+    owner: engctl runtime
+    eos_projection: eos/runtime/repositories.tsv
+    synchronization: regenerate
+  - record: checkpoint_metadata
+    repository_source: repository commit and project identity at capture time
+    classification: Runtime
+    owner: EOS checkpoint service
+    eos_projection: eos/checkpoints
+    synchronization: append_only
+  - record: active_checkpoint
+    repository_source: operator checkpoint selection
+    classification: Runtime
+    owner: EOS checkpoint service
+    eos_projection: eos/state/ACTIVE-CHECKPOINT
+    synchronization: atomic_pointer
+  - record: checkpoint_retention
+    repository_source: operator runtime configuration
+    classification: Runtime
+    owner: EOS checkpoint service
+    eos_projection: eos/state/CHECKPOINT-RETENTION
+    synchronization: atomic_value
+obsolete_records:
+  - record: independently_authored_eos_engineering_state
+    disposition: prohibited
+    replacement: deterministic EOS-STATE projection from PROJ-0001
+lifecycle:
+  direction: repository_to_eos
+  drift_policy:
+    derived_or_cache: replace_automatically
+    runtime: validate_and_preserve
+    authoritative: fail_closed
+  interruption_safety: write temporary siblings, validate, then atomically replace
+  idempotency: unchanged canonical inputs produce byte-identical projections
+  version_policy: reject unsupported schema versions before mutation

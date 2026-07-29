@@ -1,7 +1,7 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.55
+version: 2.57
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -127,6 +127,8 @@ relationships:
     target: SPEC-0011
   - type: indexes
     target: SPEC-0012
+  - type: indexes
+    target: SPEC-0013
   - type: indexes
     target: MILESTONE-0006
   - type: indexes
@@ -345,18 +347,19 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EDR-0003 | Governed Authorization Transaction Architecture | Approved | Engineering Governance | `docs/edr/EDR-0003-GOVERNED-AUTHORIZATION-TRANSACTION-ARCHITECTURE.md` |
 | EOS-0001 | Engineering Operating System Constitution | Draft | EOS Program | `docs/eos/EOS-0001-ENGINEERING_OPERATING_SYSTEM_CONSTITUTION.md` |
 | EOS-0002 | Engineering Operating System Master Plan | Draft | EOS Program | `docs/eos/EOS-0002-ENGINEERING_OPERATING_SYSTEM_MASTER_PLAN.md` |
-| EOS-0003 | EOS Operational Persistence Profile | Active | Homelab Infrastructure | `docs/eos/EOS-0003-OPERATIONAL_PERSISTENCE_PROFILE.md` |
+| EOS-0003 | EOS Operational Persistence Profile | Draft | Homelab Infrastructure | `docs/eos/EOS-0003-OPERATIONAL_PERSISTENCE_PROFILE.md` |
 | EMP-0001 | Engineering Management Platform Architecture | Active | Engineering Management Platform | `docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md` |
 | SPEC-0001 | Controlled Document Model | Active | EOS Program | `docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md` |
 | SPEC-0004 | Engineering Context Reconstruction Service | Draft | EOS Program | `docs/specifications/SPEC-0004-ENGINEERING_CONTEXT_RECONSTRUCTION_SERVICE.md` |
 | SPEC-0005 | Engineering Control Framework | Draft | EOS Program | `docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md` |
 | SPEC-0006 | Engineering Work Registry Model | Active | Engineering Management Platform | `docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md` |
 | SPEC-0007 | Engineering Platform Construction Specification | Active | Engineering Platform | `docs/specifications/SPEC-0007-ENGINEERING-PLATFORM-CONSTRUCTION-SPECIFICATION.md` |
-| SPEC-0008 | Engineering Transaction Profile Specification | Active | Engineering Governance | `docs/specifications/SPEC-0008-ENGINEERING_TRANSACTION_PROFILE_SPECIFICATION.md` |
+| SPEC-0008 | Engineering Transaction Profile Specification | Draft | Engineering Governance | `docs/specifications/SPEC-0008-ENGINEERING_TRANSACTION_PROFILE_SPECIFICATION.md` |
 | SPEC-0009 | Notification Service Specification | Active | Engineering Platform | `docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md` |
 | SPEC-0010 | Engineering Knowledge Repository Architecture | Active | Engineering Platform | `docs/specifications/SPEC-0010-ENGINEERING-KNOWLEDGE-REPOSITORY-ARCHITECTURE.md` |
 | SPEC-0011 | Production Authority Restoration Specification | Active | Lawrence O'Neal | `docs/specifications/SPEC-0011-PRODUCTION-AUTHORITY-RESTORATION-SPECIFICATION.md` |
 | SPEC-0012 | Production Execution Foundation | Active | Lawrence O'Neal | `docs/specifications/SPEC-0012-PRODUCTION-EXECUTION-FOUNDATION.md` |
+| SPEC-0013 | Controlled Mission Assurance Language | Draft | EOS Program | `docs/specifications/SPEC-0013-CONTROLLED-MISSION-ASSURANCE-LANGUAGE.md` |
 | SERVICE-0001 | EOS Core Services Catalog | Draft | EOS Program | `docs/services/SERVICE-0001-EOS_CORE_SERVICES_CATALOG.md` |
 | SERVICE-0002 | EMP Management Services Catalog | Active | Engineering Management Platform | `docs/services/SERVICE-0002-EMP_MANAGEMENT_SERVICES_CATALOG.md` |
 | GEN-0001 | Engineering Operating System Genesis Record | Active | Engineering Governance | `docs/genesis/GEN-0001-GENESIS_GOVERNANCE_RECORD.md` |
@@ -364,18 +367,18 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | STD-0000 | Engineering Governance Documentation Architecture | Active | Engineering Governance | `docs/standards/STD-0000-ENGINEERING_GOVERNANCE_DOCUMENTATION_ARCHITECTURE.md` |
 | STD-0001 | Engineering Document Lifecycle Standard | Active | Engineering Governance | `docs/standards/STD-0001-ENGINEERING_DOCUMENT_LIFECYCLE_STANDARD.md` |
 | STD-0002 | Engineering Document Persistence Standard | Active | Engineering Governance | `docs/standards/STD-0002-ENGINEERING_DOCUMENT_PERSISTENCE_STANDARD.md` |
-| STD-0003 | Engineering Work Order Standard | Active | Engineering Governance | `docs/standards/STD-0003-ENGINEERING_WORK_ORDER_STANDARD.md` |
+| STD-0003 | Engineering Work Order Standard | Draft | Engineering Governance | `docs/standards/STD-0003-ENGINEERING_WORK_ORDER_STANDARD.md` |
 | STD-0004 | Engineering State Freshness Standard | Active | Engineering Governance | `docs/standards/STD-0004-ENGINEERING_STATE_FRESHNESS_STANDARD.md` |
 | STD-0005 | Engineering Hardware Lifecycle Standard | Active | Engineering Governance | `docs/standards/STD-0005-ENGINEERING_HARDWARE_LIFECYCLE_STANDARD.md` |
-| PROC-0001 | Engineering Work Order Execution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md` |
+| PROC-0001 | Engineering Work Order Execution Procedure | Draft | Engineering Governance | `docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md` |
 | PROC-0002 | Engineering Governance Resolution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md` |
 | PROC-0003 | Engineering Recovery Runbook | Active | Engineering Governance | `docs/procedures/PROC-0003-ENGINEERING_RECOVERY_RUNBOOK.md` |
-| PROC-0004 | Engineering Handoff Construction Procedure | Active | Engineering Governance | `docs/procedures/PROC-0004-ENGINEERING_HANDOFF_CONSTRUCTION_PROCEDURE.md` |
+| PROC-0004 | Engineering Handoff Construction Procedure | Draft | Engineering Governance | `docs/procedures/PROC-0004-ENGINEERING_HANDOFF_CONSTRUCTION_PROCEDURE.md` |
 | PROC-0005 | Controlled Document Publication Procedure | Active | Engineering Governance | `docs/procedures/PROC-0005-CONTROLLED_DOCUMENT_PUBLICATION_PROCEDURE.md` |
 | PROC-0006 | Governance Qualification Procedure | Active | Engineering Governance | `docs/procedures/PROC-0006-GOVERNANCE-QUALIFICATION-PROCEDURE.md` |
 | PROC-0007 | Governance Stabilization Procedure | Active | Engineering Governance | `docs/procedures/PROC-0007-GOVERNANCE-STABILIZATION-PROCEDURE.md` |
-| TPL-0001 | Engineering Work Order Template | Active | Engineering Governance | `docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md` |
-| TPL-0002 | Completion Report Template | Active | Engineering Governance | `docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md` |
+| TPL-0001 | Engineering Work Order Template | Draft | Engineering Governance | `docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md` |
+| TPL-0002 | Completion Report Template | Draft | Engineering Governance | `docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md` |
 | TPL-0003 | Engineering Evidence Package Template | Active | Engineering Governance | `docs/templates/TPL-0003-ENGINEERING_EVIDENCE_PACKAGE_TEMPLATE.md` |
 | TPL-0004 | Engineering Governance Resolution Template | Active | Engineering Governance | `docs/templates/TPL-0004-ENGINEERING_GOVERNANCE_RESOLUTION_TEMPLATE.md` |
 | EGR-000001 | Governance Foundation Qualification and Publication | Active | Engineering Governance | `docs/resolutions/EGR-000001-GOVERNANCE_FOUNDATION_QUALIFICATION_AND_PUBLICATION.md` |
@@ -783,3 +786,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.54 | 2026-07-25 | Indexed PHASE-0001 and reconciled repository discovery to the Zeus Operational Alpha authority baseline while preserving completed EENS history. |
 | 2.55 | 2026-07-26 | Published and indexed SPEC-0011 and reconciled the production authority hierarchy, controlled-document execution authority, Zeus CLI semantics, and Authority Restoration Principle. |
 | 2.56 | 2026-07-26 | Registered SPEC-0012 and the production execution foundation while preserving dispatcher activation, agent registration, baseline publication, and first operational execution qualification as separate controls. |
+| 2.57 | 2026-07-28 | Registered SPEC-0013 Version 1.0 as the Draft Controlled Mission Assurance Language candidate and bound Zeus assurance interpretation to its exact revision; approval, activation, and controlled publication remain separate decisions. |

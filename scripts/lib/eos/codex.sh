@@ -57,7 +57,7 @@ eos_codex_completion_contract() {
         return 0
     fi
 
-    printf '%s' "This is a governed Engineering Work Order session for $work_order. The resolved Completion Report contract is ETP-BASELINE-CONTROLLED-PUBLICATION@1.0, PROC-0001@1.8, STD-0003@1.3, and TPL-0002@1.2. For every handoff in this persistent or resumed session, including concise handoffs and PASS, FAIL, or BLOCKED outcomes, independently consume that contract: read and instantiate the active TPL-0002, begin the final response exactly with '# Completion Report', and place nothing before that heading. Do not rely on conversational recall."
+    printf '%s' "This repository session references $work_order. Reconstruct every mission from the repository Engineering Execution Interface and Mission Snapshot; do not rely on conversational recall or duplicate repository procedures in a handoff. Resolve exact controlled-owner identities and candidate revisions through engineering/execution/execution-interface.yaml. Produce a mission-delta Completion Report using the resolved Completion Report owner; candidate documents are not activated by consumption."
 }
 
 eos_codex_report_qualification_summary() {

@@ -63,7 +63,7 @@ INDEX_REGISTRATIONS = {
     },
     "SPEC-0008": {
         "title": "Engineering Transaction Profile Specification",
-        "status": "Active",
+        "status": "Draft",
         "owner": "Engineering Governance",
         "path": "docs/specifications/SPEC-0008-ENGINEERING_TRANSACTION_PROFILE_SPECIFICATION.md",
     },
@@ -489,11 +489,11 @@ def main() -> int:
                 )
                 validation.check(etp_profile.get("status") == "Active", "baseline ETP is Active")
                 validation.check(
-                    etp_profile.get("components", {}).get("construction") == "PROC-0004@1.1",
-                    "baseline ETP resolves construction to PROC-0004 1.1",
+                    etp_profile.get("components", {}).get("construction") == "PROC-0004@1.6",
+                    "baseline ETP resolves construction to PROC-0004 1.6 candidate",
                 )
                 validation.check(
-                    etp_profile.get("components", {}).get("execution") == "PROC-0001@1.8",
+                    etp_profile.get("components", {}).get("execution") == "PROC-0001@1.14",
                     "baseline ETP preserves PROC-0001 execution ownership",
                 )
                 validation.check(

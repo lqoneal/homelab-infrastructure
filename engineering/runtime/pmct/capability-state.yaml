@@ -1,9 +1,9 @@
 test_name: ZEUS_PROGRESSIVE_MANUAL_CAPABILITY_TEST
 contract_version: '1.0'
 overall_result: NOT_READY
-last_evaluated_gate: OA-01
-last_run_id: PMCT-20260727T044041Z-da78606131a4
-updated_at: '2026-07-27T04:40:45.259813Z'
+last_evaluated_gate: OA-02
+last_run_id: PMCT-20260728T172349Z-c9c17ecc9474
+updated_at: '2026-07-28T17:24:04.788543Z'
 gates:
   OA-01:
     status: PASS
@@ -16,8 +16,10 @@ gates:
     operator_acceptance: NOT_RECORDED
     gate_status: AWAITING_OPERATOR_VERIFICATION
   OA-02:
-    status: NOT_READY
-    reason: manual capability demonstration not yet executed
+    status: PASS
+    reason: observable demonstration completed; manual approval remains required
+    codex_validation: PASS
+    gate_status: AWAITING_OPERATOR_VERIFICATION
   OA-03:
     status: NOT_READY
     reason: manual capability demonstration not yet executed

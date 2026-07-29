@@ -459,7 +459,19 @@ class GateApprovalService:
             )
         return next_gate
 
-    def binding(self, gate: str, *, require_clean: bool = True) -> GateBinding:
+    def qualified_binding(
+        self,
+        gate: str,
+        *,
+        require_clean: bool = True,
+        require_wop_manifest: bool = True,
+    ) -> GateBinding:
+        """Resolve and verify a current PMCT-qualified gate binding.
+
+        The optional WOP-manifest check is deliberately separate from PMCT
+        evidence validation so controlled WOP tooling can validate a pending
+        reseal without weakening the qualified-run evidence boundary.
+        """
         gate = validate_gate(gate)
         if Path(_git(self.repository, "rev-parse", "--show-toplevel")).resolve() != self.repository:
             raise GateApprovalError("repository identity mismatch")
@@ -506,9 +518,49 @@ class GateApprovalService:
             evidence_digest=evidence_digest,
             evidence_manifest_digest=_sha256(directory / "artifacts.sha256"),
             wop_identity=str(self.wop),
-            wop_manifest_digest=self._wop_digest(),
+            wop_manifest_digest=(
+                self._wop_digest()
+                if require_wop_manifest else "NOT_REQUIRED_FOR_READ_ONLY_VALIDATION"
+            ),
             operator=self.operator,
         )
+
+    def binding(self, gate: str, *, require_clean: bool = True) -> GateBinding:
+        """Resolve a qualified binding for a WOP-bound gate operation."""
+        return self.qualified_binding(gate, require_clean=require_clean)
+
+    def validate_carry_forward(self, gate: str) -> dict[str, Any]:
+        """Return an integrity-valid durable carry-forward record or fail closed."""
+        gate = validate_gate(gate)
+        if gate != "OA-01":
+            raise GateApprovalError("carry-forward validation is governed for OA-01 only")
+        binding = self.qualified_binding(
+            gate, require_clean=False, require_wop_manifest=False
+        )
+        from scripts.lib.emp.gate_carry_forward import resolve_record
+
+        record = resolve_record(self.repository, binding)
+        if record is None:
+            raise GateApprovalError("no integrity-valid OA-01 carry-forward record")
+        previous = [
+            fields for path, fields in self._valid_receipts(gate)
+            if str(path) == record["prior_accepted_receipt"]
+            and _sha256(path) == record["prior_accepted_receipt_digest"]
+        ]
+        if len(previous) != 1:
+            raise GateApprovalError("carry-forward predecessor receipt is invalid")
+        prior = previous[0]
+        if (
+            prior.get("approved_head") != record["prior_accepted_baseline"]
+            or prior.get("authority_publication", "HISTORICAL")
+            != record["prior_accepted_publication"]
+            or record.get("successor_publication")
+            != self._current_authority_binding()["active_authority_publication"]
+            or record.get("carry_forward_decision") != "CARRY_FORWARD"
+            or record.get("oa01_revalidation_required") is not False
+        ):
+            raise GateApprovalError("carry-forward publication or decision binding is invalid")
+        return record
 
     def lifecycle(self, gate: str) -> dict[str, str]:
         try:
@@ -545,6 +597,34 @@ class GateApprovalService:
             result="PASS", verified_at=str(record["verified_at"])
         )
         return record if all(record.get(key) == value for key, value in expected_values.items()) else None
+
+    def gate_milestone(self, binding: GateBinding) -> dict[str, Any]:
+        verification = self.verification_record(binding)
+        receipt = self._matching_receipt(binding)
+        if verification is not None and receipt is not None:
+            return {
+                "verification": "PASS",
+                "acceptance": "RECORDED",
+                "source": "CURRENT_BINDING",
+                "carry_forward": None,
+            }
+        if binding.gate == "OA-01":
+            from scripts.lib.emp.gate_carry_forward import resolve_record
+
+            carry = resolve_record(self.repository, binding)
+            if carry is not None:
+                return {
+                    "verification": "PASS",
+                    "acceptance": "RECORDED",
+                    "source": "CARRY_FORWARD",
+                    "carry_forward": carry,
+                }
+        return {
+            "verification": "PASS" if verification is not None else "ABSENT",
+            "acceptance": "RECORDED" if receipt is not None else "NOT_RECORDED",
+            "source": "NONE",
+            "carry_forward": None,
+        }
 
     def verify(self, gate: str) -> GateBinding:
         binding = self.binding(gate)

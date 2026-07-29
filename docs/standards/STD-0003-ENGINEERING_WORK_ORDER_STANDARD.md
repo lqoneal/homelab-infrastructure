@@ -1,12 +1,12 @@
 ---
 document_id: STD-0003
 title: Engineering Work Order Standard
-version: 1.3
-status: Active
+version: 1.5
+status: Draft
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-17
-phase: Engineering Reporting Standard Institutionalization
+last_updated: 2026-07-28
+phase: Engineering Execution Interface Standardization
 domain: Engineering Governance
 classification: Engineering Standard
 source_of_truth: true
@@ -26,6 +26,25 @@ tags:
   - engineering-standard
   - execution
   - engineering-operating-system
+mission_assurance_requirements:
+  - id: MA-WOP-001
+    language_version: '1.0'
+    phase: preflight
+    description: WOP applicability and supporting data resolve.
+    assertion:
+      any:
+        - all:
+            - selector: state.wop.applicability
+              operator: equals
+              value: applicable
+            - selector: state.wop.references
+              operator: not_empty
+        - all:
+            - selector: state.wop.applicability
+              operator: equals
+              value: not_applicable
+            - selector: state.wop.reason
+              operator: not_empty
 ---
 
 # Engineering Work Order Standard
@@ -273,6 +292,21 @@ Implementation agents verify that the Engineering Work Order is Active before ex
 
 Lifecycle state transitions remain the responsibility of Engineering Governance.
 
+## Repository Mission Contract
+
+Every mission shall have exactly one current Work Registry work item identifying
+its stable mission ID, objective, lifecycle state, owner, authority reference,
+project, phase, completion criteria, relationships, and transition history.
+When bounded effects require a WOP, that WOP augments the work item with
+explicit authority, prohibitions, dependencies, validation additions, and stop
+conditions.
+
+Together these records form the repository Mission Contract. They shall let an
+execution agent determine current mission, phase, authority, outstanding
+objective, completion criteria, and remaining lifecycle work without prompt
+history. Duplicated or conflicting current contracts fail closed. The derived
+Mission Snapshot exposes the contract but is not an authority record.
+
 ---
 
 ## Compliance
@@ -322,3 +356,4 @@ This standard is complete when every Engineering Work Order activated under the 
 | 1.1 | 2026-07-10 | Established Active as the Engineering Work Order execution-authority lifecycle state under EWO-000012. |
 | 1.2 | 2026-07-17 | Required repository-governed mission classification, the exact Completion Report title, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
 | 1.3 | 2026-07-18 | Institutionalized execution-first Completion Reports, mandatory execution/results separation, ordered findings through follow-on work, Final Certification placement, and TPL-0002 structural ownership. |
+| 1.4 | 2026-07-28 | Standardized the repository Mission Contract and its Work Registry/WOP composition for deterministic discovery, execution, and resume. |

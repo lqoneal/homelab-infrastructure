@@ -191,9 +191,34 @@ integrity-valid records matching repository HEAD, published baseline, active
 publication, and PMCT evidence. Qualification enables OA-02 verification but
 does not activate or authorize dispatch.
 
+The reconciled post-verification state is dispatcher `PREPARED`, operational
+dispatch `DISABLED`, PMCT `PASS`, OA-02 verification `PASS`, and
+`AUTHORIZE_DISPATCH` / `READY`. Authorization remains an explicit later
+operator transition. Invalid PMCT, authority, publication, agent, or OA-02
+bindings disable dispatch and block that transition.
+
+Prior accepted gates are durable mission milestones. Successor publications
+for later gates inherit OA-01 only when repository provenance and PMCT are
+valid and an integrity-protected automated impact assessment finds no changed
+OA-01 acceptance criterion. Material changes reopen OA-01 and identify the
+exact criteria; a HEAD change alone does not require repeated human approval.
+
 The current `generate-wop` qualification workflow remains review-only. This
 roadmap entry does not approve implementation, operational admission,
 submission, dispatch, or execution.
+
+P2-038 establishes the repository-authoritative Engineering Execution
+Interface. Future missions register one Mission Contract, invoke PROC-0001
+through a minimal handoff, consume a Mission Snapshot through
+`engctl execution`, and produce a mission-delta Completion Report. Command
+authority is classified by SPEC-0005; explicit operator transitions remain
+separate.
+
+The original P2-038 completion was premature and was not operator acceptance.
+P2-038-CORRECTIVE retains that implementation as unaccepted working-tree work
+while correcting semantic ownership, review gates, discovery, snapshot, and
+handoff enforcement. Candidate controlled-document revisions are not active or
+published.
 
 ---
 

@@ -34,6 +34,58 @@ prepared and inactive and operational dispatch remains disabled.
 JSON surfaces used by PMCT to demonstrate publication and gate-lifecycle
 resolution. They never publish authority or record a gate decision.
 
+## Mission discovery and qualification
+
+`zeus mission snapshot MISSION-ID` discovers the requested Mission Contract
+and generates its canonical Engineering Execution Interface snapshot.
+`zeus execution resolve MISSION-ID` exposes the same resolution pipeline.
+`zeus mission qualify MISSION-ID` verifies that exactly one contract resolves
+and reports lifecycle, implementation, acceptance, blockers, approvals, and
+the next authorized action. Repeated qualification against unchanged
+operational state produces identical JSON. These commands are observational;
+they do not record acceptance, publish a baseline, or authorize dispatch.
+
+## Mission assurance
+
+`zeus assurance capabilities` identifies the independent read-only assurance
+surface. `zeus mission requirements MISSION-ID` derives the applicable
+requirements and Mission Contract cardinality from canonical discovery.
+`zeus mission preflight MISSION-ID` verifies pre-mission readiness;
+`zeus mission verify MISSION-ID` reports readiness, execution eligibility,
+synchronization, and closeout eligibility together; and
+`zeus mission synchronization MISSION-ID` verifies post-mission source,
+registry, and completion-evidence reconciliation.
+
+Every result includes authoritative sources, observed values, unsatisfied
+requirement identifiers, and a deterministic evidence digest. A failed
+eligibility command exits 78. Assurance is observational: it does not perform
+the execution procedure, synchronize records, record acceptance, or advance a
+mission lifecycle.
+
+The requirement list and language definition are not embedded in Zeus. The
+canonical Engineering Execution Interface resolves structured declarations
+from the exact controlled specification, standard, and procedure revisions
+bound by the execution manifest. It separately resolves the exact `SPEC-0013`
+Controlled Mission Assurance Language revision. Capability and mission results
+report the resolved language version.
+
+Every declaration binds `language_version`. The controlled language defines
+the declaration schema, phases, selector grammar and roots, compound
+expressions, operator field contracts, applicability, and phase-result rules.
+Zeus implements named interpreter primitives but accepts them only when the
+bound language definition enables them. Unsupported primitives, operators,
+selectors, expression shapes, unknown fields, unsafe repository paths,
+duplicate identifiers, missing phases, unavailable owner revisions, and
+language-version mismatches fail closed.
+
+Language revisions are independent of Zeus releases. A compatible revision
+using existing interpreter primitives is adopted by updating the controlled
+language owner and execution-interface binding, then migrating every
+declaration's `language_version` atomically. A revision requiring a new
+primitive also requires an interpreter compatibility update. Neither path
+changes the read-only behavior or the Engineering Execution Interface's role
+as canonical resolver.
+
 ## Production agent qualification
 
 `zeus agent status` and `zeus agent registry` display the integrity-validated
@@ -50,6 +102,33 @@ qualification and effective-registry records live beneath
 create a publication loop. A stale qualification remains historical evidence
 but is ineligible when HEAD, published baseline, authority publication, or
 PMCT run changes. Qualification does not authorize dispatch.
+
+After OA-02 verification passes, `zeus status` and `zeus next-action` consume
+the same OA-02 lifecycle projection. Before separate operator authorization
+they report dispatcher `PREPARED`, operational dispatch `DISABLED`, PMCT
+`PASS`, OA-02 verification `PASS`, next action `AUTHORIZE_DISPATCH`, and
+result `READY`. `READY` means authorization may now be recorded; it does not
+mean dispatch is enabled. Operational dispatch becomes `ENABLED` only after
+the dispatcher activation records explicit authorization and every PMCT,
+authority, publication, agent, and OA-02 binding remains valid. Any regression
+fails closed and blocks authorization. Status inspection never records that
+transition.
+
+## Accepted-gate carry-forward
+
+OA-01 acceptance is a durable mission milestone. After a successor baseline is
+published and PMCT-qualified, `zeus gate carry-forward OA-01` performs an
+automated impact assessment against the latest integrity-valid accepted
+ancestor. It writes a checksummed runtime record binding both publications and
+baselines, the prior receipt digest, successor PMCT evidence, changed paths,
+affected acceptance criteria, and the carry-forward decision.
+
+An unaffected successor reports `OA01_REVALIDATION_REQUIRED=NO`; status,
+next-action, PMCT, OA-02, and agent qualification then resolve OA-01 as
+verified and accepted without duplicating human verification. A change to an
+OA-01-controlled authority, PMCT, evidence, decision, or safety criterion
+reports `OA01_REVALIDATION_REQUIRED=YES` with the affected criteria and cannot
+carry acceptance forward. The command never records a new operator decision.
 
 Authority baselines are managed by `scripts/authority-publishctl`. PMCT supplies
 gate evidence. Work Registry records controlled engineering work. EENS and

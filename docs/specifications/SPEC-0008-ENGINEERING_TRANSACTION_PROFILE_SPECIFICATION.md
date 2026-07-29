@@ -1,20 +1,20 @@
 ---
 document_id: SPEC-0008
 title: Engineering Transaction Profile Specification
-version: 1.0
-status: Active
+version: 1.1
+status: Draft
 owner: Engineering Governance
 created: 2026-07-18
-last_updated: 2026-07-18
-phase: Engineering Transaction Profile Institutionalization
+last_updated: 2026-07-28
+phase: Engineering Execution Interface Standardization
 domain: Engineering Governance
 classification: Engineering Specification
-predecessor_revision: null
+predecessor_revision: SPEC-0008@1.0
 successor_revision: null
-approval_status: Approved
+approval_status: Pending
 approval_authority: Engineering Governance
 approval_reference: Engineering Governance Authorization - Engineering Transaction Profile Implementation
-approval_date: 2026-07-18
+approval_date: null
 persistence_status: Persisted
 source_of_truth: true
 information_scope: Engineering Transaction Profile architecture, representation, compatibility, deterministic resolution, lifecycle, and baseline profile
@@ -253,13 +253,13 @@ transaction_effects:
   repository_changes: required
   controlled_document_publication: permitted-when-kernel-authorized
 components:
-  construction: PROC-0004@1.1
-  execution: PROC-0001@1.8
-  handoff_structure: TPL-0001@1.6
-  completion_report_structure: TPL-0002@1.2
+  construction: PROC-0004@1.6
+  execution: PROC-0001@1.14
+  handoff_structure: TPL-0001@1.9
+  completion_report_structure: TPL-0002@1.4
   lifecycle: STD-0001
   persistence: STD-0002
-  normative_ewo_semantics: STD-0003@1.3
+  normative_ewo_semantics: STD-0003@1.5
   state_and_resume: STD-0004
   validation: complete-repository-and-aggregate-platform
   publication: one-objective-atomic-repository-commit
@@ -355,3 +355,4 @@ deferred.
 | Version | Date | Description |
 | --- | --- | --- |
 | 1.0 | 2026-07-18 | Established the ETP coordination model, deterministic fail-closed resolution, compatibility and lifecycle rules, frozen manifest, and one conservative baseline profile without creating a new document class or runtime service. |
+| 1.1 | 2026-07-28 | Rebound the baseline profile to the repository-driven execution, handoff, mission-contract, and mission-delta reporting revisions. |

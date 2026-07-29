@@ -116,8 +116,9 @@ def qualification_inputs(repository: Path) -> dict[str, Any]:
     binding = _binding(root)
     service = GateApprovalService.configured(root)
     oa01 = service.binding("OA-01", require_clean=False)
-    verification = service.verification_record(oa01) is not None
-    acceptance = service._matching_receipt(oa01) is not None
+    milestone = service.gate_milestone(oa01)
+    verification = milestone["verification"] == "PASS"
+    acceptance = milestone["acceptance"] == "RECORDED"
     checks = {
         "agent_identity": bool(getpass.getuser() and socket.gethostname()),
         "repository_access": os.access(root, os.R_OK | os.W_OK),
