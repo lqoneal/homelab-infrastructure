@@ -1,0 +1,27 @@
+{
+  "admission_decision": "ACCEPTED",
+  "admission_id": "ADMISSION-44b52633-b7f5-5160-b402-739dfc518089",
+  "authoritative_references": [
+    "PROC-0001@1.11",
+    "TPL-0001@1.7",
+    "STD-0000",
+    "STD-0001",
+    "STD-0002",
+    "STD-0003",
+    "STD-0004"
+  ],
+  "deterministic_checksum": "b797f5db35041ed170765da98d5c2ef51b6f69cee029e8999e33120c5dc4b0cd",
+  "evaluation_timestamp": "2026-07-29T03:00:00Z",
+  "mission_id": "GH-ZEUS-OA-CERTIFICATION-001",
+  "repository_identity": "/data/engineering/repositories/homelab",
+  "schema_version": 1,
+  "submission_digest": "4a58112fb5d08995c3e72f8e9a925134ff316cf5c4467aa23651780135adae72",
+  "submitter_identity": "Codex mission agent",
+  "validation_failures": [],
+  "validation_summary": {
+    "failure_count": 0,
+    "reason_codes": []
+  },
+  "validator_version": "1",
+  "wop_id": "WOP-7d43e7c6-d415-5d3d-939f-f6a064f125d5"
+}

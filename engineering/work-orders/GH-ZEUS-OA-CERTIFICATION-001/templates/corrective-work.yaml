@@ -1,0 +1,14 @@
+schema_version: 1
+mission_id: GH-ZEUS-OA-CERTIFICATION-001
+source_gate: OA-XX
+source_run_id: REQUIRED
+condition: REQUIRED
+impact: REQUIRED
+preserved_evidence: []
+proposed_scope: []
+prohibited_until_authorized:
+  - corrective implementation
+  - PMCT state mutation
+  - gate progression
+required_authority: separate explicit work authorization
+status: PROPOSED

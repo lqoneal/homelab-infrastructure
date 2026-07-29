@@ -1,0 +1,45 @@
+schema_version: 1
+document_type: EngineeringWorkOrder
+wop_id: WOP-7d43e7c6-d415-5d3d-939f-f6a064f125d5
+mission_id: GH-ZEUS-OA-CERTIFICATION-001
+phase_id: ZEUS-OPERATIONAL-ALPHA
+revision: 1
+status: Active
+title: Zeus Operational Alpha Certification
+repository_identity: /data/engineering/repositories/homelab
+submitter_identity: Codex mission agent
+approval:
+  authority: Repository operator
+  reference: Mission ADMIT-GH-ZEUS-OA-CERTIFICATION-001
+  date: '2026-07-28'
+  authorized_lifecycle_state: Active
+execution_package_references:
+  authority_node_id: operator-mission-authorization
+  authorization_decision_record: Mission ADMIT-GH-ZEUS-OA-CERTIFICATION-001
+  immutable_wop: engineering/work-orders/GH-ZEUS-OA-CERTIFICATION-001/immutable-wop.yaml
+authoritative_references:
+  - PROC-0001@1.11
+  - TPL-0001@1.7
+  - STD-0000
+  - STD-0001
+  - STD-0002
+  - STD-0003
+  - STD-0004
+  - PHASE-0001
+  - PMCT-CONTRACT@1.0
+sections:
+  purpose_and_expected_outcome: Execute independent, cumulative, evidence-backed OA-01 through OA-30 certification and reconcile authoritative state.
+  mission_classification: Category B repository-controlled certification; manual operator decisions remain human-controlled.
+  governing_references: BOOTSTRAP.md and the listed controlled authorities, PMCT matrix, contract, and operator guide.
+  scope: OA verification, operator decisions, evidence, controlled transitions, corrective-work generation, reconciliation, recovery, and separately authorized finalization.
+  explicit_authority: After admission, execute gates in order and persist evidence using owning interfaces; no authority to bypass gates or independent decisions.
+  prohibited_activities: No certification during admission; no premature OA-01 acceptance, PMCT mutation, baseline freeze, or OA-30 completion declaration; no hand-edited authority state.
+  dependencies_and_entry_criteria: Accepted record, valid package manifest, clean synchronized main, current Project State and registry, and current authority bindings.
+  deliverables: Complete gate evidence and decisions, reconciliation records, corrective proposals where required, completion report, and separately authorized final baseline records.
+  execution_sequence: Follow BOOTSTRAP.md ordered idempotent gates OA-01 through OA-30 and stop at every unsatisfied prerequisite.
+  success_and_acceptance_criteria: Each gate satisfies its matrix criteria with witnessed evidence and explicit acceptance; all authoritative records agree.
+  validation_profile: verify-package.sh, immutable WOP validation, admission-record verification, PMCT validators, controlled-document validation, registry validation, and EOS synchronization validation.
+  publication_and_synchronization: Persist append-only evidence and reconcile Project State, Work Registry, controlled records, EOS, and checkpoint; freeze/publish only under separate authority.
+  stop_resume_and_escalation: Stop on failure, rejection, interruption, stale binding, integrity mismatch, or conflict; recover from durable evidence and propose separate corrective work.
+  completion_report_requirement: Produce the repository-standard completion report; OA-30 declaration and baseline freeze remain separate explicitly authorized actions.
+submission_digest: 4a58112fb5d08995c3e72f8e9a925134ff316cf5c4467aa23651780135adae72

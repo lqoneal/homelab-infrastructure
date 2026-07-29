@@ -1,0 +1,14 @@
+schema_version: 1
+mission_id: GH-ZEUS-OA-CERTIFICATION-001
+gate_id: OA-XX
+decision: PENDING  # ACCEPT or REJECT
+operator_identity: REQUIRED
+witness_identity: REQUIRED
+verification_run_id: REQUIRED
+repository_commit: REQUIRED
+authority_binding: REQUIRED
+decided_at: REQUIRED
+rationale: REQUIRED
+criteria_reviewed: []
+evidence_manifest_sha256: REQUIRED
+next_action: STOP

@@ -1,0 +1,58 @@
+schema_version: 1
+wop_id: WOP-7d43e7c6-d415-5d3d-939f-f6a064f125d5
+authority_binding:
+  authority_node_id: operator-mission-authorization
+  mission_id: GH-ZEUS-OA-CERTIFICATION-001
+  phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+  work_item_id: EMP-WORK-GH-ZEUS-OA-CERTIFICATION-001
+execution_context:
+  principal_id: authorized-oa-certification-operator
+  repository: /data/engineering/repositories/homelab
+  baseline_commit: bcdd0b1a19045654d470bc65383c05a976bae2a6
+  branch: main
+  assumptions:
+    - admitted package integrity remains valid
+    - each state-changing gate action is independently operator-controlled
+authorized_effects:
+  - effect_id: verify-and-certify-oa-gates
+    kind: repository-controlled
+    target: OA-01-through-OA-30
+    constraints:
+      - strict numeric order and cumulative eligibility
+      - witnessed manual demonstrations and durable evidence
+      - state mutation only through owning PMCT and Zeus interfaces
+  - effect_id: reconcile-certification-records
+    kind: repository-controlled
+    target: controlled-documents-project-state-work-registry-eos
+    constraints:
+      - follow owning procedures and stop on conflict
+prohibited_effects:
+  - execute-corrective-work-without-separate-authorization
+  - bypass-operator-acceptance
+  - hand-edit-pmct-authoritative-state
+  - freeze-or-publish-final-oa-baseline-without-separate-authorization
+  - declare-oa30-complete-without-separate-authorization
+prerequisites:
+  - prerequisite_id: accepted-admission-record
+    required: true
+    evidence_ref: admission/ADMISSION-44b52633-b7f5-5160-b402-739dfc518089.json
+  - prerequisite_id: package-integrity
+    required: true
+    evidence_ref: MANIFEST.sha256
+dependencies: []
+valid_from: '2026-07-28T00:00:00-07:00'
+expires_at: '2027-07-28T00:00:00-07:00'
+lease_policy:
+  required: true
+  maximum_duration_seconds: 14400
+revocation_policy:
+  revocable: true
+  authority_node_ids:
+    - operator
+    - mission
+    - safety
+payload_digest: 1e6819cb52ae7bc42975fba8041142b5f811f2eb9226cee167268e5087ac6cef
+signature:
+  algorithm: sha256-self-integrity
+  key_id: GH-ZEUS-OA-CERTIFICATION-001
+  value: 1e6819cb52ae7bc42975fba8041142b5f811f2eb9226cee167268e5087ac6cef
