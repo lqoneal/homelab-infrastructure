@@ -1,0 +1,157 @@
+schema_version: 1
+authority: SPEC-0001
+repository:
+  repository_id: homelab
+  locator: .
+  baseline_commit: bcdd0b1a19045654d470bc65383c05a976bae2a6
+
+synchronizations:
+  - synchronization_id: SYNC-ENGINEERING-CONTROL-FRAMEWORK-SCRIPTS
+    documentation:
+      document_id: SPEC-0005
+      repository_locator: docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md
+      fingerprint: {strategy: sha256, value: 68e8c8f81dfb8ae4f5e360dce0dbdf3c8fb47f64167b044567f9807c69795234}
+    implementation:
+      repository_locator: scripts
+      object_type: directory
+      coverage_scope: recursive
+      fingerprints:
+        - {strategy: repository_inventory, value: 2d7601f8dedd44679a0c7cb86e9434415f61cc7bebb6a6e57a0dd5574256f95d}
+    ownership: {documentation: Engineering Governance, implementation: Engineering Platform}
+    validation_scope: repository engineering controllers, execution engines, libraries, interfaces, and verification
+    synchronization_strategy: recursive_artifact_coverage
+    qualification_policy: {}
+
+  - synchronization_id: SYNC-EENS-SERVICE-IMPLEMENTATION
+    documentation:
+      document_id: SPEC-0009
+      repository_locator: docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md
+      fingerprint: {strategy: sha256, value: 5fcafe47f55a6e245aca2fb5a3ffc0dad7dc37a241afc09573c16d4ae2945066}
+    implementation:
+      repository_locator: services/eens
+      object_type: directory
+      coverage_scope: recursive
+      fingerprints:
+        - {strategy: repository_inventory, value: b6cf3916048d0e77b8ca970a43b2ee50142d76c705a015d1602452495637bf30}
+    ownership: {documentation: Engineering Governance, implementation: Engineering Notification Service}
+    validation_scope: notification service implementation, configuration, automation, and verification
+    synchronization_strategy: recursive_artifact_coverage
+    qualification_policy: {}
+
+  - synchronization_id: SYNC-INFRASTRUCTURE-CONFIGURATION
+    documentation:
+      document_id: INF-0001
+      repository_locator: docs/infrastructure/INF-0001-INFRASTRUCTURE_BASELINE.md
+      fingerprint: {strategy: sha256, value: 6f9ba5a7c958f0f5b951ea5dbc57f4cc31a4d143867a5129aa9d4214dbd82f27}
+    implementation:
+      repository_locator: configs
+      object_type: directory
+      coverage_scope: recursive
+      fingerprints:
+        - {strategy: repository_inventory, value: e8c68a4cf0a1844650774c5d73fcac1ccaf1c2b18d22ba801907473d97dbd571}
+    ownership: {documentation: Infrastructure Engineering, implementation: Infrastructure Engineering}
+    validation_scope: repository infrastructure configuration
+    synchronization_strategy: recursive_artifact_coverage
+    qualification_policy: {}
+
+  - synchronization_id: SYNC-SPEC-0001-VALIDATOR
+    documentation:
+      document_id: SPEC-0001
+      repository_locator: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md
+      fingerprint: {strategy: sha256, value: e6a9541ac115575c7623dc8323d990412ec25b433732496a7277e4e74a7b91bc}
+    implementation:
+      repository_locator: scripts/validate_controlled_documents.py
+      object_type: script
+      fingerprints:
+        - {strategy: sha256, value: 83c94fb79565dc61ed9e7b6df9f35900afa4f607e810f0d43da72bc43bc7a85e}
+    ownership: {documentation: EOS Program, implementation: Engineering Platform}
+    validation_scope: additive synchronization validation
+    synchronization_strategy: exact_content
+    downstream_documentation: [PROC-0005, PROC-0006]
+    qualification_policy:
+      PASS: [qualification_still_valid]
+      IMPLEMENTATION_CHANGED: [independent_qualification_required]
+      DOCUMENT_CHANGED: [manual_review_required, publication_required]
+      OUT_OF_SYNC: [independent_qualification_required, publication_required]
+
+  - synchronization_id: SYNC-ZEUS-ROADMAP-CONTROLLER
+    documentation:
+      document_id: GH-ZEUS-OA-PROGRESSIVE-001-ROADMAP
+      repository_locator: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+      fingerprint: {strategy: sha256, value: 2ff819ed68676a9de32b00212492a403ac0cc748adc8ecccc47bbbaf513e5ceb}
+    implementation:
+      repository_locator: scripts/lib/emp/progressive_oa.py
+      object_type: library
+      fingerprints:
+        - {strategy: sha256, value: 0b8f701c0d3a323034b39121a2797d3f1e616b9bc24781a91504f5a47c54f814}
+    ownership: {documentation: Zeus Operational Alpha, implementation: Engineering Management Platform}
+    validation_scope: roadmap sequencing and progressive OA state
+    synchronization_strategy: interface_and_sequence
+    downstream_documentation: [GH-ZEUS-OA-PROGRESSIVE-001-COMPLETION]
+    qualification_policy: {}
+
+  - synchronization_id: SYNC-ZEUS-WOP-EMP-CONTROLLER
+    documentation:
+      document_id: GH-ZEUS-OA-PROGRESSIVE-001-WOP
+      repository_locator: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/immutable-wop.yaml
+      fingerprint: {strategy: sha256, value: 278e15fc91c5df59c0ab4ccc62032df34bdc623871704e6f4ea6ce6218ae1752}
+    implementation:
+      repository_locator: scripts/lib/emp/wop_service.py
+      object_type: library
+      fingerprints:
+        - {strategy: sha256, value: 11c8026a6e5a5c25f656eab79c178bb20bd87ce52750707ba3b516ce70f37913}
+        - {strategy: repository_commit, value: bcdd0b1a19045654d470bc65383c05a976bae2a6}
+    ownership: {documentation: Zeus Operational Alpha, implementation: Engineering Management Platform}
+    validation_scope: WOP admission, execution, and lifecycle contracts
+    synchronization_strategy: contract_surface
+    downstream_documentation: [GH-ZEUS-OA-PROGRESSIVE-001-ROADMAP]
+    qualification_policy:
+      PASS: [automatic_revalidation_sufficient]
+
+  - synchronization_id: SYNC-ZEUS-GATES-GATE-CONTROLLER
+    documentation:
+      document_id: GH-ZEUS-OA-PROGRESSIVE-001-GATES
+      repository_locator: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gate-specification.yaml
+      fingerprint: {strategy: sha256, value: faac15ffe63f08b9aca5af680dfa520d4234693f2932a801777852ac5af1ec6f}
+    implementation:
+      repository_locator: scripts/lib/emp/gate_handlers.py
+      object_type: library
+      fingerprints:
+        - {strategy: sha256, value: d44246974eae3b563f20eb1d96c64b13bf331a9d982f1550b0f82131dae59e50}
+    ownership: {documentation: Zeus Operational Alpha, implementation: Engineering Management Platform}
+    validation_scope: gate objectives, handler dispatch, and completion
+    synchronization_strategy: gate_contract
+    downstream_documentation: [GH-ZEUS-OA-01-VERIFICATION, GH-ZEUS-OA-PROGRESSIVE-001-COMPLETION]
+    qualification_policy: {}
+
+  - synchronization_id: SYNC-ZEUS-VERIFICATION-ZEUS
+    documentation:
+      document_id: GH-ZEUS-OA-01-VERIFICATION
+      repository_locator: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-01/verification.md
+      fingerprint: {strategy: sha256, value: eee153c2cb5f1ff997833f063e6d2d73bed450f3f38f712d654f3c4b5673614e}
+    implementation:
+      repository_locator: scripts/zeus
+      object_type: executable
+      fingerprints:
+        - {strategy: sha256, value: 0596c4df8ad56dcced8ade296e552e676f1203eabc86d3fe7720a23cfed480f1}
+        - {strategy: git_object, value: efc9b31908ea757e1ffba5e4bacba13375112105}
+    ownership: {documentation: Zeus Operational Alpha, implementation: Zeus Operator Interface}
+    validation_scope: operator verification command interface
+    synchronization_strategy: command_interface
+    downstream_documentation: [GH-ZEUS-OA-PROGRESSIVE-001-COMPLETION]
+    qualification_policy: {}
+
+  - synchronization_id: SYNC-ZEUS-COMPLETION-VERIFICATION
+    documentation:
+      document_id: GH-ZEUS-OA-PROGRESSIVE-001-COMPLETION
+      repository_locator: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/COMPLETION-REPORT.md
+      fingerprint: {strategy: sha256, value: 5a13f9efbb7cc632313601933343500aeb58815c3bfddbd00b44a710042d1817}
+    implementation:
+      repository_locator: scripts/lib/emp/evidence_qualification.py
+      object_type: library
+      fingerprints:
+        - {strategy: sha256, value: 9efa62effdac8aca1f1c44e075e2899b5a3370a5eb734ebe367ef6d43611caa6}
+    ownership: {documentation: Zeus Operational Alpha, implementation: Engineering Management Platform}
+    validation_scope: completion evidence and qualification
+    synchronization_strategy: evidence_contract
+    qualification_policy: {}
