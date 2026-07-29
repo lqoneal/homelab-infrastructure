@@ -3,7 +3,12 @@
 
 from __future__ import annotations
 
+import argparse
+import json
 import re
+import shlex
+import shutil
+import subprocess
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -11,12 +16,31 @@ from typing import Any
 
 import yaml
 
-
 ROOT = Path(__file__).resolve().parent.parent
+SCRIPTS = ROOT / "scripts"
+if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
+
+from lib.document_synchronization import analyze as analyze_synchronization
+from lib.document_synchronization import load_metadata as load_synchronization_metadata
+from lib.implementation_coverage import analyze as analyze_implementation_coverage
+from lib.implementation_coverage import canonical_report as canonical_coverage_report
+from lib.implementation_coverage import load_policy as load_coverage_policy
+from lib.engineering_conformance import analyze as analyze_conformance
+from lib.engineering_conformance import canonical_report as canonical_conformance_report
+from lib.engineering_conformance import load_contracts
+from lib.engineering_assurance import analyze as analyze_assurance
+from lib.engineering_assurance import canonical_report as canonical_assurance_report
+from lib.engineering_assurance import load_catalog as load_assurance_catalog
+
+
 DOCS = ROOT / "docs"
 INDEX_PATH = DOCS / "DOC-0001-REPOSITORY_DOCUMENT_INDEX.md"
 REGISTRY_PATH = ROOT / "engineering/registry/work-registry.yaml"
 REGISTRY_SCHEMA_PATH = ROOT / "engineering/registry/work-registry.schema.yaml"
+SEMANTIC_PROFILE_PATH = (
+    ROOT / "engineering/validation/controlled-document-semantic-profiles.yaml"
+)
 
 FRAMEWORK_PATHS = {
     "DOC-0001": INDEX_PATH,
@@ -158,6 +182,300 @@ class Validation:
             return 1
         print("EGR framework, EMP architecture, and repository discovery are valid.")
         return 0
+
+
+def load_semantic_catalog() -> dict[str, Any]:
+    catalog = yaml.safe_load(SEMANTIC_PROFILE_PATH.read_text(encoding="utf-8"))
+    if not isinstance(catalog, dict):
+        raise ValueError("semantic profile catalog is not a mapping")
+    return catalog
+
+
+def semantic_profile_for(path: Path, metadata: dict[str, Any] | None = None) -> str | None:
+    """Resolve a reusable profile without changing legacy document admission."""
+    declared = (metadata or {}).get("semantic_validation_profile")
+    if isinstance(declared, str):
+        return declared
+    name = path.name.lower()
+    relative = str(path.relative_to(ROOT)).lower()
+    if name == "roadmap.md" or "implementation-roadmap" in name:
+        return "Roadmap"
+    if name == "gate-specification.yaml":
+        return "Gate Specification"
+    if name == "immutable-wop.yaml":
+        return "WOP"
+    if name == "verification.md" and "/gates/" in relative:
+        return "Operator Verification Guide"
+    if "completion-report" in name:
+        return "Completion Report"
+    classification = str((metadata or {}).get("classification", ""))
+    for profile in ("Standard", "Specification", "Procedure", "Policy", "Template"):
+        if profile.lower() in classification.lower():
+            return profile
+    return None
+
+
+CONCEPT_ALIASES = {
+    "purpose": ("purpose", "intent"),
+    "entry": ("entry", "prerequisite", "required inputs"),
+    "sequence": ("sequence", "workflow", "steps", "stage"),
+    "stop": ("stop", "fail-closed", "blocked"),
+    "outputs": ("outputs", "required outputs", "produces"),
+    "objective": ("objective", "purpose"),
+    "sequencing": ("sequence", "sequencing", "ordering"),
+    "dependencies": ("dependencies", "prerequisite", "enables"),
+    "completion": ("completion", "complete", "last gate"),
+    "traceability": ("traceability", "controlled id", "supersedes"),
+    "validation": ("validation", "verification"),
+    "acceptance": ("acceptance", "approved", "pass"),
+    "engineering explanation": ("engineering explanation", "intent and implementation", "rationale"),
+    "operator explanation": ("operator explanation", "operator verification", "steps and expected results"),
+    "verification steps": ("verification steps", "steps and expected results"),
+    "expected outputs": ("expected outputs", "expected results", "expect "),
+    "evidence inspection": ("evidence inspection", "inspect every file", "inspect the evidence"),
+    "pass criteria": ("pass criteria", "pass requires"),
+    "fail criteria": ("fail criteria", "fail includes", "is fail"),
+    "acceptance procedure": ("acceptance procedure", "accept only after pass", "approve "),
+    "rejection procedure": ("rejection procedure", "reject with", "decline "),
+    "resume procedure": ("resume procedure", "run `zeus resume`", "resume stops"),
+}
+
+PROFILE_DIMENSIONS = {
+    "required_engineering_content",
+    "required_traceability",
+    "required_evidence",
+    "required_command_documentation",
+    "required_validation_criteria",
+    "required_acceptance_criteria",
+}
+
+
+def contains_concept(text: str, concept: str) -> bool:
+    terms = CONCEPT_ALIASES.get(concept.lower(), (concept,))
+    lowered = text.lower()
+    return any(term.lower() in lowered for term in terms)
+
+
+def nested_value(document: Any, dotted_key: str) -> Any:
+    value = document
+    for part in dotted_key.split("."):
+        if not isinstance(value, dict) or part not in value:
+            return None
+        value = value[part]
+    return value
+
+
+def nonempty(value: Any) -> bool:
+    return value is not None and value != "" and value != [] and value != {}
+
+
+def resolve_command(command: str) -> Path | None:
+    executable = shlex.split(command)[0] if command.strip() else ""
+    if not executable:
+        return None
+    candidates = (
+        ROOT / executable,
+        ROOT / "scripts" / executable,
+        ROOT / "engineering" / executable,
+    )
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
+    resolved = shutil.which(executable)
+    return Path(resolved) if resolved else None
+
+
+def command_exists(command: str) -> bool:
+    return resolve_command(command) is not None
+
+
+def command_interface_check(command: str, documentation: str) -> tuple[bool, dict[str, Any]]:
+    """Inspect help-only interfaces; never execute the declared operation."""
+    try:
+        tokens = shlex.split(command)
+    except ValueError as error:
+        return False, {"command": command, "error": f"invalid shell syntax: {error}"}
+    executable = resolve_command(command)
+    if executable is None:
+        return False, {"command": command, "error": "executable does not resolve"}
+
+    command_path: list[str] = []
+    help_text = ""
+    for token in tokens[1:]:
+        if token.startswith("-") or token.upper() == token or re.search(r"\d", token):
+            break
+        probe = [str(executable), *command_path, "--help"]
+        completed = subprocess.run(
+            probe,
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+        help_text = completed.stdout + completed.stderr
+        if completed.returncode != 0 or token not in help_text:
+            break
+        command_path.append(token)
+
+    probe = [str(executable), *command_path, "--help"]
+    completed = subprocess.run(
+        probe,
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        timeout=10,
+        check=False,
+    )
+    help_text = completed.stdout + completed.stderr
+    options = [token.split("=", 1)[0] for token in tokens if token.startswith("-")]
+    missing_options = [option for option in options if option not in help_text]
+    exit_documented = bool(
+        re.search(r"\b(exit|return)\s+(?:status|code)\b|\bnonzero\b|\bnon-zero\b|\bexit\s+\d+\b", documentation, re.I)
+    )
+    result = {
+        "command": command,
+        "executable": str(executable),
+        "interface": " ".join(command_path),
+        "help_probe": " ".join(probe),
+        "help_exit": completed.returncode,
+        "missing_options": missing_options,
+        "exit_behavior_documented": exit_documented,
+        "execution_mode": "interface_only",
+    }
+    return completed.returncode == 0 and not missing_options and exit_documented, result
+
+
+def semantic_validate_path(
+    validation: Validation,
+    path: Path,
+    catalog: dict[str, Any],
+) -> dict[str, Any]:
+    result: dict[str, Any] = {"path": str(path.relative_to(ROOT)), "criteria": []}
+    if not path.is_file():
+        validation.check(False, f"semantic target exists: {path}")
+        result["profile"] = None
+        result["criteria"].append({"criterion": "DOC-COMP-001", "status": "FAIL"})
+        return result
+
+    metadata: dict[str, Any] = {}
+    text = path.read_text(encoding="utf-8")
+    document: Any = None
+    if path.suffix.lower() in {".yaml", ".yml"}:
+        document = yaml.safe_load(text)
+        if isinstance(document, dict):
+            metadata = document
+    elif text.startswith("---"):
+        try:
+            metadata = load_frontmatter(path)
+        except (ValueError, yaml.YAMLError):
+            metadata = {}
+
+    profile_name = semantic_profile_for(path, metadata)
+    profiles = catalog.get("profiles", {})
+    profile = profiles.get(profile_name) if isinstance(profiles, dict) else None
+    validation.check(
+        isinstance(profile, dict),
+        f"{result['path']}: semantic profile resolves ({profile_name or 'none'})",
+    )
+    result["profile"] = profile_name
+    if not isinstance(profile, dict):
+        result["criteria"].append({"criterion": "DOC-COMP-001", "status": "FAIL"})
+        return result
+    result["criteria"].append({"criterion": "DOC-COMP-001", "status": "PASS"})
+
+    failures = 0
+    for heading in profile.get("required_markdown", []):
+        matched = bool(re.search(rf"^#+\s+.*\b{re.escape(str(heading))}\b", text, re.I | re.M))
+        validation.check(matched, f"{result['path']}: required semantic section {heading}")
+        failures += int(not matched)
+    for concept in profile.get("required_concepts", []):
+        matched = contains_concept(text, str(concept))
+        validation.check(matched, f"{result['path']}: required semantic concept {concept}")
+        failures += int(not matched)
+    for key in profile.get("required_yaml", []):
+        matched = nonempty(nested_value(document, str(key)))
+        validation.check(matched, f"{result['path']}: required semantic field {key}")
+        failures += int(not matched)
+
+    item_key = profile.get("per_item")
+    required_item_fields = profile.get("per_item_required", [])
+    if item_key and isinstance(document, dict):
+        items = document.get(item_key)
+        validation.check(isinstance(items, list) and bool(items), f"{result['path']}: {item_key} contains entries")
+        if not isinstance(items, list) or not items:
+            failures += 1
+        else:
+            for position, item in enumerate(items, start=1):
+                for key in required_item_fields:
+                    matched = isinstance(item, dict) and nonempty(item.get(key))
+                    validation.check(
+                        matched,
+                        f"{result['path']}: {item_key}[{position}] required field {key}",
+                    )
+                    failures += int(not matched)
+
+    commands: list[str] = []
+    command_documentation = text
+    if profile_name == "Gate Specification" and isinstance(document, dict):
+        for item in document.get("gates", []):
+            if isinstance(item, dict):
+                commands.extend(
+                    command for command in item.get("operator_acceptance_procedure", [])
+                    if isinstance(command, str)
+                )
+                guide = item.get("manual_verification_procedure")
+                if isinstance(guide, str):
+                    guide_path = path.parent / guide
+                    if guide_path.is_file():
+                        command_documentation += "\n" + guide_path.read_text(encoding="utf-8")
+    command_results: list[dict[str, Any]] = []
+    for command in commands:
+        try:
+            matched, command_result = command_interface_check(command, command_documentation)
+        except (OSError, subprocess.SubprocessError) as error:
+            matched = False
+            command_result = {"command": command, "error": str(error)}
+        command_results.append(command_result)
+        validation.check(matched, f"{result['path']}: command interface, syntax, help, and exit documentation: {command}")
+        failures += int(not matched)
+    if command_results:
+        result["command_validation"] = command_results
+
+    for criterion in profile.get("criteria", []):
+        if criterion == "DOC-COMP-001":
+            continue
+        status = "FAIL" if criterion == "DOC-COMP-002" and failures else "MANUAL_REVIEW"
+        result["criteria"].append({"criterion": criterion, "status": status})
+    result["status"] = "FAIL" if failures else "PASS_WITH_MANUAL_CRITERIA"
+    return result
+
+
+def coverage_report(catalog: dict[str, Any]) -> dict[str, Any]:
+    procedures = catalog.get("procedure_references", {})
+    criteria = catalog.get("criteria", {})
+    return {
+        "schema_version": 1,
+        "authority": catalog.get("authority"),
+        "catalog": str(SEMANTIC_PROFILE_PATH.relative_to(ROOT)),
+        "criteria": [
+            {
+                "criterion": identifier,
+                "coverage": definition.get("automation", "not_automated"),
+                "validation_implementation": (
+                    "scripts/validate_controlled_documents.py"
+                    if definition.get("automation") != "manual"
+                    else None
+                ),
+                "procedure_reference": [
+                    procedures.get("publication"),
+                    procedures.get("qualification"),
+                ],
+                "evidence_reference": definition.get("required_evidence"),
+            }
+            for identifier, definition in sorted(criteria.items())
+        ],
+    }
 
 
 def repository_markdown_files() -> list[Path]:
@@ -364,7 +682,152 @@ def validate_governance_cycles(
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Validate structural and additive semantic controlled-document requirements."
+    )
+    parser.add_argument(
+        "--semantic-path",
+        action="append",
+        default=[],
+        metavar="PATH",
+        help="validate one repository-relative document using its resolved semantic profile",
+    )
+    parser.add_argument(
+        "--semantic-all",
+        action="store_true",
+        help="validate every registered semantic artifact (including Zeus domain artifacts)",
+    )
+    parser.add_argument(
+        "--semantic-report",
+        metavar="PATH",
+        help="write machine-readable semantic results as JSON",
+    )
+    parser.add_argument(
+        "--coverage-report",
+        metavar="PATH",
+        help="write the criterion automation coverage report as JSON",
+    )
+    parser.add_argument(
+        "--synchronization-metadata",
+        default="engineering/validation/implementation-synchronization.yaml",
+        metavar="PATH",
+        help="repository-relative implementation synchronization declarations",
+    )
+    parser.add_argument(
+        "--synchronization",
+        action="store_true",
+        help="run the additive implementation synchronization validation layer",
+    )
+    parser.add_argument(
+        "--synchronization-report",
+        metavar="PATH",
+        help="write the deterministic implementation synchronization report as JSON",
+    )
+    parser.add_argument(
+        "--implementation-coverage",
+        action="store_true",
+        help="run the additive repository-wide implementation coverage layer",
+    )
+    parser.add_argument(
+        "--implementation-coverage-policy",
+        default="engineering/validation/implementation-coverage.yaml",
+        metavar="PATH",
+        help="repository-relative artifact discovery and classification policy",
+    )
+    parser.add_argument(
+        "--implementation-coverage-report",
+        metavar="PATH",
+        help="write the deterministic implementation coverage report as JSON",
+    )
+    parser.add_argument(
+        "--conformance",
+        action="store_true",
+        help="run the additive engineering contract conformance validation layer",
+    )
+    parser.add_argument(
+        "--conformance-only",
+        action="store_true",
+        help="run only engineering contract conformance validation",
+    )
+    parser.add_argument(
+        "--engineering-contracts",
+        default="engineering/validation/engineering-contracts.yaml",
+        metavar="PATH",
+        help="repository-relative machine-readable engineering contract catalog",
+    )
+    parser.add_argument(
+        "--conformance-report",
+        metavar="PATH",
+        help="write the canonical engineering conformance report as JSON",
+    )
+    parser.add_argument(
+        "--assurance",
+        action="store_true",
+        help="run the additive engineering assurance validation layer",
+    )
+    parser.add_argument(
+        "--assurance-only",
+        action="store_true",
+        help="run only engineering assurance validation",
+    )
+    parser.add_argument(
+        "--engineering-properties",
+        default="engineering/validation/engineering-properties.yaml",
+        metavar="PATH",
+        help="repository-relative machine-readable Engineering Assurance Catalog",
+    )
+    parser.add_argument(
+        "--assurance-report",
+        metavar="PATH",
+        help="write the canonical Engineering Assurance Report as JSON",
+    )
+    args = parser.parse_args()
     validation = Validation()
+    if args.assurance_only:
+        args.assurance = True
+        try:
+            assurance = analyze_assurance(
+                ROOT, load_assurance_catalog(ROOT / args.engineering_properties)
+            )
+        except (OSError, ValueError, SyntaxError, yaml.YAMLError) as error:
+            validation.check(False, f"engineering assurance validation loads ({error})")
+        else:
+            validation.check(
+                all(
+                    item["determination"] == "ASSURED"
+                    for item in assurance["assurance_determinations"]
+                ),
+                "declared engineering properties are assured",
+            )
+            if args.assurance_report:
+                report_path = ROOT / args.assurance_report
+                report_path.parent.mkdir(parents=True, exist_ok=True)
+                report_path.write_text(canonical_assurance_report(assurance), encoding="utf-8")
+                validation.check(True, f"assurance report written: {report_path}")
+        return validation.finish()
+    if args.conformance_only:
+        args.conformance = True
+        try:
+            conformance = analyze_conformance(
+                ROOT, load_contracts(ROOT / args.engineering_contracts)
+            )
+        except (OSError, ValueError, yaml.YAMLError) as error:
+            validation.check(False, f"conformance validation loads ({error})")
+        else:
+            validation.check(
+                not conformance["invariant_failures"],
+                "documented engineering contracts conform to discovered implementation",
+            )
+            if args.conformance_report:
+                report_path = ROOT / args.conformance_report
+                report_path.parent.mkdir(parents=True, exist_ok=True)
+                report_path.write_text(
+                    canonical_conformance_report(conformance), encoding="utf-8"
+                )
+                validation.check(
+                    True, f"conformance report written: {report_path}"
+                )
+        return validation.finish()
     files = repository_markdown_files()
     identities, duplicates = document_identity_map(files)
 
@@ -597,6 +1060,245 @@ def main() -> int:
         )
 
     validate_governance_cycles(validation, metadata_by_id)
+
+    semantic_results: list[dict[str, Any]] = []
+    if args.semantic_path or args.semantic_all or args.coverage_report:
+        try:
+            catalog = load_semantic_catalog()
+        except (OSError, ValueError, yaml.YAMLError) as error:
+            validation.check(False, f"semantic profile catalog loads ({error})")
+            catalog = {}
+        else:
+            validation.check(
+                catalog.get("authority") == "SPEC-0001",
+                "semantic profile catalog delegates to SPEC-0001",
+            )
+            criteria = catalog.get("criteria", {})
+            profiles = catalog.get("profiles", {})
+            validation.check(isinstance(criteria, dict) and bool(criteria), "semantic criterion catalog is non-empty")
+            validation.check(isinstance(profiles, dict) and bool(profiles), "semantic profile catalog is non-empty")
+            if isinstance(criteria, dict):
+                validation.check(
+                    all(
+                        isinstance(definition, dict)
+                        and definition.get("identifier") == identifier
+                        for identifier, definition in criteria.items()
+                    ),
+                    "semantic criterion identifiers agree with catalog keys",
+                )
+            if isinstance(profiles, dict) and isinstance(criteria, dict):
+                for profile_name, profile in profiles.items():
+                    references = profile.get("criteria", []) if isinstance(profile, dict) else []
+                    validation.check(
+                        bool(references) and all(reference in criteria for reference in references),
+                        f"semantic profile {profile_name} criterion references resolve",
+                    )
+                    validation.check(
+                        isinstance(profile, dict)
+                        and bool(
+                            profile.get("required_markdown")
+                            or profile.get("required_concepts")
+                            or profile.get("required_yaml")
+                        )
+                        and all(nonempty(profile.get(dimension)) for dimension in PROFILE_DIMENSIONS),
+                        f"semantic profile {profile_name} defines every semantic dimension",
+                    )
+
+        targets = [ROOT / supplied for supplied in args.semantic_path]
+        if args.semantic_all:
+            semantic_roots = [DOCS, ROOT / "engineering"]
+            for semantic_root in semantic_roots:
+                if not semantic_root.exists():
+                    continue
+                for path in semantic_root.rglob("*"):
+                        if path.is_file() and path.suffix.lower() in {".md", ".yaml", ".yml"}:
+                            metadata: dict[str, Any] = {}
+                        if path.suffix.lower() in {".yaml", ".yml"}:
+                            try:
+                                loaded = yaml.safe_load(path.read_text(encoding="utf-8"))
+                            except (OSError, yaml.YAMLError):
+                                loaded = None
+                            if isinstance(loaded, dict):
+                                metadata = loaded
+                        relative = str(path.relative_to(ROOT)).lower()
+                        registered_domain_path = (
+                            path.name.lower()
+                            in {"roadmap.md", "gate-specification.yaml", "immutable-wop.yaml"}
+                            or (path.name.lower() == "verification.md" and "/gates/" in relative)
+                        )
+                        if metadata.get("semantic_validation_profile") or registered_domain_path:
+                            targets.append(path)
+        for target in sorted(set(targets)):
+            semantic_results.append(semantic_validate_path(validation, target, catalog))
+
+        if args.coverage_report:
+            report_path = ROOT / args.coverage_report
+            report_path.parent.mkdir(parents=True, exist_ok=True)
+            report_path.write_text(
+                json.dumps(coverage_report(catalog), indent=2) + "\n",
+                encoding="utf-8",
+            )
+            validation.check(True, f"coverage report written: {report_path}")
+
+    if args.semantic_report:
+        report_path = ROOT / args.semantic_report
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+        report_path.write_text(
+            json.dumps(
+                {"schema_version": 1, "results": semantic_results},
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        validation.check(True, f"semantic report written: {report_path}")
+    if args.synchronization or args.synchronization_report:
+        metadata_path = ROOT / args.synchronization_metadata
+        try:
+            synchronization = analyze_synchronization(
+                ROOT, load_synchronization_metadata(metadata_path)
+            )
+        except (OSError, ValueError, yaml.YAMLError) as error:
+            validation.check(False, f"synchronization validation loads ({error})")
+        else:
+            validation.check(
+                all(
+                    item["drift_status"] in {
+                        "PASS",
+                        "OUT_OF_SYNC",
+                        "IMPLEMENTATION_CHANGED",
+                        "DOCUMENT_CHANGED",
+                        "MISSING_ARTIFACT",
+                        "SUPERSEDED",
+                        "UNKNOWN",
+                    }
+                    for item in synchronization["synchronized_artifacts"]
+                ),
+                "synchronization drift classifications are recognized",
+            )
+            validation.check(
+                not any(
+                    item["drift_status"] in {
+                        "OUT_OF_SYNC",
+                        "IMPLEMENTATION_CHANGED",
+                        "DOCUMENT_CHANGED",
+                        "MISSING_ARTIFACT",
+                        "UNKNOWN",
+                    }
+                    for item in synchronization["synchronized_artifacts"]
+                ),
+                "declared documentation and implementation are synchronized",
+            )
+            if args.synchronization_report:
+                report_path = ROOT / args.synchronization_report
+                report_path.parent.mkdir(parents=True, exist_ok=True)
+                report_path.write_text(
+                    json.dumps(synchronization, indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
+                validation.check(
+                    True,
+                    f"synchronization report written: {report_path}",
+                )
+    if args.implementation_coverage or args.implementation_coverage_report:
+        try:
+            implementation_coverage = analyze_implementation_coverage(
+                ROOT,
+                load_synchronization_metadata(ROOT / args.synchronization_metadata),
+                load_coverage_policy(ROOT / args.implementation_coverage_policy),
+            )
+        except (OSError, ValueError, yaml.YAMLError) as error:
+            validation.check(False, f"implementation coverage validation loads ({error})")
+        else:
+            states = {
+                item["coverage_state"]
+                for item in implementation_coverage[
+                    "discovered_implementation_artifacts"
+                ]
+            }
+            validation.check(
+                states
+                <= {
+                    "synchronized",
+                    "undocumented",
+                    "orphaned_declaration",
+                    "obsolete_declaration",
+                    "excluded_by_policy",
+                    "external_dependency",
+                    "unknown_classification",
+                },
+                "implementation coverage classifications are recognized",
+            )
+            metrics = implementation_coverage["coverage_metrics"]
+            validation.check(
+                metrics["undocumented_artifacts"] == 0,
+                "all mandatory implementation artifacts have synchronization declarations",
+            )
+            validation.check(
+                metrics["orphan_declarations"] == 0,
+                "all synchronization declarations resolve to discovered endpoints",
+            )
+            validation.check(
+                not implementation_coverage["synchronization_gaps"],
+                "implementation coverage has no unknown or undocumented gaps",
+            )
+            if args.implementation_coverage_report:
+                report_path = ROOT / args.implementation_coverage_report
+                report_path.parent.mkdir(parents=True, exist_ok=True)
+                report_path.write_text(
+                    canonical_coverage_report(implementation_coverage),
+                    encoding="utf-8",
+                )
+                validation.check(
+                    True,
+                    f"implementation coverage report written: {report_path}",
+                )
+    if args.conformance or args.conformance_report:
+        try:
+            conformance = analyze_conformance(
+                ROOT, load_contracts(ROOT / args.engineering_contracts)
+            )
+        except (OSError, ValueError, yaml.YAMLError) as error:
+            validation.check(False, f"conformance validation loads ({error})")
+        else:
+            validation.check(
+                not conformance["invariant_failures"],
+                "documented engineering contracts conform to discovered implementation",
+            )
+            validation.check(
+                not conformance["incompatible_implementation"],
+                "no incompatible engineering implementation is discovered",
+            )
+            if args.conformance_report:
+                report_path = ROOT / args.conformance_report
+                report_path.parent.mkdir(parents=True, exist_ok=True)
+                report_path.write_text(
+                    canonical_conformance_report(conformance), encoding="utf-8"
+                )
+                validation.check(
+                    True,
+                    f"conformance report written: {report_path}",
+                )
+    if args.assurance or args.assurance_report:
+        try:
+            assurance = analyze_assurance(
+                ROOT, load_assurance_catalog(ROOT / args.engineering_properties)
+            )
+        except (OSError, ValueError, SyntaxError, yaml.YAMLError) as error:
+            validation.check(False, f"engineering assurance validation loads ({error})")
+        else:
+            validation.check(
+                all(
+                    item["determination"] == "ASSURED"
+                    for item in assurance["assurance_determinations"]
+                ),
+                "declared engineering properties are assured",
+            )
+            if args.assurance_report:
+                report_path = ROOT / args.assurance_report
+                report_path.parent.mkdir(parents=True, exist_ok=True)
+                report_path.write_text(canonical_assurance_report(assurance), encoding="utf-8")
+                validation.check(True, f"assurance report written: {report_path}")
     return validation.finish()
 
 

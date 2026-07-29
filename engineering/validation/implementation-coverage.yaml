@@ -1,0 +1,51 @@
+schema_version: 1
+authority: SPEC-0001
+discovery:
+  mechanism: git_repository_inventory
+  roots:
+    - scripts
+    - services
+    - configs
+
+categories:
+  Engineering Controller: {documentation: mandatory}
+  Verification Component: {documentation: mandatory}
+  User Interface: {documentation: mandatory}
+  Execution Engine: {documentation: mandatory}
+  Library: {documentation: mandatory}
+  Configuration: {documentation: mandatory}
+  Infrastructure Component: {documentation: mandatory}
+  Generated Artifact: {documentation: prohibited}
+  Internal Helper: {documentation: optional}
+  External Dependency: {documentation: prohibited}
+
+# First match wins. Rules describe repository-independent artifact roles; paths
+# configure this repository's application of those roles.
+classification_rules:
+  - category: Generated Artifact
+    patterns: ["**/__pycache__/**", "**/*.pyc", "**/generated/**"]
+    evidence: generated path convention
+  - category: External Dependency
+    patterns: ["**/vendor/**", "**/third_party/**", "**/node_modules/**"]
+    evidence: external dependency path convention
+  - category: Verification Component
+    patterns: ["**/tests/**", "**/test-*.sh", "**/test_*.py"]
+    evidence: verification path or filename convention
+  - category: Configuration
+    patterns: ["configs/**", "**/config/**", "**/*.service", "**/*.env.example"]
+    evidence: configuration path or suffix
+  - category: User Interface
+    patterns: ["scripts/zeus", "scripts/engctl", "scripts/*ctl"]
+    evidence: repository command interface
+  - category: Library
+    patterns: ["scripts/lib/**", "**/lib/**"]
+    evidence: library path convention
+  - category: Infrastructure Component
+    patterns: ["services/**"]
+    evidence: deployable service subtree
+  - category: Engineering Controller
+    patterns: ["scripts/*"]
+    evidence: top-level engineering controller
+  - category: Internal Helper
+    patterns: ["**/*"]
+    evidence: repository-internal unmatched helper

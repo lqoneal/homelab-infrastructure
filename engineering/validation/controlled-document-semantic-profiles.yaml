@@ -1,0 +1,310 @@
+schema_version: 1
+authority: SPEC-0001
+procedure_references:
+  publication: PROC-0005
+  qualification: PROC-0006
+coverage_states: [automated, manual, partially_automated, not_automated]
+synchronization_model:
+  optional_for_profiles: [Standard, Specification, Procedure, Policy, Template, WOP, Roadmap, Gate Specification, Operator Verification Guide, Completion Report]
+  declaration_location: controlled-document front matter or repository synchronization catalog
+  metadata_catalog: engineering/validation/implementation-synchronization.yaml
+  validator: scripts/validate_controlled_documents.py
+  report_schema_version: 1
+  object_types: [file, directory, executable, script, library, service, configuration, generated_artifact]
+  fingerprint_strategies: [sha256, git_object, repository_commit, immutable_locator]
+  drift_states: [PASS, OUT_OF_SYNC, IMPLEMENTATION_CHANGED, DOCUMENT_CHANGED, MISSING_ARTIFACT, SUPERSEDED, UNKNOWN]
+  qualification_impacts: [qualification_still_valid, manual_review_required, automatic_revalidation_sufficient, independent_qualification_required, publication_required]
+engineering_contract_model:
+  catalog: engineering/validation/engineering-contracts.yaml
+  validator: scripts/validate_controlled_documents.py
+  report_schema_version: 1
+  categories: [Command Interface, API, Configuration, Data Schema, File Format, Service Interface, Workflow, State Transition, Exit Behavior, Observable Output]
+  elements: [command_names, arguments, options, environment_variables, configuration_keys, file_locations, schemas, return_values, exit_codes, generated_artifacts, expected_side_effects, invariants, preconditions, postconditions]
+  discovery_mechanisms: [help_interface, api_signature, schema_parsing, configuration_inspection, metadata_extraction, service_descriptor, manifest_inspection, file_inspection]
+  determinations: [conformant, partially_conformant, undocumented_capability, undocumented_behavior, missing_implementation, obsolete_contract, incompatible_implementation, ambiguous_contract]
+  authority_boundary: derived_engineering_evidence_only
+engineering_property_model:
+  catalog: engineering/validation/engineering-properties.yaml
+  validator: scripts/validate_controlled_documents.py
+  report_schema_version: 1
+  categories: [Safety Invariant, Authorization Boundary, Approval Boundary, State-Transition Rule, Idempotence Requirement, Recovery Guarantee, Failure-Containment Rule, Dependency Requirement, Evidence Requirement, Lifecycle Constraint, Integrity Requirement, Availability Requirement, Determinism Requirement, Auditability Requirement, Mission Correctness Requirement]
+  strategies: [Static Inspection, State-Machine Analysis, Dependency-Graph Analysis, Policy Evaluation, Manifest Validation, Schema Validation, Control-Flow Inspection, Read-Only Command Inspection, Deterministic Simulation, Non-Mutating Test Harness, Existing Regression Evidence Evaluation, Evidence Traceability Analysis]
+  determinations: [ASSURED, PARTIALLY_ASSURED, NOT_ASSURED, VIOLATED, INSUFFICIENT_EVIDENCE, AMBIGUOUS_PROPERTY, OBSOLETE_PROPERTY, NOT_APPLICABLE]
+  evidence_classification: derived_engineering_evidence
+  authority_boundary: no approval, qualification, publication, lifecycle, operational, ownership, implementation, or decision authority
+
+criteria:
+  DOC-COMP-001:
+    identifier: DOC-COMP-001
+    description: The applicable validation profile is deterministically resolved.
+    applicability: all profiles
+    validation_method: profile resolution from declared metadata, classification, or registered repository path
+    automation: automated
+    required_evidence: resolved profile identifier
+    fail_condition: no profile or more than one profile resolves
+    remediation_guidance: declare semantic_validation_profile or correct the classification/path
+  DOC-COMP-002:
+    identifier: DOC-COMP-002
+    description: Required semantic sections or fields are present and non-empty.
+    applicability: all profiles
+    validation_method: heading or YAML-key inspection
+    automation: automated
+    required_evidence: matched section headings or field paths
+    fail_condition: a required section or field is absent or empty
+    remediation_guidance: add substantive content under the missing section or field
+  DOC-COMP-003:
+    identifier: DOC-COMP-003
+    description: Engineering content explains the intended outcome and implementation.
+    applicability: all profiles
+    validation_method: required-content section or field inspection
+    automation: partially_automated
+    required_evidence: objective, rationale, implementation, or equivalent content
+    fail_condition: required engineering content is absent; technical correctness remains manually reviewed
+    remediation_guidance: document the engineering outcome, rationale, and implementation
+  DOC-COMP-004:
+    identifier: DOC-COMP-004
+    description: Governing requirements and dependent artifacts are traceable.
+    applicability: all profiles
+    validation_method: relationship metadata, references, or traceability field inspection
+    automation: partially_automated
+    required_evidence: resolvable relationship, reference, or traceability entry
+    fail_condition: traceability is absent or a declared repository reference does not resolve
+    remediation_guidance: add authoritative references and correct unresolved repository paths
+  DOC-COMP-005:
+    identifier: DOC-COMP-005
+    description: Required evidence is identified with an inspection or production method.
+    applicability: all profiles
+    validation_method: evidence section or field inspection
+    automation: partially_automated
+    required_evidence: evidence list, locator, or expected evidence description
+    fail_condition: evidence is absent; sufficiency remains manually reviewed
+    remediation_guidance: identify evidence, its producer, and how it is inspected
+  DOC-COMP-006:
+    identifier: DOC-COMP-006
+    description: Executable commands are documented with interface, syntax, help, and exit behavior.
+    applicability: profiles that declare or require commands
+    validation_method: command declaration and repository interface inspection; unsafe commands are never executed
+    automation: partially_automated
+    required_evidence: command, resolvable executable, syntax, help reference, and exit behavior
+    fail_condition: an executable is missing or command documentation omits required behavior
+    remediation_guidance: correct syntax and document help and exit behavior
+  DOC-COMP-007:
+    identifier: DOC-COMP-007
+    description: Validation criteria are explicit and testable.
+    applicability: all profiles
+    validation_method: validation, verification, PASS, or FAIL content inspection
+    automation: partially_automated
+    required_evidence: validation criteria or expected-result statements
+    fail_condition: validation criteria are absent; correctness remains manually reviewed
+    remediation_guidance: state testable checks and expected results
+  DOC-COMP-008:
+    identifier: DOC-COMP-008
+    description: Acceptance criteria and disposition are explicit.
+    applicability: all profiles
+    validation_method: acceptance, completion, or disposition content inspection
+    automation: partially_automated
+    required_evidence: acceptance criteria and disposition method
+    fail_condition: acceptance criteria are absent; approval remains outside validator authority
+    remediation_guidance: state exact acceptance conditions and disposition route
+  DOC-COMP-009:
+    identifier: DOC-COMP-009
+    description: Entry conditions and prerequisites are explicit.
+    applicability: procedure, WOP, gate specification, operator verification guide
+    validation_method: heading or field inspection
+    automation: automated
+    required_evidence: prerequisites or entry conditions
+    fail_condition: entry conditions are absent or empty
+    remediation_guidance: state prerequisites and entry conditions
+  DOC-COMP-010:
+    identifier: DOC-COMP-010
+    description: Execution or implementation sequence is explicit.
+    applicability: procedure, WOP, gate specification, operator verification guide, roadmap
+    validation_method: ordered section, steps, sequencing table, or field inspection
+    automation: partially_automated
+    required_evidence: ordered steps or sequencing declaration
+    fail_condition: sequence is absent; ordering correctness remains manually reviewed
+    remediation_guidance: add an ordered execution or implementation sequence
+  DOC-COMP-011:
+    identifier: DOC-COMP-011
+    description: Stop, failure, and fail-closed conditions are explicit.
+    applicability: procedure, gate specification, operator verification guide
+    validation_method: heading or field inspection
+    automation: partially_automated
+    required_evidence: stop conditions, failure interpretation, or FAIL criteria
+    fail_condition: failure behavior is absent
+    remediation_guidance: document stop conditions and fail-closed behavior
+  DOC-COMP-012:
+    identifier: DOC-COMP-012
+    description: Recovery and resume behavior is explicit.
+    applicability: procedure, WOP, gate specification, operator verification guide
+    validation_method: heading, field, or referenced recovery artifact inspection
+    automation: partially_automated
+    required_evidence: recovery and resume instructions or resolvable reference
+    fail_condition: recovery behavior is absent
+    remediation_guidance: add recovery, rollback, and resume instructions
+  DOC-COMP-013:
+    identifier: DOC-COMP-013
+    description: Outputs and reconciliation obligations are explicit.
+    applicability: procedure, completion report
+    validation_method: heading or field inspection
+    automation: partially_automated
+    required_evidence: outputs and reconciliation description
+    fail_condition: outputs or reconciliation are absent
+    remediation_guidance: state produced artifacts and reconciliation obligations
+  DOC-COMP-014:
+    identifier: DOC-COMP-014
+    description: Roadmap dependencies and completion definition are explicit.
+    applicability: roadmap
+    validation_method: heading, sequencing table, dependency reference, and completion statement inspection
+    automation: partially_automated
+    required_evidence: dependencies and completion definition
+    fail_condition: dependency or completion information is absent
+    remediation_guidance: identify dependencies and define roadmap completion
+  DOC-COMP-015:
+    identifier: DOC-COMP-015
+    description: Gate capability, rationale, expected results, failure interpretation, and next gate are explicit.
+    applicability: gate specification
+    validation_method: per-gate YAML field inspection
+    automation: automated
+    required_evidence: complete field set for every gate
+    fail_condition: any gate lacks a required field
+    remediation_guidance: complete the missing gate field
+  DOC-COMP-016:
+    identifier: DOC-COMP-016
+    description: Operator guidance separates engineering explanation from operator action and disposition.
+    applicability: operator verification guide
+    validation_method: heading inspection
+    automation: partially_automated
+    required_evidence: engineering explanation, operator explanation, PASS, FAIL, acceptance, rejection, and resume sections
+    fail_condition: a required operator-facing concern is absent
+    remediation_guidance: add the missing explanation or disposition section
+  DOC-COMP-017:
+    identifier: DOC-COMP-017
+    description: WOP objectives, authorization boundary, completion boundary, and recovery are explicit.
+    applicability: WOP
+    validation_method: YAML field inspection
+    automation: automated
+    required_evidence: mission, effects, contracts, completion boundary, and recovery reference
+    fail_condition: a required WOP field is absent or referenced contract does not resolve
+    remediation_guidance: complete the WOP contract and correct referenced artifact paths
+  DOC-COMP-018:
+    identifier: DOC-COMP-018
+    description: Completion reporting records scope, validation, evidence, unresolved criteria, and final disposition.
+    applicability: completion report
+    validation_method: heading inspection
+    automation: partially_automated
+    required_evidence: scope, validation, evidence, unresolved criteria, coverage, and disposition
+    fail_condition: required closeout content is absent
+    remediation_guidance: add the missing completion-report content
+  DOC-SYNC-001:
+    identifier: DOC-SYNC-001
+    description: Declared implementation dependencies resolve and match qualified fingerprints.
+    applicability: every profile that declares implementation synchronization
+    validation_method: additive synchronization metadata, locator, fingerprint, and drift analysis
+    automation: automated
+    required_evidence: deterministic synchronization JSON report
+    fail_condition: drift is OUT_OF_SYNC, IMPLEMENTATION_CHANGED, DOCUMENT_CHANGED, MISSING_ARTIFACT, or UNKNOWN
+    remediation_guidance: review affected endpoints, synchronize the declaration, and route required requalification or publication
+  DOC-SYNC-002:
+    identifier: DOC-SYNC-002
+    description: Downstream documentation and qualification impact are deterministically identified.
+    applicability: every profile that declares implementation synchronization
+    validation_method: reverse dependency-graph traversal and declared qualification-policy analysis
+    automation: automated
+    required_evidence: graph, affected documentation, qualification impact, and required actions
+    fail_condition: an affected document or required impact route cannot be determined
+    remediation_guidance: complete dependency and qualification-policy metadata; approval remains manual
+
+profiles:
+  Standard:
+    criteria: [DOC-COMP-001, DOC-COMP-002, DOC-COMP-003, DOC-COMP-004, DOC-COMP-005, DOC-COMP-006, DOC-COMP-007, DOC-COMP-008]
+    required_markdown: [Purpose, Scope, Requirements, Validation, Compliance]
+    required_engineering_content: normative requirements and rationale
+    required_traceability: governing records and affected requirements
+    required_evidence: conformance and validation evidence
+    required_command_documentation: required when executable commands are declared
+    required_validation_criteria: testable conformance conditions
+    required_acceptance_criteria: compliance disposition
+  Specification:
+    criteria: [DOC-COMP-001, DOC-COMP-002, DOC-COMP-003, DOC-COMP-004, DOC-COMP-005, DOC-COMP-006, DOC-COMP-007, DOC-COMP-008]
+    required_markdown: [Purpose, Scope, Model, Validation, Compliance]
+    required_engineering_content: model, interfaces, invariants, and rationale
+    required_traceability: governing requirements and implementation consumers
+    required_evidence: model and interface validation evidence
+    required_command_documentation: required when executable interfaces are declared
+    required_validation_criteria: model and interface verification
+    required_acceptance_criteria: specification conformance disposition
+  Procedure:
+    criteria: [DOC-COMP-001, DOC-COMP-002, DOC-COMP-003, DOC-COMP-004, DOC-COMP-005, DOC-COMP-006, DOC-COMP-007, DOC-COMP-008, DOC-COMP-009, DOC-COMP-010, DOC-COMP-011, DOC-COMP-012, DOC-COMP-013]
+    required_concepts: [entry, sequence, stop, recovery, outputs, reconciliation, evidence]
+    required_engineering_content: entry, ordered execution, stop, recovery, outputs, and reconciliation
+    required_traceability: governing inputs and produced outputs
+    required_evidence: execution and reconciliation evidence
+    required_command_documentation: interface, syntax, help, and exit behavior for declared commands
+    required_validation_criteria: step and output verification
+    required_acceptance_criteria: successful completion and stop disposition
+  Policy:
+    criteria: [DOC-COMP-001, DOC-COMP-002, DOC-COMP-003, DOC-COMP-004, DOC-COMP-005, DOC-COMP-006, DOC-COMP-007, DOC-COMP-008]
+    required_markdown: [Purpose, Scope, Policy, Compliance]
+    required_engineering_content: policy rules, rationale, applicability, and exceptions
+    required_traceability: superior authority and implementing standards
+    required_evidence: compliance evidence
+    required_command_documentation: not applicable unless a command is normatively declared
+    required_validation_criteria: policy compliance conditions
+    required_acceptance_criteria: compliance disposition
+  Template:
+    criteria: [DOC-COMP-001, DOC-COMP-002, DOC-COMP-003, DOC-COMP-004, DOC-COMP-005, DOC-COMP-006, DOC-COMP-007, DOC-COMP-008]
+    required_concepts: [purpose, scope, evidence, validation, acceptance]
+    required_engineering_content: prompts for complete class-specific engineering content
+    required_traceability: prompts for governing and artifact references
+    required_evidence: prompts for evidence identity and inspection
+    required_command_documentation: prompts for interface, syntax, help, and exit behavior when applicable
+    required_validation_criteria: prompts for testable validation
+    required_acceptance_criteria: prompts for exact acceptance
+  WOP:
+    criteria: [DOC-COMP-001, DOC-COMP-002, DOC-COMP-003, DOC-COMP-004, DOC-COMP-005, DOC-COMP-006, DOC-COMP-007, DOC-COMP-008, DOC-COMP-009, DOC-COMP-010, DOC-COMP-012, DOC-COMP-017]
+    required_yaml: [mission_id, authority_binding, execution_context, authorized_effects, prohibited_effects, sequence, contracts, completion_boundary]
+    required_engineering_content: objectives, prerequisites, implementation, verification, recovery, and completion
+    required_traceability: authority, mission, work item, contracts, and baseline
+    required_evidence: verification and completion evidence contracts
+    required_command_documentation: required for declared execution commands
+    required_validation_criteria: admission, verification, and completion checks
+    required_acceptance_criteria: explicit acceptance boundary
+  Roadmap:
+    criteria: [DOC-COMP-001, DOC-COMP-002, DOC-COMP-003, DOC-COMP-004, DOC-COMP-005, DOC-COMP-006, DOC-COMP-007, DOC-COMP-008, DOC-COMP-010, DOC-COMP-014]
+    required_concepts: [objective, sequencing, dependencies, completion, traceability]
+    required_engineering_content: objectives, sequencing, dependencies, and completion definition
+    required_traceability: controlled identity and dependent gate or work references
+    required_evidence: completion evidence expectations
+    required_command_documentation: required only for declared roadmap commands
+    required_validation_criteria: sequence and dependency validation
+    required_acceptance_criteria: roadmap completion definition
+  Gate Specification:
+    criteria: [DOC-COMP-001, DOC-COMP-002, DOC-COMP-003, DOC-COMP-004, DOC-COMP-005, DOC-COMP-006, DOC-COMP-007, DOC-COMP-008, DOC-COMP-009, DOC-COMP-010, DOC-COMP-011, DOC-COMP-012, DOC-COMP-015]
+    required_yaml: [document_id, title, sequence, gates]
+    per_item: gates
+    per_item_required: [gate_id, mission_objective, capability_being_established, rationale, required_implementation_work, entry_prerequisites, required_evidence, exact_success_criteria, manual_verification_procedure, operator_acceptance_procedure, state_transitions, completion_marker, next_gate_enabled]
+    required_engineering_content: objective, capability, rationale, implementation, verification, recovery, and next gate
+    required_traceability: authoritative sources, predecessor gates, evidence, and next gate
+    required_evidence: commands, results, failure interpretation, and completion marker
+    required_command_documentation: Zeus interface, syntax, help output, and exit behavior
+    required_validation_criteria: positive, negative, replay, recovery, and regression checks
+    required_acceptance_criteria: exact success criteria and operator acceptance
+  Operator Verification Guide:
+    criteria: [DOC-COMP-001, DOC-COMP-002, DOC-COMP-003, DOC-COMP-004, DOC-COMP-005, DOC-COMP-006, DOC-COMP-007, DOC-COMP-008, DOC-COMP-009, DOC-COMP-010, DOC-COMP-011, DOC-COMP-012, DOC-COMP-016]
+    required_concepts: [purpose, engineering explanation, operator explanation, prerequisites, verification steps, expected outputs, evidence inspection, PASS criteria, FAIL criteria, acceptance procedure, rejection procedure, resume procedure]
+    required_engineering_content: purpose plus engineering and operator explanations
+    required_traceability: gate, evidence, decision receipt, and successor
+    required_evidence: expected outputs and evidence inspection
+    required_command_documentation: interface, syntax, help, and success and failure exits
+    required_validation_criteria: explicit PASS and FAIL criteria
+    required_acceptance_criteria: acceptance, rejection, and resume procedures
+  Completion Report:
+    criteria: [DOC-COMP-001, DOC-COMP-002, DOC-COMP-003, DOC-COMP-004, DOC-COMP-005, DOC-COMP-006, DOC-COMP-007, DOC-COMP-008, DOC-COMP-013, DOC-COMP-018]
+    required_concepts: [scope, validation, evidence, unresolved criteria, automation coverage, disposition]
+    required_engineering_content: scope, implementation outcome, validation, reconciliation, and disposition
+    required_traceability: mission, changed artifacts, criteria, and evidence
+    required_evidence: regression and qualification evidence
+    required_command_documentation: commands, expected output, help, and exit behavior when declared
+    required_validation_criteria: success and unresolved-criterion summary
+    required_acceptance_criteria: final disposition and outstanding acceptance

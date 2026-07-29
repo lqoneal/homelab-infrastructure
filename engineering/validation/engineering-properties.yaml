@@ -1,0 +1,170 @@
+schema_version: 1
+authority: SPEC-0001
+evidence_classification: derived_engineering_evidence
+authority_boundary: &boundary
+  grants_authority: false
+  grants_approval: false
+  grants_qualification: false
+  grants_publication: false
+  changes_lifecycle: false
+  executes_operational_workflow: false
+defaults: &defaults
+  preconditions: [authoritative source resolves]
+  prohibited_condition: documented control is bypassed
+  applicable_states: [documented states]
+  applicable_transitions: [documented transitions]
+  dependency_assumptions: [repository content is the evaluated baseline]
+  required_evidence: [authoritative source digest, deterministic inspection result]
+  failure_classification: engineering assurance finding
+  assurance_impact: [engineering review required, revalidation required]
+  review_owner: existing document owner
+  authority_boundary: *boundary
+
+properties:
+  - <<: *defaults
+    property_id: EP-ZEUS-ADMISSION-SELECTION
+    authoritative_source: {document_id: ZEUS-OPERATIONAL-RUNTIME, locator: engineering/operations/zeus-operational-runtime.md}
+    category: Authorization Boundary
+    engineering_objective: Mission execution requires admission and selection is limited to eligible staged missions.
+    subject: Zeus Operational Alpha
+    required_invariant: admission and eligibility precede dispatch
+    validation_strategy: [Static Inspection, Policy Evaluation]
+    checks:
+      - {kind: contains, locator: scripts/lib/emp/mission_admission_runtime.py, pattern: "admission", result_group: authority_boundary_results}
+      - {kind: contains, locator: scripts/lib/emp/orchestration.py, pattern: "eligibility_state.*eligible|no eligible mission", result_group: authority_boundary_results}
+
+  - <<: *defaults
+    property_id: EP-ZEUS-WOP-INTEGRITY-DISPATCH
+    authoritative_source: {document_id: ZEUS-MISSION-RUNTIME, locator: engineering/operations/zeus-mission-execution-runtime.md}
+    category: Integrity Requirement
+    engineering_objective: WOP identity and integrity are verified and execution follows the resolved WOP.
+    subject: Zeus Operational Alpha
+    required_invariant: dispatch consumes the verified WOP identity
+    validation_strategy: [Static Inspection, Manifest Validation]
+    checks:
+      - {kind: contains, locator: scripts/lib/emp/wop_dispatch.py, pattern: "digest|integrity", result_group: invariant_results}
+      - {kind: contains, locator: scripts/lib/emp/wop_dispatch.py, pattern: "wop", result_group: evidence_sufficiency_results}
+
+  - <<: *defaults
+    property_id: EP-ZEUS-GATE-AUTHORITY
+    authoritative_source: {document_id: ZEUS-OPERATIONAL-RUNTIME, locator: engineering/operations/zeus-operational-runtime.md}
+    category: Approval Boundary
+    engineering_objective: Approvals remain independent, gate order cannot be skipped, and validation never implies publication or lifecycle authority.
+    subject: Zeus Operational Alpha
+    required_invariant: approval identity and ordered gates precede protected execution
+    validation_strategy: [Control-Flow Inspection, Evidence Traceability Analysis]
+    checks:
+      - {kind: contains, locator: scripts/lib/emp/gate_approval.py, pattern: "approv", result_group: authority_boundary_results}
+      - {kind: contains, locator: scripts/lib/emp/mission_execution_runtime.py, pattern: "gate", result_group: transition_results}
+      - {kind: contains, locator: scripts/lib/emp/evidence_qualification.py, pattern: "qualif", result_group: authority_boundary_results}
+
+  - <<: *defaults
+    property_id: EP-ZEUS-TERMINAL-RECOVERY-REPLAY
+    authoritative_source: {document_id: ZEUS-MISSION-RUNTIME, locator: engineering/operations/zeus-mission-execution-runtime.md}
+    category: Recovery Guarantee
+    engineering_objective: Completed gates and terminal missions do not execute again; interruption resumes from authoritative state and duplicate events do not duplicate actions.
+    subject: Zeus Operational Alpha
+    required_invariant: retry resumes safely and terminal state remains terminal
+    validation_strategy: [Control-Flow Inspection, Existing Regression Evidence Evaluation]
+    checks:
+      - {kind: python_symbol, locator: scripts/lib/emp/mission_execution_runtime.py, symbol: resume, result_group: failure_path_results}
+      - {kind: contains, locator: scripts/lib/emp/mission_execution_runtime.py, pattern: "idempotency", result_group: idempotence_results}
+      - {kind: contains, locator: scripts/lib/emp/mission_execution_runtime.py, pattern: "terminal|completed", result_group: transition_results}
+
+  - <<: *defaults
+    property_id: EP-ZEUS-FAIL-CLOSED-RECONCILIATION
+    authoritative_source: {document_id: ZEUS-OPERATIONAL-RUNTIME, locator: engineering/operations/zeus-operational-runtime.md}
+    category: Failure-Containment Rule
+    engineering_objective: Failure fails closed and authoritative state and controlled records are reconciled before closeout.
+    subject: Zeus Operational Alpha
+    required_invariant: failures cannot bypass controls and closeout reconciles authoritative records
+    validation_strategy: [Static Inspection, Control-Flow Inspection]
+    checks:
+      - {kind: contains, locator: scripts/lib/emp/mission_execution_runtime.py, pattern: "fail|error", result_group: failure_path_results}
+      - {kind: python_symbol, locator: scripts/lib/emp/reconciliation.py, symbol: execute, result_group: invariant_results}
+
+  - <<: *defaults
+    property_id: EP-EENS-DUPLICATE-IDEMPOTENCY
+    authoritative_source: {document_id: SPEC-0009, locator: docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md}
+    category: Idempotence Requirement
+    engineering_objective: Duplicate events are accepted idempotently and conflicting reuse is rejected.
+    subject: EENS
+    required_invariant: stable idempotency key prevents duplicate persistence and side effects
+    validation_strategy: [Schema Validation, Control-Flow Inspection]
+    checks:
+      - {kind: contains, locator: services/eens/src/eens/store.py, pattern: "idempotency_key TEXT NOT NULL UNIQUE", result_group: idempotence_results}
+      - {kind: contains, locator: services/eens/src/eens/store.py, pattern: "different content|conflict", result_group: idempotence_results}
+
+  - <<: *defaults
+    property_id: EP-EENS-PERSISTENCE-CHECKPOINT-ORDER
+    authoritative_source: {document_id: SPEC-0009, locator: docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md}
+    category: Auditability Requirement
+    engineering_objective: Events persist with stable ordering and consumer checkpoints preserve evidence.
+    subject: EENS
+    required_invariant: committed event order and checkpoint state are durable and traceable
+    validation_strategy: [Static Inspection, Schema Validation]
+    checks:
+      - {kind: python_symbol, locator: services/eens/src/eens/store.py, symbol: append, result_group: evidence_sufficiency_results}
+      - {kind: python_symbol, locator: services/eens/src/eens/consumer.py, symbol: checkpoint, result_group: failure_path_results}
+      - {kind: contains, locator: services/eens/src/eens/store.py, pattern: "sequence", result_group: invariant_results}
+
+  - <<: *defaults
+    property_id: EP-EENS-NOTIFICATION-FAILURE-ISOLATION
+    authoritative_source: {document_id: SPEC-0009, locator: docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md}
+    category: Availability Requirement
+    engineering_objective: Notification unavailability does not corrupt canonical events or checkpoints.
+    subject: EENS
+    required_invariant: notification failure remains isolated from event persistence
+    validation_strategy: [Control-Flow Inspection, Existing Regression Evidence Evaluation]
+    checks:
+      - {kind: contains, locator: services/eens/src/eens/notify.py, pattern: "except|failure|error", result_group: failure_path_results}
+      - {kind: file_exists, locator: services/eens/tests/test_notify.py, result_group: evidence_sufficiency_results}
+
+  - <<: *defaults
+    property_id: EP-EMP-MISSION-WOP-SEQUENCE
+    authoritative_source: {document_id: EMP-0001, locator: docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md}
+    category: Mission Correctness Requirement
+    engineering_objective: Mission identity is unique and per-mission handoff sequencing resolves an integral WOP before execution.
+    subject: EMP
+    required_invariant: stable mission identity and WOP resolution precede dispatch
+    validation_strategy: [Dependency-Graph Analysis, Manifest Validation]
+    checks:
+      - {kind: contains, locator: scripts/lib/emp/wop_service.py, pattern: "mission", result_group: invariant_results}
+      - {kind: contains, locator: scripts/lib/emp/wop_dispatch.py, pattern: "digest|integrity", result_group: invariant_results}
+
+  - <<: *defaults
+    property_id: EP-EMP-QUALIFICATION-APPROVAL
+    authoritative_source: {document_id: EMP-0001, locator: docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md}
+    category: Approval Boundary
+    engineering_objective: Qualified execution agents and external approval are required; executing components cannot self-approve.
+    subject: EMP
+    required_invariant: qualification and approval identities remain distinct from execution
+    validation_strategy: [Policy Evaluation, Control-Flow Inspection]
+    checks:
+      - {kind: contains, locator: scripts/lib/emp/agent_qualification.py, pattern: "qualif", result_group: authority_boundary_results}
+      - {kind: contains, locator: scripts/lib/emp/gate_approval.py, pattern: "actor|identity|owner", result_group: authority_boundary_results}
+
+  - <<: *defaults
+    property_id: EP-EMP-PROGRESS-DEVIATION-TRACEABILITY
+    authoritative_source: {document_id: EMP-0001, locator: docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md}
+    category: Evidence Requirement
+    engineering_objective: Mission progress and deviation branches remain consistent and traceable.
+    subject: EMP
+    required_invariant: progress and deviations produce attributable evidence
+    validation_strategy: [Evidence Traceability Analysis, Static Inspection]
+    checks:
+      - {kind: contains, locator: scripts/lib/emp/orchestration.py, pattern: "progress|state", result_group: invariant_results}
+      - {kind: contains, locator: scripts/lib/emp/reasoning.py, pattern: "deviation|branch", result_group: evidence_sufficiency_results}
+
+  - <<: *defaults
+    property_id: EP-EMP-SYNCHRONIZATION-RECOVERY-CLOSEOUT
+    authoritative_source: {document_id: EMP-0001, locator: docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md}
+    category: Lifecycle Constraint
+    engineering_objective: Pre-work and post-work synchronization, interruption recovery, and closeout reconciliation preserve authoritative state.
+    subject: EMP
+    required_invariant: synchronization brackets execution and recovery resumes before reconciliation
+    validation_strategy: [Control-Flow Inspection, Evidence Traceability Analysis]
+    checks:
+      - {kind: python_symbol, locator: scripts/lib/emp/mission_execution_runtime.py, symbol: resume, result_group: failure_path_results}
+      - {kind: python_symbol, locator: scripts/lib/emp/reconciliation.py, symbol: execute, result_group: transition_results}
+      - {kind: contains, locator: scripts/lib/eos/synchronization.sh, pattern: "synchron", result_group: evidence_sufficiency_results}
