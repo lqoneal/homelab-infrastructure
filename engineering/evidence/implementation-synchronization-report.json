@@ -1,0 +1,666 @@
+{
+  "affected_documentation": [],
+  "dependency_graph": {
+    "edges": [
+      {
+        "relationship": "depends_on",
+        "source": "GH-ZEUS-OA-01-VERIFICATION",
+        "target": "GH-ZEUS-OA-PROGRESSIVE-001-GATES"
+      },
+      {
+        "relationship": "synchronizes_with",
+        "source": "GH-ZEUS-OA-01-VERIFICATION",
+        "target": "scripts/zeus"
+      },
+      {
+        "relationship": "depends_on",
+        "source": "GH-ZEUS-OA-PROGRESSIVE-001-COMPLETION",
+        "target": "GH-ZEUS-OA-01-VERIFICATION"
+      },
+      {
+        "relationship": "depends_on",
+        "source": "GH-ZEUS-OA-PROGRESSIVE-001-COMPLETION",
+        "target": "GH-ZEUS-OA-PROGRESSIVE-001-GATES"
+      },
+      {
+        "relationship": "depends_on",
+        "source": "GH-ZEUS-OA-PROGRESSIVE-001-COMPLETION",
+        "target": "GH-ZEUS-OA-PROGRESSIVE-001-ROADMAP"
+      },
+      {
+        "relationship": "synchronizes_with",
+        "source": "GH-ZEUS-OA-PROGRESSIVE-001-COMPLETION",
+        "target": "scripts/lib/emp/evidence_qualification.py"
+      },
+      {
+        "relationship": "synchronizes_with",
+        "source": "GH-ZEUS-OA-PROGRESSIVE-001-GATES",
+        "target": "scripts/lib/emp/gate_handlers.py"
+      },
+      {
+        "relationship": "depends_on",
+        "source": "GH-ZEUS-OA-PROGRESSIVE-001-ROADMAP",
+        "target": "GH-ZEUS-OA-PROGRESSIVE-001-WOP"
+      },
+      {
+        "relationship": "synchronizes_with",
+        "source": "GH-ZEUS-OA-PROGRESSIVE-001-ROADMAP",
+        "target": "scripts/lib/emp/progressive_oa.py"
+      },
+      {
+        "relationship": "synchronizes_with",
+        "source": "GH-ZEUS-OA-PROGRESSIVE-001-WOP",
+        "target": "scripts/lib/emp/wop_service.py"
+      },
+      {
+        "relationship": "synchronizes_with",
+        "source": "INF-0001",
+        "target": "configs"
+      },
+      {
+        "relationship": "depends_on",
+        "source": "PROC-0005",
+        "target": "SPEC-0001"
+      },
+      {
+        "relationship": "depends_on",
+        "source": "PROC-0006",
+        "target": "SPEC-0001"
+      },
+      {
+        "relationship": "synchronizes_with",
+        "source": "SPEC-0001",
+        "target": "scripts/validate_controlled_documents.py"
+      },
+      {
+        "relationship": "synchronizes_with",
+        "source": "SPEC-0005",
+        "target": "scripts"
+      },
+      {
+        "relationship": "synchronizes_with",
+        "source": "SPEC-0009",
+        "target": "services/eens"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "GH-ZEUS-OA-01-VERIFICATION",
+        "kind": "documentation"
+      },
+      {
+        "id": "GH-ZEUS-OA-PROGRESSIVE-001-COMPLETION",
+        "kind": "documentation"
+      },
+      {
+        "id": "GH-ZEUS-OA-PROGRESSIVE-001-GATES",
+        "kind": "documentation"
+      },
+      {
+        "id": "GH-ZEUS-OA-PROGRESSIVE-001-ROADMAP",
+        "kind": "documentation"
+      },
+      {
+        "id": "GH-ZEUS-OA-PROGRESSIVE-001-WOP",
+        "kind": "documentation"
+      },
+      {
+        "id": "INF-0001",
+        "kind": "documentation"
+      },
+      {
+        "id": "PROC-0005",
+        "kind": "documentation"
+      },
+      {
+        "id": "PROC-0006",
+        "kind": "documentation"
+      },
+      {
+        "id": "SPEC-0001",
+        "kind": "documentation"
+      },
+      {
+        "id": "SPEC-0005",
+        "kind": "documentation"
+      },
+      {
+        "id": "SPEC-0009",
+        "kind": "documentation"
+      },
+      {
+        "id": "configs",
+        "kind": "implementation"
+      },
+      {
+        "id": "scripts",
+        "kind": "implementation"
+      },
+      {
+        "id": "scripts/lib/emp/evidence_qualification.py",
+        "kind": "implementation"
+      },
+      {
+        "id": "scripts/lib/emp/gate_handlers.py",
+        "kind": "implementation"
+      },
+      {
+        "id": "scripts/lib/emp/progressive_oa.py",
+        "kind": "implementation"
+      },
+      {
+        "id": "scripts/lib/emp/wop_service.py",
+        "kind": "implementation"
+      },
+      {
+        "id": "scripts/validate_controlled_documents.py",
+        "kind": "implementation"
+      },
+      {
+        "id": "scripts/zeus",
+        "kind": "implementation"
+      },
+      {
+        "id": "services/eens",
+        "kind": "implementation"
+      }
+    ]
+  },
+  "repository": {
+    "baseline_commit": "bcdd0b1a19045654d470bc65383c05a976bae2a6",
+    "locator": ".",
+    "repository_id": "homelab"
+  },
+  "schema_version": 1,
+  "summary": {
+    "DOCUMENT_CHANGED": 0,
+    "IMPLEMENTATION_CHANGED": 0,
+    "MISSING_ARTIFACT": 0,
+    "OUT_OF_SYNC": 0,
+    "PASS": 9,
+    "SUPERSEDED": 0,
+    "UNKNOWN": 0
+  },
+  "synchronized_artifacts": [
+    {
+      "documentation": {
+        "document_id": "SPEC-0009",
+        "fingerprint": {
+          "strategy": "sha256",
+          "value": "5fcafe47f55a6e245aca2fb5a3ffc0dad7dc37a241afc09573c16d4ae2945066"
+        },
+        "repository_locator": "docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md"
+      },
+      "documentation_changed": false,
+      "documentation_fingerprints": [
+        {
+          "actual": "5fcafe47f55a6e245aca2fb5a3ffc0dad7dc37a241afc09573c16d4ae2945066",
+          "expected": "5fcafe47f55a6e245aca2fb5a3ffc0dad7dc37a241afc09573c16d4ae2945066",
+          "matches": true,
+          "strategy": "sha256"
+        }
+      ],
+      "drift_status": "PASS",
+      "implementation": {
+        "object_type": "directory",
+        "repository_locator": "services/eens"
+      },
+      "implementation_changed": false,
+      "implementation_fingerprints": [
+        {
+          "actual": "b6cf3916048d0e77b8ca970a43b2ee50142d76c705a015d1602452495637bf30",
+          "expected": "b6cf3916048d0e77b8ca970a43b2ee50142d76c705a015d1602452495637bf30",
+          "matches": true,
+          "strategy": "repository_inventory"
+        }
+      ],
+      "ownership": {
+        "documentation": "Engineering Governance",
+        "implementation": "Engineering Notification Service"
+      },
+      "qualification_impact": {
+        "approval_decision": null,
+        "assessment": [
+          "qualification_still_valid"
+        ],
+        "automatic_decision_prohibited": true
+      },
+      "requalification_required": false,
+      "required_actions": [
+        "qualification_still_valid"
+      ],
+      "synchronization_id": "SYNC-EENS-SERVICE-IMPLEMENTATION",
+      "synchronization_required": false,
+      "synchronization_strategy": "recursive_artifact_coverage",
+      "validation_scope": "notification service implementation, configuration, automation, and verification"
+    },
+    {
+      "documentation": {
+        "document_id": "SPEC-0005",
+        "fingerprint": {
+          "strategy": "sha256",
+          "value": "68e8c8f81dfb8ae4f5e360dce0dbdf3c8fb47f64167b044567f9807c69795234"
+        },
+        "repository_locator": "docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md"
+      },
+      "documentation_changed": false,
+      "documentation_fingerprints": [
+        {
+          "actual": "68e8c8f81dfb8ae4f5e360dce0dbdf3c8fb47f64167b044567f9807c69795234",
+          "expected": "68e8c8f81dfb8ae4f5e360dce0dbdf3c8fb47f64167b044567f9807c69795234",
+          "matches": true,
+          "strategy": "sha256"
+        }
+      ],
+      "drift_status": "PASS",
+      "implementation": {
+        "object_type": "directory",
+        "repository_locator": "scripts"
+      },
+      "implementation_changed": false,
+      "implementation_fingerprints": [
+        {
+          "actual": "2d7601f8dedd44679a0c7cb86e9434415f61cc7bebb6a6e57a0dd5574256f95d",
+          "expected": "2d7601f8dedd44679a0c7cb86e9434415f61cc7bebb6a6e57a0dd5574256f95d",
+          "matches": true,
+          "strategy": "repository_inventory"
+        }
+      ],
+      "ownership": {
+        "documentation": "Engineering Governance",
+        "implementation": "Engineering Platform"
+      },
+      "qualification_impact": {
+        "approval_decision": null,
+        "assessment": [
+          "qualification_still_valid"
+        ],
+        "automatic_decision_prohibited": true
+      },
+      "requalification_required": false,
+      "required_actions": [
+        "qualification_still_valid"
+      ],
+      "synchronization_id": "SYNC-ENGINEERING-CONTROL-FRAMEWORK-SCRIPTS",
+      "synchronization_required": false,
+      "synchronization_strategy": "recursive_artifact_coverage",
+      "validation_scope": "repository engineering controllers, execution engines, libraries, interfaces, and verification"
+    },
+    {
+      "documentation": {
+        "document_id": "INF-0001",
+        "fingerprint": {
+          "strategy": "sha256",
+          "value": "6f9ba5a7c958f0f5b951ea5dbc57f4cc31a4d143867a5129aa9d4214dbd82f27"
+        },
+        "repository_locator": "docs/infrastructure/INF-0001-INFRASTRUCTURE_BASELINE.md"
+      },
+      "documentation_changed": false,
+      "documentation_fingerprints": [
+        {
+          "actual": "6f9ba5a7c958f0f5b951ea5dbc57f4cc31a4d143867a5129aa9d4214dbd82f27",
+          "expected": "6f9ba5a7c958f0f5b951ea5dbc57f4cc31a4d143867a5129aa9d4214dbd82f27",
+          "matches": true,
+          "strategy": "sha256"
+        }
+      ],
+      "drift_status": "PASS",
+      "implementation": {
+        "object_type": "directory",
+        "repository_locator": "configs"
+      },
+      "implementation_changed": false,
+      "implementation_fingerprints": [
+        {
+          "actual": "e8c68a4cf0a1844650774c5d73fcac1ccaf1c2b18d22ba801907473d97dbd571",
+          "expected": "e8c68a4cf0a1844650774c5d73fcac1ccaf1c2b18d22ba801907473d97dbd571",
+          "matches": true,
+          "strategy": "repository_inventory"
+        }
+      ],
+      "ownership": {
+        "documentation": "Infrastructure Engineering",
+        "implementation": "Infrastructure Engineering"
+      },
+      "qualification_impact": {
+        "approval_decision": null,
+        "assessment": [
+          "qualification_still_valid"
+        ],
+        "automatic_decision_prohibited": true
+      },
+      "requalification_required": false,
+      "required_actions": [
+        "qualification_still_valid"
+      ],
+      "synchronization_id": "SYNC-INFRASTRUCTURE-CONFIGURATION",
+      "synchronization_required": false,
+      "synchronization_strategy": "recursive_artifact_coverage",
+      "validation_scope": "repository infrastructure configuration"
+    },
+    {
+      "documentation": {
+        "document_id": "SPEC-0001",
+        "fingerprint": {
+          "strategy": "sha256",
+          "value": "e6a9541ac115575c7623dc8323d990412ec25b433732496a7277e4e74a7b91bc"
+        },
+        "repository_locator": "docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md"
+      },
+      "documentation_changed": false,
+      "documentation_fingerprints": [
+        {
+          "actual": "e6a9541ac115575c7623dc8323d990412ec25b433732496a7277e4e74a7b91bc",
+          "expected": "e6a9541ac115575c7623dc8323d990412ec25b433732496a7277e4e74a7b91bc",
+          "matches": true,
+          "strategy": "sha256"
+        }
+      ],
+      "drift_status": "PASS",
+      "implementation": {
+        "object_type": "script",
+        "repository_locator": "scripts/validate_controlled_documents.py"
+      },
+      "implementation_changed": false,
+      "implementation_fingerprints": [
+        {
+          "actual": "83c94fb79565dc61ed9e7b6df9f35900afa4f607e810f0d43da72bc43bc7a85e",
+          "expected": "83c94fb79565dc61ed9e7b6df9f35900afa4f607e810f0d43da72bc43bc7a85e",
+          "matches": true,
+          "strategy": "sha256"
+        }
+      ],
+      "ownership": {
+        "documentation": "EOS Program",
+        "implementation": "Engineering Platform"
+      },
+      "qualification_impact": {
+        "approval_decision": null,
+        "assessment": [
+          "qualification_still_valid"
+        ],
+        "automatic_decision_prohibited": true
+      },
+      "requalification_required": false,
+      "required_actions": [
+        "qualification_still_valid"
+      ],
+      "synchronization_id": "SYNC-SPEC-0001-VALIDATOR",
+      "synchronization_required": false,
+      "synchronization_strategy": "exact_content",
+      "validation_scope": "additive synchronization validation"
+    },
+    {
+      "documentation": {
+        "document_id": "GH-ZEUS-OA-PROGRESSIVE-001-COMPLETION",
+        "fingerprint": {
+          "strategy": "sha256",
+          "value": "5a13f9efbb7cc632313601933343500aeb58815c3bfddbd00b44a710042d1817"
+        },
+        "repository_locator": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/COMPLETION-REPORT.md"
+      },
+      "documentation_changed": false,
+      "documentation_fingerprints": [
+        {
+          "actual": "5a13f9efbb7cc632313601933343500aeb58815c3bfddbd00b44a710042d1817",
+          "expected": "5a13f9efbb7cc632313601933343500aeb58815c3bfddbd00b44a710042d1817",
+          "matches": true,
+          "strategy": "sha256"
+        }
+      ],
+      "drift_status": "PASS",
+      "implementation": {
+        "object_type": "library",
+        "repository_locator": "scripts/lib/emp/evidence_qualification.py"
+      },
+      "implementation_changed": false,
+      "implementation_fingerprints": [
+        {
+          "actual": "9efa62effdac8aca1f1c44e075e2899b5a3370a5eb734ebe367ef6d43611caa6",
+          "expected": "9efa62effdac8aca1f1c44e075e2899b5a3370a5eb734ebe367ef6d43611caa6",
+          "matches": true,
+          "strategy": "sha256"
+        }
+      ],
+      "ownership": {
+        "documentation": "Zeus Operational Alpha",
+        "implementation": "Engineering Management Platform"
+      },
+      "qualification_impact": {
+        "approval_decision": null,
+        "assessment": [
+          "qualification_still_valid"
+        ],
+        "automatic_decision_prohibited": true
+      },
+      "requalification_required": false,
+      "required_actions": [
+        "qualification_still_valid"
+      ],
+      "synchronization_id": "SYNC-ZEUS-COMPLETION-VERIFICATION",
+      "synchronization_required": false,
+      "synchronization_strategy": "evidence_contract",
+      "validation_scope": "completion evidence and qualification"
+    },
+    {
+      "documentation": {
+        "document_id": "GH-ZEUS-OA-PROGRESSIVE-001-GATES",
+        "fingerprint": {
+          "strategy": "sha256",
+          "value": "faac15ffe63f08b9aca5af680dfa520d4234693f2932a801777852ac5af1ec6f"
+        },
+        "repository_locator": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gate-specification.yaml"
+      },
+      "documentation_changed": false,
+      "documentation_fingerprints": [
+        {
+          "actual": "faac15ffe63f08b9aca5af680dfa520d4234693f2932a801777852ac5af1ec6f",
+          "expected": "faac15ffe63f08b9aca5af680dfa520d4234693f2932a801777852ac5af1ec6f",
+          "matches": true,
+          "strategy": "sha256"
+        }
+      ],
+      "drift_status": "PASS",
+      "implementation": {
+        "object_type": "library",
+        "repository_locator": "scripts/lib/emp/gate_handlers.py"
+      },
+      "implementation_changed": false,
+      "implementation_fingerprints": [
+        {
+          "actual": "d44246974eae3b563f20eb1d96c64b13bf331a9d982f1550b0f82131dae59e50",
+          "expected": "d44246974eae3b563f20eb1d96c64b13bf331a9d982f1550b0f82131dae59e50",
+          "matches": true,
+          "strategy": "sha256"
+        }
+      ],
+      "ownership": {
+        "documentation": "Zeus Operational Alpha",
+        "implementation": "Engineering Management Platform"
+      },
+      "qualification_impact": {
+        "approval_decision": null,
+        "assessment": [
+          "qualification_still_valid"
+        ],
+        "automatic_decision_prohibited": true
+      },
+      "requalification_required": false,
+      "required_actions": [
+        "qualification_still_valid"
+      ],
+      "synchronization_id": "SYNC-ZEUS-GATES-GATE-CONTROLLER",
+      "synchronization_required": false,
+      "synchronization_strategy": "gate_contract",
+      "validation_scope": "gate objectives, handler dispatch, and completion"
+    },
+    {
+      "documentation": {
+        "document_id": "GH-ZEUS-OA-PROGRESSIVE-001-ROADMAP",
+        "fingerprint": {
+          "strategy": "sha256",
+          "value": "2ff819ed68676a9de32b00212492a403ac0cc748adc8ecccc47bbbaf513e5ceb"
+        },
+        "repository_locator": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md"
+      },
+      "documentation_changed": false,
+      "documentation_fingerprints": [
+        {
+          "actual": "2ff819ed68676a9de32b00212492a403ac0cc748adc8ecccc47bbbaf513e5ceb",
+          "expected": "2ff819ed68676a9de32b00212492a403ac0cc748adc8ecccc47bbbaf513e5ceb",
+          "matches": true,
+          "strategy": "sha256"
+        }
+      ],
+      "drift_status": "PASS",
+      "implementation": {
+        "object_type": "library",
+        "repository_locator": "scripts/lib/emp/progressive_oa.py"
+      },
+      "implementation_changed": false,
+      "implementation_fingerprints": [
+        {
+          "actual": "0b8f701c0d3a323034b39121a2797d3f1e616b9bc24781a91504f5a47c54f814",
+          "expected": "0b8f701c0d3a323034b39121a2797d3f1e616b9bc24781a91504f5a47c54f814",
+          "matches": true,
+          "strategy": "sha256"
+        }
+      ],
+      "ownership": {
+        "documentation": "Zeus Operational Alpha",
+        "implementation": "Engineering Management Platform"
+      },
+      "qualification_impact": {
+        "approval_decision": null,
+        "assessment": [
+          "qualification_still_valid"
+        ],
+        "automatic_decision_prohibited": true
+      },
+      "requalification_required": false,
+      "required_actions": [
+        "qualification_still_valid"
+      ],
+      "synchronization_id": "SYNC-ZEUS-ROADMAP-CONTROLLER",
+      "synchronization_required": false,
+      "synchronization_strategy": "interface_and_sequence",
+      "validation_scope": "roadmap sequencing and progressive OA state"
+    },
+    {
+      "documentation": {
+        "document_id": "GH-ZEUS-OA-01-VERIFICATION",
+        "fingerprint": {
+          "strategy": "sha256",
+          "value": "eee153c2cb5f1ff997833f063e6d2d73bed450f3f38f712d654f3c4b5673614e"
+        },
+        "repository_locator": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-01/verification.md"
+      },
+      "documentation_changed": false,
+      "documentation_fingerprints": [
+        {
+          "actual": "eee153c2cb5f1ff997833f063e6d2d73bed450f3f38f712d654f3c4b5673614e",
+          "expected": "eee153c2cb5f1ff997833f063e6d2d73bed450f3f38f712d654f3c4b5673614e",
+          "matches": true,
+          "strategy": "sha256"
+        }
+      ],
+      "drift_status": "PASS",
+      "implementation": {
+        "object_type": "executable",
+        "repository_locator": "scripts/zeus"
+      },
+      "implementation_changed": false,
+      "implementation_fingerprints": [
+        {
+          "actual": "0596c4df8ad56dcced8ade296e552e676f1203eabc86d3fe7720a23cfed480f1",
+          "expected": "0596c4df8ad56dcced8ade296e552e676f1203eabc86d3fe7720a23cfed480f1",
+          "matches": true,
+          "strategy": "sha256"
+        },
+        {
+          "actual": "efc9b31908ea757e1ffba5e4bacba13375112105",
+          "expected": "efc9b31908ea757e1ffba5e4bacba13375112105",
+          "matches": true,
+          "strategy": "git_object"
+        }
+      ],
+      "ownership": {
+        "documentation": "Zeus Operational Alpha",
+        "implementation": "Zeus Operator Interface"
+      },
+      "qualification_impact": {
+        "approval_decision": null,
+        "assessment": [
+          "qualification_still_valid"
+        ],
+        "automatic_decision_prohibited": true
+      },
+      "requalification_required": false,
+      "required_actions": [
+        "qualification_still_valid"
+      ],
+      "synchronization_id": "SYNC-ZEUS-VERIFICATION-ZEUS",
+      "synchronization_required": false,
+      "synchronization_strategy": "command_interface",
+      "validation_scope": "operator verification command interface"
+    },
+    {
+      "documentation": {
+        "document_id": "GH-ZEUS-OA-PROGRESSIVE-001-WOP",
+        "fingerprint": {
+          "strategy": "sha256",
+          "value": "278e15fc91c5df59c0ab4ccc62032df34bdc623871704e6f4ea6ce6218ae1752"
+        },
+        "repository_locator": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/immutable-wop.yaml"
+      },
+      "documentation_changed": false,
+      "documentation_fingerprints": [
+        {
+          "actual": "278e15fc91c5df59c0ab4ccc62032df34bdc623871704e6f4ea6ce6218ae1752",
+          "expected": "278e15fc91c5df59c0ab4ccc62032df34bdc623871704e6f4ea6ce6218ae1752",
+          "matches": true,
+          "strategy": "sha256"
+        }
+      ],
+      "drift_status": "PASS",
+      "implementation": {
+        "object_type": "library",
+        "repository_locator": "scripts/lib/emp/wop_service.py"
+      },
+      "implementation_changed": false,
+      "implementation_fingerprints": [
+        {
+          "actual": "11c8026a6e5a5c25f656eab79c178bb20bd87ce52750707ba3b516ce70f37913",
+          "expected": "11c8026a6e5a5c25f656eab79c178bb20bd87ce52750707ba3b516ce70f37913",
+          "matches": true,
+          "strategy": "sha256"
+        },
+        {
+          "actual": "d25d144312b73fc8230113c99f5d0368037b4483",
+          "expected": "bcdd0b1a19045654d470bc65383c05a976bae2a6",
+          "matches": true,
+          "strategy": "repository_commit"
+        }
+      ],
+      "ownership": {
+        "documentation": "Zeus Operational Alpha",
+        "implementation": "Engineering Management Platform"
+      },
+      "qualification_impact": {
+        "approval_decision": null,
+        "assessment": [
+          "automatic_revalidation_sufficient"
+        ],
+        "automatic_decision_prohibited": true
+      },
+      "requalification_required": false,
+      "required_actions": [
+        "automatic_revalidation_sufficient"
+      ],
+      "synchronization_id": "SYNC-ZEUS-WOP-EMP-CONTROLLER",
+      "synchronization_required": false,
+      "synchronization_strategy": "contract_surface",
+      "validation_scope": "WOP admission, execution, and lifecycle contracts"
+    }
+  ]
+}

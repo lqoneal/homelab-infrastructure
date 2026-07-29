@@ -1,0 +1,621 @@
+{
+  "authority": "SPEC-0001",
+  "authority_boundaries": {
+    "engineering_intent": "not_inferred",
+    "governance": "not_inferred",
+    "lifecycle": "not_inferred",
+    "ownership": "not_inferred",
+    "publication": "not_inferred",
+    "qualification": "not_inferred",
+    "undocumented_contracts": "not_inferred"
+  },
+  "compatibility_findings": [],
+  "conformant_interfaces": [
+    "CONTRACT-EMP-ORCHESTRATION",
+    "CONTRACT-ENGCTL-COMMAND",
+    "CONTRACT-EVIDENCE-QUALIFICATION",
+    "CONTRACT-GATE-EXECUTION",
+    "CONTRACT-NOTIFICATION-INTERFACE",
+    "CONTRACT-REPOSITORY-VALIDATION",
+    "CONTRACT-ROADMAP-PROCESSING",
+    "CONTRACT-SYNCHRONIZATION-SERVICE",
+    "CONTRACT-WOP-EXECUTION",
+    "CONTRACT-ZEUS-COMMAND"
+  ],
+  "discovered_contracts": [
+    {
+      "api_signatures": [
+        {
+          "arguments": [],
+          "async": false,
+          "name": "empty_orchestration_state",
+          "return_annotation": "dict[str, Any]"
+        }
+      ],
+      "contract_id": "CONTRACT-EMP-ORCHESTRATION",
+      "evidence": {
+        "content_sha256": "374e29cc5a1bc533fad4902c3e03917a54894c3280c528ce73738a26a80d299d",
+        "locator": "scripts/lib/emp/orchestration.py",
+        "mechanism": "python_ast",
+        "symbol": "empty_orchestration_state"
+      },
+      "status": "discovered"
+    },
+    {
+      "command_names": [
+        "engctl"
+      ],
+      "contract_id": "CONTRACT-ENGCTL-COMMAND",
+      "evidence": {
+        "command_path": [],
+        "content_sha256": "282d24896f17a7d97d2bb114594700ef26f07275741178756f7bce1269bc1d2c",
+        "inspection_only": true,
+        "locator": "scripts/engctl",
+        "mechanism": "help_interface",
+        "return_code": 0
+      },
+      "observable_output": "Usage:\n  engctl resume [project]\n  engctl status [project]\n  engctl doctor\n  engctl ssh {status|environment|load [key ...]}\n  engctl checkpoint {latest|active|list|create <title>|restore [checkpoint]|validate|retention [count]}\n  engctl eos {status|validate|synchronize|sync-validate|sync-status|refresh|operational|persistence} [project]\n  engctl repository {discover|health|sync-status|readiness|refresh} [project]\n  engctl registry {path|validate|show|list|get|context|create|update|archive|transition}\n  engctl portfolio {summary|status|order}\n  engctl project {list|register|activate|suspend}\n  engctl queue {list|show|validate|enqueue|dequeue|reprioritize|reorder}\n  engctl milestone {list|get|status|qualify|complete}\n  engctl dependency {list|validate|check|blocked|satisfy}\n  engctl defer {list|validate|apply|resume|history}\n  engctl context [project]\n  engctl validate [project]\n  engctl platform {status|validate|qualify} [project]\n  engctl execution {inventory|snapshot [--mission ID]|validate-handoff FILE}\n  engctl mission contract {inspect|validate|resolve|admit|activate-request|recover|activate|suspend|resume|revoke|complete}\n  engctl codex [--ewo EWO-XXXXXX] [--timeout SECONDS] [--] [codex arguments ...]\n  engctl version\n",
+      "options": [
+        "--",
+        "--ewo",
+        "--mission",
+        "--timeout"
+      ],
+      "status": "discovered"
+    },
+    {
+      "api_signatures": [
+        {
+          "arguments": [
+            "value"
+          ],
+          "async": false,
+          "name": "artifact_digest",
+          "return_annotation": "str"
+        }
+      ],
+      "contract_id": "CONTRACT-EVIDENCE-QUALIFICATION",
+      "evidence": {
+        "content_sha256": "9efa62effdac8aca1f1c44e075e2899b5a3370a5eb734ebe367ef6d43611caa6",
+        "locator": "scripts/lib/emp/evidence_qualification.py",
+        "mechanism": "python_ast",
+        "symbol": "artifact_digest"
+      },
+      "status": "discovered"
+    },
+    {
+      "api_signatures": [
+        {
+          "arguments": [
+            "repository_root"
+          ],
+          "async": false,
+          "name": "qualification_framework",
+          "return_annotation": null
+        }
+      ],
+      "contract_id": "CONTRACT-GATE-EXECUTION",
+      "evidence": {
+        "content_sha256": "d44246974eae3b563f20eb1d96c64b13bf331a9d982f1550b0f82131dae59e50",
+        "locator": "scripts/lib/emp/gate_handlers.py",
+        "mechanism": "python_ast",
+        "symbol": "qualification_framework"
+      },
+      "status": "discovered"
+    },
+    {
+      "contract_id": "CONTRACT-NOTIFICATION-INTERFACE",
+      "evidence": {
+        "content_sha256": "c51947ce758f69327e4cf39d86adc23788835f27b8bb241abb4c9529ee22ff0f",
+        "locator": "scripts/lib/notifications/ntfy.sh",
+        "mechanism": "file_inspection"
+      },
+      "status": "discovered"
+    },
+    {
+      "api_signatures": [
+        {
+          "arguments": [
+            "argv"
+          ],
+          "async": false,
+          "name": "main",
+          "return_annotation": "int"
+        }
+      ],
+      "contract_id": "CONTRACT-REPOSITORY-VALIDATION",
+      "evidence": {
+        "content_sha256": "325259080763553eaa1e31b35c664ea91e2b17737b5426b5396a66ce294fcef0",
+        "locator": "scripts/lib/eos/execution_interface.py",
+        "mechanism": "python_ast",
+        "symbol": "main"
+      },
+      "status": "discovered"
+    },
+    {
+      "api_signatures": [
+        {
+          "arguments": [
+            "root"
+          ],
+          "async": false,
+          "name": "gates",
+          "return_annotation": "list[dict]"
+        }
+      ],
+      "contract_id": "CONTRACT-ROADMAP-PROCESSING",
+      "evidence": {
+        "content_sha256": "0b8f701c0d3a323034b39121a2797d3f1e616b9bc24781a91504f5a47c54f814",
+        "locator": "scripts/lib/emp/progressive_oa.py",
+        "mechanism": "python_ast",
+        "symbol": "gates"
+      },
+      "status": "discovered"
+    },
+    {
+      "api_signatures": [
+        {
+          "arguments": [
+            "expected"
+          ],
+          "async": false,
+          "name": "validate",
+          "return_annotation": "list[str]"
+        }
+      ],
+      "contract_id": "CONTRACT-SYNCHRONIZATION-SERVICE",
+      "evidence": {
+        "content_sha256": "6e7ffead0ff401d0e073215d336cec32ed0b6fba23c304209aadf621e924f814",
+        "locator": "scripts/lib/eos/state_sync.py",
+        "mechanism": "python_ast",
+        "symbol": "validate"
+      },
+      "status": "discovered"
+    },
+    {
+      "api_signatures": [
+        {
+          "arguments": [
+            "self",
+            "intent",
+            "bundle",
+            "repository_root",
+            "at"
+          ],
+          "async": false,
+          "name": "generate",
+          "return_annotation": "dict[str, Any]"
+        }
+      ],
+      "contract_id": "CONTRACT-WOP-EXECUTION",
+      "evidence": {
+        "content_sha256": "11c8026a6e5a5c25f656eab79c178bb20bd87ce52750707ba3b516ce70f37913",
+        "locator": "scripts/lib/emp/wop_service.py",
+        "mechanism": "python_ast",
+        "symbol": "generate"
+      },
+      "status": "discovered"
+    },
+    {
+      "command_names": [
+        "zeus"
+      ],
+      "contract_id": "CONTRACT-ZEUS-COMMAND",
+      "evidence": {
+        "command_path": [],
+        "content_sha256": "a23a43780e6db44e631ed864ab0d040f97315eed6e3f4b42dd2770415d7c8526",
+        "inspection_only": true,
+        "locator": "scripts/zeus",
+        "mechanism": "help_interface",
+        "return_code": 0
+      },
+      "observable_output": "usage: zeus [-h] [--state STATE]\n            {bootstrap,status,authority,intro,submit,missions,mission,assurance,approve,accept,decline,verify,execution,evidence,qualification,completion,resume,policy,show,validate,explain,converse,generate-wop,admit-mission,execute-mission,dispatcher,agent,gate,next-action} ...\n\nSupervised Zeus engineering orchestration interface.\n\npositional arguments:\n  {bootstrap,status,authority,intro,submit,missions,mission,assurance,approve,accept,decline,verify,execution,evidence,qualification,completion,resume,policy,show,validate,explain,converse,generate-wop,admit-mission,execute-mission,dispatcher,agent,gate,next-action}\n    intro               review operator orientation\n\noptions:\n  -h, --help            show this help message and exit\n  --state STATE         engineering/test state override\n",
+      "options": [
+        "--help",
+        "--state",
+        "-h"
+      ],
+      "status": "discovered"
+    }
+  ],
+  "evidence_classification": "derived_engineering_evidence",
+  "incompatible_implementation": [],
+  "invariant_failures": [],
+  "partial_conformance": [],
+  "recommended_engineering_actions": [],
+  "schema_version": 1,
+  "summary": {
+    "ambiguous_contract": 0,
+    "conformant": 10,
+    "incompatible_implementation": 0,
+    "missing_implementation": 0,
+    "obsolete_contract": 0,
+    "partially_conformant": 0,
+    "undocumented_behavior": 0,
+    "undocumented_capability": 0
+  },
+  "undocumented_implementation_behavior": [],
+  "validated_contracts": [
+    {
+      "category": "Workflow",
+      "checks": [
+        {
+          "element": "arguments",
+          "expected": [],
+          "observed": [],
+          "status": "PASS"
+        },
+        {
+          "element": "file_locations",
+          "expected": [
+            "scripts/lib/emp/orchestration.py"
+          ],
+          "observed": [
+            "scripts/lib/emp/orchestration.py"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "contract_id": "CONTRACT-EMP-ORCHESTRATION",
+      "determination": "conformant",
+      "evidence": {
+        "content_sha256": "374e29cc5a1bc533fad4902c3e03917a54894c3280c528ce73738a26a80d299d",
+        "locator": "scripts/lib/emp/orchestration.py",
+        "mechanism": "python_ast",
+        "symbol": "empty_orchestration_state"
+      },
+      "source": {
+        "document_id": "EMP-0001",
+        "locator": "docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md"
+      }
+    },
+    {
+      "category": "Command Interface",
+      "checks": [
+        {
+          "element": "command_names",
+          "expected": [
+            "engctl"
+          ],
+          "observed": [
+            "engctl"
+          ],
+          "status": "PASS"
+        },
+        {
+          "element": "file_locations",
+          "expected": [
+            "scripts/engctl"
+          ],
+          "observed": [
+            "scripts/engctl"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "contract_id": "CONTRACT-ENGCTL-COMMAND",
+      "determination": "conformant",
+      "evidence": {
+        "command_path": [],
+        "content_sha256": "282d24896f17a7d97d2bb114594700ef26f07275741178756f7bce1269bc1d2c",
+        "inspection_only": true,
+        "locator": "scripts/engctl",
+        "mechanism": "help_interface",
+        "return_code": 0
+      },
+      "source": {
+        "document_id": "SPEC-0005",
+        "locator": "docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md"
+      }
+    },
+    {
+      "category": "API",
+      "checks": [
+        {
+          "element": "arguments",
+          "expected": [
+            "value"
+          ],
+          "observed": [
+            "value"
+          ],
+          "status": "PASS"
+        },
+        {
+          "element": "file_locations",
+          "expected": [
+            "scripts/lib/emp/evidence_qualification.py"
+          ],
+          "observed": [
+            "scripts/lib/emp/evidence_qualification.py"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "contract_id": "CONTRACT-EVIDENCE-QUALIFICATION",
+      "determination": "conformant",
+      "evidence": {
+        "content_sha256": "9efa62effdac8aca1f1c44e075e2899b5a3370a5eb734ebe367ef6d43611caa6",
+        "locator": "scripts/lib/emp/evidence_qualification.py",
+        "mechanism": "python_ast",
+        "symbol": "artifact_digest"
+      },
+      "source": {
+        "document_id": "PROC-0006",
+        "locator": "docs/procedures/PROC-0006-GOVERNANCE-QUALIFICATION-PROCEDURE.md"
+      }
+    },
+    {
+      "category": "API",
+      "checks": [
+        {
+          "element": "arguments",
+          "expected": [
+            "repository_root"
+          ],
+          "observed": [
+            "repository_root"
+          ],
+          "status": "PASS"
+        },
+        {
+          "element": "file_locations",
+          "expected": [
+            "scripts/lib/emp/gate_handlers.py"
+          ],
+          "observed": [
+            "scripts/lib/emp/gate_handlers.py"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "contract_id": "CONTRACT-GATE-EXECUTION",
+      "determination": "conformant",
+      "evidence": {
+        "content_sha256": "d44246974eae3b563f20eb1d96c64b13bf331a9d982f1550b0f82131dae59e50",
+        "locator": "scripts/lib/emp/gate_handlers.py",
+        "mechanism": "python_ast",
+        "symbol": "qualification_framework"
+      },
+      "source": {
+        "document_id": "GH-ZEUS-OA-PROGRESSIVE-001-GATES",
+        "locator": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gate-specification.yaml"
+      }
+    },
+    {
+      "category": "Service Interface",
+      "checks": [
+        {
+          "element": "file_locations",
+          "expected": [
+            "scripts/lib/notifications/ntfy.sh"
+          ],
+          "observed": [
+            "scripts/lib/notifications/ntfy.sh"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "contract_id": "CONTRACT-NOTIFICATION-INTERFACE",
+      "determination": "conformant",
+      "evidence": {
+        "content_sha256": "c51947ce758f69327e4cf39d86adc23788835f27b8bb241abb4c9529ee22ff0f",
+        "locator": "scripts/lib/notifications/ntfy.sh",
+        "mechanism": "file_inspection"
+      },
+      "source": {
+        "document_id": "SPEC-0009",
+        "locator": "docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md"
+      }
+    },
+    {
+      "category": "API",
+      "checks": [
+        {
+          "element": "arguments",
+          "expected": [
+            "argv"
+          ],
+          "observed": [
+            "argv"
+          ],
+          "status": "PASS"
+        },
+        {
+          "element": "file_locations",
+          "expected": [
+            "scripts/lib/eos/execution_interface.py"
+          ],
+          "observed": [
+            "scripts/lib/eos/execution_interface.py"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "contract_id": "CONTRACT-REPOSITORY-VALIDATION",
+      "determination": "conformant",
+      "evidence": {
+        "content_sha256": "325259080763553eaa1e31b35c664ea91e2b17737b5426b5396a66ce294fcef0",
+        "locator": "scripts/lib/eos/execution_interface.py",
+        "mechanism": "python_ast",
+        "symbol": "main"
+      },
+      "source": {
+        "document_id": "PROC-0005",
+        "locator": "docs/procedures/PROC-0005-CONTROLLED_DOCUMENT_PUBLICATION_PROCEDURE.md"
+      }
+    },
+    {
+      "category": "Workflow",
+      "checks": [
+        {
+          "element": "arguments",
+          "expected": [
+            "root"
+          ],
+          "observed": [
+            "root"
+          ],
+          "status": "PASS"
+        },
+        {
+          "element": "file_locations",
+          "expected": [
+            "scripts/lib/emp/progressive_oa.py"
+          ],
+          "observed": [
+            "scripts/lib/emp/progressive_oa.py"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "contract_id": "CONTRACT-ROADMAP-PROCESSING",
+      "determination": "conformant",
+      "evidence": {
+        "content_sha256": "0b8f701c0d3a323034b39121a2797d3f1e616b9bc24781a91504f5a47c54f814",
+        "locator": "scripts/lib/emp/progressive_oa.py",
+        "mechanism": "python_ast",
+        "symbol": "gates"
+      },
+      "source": {
+        "document_id": "GH-ZEUS-OA-PROGRESSIVE-001-ROADMAP",
+        "locator": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md"
+      }
+    },
+    {
+      "category": "API",
+      "checks": [
+        {
+          "element": "arguments",
+          "expected": [
+            "expected"
+          ],
+          "observed": [
+            "expected"
+          ],
+          "status": "PASS"
+        },
+        {
+          "element": "file_locations",
+          "expected": [
+            "scripts/lib/eos/state_sync.py"
+          ],
+          "observed": [
+            "scripts/lib/eos/state_sync.py"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "contract_id": "CONTRACT-SYNCHRONIZATION-SERVICE",
+      "determination": "conformant",
+      "evidence": {
+        "content_sha256": "6e7ffead0ff401d0e073215d336cec32ed0b6fba23c304209aadf621e924f814",
+        "locator": "scripts/lib/eos/state_sync.py",
+        "mechanism": "python_ast",
+        "symbol": "validate"
+      },
+      "source": {
+        "document_id": "SPEC-0001",
+        "locator": "docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md"
+      }
+    },
+    {
+      "category": "Service Interface",
+      "checks": [
+        {
+          "element": "arguments",
+          "expected": [
+            "self",
+            "intent",
+            "bundle",
+            "repository_root",
+            "at"
+          ],
+          "observed": [
+            "at",
+            "bundle",
+            "intent",
+            "repository_root",
+            "self"
+          ],
+          "status": "PASS"
+        },
+        {
+          "element": "file_locations",
+          "expected": [
+            "scripts/lib/emp/wop_service.py"
+          ],
+          "observed": [
+            "scripts/lib/emp/wop_service.py"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "contract_id": "CONTRACT-WOP-EXECUTION",
+      "determination": "conformant",
+      "evidence": {
+        "content_sha256": "11c8026a6e5a5c25f656eab79c178bb20bd87ce52750707ba3b516ce70f37913",
+        "locator": "scripts/lib/emp/wop_service.py",
+        "mechanism": "python_ast",
+        "symbol": "generate"
+      },
+      "source": {
+        "document_id": "PROC-0001",
+        "locator": "docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md"
+      }
+    },
+    {
+      "category": "Command Interface",
+      "checks": [
+        {
+          "element": "command_names",
+          "expected": [
+            "zeus"
+          ],
+          "observed": [
+            "zeus"
+          ],
+          "status": "PASS"
+        },
+        {
+          "element": "file_locations",
+          "expected": [
+            "scripts/zeus"
+          ],
+          "observed": [
+            "scripts/zeus"
+          ],
+          "status": "PASS"
+        },
+        {
+          "element": "options",
+          "expected": [
+            "--help",
+            "--state",
+            "-h"
+          ],
+          "observed": [
+            "--help",
+            "--state",
+            "-h"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "contract_id": "CONTRACT-ZEUS-COMMAND",
+      "determination": "conformant",
+      "evidence": {
+        "command_path": [],
+        "content_sha256": "a23a43780e6db44e631ed864ab0d040f97315eed6e3f4b42dd2770415d7c8526",
+        "inspection_only": true,
+        "locator": "scripts/zeus",
+        "mechanism": "help_interface",
+        "return_code": 0
+      },
+      "source": {
+        "document_id": "SPEC-0010",
+        "locator": "docs/specifications/SPEC-0010-ZEUS-ENGINEERING-ORCHESTRATION-SYSTEM.md"
+      }
+    }
+  ]
+}

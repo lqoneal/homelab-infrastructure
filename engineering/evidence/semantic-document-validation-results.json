@@ -1,0 +1,2940 @@
+{
+  "schema_version": 1,
+  "results": [
+    {
+      "path": "docs/roadmap.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "FAIL"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-014",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Roadmap",
+      "status": "FAIL"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-CERTIFICATION-001/immutable-wop.yaml",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "FAIL"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-017",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "WOP",
+      "status": "FAIL"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-014",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Roadmap",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gate-specification.yaml",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-015",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Gate Specification",
+      "command_validation": [
+        {
+          "command": "zeus approve OA-01 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-01",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-02 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-02",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-03 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-03",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-04 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-04",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-05 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-05",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-06 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-06",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-07 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-07",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-08 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-08",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-09 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-09",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-10 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-10",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-11 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-11",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-12 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-12",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-13 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-13",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-14 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-14",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-15 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-15",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-16 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-16",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-17 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-17",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-18 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-18",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-19 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-19",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-20 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-20",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-21 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-21",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-22 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-22",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-23 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-23",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-24 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-24",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-25 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-25",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-26 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-26",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-27 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-27",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-28 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-28",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-29 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-29",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus approve OA-30 --operator OPERATOR",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "approve",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus approve --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus gate receipt OA-30",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "gate receipt",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus gate receipt --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        },
+        {
+          "command": "zeus resume",
+          "executable": "/data/engineering/repositories/homelab/scripts/zeus",
+          "interface": "resume",
+          "help_probe": "/data/engineering/repositories/homelab/scripts/zeus resume --help",
+          "help_exit": 0,
+          "missing_options": [],
+          "exit_behavior_documented": true,
+          "execution_mode": "interface_only"
+        }
+      ],
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-01/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-02/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-03/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-04/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-05/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-06/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-07/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-08/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-09/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-10/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-11/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-12/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-13/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-14/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-15/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-16/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-17/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-18/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-19/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-20/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-21/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-22/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-23/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-24/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-25/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-26/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-27/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-28/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-29/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-30/verification.md",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-011",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-016",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "Operator Verification Guide",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/immutable-wop.yaml",
+      "criteria": [
+        {
+          "criterion": "DOC-COMP-001",
+          "status": "PASS"
+        },
+        {
+          "criterion": "DOC-COMP-002",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-003",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-004",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-005",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-006",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-007",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-008",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-009",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-010",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-012",
+          "status": "MANUAL_REVIEW"
+        },
+        {
+          "criterion": "DOC-COMP-017",
+          "status": "MANUAL_REVIEW"
+        }
+      ],
+      "profile": "WOP",
+      "status": "PASS_WITH_MANUAL_CRITERIA"
+    }
+  ]
+}

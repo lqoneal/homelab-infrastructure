@@ -1,0 +1,929 @@
+{
+  "assurance_determinations": [
+    {
+      "determination": "ASSURED",
+      "property_id": "EP-EENS-DUPLICATE-IDEMPOTENCY"
+    },
+    {
+      "determination": "ASSURED",
+      "property_id": "EP-EENS-NOTIFICATION-FAILURE-ISOLATION"
+    },
+    {
+      "determination": "ASSURED",
+      "property_id": "EP-EENS-PERSISTENCE-CHECKPOINT-ORDER"
+    },
+    {
+      "determination": "ASSURED",
+      "property_id": "EP-EMP-MISSION-WOP-SEQUENCE"
+    },
+    {
+      "determination": "PARTIALLY_ASSURED",
+      "property_id": "EP-EMP-PROGRESS-DEVIATION-TRACEABILITY"
+    },
+    {
+      "determination": "ASSURED",
+      "property_id": "EP-EMP-QUALIFICATION-APPROVAL"
+    },
+    {
+      "determination": "ASSURED",
+      "property_id": "EP-EMP-SYNCHRONIZATION-RECOVERY-CLOSEOUT"
+    },
+    {
+      "determination": "ASSURED",
+      "property_id": "EP-ZEUS-ADMISSION-SELECTION"
+    },
+    {
+      "determination": "ASSURED",
+      "property_id": "EP-ZEUS-FAIL-CLOSED-RECONCILIATION"
+    },
+    {
+      "determination": "ASSURED",
+      "property_id": "EP-ZEUS-GATE-AUTHORITY"
+    },
+    {
+      "determination": "ASSURED",
+      "property_id": "EP-ZEUS-TERMINAL-RECOVERY-REPLAY"
+    },
+    {
+      "determination": "ASSURED",
+      "property_id": "EP-ZEUS-WOP-INTEGRITY-DISPATCH"
+    }
+  ],
+  "assurance_strategies": [
+    "Control-Flow Inspection",
+    "Dependency-Graph Analysis",
+    "Evidence Traceability Analysis",
+    "Existing Regression Evidence Evaluation",
+    "Manifest Validation",
+    "Policy Evaluation",
+    "Schema Validation",
+    "Static Inspection"
+  ],
+  "authority_boundary_statement": "This report grants no approval, qualification, publication, lifecycle, operational, implementation, ownership, or decision authority.",
+  "declared_engineering_properties": [
+    {
+      "assurance_determination": "ASSURED",
+      "assurance_impact": [
+        "engineering review required",
+        "revalidation required"
+      ],
+      "authoritative_source": {
+        "document_id": "SPEC-0009",
+        "locator": "docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md"
+      },
+      "authority_boundary": {
+        "changes_lifecycle": false,
+        "executes_operational_workflow": false,
+        "grants_approval": false,
+        "grants_authority": false,
+        "grants_publication": false,
+        "grants_qualification": false
+      },
+      "authority_boundary_results": [],
+      "engineering_objective": "Duplicate events are accepted idempotently and conflicting reuse is rejected.",
+      "evaluated_subject": "EENS",
+      "evidence_sufficiency_results": [
+        {
+          "kind": "authoritative_source_traceability",
+          "locator": "docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md",
+          "status": "PASS"
+        }
+      ],
+      "failure_path_results": [],
+      "idempotence_classification": "proven idempotent",
+      "idempotence_results": [
+        {
+          "kind": "contains",
+          "locator": "services/eens/src/eens/store.py",
+          "matched": true,
+          "pattern": "idempotency_key TEXT NOT NULL UNIQUE",
+          "sha256": "37b1bf6e1fd5515d9788d05c4e5c4d41ced908171422ddfde9e72c0841ce5206",
+          "status": "PASS"
+        },
+        {
+          "kind": "contains",
+          "locator": "services/eens/src/eens/store.py",
+          "matched": true,
+          "pattern": "different content|conflict",
+          "sha256": "37b1bf6e1fd5515d9788d05c4e5c4d41ced908171422ddfde9e72c0841ce5206",
+          "status": "PASS"
+        }
+      ],
+      "invariant_results": [],
+      "observed_evidence": [
+        {
+          "locator": "docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md",
+          "sha256": "5fcafe47f55a6e245aca2fb5a3ffc0dad7dc37a241afc09573c16d4ae2945066"
+        }
+      ],
+      "property_category": "Idempotence Requirement",
+      "property_id": "EP-EENS-DUPLICATE-IDEMPOTENCY",
+      "recommended_engineering_actions": [
+        "no action required"
+      ],
+      "review_owner": "existing document owner",
+      "transition_results": [],
+      "unresolved_conditions": [],
+      "validation_strategy": [
+        "Schema Validation",
+        "Control-Flow Inspection"
+      ]
+    },
+    {
+      "assurance_determination": "ASSURED",
+      "assurance_impact": [
+        "engineering review required",
+        "revalidation required"
+      ],
+      "authoritative_source": {
+        "document_id": "SPEC-0009",
+        "locator": "docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md"
+      },
+      "authority_boundary": {
+        "changes_lifecycle": false,
+        "executes_operational_workflow": false,
+        "grants_approval": false,
+        "grants_authority": false,
+        "grants_publication": false,
+        "grants_qualification": false
+      },
+      "authority_boundary_results": [],
+      "engineering_objective": "Notification unavailability does not corrupt canonical events or checkpoints.",
+      "evaluated_subject": "EENS",
+      "evidence_sufficiency_results": [
+        {
+          "kind": "file_exists",
+          "locator": "services/eens/tests/test_notify.py",
+          "sha256": "5f797fb01d1ccf305635ccc297578335d8e36a674a65c81d4f25d45488886e40",
+          "status": "PASS"
+        },
+        {
+          "kind": "authoritative_source_traceability",
+          "locator": "docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md",
+          "status": "PASS"
+        }
+      ],
+      "failure_path_results": [
+        {
+          "kind": "contains",
+          "locator": "services/eens/src/eens/notify.py",
+          "matched": true,
+          "pattern": "except|failure|error",
+          "sha256": "0dc73754cca6a65cc2ecadfb840c9c9f0af7eaecb2295716cd44c9b9249dbcb8",
+          "status": "PASS"
+        }
+      ],
+      "idempotence_classification": "not applicable",
+      "idempotence_results": [],
+      "invariant_results": [],
+      "observed_evidence": [
+        {
+          "locator": "docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md",
+          "sha256": "5fcafe47f55a6e245aca2fb5a3ffc0dad7dc37a241afc09573c16d4ae2945066"
+        }
+      ],
+      "property_category": "Availability Requirement",
+      "property_id": "EP-EENS-NOTIFICATION-FAILURE-ISOLATION",
+      "recommended_engineering_actions": [
+        "no action required"
+      ],
+      "review_owner": "existing document owner",
+      "transition_results": [],
+      "unresolved_conditions": [],
+      "validation_strategy": [
+        "Control-Flow Inspection",
+        "Existing Regression Evidence Evaluation"
+      ]
+    },
+    {
+      "assurance_determination": "ASSURED",
+      "assurance_impact": [
+        "engineering review required",
+        "revalidation required"
+      ],
+      "authoritative_source": {
+        "document_id": "SPEC-0009",
+        "locator": "docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md"
+      },
+      "authority_boundary": {
+        "changes_lifecycle": false,
+        "executes_operational_workflow": false,
+        "grants_approval": false,
+        "grants_authority": false,
+        "grants_publication": false,
+        "grants_qualification": false
+      },
+      "authority_boundary_results": [],
+      "engineering_objective": "Events persist with stable ordering and consumer checkpoints preserve evidence.",
+      "evaluated_subject": "EENS",
+      "evidence_sufficiency_results": [
+        {
+          "kind": "python_symbol",
+          "locator": "services/eens/src/eens/store.py",
+          "sha256": "37b1bf6e1fd5515d9788d05c4e5c4d41ced908171422ddfde9e72c0841ce5206",
+          "status": "PASS",
+          "symbol": "append"
+        },
+        {
+          "kind": "authoritative_source_traceability",
+          "locator": "docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md",
+          "status": "PASS"
+        }
+      ],
+      "failure_path_results": [
+        {
+          "kind": "python_symbol",
+          "locator": "services/eens/src/eens/consumer.py",
+          "sha256": "87e68367d14b21dae4e27003e0e83c2d19d9b5ecc278fb21d0bf3ec575efe585",
+          "status": "PASS",
+          "symbol": "checkpoint"
+        }
+      ],
+      "idempotence_classification": "not applicable",
+      "idempotence_results": [],
+      "invariant_results": [
+        {
+          "kind": "contains",
+          "locator": "services/eens/src/eens/store.py",
+          "matched": true,
+          "pattern": "sequence",
+          "sha256": "37b1bf6e1fd5515d9788d05c4e5c4d41ced908171422ddfde9e72c0841ce5206",
+          "status": "PASS"
+        }
+      ],
+      "observed_evidence": [
+        {
+          "locator": "docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md",
+          "sha256": "5fcafe47f55a6e245aca2fb5a3ffc0dad7dc37a241afc09573c16d4ae2945066"
+        }
+      ],
+      "property_category": "Auditability Requirement",
+      "property_id": "EP-EENS-PERSISTENCE-CHECKPOINT-ORDER",
+      "recommended_engineering_actions": [
+        "no action required"
+      ],
+      "review_owner": "existing document owner",
+      "transition_results": [],
+      "unresolved_conditions": [],
+      "validation_strategy": [
+        "Static Inspection",
+        "Schema Validation"
+      ]
+    },
+    {
+      "assurance_determination": "ASSURED",
+      "assurance_impact": [
+        "engineering review required",
+        "revalidation required"
+      ],
+      "authoritative_source": {
+        "document_id": "EMP-0001",
+        "locator": "docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md"
+      },
+      "authority_boundary": {
+        "changes_lifecycle": false,
+        "executes_operational_workflow": false,
+        "grants_approval": false,
+        "grants_authority": false,
+        "grants_publication": false,
+        "grants_qualification": false
+      },
+      "authority_boundary_results": [],
+      "engineering_objective": "Mission identity is unique and per-mission handoff sequencing resolves an integral WOP before execution.",
+      "evaluated_subject": "EMP",
+      "evidence_sufficiency_results": [
+        {
+          "kind": "authoritative_source_traceability",
+          "locator": "docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md",
+          "status": "PASS"
+        }
+      ],
+      "failure_path_results": [],
+      "idempotence_classification": "not applicable",
+      "idempotence_results": [],
+      "invariant_results": [
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/wop_service.py",
+          "matched": true,
+          "pattern": "mission",
+          "sha256": "11c8026a6e5a5c25f656eab79c178bb20bd87ce52750707ba3b516ce70f37913",
+          "status": "PASS"
+        },
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/wop_dispatch.py",
+          "matched": true,
+          "pattern": "digest|integrity",
+          "sha256": "0cad9723594cb7e2e477df3b84a5d2622f8096abbcda9a1052da97cd73e2fd87",
+          "status": "PASS"
+        }
+      ],
+      "observed_evidence": [
+        {
+          "locator": "docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md",
+          "sha256": "6dde10e1d1bb39cc9871b1008b54515b90c2e02ccb4d39e77d23085eb5df3c7d"
+        }
+      ],
+      "property_category": "Mission Correctness Requirement",
+      "property_id": "EP-EMP-MISSION-WOP-SEQUENCE",
+      "recommended_engineering_actions": [
+        "no action required"
+      ],
+      "review_owner": "existing document owner",
+      "transition_results": [],
+      "unresolved_conditions": [],
+      "validation_strategy": [
+        "Dependency-Graph Analysis",
+        "Manifest Validation"
+      ]
+    },
+    {
+      "assurance_determination": "PARTIALLY_ASSURED",
+      "assurance_impact": [
+        "engineering review required",
+        "revalidation required"
+      ],
+      "authoritative_source": {
+        "document_id": "EMP-0001",
+        "locator": "docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md"
+      },
+      "authority_boundary": {
+        "changes_lifecycle": false,
+        "executes_operational_workflow": false,
+        "grants_approval": false,
+        "grants_authority": false,
+        "grants_publication": false,
+        "grants_qualification": false
+      },
+      "authority_boundary_results": [],
+      "engineering_objective": "Mission progress and deviation branches remain consistent and traceable.",
+      "evaluated_subject": "EMP",
+      "evidence_sufficiency_results": [
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/reasoning.py",
+          "matched": false,
+          "pattern": "deviation|branch",
+          "sha256": "539cf7b13e48171b927675157bd9875a55ea4becf448c56be2354fadba356ce8",
+          "status": "FAIL"
+        },
+        {
+          "kind": "authoritative_source_traceability",
+          "locator": "docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md",
+          "status": "PASS"
+        }
+      ],
+      "failure_path_results": [],
+      "idempotence_classification": "not applicable",
+      "idempotence_results": [],
+      "invariant_results": [
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/orchestration.py",
+          "matched": true,
+          "pattern": "progress|state",
+          "sha256": "374e29cc5a1bc533fad4902c3e03917a54894c3280c528ce73738a26a80d299d",
+          "status": "PASS"
+        }
+      ],
+      "observed_evidence": [
+        {
+          "locator": "docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md",
+          "sha256": "6dde10e1d1bb39cc9871b1008b54515b90c2e02ccb4d39e77d23085eb5df3c7d"
+        }
+      ],
+      "property_category": "Evidence Requirement",
+      "property_id": "EP-EMP-PROGRESS-DEVIATION-TRACEABILITY",
+      "recommended_engineering_actions": [
+        "engineering review required",
+        "revalidation required"
+      ],
+      "review_owner": "existing document owner",
+      "transition_results": [],
+      "unresolved_conditions": [
+        "contains inspection failed"
+      ],
+      "validation_strategy": [
+        "Evidence Traceability Analysis",
+        "Static Inspection"
+      ]
+    },
+    {
+      "assurance_determination": "ASSURED",
+      "assurance_impact": [
+        "engineering review required",
+        "revalidation required"
+      ],
+      "authoritative_source": {
+        "document_id": "EMP-0001",
+        "locator": "docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md"
+      },
+      "authority_boundary": {
+        "changes_lifecycle": false,
+        "executes_operational_workflow": false,
+        "grants_approval": false,
+        "grants_authority": false,
+        "grants_publication": false,
+        "grants_qualification": false
+      },
+      "authority_boundary_results": [
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/agent_qualification.py",
+          "matched": true,
+          "pattern": "qualif",
+          "sha256": "e30b1a2fc8a6e2fe27329fdc58029dd26cd9cb555586765f71630cc164d640bd",
+          "status": "PASS"
+        },
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/gate_approval.py",
+          "matched": true,
+          "pattern": "actor|identity|owner",
+          "sha256": "666044824cd63a5c6d0301ff213793ea51592a6a4ccd02c20aa40ad481f3fbbb",
+          "status": "PASS"
+        }
+      ],
+      "engineering_objective": "Qualified execution agents and external approval are required; executing components cannot self-approve.",
+      "evaluated_subject": "EMP",
+      "evidence_sufficiency_results": [
+        {
+          "kind": "authoritative_source_traceability",
+          "locator": "docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md",
+          "status": "PASS"
+        }
+      ],
+      "failure_path_results": [],
+      "idempotence_classification": "not applicable",
+      "idempotence_results": [],
+      "invariant_results": [],
+      "observed_evidence": [
+        {
+          "locator": "docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md",
+          "sha256": "6dde10e1d1bb39cc9871b1008b54515b90c2e02ccb4d39e77d23085eb5df3c7d"
+        }
+      ],
+      "property_category": "Approval Boundary",
+      "property_id": "EP-EMP-QUALIFICATION-APPROVAL",
+      "recommended_engineering_actions": [
+        "no action required"
+      ],
+      "review_owner": "existing document owner",
+      "transition_results": [],
+      "unresolved_conditions": [],
+      "validation_strategy": [
+        "Policy Evaluation",
+        "Control-Flow Inspection"
+      ]
+    },
+    {
+      "assurance_determination": "ASSURED",
+      "assurance_impact": [
+        "engineering review required",
+        "revalidation required"
+      ],
+      "authoritative_source": {
+        "document_id": "EMP-0001",
+        "locator": "docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md"
+      },
+      "authority_boundary": {
+        "changes_lifecycle": false,
+        "executes_operational_workflow": false,
+        "grants_approval": false,
+        "grants_authority": false,
+        "grants_publication": false,
+        "grants_qualification": false
+      },
+      "authority_boundary_results": [],
+      "engineering_objective": "Pre-work and post-work synchronization, interruption recovery, and closeout reconciliation preserve authoritative state.",
+      "evaluated_subject": "EMP",
+      "evidence_sufficiency_results": [
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/eos/synchronization.sh",
+          "matched": true,
+          "pattern": "synchron",
+          "sha256": "9f45e7ef9226f20d59289a5a2fd6ca4c6ee90a875711b16b7afa2712266d834b",
+          "status": "PASS"
+        },
+        {
+          "kind": "authoritative_source_traceability",
+          "locator": "docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md",
+          "status": "PASS"
+        }
+      ],
+      "failure_path_results": [
+        {
+          "kind": "python_symbol",
+          "locator": "scripts/lib/emp/mission_execution_runtime.py",
+          "sha256": "6b56f8086a0d51689f4eb5ebb34062d6148fd3a3e4f613ad389cf9937e304b09",
+          "status": "PASS",
+          "symbol": "resume"
+        }
+      ],
+      "idempotence_classification": "not applicable",
+      "idempotence_results": [],
+      "invariant_results": [],
+      "observed_evidence": [
+        {
+          "locator": "docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md",
+          "sha256": "6dde10e1d1bb39cc9871b1008b54515b90c2e02ccb4d39e77d23085eb5df3c7d"
+        }
+      ],
+      "property_category": "Lifecycle Constraint",
+      "property_id": "EP-EMP-SYNCHRONIZATION-RECOVERY-CLOSEOUT",
+      "recommended_engineering_actions": [
+        "no action required"
+      ],
+      "review_owner": "existing document owner",
+      "transition_results": [
+        {
+          "kind": "python_symbol",
+          "locator": "scripts/lib/emp/reconciliation.py",
+          "sha256": "40e7a73234faddda3adcfe4cac52061ee61d025e3f81bffcf9ef0c703c0482e4",
+          "status": "PASS",
+          "symbol": "execute"
+        }
+      ],
+      "unresolved_conditions": [],
+      "validation_strategy": [
+        "Control-Flow Inspection",
+        "Evidence Traceability Analysis"
+      ]
+    },
+    {
+      "assurance_determination": "ASSURED",
+      "assurance_impact": [
+        "engineering review required",
+        "revalidation required"
+      ],
+      "authoritative_source": {
+        "document_id": "ZEUS-OPERATIONAL-RUNTIME",
+        "locator": "engineering/operations/zeus-operational-runtime.md"
+      },
+      "authority_boundary": {
+        "changes_lifecycle": false,
+        "executes_operational_workflow": false,
+        "grants_approval": false,
+        "grants_authority": false,
+        "grants_publication": false,
+        "grants_qualification": false
+      },
+      "authority_boundary_results": [
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/mission_admission_runtime.py",
+          "matched": true,
+          "pattern": "admission",
+          "sha256": "0b122d599d49224c7c4b87ee66771c48977b77d46613bcd8ea654e7b49d456f2",
+          "status": "PASS"
+        },
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/orchestration.py",
+          "matched": true,
+          "pattern": "eligibility_state.*eligible|no eligible mission",
+          "sha256": "374e29cc5a1bc533fad4902c3e03917a54894c3280c528ce73738a26a80d299d",
+          "status": "PASS"
+        }
+      ],
+      "engineering_objective": "Mission execution requires admission and selection is limited to eligible staged missions.",
+      "evaluated_subject": "Zeus Operational Alpha",
+      "evidence_sufficiency_results": [
+        {
+          "kind": "authoritative_source_traceability",
+          "locator": "engineering/operations/zeus-operational-runtime.md",
+          "status": "PASS"
+        }
+      ],
+      "failure_path_results": [],
+      "idempotence_classification": "not applicable",
+      "idempotence_results": [],
+      "invariant_results": [],
+      "observed_evidence": [
+        {
+          "locator": "engineering/operations/zeus-operational-runtime.md",
+          "sha256": "de4b509095f7d9b1c38e9d09077f82c134cfa0c2d489ab97e0f432b34a4a797c"
+        }
+      ],
+      "property_category": "Authorization Boundary",
+      "property_id": "EP-ZEUS-ADMISSION-SELECTION",
+      "recommended_engineering_actions": [
+        "no action required"
+      ],
+      "review_owner": "existing document owner",
+      "transition_results": [],
+      "unresolved_conditions": [],
+      "validation_strategy": [
+        "Static Inspection",
+        "Policy Evaluation"
+      ]
+    },
+    {
+      "assurance_determination": "ASSURED",
+      "assurance_impact": [
+        "engineering review required",
+        "revalidation required"
+      ],
+      "authoritative_source": {
+        "document_id": "ZEUS-OPERATIONAL-RUNTIME",
+        "locator": "engineering/operations/zeus-operational-runtime.md"
+      },
+      "authority_boundary": {
+        "changes_lifecycle": false,
+        "executes_operational_workflow": false,
+        "grants_approval": false,
+        "grants_authority": false,
+        "grants_publication": false,
+        "grants_qualification": false
+      },
+      "authority_boundary_results": [],
+      "engineering_objective": "Failure fails closed and authoritative state and controlled records are reconciled before closeout.",
+      "evaluated_subject": "Zeus Operational Alpha",
+      "evidence_sufficiency_results": [
+        {
+          "kind": "authoritative_source_traceability",
+          "locator": "engineering/operations/zeus-operational-runtime.md",
+          "status": "PASS"
+        }
+      ],
+      "failure_path_results": [
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/mission_execution_runtime.py",
+          "matched": true,
+          "pattern": "fail|error",
+          "sha256": "6b56f8086a0d51689f4eb5ebb34062d6148fd3a3e4f613ad389cf9937e304b09",
+          "status": "PASS"
+        }
+      ],
+      "idempotence_classification": "not applicable",
+      "idempotence_results": [],
+      "invariant_results": [
+        {
+          "kind": "python_symbol",
+          "locator": "scripts/lib/emp/reconciliation.py",
+          "sha256": "40e7a73234faddda3adcfe4cac52061ee61d025e3f81bffcf9ef0c703c0482e4",
+          "status": "PASS",
+          "symbol": "execute"
+        }
+      ],
+      "observed_evidence": [
+        {
+          "locator": "engineering/operations/zeus-operational-runtime.md",
+          "sha256": "de4b509095f7d9b1c38e9d09077f82c134cfa0c2d489ab97e0f432b34a4a797c"
+        }
+      ],
+      "property_category": "Failure-Containment Rule",
+      "property_id": "EP-ZEUS-FAIL-CLOSED-RECONCILIATION",
+      "recommended_engineering_actions": [
+        "no action required"
+      ],
+      "review_owner": "existing document owner",
+      "transition_results": [],
+      "unresolved_conditions": [],
+      "validation_strategy": [
+        "Static Inspection",
+        "Control-Flow Inspection"
+      ]
+    },
+    {
+      "assurance_determination": "ASSURED",
+      "assurance_impact": [
+        "engineering review required",
+        "revalidation required"
+      ],
+      "authoritative_source": {
+        "document_id": "ZEUS-OPERATIONAL-RUNTIME",
+        "locator": "engineering/operations/zeus-operational-runtime.md"
+      },
+      "authority_boundary": {
+        "changes_lifecycle": false,
+        "executes_operational_workflow": false,
+        "grants_approval": false,
+        "grants_authority": false,
+        "grants_publication": false,
+        "grants_qualification": false
+      },
+      "authority_boundary_results": [
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/gate_approval.py",
+          "matched": true,
+          "pattern": "approv",
+          "sha256": "666044824cd63a5c6d0301ff213793ea51592a6a4ccd02c20aa40ad481f3fbbb",
+          "status": "PASS"
+        },
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/evidence_qualification.py",
+          "matched": true,
+          "pattern": "qualif",
+          "sha256": "9efa62effdac8aca1f1c44e075e2899b5a3370a5eb734ebe367ef6d43611caa6",
+          "status": "PASS"
+        }
+      ],
+      "engineering_objective": "Approvals remain independent, gate order cannot be skipped, and validation never implies publication or lifecycle authority.",
+      "evaluated_subject": "Zeus Operational Alpha",
+      "evidence_sufficiency_results": [
+        {
+          "kind": "authoritative_source_traceability",
+          "locator": "engineering/operations/zeus-operational-runtime.md",
+          "status": "PASS"
+        }
+      ],
+      "failure_path_results": [],
+      "idempotence_classification": "not applicable",
+      "idempotence_results": [],
+      "invariant_results": [],
+      "observed_evidence": [
+        {
+          "locator": "engineering/operations/zeus-operational-runtime.md",
+          "sha256": "de4b509095f7d9b1c38e9d09077f82c134cfa0c2d489ab97e0f432b34a4a797c"
+        }
+      ],
+      "property_category": "Approval Boundary",
+      "property_id": "EP-ZEUS-GATE-AUTHORITY",
+      "recommended_engineering_actions": [
+        "no action required"
+      ],
+      "review_owner": "existing document owner",
+      "transition_results": [
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/mission_execution_runtime.py",
+          "matched": true,
+          "pattern": "gate",
+          "sha256": "6b56f8086a0d51689f4eb5ebb34062d6148fd3a3e4f613ad389cf9937e304b09",
+          "status": "PASS"
+        }
+      ],
+      "unresolved_conditions": [],
+      "validation_strategy": [
+        "Control-Flow Inspection",
+        "Evidence Traceability Analysis"
+      ]
+    },
+    {
+      "assurance_determination": "ASSURED",
+      "assurance_impact": [
+        "engineering review required",
+        "revalidation required"
+      ],
+      "authoritative_source": {
+        "document_id": "ZEUS-MISSION-RUNTIME",
+        "locator": "engineering/operations/zeus-mission-execution-runtime.md"
+      },
+      "authority_boundary": {
+        "changes_lifecycle": false,
+        "executes_operational_workflow": false,
+        "grants_approval": false,
+        "grants_authority": false,
+        "grants_publication": false,
+        "grants_qualification": false
+      },
+      "authority_boundary_results": [],
+      "engineering_objective": "Completed gates and terminal missions do not execute again; interruption resumes from authoritative state and duplicate events do not duplicate actions.",
+      "evaluated_subject": "Zeus Operational Alpha",
+      "evidence_sufficiency_results": [
+        {
+          "kind": "authoritative_source_traceability",
+          "locator": "engineering/operations/zeus-mission-execution-runtime.md",
+          "status": "PASS"
+        }
+      ],
+      "failure_path_results": [
+        {
+          "kind": "python_symbol",
+          "locator": "scripts/lib/emp/mission_execution_runtime.py",
+          "sha256": "6b56f8086a0d51689f4eb5ebb34062d6148fd3a3e4f613ad389cf9937e304b09",
+          "status": "PASS",
+          "symbol": "resume"
+        }
+      ],
+      "idempotence_classification": "proven idempotent",
+      "idempotence_results": [
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/mission_execution_runtime.py",
+          "matched": true,
+          "pattern": "idempotency",
+          "sha256": "6b56f8086a0d51689f4eb5ebb34062d6148fd3a3e4f613ad389cf9937e304b09",
+          "status": "PASS"
+        }
+      ],
+      "invariant_results": [],
+      "observed_evidence": [
+        {
+          "locator": "engineering/operations/zeus-mission-execution-runtime.md",
+          "sha256": "cef961e59e5a0efdea7162586c7abe600aa121c865fb27b1fb063db26125c190"
+        }
+      ],
+      "property_category": "Recovery Guarantee",
+      "property_id": "EP-ZEUS-TERMINAL-RECOVERY-REPLAY",
+      "recommended_engineering_actions": [
+        "no action required"
+      ],
+      "review_owner": "existing document owner",
+      "transition_results": [
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/mission_execution_runtime.py",
+          "matched": true,
+          "pattern": "terminal|completed",
+          "sha256": "6b56f8086a0d51689f4eb5ebb34062d6148fd3a3e4f613ad389cf9937e304b09",
+          "status": "PASS"
+        }
+      ],
+      "unresolved_conditions": [],
+      "validation_strategy": [
+        "Control-Flow Inspection",
+        "Existing Regression Evidence Evaluation"
+      ]
+    },
+    {
+      "assurance_determination": "ASSURED",
+      "assurance_impact": [
+        "engineering review required",
+        "revalidation required"
+      ],
+      "authoritative_source": {
+        "document_id": "ZEUS-MISSION-RUNTIME",
+        "locator": "engineering/operations/zeus-mission-execution-runtime.md"
+      },
+      "authority_boundary": {
+        "changes_lifecycle": false,
+        "executes_operational_workflow": false,
+        "grants_approval": false,
+        "grants_authority": false,
+        "grants_publication": false,
+        "grants_qualification": false
+      },
+      "authority_boundary_results": [],
+      "engineering_objective": "WOP identity and integrity are verified and execution follows the resolved WOP.",
+      "evaluated_subject": "Zeus Operational Alpha",
+      "evidence_sufficiency_results": [
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/wop_dispatch.py",
+          "matched": true,
+          "pattern": "wop",
+          "sha256": "0cad9723594cb7e2e477df3b84a5d2622f8096abbcda9a1052da97cd73e2fd87",
+          "status": "PASS"
+        },
+        {
+          "kind": "authoritative_source_traceability",
+          "locator": "engineering/operations/zeus-mission-execution-runtime.md",
+          "status": "PASS"
+        }
+      ],
+      "failure_path_results": [],
+      "idempotence_classification": "not applicable",
+      "idempotence_results": [],
+      "invariant_results": [
+        {
+          "kind": "contains",
+          "locator": "scripts/lib/emp/wop_dispatch.py",
+          "matched": true,
+          "pattern": "digest|integrity",
+          "sha256": "0cad9723594cb7e2e477df3b84a5d2622f8096abbcda9a1052da97cd73e2fd87",
+          "status": "PASS"
+        }
+      ],
+      "observed_evidence": [
+        {
+          "locator": "engineering/operations/zeus-mission-execution-runtime.md",
+          "sha256": "cef961e59e5a0efdea7162586c7abe600aa121c865fb27b1fb063db26125c190"
+        }
+      ],
+      "property_category": "Integrity Requirement",
+      "property_id": "EP-ZEUS-WOP-INTEGRITY-DISPATCH",
+      "recommended_engineering_actions": [
+        "no action required"
+      ],
+      "review_owner": "existing document owner",
+      "transition_results": [],
+      "unresolved_conditions": [],
+      "validation_strategy": [
+        "Static Inspection",
+        "Manifest Validation"
+      ]
+    }
+  ],
+  "evaluated_systems": [
+    "EENS",
+    "EMP",
+    "Zeus Operational Alpha"
+  ],
+  "evidence_classification": "derived engineering evidence",
+  "recommended_engineering_actions": [
+    "engineering review required",
+    "no action required",
+    "revalidation required"
+  ],
+  "schema_version": 1,
+  "unresolved_properties": [
+    "EP-EMP-PROGRESS-DEVIATION-TRACEABILITY"
+  ]
+}

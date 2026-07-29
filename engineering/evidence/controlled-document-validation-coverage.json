@@ -1,0 +1,207 @@
+{
+  "schema_version": 1,
+  "authority": "SPEC-0001",
+  "catalog": "engineering/validation/controlled-document-semantic-profiles.yaml",
+  "criteria": [
+    {
+      "criterion": "DOC-COMP-001",
+      "coverage": "automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "resolved profile identifier"
+    },
+    {
+      "criterion": "DOC-COMP-002",
+      "coverage": "automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "matched section headings or field paths"
+    },
+    {
+      "criterion": "DOC-COMP-003",
+      "coverage": "partially_automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "objective, rationale, implementation, or equivalent content"
+    },
+    {
+      "criterion": "DOC-COMP-004",
+      "coverage": "partially_automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "resolvable relationship, reference, or traceability entry"
+    },
+    {
+      "criterion": "DOC-COMP-005",
+      "coverage": "partially_automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "evidence list, locator, or expected evidence description"
+    },
+    {
+      "criterion": "DOC-COMP-006",
+      "coverage": "partially_automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "command, resolvable executable, syntax, help reference, and exit behavior"
+    },
+    {
+      "criterion": "DOC-COMP-007",
+      "coverage": "partially_automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "validation criteria or expected-result statements"
+    },
+    {
+      "criterion": "DOC-COMP-008",
+      "coverage": "partially_automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "acceptance criteria and disposition method"
+    },
+    {
+      "criterion": "DOC-COMP-009",
+      "coverage": "automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "prerequisites or entry conditions"
+    },
+    {
+      "criterion": "DOC-COMP-010",
+      "coverage": "partially_automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "ordered steps or sequencing declaration"
+    },
+    {
+      "criterion": "DOC-COMP-011",
+      "coverage": "partially_automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "stop conditions, failure interpretation, or FAIL criteria"
+    },
+    {
+      "criterion": "DOC-COMP-012",
+      "coverage": "partially_automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "recovery and resume instructions or resolvable reference"
+    },
+    {
+      "criterion": "DOC-COMP-013",
+      "coverage": "partially_automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "outputs and reconciliation description"
+    },
+    {
+      "criterion": "DOC-COMP-014",
+      "coverage": "partially_automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "dependencies and completion definition"
+    },
+    {
+      "criterion": "DOC-COMP-015",
+      "coverage": "automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "complete field set for every gate"
+    },
+    {
+      "criterion": "DOC-COMP-016",
+      "coverage": "partially_automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "engineering explanation, operator explanation, PASS, FAIL, acceptance, rejection, and resume sections"
+    },
+    {
+      "criterion": "DOC-COMP-017",
+      "coverage": "automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "mission, effects, contracts, completion boundary, and recovery reference"
+    },
+    {
+      "criterion": "DOC-COMP-018",
+      "coverage": "partially_automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "scope, validation, evidence, unresolved criteria, coverage, and disposition"
+    },
+    {
+      "criterion": "DOC-SYNC-001",
+      "coverage": "automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "deterministic synchronization JSON report"
+    },
+    {
+      "criterion": "DOC-SYNC-002",
+      "coverage": "automated",
+      "validation_implementation": "scripts/validate_controlled_documents.py",
+      "procedure_reference": [
+        "PROC-0005",
+        "PROC-0006"
+      ],
+      "evidence_reference": "graph, affected documentation, qualification impact, and required actions"
+    }
+  ]
+}
