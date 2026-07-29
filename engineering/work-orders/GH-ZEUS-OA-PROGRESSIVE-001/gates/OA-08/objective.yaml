@@ -1,0 +1,6 @@
+gate_id: OA-08
+title: WOP Resolution
+mission_objective: Prove deterministic resolution of the selected mission to one immutable
+  WOP.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

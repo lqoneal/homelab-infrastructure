@@ -1,0 +1,5 @@
+gate_id: OA-16
+title: Execution Start and EENS Observation
+mission_objective: Prove durable execution-start state and EENS lifecycle notification.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

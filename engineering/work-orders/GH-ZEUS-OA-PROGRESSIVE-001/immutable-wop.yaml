@@ -1,0 +1,45 @@
+schema_version: 1
+wop_id: WOP-8e6c4ab8-4c85-5d6c-9c90-10b8814bdf99
+revision: 1
+status: Active
+mission_id: REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001
+phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+work_item_id: EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001
+authority_binding:
+  authority_node_id: operator-mission-authorization
+  authority_reference: REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001
+execution_context:
+  repository: /data/engineering/repositories/homelab
+  qualified_baseline: bcdd0b1a19045654d470bc65383c05a976bae2a6
+  branch: main
+  principal_id: progressive-oa-execution-agent
+authorized_effects:
+  - verify package, inventory repository, resolve eligibility, and reconcile current state
+  - implement, validate, evidence, reconcile, and prepare operator verification for exactly one active gate
+  - publish a gate implementation only when repository procedures permit
+  - consume a valid acceptance receipt and automatically enable the immediate successor
+prohibited_effects:
+  - execute any OA gate during package reconstruction
+  - inherit historical gate acceptance or completion
+  - execute more than one unaccepted gate
+  - infer operator approval or acceptance
+  - modify or delete historical OA records
+  - implement corrective work without separate authority
+  - declare Operational Alpha or freeze the baseline
+sequence:
+  first: OA-01
+  last: OA-30
+  count: 30
+  ordering: strict-cumulative
+  concurrency: one-active-gate
+  normal_pause: operator-verification-and-explicit-decision
+  acceptance_transition: immediate-successor-enable-and-resume
+contracts:
+  roadmap: ROADMAP.md
+  gate_specification: gate-specification.yaml
+  traceability: TRACEABILITY.md
+  controller: controller
+  recovery: RECOVERY.md
+  reconciliation: RECONCILIATION.md
+admission_record: admission/ADMISSION-f01c0c2d-8edb-5567-ad19-8d0f4344909f.json
+completion_boundary: OA-30 declaration preparation; separate authority required for declaration and freeze

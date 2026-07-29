@@ -1,0 +1,6 @@
+gate_id: OA-07
+title: Mission Selection
+mission_objective: Prove Zeus selects only an eligible staged mission according to
+  controlled priority and policy.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

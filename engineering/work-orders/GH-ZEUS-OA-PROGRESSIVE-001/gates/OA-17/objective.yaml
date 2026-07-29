@@ -1,0 +1,6 @@
+gate_id: OA-17
+title: Gate and Handoff Progress Monitoring
+mission_objective: Prove Zeus observes progress, handoffs, checkpoints, and failures
+  through EENS.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

@@ -1,0 +1,6 @@
+gate_id: OA-04
+title: Project and Operational Context Reconstruction
+mission_objective: Prove repository-only reconstruction of current project, phase,
+  work, authority, and runtime context.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

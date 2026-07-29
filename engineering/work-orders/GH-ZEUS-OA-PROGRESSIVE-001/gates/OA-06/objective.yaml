@@ -1,0 +1,6 @@
+gate_id: OA-06
+title: Mission Eligibility Evaluation
+mission_objective: Prove deterministic classification of eligible, blocked, deferred,
+  and ineligible missions.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

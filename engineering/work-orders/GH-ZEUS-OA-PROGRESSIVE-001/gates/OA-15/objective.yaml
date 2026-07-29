@@ -1,0 +1,6 @@
+gate_id: OA-15
+title: Controlled Dispatch
+mission_objective: Prove Zeus dispatches the admitted WOP to the selected qualified
+  agent exactly once.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

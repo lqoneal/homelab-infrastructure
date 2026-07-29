@@ -1,0 +1,6 @@
+gate_id: OA-30
+title: Operational Alpha Qualification and Declaration Preparation
+mission_objective: Prove OA-01 through OA-29 remain valid, produce a candidate baseline,
+  and prepare separately authorized declaration and freeze.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

@@ -1,0 +1,6 @@
+gate_id: OA-14
+title: Human Dispatch Authorization
+mission_objective: Prove explicit authorization, rejection, expiration, and replay-safe
+  dispatch authorization receipts.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

@@ -1,0 +1,22 @@
+schema_version: 1
+package_id: GH-ZEUS-OA-PROGRESSIVE-001
+gate_id: OA-28
+status: UNSTARTED
+bindings:
+  repository: null
+  commit: null
+  authority: null
+  mission: null
+  wop: null
+  execution: null
+  agent: null
+tests:
+  positive: []
+  negative: []
+  replay: []
+  recovery: []
+  regression: []
+commands: []
+artifacts: []
+reconciliation: {}
+completion_marker: null

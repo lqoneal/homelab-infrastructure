@@ -1,0 +1,2331 @@
+schema_version: 1
+document_id: ZEUS-OA-GATE-SPEC-002
+title: Zeus Operational Alpha Gate Specification
+status: Controlled
+mission: Zeus Operational Alpha
+sequence: OA-01 through OA-30; strictly cumulative; no inherited status
+gates:
+- gate_id: OA-01
+  sequence: 1
+  title: Authoritative Baseline and Repository Identity
+  mission_objective: Prove that Zeus operates from one identified, synchronized, integrity-valid repository and
+    qualified baseline.
+  capability_being_established: Authoritative Baseline and Repository Identity
+  rationale: Authoritative Baseline and Repository Identity is a cumulative prerequisite for a trustworthy supervised
+    Operational Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: &id001
+  - docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md
+  - engineering/execution/execution-interface.yaml
+  - engineering/operations/zeus-operational-alpha-progress.md
+  - engineering/tests/zeus-operational-alpha/PMCT-CONTRACT.md
+  - engineering/tests/zeus-operational-alpha/PMCT-CAPABILITY-MATRIX.yaml
+  - engineering/operations/zeus-mission-admission-runtime.md
+  - engineering/operations/zeus-mission-execution-runtime.md
+  - engineering/operations/zeus-operator-interface.md
+  - services/eens/README.md
+  - docs/project/PROJ-0001-PROJECT_STATE.md
+  - engineering/registry/work-registry.yaml
+  entry_prerequisites:
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-01.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove that Zeus operates from one identified, synchronized, integrity-valid repository and qualified
+    baseline. through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-01
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove that Zeus operates from one identified, synchronized, integrity-valid repository and qualified baseline.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-01/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-01 --operator OPERATOR
+  - zeus gate receipt OA-01
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-02
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-01/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-02
+- gate_id: OA-02
+  sequence: 2
+  title: Controlled Mission Authority
+  mission_objective: Prove that no mission may execute without valid, current, discoverable authority.
+  capability_being_established: Controlled Mission Authority
+  rationale: Controlled Mission Authority is a cumulative prerequisite for a trustworthy supervised Operational
+    Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-01: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-02.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove that no mission may execute without valid, current, discoverable authority. through the authoritative
+    Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-02
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove that no mission may execute without valid, current, discoverable authority.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-02/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-02 --operator OPERATOR
+  - zeus gate receipt OA-02
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-03
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-02/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-03
+- gate_id: OA-03
+  sequence: 3
+  title: Mission Contract Discovery
+  mission_objective: Prove deterministic discovery of exactly one applicable Mission Contract.
+  capability_being_established: Mission Contract Discovery
+  rationale: Mission Contract Discovery is a cumulative prerequisite for a trustworthy supervised Operational Alpha
+    lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-02: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-03.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove deterministic discovery of exactly one applicable Mission Contract. through the authoritative
+    Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-03
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove deterministic discovery of exactly one applicable Mission Contract.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-03/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-03 --operator OPERATOR
+  - zeus gate receipt OA-03
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-04
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-03/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-04
+- gate_id: OA-04
+  sequence: 4
+  title: Project and Operational Context Reconstruction
+  mission_objective: Prove repository-only reconstruction of current project, phase, work, authority, and runtime
+    context.
+  capability_being_established: Project and Operational Context Reconstruction
+  rationale: Project and Operational Context Reconstruction is a cumulative prerequisite for a trustworthy supervised
+    Operational Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-03: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-04.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove repository-only reconstruction of current project, phase, work, authority, and runtime context.
+    through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-04
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove repository-only reconstruction of current project, phase, work, authority, and runtime context.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-04/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-04 --operator OPERATOR
+  - zeus gate receipt OA-04
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-05
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-04/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-05
+- gate_id: OA-05
+  sequence: 5
+  title: Mission Staging Contract
+  mission_objective: Prove candidate missions are staged with stable identity, objective, scope, dependencies, priority,
+    and state.
+  capability_being_established: Mission Staging Contract
+  rationale: Mission Staging Contract is a cumulative prerequisite for a trustworthy supervised Operational Alpha
+    lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-04: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-05.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove candidate missions are staged with stable identity, objective, scope, dependencies, priority,
+    and state. through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-05
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove candidate missions are staged with stable identity, objective, scope, dependencies, priority, and state.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-05/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-05 --operator OPERATOR
+  - zeus gate receipt OA-05
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-06
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-05/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-06
+- gate_id: OA-06
+  sequence: 6
+  title: Mission Eligibility Evaluation
+  mission_objective: Prove deterministic classification of eligible, blocked, deferred, and ineligible missions.
+  capability_being_established: Mission Eligibility Evaluation
+  rationale: Mission Eligibility Evaluation is a cumulative prerequisite for a trustworthy supervised Operational
+    Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-05: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-06.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove deterministic classification of eligible, blocked, deferred, and ineligible missions. through
+    the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-06
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove deterministic classification of eligible, blocked, deferred, and ineligible missions.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-06/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-06 --operator OPERATOR
+  - zeus gate receipt OA-06
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-07
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-06/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-07
+- gate_id: OA-07
+  sequence: 7
+  title: Mission Selection
+  mission_objective: Prove Zeus selects only an eligible staged mission according to controlled priority and policy.
+  capability_being_established: Mission Selection
+  rationale: Mission Selection is a cumulative prerequisite for a trustworthy supervised Operational Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-06: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-07.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove Zeus selects only an eligible staged mission according to controlled priority and policy.
+    through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-07
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove Zeus selects only an eligible staged mission according to controlled priority and policy.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-07/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-07 --operator OPERATOR
+  - zeus gate receipt OA-07
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-08
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-07/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-08
+- gate_id: OA-08
+  sequence: 8
+  title: WOP Resolution
+  mission_objective: Prove deterministic resolution of the selected mission to one immutable WOP.
+  capability_being_established: WOP Resolution
+  rationale: WOP Resolution is a cumulative prerequisite for a trustworthy supervised Operational Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-07: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-08.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove deterministic resolution of the selected mission to one immutable WOP. through the authoritative
+    Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-08
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove deterministic resolution of the selected mission to one immutable WOP.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-08/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-08 --operator OPERATOR
+  - zeus gate receipt OA-08
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-09
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-08/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-09
+- gate_id: OA-09
+  sequence: 9
+  title: WOP Integrity and Admission
+  mission_objective: Prove package integrity, schema validity, admission evaluation, and fail-closed rejection.
+  capability_being_established: WOP Integrity and Admission
+  rationale: WOP Integrity and Admission is a cumulative prerequisite for a trustworthy supervised Operational Alpha
+    lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-08: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-09.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove package integrity, schema validity, admission evaluation, and fail-closed rejection. through
+    the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-09
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove package integrity, schema validity, admission evaluation, and fail-closed rejection.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-09/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-09 --operator OPERATOR
+  - zeus gate receipt OA-09
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-10
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-09/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-10
+- gate_id: OA-10
+  sequence: 10
+  title: Execution Context and Lease
+  mission_objective: Prove bounded execution context, principal identity, authority lease, expiry, and revocation
+    behavior.
+  capability_being_established: Execution Context and Lease
+  rationale: Execution Context and Lease is a cumulative prerequisite for a trustworthy supervised Operational Alpha
+    lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-09: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-10.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove bounded execution context, principal identity, authority lease, expiry, and revocation behavior.
+    through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-10
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove bounded execution context, principal identity, authority lease, expiry, and revocation behavior.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-10/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-10 --operator OPERATOR
+  - zeus gate receipt OA-10
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-11
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-10/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-11
+- gate_id: OA-11
+  sequence: 11
+  title: Qualified-Agent Registry
+  mission_objective: Prove integrity-bound qualification and repository-preserving registration of execution agents.
+  capability_being_established: Qualified-Agent Registry
+  rationale: Qualified-Agent Registry is a cumulative prerequisite for a trustworthy supervised Operational Alpha
+    lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-10: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-11.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove integrity-bound qualification and repository-preserving registration of execution agents.
+    through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-11
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove integrity-bound qualification and repository-preserving registration of execution agents.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-11/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-11 --operator OPERATOR
+  - zeus gate receipt OA-11
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-12
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-11/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-12
+- gate_id: OA-12
+  sequence: 12
+  title: Agent Selection
+  mission_objective: Prove Zeus selects only an agent qualified for repository, mission class, tools, and execution
+    profile.
+  capability_being_established: Agent Selection
+  rationale: Agent Selection is a cumulative prerequisite for a trustworthy supervised Operational Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-11: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-12.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove Zeus selects only an agent qualified for repository, mission class, tools, and execution profile.
+    through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-12
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove Zeus selects only an agent qualified for repository, mission class, tools, and execution profile.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-12/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-12 --operator OPERATOR
+  - zeus gate receipt OA-12
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-13
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-12/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-13
+- gate_id: OA-13
+  sequence: 13
+  title: Dispatch Preparation
+  mission_objective: Prove deterministic creation of a dispatch candidate without beginning execution.
+  capability_being_established: Dispatch Preparation
+  rationale: Dispatch Preparation is a cumulative prerequisite for a trustworthy supervised Operational Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-12: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-13.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove deterministic creation of a dispatch candidate without beginning execution. through the authoritative
+    Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-13
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove deterministic creation of a dispatch candidate without beginning execution.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-13/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-13 --operator OPERATOR
+  - zeus gate receipt OA-13
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-14
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-13/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-14
+- gate_id: OA-14
+  sequence: 14
+  title: Human Dispatch Authorization
+  mission_objective: Prove explicit authorization, rejection, expiration, and replay-safe dispatch authorization
+    receipts.
+  capability_being_established: Human Dispatch Authorization
+  rationale: Human Dispatch Authorization is a cumulative prerequisite for a trustworthy supervised Operational
+    Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-13: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-14.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove explicit authorization, rejection, expiration, and replay-safe dispatch authorization receipts.
+    through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-14
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove explicit authorization, rejection, expiration, and replay-safe dispatch authorization receipts.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-14/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-14 --operator OPERATOR
+  - zeus gate receipt OA-14
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-15
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-14/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-15
+- gate_id: OA-15
+  sequence: 15
+  title: Controlled Dispatch
+  mission_objective: Prove Zeus dispatches the admitted WOP to the selected qualified agent exactly once.
+  capability_being_established: Controlled Dispatch
+  rationale: Controlled Dispatch is a cumulative prerequisite for a trustworthy supervised Operational Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-14: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-15.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove Zeus dispatches the admitted WOP to the selected qualified agent exactly once. through the
+    authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-15
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove Zeus dispatches the admitted WOP to the selected qualified agent exactly once.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-15/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-15 --operator OPERATOR
+  - zeus gate receipt OA-15
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-16
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-15/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-16
+- gate_id: OA-16
+  sequence: 16
+  title: Execution Start and EENS Observation
+  mission_objective: Prove durable execution-start state and EENS lifecycle notification.
+  capability_being_established: Execution Start and EENS Observation
+  rationale: Execution Start and EENS Observation is a cumulative prerequisite for a trustworthy supervised Operational
+    Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-15: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-16.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove durable execution-start state and EENS lifecycle notification. through the authoritative Zeus
+    interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-16
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove durable execution-start state and EENS lifecycle notification.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-16/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-16 --operator OPERATOR
+  - zeus gate receipt OA-16
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-17
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-16/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-17
+- gate_id: OA-17
+  sequence: 17
+  title: Gate and Handoff Progress Monitoring
+  mission_objective: Prove Zeus observes progress, handoffs, checkpoints, and failures through EENS.
+  capability_being_established: Gate and Handoff Progress Monitoring
+  rationale: Gate and Handoff Progress Monitoring is a cumulative prerequisite for a trustworthy supervised Operational
+    Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-16: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-17.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove Zeus observes progress, handoffs, checkpoints, and failures through EENS. through the authoritative
+    Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-17
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove Zeus observes progress, handoffs, checkpoints, and failures through EENS.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-17/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-17 --operator OPERATOR
+  - zeus gate receipt OA-17
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-18
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-17/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-18
+- gate_id: OA-18
+  sequence: 18
+  title: Approval Enforcement During Execution
+  mission_objective: Prove protected actions pause for valid operator approval and cannot bypass the approval boundary.
+  capability_being_established: Approval Enforcement During Execution
+  rationale: Approval Enforcement During Execution is a cumulative prerequisite for a trustworthy supervised Operational
+    Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-17: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-18.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove protected actions pause for valid operator approval and cannot bypass the approval boundary.
+    through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-18
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove protected actions pause for valid operator approval and cannot bypass the approval boundary.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-18/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-18 --operator OPERATOR
+  - zeus gate receipt OA-18
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-19
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-18/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-19
+- gate_id: OA-19
+  sequence: 19
+  title: Evidence Capture
+  mission_objective: Prove append-only capture of commands, outputs, state, timestamps, identities, checksums, and
+    completion markers.
+  capability_being_established: Evidence Capture
+  rationale: Evidence Capture is a cumulative prerequisite for a trustworthy supervised Operational Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-18: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-19.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove append-only capture of commands, outputs, state, timestamps, identities, checksums, and completion
+    markers. through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-19
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove append-only capture of commands, outputs, state, timestamps, identities, checksums, and completion markers.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-19/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-19 --operator OPERATOR
+  - zeus gate receipt OA-19
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-20
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-19/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-20
+- gate_id: OA-20
+  sequence: 20
+  title: Evidence Integrity and Provenance
+  mission_objective: Prove evidence binding to repository commit, authority, mission, WOP, execution, gate, and
+    agent.
+  capability_being_established: Evidence Integrity and Provenance
+  rationale: Evidence Integrity and Provenance is a cumulative prerequisite for a trustworthy supervised Operational
+    Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-19: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-20.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove evidence binding to repository commit, authority, mission, WOP, execution, gate, and agent.
+    through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-20
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove evidence binding to repository commit, authority, mission, WOP, execution, gate, and agent.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-20/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-20 --operator OPERATOR
+  - zeus gate receipt OA-20
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-21
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-20/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-21
+- gate_id: OA-21
+  sequence: 21
+  title: Independent Result Qualification
+  mission_objective: Prove a qualifier independent of the execution agent evaluates implementation and evidence.
+  capability_being_established: Independent Result Qualification
+  rationale: Independent Result Qualification is a cumulative prerequisite for a trustworthy supervised Operational
+    Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-20: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-21.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove a qualifier independent of the execution agent evaluates implementation and evidence. through
+    the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-21
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove a qualifier independent of the execution agent evaluates implementation and evidence.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-21/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-21 --operator OPERATOR
+  - zeus gate receipt OA-21
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-22
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-21/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-22
+- gate_id: OA-22
+  sequence: 22
+  title: Failure and Corrective-Work Generation
+  mission_objective: Prove fail-closed handling and bounded generation of separately authorized corrective work.
+  capability_being_established: Failure and Corrective-Work Generation
+  rationale: Failure and Corrective-Work Generation is a cumulative prerequisite for a trustworthy supervised Operational
+    Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-21: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-22.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove fail-closed handling and bounded generation of separately authorized corrective work. through
+    the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-22
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove fail-closed handling and bounded generation of separately authorized corrective work.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-22/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-22 --operator OPERATOR
+  - zeus gate receipt OA-22
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-23
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-22/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-23
+- gate_id: OA-23
+  sequence: 23
+  title: Safe Interruption
+  mission_objective: Prove durable pause behavior without inferred completion or duplicated effects.
+  capability_being_established: Safe Interruption
+  rationale: Safe Interruption is a cumulative prerequisite for a trustworthy supervised Operational Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-22: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-23.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove durable pause behavior without inferred completion or duplicated effects. through the authoritative
+    Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-23
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove durable pause behavior without inferred completion or duplicated effects.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-23/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-23 --operator OPERATOR
+  - zeus gate receipt OA-23
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-24
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-23/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-24
+- gate_id: OA-24
+  sequence: 24
+  title: Resume and Idempotent Continuation
+  mission_objective: Prove reconstruction from durable state and continuation from the first incomplete operation.
+  capability_being_established: Resume and Idempotent Continuation
+  rationale: Resume and Idempotent Continuation is a cumulative prerequisite for a trustworthy supervised Operational
+    Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-23: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-24.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove reconstruction from durable state and continuation from the first incomplete operation. through
+    the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-24
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove reconstruction from durable state and continuation from the first incomplete operation.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-24/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-24 --operator OPERATOR
+  - zeus gate receipt OA-24
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-25
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-24/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-25
+- gate_id: OA-25
+  sequence: 25
+  title: Controlled State Reconciliation
+  mission_objective: Prove reconciliation of Zeus, EMP, PMCT, EENS, Project State, Work Registry, EOS, and controlled
+    records.
+  capability_being_established: Controlled State Reconciliation
+  rationale: Controlled State Reconciliation is a cumulative prerequisite for a trustworthy supervised Operational
+    Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-24: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-25.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove reconciliation of Zeus, EMP, PMCT, EENS, Project State, Work Registry, EOS, and controlled
+    records. through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-25
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove reconciliation of Zeus, EMP, PMCT, EENS, Project State, Work Registry, EOS, and controlled records.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-25/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-25 --operator OPERATOR
+  - zeus gate receipt OA-25
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-26
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-25/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-26
+- gate_id: OA-26
+  sequence: 26
+  title: Completion Determination
+  mission_objective: Prove mission implementation completion is evidence-calculated and distinct from acceptance.
+  capability_being_established: Completion Determination
+  rationale: Completion Determination is a cumulative prerequisite for a trustworthy supervised Operational Alpha
+    lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-25: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-26.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove mission implementation completion is evidence-calculated and distinct from acceptance. through
+    the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-26
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove mission implementation completion is evidence-calculated and distinct from acceptance.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-26/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-26 --operator OPERATOR
+  - zeus gate receipt OA-26
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-27
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-26/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-27
+- gate_id: OA-27
+  sequence: 27
+  title: Operator Acceptance
+  mission_objective: Prove explicit acceptance or rejection bound to the exact qualified result and evidence manifest.
+  capability_being_established: Operator Acceptance
+  rationale: Operator Acceptance is a cumulative prerequisite for a trustworthy supervised Operational Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-26: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-27.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove explicit acceptance or rejection bound to the exact qualified result and evidence manifest.
+    through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-27
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove explicit acceptance or rejection bound to the exact qualified result and evidence manifest.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-27/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-27 --operator OPERATOR
+  - zeus gate receipt OA-27
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-28
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-27/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-28
+- gate_id: OA-28
+  sequence: 28
+  title: Mission Closeout
+  mission_objective: Prove completion reporting, final reconciliation, execution closure, and removal from active
+    work.
+  capability_being_established: Mission Closeout
+  rationale: Mission Closeout is a cumulative prerequisite for a trustworthy supervised Operational Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-27: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-28.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove completion reporting, final reconciliation, execution closure, and removal from active work.
+    through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-28
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove completion reporting, final reconciliation, execution closure, and removal from active work.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-28/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-28 --operator OPERATOR
+  - zeus gate receipt OA-28
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-29
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-28/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-29
+- gate_id: OA-29
+  sequence: 29
+  title: End-to-End Representative Mission
+  mission_objective: Prove the complete lifecycle using a bounded representative mission from staging through accepted
+    closeout.
+  capability_being_established: End-to-End Representative Mission
+  rationale: End-to-End Representative Mission is a cumulative prerequisite for a trustworthy supervised Operational
+    Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-28: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-29.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove the complete lifecycle using a bounded representative mission from staging through accepted
+    closeout. through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-29
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove the complete lifecycle using a bounded representative mission from staging through accepted closeout.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-29/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-29 --operator OPERATOR
+  - zeus gate receipt OA-29
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable OA-30
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-29/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: OA-30
+- gate_id: OA-30
+  sequence: 30
+  title: Operational Alpha Qualification and Declaration Preparation
+  mission_objective: Prove OA-01 through OA-29 remain valid, produce a candidate baseline, and prepare separately
+    authorized declaration and freeze.
+  capability_being_established: Operational Alpha Qualification and Declaration Preparation
+  rationale: Operational Alpha Qualification and Declaration Preparation is a cumulative prerequisite for a trustworthy
+    supervised Operational Alpha lifecycle.
+  inherited_design_requirements:
+  - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
+    semantics.
+  - Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.
+  - Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.
+  authoritative_source_references: *id001
+  entry_prerequisites:
+  - 'OA-29: ACCEPTED'
+  - package admission receipt integrity PASS
+  - repository identity and authority bindings current
+  - exactly this gate is the first incomplete eligible gate
+  required_implementation_work:
+  - Implement or reconcile the production capability needed to satisfy OA-30.
+  - Add deterministic positive, negative, replay, interruption, and cumulative regression tests.
+  - Persist append-only evidence and reconcile every affected controlled record.
+  prohibited_effects:
+  - begin any later gate
+  - inherit prior OA acceptance or completion
+  - self-approve or infer operator acceptance
+  - mutate historical OA evidence
+  - declare Operational Alpha or freeze the baseline
+  positive_test_cases:
+  - Demonstrate Prove OA-01 through OA-29 remain valid, produce a candidate baseline, and prepare separately authorized
+    declaration and freeze. through the authoritative Zeus interface.
+  negative_and_fail_closed_test_cases:
+  - Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.
+  - Prove later gates remain ineligible and no protected external effect occurs.
+  idempotency_and_replay_tests:
+  - Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence,
+    event, or dispatch.
+  safety_and_recovery_tests:
+  - Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete
+    operation.
+  regression_suite:
+  - OA-01 through OA-30
+  - scripts/tests
+  - engineering/tests/zeus-operational-alpha/tests
+  required_evidence:
+  - repository identity, branch, exact HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - commands, stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, interruption, recovery, and cumulative regression results
+  - controlled-record reconciliation report and VERIFIED marker
+  exact_success_criteria:
+  - Prove OA-01 through OA-29 remain valid, produce a candidate baseline, and prepare separately authorized declaration
+    and freeze.
+  - all required tests PASS and all negative cases fail closed
+  - evidence manifest integrity PASS
+  - records reconcile with no conflict
+  - operator acceptance receipt is valid before next-gate eligibility
+  manual_verification_procedure: gates/OA-30/verification.md
+  operator_acceptance_procedure:
+  - zeus approve OA-30 --operator OPERATOR
+  - zeus gate receipt OA-30
+  - zeus resume
+  state_transitions:
+  - PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION
+  - AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED
+  - ACCEPTED -> enable SEPARATELY_AUTHORIZED_OA_DECLARATION
+  - failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED
+  records_reconciled:
+  - Zeus runtime
+  - EMP
+  - PMCT
+  - EENS
+  - Project State
+  - Work Registry
+  - EOS
+  - controlled documents
+  completion_marker: runtime/evidence/OA-30/VERIFIED plus integrity-valid operator decision receipt
+  next_gate_enabled: SEPARATELY_AUTHORIZED_OA_DECLARATION

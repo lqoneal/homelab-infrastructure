@@ -1,0 +1,6 @@
+gate_id: OA-26
+title: Completion Determination
+mission_objective: Prove mission implementation completion is evidence-calculated
+  and distinct from acceptance.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

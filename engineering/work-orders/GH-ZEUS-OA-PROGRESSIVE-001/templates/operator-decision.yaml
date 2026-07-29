@@ -1,0 +1,8 @@
+schema_version: 1
+package_id: GH-ZEUS-OA-PROGRESSIVE-001
+gate_id: OA-XX
+decision: ACCEPTED_OR_REJECTED
+operator: null
+decided_at: null
+evidence_marker_sha256: null
+receipt_digest: null

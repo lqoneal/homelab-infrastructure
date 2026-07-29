@@ -1,0 +1,45 @@
+schema_version: 1
+document_type: EngineeringWorkOrder
+wop_id: WOP-8e6c4ab8-4c85-5d6c-9c90-10b8814bdf99
+mission_id: REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001
+phase_id: ZEUS-OPERATIONAL-ALPHA
+revision: 1
+status: Active
+title: Progressive Zeus Operational Alpha Qualification
+repository_identity: /data/engineering/repositories/homelab
+submitter_identity: reconstruction mission agent
+approval:
+  authority: Repository operator
+  reference: REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001
+  date: '2026-07-28'
+  authorized_lifecycle_state: Active
+execution_package_references:
+  authority_node_id: operator-mission-authorization
+  authorization_decision_record: REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001
+  immutable_wop: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/immutable-wop.yaml
+authoritative_references:
+  - PROC-0001@1.11
+  - TPL-0001@1.7
+  - STD-0000
+  - STD-0001
+  - STD-0002
+  - STD-0003
+  - STD-0004
+  - ZEUS-OA-ROADMAP-002
+  - ZEUS-OA-GATE-SPEC-002
+sections:
+  purpose_and_expected_outcome: Independently implement, verify, and accept thirty cumulative OA gates while preserving historical design and evidence.
+  mission_classification: Category A repository engineering and controlled operational qualification.
+  governing_references: BOOTSTRAP.md, immutable-wop.yaml, gate-specification.yaml, ROADMAP.md, and TRACEABILITY.md.
+  scope: One-gate-at-a-time implementation, verification, evidence, reconciliation, acceptance, recovery, and successive progression.
+  explicit_authority: Execute the admitted WOP beginning at the new OA-01; acceptance directly enables the immediate successor.
+  prohibited_activities: No inherited status, concurrent gates, inferred acceptance, historical rewriting, unauthorized corrective work, OA declaration, or freeze.
+  dependencies_and_entry_criteria: Accepted admission, package integrity, current authority, synchronized repository and EOS, and sole eligible active gate.
+  deliverables: Thirty complete gate packages, evidence, decisions, reconciliation, representative lifecycle, and declaration-preparation candidate.
+  execution_sequence: Strict OA-01 through OA-30 cumulative sequence controlled by controller.
+  success_and_acceptance_criteria: Every gate meets its exact contract and receives an integrity-valid operator acceptance receipt.
+  validation_profile: verify-package.sh, Zeus WOP validation, gate-specific verification, cumulative regressions, registry, controlled documents, and EOS.
+  publication_and_synchronization: Publish only under repository procedure and reconcile every affected controlled record.
+  stop_resume_and_escalation: Fail closed and use RECOVERY.md; corrective implementation always requires separate authority.
+  completion_report_requirement: Produce per-gate and final reports; OA declaration and baseline freeze remain separately authorized.
+submission_digest: ff004a4b0c674b33c47ad078861fd052a2628bca925b062bf902958128ea6f59

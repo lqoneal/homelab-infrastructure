@@ -1,0 +1,12 @@
+schema_version: 1
+record_type: CORRECTIVE_WORK_PROPOSAL
+package_id: GH-ZEUS-OA-PROGRESSIVE-001
+gate_id: OA-XX
+trigger: null
+bounded_objective: null
+affected_records: []
+prohibited_effects:
+  - implementation without separate authority
+  - acceptance inference
+  - later-gate execution
+authorization_status: REQUIRED

@@ -1,0 +1,6 @@
+gate_id: OA-12
+title: Agent Selection
+mission_objective: Prove Zeus selects only an agent qualified for repository, mission
+  class, tools, and execution profile.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

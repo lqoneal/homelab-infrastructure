@@ -1,0 +1,6 @@
+gate_id: OA-22
+title: Failure and Corrective-Work Generation
+mission_objective: Prove fail-closed handling and bounded generation of separately
+  authorized corrective work.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

@@ -1,0 +1,6 @@
+gate_id: OA-23
+title: Safe Interruption
+mission_objective: Prove durable pause behavior without inferred completion or duplicated
+  effects.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

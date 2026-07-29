@@ -1,0 +1,6 @@
+gate_id: OA-18
+title: Approval Enforcement During Execution
+mission_objective: Prove protected actions pause for valid operator approval and cannot
+  bypass the approval boundary.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

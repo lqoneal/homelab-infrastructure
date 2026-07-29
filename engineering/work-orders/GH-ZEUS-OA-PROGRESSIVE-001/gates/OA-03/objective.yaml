@@ -1,0 +1,6 @@
+gate_id: OA-03
+title: Mission Contract Discovery
+mission_objective: Prove deterministic discovery of exactly one applicable Mission
+  Contract.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

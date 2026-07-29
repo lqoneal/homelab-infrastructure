@@ -1,0 +1,27 @@
+{
+  "admission_decision": "ACCEPTED",
+  "admission_id": "ADMISSION-f01c0c2d-8edb-5567-ad19-8d0f4344909f",
+  "authoritative_references": [
+    "PROC-0001@1.11",
+    "TPL-0001@1.7",
+    "STD-0000",
+    "STD-0001",
+    "STD-0002",
+    "STD-0003",
+    "STD-0004"
+  ],
+  "deterministic_checksum": "75e2bda2338058b88bcf3c2527b13bbe78e99c966c604c34a95c91b49707492c",
+  "evaluation_timestamp": "2026-07-29T05:00:00Z",
+  "mission_id": "REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001",
+  "repository_identity": "/data/engineering/repositories/homelab",
+  "schema_version": 1,
+  "submission_digest": "ff004a4b0c674b33c47ad078861fd052a2628bca925b062bf902958128ea6f59",
+  "submitter_identity": "reconstruction mission agent",
+  "validation_failures": [],
+  "validation_summary": {
+    "failure_count": 0,
+    "reason_codes": []
+  },
+  "validator_version": "1",
+  "wop_id": "WOP-8e6c4ab8-4c85-5d6c-9c90-10b8814bdf99"
+}

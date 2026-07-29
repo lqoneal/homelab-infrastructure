@@ -1,0 +1,6 @@
+gate_id: OA-24
+title: Resume and Idempotent Continuation
+mission_objective: Prove reconstruction from durable state and continuation from the
+  first incomplete operation.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

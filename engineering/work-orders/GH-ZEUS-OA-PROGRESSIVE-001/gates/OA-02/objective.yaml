@@ -1,0 +1,6 @@
+gate_id: OA-02
+title: Controlled Mission Authority
+mission_objective: Prove that no mission may execute without valid, current, discoverable
+  authority.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

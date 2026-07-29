@@ -1,0 +1,6 @@
+gate_id: OA-01
+title: Authoritative Baseline and Repository Identity
+mission_objective: Prove that Zeus operates from one identified, synchronized, integrity-valid
+  repository and qualified baseline.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

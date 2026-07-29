@@ -1,0 +1,6 @@
+gate_id: OA-09
+title: WOP Integrity and Admission
+mission_objective: Prove package integrity, schema validity, admission evaluation,
+  and fail-closed rejection.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

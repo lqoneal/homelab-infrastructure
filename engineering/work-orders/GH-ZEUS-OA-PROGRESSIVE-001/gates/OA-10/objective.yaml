@@ -1,0 +1,6 @@
+gate_id: OA-10
+title: Execution Context and Lease
+mission_objective: Prove bounded execution context, principal identity, authority
+  lease, expiry, and revocation behavior.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

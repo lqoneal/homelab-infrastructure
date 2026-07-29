@@ -1,0 +1,128 @@
+{
+  "active_gate": "OA-01",
+  "gates": {
+    "OA-01": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-02": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-03": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-04": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-05": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-06": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-07": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-08": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-09": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-10": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-11": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-12": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-13": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-14": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-15": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-16": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-17": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-18": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-19": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-20": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-21": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-22": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-23": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-24": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-25": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-26": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-27": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-28": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-29": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    },
+    "OA-30": {
+      "acceptance_receipt": null,
+      "state": "PENDING"
+    }
+  },
+  "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
+  "schema_version": 1,
+  "status": "READY"
+}

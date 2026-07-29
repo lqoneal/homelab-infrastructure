@@ -1,0 +1,6 @@
+gate_id: OA-13
+title: Dispatch Preparation
+mission_objective: Prove deterministic creation of a dispatch candidate without beginning
+  execution.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

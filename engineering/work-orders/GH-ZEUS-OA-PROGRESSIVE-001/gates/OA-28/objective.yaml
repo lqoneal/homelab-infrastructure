@@ -1,0 +1,6 @@
+gate_id: OA-28
+title: Mission Closeout
+mission_objective: Prove completion reporting, final reconciliation, execution closure,
+  and removal from active work.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

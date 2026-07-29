@@ -1,0 +1,6 @@
+gate_id: OA-05
+title: Mission Staging Contract
+mission_objective: Prove candidate missions are staged with stable identity, objective,
+  scope, dependencies, priority, and state.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

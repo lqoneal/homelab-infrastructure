@@ -1,0 +1,6 @@
+gate_id: OA-11
+title: Qualified-Agent Registry
+mission_objective: Prove integrity-bound qualification and repository-preserving registration
+  of execution agents.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED

@@ -1,0 +1,6 @@
+gate_id: OA-20
+title: Evidence Integrity and Provenance
+mission_objective: Prove evidence binding to repository commit, authority, mission,
+  WOP, execution, gate, and agent.
+operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
+status: UNSTARTED
