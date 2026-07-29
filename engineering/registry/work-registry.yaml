@@ -1,8 +1,8 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 73
-updated_at: '2026-07-28'
+revision: 77
+updated_at: '2026-07-29T06:11:33+00:00'
 serialization: yaml
 mutation_history:
 - revision: 2
@@ -178,7 +178,8 @@ mutation_history:
   at: '2026-07-17T17:50:01+00:00'
   actor: Codex
   action: transition EMP-WORK-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION to completed
-  reason: EWO-000021 publication, reconciliation, milestone recording, and qualification completed.
+  reason: EWO-000021 publication, reconciliation, milestone recording, and qualification
+    completed.
 - revision: 29
   previous_revision: 28
   at: '2026-07-17T19:48:47+00:00'
@@ -190,313 +191,357 @@ mutation_history:
   at: '2026-07-17T19:48:47+00:00'
   actor: Engineering Governance authorization agent
   action: create and activate EMP-WORK-SPEC-0007-REVISION-15-PUBLICATION
-  reason: Register EWO-000022 as the active bounded execution authority for SPEC-0007 Revision 15 controlled publication.
+  reason: Register EWO-000022 as the active bounded execution authority for SPEC-0007
+    Revision 15 controlled publication.
 - revision: 31
   previous_revision: 30
   at: '2026-07-17T21:15:00+00:00'
   actor: Codex publication agent
   action: record SPEC-0007 Revision 15 publication readiness
-  reason: Record verified acquisition, SPEC-0007 Version 1.1 controlled publication, evidence, and governance-review readiness while preserving EWO-000022 lifecycle authority as Active.
+  reason: Record verified acquisition, SPEC-0007 Version 1.1 controlled publication,
+    evidence, and governance-review readiness while preserving EWO-000022 lifecycle
+    authority as Active.
 - revision: 32
   previous_revision: 31
   at: '2026-07-18T00:00:00+00:00'
   actor: Engineering Governance authorization-publication agent
   action: transition EMP-MISSION-SPEC-0007-REVISION-15-PUBLICATION to completed
-  reason: Engineering Governance accepted EWO-000022 execution and activated EWO-000023 as the successor primary Homelab authority.
+  reason: Engineering Governance accepted EWO-000022 execution and activated EWO-000023
+    as the successor primary Homelab authority.
 - revision: 33
   previous_revision: 32
   at: '2026-07-18T00:00:01+00:00'
   actor: Engineering Governance authorization-publication agent
   action: transition EMP-WORK-SPEC-0007-REVISION-15-PUBLICATION to completed
-  reason: Revision 15 publication, evidence, validation, and commit completed successfully under EWO-000022.
+  reason: Revision 15 publication, evidence, validation, and commit completed successfully
+    under EWO-000022.
 - revision: 34
   previous_revision: 33
   at: '2026-07-18T00:00:02+00:00'
   actor: Engineering Governance authorization-publication agent
   action: create and activate EMP-MISSION-GOVERNANCE-AUTHORITY-ARCHITECTURE
-  reason: Register the approved bounded governance-authority architecture investigation under EWO-000023.
+  reason: Register the approved bounded governance-authority architecture investigation
+    under EWO-000023.
 - revision: 35
   previous_revision: 34
   at: '2026-07-18T00:00:03+00:00'
   actor: Engineering Governance authorization-publication agent
   action: create and activate EMP-WORK-GOVERNANCE-AUTHORITY-ARCHITECTURE
-  reason: Register EWO-000023 as the Active documentation-only investigation authority without authorizing implementation.
+  reason: Register EWO-000023 as the Active documentation-only investigation authority
+    without authorizing implementation.
 - revision: 36
   previous_revision: 35
   at: '2026-07-18T06:00:00+00:00'
   actor: Engineering Governance planning-transfer agent
   action: execute EWO-000023 Governance Planning Transfer Transaction
-  reason: Transfer every approved EWO-000023 future obligation from Engineering execution into one proposed Governance institutionalization mission and four deferred planning workstreams without evaluation or implementation authority.
+  reason: Transfer every approved EWO-000023 future obligation from Engineering execution
+    into one proposed Governance institutionalization mission and four deferred planning
+    workstreams without evaluation or implementation authority.
 - revision: 37
   previous_revision: 36
   at: '2026-07-18T07:00:00+00:00'
   actor: Engineering Governance lifecycle-transition agent
   action: project exceptional EWO-000023 Active-to-Archived lifecycle transition
-  reason: Record completed Engineering execution, terminated EWO-000023 authority, and transferred responsibility to Governance planning without false supersedence or new lifecycle states.
+  reason: Record completed Engineering execution, terminated EWO-000023 authority,
+    and transferred responsibility to Governance planning without false supersedence
+    or new lifecycle states.
 - revision: 38
   previous_revision: 37
   at: '2026-07-18T08:00:00+00:00'
   actor: Engineering Governance milestone-publication agent
   action: publish MILESTONE-0007 historical summary
-  reason: Register the achieved historical summary of the immutable EWO-000023 Governance Authority Transaction architecture qualification without creating evidence, work, implementation authority, adoption, or institutionalization.
+  reason: Register the achieved historical summary of the immutable EWO-000023 Governance
+    Authority Transaction architecture qualification without creating evidence, work,
+    implementation authority, adoption, or institutionalization.
 - revision: 39
   previous_revision: 38
   at: '2026-07-18T09:00:00+00:00'
   actor: Engineering Governance reporting-standard implementation agent
   action: institutionalize Engineering Reporting Standard
-  reason: Record the completed Workstream 1 controlled-document refinement of STD-0003, PROC-0001, TPL-0001, and TPL-0002 without redesigning governance or creating a new reporting class.
+  reason: Record the completed Workstream 1 controlled-document refinement of STD-0003,
+    PROC-0001, TPL-0001, and TPL-0002 without redesigning governance or creating a
+    new reporting class.
 - revision: 40
   previous_revision: 39
   at: '2026-07-18T10:00:00+00:00'
   actor: Engineering Governance handoff-template implementation agent
   action: institutionalize next-generation Engineering Handoff template
-  reason: Record the completed Workstream 2 refinement of TPL-0001 into a concise authorization contract without secondary controlled-document revision or governance redesign.
+  reason: Record the completed Workstream 2 refinement of TPL-0001 into a concise
+    authorization contract without secondary controlled-document revision or governance
+    redesign.
 - revision: 41
   previous_revision: 40
   at: '2026-07-18T11:00:00+00:00'
   actor: Engineering Governance handoff-construction procedure implementation agent
   action: institutionalize Engineering Handoff Construction Procedure
-  reason: Publish PROC-0004 as the single construction owner and synchronize TPL-0001 structural ownership without altering Governance authority, execution workflow, or platform architecture.
+  reason: Publish PROC-0004 as the single construction owner and synchronize TPL-0001
+    structural ownership without altering Governance authority, execution workflow,
+    or platform architecture.
 - revision: 42
   previous_revision: 41
   at: '2026-07-18T12:00:00+00:00'
   actor: Engineering Governance ETP implementation agent
   action: institutionalize Engineering Transaction Profile capability
-  reason: Publish SPEC-0008, one conservative baseline profile, bounded PROC-0004 and TPL-0001 integration, and fail-closed validation without new document classes, runtime services, or semantic ownership changes.
+  reason: Publish SPEC-0008, one conservative baseline profile, bounded PROC-0004
+    and TPL-0001 integration, and fail-closed validation without new document classes,
+    runtime services, or semantic ownership changes.
 - revision: 43
   previous_revision: 42
   at: '2026-07-19T03:11:49+00:00'
   actor: Codex
   action: create EMP-WORK-RASPBERRY-PI-ENGINEERING-QUALIFICATION-PROCEDURE
-  reason: Record the non-implementing Raspberry Pi EQP recommendation after completed documentation discovery.
+  reason: Record the non-implementing Raspberry Pi EQP recommendation after completed
+    documentation discovery.
 - revision: 44
   previous_revision: 43
   at: '2026-07-19T03:12:22+00:00'
   actor: Codex
   action: create EMP-WORK-ENGINEERING-QUALIFICATION-AUTOMATION
-  reason: Record future Engineering OS qualification automation separately from procedure development; no implementation is authorized.
+  reason: Record future Engineering OS qualification automation separately from procedure
+    development; no implementation is authorized.
 - revision: 45
   previous_revision: 44
   at: '2026-07-19T03:33:22+00:00'
   actor: Codex
   action: create EMP-WORK-ENGINEERING-QUALIFICATION-STATE-PERSISTENCE
-  reason: Record standardized Qualification Report persistence and resume consumption as deferred platform work without implementing Engineering State or EOS behavior.
+  reason: Record standardized Qualification Report persistence and resume consumption
+    as deferred platform work without implementing Engineering State or EOS behavior.
 - revision: 46
   previous_revision: 45
   at: '2026-07-21T10:30:00-07:00'
   actor: Mission 7 repository reconciliation agent
   action: register MISSION-000007 EENS Repository Convergence
-  reason: Record the qualified EENS Operational Alpha repository convergence,
-    canonical-source and operational-deployment boundary, preserved standalone
-    history, and deferred full HNS expansion.
+  reason: Record the qualified EENS Operational Alpha repository convergence, canonical-source
+    and operational-deployment boundary, preserved standalone history, and deferred
+    full HNS expansion.
 - revision: 47
   previous_revision: 46
   at: '2026-07-25T00:00:00-07:00'
   actor: Mission B authority reconciliation agent
   action: establish Zeus Operational Alpha authority projection
-  reason: Close historical MISSION-000007, establish the active Zeus mission and
-    phase, and register Mission C as planned read-only work without authorizing
-    runtime implementation.
+  reason: Close historical MISSION-000007, establish the active Zeus mission and phase,
+    and register Mission C as planned read-only work without authorizing runtime implementation.
 - revision: 48
   previous_revision: 47
   at: '2026-07-26T12:00:00-07:00'
   actor: ZEUS-P2-003 implementation agent
   action: register completed Authority Resolution Runtime implementation
-  reason: Project the qualified repository-local ARB runtime, operational WOP
-    integration, qualification compatibility, and fail-closed live-source
-    activation boundary without originating approval or authority.
+  reason: Project the qualified repository-local ARB runtime, operational WOP integration,
+    qualification compatibility, and fail-closed live-source activation boundary without
+    originating approval or authority.
 - revision: 49
   previous_revision: 48
   at: '2026-07-26T20:00:00-07:00'
   actor: ZEUS-P2-004 implementation agent
   action: register completed operational authority publication framework
-  reason: Project the qualified signed publication, readiness, explicit
-    activation, rollback, revocation, and recovery capability while production
-    owner trust and records remain unenrolled.
+  reason: Project the qualified signed publication, readiness, explicit activation,
+    rollback, revocation, and recovery capability while production owner trust and
+    records remain unenrolled.
 - revision: 50
   previous_revision: 49
   at: '2026-07-26T21:00:00-07:00'
   actor: ZEUS-P2-005 commissioning preflight agent
   action: register blocked operational authority commissioning
-  reason: Preserve the fail-closed commissioning result after confirming that
-    authentic owner trust anchors, signed records, and Governance approval were
-    not supplied; no workstation or qualification identity is promoted.
+  reason: Preserve the fail-closed commissioning result after confirming that authentic
+    owner trust anchors, signed records, and Governance approval were not supplied;
+    no workstation or qualification identity is promoted.
 - revision: 51
   previous_revision: 50
   at: '2026-07-26T22:00:00-07:00'
   actor: ZEUS-P2-006 implementation agent
   action: register completed authority owner enrollment toolkit
-  reason: Project secure public-key enrollment lifecycle, candidate trust
-    compilation, unsigned publication preparation, approval validation, and
-    enhanced diagnostics without enrolling owners or activating production.
+  reason: Project secure public-key enrollment lifecycle, candidate trust compilation,
+    unsigned publication preparation, approval validation, and enhanced diagnostics
+    without enrolling owners or activating production.
 - revision: 52
   previous_revision: 51
   at: '2026-07-26T23:00:00-07:00'
   actor: ZEUS-P2-007 implementation agent
   action: register completed Mission Admission Runtime integration
-  reason: Project the qualified persistent, restartable admission coordinator,
-    shared qualification and operational interfaces, structured evidence, and
-    fail-closed authority gate without commissioning or execution.
+  reason: Project the qualified persistent, restartable admission coordinator, shared
+    qualification and operational interfaces, structured evidence, and fail-closed
+    authority gate without commissioning or execution.
 - revision: 53
   previous_revision: 52
   at: '2026-07-27T00:00:00-07:00'
   actor: ZEUS-P2-008 implementation agent
   action: register completed Mission Execution Runtime
-  reason: Project the qualified restartable gate engine, checkpoints,
-    immutable execution evidence, EENS adapter, and disabled operational
-    dispatch boundary without commissioning production.
+  reason: Project the qualified restartable gate engine, checkpoints, immutable execution
+    evidence, EENS adapter, and disabled operational dispatch boundary without commissioning
+    production.
 - revision: 54
   previous_revision: 53
   at: '2026-07-27T01:00:00-07:00'
   actor: ZEUS-P2-009 implementation agent
   action: register completed Operational Gate Handler Framework
-  reason: Project the published P2-002 through P2-008 baseline and qualified
-    verification-first handler discovery, negotiation, isolation, evidence,
-    and qualification integration without adding operational dispatch.
+  reason: Project the published P2-002 through P2-008 baseline and qualified verification-first
+    handler discovery, negotiation, isolation, evidence, and qualification integration
+    without adding operational dispatch.
 - revision: 55
   previous_revision: 54
   at: '2026-07-27T02:00:00-07:00'
   actor: ZEUS-P2-010 implementation agent
   action: register qualified operational artifact gate handler
-  reason: Project immutable operational context, safe artifact actions,
-    action-level checkpoints, cancellation, deterministic resume, evidence,
-    and isolated qualification while production dispatch remains disabled.
+  reason: Project immutable operational context, safe artifact actions, action-level
+    checkpoints, cancellation, deterministic resume, evidence, and isolated qualification
+    while production dispatch remains disabled.
 - revision: 56
   previous_revision: 55
   at: '2026-07-26T23:59:00-07:00'
   actor: ZEUS-P2-019 implementation agent
   action: register qualified production execution foundation
-  reason: Record the policy, activation, agent registry, invocation, EENS,
-    evidence, reconciliation and integrated qualification foundation without
-    claiming commissioning or operational execution.
+  reason: Record the policy, activation, agent registry, invocation, EENS, evidence,
+    reconciliation and integrated qualification foundation without claiming commissioning
+    or operational execution.
 - revision: 57
   previous_revision: 56
   at: '2026-07-26T21:30:00+00:00'
   actor: ZEUS-P2-020 implementation agent
   action: establish Progressive Manual Capability Test
-  reason: Register the locked cumulative OA-01 through OA-30 manual acceptance
-    framework and honest initial NOT_READY result without activating production.
+  reason: Register the locked cumulative OA-01 through OA-30 manual acceptance framework
+    and honest initial NOT_READY result without activating production.
 - revision: 58
   previous_revision: 57
   at: '2026-07-26T21:35:00+00:00'
   actor: ZEUS-P2-021 implementation agent
   action: implement authoritative next-action acceptance interface
-  reason: Register the read-only state-derived BETA decision surface and OA-01
-    PASS evidence without authorizing or performing production transition.
+  reason: Register the read-only state-derived BETA decision surface and OA-01 PASS
+    evidence without authorizing or performing production transition.
 - revision: 59
   previous_revision: 58
   at: '2026-07-26T22:15:00+00:00'
   actor: ZEUS-P2-022 implementation agent
   action: register runtime telemetry contract clarification for review
-  reason: Distinguish immutable authoritative and decision state from bounded
-    presentation telemetry, preserve the OA-01 Codex PASS result, and record
-    operator verification pending with OA-02 blocked.
+  reason: Distinguish immutable authoritative and decision state from bounded presentation
+    telemetry, preserve the OA-01 Codex PASS result, and record operator verification
+    pending with OA-02 blocked.
 - revision: 60
   previous_revision: 59
   at: '2026-07-26T23:00:00+00:00'
   actor: ZEUS-P2-022 closeout agent
   action: complete runtime telemetry contract clarification
-  reason: Operator approved the corrected documentation and lifecycle state for
-    closeout while OA-01 remains awaiting independent operator verification.
+  reason: Operator approved the corrected documentation and lifecycle state for closeout
+    while OA-01 remains awaiting independent operator verification.
 - revision: 61
   previous_revision: 60
   at: '2026-07-26T23:40:00+00:00'
   actor: ZEUS-P2-023 implementation agent
   action: register verification-first operator gate approval UX for review
-  reason: Record isolated implementation and qualification without creating a
-    live verification record, acceptance receipt, or next-gate transition.
+  reason: Record isolated implementation and qualification without creating a live
+    verification record, acceptance receipt, or next-gate transition.
 - revision: 62
   previous_revision: 61
   at: '2026-07-27T00:15:00+00:00'
   actor: ZEUS-P2-024 closeout agent
   action: qualify ZEUS-P2-023 for isolated commit
-  reason: Complete implementation, failure-mode qualification, controlled
-    reconciliation, and external WOP integrity verification while excluding
-    ZEUS-P2-019 artifacts.
+  reason: Complete implementation, failure-mode qualification, controlled reconciliation,
+    and external WOP integrity verification while excluding ZEUS-P2-019 artifacts.
 - revision: 63
   previous_revision: 62
   at: '2026-07-27T01:00:00+00:00'
   actor: ZEUS-P2-025 implementation agent
   action: resolve publication fixed point and receipt lineage
-  reason: Move authority activation outside tracked Git content and establish
-    immutable successor approvals without allowing stale receipts to advance a
-    gate.
+  reason: Move authority activation outside tracked Git content and establish immutable
+    successor approvals without allowing stale receipts to advance a gate.
 - revision: 64
   previous_revision: 63
   at: '2026-07-27T02:30:00+00:00'
   actor: ZEUS-P2-026 implementation agent
   action: reconcile post-publication gate lifecycle precedence
-  reason: Make current-binding OA-01 verification and acceptance precede
-    dispatcher commissioning or OA-02 execution while preserving production
-    publication state.
+  reason: Make current-binding OA-01 verification and acceptance precede dispatcher
+    commissioning or OA-02 execution while preserving production publication state.
 - revision: 65
   previous_revision: 64
   at: '2026-07-27T03:45:00+00:00'
   actor: ZEUS-P2-027 implementation agent
   action: correct OA-01 verification readiness and PMCT authority binding
-  reason: Persist completed PMCT results, treat current prerequisites with
-    absent evidence as READY, and exclude historical PASS runs from a different
-    repository-authority binding.
+  reason: Persist completed PMCT results, treat current prerequisites with absent
+    evidence as READY, and exclude historical PASS runs from a different repository-authority
+    binding.
 - revision: 66
   previous_revision: 65
   at: '2026-07-28T01:00:00-07:00'
   actor: P2-038 corrective implementation agent
   action: reopen unaccepted P2-038 implementation state
-  reason: Preserve the historical self-certified completion transition while
-    correcting its management state to active, unaccepted working-tree work.
+  reason: Preserve the historical self-certified completion transition while correcting
+    its management state to active, unaccepted working-tree work.
 - revision: 67
   previous_revision: 66
   at: '2026-07-28T01:00:01-07:00'
   actor: P2-038 corrective implementation agent
   action: create EMP-WORK-P2-038-CORRECTIVE
-  reason: Register the bounded corrective implementation Mission Contract
-    without recording operator acceptance, publication, or dispatch.
+  reason: Register the bounded corrective implementation Mission Contract without
+    recording operator acceptance, publication, or dispatch.
 - revision: 68
   previous_revision: 67
   at: '2026-07-28T02:00:00-07:00'
   actor: P2-038 corrective implementation agent
   action: transition EMP-WORK-P2-038-CORRECTIVE to completed
-  reason: Record implementation completion after corrective verification while
-    leaving operator acceptance not recorded.
+  reason: Record implementation completion after corrective verification while leaving
+    operator acceptance not recorded.
 - revision: 69
   previous_revision: 68
   at: '2026-07-28T23:30:00-07:00'
   actor: GH-ZEUS-CLOSEOUT-001 reconciliation agent
   action: record Zeus Assurance closeout validation blocker
-  reason: Repository-local reconciliation passed, but aggregate publication
-    validation failed on missing external EOS state and checkpoint records.
-    Publication, Draft activation, dispatch, and EENS implementation did not
-    occur.
+  reason: Repository-local reconciliation passed, but aggregate publication validation
+    failed on missing external EOS state and checkpoint records. Publication, Draft
+    activation, dispatch, and EENS implementation did not occur.
 - revision: 70
   previous_revision: 69
   at: '2026-07-28T23:45:00-07:00'
   actor: GH-EOS-INTEGRATION-001 synchronization agent
   action: resolve GH-ZEUS-CLOSEOUT-001 external EOS blocker
-  reason: Repository-authoritative EOS projections, checkpoint runtime state,
-    and synchronization validation now satisfy the prior reentry conditions.
+  reason: Repository-authoritative EOS projections, checkpoint runtime state, and
+    synchronization validation now satisfy the prior reentry conditions.
 - revision: 71
   previous_revision: 70
   at: '2026-07-28T23:45:01-07:00'
   actor: GH-EOS-INTEGRATION-001 synchronization agent
   action: register repository EOS integration mission
-  reason: Record the bounded repository–EOS authority and synchronization
-    mission without activating Draft documents or beginning EENS implementation.
+  reason: Record the bounded repository–EOS authority and synchronization mission
+    without activating Draft documents or beginning EENS implementation.
 - revision: 72
   previous_revision: 71
   at: '2026-07-28T23:59:00-07:00'
   actor: GH-EOS-INTEGRATION-001 synchronization agent
   action: complete repository EOS integration implementation
-  reason: Authority mapping, deterministic synchronization, drift detection,
-    layered validation, resume integration, and qualification evidence are
-    complete.
+  reason: Authority mapping, deterministic synchronization, drift detection, layered
+    validation, resume integration, and qualification evidence are complete.
 - revision: 73
   previous_revision: 72
   at: '2026-07-29T00:05:00-07:00'
   actor: GH-EOS-INTEGRATION-001 synchronization agent
   action: complete integrated Zeus baseline closeout
-  reason: Integrated repository, synchronization, EOS runtime, platform, and
-    resume qualification resolved the publication blocker and completed the
-    Engineering Execution Interface and Zeus Assurance baseline.
+  reason: Integrated repository, synchronization, EOS runtime, platform, and resume
+    qualification resolved the publication blocker and completed the Engineering Execution
+    Interface and Zeus Assurance baseline.
+- revision: 74
+  previous_revision: 73
+  at: '2026-07-29T01:24:49+00:00'
+  actor: ADMIT-GH-ZEUS-OA-CERTIFICATION-001 admission agent
+  action: create EMP-WORK-GH-ZEUS-OA-CERTIFICATION-001
+  reason: Register the admitted Zeus OA certification WOP as eligible, unstarted work
+    without executing any OA gate.
+- revision: 75
+  previous_revision: 74
+  at: '2026-07-29T05:00:00+00:00'
+  actor: REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001 reconstruction agent
+  action: supersede incomplete OA package and register Progressive OA WOP
+  reason: Preserve the historical package while registering the admitted thirty-gate
+    replacement as ready and unstarted.
+- revision: 76
+  previous_revision: 75
+  at: '2026-07-29T05:53:14+00:00'
+  actor: repository_owner
+  action: activate EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001
+  reason: Reconcile atomic activation of Mission Contract MC-VALIDATION-ZEUS-PUBLICATION-001 in TX-ACTIVATE-VALIDATION-ZEUS-001.
+- revision: 77
+  previous_revision: 76
+  at: '2026-07-29T06:11:33+00:00'
+  actor: repository_owner
+  action: activate EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001
+  reason: Reconcile atomic activation of Mission Contract MC-MISSION-CONTRACT-PUBLICATION-001 in TX-ACTIVATE-MISSION-CONTRACT-PUBLICATION-001.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -664,8 +709,8 @@ entities:
     objective: Establish a single authority baseline for read-only Zeus capability
       discovery before any implementation is authorized.
     entry_criteria: Mission A validation baseline is clean and PHASE-0001 is Active.
-    completion_criteria: A separately authorized mission accepts the read-only
-      capability-discovery baseline without beginning runtime implementation.
+    completion_criteria: A separately authorized mission accepts the read-only capability-discovery
+      baseline without beginning runtime implementation.
   - registry_id: EMP-MISSION-PLATFORM-ROADMAP
     object_type: Mission
     title: Engineering Management Platform Roadmap
@@ -798,19 +843,24 @@ entities:
       to: active
       at: '2026-07-17T19:48:47+00:00'
       actor: Engineering Governance authorization agent
-      reason: The Engineering Mission Handoff approves and activates the bounded Revision 15 controlled-publication mission.
+      reason: The Engineering Mission Handoff approves and activates the bounded Revision
+        15 controlled-publication mission.
       authority_reference: EWO-000022
     - from: active
       to: completed
       at: '2026-07-18T00:00:00+00:00'
       actor: Engineering Governance authorization-publication agent
-      reason: Engineering Governance accepted the completed Revision 15 publication and activated EWO-000023.
+      reason: Engineering Governance accepted the completed Revision 15 publication
+        and activated EWO-000023.
       authority_reference: EWO-000023
     project_id: EMP-PROJECT-HOMELAB
     order: 2
-    objective: Persist Engineering Platform Construction Specification Revision 15 as a new controlled SPEC-0007 revision.
-    entry_criteria: EWO-000022 is Approved and Active; Category A Work Initiation passes; the Revision 15 source and trust boundary are verified.
-    completion_criteria: Revision 15 is acquired, reconciled, approved, published, evidenced, validated, and committed within EWO-000022 authority.
+    objective: Persist Engineering Platform Construction Specification Revision 15
+      as a new controlled SPEC-0007 revision.
+    entry_criteria: EWO-000022 is Approved and Active; Category A Work Initiation
+      passes; the Revision 15 source and trust boundary are verified.
+    completion_criteria: Revision 15 is acquired, reconciled, approved, published,
+      evidenced, validated, and committed within EWO-000022 authority.
   - registry_id: EMP-MISSION-GOVERNANCE-AUTHORITY-ARCHITECTURE
     object_type: Mission
     title: Governance Authority Architecture Investigation
@@ -840,13 +890,19 @@ entities:
       to: completed
       at: '2026-07-18T07:00:00+00:00'
       actor: Engineering Governance lifecycle-transition agent
-      reason: EWO-000023 completed Engineering execution and transitioned exceptionally from Active to Archived after Governance planning transfer.
-      authority_reference: Engineering Governance Authorization - Exceptional Lifecycle Transition for EWO-000023
+      reason: EWO-000023 completed Engineering execution and transitioned exceptionally
+        from Active to Archived after Governance planning transfer.
+      authority_reference: Engineering Governance Authorization - Exceptional Lifecycle
+        Transition for EWO-000023
     project_id: EMP-PROJECT-HOMELAB
     order: 3
-    objective: Investigate a permanent bounded governance-authority architecture without implementing it.
-    entry_criteria: EWO-000023 is persisted, Approved, and Active; the authorization-publication transaction is committed; and Category A Work Initiation passes.
-    completion_criteria: Required investigation artifacts, evidence, analyses, exactly one Draft EDR, validation, roadmap, recommendation package, and Completion Report are ready for Governance review without implementation.
+    objective: Investigate a permanent bounded governance-authority architecture without
+      implementing it.
+    entry_criteria: EWO-000023 is persisted, Approved, and Active; the authorization-publication
+      transaction is committed; and Category A Work Initiation passes.
+    completion_criteria: Required investigation artifacts, evidence, analyses, exactly
+      one Draft EDR, validation, roadmap, recommendation package, and Completion Report
+      are ready for Governance review without implementation.
     controlled_lifecycle_state: Archived
     engineering_authority: closed
     responsibility_status: transferred-to-governance-planning
@@ -856,7 +912,8 @@ entities:
     management_state: proposed
     owner: Engineering Governance
     scope: EMP-PROJECT-HOMELAB
-    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    authority_reference: Engineering Governance Authorization - Governance Planning
+      Transfer Transaction
     source_records:
     - EDR-0003
     - EWO-000023
@@ -872,13 +929,20 @@ entities:
       to: proposed
       at: '2026-07-18T06:00:00+00:00'
       actor: Engineering Governance planning-transfer agent
-      reason: Accept planning responsibility for approved EWO-000023 future obligations without authorizing evaluation, implementation, or execution.
-      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+      reason: Accept planning responsibility for approved EWO-000023 future obligations
+        without authorizing evaluation, implementation, or execution.
+      authority_reference: Engineering Governance Authorization - Governance Planning
+        Transfer Transaction
     project_id: EMP-PROJECT-HOMELAB
     order: 4
-    objective: Preserve and plan future evaluation of the Engineering Governance Review Pattern and all approved EWO-000023 governance-improvement candidates.
-    entry_criteria: Separately authorized Governance work identifies the exact evaluation scope, controlled sources, owners, and boundaries; no authority is inherited from this planning entry.
-    completion_criteria: Every approved institutionalization recommendation is dispositioned through separately authorized Governance work with complete traceability and no inferred implementation authority.
+    objective: Preserve and plan future evaluation of the Engineering Governance Review
+      Pattern and all approved EWO-000023 governance-improvement candidates.
+    entry_criteria: Separately authorized Governance work identifies the exact evaluation
+      scope, controlled sources, owners, and boundaries; no authority is inherited
+      from this planning entry.
+    completion_criteria: Every approved institutionalization recommendation is dispositioned
+      through separately authorized Governance work with complete traceability and
+      no inferred implementation authority.
   phases:
   - registry_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
     object_type: Phase
@@ -901,8 +965,8 @@ entities:
       to: active
       at: 2026-07-25
       actor: Mission B authority reconciliation agent
-      reason: Activate the authority-establishment phase while keeping all Zeus
-        implementation work inactive.
+      reason: Activate the authority-establishment phase while keeping all Zeus implementation
+        work inactive.
       authority_reference: PHASE-0001
     mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
     order: 1
@@ -1153,9 +1217,9 @@ entities:
       to: completed
       at: '2026-07-27T02:00:00-07:00'
       actor: ZEUS-P2-010 implementation agent
-      reason: Operational artifact gates and context services pass isolated
-        qualification with checkpoint recovery and evidence while the default
-        runtime still denies operational dispatch.
+      reason: Operational artifact gates and context services pass isolated qualification
+        with checkpoint recovery and evidence while the default runtime still denies
+        operational dispatch.
       authority_reference: ZEUS-P2-010
     project_id: EMP-PROJECT-HOMELAB
     order: 31
@@ -1164,10 +1228,10 @@ entities:
     sprint_id: null
     work_type: operational-gate-handler-qualification
     priority: 1
-    completion_criteria: An operational-only handler executes safe real gates
-      through the framework with immutable context, verification-first safety,
-      deterministic action checkpoints, cancellation, resume, evidence, and
-      unchanged production dispatch denial.
+    completion_criteria: An operational-only handler executes safe real gates through
+      the framework with immutable context, verification-first safety, deterministic
+      action checkpoints, cancellation, resume, evidence, and unchanged production
+      dispatch denial.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-009-GATE-HANDLER-FRAMEWORK
     object_type: WorkItem
@@ -1190,9 +1254,9 @@ entities:
       to: completed
       at: '2026-07-27T01:00:00-07:00'
       actor: ZEUS-P2-009 implementation agent
-      reason: The prior qualified baseline is published and the pluggable,
-        isolated, verification-first qualification handler framework passes
-        while operational dispatch remains disabled.
+      reason: The prior qualified baseline is published and the pluggable, isolated,
+        verification-first qualification handler framework passes while operational
+        dispatch remains disabled.
       authority_reference: ZEUS-P2-009
     project_id: EMP-PROJECT-HOMELAB
     order: 30
@@ -1201,10 +1265,9 @@ entities:
     sprint_id: null
     work_type: operational-gate-handler-framework
     priority: 1
-    completion_criteria: Reconciled work is published, handler discovery and
-      compatibility negotiation pass, verification-first execution is
-      evidenced, qualification remains non-mutating, and production dispatch
-      remains unavailable.
+    completion_criteria: Reconciled work is published, handler discovery and compatibility
+      negotiation pass, verification-first execution is evidenced, qualification remains
+      non-mutating, and production dispatch remains unavailable.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-008-MISSION-EXECUTION-RUNTIME
     object_type: WorkItem
@@ -1227,9 +1290,9 @@ entities:
       to: completed
       at: '2026-07-27T00:00:00-07:00'
       actor: ZEUS-P2-008 implementation agent
-      reason: Persistent state, typed gates, checkpoints, evidence publication,
-        EENS projection, recovery, and qualification pass while operational
-        dispatch remains disabled.
+      reason: Persistent state, typed gates, checkpoints, evidence publication, EENS
+        projection, recovery, and qualification pass while operational dispatch remains
+        disabled.
       authority_reference: ZEUS-P2-008
     project_id: EMP-PROJECT-HOMELAB
     order: 29
@@ -1238,9 +1301,9 @@ entities:
     sprint_id: null
     work_type: mission-execution-runtime
     priority: 1
-    completion_criteria: Qualified WOPs traverse a persistent idempotent gate
-      engine with immutable evidence, checkpoints, interruption recovery, and
-      EENS integration while operational dispatch stays fail closed.
+    completion_criteria: Qualified WOPs traverse a persistent idempotent gate engine
+      with immutable evidence, checkpoints, interruption recovery, and EENS integration
+      while operational dispatch stays fail closed.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-007-MISSION-ADMISSION-RUNTIME
     object_type: WorkItem
@@ -1263,9 +1326,9 @@ entities:
       to: completed
       at: '2026-07-26T23:00:00-07:00'
       actor: ZEUS-P2-007 implementation agent
-      reason: The shared admission state machine, evidence, resume behavior,
-        diagnostics, integration, and qualification pass while production
-        commissioning remains external and blocked.
+      reason: The shared admission state machine, evidence, resume behavior, diagnostics,
+        integration, and qualification pass while production commissioning remains
+        external and blocked.
       authority_reference: ZEUS-P2-007
     project_id: EMP-PROJECT-HOMELAB
     order: 28
@@ -1274,10 +1337,9 @@ entities:
     sprint_id: null
     work_type: mission-admission-runtime-integration
     priority: 1
-    completion_criteria: The supervised admission pipeline uses shared runtime
-      interfaces, persists auditable stage evidence, resumes idempotently,
-      preserves qualification behavior, and fails closed without authentic
-      operational authority.
+    completion_criteria: The supervised admission pipeline uses shared runtime interfaces,
+      persists auditable stage evidence, resumes idempotently, preserves qualification
+      behavior, and fails closed without authentic operational authority.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-006-OWNER-ENROLLMENT-TOOLKIT
     object_type: WorkItem
@@ -1300,8 +1362,8 @@ entities:
       to: completed
       at: '2026-07-26T22:00:00-07:00'
       actor: ZEUS-P2-006 implementation agent
-      reason: Toolkit and qualification are complete while genuine owner
-        enrollment and commissioning remain external.
+      reason: Toolkit and qualification are complete while genuine owner enrollment
+        and commissioning remain external.
       authority_reference: ZEUS-P2-006
     project_id: EMP-PROJECT-HOMELAB
     order: 27
@@ -1310,10 +1372,9 @@ entities:
     sprint_id: null
     work_type: authority-owner-enrollment-toolkit
     priority: 1
-    completion_criteria: Enrollment lifecycle, trust compilation, unsigned
-      publication preparation, approval validation, diagnostics,
-      documentation, and repository qualification pass without production
-      enrollment or activation.
+    completion_criteria: Enrollment lifecycle, trust compilation, unsigned publication
+      preparation, approval validation, diagnostics, documentation, and repository
+      qualification pass without production enrollment or activation.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-005-AUTHORITY-COMMISSIONING
     object_type: WorkItem
@@ -1336,8 +1397,8 @@ entities:
       to: blocked
       at: '2026-07-26T21:00:00-07:00'
       actor: ZEUS-P2-005 commissioning preflight agent
-      reason: Authentic owner principals, public keys, signed envelopes, and
-        Governance approval are absent; activation is prohibited.
+      reason: Authentic owner principals, public keys, signed envelopes, and Governance
+        approval are absent; activation is prohibited.
       authority_reference: ZEUS-P2-005
     project_id: EMP-PROJECT-HOMELAB
     order: 26
@@ -1346,9 +1407,9 @@ entities:
     sprint_id: null
     work_type: operational-authority-commissioning
     priority: 1
-    completion_criteria: All designated owners publish authentic signed
-      records, readiness passes, activation is receipt-bound, operational WOP
-      generation succeeds, and validation passes without dispatch.
+    completion_criteria: All designated owners publish authentic signed records, readiness
+      passes, activation is receipt-bound, operational WOP generation succeeds, and
+      validation passes without dispatch.
     queue_ids: []
     blocking_conditions:
     - production owner trust anchors not enrolled
@@ -1384,8 +1445,8 @@ entities:
       to: completed
       at: '2026-07-26T20:00:00-07:00'
       actor: ZEUS-P2-004 implementation agent
-      reason: Record framework qualification without enrolling owner keys,
-        fabricating records, or activating production.
+      reason: Record framework qualification without enrolling owner keys, fabricating
+        records, or activating production.
       authority_reference: ZEUS-P2-004
     project_id: EMP-PROJECT-HOMELAB
     order: 25
@@ -1394,10 +1455,9 @@ entities:
     sprint_id: null
     work_type: operational-authority-publication
     priority: 1
-    completion_criteria: Signed owner publication, candidate reconstruction,
-      readiness, explicit activation, rollback, revocation, recovery,
-      documentation, and qualification pass while production remains
-      fail-closed.
+    completion_criteria: Signed owner publication, candidate reconstruction, readiness,
+      explicit activation, rollback, revocation, recovery, documentation, and qualification
+      pass while production remains fail-closed.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-003-AUTHORITY-RESOLUTION
     object_type: WorkItem
@@ -1420,8 +1480,8 @@ entities:
       to: completed
       at: '2026-07-26T12:00:00-07:00'
       actor: ZEUS-P2-003 implementation agent
-      reason: Record the completed and qualified implementation while live
-        authority-source publication remains fail-closed.
+      reason: Record the completed and qualified implementation while live authority-source
+        publication remains fail-closed.
       authority_reference: ZEUS-P2-003
     project_id: EMP-PROJECT-HOMELAB
     order: 24
@@ -1430,9 +1490,9 @@ entities:
     sprint_id: null
     work_type: authority-resolution-runtime
     priority: 1
-    completion_criteria: Runtime, ARB sealing, dual-mode WOP generation,
-      validation, compatibility, documentation, evidence, and repository
-      qualification pass without live approval allocation.
+    completion_criteria: Runtime, ARB sealing, dual-mode WOP generation, validation,
+      compatibility, documentation, evidence, and repository qualification pass without
+      live approval allocation.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-CAPABILITY-DISCOVERY
     object_type: WorkItem
@@ -1946,13 +2006,15 @@ entities:
       to: active
       at: '2026-07-17T19:48:47+00:00'
       actor: Engineering Governance authorization agent
-      reason: EWO-000022 authorizes the bounded Revision 15 controlled-publication mission.
+      reason: EWO-000022 authorizes the bounded Revision 15 controlled-publication
+        mission.
       authority_reference: EWO-000022
     - from: active
       to: completed
       at: '2026-07-18T00:00:01+00:00'
       actor: Engineering Governance authorization-publication agent
-      reason: Revision 15 publication execution completed and was accepted by Engineering Governance.
+      reason: Revision 15 publication execution completed and was accepted by Engineering
+        Governance.
       authority_reference: EWO-000023
     project_id: EMP-PROJECT-HOMELAB
     order: 10
@@ -1961,7 +2023,9 @@ entities:
     sprint_id: null
     work_type: controlled-document-publication
     priority: 1
-    completion_criteria: Revision 15 source acquisition, reconciliation, controlled publication, evidence, validation, state reconciliation, and bounded repository commit pass under EWO-000022.
+    completion_criteria: Revision 15 source acquisition, reconciliation, controlled
+      publication, evidence, validation, state reconciliation, and bounded repository
+      commit pass under EWO-000022.
     queue_ids: []
   - registry_id: EMP-WORK-GOVERNANCE-AUTHORITY-ARCHITECTURE
     object_type: WorkItem
@@ -1990,8 +2054,10 @@ entities:
       to: completed
       at: '2026-07-18T07:00:00+00:00'
       actor: Engineering Governance lifecycle-transition agent
-      reason: EWO-000023 completed all Engineering obligations and transitioned exceptionally from Active to Archived.
-      authority_reference: Engineering Governance Authorization - Exceptional Lifecycle Transition for EWO-000023
+      reason: EWO-000023 completed all Engineering obligations and transitioned exceptionally
+        from Active to Archived.
+      authority_reference: Engineering Governance Authorization - Exceptional Lifecycle
+        Transition for EWO-000023
     project_id: EMP-PROJECT-HOMELAB
     order: 11
     mission_id: EMP-MISSION-GOVERNANCE-AUTHORITY-ARCHITECTURE
@@ -1999,7 +2065,8 @@ entities:
     sprint_id: null
     work_type: governance-architecture-investigation
     priority: 1
-    completion_criteria: Complete all EWO-000023 investigation deliverables and validation without implementing or activating any recommendation.
+    completion_criteria: Complete all EWO-000023 investigation deliverables and validation
+      without implementing or activating any recommendation.
     queue_ids: []
     controlled_lifecycle_state: Archived
     engineering_authority: closed
@@ -2010,7 +2077,8 @@ entities:
     management_state: deferred
     owner: Engineering Governance
     scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
-    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    authority_reference: Engineering Governance Authorization - Governance Planning
+      Transfer Transaction
     source_records:
     - EDR-0003
     - EWO-000023-COMPLETION
@@ -2025,8 +2093,10 @@ entities:
       to: deferred
       at: '2026-07-18T06:00:00+00:00'
       actor: Engineering Governance planning-transfer agent
-      reason: Accept planning ownership only; evaluation and implementation remain separately authorized future work.
-      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+      reason: Accept planning ownership only; evaluation and implementation remain
+        separately authorized future work.
+      authority_reference: Engineering Governance Authorization - Governance Planning
+        Transfer Transaction
     project_id: EMP-PROJECT-HOMELAB
     order: 12
     mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
@@ -2034,15 +2104,20 @@ entities:
     sprint_id: null
     work_type: governance-planning
     priority: 2
-    completion_criteria: Evaluation only. Separately authorized Governance work dispositions the Approval Package Synchronization Declaration, Approval Package Synchronization Verification, and Approval Package Manifest; implementation is not authorized.
+    completion_criteria: Evaluation only. Separately authorized Governance work dispositions
+      the Approval Package Synchronization Declaration, Approval Package Synchronization
+      Verification, and Approval Package Manifest; implementation is not authorized.
     queue_ids: []
     planning_status: deferred
     evaluation_status: not-authorized
     implementation_status: not-authorized
     authorization_status: planning-ownership-only
-    originating_approval: EDR-0003 Governance disposition and Governance Planning Transfer Transaction
-    dependency_chain: EDR-0003 approval and publication, then separate Governance evaluation authority
-    reentry_conditions: Approved and published EDR-0003 plus a separately authorized Governance evaluation EWO or superior controlled authority.
+    originating_approval: EDR-0003 Governance disposition and Governance Planning
+      Transfer Transaction
+    dependency_chain: EDR-0003 approval and publication, then separate Governance
+      evaluation authority
+    reentry_conditions: Approved and published EDR-0003 plus a separately authorized
+      Governance evaluation EWO or superior controlled authority.
     recommendations:
     - Approval Package Synchronization Declaration
     - Approval Package Synchronization Verification
@@ -2053,7 +2128,8 @@ entities:
     management_state: deferred
     owner: Engineering Governance
     scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
-    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    authority_reference: Engineering Governance Authorization - Governance Planning
+      Transfer Transaction
     source_records:
     - EDR-0003
     - EWO-000023-COMPLETION
@@ -2068,8 +2144,10 @@ entities:
       to: deferred
       at: '2026-07-18T06:00:00+00:00'
       actor: Engineering Governance planning-transfer agent
-      reason: Accept planning ownership only; evaluation and implementation remain separately authorized future work.
-      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+      reason: Accept planning ownership only; evaluation and implementation remain
+        separately authorized future work.
+      authority_reference: Engineering Governance Authorization - Governance Planning
+        Transfer Transaction
     project_id: EMP-PROJECT-HOMELAB
     order: 13
     mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
@@ -2077,15 +2155,21 @@ entities:
     sprint_id: null
     work_type: governance-planning
     priority: 2
-    completion_criteria: Evaluation only. Separately authorized Governance work dispositions the Permanent Engineering Governance Disposition Report, Governance Transaction Series, and Controlled Governance Record-Class Architecture; implementation is not authorized.
+    completion_criteria: Evaluation only. Separately authorized Governance work dispositions
+      the Permanent Engineering Governance Disposition Report, Governance Transaction
+      Series, and Controlled Governance Record-Class Architecture; implementation
+      is not authorized.
     queue_ids: []
     planning_status: deferred
     evaluation_status: not-authorized
     implementation_status: not-authorized
     authorization_status: planning-ownership-only
-    originating_approval: EDR-0003 Governance disposition, deferred record-class recommendation, and Governance Planning Transfer Transaction
-    dependency_chain: EDR-0003 approval and publication, then separate Governance evaluation authority
-    reentry_conditions: Approved and published EDR-0003 plus a separately authorized Governance evaluation EWO or superior controlled authority.
+    originating_approval: EDR-0003 Governance disposition, deferred record-class recommendation,
+      and Governance Planning Transfer Transaction
+    dependency_chain: EDR-0003 approval and publication, then separate Governance
+      evaluation authority
+    reentry_conditions: Approved and published EDR-0003 plus a separately authorized
+      Governance evaluation EWO or superior controlled authority.
     recommendations:
     - Permanent Engineering Governance Disposition Report
     - Governance Transaction Series
@@ -2096,7 +2180,8 @@ entities:
     management_state: deferred
     owner: Engineering Governance
     scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
-    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    authority_reference: Engineering Governance Authorization - Governance Planning
+      Transfer Transaction
     source_records:
     - EDR-0003
     - EWO-000023-COMPLETION
@@ -2111,8 +2196,10 @@ entities:
       to: deferred
       at: '2026-07-18T06:00:00+00:00'
       actor: Engineering Governance planning-transfer agent
-      reason: Accept planning ownership only; evaluation and implementation remain separately authorized future work.
-      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+      reason: Accept planning ownership only; evaluation and implementation remain
+        separately authorized future work.
+      authority_reference: Engineering Governance Authorization - Governance Planning
+        Transfer Transaction
     project_id: EMP-PROJECT-HOMELAB
     order: 14
     mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
@@ -2120,15 +2207,22 @@ entities:
     sprint_id: null
     work_type: governance-planning
     priority: 2
-    completion_criteria: Evaluation only. Separately authorized Governance work dispositions Deferred Recommendation Reconciliation, Closeout Completeness Verification, Engineering Closeout Transition Phase, Mandatory Engineering Closeout Transition Gate, and Engineering Authority Transfer Verification; implementation is not authorized.
+    completion_criteria: Evaluation only. Separately authorized Governance work dispositions
+      Deferred Recommendation Reconciliation, Closeout Completeness Verification,
+      Engineering Closeout Transition Phase, Mandatory Engineering Closeout Transition
+      Gate, and Engineering Authority Transfer Verification; implementation is not
+      authorized.
     queue_ids: []
     planning_status: deferred
     evaluation_status: not-authorized
     implementation_status: not-authorized
     authorization_status: planning-ownership-only
-    originating_approval: Engineering Lifecycle Closeout Verification, Recommendation Reconciliation, and Governance Planning Transfer Transaction
-    dependency_chain: Authoritative planning transfer, then separate Governance evaluation authority
-    reentry_conditions: Separately authorized Governance evaluation EWO or superior controlled authority defining lifecycle-owner scope.
+    originating_approval: Engineering Lifecycle Closeout Verification, Recommendation
+      Reconciliation, and Governance Planning Transfer Transaction
+    dependency_chain: Authoritative planning transfer, then separate Governance evaluation
+      authority
+    reentry_conditions: Separately authorized Governance evaluation EWO or superior
+      controlled authority defining lifecycle-owner scope.
     recommendations:
     - Deferred Recommendation Reconciliation
     - Closeout Completeness Verification
@@ -2143,7 +2237,8 @@ entities:
     management_state: deferred
     owner: Engineering Governance
     scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
-    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    authority_reference: Engineering Governance Authorization - Governance Planning
+      Transfer Transaction
     source_records:
     - EDR-0003
     - EWO-000023-COMPLETION
@@ -2158,8 +2253,10 @@ entities:
       to: deferred
       at: '2026-07-18T06:00:00+00:00'
       actor: Engineering Governance planning-transfer agent
-      reason: Accept planning ownership only; evaluation and implementation remain separately authorized future work.
-      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+      reason: Accept planning ownership only; evaluation and implementation remain
+        separately authorized future work.
+      authority_reference: Engineering Governance Authorization - Governance Planning
+        Transfer Transaction
     project_id: EMP-PROJECT-HOMELAB
     order: 15
     mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
@@ -2167,15 +2264,21 @@ entities:
     sprint_id: null
     work_type: governance-planning
     priority: 2
-    completion_criteria: Evaluation only. Separately authorized Governance work dispositions authoritative planning ownership, Governance Planning Transfer Transaction, transfer-of-responsibility model, attributable deferrals, Work Registry integration, and governance planning architecture; implementation is not authorized.
+    completion_criteria: Evaluation only. Separately authorized Governance work dispositions
+      authoritative planning ownership, Governance Planning Transfer Transaction,
+      transfer-of-responsibility model, attributable deferrals, Work Registry integration,
+      and governance planning architecture; implementation is not authorized.
     queue_ids: []
     planning_status: deferred
     evaluation_status: not-authorized
     implementation_status: not-authorized
     authorization_status: planning-ownership-only
-    originating_approval: Recommendation Reconciliation and Governance Planning Transfer Transaction
-    dependency_chain: Completed planning transfer, then separate Governance evaluation authority
-    reentry_conditions: Separately authorized Governance evaluation EWO or superior controlled authority defining planning-owner scope.
+    originating_approval: Recommendation Reconciliation and Governance Planning Transfer
+      Transaction
+    dependency_chain: Completed planning transfer, then separate Governance evaluation
+      authority
+    reentry_conditions: Separately authorized Governance evaluation EWO or superior
+      controlled authority defining planning-owner scope.
     recommendations:
     - Authoritative planning ownership
     - Governance Planning Transfer Transaction
@@ -2189,7 +2292,8 @@ entities:
     management_state: completed
     owner: Engineering Governance
     scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
-    authority_reference: Engineering Governance Authorization - Engineering Reporting Standard Implementation
+    authority_reference: Engineering Governance Authorization - Engineering Reporting
+      Standard Implementation
     source_records:
     - STD-0003
     - PROC-0001
@@ -2206,8 +2310,10 @@ entities:
       to: completed
       at: '2026-07-18T09:00:00+00:00'
       actor: Engineering Governance reporting-standard implementation agent
-      reason: The four-document reporting refinement package was implemented and prepared for atomic publication under direct Engineering Governance authority.
-      authority_reference: Engineering Governance Authorization - Engineering Reporting Standard Implementation
+      reason: The four-document reporting refinement package was implemented and prepared
+        for atomic publication under direct Engineering Governance authority.
+      authority_reference: Engineering Governance Authorization - Engineering Reporting
+        Standard Implementation
     project_id: EMP-PROJECT-HOMELAB
     order: 16
     mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
@@ -2215,7 +2321,10 @@ entities:
     sprint_id: null
     work_type: governance-institutionalization
     priority: 1
-    completion_criteria: STD-0003 owns normative reporting requirements, PROC-0001 owns report production workflow, TPL-0002 owns reusable structure, and TPL-0001 owns transaction-specific authorization fields; validation and atomic publication pass without architectural redesign.
+    completion_criteria: STD-0003 owns normative reporting requirements, PROC-0001
+      owns report production workflow, TPL-0002 owns reusable structure, and TPL-0001
+      owns transaction-specific authorization fields; validation and atomic publication
+      pass without architectural redesign.
     queue_ids: []
   - registry_id: EMP-WORK-ENGINEERING-HANDOFF-TEMPLATE
     object_type: WorkItem
@@ -2223,7 +2332,8 @@ entities:
     management_state: completed
     owner: Engineering Governance
     scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
-    authority_reference: Engineering Governance Authorization - Next-Generation Engineering Handoff Template Implementation
+    authority_reference: Engineering Governance Authorization - Next-Generation Engineering
+      Handoff Template Implementation
     source_records:
     - TPL-0001
     - STD-0003
@@ -2243,8 +2353,11 @@ entities:
       to: completed
       at: '2026-07-18T10:00:00+00:00'
       actor: Engineering Governance handoff-template implementation agent
-      reason: TPL-0001 was refined into a concise authorization contract after semantic coverage verification established that no secondary controlled-document revision was required.
-      authority_reference: Engineering Governance Authorization - Next-Generation Engineering Handoff Template Implementation
+      reason: TPL-0001 was refined into a concise authorization contract after semantic
+        coverage verification established that no secondary controlled-document revision
+        was required.
+      authority_reference: Engineering Governance Authorization - Next-Generation
+        Engineering Handoff Template Implementation
     project_id: EMP-PROJECT-HOMELAB
     order: 17
     mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
@@ -2252,7 +2365,10 @@ entities:
     sprint_id: null
     work_type: governance-institutionalization
     priority: 1
-    completion_criteria: TPL-0001 contains the proven authorization-contract sections, references single authoritative owners for reusable behavior, preserves historical Engineering Work Orders, and passes controlled-document and aggregate platform validation without architectural redesign.
+    completion_criteria: TPL-0001 contains the proven authorization-contract sections,
+      references single authoritative owners for reusable behavior, preserves historical
+      Engineering Work Orders, and passes controlled-document and aggregate platform
+      validation without architectural redesign.
     queue_ids: []
   - registry_id: EMP-WORK-ENGINEERING-HANDOFF-CONSTRUCTION-PROCEDURE
     object_type: WorkItem
@@ -2260,7 +2376,8 @@ entities:
     management_state: completed
     owner: Engineering Governance
     scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
-    authority_reference: Engineering Governance Authorization - Engineering Handoff Construction Procedure Implementation
+    authority_reference: Engineering Governance Authorization - Engineering Handoff
+      Construction Procedure Implementation
     source_records:
     - PROC-0004
     - TPL-0001
@@ -2276,9 +2393,12 @@ entities:
     - from: null
       to: completed
       at: '2026-07-18T11:00:00+00:00'
-      actor: Engineering Governance handoff-construction procedure implementation agent
-      reason: PROC-0004 was established as the construction owner and TPL-0001 was restricted to reusable structural ownership under the qualified architecture.
-      authority_reference: Engineering Governance Authorization - Engineering Handoff Construction Procedure Implementation
+      actor: Engineering Governance handoff-construction procedure implementation
+        agent
+      reason: PROC-0004 was established as the construction owner and TPL-0001 was
+        restricted to reusable structural ownership under the qualified architecture.
+      authority_reference: Engineering Governance Authorization - Engineering Handoff
+        Construction Procedure Implementation
     project_id: EMP-PROJECT-HOMELAB
     order: 18
     mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
@@ -2286,7 +2406,10 @@ entities:
     sprint_id: null
     work_type: governance-institutionalization
     priority: 1
-    completion_criteria: PROC-0004 owns construction and Authority Preservation Validation; TPL-0001 owns structure; STD-0003 owns normative semantics; PROC-0001 owns post-activation execution; validation and atomic publication preserve Governance authority and platform architecture.
+    completion_criteria: PROC-0004 owns construction and Authority Preservation Validation;
+      TPL-0001 owns structure; STD-0003 owns normative semantics; PROC-0001 owns post-activation
+      execution; validation and atomic publication preserve Governance authority and
+      platform architecture.
     queue_ids: []
   - registry_id: EMP-WORK-ENGINEERING-TRANSACTION-PROFILE
     object_type: WorkItem
@@ -2294,7 +2417,8 @@ entities:
     management_state: completed
     owner: Engineering Governance
     scope: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
-    authority_reference: Engineering Governance Authorization - Engineering Transaction Profile Implementation
+    authority_reference: Engineering Governance Authorization - Engineering Transaction
+      Profile Implementation
     source_records:
     - SPEC-0008
     - PROC-0004
@@ -2310,8 +2434,11 @@ entities:
       to: completed
       at: '2026-07-18T12:00:00+00:00'
       actor: Engineering Governance ETP implementation agent
-      reason: The specification-owned ETP coordination model, sole baseline profile, construction integration, structural manifest, and validation fixtures were completed within the approved subsystem.
-      authority_reference: Engineering Governance Authorization - Engineering Transaction Profile Implementation
+      reason: The specification-owned ETP coordination model, sole baseline profile,
+        construction integration, structural manifest, and validation fixtures were
+        completed within the approved subsystem.
+      authority_reference: Engineering Governance Authorization - Engineering Transaction
+        Profile Implementation
     project_id: EMP-PROJECT-HOMELAB
     order: 19
     mission_id: EMP-MISSION-GOVERNANCE-REVIEW-PATTERN-INSTITUTIONALIZATION
@@ -2319,7 +2446,10 @@ entities:
     sprint_id: null
     work_type: governance-institutionalization
     priority: 1
-    completion_criteria: SPEC-0008 owns profile coordination, the sole baseline profile resolves deterministically and fail-closed, PROC-0004 consumes it, TPL-0001 records the frozen manifest, and existing semantic owners remain unchanged through atomic validated publication.
+    completion_criteria: SPEC-0008 owns profile coordination, the sole baseline profile
+      resolves deterministically and fail-closed, PROC-0004 consumes it, TPL-0001
+      records the frozen manifest, and existing semantic owners remain unchanged through
+      atomic validated publication.
     queue_ids: []
   - registry_id: EMP-WORK-RASPBERRY-PI-ENGINEERING-QUALIFICATION-PROCEDURE
     object_type: WorkItem
@@ -2327,7 +2457,8 @@ entities:
     management_state: proposed
     owner: Engineering Governance
     scope: Reusable Raspberry Pi engineering workstation commissioning qualification
-    authority_reference: Codex Handoff — Record Raspberry Pi Engineering Qualification Procedure Recommendation
+    authority_reference: Codex Handoff — Record Raspberry Pi Engineering Qualification
+      Procedure Recommendation
     source_records:
     - STD-0005
     - PROC-0001
@@ -2344,8 +2475,10 @@ entities:
       to: proposed
       at: '2026-07-19T03:08:05+00:00'
       actor: Codex
-      reason: Record a future procedure recommendation after portfolio discovery found no reusable Raspberry Pi qualification procedure.
-      authority_reference: Codex Handoff — Record Raspberry Pi Engineering Qualification Procedure Recommendation
+      reason: Record a future procedure recommendation after portfolio discovery found
+        no reusable Raspberry Pi qualification procedure.
+      authority_reference: Codex Handoff — Record Raspberry Pi Engineering Qualification
+        Procedure Recommendation
     project_id: EMP-PROJECT-HOMELAB
     order: 20
     mission_id: null
@@ -2353,7 +2486,14 @@ entities:
     sprint_id: null
     work_type: controlled-procedure-recommendation
     priority: 2
-    completion_criteria: Under separate future authorization, publish a repeatable controlled Raspberry Pi Engineering Qualification Procedure for engineering workstation commissioning. The procedure shall cover physical inspection, asset identification, power validation, storage validation, operating system verification, SSH provisioning and validation, network validation, hardware inventory, firmware validation, thermal validation, engineering baseline verification, asset registration, role assignment, documentation update, and engineering qualification sign-off. It shall reference existing authorities instead of duplicating their requirements.
+    completion_criteria: Under separate future authorization, publish a repeatable
+      controlled Raspberry Pi Engineering Qualification Procedure for engineering
+      workstation commissioning. The procedure shall cover physical inspection, asset
+      identification, power validation, storage validation, operating system verification,
+      SSH provisioning and validation, network validation, hardware inventory, firmware
+      validation, thermal validation, engineering baseline verification, asset registration,
+      role assignment, documentation update, and engineering qualification sign-off.
+      It shall reference existing authorities instead of duplicating their requirements.
     queue_ids: []
     planning_status: recommendation-recorded
     implementation_status: not-authorized
@@ -2373,7 +2513,10 @@ entities:
     - Role assignment
     - Documentation update
     - Engineering qualification sign-off
-    gap_summary: STD-0005 governs the hardware lifecycle, PROC-0003 governs recovery and Raspberry Pi update qualification, PROC-0001 governs work initiation and execution, and INF-0001 records infrastructure baselines; none defines an end-to-end repeatable Raspberry Pi commissioning qualification procedure.
+    gap_summary: STD-0005 governs the hardware lifecycle, PROC-0003 governs recovery
+      and Raspberry Pi update qualification, PROC-0001 governs work initiation and
+      execution, and INF-0001 records infrastructure baselines; none defines an end-to-end
+      repeatable Raspberry Pi commissioning qualification procedure.
     reentry_conditions:
     - Separate engineering authorization to develop controlled documentation
     - Whole-document reconciliation of every controlled document selected for revision
@@ -2384,7 +2527,8 @@ entities:
     management_state: proposed
     owner: Engineering Platform
     scope: Future Engineering OS automation of the governed qualification workflow
-    authority_reference: Codex Handoff — Record Raspberry Pi Engineering Qualification Procedure Recommendation
+    authority_reference: Codex Handoff — Record Raspberry Pi Engineering Qualification
+      Procedure Recommendation
     source_records:
     - STD-0005
     - SPEC-0007
@@ -2399,8 +2543,10 @@ entities:
       to: proposed
       at: '2026-07-19T03:08:05+00:00'
       actor: Codex
-      reason: Record future Engineering OS qualification automation separately from procedure development; no implementation is authorized.
-      authority_reference: Codex Handoff — Record Raspberry Pi Engineering Qualification Procedure Recommendation
+      reason: Record future Engineering OS qualification automation separately from
+        procedure development; no implementation is authorized.
+      authority_reference: Codex Handoff — Record Raspberry Pi Engineering Qualification
+        Procedure Recommendation
     project_id: EMP-PROJECT-HOMELAB
     order: 21
     mission_id: null
@@ -2408,12 +2554,17 @@ entities:
     sprint_id: null
     work_type: engineering-platform-automation-recommendation
     priority: 3
-    completion_criteria: After a Raspberry Pi Engineering Qualification Procedure is published and under separate implementation authorization, provide an Engineering OS workflow such as engctl qualify that executes or orchestrates the governed qualification stages, preserves validation evidence, and reports qualification status without creating a second source of procedural authority.
+    completion_criteria: After a Raspberry Pi Engineering Qualification Procedure
+      is published and under separate implementation authorization, provide an Engineering
+      OS workflow such as engctl qualify that executes or orchestrates the governed
+      qualification stages, preserves validation evidence, and reports qualification
+      status without creating a second source of procedural authority.
     queue_ids: []
     planning_status: recommendation-recorded
     implementation_status: not-authorized
     future_capability: engctl qualify
-    dependency_summary: Procedure publication and activation must precede automation design and implementation.
+    dependency_summary: Procedure publication and activation must precede automation
+      design and implementation.
     reentry_conditions:
     - Published Raspberry Pi Engineering Qualification Procedure
     - Separate Engineering OS automation authorization
@@ -2423,8 +2574,10 @@ entities:
     title: Engineering Qualification State Persistence
     management_state: proposed
     owner: Engineering Platform
-    scope: Standardized Qualification Report persistence for Engineering State and resume consumption
-    authority_reference: Codex Handoff — Persist Raspberry Pi Qualification Architecture Recommendations
+    scope: Standardized Qualification Report persistence for Engineering State and
+      resume consumption
+    authority_reference: Codex Handoff — Persist Raspberry Pi Qualification Architecture
+      Recommendations
     source_records:
     - STD-0004
     - STD-0005
@@ -2443,8 +2596,11 @@ entities:
       to: proposed
       at: '2026-07-19T03:33:22+00:00'
       actor: Codex
-      reason: Record missing deferred architecture work after duplicate review found procedure-publication and automation items but no qualification-state persistence item.
-      authority_reference: Codex Handoff — Persist Raspberry Pi Qualification Architecture Recommendations
+      reason: Record missing deferred architecture work after duplicate review found
+        procedure-publication and automation items but no qualification-state persistence
+        item.
+      authority_reference: Codex Handoff — Persist Raspberry Pi Qualification Architecture
+        Recommendations
     project_id: EMP-PROJECT-HOMELAB
     order: 22
     mission_id: null
@@ -2452,16 +2608,24 @@ entities:
     sprint_id: null
     work_type: engineering-platform-state-persistence-recommendation
     priority: 2
-    completion_criteria: Under separate future authorization, define and implement standardized Qualification Reports as persistent Engineering State artifacts with asset identity, qualification disposition, limitations, authoritative source linkage, freshness, and traceability consumable by Engineering Resume and future Engineering Platform automation without duplicating the report, asset record, or governing procedure.
+    completion_criteria: Under separate future authorization, define and implement
+      standardized Qualification Reports as persistent Engineering State artifacts
+      with asset identity, qualification disposition, limitations, authoritative source
+      linkage, freshness, and traceability consumable by Engineering Resume and future
+      Engineering Platform automation without duplicating the report, asset record,
+      or governing procedure.
     queue_ids: []
     planning_status: recommendation-recorded
     implementation_status: not-authorized
-    dependency_summary: The authoritative Qualification Procedure and standardized Qualification Report contract must exist before state persistence, resume integration, or qualification automation is implemented.
+    dependency_summary: The authoritative Qualification Procedure and standardized
+      Qualification Report contract must exist before state persistence, resume integration,
+      or qualification automation is implemented.
     reentry_conditions:
     - Published authoritative Engineering Qualification Procedure
     - Approved standardized Qualification Report contract
     - Separately authorized Engineering State and resume integration work
-    - Defined ownership and freshness interfaces consistent with STD-0004, STD-0005, SPEC-0004, and SPEC-0007
+    - Defined ownership and freshness interfaces consistent with STD-0004, STD-0005,
+      SPEC-0004, and SPEC-0007
   - registry_id: EMP-WORK-ZEUS-P2-019-EXECUTION-FOUNDATION
     object_type: WorkItem
     title: Zeus Production Execution Foundation
@@ -2499,8 +2663,8 @@ entities:
     sprint_id: null
     work_type: platform-implementation
     priority: 0
-    completion_criteria: Production execution foundation implemented, validated,
-      committed and prepared for separate signed publication and commissioning.
+    completion_criteria: Production execution foundation implemented, validated, committed
+      and prepared for separate signed publication and commissioning.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-020-PMCT
     object_type: WorkItem
@@ -2538,8 +2702,8 @@ entities:
     sprint_id: null
     work_type: test-framework-implementation
     priority: 0
-    completion_criteria: Locked cumulative PMCT, evidence package, self-tests,
-      controlled reconciliation, and honest initial OA-01 NOT_READY result are complete.
+    completion_criteria: Locked cumulative PMCT, evidence package, self-tests, controlled
+      reconciliation, and honest initial OA-01 NOT_READY result are complete.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-021-NEXT-ACTION
     object_type: WorkItem
@@ -2568,7 +2732,8 @@ entities:
       to: completed
       at: '2026-07-26T21:35:00+00:00'
       actor: ZEUS-P2-021 implementation agent
-      reason: State-derived decision interface and Codex PMCT OA-01 demonstration passed; operator acceptance remains separately required.
+      reason: State-derived decision interface and Codex PMCT OA-01 demonstration
+        passed; operator acceptance remains separately required.
       authority_reference: ZEUS-P2-021
     project_id: EMP-PROJECT-HOMELAB
     order: 34
@@ -2578,8 +2743,8 @@ entities:
     work_type: acceptance-interface-implementation
     priority: 0
     completion_criteria: Human and JSON next-action output derives from authoritative
-      state, remains BETA/observational, and produces an OA-01 Codex PASS
-      demonstration without implying operator acceptance.
+      state, remains BETA/observational, and produces an OA-01 Codex PASS demonstration
+      without implying operator acceptance.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-022-RUNTIME-TELEMETRY
     object_type: WorkItem
@@ -2608,8 +2773,8 @@ entities:
       to: completed
       at: '2026-07-26T23:00:00+00:00'
       actor: ZEUS-P2-022 closeout agent
-      reason: Operator approved the corrected telemetry contract and enforced
-        OA-01 acceptance lifecycle for repository closeout.
+      reason: Operator approved the corrected telemetry contract and enforced OA-01
+        acceptance lifecycle for repository closeout.
       authority_reference: ZEUS-P2-022
     project_id: EMP-PROJECT-HOMELAB
     order: 35
@@ -2648,8 +2813,8 @@ entities:
       to: completed
       at: '2026-07-27T00:15:00+00:00'
       actor: ZEUS-P2-024 closeout agent
-      reason: P2-023 implementation, isolated tests, repository validation, and
-        WOP reconciliation passed for commit review.
+      reason: P2-023 implementation, isolated tests, repository validation, and WOP
+        reconciliation passed for commit review.
       authority_reference: ZEUS-P2-024
     project_id: EMP-PROJECT-HOMELAB
     order: 36
@@ -2658,10 +2823,10 @@ entities:
     sprint_id: null
     work_type: operator-interface-implementation
     priority: 0
-    completion_criteria: Gate approval resolves authoritative identifiers,
-      requires a matching durable verification, requests explicit confirmation,
-      writes a bound immutable receipt, and reports only conditional next-gate
-      eligibility without executing that gate.
+    completion_criteria: Gate approval resolves authoritative identifiers, requires
+      a matching durable verification, requests explicit confirmation, writes a bound
+      immutable receipt, and reports only conditional next-gate eligibility without
+      executing that gate.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-025-PUBLICATION-RECEIPT-LIFECYCLE
     object_type: WorkItem
@@ -2684,15 +2849,15 @@ entities:
       to: active
       at: '2026-07-27T00:30:00+00:00'
       actor: loneal through authenticated instruction
-      reason: Resolve the publication fixed point and incomplete approval
-        receipt lifecycle without weakening qualification.
+      reason: Resolve the publication fixed point and incomplete approval receipt
+        lifecycle without weakening qualification.
       authority_reference: ZEUS-P2-025 Mission Instruction
     - from: active
       to: completed
       at: '2026-07-27T01:00:00+00:00'
       actor: ZEUS-P2-025 implementation agent
-      reason: Architecture, implementation, isolated qualification, and
-        controlled-record reconciliation completed.
+      reason: Architecture, implementation, isolated qualification, and controlled-record
+        reconciliation completed.
       authority_reference: ZEUS-P2-025 Mission Instruction
     project_id: EMP-PROJECT-HOMELAB
     order: 37
@@ -2701,9 +2866,9 @@ entities:
     sprint_id: null
     work_type: authority-lifecycle-correction
     priority: 0
-    completion_criteria: Publication leaves Git clean with published HEAD
-      unchanged, and append-only successor receipts preserve historical
-      evidence while stale bindings cannot authorize gate progression.
+    completion_criteria: Publication leaves Git clean with published HEAD unchanged,
+      and append-only successor receipts preserve historical evidence while stale
+      bindings cannot authorize gate progression.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-026-LIFECYCLE-RECONCILIATION
     object_type: WorkItem
@@ -2726,15 +2891,15 @@ entities:
       to: active
       at: '2026-07-27T02:00:00+00:00'
       actor: loneal through authenticated instruction
-      reason: Reconcile post-publication lifecycle decision paths without
-        advancing OA-01 or OA-02.
+      reason: Reconcile post-publication lifecycle decision paths without advancing
+        OA-01 or OA-02.
       authority_reference: ZEUS-P2-026 Post-Publication Lifecycle Reconciliation
     - from: active
       to: completed
       at: '2026-07-27T02:30:00+00:00'
       actor: ZEUS-P2-026 implementation agent
-      reason: Corrected lifecycle precedence, admission scope, PMCT readiness
-        semantics, tests, and controlled records for review.
+      reason: Corrected lifecycle precedence, admission scope, PMCT readiness semantics,
+        tests, and controlled records for review.
       authority_reference: ZEUS-P2-026 Post-Publication Lifecycle Reconciliation
     project_id: EMP-PROJECT-HOMELAB
     order: 38
@@ -2768,15 +2933,15 @@ entities:
       to: active
       at: '2026-07-27T03:25:45+00:00'
       actor: loneal through authenticated instruction
-      reason: Correct the PMCT readiness, state-persistence, and current-binding
-        candidate-selection defects without crossing the operator boundary.
+      reason: Correct the PMCT readiness, state-persistence, and current-binding candidate-selection
+        defects without crossing the operator boundary.
       authority_reference: Zeus Engineering Handoff - P2-027
     - from: active
       to: completed
       at: '2026-07-27T03:45:00+00:00'
       actor: ZEUS-P2-027 implementation agent
-      reason: Corrective implementation, fresh PMCT qualification, isolated
-        operator-boundary regression, and controlled reconciliation completed.
+      reason: Corrective implementation, fresh PMCT qualification, isolated operator-boundary
+        regression, and controlled reconciliation completed.
       authority_reference: Zeus Engineering Handoff - P2-027
     project_id: EMP-PROJECT-HOMELAB
     order: 39
@@ -2785,9 +2950,9 @@ entities:
     sprint_id: null
     work_type: verification-lifecycle-correction
     priority: 0
-    completion_criteria: Current prerequisites with absent evidence resolve
-      READY, completed PMCT runs atomically update capability state, and only
-      PASS evidence matching current repository authority can be verified.
+    completion_criteria: Current prerequisites with absent evidence resolve READY,
+      completed PMCT runs atomically update capability state, and only PASS evidence
+      matching current repository authority can be verified.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-036-OA02-PMCT
     object_type: WorkItem
@@ -2810,15 +2975,15 @@ entities:
       to: active
       at: '2026-07-27T17:00:00+00:00'
       actor: Codex
-      reason: Implement the OA-02-specific PMCT demonstration without qualifying
-        an agent or enabling dispatch.
+      reason: Implement the OA-02-specific PMCT demonstration without qualifying an
+        agent or enabling dispatch.
       authority_reference: Codex Handoff - P2-036
     - from: active
       to: completed
       at: '2026-07-27T17:05:19+00:00'
       actor: Codex
-      reason: Deterministic OA-02 PMCT qualification and automatic lifecycle
-        reconciliation passed while operational interlocks remained engaged.
+      reason: Deterministic OA-02 PMCT qualification and automatic lifecycle reconciliation
+        passed while operational interlocks remained engaged.
       authority_reference: Codex Handoff - P2-036
     project_id: EMP-PROJECT-HOMELAB
     order: 40
@@ -2827,9 +2992,9 @@ entities:
     sprint_id: null
     work_type: capability-qualification
     priority: 0
-    completion_criteria: OA-02 PMCT produces current-binding deterministic PASS
-      evidence and Zeus derives production-agent qualification as the next
-      prerequisite without enabling dispatch.
+    completion_criteria: OA-02 PMCT produces current-binding deterministic PASS evidence
+      and Zeus derives production-agent qualification as the next prerequisite without
+      enabling dispatch.
     queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-037-PRODUCTION-AGENT
     object_type: WorkItem
@@ -2852,15 +3017,15 @@ entities:
       to: active
       at: '2026-07-27T17:20:00+00:00'
       actor: Codex
-      reason: Implement current-binding production-agent qualification without
-        authorizing dispatch or executing work.
+      reason: Implement current-binding production-agent qualification without authorizing
+        dispatch or executing work.
       authority_reference: Codex Handoff - P2-037
     - from: active
       to: completed
       at: '2026-07-27T17:25:00+00:00'
       actor: Codex
-      reason: Runtime qualification, deterministic registry, revocation, and
-        OA-02 lifecycle reconciliation qualified.
+      reason: Runtime qualification, deterministic registry, revocation, and OA-02
+        lifecycle reconciliation qualified.
       authority_reference: Codex Handoff - P2-037
     project_id: EMP-PROJECT-HOMELAB
     order: 41
@@ -2869,10 +3034,10 @@ entities:
     sprint_id: null
     work_type: capability-qualification
     priority: 0
-    completion_criteria: One integrity-valid current-binding production agent
-      can satisfy OA-02 verification while unaffected accepted OA-01 state is
-      carried forward through an integrity-protected impact assessment and
-      dispatcher activation and operational dispatch remain prohibited.
+    completion_criteria: One integrity-valid current-binding production agent can
+      satisfy OA-02 verification while unaffected accepted OA-01 state is carried
+      forward through an integrity-protected impact assessment and dispatcher activation
+      and operational dispatch remain prohibited.
     queue_ids: []
   - registry_id: EMP-WORK-P2-038-EXECUTION-INTERFACE
     object_type: WorkItem
@@ -2895,15 +3060,15 @@ entities:
       to: active
       at: '2026-07-28T00:00:00-07:00'
       actor: Codex
-      reason: Assess and standardize the repository-driven Engineering Execution
-        Interface without exercising publication or dispatch authority.
+      reason: Assess and standardize the repository-driven Engineering Execution Interface
+        without exercising publication or dispatch authority.
       authority_reference: Operator Mission Directive - P2-038
     - from: active
       to: completed
       at: '2026-07-29T00:05:00-07:00'
       actor: GH-EOS-INTEGRATION-001 synchronization agent
-      reason: Integrated qualification incorporates the corrected Engineering
-        Execution Interface into the reconciled Zeus baseline.
+      reason: Integrated qualification incorporates the corrected Engineering Execution
+        Interface into the reconciled Zeus baseline.
       authority_reference: GH-ZEUS-CLOSEOUT-001 publication authorization
     project_id: EMP-PROJECT-HOMELAB
     order: 42
@@ -2912,10 +3077,10 @@ entities:
     sprint_id: null
     work_type: framework-standardization
     priority: 0
-    completion_criteria: Repository discovery, mission contracts, authority,
-      verification, reconciliation, completion reporting, resume, mission
-      snapshots, and command classification are integrated through one
-      machine-consumable interface and proven by a minimal handoff.
+    completion_criteria: Repository discovery, mission contracts, authority, verification,
+      reconciliation, completion reporting, resume, mission snapshots, and command
+      classification are integrated through one machine-consumable interface and proven
+      by a minimal handoff.
     queue_ids: []
   - registry_id: EMP-WORK-P2-038-CORRECTIVE
     object_type: WorkItem
@@ -2945,8 +3110,8 @@ entities:
       to: completed
       at: '2026-07-28T02:00:00-07:00'
       actor: P2-038 corrective implementation agent
-      reason: Corrective implementation and verification completed; operator
-        acceptance remains not recorded.
+      reason: Corrective implementation and verification completed; operator acceptance
+        remains not recorded.
       authority_reference: P2-038 Corrective Implementation Approval (2026-07-28)
     project_id: EMP-PROJECT-HOMELAB
     order: 43
@@ -2955,9 +3120,9 @@ entities:
     sprint_id: null
     work_type: framework-corrective
     priority: 0
-    completion_criteria: Correct the P2-038 acceptance defects, preserve its
-      implementation as unaccepted working-tree work, and prove the canonical
-      execution pipeline fails closed.
+    completion_criteria: Correct the P2-038 acceptance defects, preserve its implementation
+      as unaccepted working-tree work, and prove the canonical execution pipeline
+      fails closed.
     queue_ids: []
   - registry_id: EMP-WORK-GH-ZEUS-CLOSEOUT-001
     object_type: WorkItem
@@ -2988,23 +3153,23 @@ entities:
       to: blocked
       at: '2026-07-28T23:30:00-07:00'
       actor: GH-ZEUS-CLOSEOUT-001 reconciliation agent
-      reason: Repository-local reconciliation and regression passed, but
-        aggregate validation failed because required external EOS state records
-        and checkpoint storage are absent.
+      reason: Repository-local reconciliation and regression passed, but aggregate
+        validation failed because required external EOS state records and checkpoint
+        storage are absent.
       authority_reference: GH-ZEUS-CLOSEOUT-001 operator acceptance
     - from: blocked
       to: active
       at: '2026-07-28T23:45:00-07:00'
       actor: GH-EOS-INTEGRATION-001 synchronization agent
-      reason: Repository–EOS synchronization resolved the external EOS state
-        and checkpoint validation blockers; publication qualification may resume.
+      reason: Repository–EOS synchronization resolved the external EOS state and checkpoint
+        validation blockers; publication qualification may resume.
       authority_reference: GH-EOS-INTEGRATION-001 operator authorization
     - from: active
       to: completed
       at: '2026-07-29T00:05:00-07:00'
       actor: GH-EOS-INTEGRATION-001 synchronization agent
-      reason: Final integrated qualification passed after deterministic
-        repository–EOS synchronization resolved the external blocker.
+      reason: Final integrated qualification passed after deterministic repository–EOS
+        synchronization resolved the external blocker.
       authority_reference: GH-ZEUS-CLOSEOUT-001 publication authorization
     project_id: EMP-PROJECT-HOMELAB
     order: 44
@@ -3013,9 +3178,9 @@ entities:
     sprint_id: null
     work_type: baseline-reconciliation
     priority: 0
-    completion_criteria: Zeus Assurance work is internally reconciled, aggregate
-      validation passes, and the baseline is published while Draft activation,
-      dispatch, and EENS implementation remain prohibited.
+    completion_criteria: Zeus Assurance work is internally reconciled, aggregate validation
+      passes, and the baseline is published while Draft activation, dispatch, and
+      EENS implementation remain prohibited.
     queue_ids: []
   - registry_id: EMP-WORK-GH-EOS-INTEGRATION-001
     object_type: WorkItem
@@ -3045,8 +3210,8 @@ entities:
       to: completed
       at: '2026-07-28T23:59:00-07:00'
       actor: GH-EOS-INTEGRATION-001 synchronization agent
-      reason: Complete authority resolution, synchronization, drift detection,
-        layered validation, resume integration, and qualification evidence.
+      reason: Complete authority resolution, synchronization, drift detection, layered
+        validation, resume integration, and qualification evidence.
       authority_reference: GH-EOS-INTEGRATION-001 operator authorization
     project_id: EMP-PROJECT-HOMELAB
     order: 45
@@ -3055,9 +3220,92 @@ entities:
     sprint_id: null
     work_type: platform-state-integration
     priority: 0
-    completion_criteria: Repository records are the sole authoritative
-      engineering state, EOS projections synchronize deterministically, layered
-      validation and resume pass, and Draft/EENS boundaries remain preserved.
+    completion_criteria: Repository records are the sole authoritative engineering
+      state, EOS projections synchronize deterministically, layered validation and
+      resume pass, and Draft/EENS boundaries remain preserved.
+    queue_ids: []
+  - registry_id: EMP-WORK-GH-ZEUS-OA-CERTIFICATION-001
+    object_type: WorkItem
+    title: Zeus Operational Alpha Certification
+    management_state: cancelled
+    owner: Lawrence O'Neal
+    scope: GH-ZEUS-OA-CERTIFICATION-001
+    authority_reference: Mission ADMIT-GH-ZEUS-OA-CERTIFICATION-001 and ACCEPTED WOP
+      Admission Record
+    source_records:
+    - PROJ-0001
+    - PHASE-0001
+    relationships:
+    - type: related_to
+      target: PHASE-0001
+    created_at: '2026-07-28T20:00:00-07:00'
+    updated_at: '2026-07-29T05:00:00+00:00'
+    revision: 2
+    transition_history:
+    - from: null
+      to: ready
+      at: '2026-07-28T20:00:00-07:00'
+      actor: ADMIT-GH-ZEUS-OA-CERTIFICATION-001 admission agent
+      reason: Register the admitted certification WOP as eligible, unstarted work.
+      authority_reference: ADMISSION-44b52633-b7f5-5160-b402-739dfc518089
+    - from: ready
+      to: cancelled
+      at: '2026-07-29T05:00:00+00:00'
+      actor: REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001 reconstruction agent
+      reason: Suspend and supersede the incomplete package while preserving it as
+        historical evidence; none of its OA gates may execute.
+      authority_reference: REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001
+    project_id: EMP-PROJECT-HOMELAB
+    order: 46
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: operational-certification
+    priority: 0
+    completion_criteria: OA-01 through OA-30 are independently verified and accepted
+      in order, records reconcile, and separately authorized OA-30 declaration and
+      final baseline freeze complete.
+    queue_ids: []
+  - registry_id: EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001
+    object_type: WorkItem
+    title: Progressive Zeus Operational Alpha Qualification
+    management_state: active
+    owner: Lawrence O'Neal
+    scope: GH-ZEUS-OA-PROGRESSIVE-001
+    authority_reference: REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001 and ACCEPTED WOP Admission Record
+    source_records:
+    - PROJ-0001
+    - PHASE-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-GH-ZEUS-OA-CERTIFICATION-001
+    created_at: '2026-07-29T05:00:00+00:00'
+    updated_at: '2026-07-29T05:53:14+00:00'
+    revision: 2
+    transition_history:
+    - from: null
+      to: ready
+      at: '2026-07-29T05:00:00+00:00'
+      actor: REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001 reconstruction agent
+      reason: Register the admitted thirty-gate Progressive OA WOP as eligible and unstarted.
+      authority_reference: ADMISSION-f01c0c2d-8edb-5567-ad19-8d0f4344909f
+    - from: ready
+      to: active
+      at: '2026-07-29T05:53:14+00:00'
+      actor: repository_owner
+      reason: Mission Contract atomic activation
+      authority_reference: engineering/mission-contracts/approvals/APPROVAL-VALIDATION-ZEUS-ACTIVATION-001.yaml
+      mission_contract: MC-VALIDATION-ZEUS-PUBLICATION-001
+      transaction_id: TX-ACTIVATE-VALIDATION-ZEUS-001
+    project_id: EMP-PROJECT-HOMELAB
+    order: 47
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: operational-qualification
+    priority: 0
+    completion_criteria: OA-01 through OA-30 are independently implemented, verified,
+      and accepted in order; OA-30 stops at separately authorized declaration preparation.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP
@@ -3216,10 +3464,12 @@ entities:
       to: achieved
       at: '2026-07-17T10:30:00+00:00'
       actor: Codex
-      reason: SPEC-0007 replaced conversational design as the governing implementation baseline.
+      reason: SPEC-0007 replaced conversational design as the governing implementation
+        baseline.
       authority_reference: EWO-000021
     scope_id: EMP-WORK-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION
-    success_criteria: SPEC-0007 is controlled and governs future separately authorized implementation.
+    success_criteria: SPEC-0007 is controlled and governs future separately authorized
+      implementation.
     target_date: 2026-07-17
     evidence_records:
     - MILESTONE-0006
@@ -3231,7 +3481,8 @@ entities:
     management_state: achieved
     owner: Engineering Governance
     scope: EMP-MISSION-GOVERNANCE-AUTHORITY-ARCHITECTURE
-    authority_reference: Engineering Governance Authorization - Controlled MILESTONE-0007 Publication
+    authority_reference: Engineering Governance Authorization - Controlled MILESTONE-0007
+      Publication
     source_records:
     - MILESTONE-0007
     - EDR-0003
@@ -3252,10 +3503,14 @@ entities:
       to: achieved
       at: '2026-07-18T08:00:00+00:00'
       actor: Engineering Governance milestone-publication agent
-      reason: Publish the historical summary of qualification already demonstrated and immutably persisted through EWO-000023.
-      authority_reference: Engineering Governance Authorization - Controlled MILESTONE-0007 Publication
+      reason: Publish the historical summary of qualification already demonstrated
+        and immutably persisted through EWO-000023.
+      authority_reference: Engineering Governance Authorization - Controlled MILESTONE-0007
+        Publication
     scope_id: EMP-MISSION-GOVERNANCE-AUTHORITY-ARCHITECTURE
-    success_criteria: MILESTONE-0007 summarizes only immutable EWO-000023 evidence, preserves chronology and uniqueness, and creates no implementation, adoption, institutionalization, or future-work authority.
+    success_criteria: MILESTONE-0007 summarizes only immutable EWO-000023 evidence,
+      preserves chronology and uniqueness, and creates no implementation, adoption,
+      institutionalization, or future-work authority.
     target_date: 2026-07-18
     evidence_records:
     - MILESTONE-0007
@@ -3387,7 +3642,8 @@ entities:
     management_state: active
     owner: Engineering Governance
     scope: EMP-WORK-APPROVAL-PACKAGE-GOVERNANCE-CONTROLS
-    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    authority_reference: Engineering Governance Authorization - Governance Planning
+      Transfer Transaction
     source_records:
     - EDR-0003
     - EWO-000023-COMPLETION
@@ -3402,11 +3658,16 @@ entities:
       to: active
       at: '2026-07-18T06:00:00+00:00'
       actor: Engineering Governance planning-transfer agent
-      reason: Preserve future evaluation while withholding evaluation and implementation authority.
-      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+      reason: Preserve future evaluation while withholding evaluation and implementation
+        authority.
+      authority_reference: Engineering Governance Authorization - Governance Planning
+        Transfer Transaction
     work_item_id: EMP-WORK-APPROVAL-PACKAGE-GOVERNANCE-CONTROLS
-    reason: Planning ownership is accepted for lifecycle closeout controls and Administrative Closeout Procedure standardization; evaluation and implementation require separate Governance authority.
-    reentry_conditions: Approved and published EDR-0003 plus separately authorized Governance evaluation work.
+    reason: Planning ownership is accepted for lifecycle closeout controls and Administrative
+      Closeout Procedure standardization; evaluation and implementation require separate
+      Governance authority.
+    reentry_conditions: Approved and published EDR-0003 plus separately authorized
+      Governance evaluation work.
     target_horizon: Post-EDR-0003 publication institutionalization
     resolution_reference: null
   - registry_id: EMP-DEFERRAL-GOVERNANCE-RECORD-TRANSACTION-ARCHITECTURE
@@ -3415,7 +3676,8 @@ entities:
     management_state: active
     owner: Engineering Governance
     scope: EMP-WORK-GOVERNANCE-RECORD-TRANSACTION-ARCHITECTURE
-    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    authority_reference: Engineering Governance Authorization - Governance Planning
+      Transfer Transaction
     source_records:
     - EDR-0003
     - EWO-000023-COMPLETION
@@ -3430,11 +3692,15 @@ entities:
       to: active
       at: '2026-07-18T06:00:00+00:00'
       actor: Engineering Governance planning-transfer agent
-      reason: Preserve future evaluation while withholding evaluation and implementation authority.
-      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+      reason: Preserve future evaluation while withholding evaluation and implementation
+        authority.
+      authority_reference: Engineering Governance Authorization - Governance Planning
+        Transfer Transaction
     work_item_id: EMP-WORK-GOVERNANCE-RECORD-TRANSACTION-ARCHITECTURE
-    reason: Planning ownership is accepted; evaluation and implementation require separate Governance authority.
-    reentry_conditions: Approved and published EDR-0003 plus separately authorized Governance evaluation work.
+    reason: Planning ownership is accepted; evaluation and implementation require
+      separate Governance authority.
+    reentry_conditions: Approved and published EDR-0003 plus separately authorized
+      Governance evaluation work.
     target_horizon: Post-EDR-0003 publication institutionalization
     resolution_reference: null
   - registry_id: EMP-DEFERRAL-ENGINEERING-LIFECYCLE-CLOSEOUT-CONTROLS
@@ -3443,7 +3709,8 @@ entities:
     management_state: active
     owner: Engineering Governance
     scope: EMP-WORK-ENGINEERING-LIFECYCLE-CLOSEOUT-CONTROLS
-    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    authority_reference: Engineering Governance Authorization - Governance Planning
+      Transfer Transaction
     source_records:
     - EDR-0003
     - EWO-000023-COMPLETION
@@ -3458,11 +3725,15 @@ entities:
       to: active
       at: '2026-07-18T06:00:00+00:00'
       actor: Engineering Governance planning-transfer agent
-      reason: Preserve future evaluation while withholding evaluation and implementation authority.
-      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+      reason: Preserve future evaluation while withholding evaluation and implementation
+        authority.
+      authority_reference: Engineering Governance Authorization - Governance Planning
+        Transfer Transaction
     work_item_id: EMP-WORK-ENGINEERING-LIFECYCLE-CLOSEOUT-CONTROLS
-    reason: Planning ownership is accepted; evaluation and implementation require separate Governance authority.
-    reentry_conditions: Separately authorized Governance evaluation work defining lifecycle-owner scope.
+    reason: Planning ownership is accepted; evaluation and implementation require
+      separate Governance authority.
+    reentry_conditions: Separately authorized Governance evaluation work defining
+      lifecycle-owner scope.
     target_horizon: Post-EDR-0003 publication institutionalization
     resolution_reference: null
   - registry_id: EMP-DEFERRAL-GOVERNANCE-PLANNING-INTEGRATION
@@ -3471,7 +3742,8 @@ entities:
     management_state: active
     owner: Engineering Governance
     scope: EMP-WORK-GOVERNANCE-PLANNING-INTEGRATION
-    authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+    authority_reference: Engineering Governance Authorization - Governance Planning
+      Transfer Transaction
     source_records:
     - EDR-0003
     - EWO-000023-COMPLETION
@@ -3486,11 +3758,15 @@ entities:
       to: active
       at: '2026-07-18T06:00:00+00:00'
       actor: Engineering Governance planning-transfer agent
-      reason: Preserve future evaluation while withholding evaluation and implementation authority.
-      authority_reference: Engineering Governance Authorization - Governance Planning Transfer Transaction
+      reason: Preserve future evaluation while withholding evaluation and implementation
+        authority.
+      authority_reference: Engineering Governance Authorization - Governance Planning
+        Transfer Transaction
     work_item_id: EMP-WORK-GOVERNANCE-PLANNING-INTEGRATION
-    reason: Planning ownership is accepted; evaluation and implementation require separate Governance authority.
-    reentry_conditions: Separately authorized Governance evaluation work defining planning-owner scope.
+    reason: Planning ownership is accepted; evaluation and implementation require
+      separate Governance authority.
+    reentry_conditions: Separately authorized Governance evaluation work defining
+      planning-owner scope.
     target_horizon: Post-EDR-0003 publication institutionalization
     resolution_reference: null
   dependencies:
@@ -3583,7 +3859,6 @@ entities:
     dependency_kind: qualification-gate
     satisfaction_criteria: SprinterOS MILESTONE-0004 is approved and project, phase,
       sprint, controller, EOS, and EMP state agree.
-
 missions:
 - mission_id: MISSION-000007
   title: EENS Repository Convergence
@@ -3595,8 +3870,7 @@ missions:
   - preserve and import qualified standalone EENS history without squashing
   - establish services/eens as the canonical Homelab repository source
   - reconcile authoritative and supporting repository documentation
-  - preserve the boundary between EENS Operational Alpha and future HNS
-    architecture
+  - preserve the boundary between EENS Operational Alpha and future HNS architecture
   implemented_state:
     capability: EENS Operational Alpha
     qualified_host: LOpi
@@ -3614,10 +3888,10 @@ missions:
     - wrapped-command lifecycle event production
     - continuous notification delivery
   historical_boundary:
-    evidence: Qualified standalone EENS implementation history and namespaced
-      tags were imported without squashing.
-    ewo_000020: Preserved as historically superseded and not treated as the
-      execution authority for the imported standalone implementation.
+    evidence: Qualified standalone EENS implementation history and namespaced tags
+      were imported without squashing.
+    ewo_000020: Preserved as historically superseded and not treated as the execution
+      authority for the imported standalone implementation.
   future_hns_work:
   - authenticated WebSocket Tier 1 transport
   - reference workstation client

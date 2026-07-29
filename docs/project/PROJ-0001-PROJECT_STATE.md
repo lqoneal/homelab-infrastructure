@@ -1,7 +1,7 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 9.0
+version: 9.2
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,7 +9,7 @@ last_updated: 2026-07-28
 mission: Zeus Operational Alpha
 phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@8.9
+predecessor_revision: PROJ-0001@9.1
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -379,11 +379,12 @@ remains incomplete.
 
 **Next Immediate Step:**
 
-Run independent OA-01 operator verification, then record operator acceptance
-only after a matching verification passes. OA-02 eligibility is blocked by
-`OA-01_OPERATOR_ACCEPTANCE_REQUIRED`. Do not begin OA-02, publish, activate,
-qualify, register, or dispatch before that lifecycle prerequisite is
-reconciled.
+Begin `GH-ZEUS-OA-PROGRESSIVE-001` under ACCEPTED Admission Record
+`ADMISSION-f01c0c2d-8edb-5567-ad19-8d0f4344909f` by running its package
+preflight. The previous `GH-ZEUS-OA-CERTIFICATION-001` package is suspended and
+preserved as historical evidence because its gates lacked complete objectives.
+The new OA-01 is ready and unstarted; no gate status is inherited. Do not begin
+OA-02 until new OA-01 verification and explicit operator acceptance pass.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -682,3 +683,12 @@ When resuming this project:
 | 8.8     | 2026-07-28 | Reconciled the Engineering Execution Interface and Zeus Assurance publication candidate, preserved all revised controlled documents as Draft, and recorded the external EOS state/checkpoint validation blocker without publishing or beginning EENS work. |
 | 8.9     | 2026-07-28 | Established repository-authoritative EOS state projection, deterministic one-way synchronization, layered platform validation, and integrated resume; preserved checkpoint runtime evidence, Draft status, and the EENS implementation boundary. |
 | 9.0     | 2026-07-28 | Completed integrated qualification, resolved the Zeus closeout publication blocker, and established the synchronized Zeus Assurance baseline for the next separately authorized EENS integration mission. |
+| 9.1     | 2026-07-28 | Admitted the self-contained GH-ZEUS-OA-CERTIFICATION-001 WOP, registered certification as ready and unstarted, and preserved all OA, PMCT, acceptance, baseline-freeze, and OA-30 declaration boundaries. |
+| 9.2     | 2026-07-28 | Suspended the incomplete historical OA certification package, established the controlled thirty-gate Progressive OA roadmap and admitted WOP, and made the new OA-01 ready without executing any OA gate or authorizing declaration/freeze. |
+
+## Operational Mission Activation
+
+- Mission: `MISSION-CONTRACT-PUBLICATION-001`
+- Mission Contract: `MC-MISSION-CONTRACT-PUBLICATION-001`
+- Lifecycle: `ACTIVE`
+- Publication execution: not started
