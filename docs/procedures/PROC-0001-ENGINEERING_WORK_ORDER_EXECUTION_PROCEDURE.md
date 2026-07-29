@@ -1,16 +1,16 @@
 ---
 document_id: PROC-0001
 title: Engineering Work Order Execution Procedure
-version: 1.14
+version: 1.16
 status: Draft
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-28
+last_updated: 2026-07-29
 phase: Engineering Execution Interface Standardization
 domain: Engineering Governance
 classification: Engineering Procedure
 source_of_truth: true
-predecessor_revision: PROC-0001@1.13
+predecessor_revision: PROC-0001@1.15
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -473,7 +473,25 @@ engctl registry validate
 engctl execution snapshot --mission <MISSION-ID>
 ```
 
-A missing, ambiguous, stale, or conflicting Mission Contract blocks execution.
+A missing, ambiguous, stale, or conflicting Mission Contract blocks
+implementation. Resolve the failure as follows:
+
+1. preserve the normal authority-resolution result;
+2. evaluate every Governance Bootstrap Condition predicate defined by
+   SPEC-0011;
+3. when any predicate fails, execute the existing fail-closed STOP behavior;
+4. when every predicate passes, suspend execution, produce a Bootstrap
+   Detection Report, and request Engineering Governance guidance under
+   PROC-0002.
+
+Bootstrap detection does not create execution authority. During suspension an
+execution agent shall not modify an active Mission Contract, invent or expand
+authority, implement a product or feature, complete or accept a gate, or
+advance a gate, create or amend a Mission Contract, reinterpret controlled
+documentation, or change repository content. Resume is permitted only after
+Engineering Governance determines correction is required, the minimum revision
+becomes authoritative through the normal controlled-document process, and
+normal Mission Contract resolution independently succeeds.
 
 ---
 
@@ -1001,13 +1019,25 @@ Authority not explicitly granted remains prohibited.
 
 ### Mission Admission and Activation Candidate
 
-Before operational execution, an approved mission shall pass deterministic
-mission admission. Admission shall qualify the mission lifecycle, WOP,
-repository, baseline, roles, attributable approval, dependencies, and scope,
-and shall return only `ADMIT` or `DENY` with stable reason codes.
+Engineering Governance is the sole Mission Admission Authority until
+controlled documentation explicitly establishes another model. A WOP manually
+submitted by Engineering Governance is intentionally submitted and admitted.
+Admission records Governance intent only and remains valid until explicitly
+revoked by Engineering Governance.
 
-An admitted mission becomes operational only through a durable activation
-request. The activation service shall lock the repository boundary, verify
+Engineering Governance is separately the sole Mission Activation Authority.
+Activation authorizes the system to begin execution qualification. It does not
+guarantee successful execution. An execution agent shall never independently
+admit, revoke, or activate a mission.
+
+Repository identity, repository integrity, package integrity, Mission Contract
+resolution, authority resolution, and execution verification shall determine
+execution readiness independently of Mission Admission. Objective failure
+shall set execution status to `BLOCKED` and preserve the admitted mission and
+Governance activation record. Execution verification does not reinterpret,
+reverse, or invalidate admission or activation.
+
+The activation service shall lock the repository boundary, verify
 that no conflicting active Mission Contract exists, and atomically reconcile
 the Mission Contract, Work Registry, Project State, and activation evidence.
 EOS is a derived projection and shall synchronize and validate before the
@@ -1020,6 +1050,55 @@ new activation is attempted. A committed request is idempotent. A terminal
 Mission Contract cannot reactivate. Operational execution shall begin only
 when exactly one active Mission Contract resolves and resume and execution
 snapshot interfaces report identical authority.
+
+The canonical manual lifecycle is:
+
+`Engineering Governance -> Manual WOP Submission -> Mission Admission ->
+Repository Identity Verification -> Repository Integrity Verification ->
+Package Integrity Verification -> Mission Activation -> Mission Contract
+Resolution -> Execution Verification -> Mission Execution`.
+
+Execution agents participate beginning with repository verification. Mission
+intent originates with Engineering Governance.
+
+### Independent Mission State
+
+Governance state and execution state are separate dimensions:
+
+| Governance state | Meaning |
+| --- | --- |
+| `Submitted` | Engineering Governance has submitted the mission for admission. |
+| `Admitted` | Engineering Governance has intentionally accepted the mission into the Engineering Operating System. |
+| `Activated` | Engineering Governance has authorized execution qualification to begin. |
+| `Revoked` | Engineering Governance has explicitly withdrawn admission or activation. |
+| `Completed` | Engineering Governance has closed the governance lifecycle. |
+
+| Execution state | Meaning |
+| --- | --- |
+| `Pending Verification` | Execution qualification has not completed. |
+| `Verification Failed` | An objective readiness check failed. |
+| `Ready` | Every required execution-readiness check currently passes. |
+| `Executing` | Authorized mission execution is in progress. |
+| `Suspended` | Execution has paused without changing Governance state. |
+| `Failed` | Execution terminated unsuccessfully without changing Governance state. |
+| `Completed` | Execution completed; Governance closeout remains independent. |
+
+Governance state changes only through Engineering Governance. Execution state
+changes through objective execution events.
+
+### Blocked Missions
+
+A verification failure shall report:
+
+```text
+Mission Status: ADMITTED
+Execution Status: BLOCKED
+```
+
+A blocked mission remains admitted, attributable, auditable, and awaiting
+correction. After correction it may resume execution qualification from the
+applicable verification boundary without a new Mission Admission. An execution
+agent shall never reinterpret a blocked mission as not admitted.
 
 This procedure is complete when every implementation agent can execute an Active Engineering Work Order deterministically, consistently, and within the approved governance framework from document verification through completion reporting.
 
@@ -1045,3 +1124,4 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.13 | 2026-07-28 | Candidate: routed canonical discovery, authority, snapshot, and handoff validation through the SPEC-0005 Engineering Execution Contract with mandatory framework review gates. |
 | 1.14 | 2026-07-28 | Candidate: defined independent Zeus mission-assurance verification across preflight, execution, synchronization, and closeout while preserving this procedure's process ownership. |
 | 1.15 candidate | 2026-07-28 | Added deterministic mission admission, activation-request, atomic reconciliation, rollback, interruption recovery, cardinality, and shared authority-reporting workflow. |
+| 1.16 | 2026-07-29 | Added Governance Bootstrap consultation and normal-authority re-entry; defined independent Governance and execution state, Governance-only admission and activation, and resumable blocked missions. |

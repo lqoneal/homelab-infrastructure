@@ -1,11 +1,11 @@
 ---
 document_id: CHAR-0001
 title: Engineering Charter
-version: 1.2
+version: 1.3
 status: Active
 owner: Engineering Governance
 created: 2026-07-10
-last_updated: 2026-07-26
+last_updated: 2026-07-29
 phase: Governance Foundation
 domain: Engineering Governance
 classification: Foundational Governance Charter
@@ -199,28 +199,69 @@ Process deficiencies identified during initiation, execution, validation, or qua
 
 ---
 
-## Bootstrap Authority
+## Governance Bootstrap Consultation
 
 Lawrence O'Neal possesses ultimate engineering authority independent of
 repository state and exercises it through authenticated principal `loneal` and
 the Zeus CLI.
 
-Bootstrapping authority exists only to restore authoritative repository state
-when controlled documentation cannot authorize execution. It authorizes
-reconciliation of controlled documentation before operational execution
-proceeds; it never authorizes a bypass of controlled documentation, policy,
-authentication, provenance, validation, or auditing.
+Controlled documentation remains the sole source of execution authority.
+Governance bootstrap is a detection and consultation condition only. It never
+creates, activates, grants, or substitutes for authority.
 
 Zeus shall first attempt normal authority resolution. Missing, stale,
 conflicting, incomplete, or invalid authority shall be handled according to the
-Authority Restoration Principle in SPEC-0011. Deterministic reconciliation
-that requires no human engineering decision shall be performed automatically.
-An explicit authenticated decision shall be requested only when reconciliation
-requires Lawrence O'Neal to exercise ultimate engineering authority.
+Governance Bootstrap Condition in SPEC-0011. When every predicate is met, Zeus
+shall suspend execution, preserve repository state, produce a Bootstrap
+Detection Report, and request Engineering Governance verification.
 
-After reconciliation, Zeus shall validate the repository and re-run normal
-authority resolution. Execution may proceed only under restored
-controlled-document authority.
+Engineering Governance determines only whether controlled documentation
+requires correction. Consultation does not authorize execution. If correction
+is required, Engineering Governance may authorize preparation of the minimum
+controlled-document revision through the normal governance process. Execution
+remains suspended until that revision becomes authoritative and normal Mission
+Contract resolution succeeds.
+
+Bootstrap consultation is distinct from Mission Admission and Mission
+Activation and shall never substitute for either function.
+
+---
+
+## Mission Admission and Activation
+
+Until superseded by an approved controlled-document revision, Engineering
+Governance is the sole Mission Admission Authority and sole Mission Activation
+Authority.
+
+Manual WOP submission by Engineering Governance is intentional mission
+submission and Mission Admission. Admission means only that Engineering
+Governance has intentionally accepted the mission into the Engineering
+Operating System. It records Governance intent and does not imply repository
+readiness, package validity, execution authority, activation, Mission Contract
+resolution, or execution readiness.
+
+Admission remains valid until Engineering Governance explicitly revokes it.
+Repository identity, repository integrity, package integrity, Mission Contract
+resolution, authority resolution, and execution verification are independent
+execution-readiness checks. Their failure blocks execution and shall not
+reverse, reinterpret, or invalidate admission.
+
+Mission Activation is a separate Engineering Governance decision authorizing
+the system to begin execution qualification. Activation does not guarantee
+successful execution, resolve a Mission Contract, or establish execution
+readiness. An execution agent shall never activate a mission independently.
+
+Admission, activation, and execution verification are distinct. Failure of
+execution verification stops execution but does not reverse the prior
+Governance admission decision.
+
+Governance state consists of `Submitted`, `Admitted`, `Activated`, `Revoked`,
+and `Completed` and changes only through Engineering Governance. Execution
+state consists of `Pending Verification`, `Verification Failed`, `Ready`,
+`Executing`, `Suspended`, `Failed`, and `Completed` and changes only through
+objective execution events. A blocked mission remains admitted, attributable,
+auditable, and eligible to resume execution qualification after correction
+without a new Mission Admission.
 
 ---
 

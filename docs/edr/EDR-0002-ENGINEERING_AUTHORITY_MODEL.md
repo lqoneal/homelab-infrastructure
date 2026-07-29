@@ -1,11 +1,11 @@
 ---
 document_id: EDR-0002
 title: Engineering Authority Model
-version: 1.2
+version: 1.3
 status: Draft
 owner: EOS Program
 created: 2026-07-08
-last_updated: 2026-07-26
+last_updated: 2026-07-29
 phase: Governance Architecture Reconciliation
 domain: Engineering Governance
 classification: Foundational Architecture Decision Record
@@ -107,15 +107,18 @@ originate ultimate engineering authority.
 
 No subordinate record, including this Engineering Decision Record, may establish a competing governance hierarchy or expand its own delegated authority.
 
-### Bootstrap Authority
+### Governance Bootstrap Consultation
 
-Bootstrap authority is defined by CHAR-0001 and historically documented by GEN-0001.
+The historical, one-time genesis event is documented by GEN-0001. It is not a
+present authority path and cannot be repeated.
 
-This decision preserves bootstrap authority by reference to CHAR-0001 and
-SPEC-0011. Bootstrapping authorizes reconciliation of controlled documentation
-when normal authority cannot be resolved. It does not bypass controlled
-documentation or authorize operational execution. After reconciliation, Zeus
-validates the repository and re-runs normal authority resolution.
+CHAR-0001 and SPEC-0011 define current governance bootstrap solely as
+detection, execution suspension, a Bootstrap Detection Report, and mandatory
+Engineering Governance verification. Engineering Governance determines
+whether controlled documentation requires correction. Any correction and any
+later execution authority must originate through normal controlled-document
+revision, publication, Mission Admission, Mission Activation, and Mission
+Contract resolution. Consultation itself authorizes none of those effects.
 
 ## Two Distinct Forms of Authority
 
@@ -365,3 +368,4 @@ Derived views never govern and never become authoritative by use alone.
 | 1.0 | 2026-07-08 | Established the original single-source Authoritative Engineering Record and derived-view architecture. |
 | 1.1 | 2026-07-10 | Reconciled Governance Authority, Information Authority, Charter delegation, Draft lifecycle semantics, related-record traceability, and derived-view constraints under the Gate B Governance Architecture Reconciliation. |
 | 1.2 | 2026-07-26 | Reconciled the production authority hierarchy and authority-restoration model with CHAR-0001 and SPEC-0011. |
+| 1.3 | 2026-07-29 | Replaced the alternate bootstrap-authority interpretation with mandatory Governance consultation and normal controlled-document authority restoration. |

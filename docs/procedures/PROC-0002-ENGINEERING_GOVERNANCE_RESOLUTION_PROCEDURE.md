@@ -1,15 +1,15 @@
 ---
 document_id: PROC-0002
 title: Engineering Governance Resolution Procedure
-version: 1.4
+version: 1.5
 status: Active
 owner: Engineering Governance
 created: 2026-07-13
-last_updated: 2026-07-18
+last_updated: 2026-07-29
 phase: Governance Stabilization Procedure Integration
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: PROC-0002@1.3
+predecessor_revision: PROC-0002@1.4
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -193,6 +193,26 @@ preparation and decision-recording owner.
 ## Step 1 — Verify Authority and Decision Subject
 
 Identify the controlled authority permitting preparation of the EGR. Preparation authority may arise from an Active EWO, superior governance, or another explicit controlled authorization mechanism.
+
+When PROC-0001 or SPEC-0011 supplies a Bootstrap Detection Report, preparation
+of a Governance consultation record is permitted only to present the preserved
+evidence for decision. This consultation path does not authorize restoration
+work or any implementation.
+
+Engineering Governance shall verify every Governance Bootstrap Condition
+predicate and record exactly one result:
+
+- `NO_GOVERNANCE_CORRECTION_REQUIRED`, maintaining fail-closed termination; or
+- `GOVERNANCE_CORRECTION_REQUIRED`, permitting preparation of only the minimum
+  controlled-document revision required to restore the authority chain.
+
+The decision shall identify the affected governance records and correction
+boundary. It grants no implementation or execution authority. Product
+implementation, feature development, gate implementation, gate completion,
+gate acceptance, and gate advancement remain prohibited. Normal work may
+resume only after the revision becomes authoritative through the normal
+governance process, repository validation passes, and normal Mission Contract
+resolution succeeds.
 
 Record the decision subject precisely. When the subject is a controlled document revision, identify its permanent `document_id` and exact version. When the subject is completed engineering execution, identify the governing EWO and applicable Completion Report and Evidence Package.
 
@@ -441,3 +461,4 @@ required follow-up EWO.
 | 1.2 | 2026-07-18 | Integrated PROC-0005 as the common operational publication procedure while preserving PROC-0002 ownership of EGR preparation, disposition, approval, activation, traceability, supersedence, and archival. |
 | 1.3 | 2026-07-18 | Integrated Active PROC-0006 as an external qualification-evidence source while preserving Engineering Governance decision authority and PROC-0002 decision-recording ownership. |
 | 1.4 | 2026-07-18 | Integrated Active PROC-0007 as a reconciliation and routing evidence source while preserving Engineering Governance decision authority and PROC-0002 EGR ownership. |
+| 1.5 | 2026-07-29 | Added the Bootstrap Detection Report consultation path, two-result Governance correction decision, controlled-document-only authority, and normal-resolution re-entry. |

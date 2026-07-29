@@ -1,11 +1,11 @@
 ---
 document_id: POL-0001
 title: Engineering Governance Policy
-version: 1.2
+version: 1.4
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-26
+last_updated: 2026-07-29
 phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Governance Policy
@@ -177,6 +177,73 @@ authority cannot be resolved, Zeus shall treat the condition as authority
 restoration work under SPEC-0011. Bootstrapping authorizes reconciliation of
 controlled documentation, never execution outside it.
 
+### Governance Bootstrap Continuity
+
+A Governance Bootstrap Condition is a narrowly defined authority-restoration
+condition, not execution authority. It exists only when repository identity and
+the qualified baseline are verified, Mission Contract resolution has
+completed, the requested work cannot be attributed to active authority, the
+requested work exists solely to restore governance authority, implementation
+cannot lawfully continue, and an immediate terminal stop would permanently
+prevent governance recovery.
+
+Detection suspends execution. It requires a Bootstrap Detection Report and
+consultation with Engineering Governance under PROC-0002 and SPEC-0011. It
+does not permit an agent to modify an active Mission Contract, invent or expand
+authority, implement a product or feature, complete a gate, or advance a gate.
+
+Engineering Governance shall determine either
+`NO_GOVERNANCE_CORRECTION_REQUIRED`, which maintains fail-closed termination,
+or `GOVERNANCE_CORRECTION_REQUIRED`, which permits preparation of only the
+minimum controlled-document revision through the normal governance process.
+Consultation grants no execution authority. Execution remains suspended until
+the revision becomes authoritative and normal Mission Contract resolution
+succeeds.
+
+Bootstrap consultation is distinct from Mission Admission and Mission
+Activation. It cannot substitute for either function.
+
+### Temporary Mission Admission and Activation Directive
+
+Until explicitly superseded through controlled documentation:
+
+- Engineering Governance is the sole Mission Admission Authority;
+- Engineering Governance is the sole Mission Activation Authority;
+- manual WOP submission by Engineering Governance constitutes intentional
+  mission submission and Mission Admission; and
+- admission remains valid until explicitly revoked by Engineering Governance.
+
+Mission Admission means Engineering Governance has intentionally accepted the
+mission into the Engineering Operating System. It records Governance intent
+only. It does not imply repository readiness, package validity, execution
+authority, activation, Mission Contract resolution, authority resolution, or
+execution readiness.
+
+Activation is a separate Engineering Governance decision authorizing the
+system to begin execution qualification. It does not guarantee successful
+execution. Execution agents shall not admit, revoke, or activate missions and
+shall not reinterpret a completed Governance decision.
+
+Repository identity, repository integrity, package integrity, Mission Contract
+resolution, authority resolution, and execution verification determine
+execution readiness only. Failure shall set an execution blocker while the
+mission remains admitted. Correction may resume execution qualification
+without a new admission.
+
+Governance state is one of `Submitted`, `Admitted`, `Activated`, `Revoked`, or
+`Completed` and changes only through Engineering Governance. Execution state is
+one of `Pending Verification`, `Verification Failed`, `Ready`, `Executing`,
+`Suspended`, `Failed`, or `Completed` and changes through objective execution
+events. The identical label `Completed` is qualified by its state dimension;
+completion in one dimension does not infer completion in the other.
+
+A blocked mission remains admitted, attributable, auditable, and awaiting
+correction. An execution agent shall never reinterpret `BLOCKED` as not
+admitted.
+
+Future delegated admission authorities, automated admission workflows,
+multi-user approval models, and policy engines shall not be inferred.
+
 ---
 
 ## Roles and Responsibilities
@@ -222,6 +289,35 @@ The Governance Baseline consists of the applicable approved governance records, 
 Engineering Work Orders authorize bounded execution against the designated operational Governance Baseline.
 
 The Governance Baseline remains frozen throughout phase execution unless Engineering Governance approves a corrective revision to resolve an execution-blocking defect.
+
+### Operational Alpha Governance Baseline and Freeze
+
+`GOVERNANCE-BASELINE-OA-1.0` is the constitutional baseline consumed by Zeus
+Operational Alpha. Its controlled manifest and qualification boundary are
+recorded by MILESTONE-0009.
+
+Governance operates as maintained operational infrastructure under this
+baseline. Normal engineering work shall consume constitutional governance and
+shall not modify, extend, reinterpret, or redesign it. A constitutional
+governance modification requires explicit Engineering Governance
+authorization identifying the affected baseline, constitutional concepts,
+controlled documents, qualification suites, and verification workflow.
+
+Maintenance may correct an explicitly authorized defect without introducing
+new governance functionality. Proposed improvements that are not required to
+correct an authorized defect shall enter the Governance backlog and remain
+deferred until Engineering Governance authorizes a constitutional revision.
+
+Every constitutional revision shall update as one synchronized change:
+
+1. affected controlled documentation;
+2. affected governance documentation qualification suites; and
+3. the standard baseline verification workflow.
+
+No constitutional revision is complete, eligible for baseline designation, or
+available to operational engineering until controlled-document validation,
+cross-reference validation, and every governance qualification pass through
+the standard verification workflow.
 
 ---
 
@@ -393,3 +489,6 @@ and provides the policy-level governing foundation for all Engineering Operating
 | --- | --- | --- |
 | 1.0 | 2026-07-09 | Initial Engineering Governance Policy established. |
 | 1.1 | 2026-07-17 | Established holistic governance reconciliation, repository-governed workflow behavior, no silent correction, architecture validation, and future-mission verification under EGR-000002 and EWO-000018. |
+| 1.2 | 2026-07-26 | Reconciled the production authority ownership and authority-restoration model with SPEC-0011. |
+| 1.3 | 2026-07-29 | Defined governance bootstrap as mandatory suspension and Engineering Governance consultation; separated Governance-owned Mission Admission and Mission Activation from objective execution readiness and blocked-mission state. |
+| 1.4 | 2026-07-29 | Established the Operational Alpha Governance Baseline and freeze policy, required explicit authorization for constitutional change, and mandated synchronized documentation, qualification, and verification updates. |

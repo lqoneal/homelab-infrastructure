@@ -1,11 +1,11 @@
 ---
 document_id: GEN-0001
 title: Engineering Operating System Genesis Record
-version: 1.1
+version: 1.2
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-26
+last_updated: 2026-07-29
 phase: Governance Bootstrap
 domain: Engineering Governance
 classification: Genesis Governance Record
@@ -69,13 +69,16 @@ Subsequent Engineering Qualification activities demonstrated that implementation
 
 Those execution stops demonstrated that the Engineering Operating System correctly required authoritative controlled engineering records before engineering execution could proceed.
 
-Engineering Governance therefore exercised delegated bootstrap authority as the one-time constitutional mechanism required to create the initial governance records.
+Engineering Governance therefore recorded the one-time genesis authorization
+that created the initial governance records.
 
 ---
 
 ## Governance Bootstrap
 
-The Governance Bootstrap is the one-time constitutional activity through which Engineering Governance exercised delegated bootstrap authority to establish the first controlled governance documents of the Engineering Operating System.
+The Governance Bootstrap is the one-time historical constitutional activity
+through which Engineering Governance established the first controlled
+governance documents of the Engineering Operating System.
 
 During the Governance Bootstrap:
 
@@ -85,6 +88,12 @@ During the Governance Bootstrap:
 * No Engineering Work Order governs the bootstrap because an operational governance baseline does not yet exist.
 
 The Governance Bootstrap shall never be repeated.
+
+This historical genesis event is not a present authority source. Current
+governance bootstrap terminology means only the detection and consultation
+workflow defined by CHAR-0001 and SPEC-0011. It creates no authority and cannot
+substitute for controlled-document revision, Mission Admission, Mission
+Activation, or Mission Contract resolution.
 
 The Transitional Engineering Handoff Governance mechanism established by
 CHAR-0001 v1.1 is not a repetition of the Governance Bootstrap. It is a

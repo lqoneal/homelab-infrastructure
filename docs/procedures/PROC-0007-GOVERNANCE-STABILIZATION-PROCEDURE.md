@@ -1,15 +1,15 @@
 ---
 document_id: PROC-0007
 title: Governance Stabilization Procedure
-version: 1.0
+version: 1.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-18
-last_updated: 2026-07-18
+last_updated: 2026-07-29
 phase: Initial Controlled Publication
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: PROC-0007@0.1
+predecessor_revision: PROC-0007@1.0
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -602,9 +602,35 @@ The following require separate authority:
 - Governance analytics and baseline assembly; and
 - reference-based integration throughout the Governance framework.
 
+## 16. Constitutional Revision Synchronization Gate
+
+When Engineering Governance explicitly authorizes a revision to the
+constitutional baseline, Governance Stabilization shall treat controlled
+documentation, governance documentation qualification, and the standard
+verification workflow as one affected subsystem.
+
+Before publication routing, the stabilization record shall:
+
+1. identify the current and proposed Governance Baseline identifiers;
+2. inventory every affected constitutional owner and downstream document;
+3. update the controlled documentation defining the revised model;
+4. update every affected governance documentation qualification;
+5. update the standard verification workflow so no qualification is orphaned;
+6. demonstrate controlled-document semantic and cross-reference validity;
+7. demonstrate that all governance documentation qualifications execute
+   through the standard verification workflow and pass; and
+8. record the exact publication boundary and remaining backlog.
+
+Failure, omission, or divergence in any of the three synchronized surfaces
+blocks publication and baseline designation. Operational engineering continues
+to consume the preceding baseline until the successor is qualified and
+published. This gate adds no authority to Governance Stabilization and does not
+permit it to approve or publish its own result.
+
 ## Revision History
 
 | Version | Date | Description |
 | --- | --- | --- |
 | 0.1 | 2026-07-18 | Developed the Draft Governance Stabilization Procedure from the qualified twelve-stage orchestration capability using Active PROC-0006 as its external qualification dependency, without approval, activation, publication, automation, or authority transfer. |
 | 1.0 | 2026-07-18 | Approved, activated, and published the qualified Governance Stabilization Procedure under EGR-000006 without changing its architecture, workflow, authority model, or interaction contracts. |
+| 1.1 | 2026-07-29 | Added the constitutional revision synchronization gate requiring coordinated controlled-document, qualification-suite, and standard-verification updates before successor-baseline designation. |

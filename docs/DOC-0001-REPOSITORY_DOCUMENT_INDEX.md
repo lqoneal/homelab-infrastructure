@@ -1,15 +1,15 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.57
+version: 2.58
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-26
+last_updated: 2026-07-29
 phase: Zeus Operational Alpha
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.54
+predecessor_revision: DOC-0001@2.57
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -155,6 +155,8 @@ relationships:
     target: MILESTONE-0007-PUBLICATION-VERIFICATION
   - type: indexes
     target: MILESTONE-0008
+  - type: indexes
+    target: MILESTONE-0009
   - type: related_to
     target: EWO-000018
 tags:
@@ -450,6 +452,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | MILESTONE-0007 | Governance Authority Transaction Architecture Qualified | Approved | Engineering Governance | `docs/project/milestones/2026-07-18-governance-authority-transaction-architecture-qualified.md` |
 | MILESTONE-0007-PUBLICATION-VERIFICATION | MILESTONE-0007 Publication Verification Report | Active | Engineering Governance | `docs/project/milestones/MILESTONE-0007-PUBLICATION-VERIFICATION-REPORT.md` |
 | MILESTONE-0008 | Engineering Governance Framework Version 1.0 Operationally Qualified | Approved | Engineering Governance | `docs/project/milestones/2026-07-18-engineering-governance-framework-1.0-operationally-qualified.md` |
+| MILESTONE-0009 | Operational Alpha Governance Baseline 1.0 and Governance Freeze | Approved | Engineering Governance | `docs/project/milestones/2026-07-29-operational-alpha-governance-baseline-1.0.md` |
 
 This table shall be updated whenever a controlled document is created, superseded, or archived.
 
@@ -787,3 +790,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.55 | 2026-07-26 | Published and indexed SPEC-0011 and reconciled the production authority hierarchy, controlled-document execution authority, Zeus CLI semantics, and Authority Restoration Principle. |
 | 2.56 | 2026-07-26 | Registered SPEC-0012 and the production execution foundation while preserving dispatcher activation, agent registration, baseline publication, and first operational execution qualification as separate controls. |
 | 2.57 | 2026-07-28 | Registered SPEC-0013 Version 1.0 as the Draft Controlled Mission Assurance Language candidate and bound Zeus assurance interpretation to its exact revision; approval, activation, and controlled publication remain separate decisions. |
+| 2.58 | 2026-07-29 | Registered MILESTONE-0009 as the Operational Alpha constitutional baseline and governance-freeze transition, including mandatory synchronized documentation, qualification, and verification change control. |

@@ -297,15 +297,45 @@ Project wrappers SHALL:
 
 The Mission Activation Service SHALL implement this ordered pipeline:
 
-`Approved Mission -> Admission -> Activation Request -> Approval Verification
--> Mission Contract Resolution -> Atomic Activation Transaction -> Registry
-Reconciliation -> EOS Synchronization -> Operational Mission`.
+`Engineering Governance -> Manual WOP Submission -> Mission Admission ->
+Repository Identity Verification -> Repository Integrity Verification ->
+Package Integrity Verification -> Mission Activation -> Mission Contract
+Resolution -> Execution Verification -> Mission Execution`.
 
-Admission SHALL deterministically qualify mission eligibility, WOP,
-repository, baseline, roles, approval, dependencies, and scope. The result
-vocabulary is `ADMIT` or `DENY`; denial includes stable reason codes.
+Engineering Governance SHALL be the sole Mission Admission Authority and
+Mission Activation Authority until a controlled-document revision explicitly
+supersedes this temporary operating directive. Manual Governance submission
+SHALL establish intentional mission submission and Mission Admission.
+Admission SHALL mean only that Engineering Governance intentionally accepted
+the mission into the Engineering Operating System. Admission SHALL remain valid
+until explicitly revoked through Engineering Governance.
 
-Activation SHALL use a repository lock, request idempotency, expected-state
+Admission SHALL NOT imply repository readiness, package validity, execution
+authority, activation, Mission Contract resolution, authority resolution, or
+execution readiness. Execution agents SHALL NOT admit, revoke, or reinterpret
+mission intent.
+
+Mission Activation SHALL be an attributable Engineering Governance decision
+authorizing the system to begin execution qualification. It SHALL NOT guarantee
+successful execution. Execution agents SHALL NOT activate missions
+independently.
+
+Repository identity, repository integrity, package integrity, Mission Contract
+resolution, authority resolution, and execution verification SHALL determine
+execution readiness only. Objective failure SHALL set execution status to
+`BLOCKED` without reversing or invalidating admission.
+
+Governance state SHALL be `Submitted`, `Admitted`, `Activated`, `Revoked`, or
+`Completed` and SHALL change only through Engineering Governance. Execution
+state SHALL be `Pending Verification`, `Verification Failed`, `Ready`,
+`Executing`, `Suspended`, `Failed`, or `Completed` and SHALL change through
+objective execution events.
+
+A blocked mission SHALL remain admitted, attributable, auditable, and eligible
+to resume execution qualification after correction without a new Mission
+Admission. Execution agents SHALL NOT reinterpret `BLOCKED` as not admitted.
+
+Activation processing SHALL use a repository lock, request idempotency, expected-state
 comparison, one-active-contract cardinality, durable before-images, atomic
 replacement, post-write resolution, and a transaction journal. Canonical
 repository records are the Mission Contract, Work Registry, Project State, and
@@ -341,3 +371,4 @@ All future EOS controllers SHALL conform to this specification.
 | 1.2 | 2026-07-28 | Candidate: defined the Engineering Execution Contract, separated command permission from decision authority, and required non-reusable framework review and approval gates. |
 | 1.2 candidate reconciliation | 2026-07-28 | Added controlled-owner mission-assurance declarations and required generic, fail-closed Zeus evaluation through the canonical execution resolver. |
 | 1.3 candidate | 2026-07-28 | Added the Mission Activation Service, admission qualifications, atomic transaction boundary, reconciliation, rollback, recovery, and resolver cardinality requirements. |
+| 1.4 candidate | 2026-07-29 | Reconciled Governance-only admission and activation, independent Governance and execution state, execution-readiness blockers, and resumable blocked missions without adding runtime behavior. |
