@@ -1,21 +1,21 @@
 ---
 document_id: PROC-0005
 title: Controlled Document Publication Procedure
-version: 1.2
-status: Active
+version: 1.3
+status: Draft
 owner: Engineering Governance
 created: 2026-07-18
-last_updated: 2026-07-18
+last_updated: 2026-07-28
 phase: Governance Stabilization Procedure Integration
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: PROC-0005@1.1
+predecessor_revision: PROC-0005@1.2
 successor_revision: null
-approval_status: Approved
-approval_authority: Engineering Governance
-approval_reference: EGR-000006
-approval_date: 2026-07-18
-persistence_status: Persisted
+approval_status: Pending
+approval_authority: null
+approval_reference: null
+approval_date: null
+persistence_status: Pending
 source_of_truth: true
 information_scope: Controlled document construction, review, remediation, qualification, authorization, publication, verification, evidence, proportional application, and automation boundaries
 declared_deferrals:
@@ -661,6 +661,40 @@ output or repository evidence when the governing record requires it.
 
 ## 17. Validation Checklist
 
+For every new document or complete successor revision, resolve exactly one
+SPEC-0001 semantic validation profile and evaluate every criterion identifier
+assigned to it. A prose-only completeness statement is not criterion
+evaluation.
+
+Publication evidence shall contain the resolved profile and resolution basis,
+a criterion-to-evidence matrix, a completeness summary, an unresolved-
+criterion report, the machine-readable automation coverage report,
+command-interface results when applicable, and the exact candidate
+fingerprint. Results shall distinguish PASS, FAIL, NOT APPLICABLE, and MANUAL
+REVIEW.
+
+Automated PASS establishes only the implemented check. Partially automated,
+manual, and not-automated criteria require attributable review evidence.
+Missing profile, missing criterion, unresolved criterion, missing evidence, or
+indeterminate applicability is fail-closed and prevents publication
+authorization.
+
+Remediation shall reference the same criterion identifiers and rerun affected
+criteria plus the complete profile. Regenerate traceability and unresolved
+reports for the exact frozen candidate before authorization and after
+publication.
+
+The reusable interface is:
+
+```text
+python3 scripts/validate_controlled_documents.py --semantic-path <path> --semantic-report <results.json> --coverage-report <coverage.json>
+```
+
+`--help` documents the interface. Exit zero means automated structural and
+requested semantic checks passed; non-zero means at least one automated check
+failed. The command does not resolve manual criteria, approve content, or
+authorize publication.
+
 | Control | Pre-Publication | Post-Publication |
 | --- | --- | --- |
 | Authority and exact scope resolve | Required | Confirm unchanged |
@@ -755,7 +789,75 @@ Stop the workflow when:
 Stop conditions are reported, not silently repaired beyond the authorized
 remediation scope.
 
-## 21. Compliance and Success Criteria
+## 21. Synchronization Publication Checks
+
+When a publication set contains a document with implementation synchronization
+declarations, readiness review shall include the additive synchronization
+report. `UNKNOWN`, `MISSING_ARTIFACT`, `IMPLEMENTATION_CHANGED`,
+`DOCUMENT_CHANGED`, or `OUT_OF_SYNC` shall be preserved as findings and routed
+to the applicable review or qualification owner. They shall not be converted
+to PASS by publication.
+
+The frozen publication evidence shall record documentation and implementation
+fingerprints, affected documents, qualification impact, and required actions.
+After publication, rerun synchronization validation against the committed
+locator. A changed documentation fingerprint is expected only when included in
+the authorized publication set; it does not authorize implementation changes.
+Likewise, implementation changes never authorize document publication.
+
+The synchronization report is derived evidence. The Publication Authority and
+Publication Executor retain exactly their existing roles, and no report status
+approves content, lifecycle, publication, or implementation.
+
+## 22. Implementation Coverage Publication Checks
+
+Readiness review for a publication that changes implementation or
+synchronization declarations shall run the independently selectable coverage
+layer:
+
+```bash
+python3 scripts/validate_controlled_documents.py \
+  --implementation-coverage \
+  --implementation-coverage-report <coverage-results.json>
+```
+
+The review shall reconcile every `undocumented`, `orphaned_declaration`,
+`obsolete_declaration`, and `unknown_classification` finding to its recorded
+repository and declaration evidence. Optional, prohibited, generated, and
+external artifacts may be excluded only by the applicable classification
+policy. A filename, nearby document, or apparent owner shall not be used to
+infer an authoritative relationship.
+
+Coverage results are derived readiness evidence. They do not add an artifact to
+the publication set, authorize remediation, assign documentation ownership, or
+make a publication or lifecycle decision. A changed coverage policy,
+declaration, implementation root, or implementation artifact shall be included
+in the frozen publication evidence when it is within the authorized boundary.
+
+## 22.1 Engineering Contract Conformance Publication Checks
+
+When a publication changes an explicitly documented Engineering Contract or
+its declared implementation surface, readiness review shall run the
+independently selectable conformance layer:
+
+```bash
+python3 scripts/validate_controlled_documents.py \
+  --conformance-only \
+  --conformance-report <conformance-results.json>
+```
+
+The review shall preserve contract extraction, discovery, determination,
+invariant, compatibility, and recommended-action evidence. Missing,
+incompatible, partial, obsolete, ambiguous, or undocumented findings shall be
+routed to the existing technical review owner. They shall not be treated as
+functional-test results or converted into authorization.
+
+Conformance evidence does not add paths to a publication boundary, approve
+content, authorize remediation, qualify implementation, or change lifecycle.
+PROC-0005 retains publication execution ownership and consumes conformance
+only as derived readiness evidence.
+
+## 23. Compliance and Success Criteria
 
 A publication conforms to this procedure when:
 
@@ -775,7 +877,7 @@ The procedure succeeds when a qualified executor can reproduce the workflow
 across controlled document classes without undocumented knowledge or inferred
 authority.
 
-## 22. Adoption and Future Integration
+## 24. Adoption and Future Integration
 
 This procedure is the single reusable operational publication workflow for the
 controlled document classes in section 2. Class-specific procedures supplement
@@ -817,6 +919,18 @@ Automation shall validate the actor and authority reference before accepting an
 event. It shall not synthesize PASS, REJECTED, WITHDRAWN, lifecycle approval,
 publication authority, or corrective authority from repository state.
 
+## Engineering Assurance Evidence in Publication
+
+When an authorized publication package declares Engineering Properties, the
+readiness and conformance evidence may include the independently executable
+Engineering Assurance layer after structural, semantic, synchronization,
+implementation coverage, and implementation conformance validation. The
+publication review shall preserve every property determination, unresolved
+condition, advisory impact, canonical report digest, and authority-boundary
+statement. A successful assurance result is evidence only: it does not
+authorize publication, imply approval or qualification, change lifecycle
+state, or replace the publication transaction and its existing owners.
+
 ## Revision History
 
 | Version | Date | Description |
@@ -824,3 +938,5 @@ publication authority, or corrective authority from repository state.
 | 1.0 | 2026-07-18 | Published the qualified reusable six-stage controlled-document publication workflow, separated authority and outcome domains, exact publication-boundary controls, evidence and validation models, proportional application, and informative automation transition appendix without authorizing automation or downstream implementation. |
 | 1.1 | 2026-07-18 | Integrated Active PROC-0006 as an optional external qualification dependency while preserving PROC-0005 publication lifecycle, authorization, execution, outcome, and verification ownership. |
 | 1.2 | 2026-07-18 | Integrated Active PROC-0007 as an optional source of qualified and authorized reconciliation publication packages while preserving PROC-0005 publication ownership. |
+| 1.3 | 2026-07-28 | Draft successor adds profile resolution, criterion-to-evidence traceability, completeness and unresolved-criterion summaries, automation coverage, command evidence, fail-closed semantic disposition, additive synchronization, repository-wide implementation coverage, and Engineering Contract conformance evidence without changing publication ownership. |
+| 1.4 | 2026-07-28 | Adds optional Engineering Assurance evidence consumption and canonical report preservation without changing publication authority, lifecycle ownership, or execution. |

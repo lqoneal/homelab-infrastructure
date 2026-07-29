@@ -1,21 +1,21 @@
 ---
 document_id: PROC-0006
 title: Governance Qualification Procedure
-version: 1.1
-status: Active
+version: 1.2
+status: Draft
 owner: Engineering Governance
 created: 2026-07-18
-last_updated: 2026-07-18
+last_updated: 2026-07-28
 phase: Governance Stabilization Procedure Integration
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: PROC-0006@1.0
+predecessor_revision: PROC-0006@1.1
 successor_revision: null
-approval_status: Approved
-approval_authority: Engineering Governance
-approval_reference: EGR-000006
-approval_date: 2026-07-18
-persistence_status: Persisted
+approval_status: Pending
+approval_authority: null
+approval_reference: null
+approval_date: null
+persistence_status: Pending
 source_of_truth: true
 information_scope: Governance qualification invocation, evidence sufficiency, independent review, finding classification, bounded remediation, conformance requalification, recommendation, external decision routing, and closeout
 declared_deferrals:
@@ -338,7 +338,11 @@ record evidence, not inferred authority.
 
 #### Evidence and Exit Criteria
 
-Produce a criterion-by-criterion review record with observations and evidence.
+Resolve the SPEC-0001 profile and verify that its criterion set is correct for
+the subject class without importing unrelated profile requirements. Produce a
+criterion-by-criterion review record keyed by `DOC-COMP-NNN`, with
+observations and evidence. Free-form observations may supplement but shall not
+replace criterion identifiers.
 Exit when every applicable criterion is evaluated or report `BLOCKED` when a
 deterministic evaluation cannot be completed. A terminal BLOCKED result routes
 to Stage 9.
@@ -397,15 +401,20 @@ Establish the final qualification result for the complete current subject.
 
 #### Activities
 
-Verify all applicable criteria, correction coverage, internal consistency,
+Verify all applicable criteria, criterion correctness, correction coverage,
+criterion-to-evidence coverage, evidence sufficiency, semantic completeness,
+automation coverage, internal consistency,
 authority preservation, metadata and relationships where applicable,
 deterministic validation, exception treatment, deferrals, and regression
 results.
 
 #### Evidence and Exit Criteria
 
-Produce the exact qualified subject fingerprint, complete validation record,
-remaining-finding inventory, and one qualification result from section 7.
+Produce the exact qualified subject fingerprint, complete criterion record,
+coverage and unresolved-criterion reports, remaining-finding inventory, and
+one qualification result from section 7. The acceptance recommendation shall
+reference supporting criterion identifiers and identify every manual
+judgment. Qualification does not itself accept the subject.
 `PASS` or `PASS_WITH_FINDINGS` proceeds to Stage 7. `FAIL` proceeds to Stage 7
 with a failure recommendation. `BLOCKED` routes to Stage 9 for terminal
 closeout or recorded authorized resume instructions.
@@ -505,6 +514,18 @@ qualification result. The decision and its rationale are recorded separately.
 
 ## 10. Evidence Requirements
 
+For semantic qualification, evidence shall also include the resolved
+SPEC-0001 profile, catalog version or fingerprint, every applicable criterion
+identifier, automation state, validation implementation, evidence locator,
+reviewer, result, and remediation disposition. The reviewer shall verify
+criterion correctness, evidence sufficiency, complete criterion coverage,
+whole-subject semantic completeness, and the evidence basis for the acceptance
+recommendation.
+
+An omitted or unresolved applicable criterion is blocking. Automated presence
+checks do not establish technical correctness. Manual and partially automated
+criteria require independent evidence and an attributable disposition.
+
 Use TPL-0003 without redesign. The evidence package or supporting artifacts
 shall permit reconstruction of:
 
@@ -555,7 +576,85 @@ This procedure may be profiled by another procedure, but its result shall
 return to the caller. It shall not become a hidden authorization or recursive
 orchestration mechanism.
 
-## 13. Completion Criteria
+## 13. Implementation Synchronization Qualification
+
+When the subject declares implementation dependencies, evidence intake shall
+include the deterministic synchronization report, recorded and actual endpoint
+fingerprints, dependency graph, affected documentation, and required actions.
+The reviewer shall evaluate the declared validation scope and strategy rather
+than infer equivalence from filenames or timestamps.
+
+`PASS` may support `qualification_still_valid` or
+`automatic_revalidation_sufficient` when the applicable profile permits it.
+`IMPLEMENTATION_CHANGED`, `DOCUMENT_CHANGED`, `OUT_OF_SYNC`,
+`MISSING_ARTIFACT`, `SUPERSEDED`, and `UNKNOWN` require the declared impact
+route, which may include manual review, independent qualification, or
+publication. The qualification reviewer shall verify the impact analysis and
+may issue findings when it is incomplete or unsupported.
+
+Automation performs no approval decision. Synchronization results and impact
+analysis are qualification evidence; this procedure remains the qualification
+owner and returns recommendations to the external decision owner.
+
+## 14. Implementation Coverage Qualification
+
+When implementation or synchronization declarations are in scope, evidence
+intake shall include the implementation coverage policy, deterministic JSON
+report, repository inventory provenance, classifications, matched declaration
+identifiers, orphan evidence, coverage graph, metrics, and documentation debt.
+The reviewer shall independently confirm that discovery roots are complete for
+the subject and that classification rules are ordered, repository-independent,
+and applied without Zeus- or domain-specific engine logic.
+
+An undocumented mandatory artifact, unknown classification, unreachable
+endpoint, stale dependency declaration, or unexplained documentation debt is a
+qualification finding. Exclusions shall cite the applicable optional,
+prohibited, generated, internal-helper, or external-dependency policy.
+One-hundred-percent metrics do not establish semantic correctness,
+synchronization PASS, approval, publication readiness, or qualification by
+themselves.
+
+The reviewer shall not infer documentation identity or ownership. Coverage
+analysis supplies evidence and recommended review actions only; this procedure
+retains qualification ownership and returns its recommendation to the existing
+decision owner.
+
+## 14.1 Engineering Contract Conformance Qualification
+
+When documented Engineering Contracts are in scope, evidence intake shall
+include the exact catalog, extraction result, discovery evidence, per-element
+comparison, invariant failures, compatibility findings, canonical JSON report,
+and reproducibility result. The reviewer shall distinguish conformance evidence
+from functional, integration, and qualification testing.
+
+`conformant` supports only the factual claim that discovered implementation
+agrees with the documented contract inspected. `partially_conformant`,
+`missing_implementation`, `obsolete_contract`, `incompatible_implementation`,
+`ambiguous_contract`, and undocumented behavior or capability remain findings
+for existing owners to disposition. Compatibility findings are advisory.
+
+The reviewer shall confirm that no contract, intent, ownership, approval,
+publication, qualification, or lifecycle authority was inferred. Conformance
+analysis supplies derived evidence only; PROC-0006 retains qualification
+ownership and returns its recommendation to the external decision owner.
+
+### Engineering Assurance Evidence Review
+
+Where the subject declares Engineering Properties, the Qualification Reviewer
+shall evaluate the canonical Engineering Assurance Report independently from
+structural, semantic, synchronization, coverage, conformance, functional, and
+integration evidence. The review shall trace every declaration to an
+authoritative source and examine invariant, transition, authority, idempotence,
+failure/recovery, evidence-sufficiency, determination, impact, and unresolved
+condition fields.
+
+`ASSURED` is not approval, qualification, acceptance, publication, lifecycle
+authority, or operational authorization. Any other determination is a finding
+input whose advisory impact must be considered by the existing decision owner.
+The assurance engine may neither qualify itself nor infer a qualification
+result, and missing or stale authority evidence shall fail closed.
+
+## 15. Completion Criteria
 
 Qualification is operationally complete when the nine stages are accounted
 for; the subject, authority, evidence, findings, remediation, result,
@@ -566,7 +665,7 @@ A `FAIL` or `BLOCKED` result may be a valid completed qualification outcome.
 Execution success is not restricted to a PASS result; success means the
 procedure produced a truthful qualified outcome within authority.
 
-## 14. Future Considerations
+## 16. Future Considerations
 
 The following remain Deferred Execution and require separate authorization:
 
@@ -583,3 +682,5 @@ The following remain Deferred Execution and require separate authorization:
 | 0.2 | 2026-07-18 | Resolved review findings by making every stage explicitly accountable, routing blocked and withdrawn outcomes through closeout, and adding deterministic scenario routing without changing the qualified architecture or authority model. |
 | 1.0 | 2026-07-18 | Approved, activated, and published the qualified reusable Governance Qualification Procedure under EGR-000005 without changing its architecture, authority model, or interaction contracts. |
 | 1.1 | 2026-07-18 | Integrated Active PROC-0007 as an external orchestration caller while preserving PROC-0006 independent qualification ownership and caller-return behavior. |
+| 1.2 | 2026-07-28 | Draft successor requires SPEC-0001 criterion identifiers for independent semantic qualification, evidence sufficiency, semantic coverage, synchronization drift, repository-wide implementation coverage, Engineering Contract conformance, invariant and compatibility evidence, and evidence-based acceptance recommendations. |
+| 1.3 | 2026-07-28 | Adds independent review of Engineering Assurance derived evidence while preserving qualification ownership and all external approval, publication, lifecycle, and operational authorities. |

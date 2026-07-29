@@ -1,21 +1,21 @@
 ---
 document_id: SPEC-0001
 title: Controlled Document Representation Specification
-version: 1.5
-status: Active
+version: 1.6
+status: Draft
 owner: EOS Program
 created: 2026-07-08
-last_updated: 2026-07-17
+last_updated: 2026-07-28
 phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Specification
 source_of_truth: true
-predecessor_revision: SPEC-0001@1.4
+predecessor_revision: SPEC-0001@1.5
 successor_revision: null
-approval_status: Approved
-approval_authority: Engineering Governance
-approval_reference: EGR-000002
-approval_date: 2026-07-13
+approval_status: Pending
+approval_authority: null
+approval_reference: null
+approval_date: null
 persistence_status: Pending
 relationships:
   - type: governed_by
@@ -595,36 +595,426 @@ Verify the complete publication for internal consistency, governing conformance,
 
 ---
 
-## 18. Self-Conformance of SPEC-0001 Version 1.4
+## 18. Semantic Completeness Validation
+
+### 18.1 Ownership and Additive Operation
+
+Semantic validation is part of this existing controlled-document
+representation and validation model. It supplements, and does not replace or
+reinterpret, structural validation. STD-0000 continues to own document-class
+responsibilities; STD-0001 continues to own lifecycle; STD-0002 continues to
+own persistence; PROC-0005 continues to own publication workflow; and
+PROC-0006 continues to own independent qualification workflow.
+
+The machine-readable catalog at
+`engineering/validation/controlled-document-semantic-profiles.yaml` is the
+executable representation incorporated by this specification. It is not a
+controlled-document class, standard, lifecycle authority, publication
+authority, or competing information owner. Criterion meaning is owned here;
+the catalog binds identifiers to deterministic implementation data.
+
+Legacy controlled revisions remain structurally admissible under Principle 6.
+Semantic validation applies when a revision declares
+`semantic_validation_profile`, when a caller selects an explicit semantic
+target, or when a repository path has a profile mapping registered by this
+specification. Absence of an applicable profile fails closed for an explicitly
+requested semantic validation.
+
+### 18.2 Reusable Profile Contract
+
+Every profile shall identify:
+
+1. required semantic sections or fields;
+2. required engineering content;
+3. governing and artifact traceability;
+4. required evidence;
+5. command-documentation applicability;
+6. validation criteria; and
+7. acceptance criteria.
+
+The reusable profiles are:
+
+| Profile | Class-specific semantic responsibility |
+| --- | --- |
+| Standard | Purpose, scope, normative requirements, validation, and compliance |
+| Specification | Purpose, scope, engineering model, validation, and compliance |
+| Procedure | Entry, execution sequence, stop, recovery, outputs, reconciliation, and evidence |
+| Policy | Purpose, scope, policy direction, validation, and compliance |
+| Template | Required prompts for purpose, engineering content, traceability, evidence, validation, and acceptance |
+| WOP | Objectives, prerequisites, implementation boundary, verification, evidence, acceptance, recovery, and completion |
+| Roadmap | Objectives, sequencing, dependencies, completion definition, and traceability |
+| Gate Specification | Objective, capability, rationale, implementation, verification, commands, results, failure interpretation, evidence, acceptance, recovery, and next gate |
+| Operator Verification Guide | Purpose, engineering and operator explanations, prerequisites, steps, outputs, evidence inspection, PASS, FAIL, acceptance, rejection, and resume |
+| Completion Report | Scope, implementation outcome, evidence, validation, unresolved criteria, coverage, reconciliation, and disposition |
+
+Profiles shall reuse criteria and shall not import class-specific requirements
+into unrelated classes. A profile may be extended only by revising this model
+and its incorporated catalog together.
+
+### 18.3 Criterion Contract
+
+Completeness criterion identifiers use the permanent form `DOC-COMP-NNN`.
+Every catalog entry shall contain:
+
+- identifier;
+- description;
+- applicability;
+- validation method;
+- automation state;
+- required evidence;
+- fail condition; and
+- remediation guidance.
+
+The identifier is the authoritative repository reference. Prose observations
+may explain a finding but shall not replace its criterion identifier.
+Criterion references in every profile shall resolve to exactly one catalog
+entry.
+
+### 18.4 Criterion Catalog
+
+The incorporated catalog defines `DOC-COMP-001` through `DOC-COMP-018`:
+
+| Range | Owned concern |
+| --- | --- |
+| DOC-COMP-001–008 | Profile resolution, semantic content, traceability, evidence, commands, validation, and acceptance |
+| DOC-COMP-009–013 | Entry, sequence, stop, recovery, outputs, and reconciliation |
+| DOC-COMP-014 | Roadmap dependencies and completion |
+| DOC-COMP-015 | Gate-specific capability and verification completeness |
+| DOC-COMP-016 | Operator explanation and disposition completeness |
+| DOC-COMP-017 | WOP boundary and completion completeness |
+| DOC-COMP-018 | Completion-report closeout completeness |
+
+Automation coverage is one of `automated`, `manual`,
+`partially_automated`, or `not_automated`. Automated presence checks do not
+claim engineering correctness or evidence sufficiency. Manual criteria remain
+mandatory and fail publication when unresolved.
+
+### 18.5 Command Verification
+
+Where a profile declares executable commands, validation shall:
+
+- resolve the executable or repository interface;
+- verify the documented invocation shape against the exposed interface;
+- require a help reference or help output;
+- require documented success and non-success exit behavior; and
+- record whether validation inspected the interface or safely executed it.
+
+Unsafe, privileged, destructive, environment-dependent, or side-effecting
+commands shall not be executed by semantic validation. Their interface,
+syntax, help, and documented exit contract shall be inspected only.
+
+### 18.6 Coverage and Traceability Output
+
+Machine-readable coverage output shall identify, for every criterion:
+
+- automation state;
+- validation implementation;
+- PROC-0005 and PROC-0006 procedure references; and
+- required evidence reference.
+
+Per-document semantic results shall identify the resolved profile, each
+criterion, its result, and unresolved manual review. A generated report is a
+Derived Engineering View and does not approve content, change lifecycle, or
+replace qualification evidence.
+
+---
+
+## 19. Self-Conformance of SPEC-0001 Version 1.6
 
 This revision conforms to its representation model as follows:
 
 * core identity, revision, approval, persistence, relationship, and deferral metadata are present;
 * `document_id` remains permanent while the approved title changes;
 * Charter governance, policy conformance, EDR implementation, STD-0000 conformance, indexing, and historical authorizations use canonical typed relationships;
-* lifecycle status is Active under the approved transitional implementation authority;
-* approval status is explicit and attributable to Engineering Governance;
-* persistence status is truthfully `Pending` because this mission prohibits commit and publication;
-* no immutable locator is claimed for Version 1.4;
+* lifecycle status is truthfully Draft and makes no operational claim;
+* approval status is Pending and no approval authority is fabricated;
+* persistence status is truthfully `Pending`;
+* no immutable locator is claimed for Version 1.6;
 * missing historical locators for Versions 1.1–1.3 are explicitly deferred rather than fabricated;
 * repository-wide rollout and dependent updates are explicitly deferred;
-* Revision History preserves Versions 1.0–1.3 and records the title rationale.
+* Revision History preserves Versions 1.0–1.5 and records this Draft successor.
 
-The revision is operationally Active but not historically persisted. Persistence qualification remains incomplete until separately authorized repository work changes `persistence_status` and records a verified locator.
+This Version 1.6 successor is a Draft candidate. It does not alter the
+approval, lifecycle, or persistence facts of the published Version 1.5
+revision and does not become operational authority without the existing
+review, approval, publication, and persistence workflow.
 
 ---
 
-## 19. Backward Compatibility and Adoption
+## 20. Backward Compatibility and Adoption
 
 Existing controlled records remain valid under their approved representation until separately revised.
 
-Legacy metadata fields, identifiers, paths, and lifecycle records shall not be rewritten merely to conform to Version 1.4. Their next authorized complete revision shall adopt the canonical model unless Engineering Governance approves an exception.
+Legacy metadata fields, identifiers, paths, and lifecycle records shall not be rewritten merely to conform to Version 1.6. Their next authorized complete revision shall adopt the canonical model unless Engineering Governance approves an exception.
 
 Repository-wide rollout shall inventory affected records, preserve unrelated work, identify authority, validate each complete revision, and avoid fabricated historical data.
 
 ---
 
-## 20. Compliance
+## 21. Implementation Synchronization Model
+
+Implementation synchronization is an additive validation capability of this
+specification. It is not a documentation class, lifecycle, publication
+workflow, qualification authority, or competing validation framework.
+
+The model separates four concerns:
+
+| Concern | Representation | Ownership boundary |
+| --- | --- | --- |
+| Documentation | Controlled identity and repository locator | Its existing Information Authority |
+| Implementation | Repository artifact and object type | The implementation owner named by the declaration |
+| Derived evidence | Fingerprints, graph, drift status, and impact analysis | Evidence producer; evidence makes no approval decision |
+| Synchronization metadata | Relationship, scope, strategy, and prior fingerprints | Relationship metadata only; it owns neither endpoint |
+
+Documentation never owns implementation through synchronization metadata, and
+implementation never owns documentation. Existing section 8 relationship types
+remain the controlled-document relationship vocabulary. A synchronization
+declaration binds those existing identities to implementation locators without
+creating another dependency mechanism.
+
+### 21.1 Reusable Artifact Declaration
+
+Every supported controlled-document profile may optionally declare one or more
+implementation dependencies in its front matter or in the repository
+synchronization catalog. Central catalog declarations are appropriate when
+domain artifacts do not use controlled-document front matter. Each declaration
+shall contain:
+
+```yaml
+synchronization_id: SYNC-SPEC-0001-VALIDATOR
+documentation:
+  document_id: SPEC-0001
+  repository_locator: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md
+  fingerprint: {strategy: sha256, value: "<qualified fingerprint>"}
+implementation:
+  repository_locator: scripts/validate_controlled_documents.py
+  object_type: script
+  fingerprints:
+    - {strategy: sha256, value: "<qualified fingerprint>"}
+ownership:
+  documentation: EOS Program
+  implementation: "<existing implementation owner>"
+validation_scope: synchronization validation
+synchronization_strategy: exact_content
+qualification_policy: {}
+```
+
+`object_type` supports `file`, `directory`, `executable`, `script`, `library`,
+`service`, `configuration`, and `generated_artifact`. A repository locator is
+repository-relative and shall not escape the repository. The declaration may
+identify downstream documentation and supersedence. Ownership fields record
+existing owners; they do not assign or transfer ownership.
+
+### 21.2 Fingerprints and Identity
+
+Supported fingerprint strategies are SHA-256 content or deterministic directory
+tree hashes, Git repository-inventory hashes that exclude ignored generated
+content, Git object identifiers, repository commit identity, and immutable
+locator identity. A declaration may record multiple strategies. Strategy names
+and repository-relative locators are portable; the validator resolves them
+against the repository supplied at execution time.
+
+A comparison requires an expected qualified fingerprint and a newly derived
+actual fingerprint for both documentation and implementation. Missing
+comparison evidence produces `UNKNOWN`, never an inferred PASS.
+
+### 21.3 Drift Classification
+
+The synchronization layer shall emit exactly one status per declaration:
+
+| Status | Meaning |
+| --- | --- |
+| `PASS` | Both endpoints exist and both match their recorded fingerprints |
+| `OUT_OF_SYNC` | Documentation and implementation both changed |
+| `IMPLEMENTATION_CHANGED` | Only implementation changed |
+| `DOCUMENT_CHANGED` | Only documentation changed |
+| `MISSING_ARTIFACT` | A declared endpoint does not resolve |
+| `SUPERSEDED` | The declaration identifies a successor |
+| `UNKNOWN` | Evidence is insufficient for deterministic comparison |
+
+The report shall separately state artifact existence, endpoint changes,
+synchronization requirement, and requalification requirement. `SUPERSEDED`
+preserves traceability and does not silently redirect an old declaration.
+
+### 21.4 Dependency Graph and Traversal
+
+The graph reuses controlled identities and repository locators as nodes.
+`synchronizes_with` is a derived evidence edge between a document and an
+artifact, not a new controlled relationship type. Existing `depends_on`,
+`required_by`, `implements`, `implemented_by`, `validated_by`, and `validates`
+relationships retain their section 8 meanings. Deterministic reverse traversal
+from a changed implementation node identifies every directly and transitively
+affected downstream document.
+
+The generic graph supports Specifications, Procedures, Standards, WOPs,
+Roadmaps, Gate Specifications, Verification Guides, Completion Reports, source
+files, executables, and scripts. Domain integrations, including Zeus, supply
+ordinary declarations and do not alter the generic graph algorithm.
+
+### 21.5 Qualification Impact Analysis
+
+Each drift result maps to one or more evidence-based impact assessments:
+`qualification_still_valid`, `manual_review_required`,
+`automatic_revalidation_sufficient`, `independent_qualification_required`, or
+`publication_required`. A declaration may select stricter mappings.
+
+Impact analysis recommends required actions only. It shall set no approval,
+acceptance, rejection, lifecycle, publication, or qualification decision.
+
+### 21.6 Additive Validation and Reporting
+
+Structural and semantic validation remain unchanged. Synchronization runs only
+as an additional requested layer. Its deterministic JSON report contains
+synchronized artifacts, implementation and documentation fingerprints,
+dependency graph, drift status, affected documentation, qualification impact,
+and required actions. The same repository bytes, metadata, and Git identity
+shall produce byte-identical report content.
+
+### 21.7 Repository-Wide Implementation Coverage
+
+Coverage validation is the fourth and final additive validation layer after
+structural, semantic, and synchronization validation. Synchronization continues
+to answer whether declared endpoints agree. Coverage separately answers which
+discoverable implementation artifacts should have been declared but were not.
+The coverage layer shall be independently selectable and shall not alter a
+synchronization drift result.
+
+Repository discovery shall reuse the repository inventory, including tracked
+and non-ignored untracked files, under explicitly configured implementation
+roots. Ordered classification rules shall assign exactly one of these
+repository-independent categories: Engineering Controller, Verification
+Component, User Interface, Execution Engine, Library, Configuration,
+Infrastructure Component, Generated Artifact, Internal Helper, or External
+Dependency. Each category shall state that synchronization documentation is
+`mandatory`, `optional`, or `prohibited`. An unmatched artifact is an unknown
+classification and fails closed.
+
+A synchronization declaration covers its exact implementation locator. A
+directory declaration may cover descendants only when it explicitly sets
+`coverage_scope: recursive`; directory containment shall not be inferred.
+This permits repository metadata to represent a documented implementation
+surface without duplicating the repository discovery mechanism.
+
+### 21.8 Coverage Determinations and Orphans
+
+For each discovered artifact, the coverage layer shall deterministically emit
+one state:
+
+| State | Determination |
+| --- | --- |
+| `synchronized` | A mandatory artifact is reached by a declaration whose documentation exists |
+| `undocumented` | A mandatory artifact has no covering declaration |
+| `orphaned_declaration` | A declaration endpoint cannot be reached |
+| `obsolete_declaration` | A covering declaration identifies a successor |
+| `excluded_by_policy` | Optional or prohibited synchronization policy applies |
+| `external_dependency` | The artifact is classified as externally owned |
+| `unknown_classification` | No classification rule applies |
+
+Orphan analysis shall report undocumented implementation, documentation without
+implementation, obsolete declarations, unreachable implementation, unreachable
+documentation, and stale dependency declarations. Every finding shall retain
+the matched rule, declaration identifiers, endpoint existence, or inventory
+evidence that caused the determination. Documentation identity, kind, and
+ownership shall come only from declarations; the coverage engine shall not
+infer documentation ownership from names or paths.
+
+### 21.9 Metrics, Debt, and Coverage Report
+
+The deterministic JSON report shall include discovered, synchronized,
+undocumented, orphaned, obsolete, excluded, external, and unknown artifacts; a
+coverage graph; synchronization gaps; documentation debt; and recommended
+review actions. It shall report total implementation artifacts, synchronized
+artifacts, undocumented artifacts, orphan declarations, excluded artifacts,
+documentation coverage percentage, synchronization coverage percentage, and
+documentation debt.
+
+Documentation coverage is the percentage of mandatory artifacts with reachable
+authoritative documentation. Synchronization coverage is the percentage of all
+discovered artifacts reached by a declaration. Documentation debt is the count
+of undocumented mandatory artifacts plus unreachable declared documentation.
+Counts and percentages are derived from sorted repository inventory and
+declarations, so identical repository content and policy produce identical
+metrics and byte-identical JSON.
+
+`engineering/validation/implementation-coverage.yaml` is the incorporated
+discovery and classification policy. It implements this model only and creates
+no governance, documentation, publication, qualification, or lifecycle
+authority. Domain integrations such as Zeus are ordinary paths and
+declarations; no domain-specific branch is permitted in the generic engine.
+
+### 21.10 Engineering Contract Model
+
+An Engineering Contract is a repository-independent, machine-readable
+representation of an explicitly documented and verifiable implementation
+expectation. It describes required observable behavior without prescribing
+implementation design. Supported categories are Command Interface, API,
+Configuration, Data Schema, File Format, Service Interface, Workflow, State
+Transition, Exit Behavior, and Observable Output.
+
+A contract has a permanent `contract_id`, category, authoritative documented
+source, discovery declaration, and one or more expectations. Supported
+expectation elements are command names, arguments, options, environment
+variables, configuration keys, file locations, schemas, return values, exit
+codes, generated artifacts, expected side effects, invariants, preconditions,
+and postconditions. Extraction shall reject duplicate identifiers, unknown
+categories, unknown elements, absent sources, and empty expectations. Sorted
+catalog input and canonical serialization make extraction reproducible.
+
+`engineering/validation/engineering-contracts.yaml` is the incorporated
+executable representation. It assigns no authority or ownership. A contract
+exists only when an authoritative document explicitly declares the
+expectation; validators shall not infer engineering intent or undocumented
+contracts from implementation.
+
+### 21.11 Contract Discovery and Conformance
+
+Discovery may inspect CLI help, schemas, configuration, metadata, API
+signatures, service descriptors, and manifests. It shall use repository
+locators and static inspection wherever possible. Help inspection may execute
+only the non-operational help interface. Operational workflows, mutating
+commands, privileged actions, and side-effecting probes shall not be executed
+without separate explicit authorization.
+
+For every contract, comparison shall emit exactly one determination:
+`conformant`, `partially_conformant`, `undocumented_capability`,
+`undocumented_behavior`, `missing_implementation`, `obsolete_contract`,
+`incompatible_implementation`, or `ambiguous_contract`. Every determination
+shall retain the documented expectation, discovered value, discovery
+mechanism, locator, and content fingerprint or error evidence.
+
+Engineering invariants are evaluated and reported independently from the
+overall determination. Compatibility analysis identifies removed, renamed,
+deprecated, or incompatible interfaces and undocumented breaking behavior.
+Compatibility results are advisory derived evidence and make no acceptance,
+approval, publication, qualification, or lifecycle decision.
+
+### 21.12 Conformance Layer and Canonical Report
+
+Conformance is the fifth additive validation layer:
+
+1. structural validation;
+2. semantic validation;
+3. synchronization validation;
+4. implementation coverage validation; and
+5. engineering contract conformance validation.
+
+Each layer remains independently selectable. Conformance verifies documented
+engineering agreement and does not replace functional, integration,
+qualification, publication, or approval activity. The generic engine shall
+contain no repository- or Zeus-specific branch. Zeus and other domains
+integrate through ordinary contracts.
+
+The canonical JSON report includes validated and discovered contracts,
+conformant interfaces, partial conformance, undocumented behavior,
+incompatible implementation, invariant failures, advisory compatibility
+findings, and recommended engineering actions. Identical repository content
+and contract declarations shall produce byte-identical output.
+
+All findings are `derived_engineering_evidence`. The layer shall not infer
+governance, publication, qualification, lifecycle, ownership, engineering
+intent, or undocumented contracts.
+
+## 22. Compliance
 
 A controlled revision conforms when:
 
@@ -645,11 +1035,59 @@ No metadata field may be used to conceal missing authority, approval, persistenc
 
 ---
 
-## 21. Success Criteria
+## 23. Success Criteria
 
 This specification is complete when repository-controlled documents can be represented, approved, related, lifecycle-controlled, persisted, discovered, validated, and reconstructed deterministically without conflating governance authority, information ownership, lifecycle status, or Git state.
 
 ---
+
+## Engineering Property and Assurance Model
+
+An Engineering Property is a permanent, repository-independent declaration of
+a verifiable system condition required by authoritative engineering
+documentation. It states a required engineering outcome, not an implementation
+choice. A property exists only when its `authoritative_source` resolves to
+documentation that establishes that intent; implementation inspection shall
+not create, expand, or infer a property.
+
+The supported categories are Safety Invariant, Authorization Boundary,
+Approval Boundary, State-Transition Rule, Idempotence Requirement, Recovery
+Guarantee, Failure-Containment Rule, Dependency Requirement, Evidence
+Requirement, Lifecycle Constraint, Integrity Requirement, Availability
+Requirement, Determinism Requirement, Auditability Requirement, and Mission
+Correctness Requirement.
+
+The machine-readable Engineering Assurance Catalog shall provide a permanent
+property identifier, authoritative source, category, objective, subject,
+preconditions, required invariant, prohibited condition, applicable states and
+transitions, dependency assumptions, validation strategy, required evidence,
+failure classification, assurance impact, review owner, and authority
+boundary. Declarations are ordinary data and may describe any system without
+service-specific validator logic.
+
+Reusable strategies are Static Inspection, State-Machine Analysis,
+Dependency-Graph Analysis, Policy Evaluation, Manifest Validation, Schema
+Validation, Control-Flow Inspection, Read-Only Command Inspection,
+Deterministic Simulation, Non-Mutating Test Harness, Existing Regression
+Evidence Evaluation, and Evidence Traceability Analysis. They shall not
+execute operational workflows, privileged or destructive actions, approvals,
+publications, or production transitions without separate explicit authority.
+
+Assurance evaluates invariants, transitions, authority boundaries,
+idempotence, failure and recovery paths, and evidence sufficiency independently
+of interface conformance. Every property receives exactly one of `ASSURED`,
+`PARTIALLY_ASSURED`, `NOT_ASSURED`, `VIOLATED`,
+`INSUFFICIENT_EVIDENCE`, `AMBIGUOUS_PROPERTY`, `OBSOLETE_PROPERTY`, or
+`NOT_APPLICABLE`. Impact is advisory and is limited to engineering review,
+implementation correction, documentation correction, contract correction,
+synchronization update, revalidation, independent qualification, publication
+review, operational-hold recommendation, or no action.
+
+Canonical assurance JSON shall be stable for identical repository content,
+declarations, and evidence. Assurance reports are derived engineering evidence
+only. They create no intent or ownership, grant no authority, make no approval,
+qualification, publication, lifecycle, operational, implementation, or hold
+decision, and do not replace testing or independent engineering judgment.
 
 ## Workflow Governance Representation
 
@@ -676,6 +1114,7 @@ or override the represented behavior.
 | 1.3 | 2026-07-10 | Defined revision identity, linear lineage, deterministic supersedence, historical persistence, immutable Git locators, and deterministic reconstruction under EWO-000011 Revision 2. |
 | 1.4 | 2026-07-11 | Renamed the document from Controlled Document Model to Controlled Document Representation Specification to distinguish representation responsibility from STD-0000 architecture; reconciled Charter, Governance Authority, Information Authority, AER, approval, relationship, lifecycle, persistence-state, title, validation, and self-conformance semantics. |
 | 1.5 | 2026-07-17 | Defined repository representation for mission classification, Completion Reports, Governance Conformance Reviews, and non-authoritative handoff references under EGR-000002 and EWO-000018. |
+| 1.6 | 2026-07-28 | Draft successor adds reusable semantic validation profiles, permanent completeness criteria, command-interface validation, criterion traceability, machine-readable automation coverage, additive implementation synchronization, deterministic repository-wide implementation coverage, and repository-independent engineering contract conformance with invariant, compatibility, and canonical JSON evidence without changing class, lifecycle, persistence, publication, implementation, or qualification ownership. |
 
 ---
 
