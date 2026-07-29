@@ -172,6 +172,17 @@ class MissionActivationTests(unittest.TestCase):
         replay = ActivationService(self.root).activate(self.request_path)
         self.assertEqual(replay["transaction_id"], result["transaction_id"])
 
+    def test_successor_activation_reconciles_already_active_registry_item(self):
+        value = yaml.safe_load(self.registry.read_text())
+        value["entities"]["work_items"][0]["management_state"] = "active"
+        self.registry.write_text(yaml.safe_dump(value, sort_keys=False))
+        result = ActivationService(self.root).activate(self.request_path)
+        self.assertEqual(result["state"], "COMMITTED")
+        registry = yaml.safe_load(self.registry.read_text())
+        item = registry["entities"]["work_items"][0]
+        self.assertEqual(item["management_state"], "active")
+        self.assertEqual(item["revision"], 1)
+
     def test_conflicting_active_contract_denies(self):
         other = self.contract()
         other["contract_id"] = "MC-2"

@@ -1,0 +1,19 @@
+schema_version: 1
+document_type: MissionActivationApproval
+approval_id: APPROVAL-MISSION-CONTRACT-PUBLICATION-001
+decision: approved
+mission_id: MISSION-CONTRACT-PUBLICATION-001
+contract_id: MC-MISSION-CONTRACT-PUBLICATION-001
+authorizer: repository_owner
+recorded_at: '2026-07-29T00:00:00-07:00'
+source: Human publication instruction in the current repository session
+scope:
+  - independent publication verification
+  - local candidate commits
+  - push to origin main
+  - remote qualification
+  - repository and EOS reconciliation
+  - bootstrap closeout after remote verification
+excluded:
+  - architectural redesign
+  - unrelated functional enhancement

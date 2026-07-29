@@ -1,0 +1,11 @@
+{
+  "contract_id": "MC-MISSION-CONTRACT-PUBLICATION-001",
+  "evidence_type": "mission-activation",
+  "mission_id": "MISSION-CONTRACT-PUBLICATION-001",
+  "registry_id": "EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001",
+  "request_id": "ACTIVATE-MISSION-CONTRACT-PUBLICATION-001",
+  "result": "COMMITTED",
+  "schema_version": 1,
+  "timestamp": "2026-07-29T06:11:33+00:00",
+  "transaction_id": "TX-ACTIVATE-MISSION-CONTRACT-PUBLICATION-001"
+}

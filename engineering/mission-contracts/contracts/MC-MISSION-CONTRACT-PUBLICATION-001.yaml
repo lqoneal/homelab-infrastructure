@@ -1,18 +1,20 @@
 activation:
   actor: repository_owner
   record: engineering/mission-contracts/approvals/APPROVAL-MISSION-CONTRACT-PUBLICATION-001.yaml
-  timestamp: '2026-07-29T06:10:56+00:00'
+  request: ACTIVATE-MISSION-CONTRACT-PUBLICATION-001
+  timestamp: '2026-07-29T06:11:33+00:00'
+  transaction: TX-ACTIVATE-MISSION-CONTRACT-PUBLICATION-001
 approvals:
   activation: approved
-  publication: required_separately
+  publication: approved
 closeout:
   requirements:
-  - validation complete
-  - commits reviewed
-  - publication separately approved or deferred
-  - authoritative state reconciled
-contract_digest: 61776f160c2b9af2fd4b8ab58d052af3e5db43ea9e5c22295c76625988c1a9ce
-contract_id: MC-VALIDATION-ZEUS-PUBLICATION-001
+  - remote verification complete
+  - published baseline reconciled
+  - bootstrap completed and revoked
+  - operational authority revalidated
+contract_digest: 1e8f58607b72b84898fb1486e0517bbdba36141679f8b3c1bda90c61fde7724f
+contract_id: MC-MISSION-CONTRACT-PUBLICATION-001
 dirty_tree:
   manifest: engineering/evidence/worktree-classification-and-publication-001-manifest.json
   policy: CLASSIFIED_DIRTY_ALLOWED
@@ -20,10 +22,10 @@ dirty_tree:
 document_type: MissionContract
 expiration: on_closeout_or_revocation
 interruption:
-  behavior: Re-resolve contract, baseline, manifest, and recovery evidence before
-    continuing.
-lifecycle: suspended
-mission_id: VALIDATION-AND-ZEUS-CANDIDATE-PUBLICATION-001
+  behavior: Re-resolve contract, publication state, remote state, and reconciliation
+    evidence before continuing.
+lifecycle: active
+mission_id: MISSION-CONTRACT-PUBLICATION-001
 permissions:
   close_mission: true
   commit: true
@@ -31,8 +33,8 @@ permissions:
   generate_evidence: true
   inspect: true
   modify: true
-  publish: false
-  push: false
+  publish: true
+  push: true
   reconcile_metadata: true
   reconcile_state: true
   rollback: true
@@ -41,7 +43,7 @@ registry_id: EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001
 repository:
   allowed_target_branches:
   - main
-  baseline: c3bcc2e5ca6f778c4755af1f1c41011da35ce6e2
+  baseline: d25d144312b73fc8230113c99f5d0368037b4483
   branch: main
   identity: homelab
   remote: git@github.com:lqoneal/homelab-infrastructure.git
@@ -54,7 +56,7 @@ roles:
   implementation_owner: Engineering Platform
   orchestration_agent: ChatGPT
   publication_owner: repository_owner
-  qualification_owner: independent_or_unassigned
+  qualification_owner: independent_verification
   repository_operator: repository_owner
   review_owner: repository_owner
 schema_version: 1
@@ -69,18 +71,17 @@ scope:
   - CU-05
   - CU-06
   - CU-07
+  - bootstrap-closeout
   excluded:
-  - controlled-document activation
-  - qualification
+  - architectural redesign
+  - unrelated features
   - force push
-  - publication without separate approval
   included:
-  - classified candidate cleanup
-  - synchronization reconciliation
-  - deterministic reports
-  - staged unit review
-  - local commits
-  recovery_locator: /data/engineering/recovery/mission-contract-bootstrap-001/pre-bootstrap
+  - classified publication candidate
+  - Mission Contract architecture
+  - activation evidence
+  - publication reconciliation
+  - bootstrap closeout
 wop:
   digest: 278e15fc91c5df59c0ab4ccc62032df34bdc623871704e6f4ea6ce6218ae1752
   id: GH-ZEUS-OA-PROGRESSIVE-001

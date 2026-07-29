@@ -1,0 +1,11 @@
+schema_version: 1
+document_type: MissionActivationRequest
+request_id: ACTIVATE-MISSION-CONTRACT-PUBLICATION-001
+mission_id: MISSION-CONTRACT-PUBLICATION-001
+contract_id: MC-MISSION-CONTRACT-PUBLICATION-001
+actor: repository_owner
+expected_lifecycle: candidate
+approval:
+  locator: engineering/mission-contracts/approvals/APPROVAL-MISSION-CONTRACT-PUBLICATION-001.yaml
+  digest: 0be9e6046c24996080fac8d885786708668268ecb8f3b8efe10210c3defc1f91
+requested_outcome: publication_and_bootstrap_closeout

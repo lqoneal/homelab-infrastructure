@@ -355,26 +355,33 @@ class ActivationService:
         if end < 0:
             end = text.find("\n  queues:", start)
         item = text[start:end]
-        if "    management_state: ready\n" not in item:
-            raise MissionContractError("registry item is not ready for activation")
-        item = item.replace("    management_state: ready\n", "    management_state: active\n", 1)
         item_value = next(
             entry for entry in registry["entities"]["work_items"]
             if entry.get("registry_id") == contract["registry_id"]
         )
+        item_state = item_value.get("management_state")
+        if item_state not in ELIGIBLE_REGISTRY_STATES:
+            raise MissionContractError("registry item is not eligible for activation")
+        if item_state == "ready":
+            item = item.replace(
+                "    management_state: ready\n",
+                "    management_state: active\n",
+                1,
+            )
         prior_updated = str(item_value.get("updated_at"))
         prior_item_revision = int(item_value.get("revision", 0))
-        if prior_updated != "None":
+        if item_state == "ready" and prior_updated != "None":
             item = item.replace(
                 f"    updated_at: '{prior_updated}'\n",
                 f"    updated_at: '{timestamp}'\n",
                 1,
             )
-        item = item.replace(
-            f"    revision: {prior_item_revision}\n",
-            f"    revision: {prior_item_revision + 1}\n",
-            1,
-        )
+        if item_state == "ready":
+            item = item.replace(
+                f"    revision: {prior_item_revision}\n",
+                f"    revision: {prior_item_revision + 1}\n",
+                1,
+            )
         activation_history = (
             "    - from: ready\n"
             "      to: active\n"
@@ -385,12 +392,18 @@ class ActivationService:
             f"      mission_contract: {contract['contract_id']}\n"
             f"      transaction_id: {transaction_id}\n"
         )
-        history_end = item.find("\n    project_id:")
-        if history_end < 0:
-            history_end = item.find("\n    order:")
-        if history_end < 0:
-            history_end = len(item)
-        item = item[:history_end] + "\n" + activation_history.rstrip() + item[history_end:]
+        if item_state == "ready":
+            history_end = item.find("\n    project_id:")
+            if history_end < 0:
+                history_end = item.find("\n    order:")
+            if history_end < 0:
+                history_end = len(item)
+            item = (
+                item[:history_end]
+                + "\n"
+                + activation_history.rstrip()
+                + item[history_end:]
+            )
         return (text[:start] + item + text[end:]).encode()
 
     def _mutations(
