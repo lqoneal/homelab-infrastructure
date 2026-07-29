@@ -6,7 +6,7 @@ authority_type: ONE_TIME_HUMAN_AUTHORIZATION
 authorizer: repository_owner
 repository_id: homelab-infrastructure
 baseline: bcdd0b1a19045654d470bc65383c05a976bae2a6
-lifecycle: active
+lifecycle: completed
 scope: MISSION_CONTRACT_SUBSYSTEM_AND_ACTIVATION_ARCHITECTURE
 publication_authority: false
 qualification_authority: false
@@ -15,9 +15,9 @@ force_push_authority: false
 self_renewal: false
 source: Human Bootstrap Authorization MISSION-CONTRACT-BOOTSTRAP-001
 closeout:
-  transactional_authority: active
+  transactional_authority: revoked
   reusable: false
   publication_mission_contract_activated: true
-  publication_mission_executed: false
-  publication_readiness: ready
-  bootstrap_closeout: pending_publication
+  publication_mission_executed: true
+  publication_readiness: complete
+  bootstrap_closeout: complete

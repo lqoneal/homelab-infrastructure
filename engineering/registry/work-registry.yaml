@@ -1,7 +1,7 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 77
+revision: 78
 updated_at: '2026-07-29T06:11:33+00:00'
 serialization: yaml
 mutation_history:
@@ -542,6 +542,12 @@ mutation_history:
   actor: repository_owner
   action: activate EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001
   reason: Reconcile atomic activation of Mission Contract MC-MISSION-CONTRACT-PUBLICATION-001 in TX-ACTIVATE-MISSION-CONTRACT-PUBLICATION-001.
+- revision: 78
+  previous_revision: 77
+  at: '2026-07-29T07:00:00+00:00'
+  actor: repository_owner
+  action: reconcile published Mission Contract baseline
+  reason: Record remote qualification of a539f312dff6f70eef203fb42add111dfd847ff6 and retirement of bootstrap authority while retaining normal Mission Contract authority.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -3272,7 +3278,7 @@ entities:
     management_state: active
     owner: Lawrence O'Neal
     scope: GH-ZEUS-OA-PROGRESSIVE-001
-    authority_reference: REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001 and ACCEPTED WOP Admission Record
+    authority_reference: MC-MISSION-CONTRACT-PUBLICATION-001
     source_records:
     - PROJ-0001
     - PHASE-0001

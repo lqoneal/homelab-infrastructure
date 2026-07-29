@@ -1,7 +1,7 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 9.2
+version: 9.3
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,7 +9,7 @@ last_updated: 2026-07-28
 mission: Zeus Operational Alpha
 phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@9.1
+predecessor_revision: PROJ-0001@9.2
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -685,10 +685,14 @@ When resuming this project:
 | 9.0     | 2026-07-28 | Completed integrated qualification, resolved the Zeus closeout publication blocker, and established the synchronized Zeus Assurance baseline for the next separately authorized EENS integration mission. |
 | 9.1     | 2026-07-28 | Admitted the self-contained GH-ZEUS-OA-CERTIFICATION-001 WOP, registered certification as ready and unstarted, and preserved all OA, PMCT, acceptance, baseline-freeze, and OA-30 declaration boundaries. |
 | 9.2     | 2026-07-28 | Suspended the incomplete historical OA certification package, established the controlled thirty-gate Progressive OA roadmap and admitted WOP, and made the new OA-01 ready without executing any OA gate or authorizing declaration/freeze. |
+| 9.3     | 2026-07-28 | Published and remotely qualified the Mission Contract subsystem and activation architecture at `a539f312dff6f70eef203fb42add111dfd847ff6`, revoked bootstrap authority, and retained exactly one active normal Mission Contract for operational authority. |
 
 ## Operational Mission Activation
 
 - Mission: `MISSION-CONTRACT-PUBLICATION-001`
 - Mission Contract: `MC-MISSION-CONTRACT-PUBLICATION-001`
 - Lifecycle: `ACTIVE`
-- Publication execution: not started
+- Publication execution: completed and remotely qualified
+- Bootstrap lifecycle: `COMPLETED`
+- Bootstrap authority: `REVOKED`
+- Operational authority: Mission Contract framework
