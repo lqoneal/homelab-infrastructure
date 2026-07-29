@@ -1,7 +1,7 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.58
+version: 2.59
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,7 +9,7 @@ last_updated: 2026-07-29
 phase: Zeus Operational Alpha
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.57
+predecessor_revision: DOC-0001@2.58
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -376,7 +376,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | PROC-0002 | Engineering Governance Resolution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md` |
 | PROC-0003 | Engineering Recovery Runbook | Active | Engineering Governance | `docs/procedures/PROC-0003-ENGINEERING_RECOVERY_RUNBOOK.md` |
 | PROC-0004 | Engineering Handoff Construction Procedure | Draft | Engineering Governance | `docs/procedures/PROC-0004-ENGINEERING_HANDOFF_CONSTRUCTION_PROCEDURE.md` |
-| PROC-0005 | Controlled Document Publication Procedure | Active | Engineering Governance | `docs/procedures/PROC-0005-CONTROLLED_DOCUMENT_PUBLICATION_PROCEDURE.md` |
+| PROC-0005 | Controlled Document Publication Procedure | Draft | Engineering Governance | `docs/procedures/PROC-0005-CONTROLLED_DOCUMENT_PUBLICATION_PROCEDURE.md` |
 | PROC-0006 | Governance Qualification Procedure | Active | Engineering Governance | `docs/procedures/PROC-0006-GOVERNANCE-QUALIFICATION-PROCEDURE.md` |
 | PROC-0007 | Governance Stabilization Procedure | Active | Engineering Governance | `docs/procedures/PROC-0007-GOVERNANCE-STABILIZATION-PROCEDURE.md` |
 | TPL-0001 | Engineering Work Order Template | Draft | Engineering Governance | `docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md` |
@@ -791,3 +791,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.56 | 2026-07-26 | Registered SPEC-0012 and the production execution foundation while preserving dispatcher activation, agent registration, baseline publication, and first operational execution qualification as separate controls. |
 | 2.57 | 2026-07-28 | Registered SPEC-0013 Version 1.0 as the Draft Controlled Mission Assurance Language candidate and bound Zeus assurance interpretation to its exact revision; approval, activation, and controlled publication remain separate decisions. |
 | 2.58 | 2026-07-29 | Registered MILESTONE-0009 as the Operational Alpha constitutional baseline and governance-freeze transition, including mandatory synchronized documentation, qualification, and verification change control. |
+| 2.59 | 2026-07-29 | Reconciled PROC-0001 Version 1.17, PROC-0005 Version 1.5, STD-0004 Version 1.4, and EOS-0003 Version 1.4 with the repository-authoritative EOS publication contract and explicit synchronization boundaries. |

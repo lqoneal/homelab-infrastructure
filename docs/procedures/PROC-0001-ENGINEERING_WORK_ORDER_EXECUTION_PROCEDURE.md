@@ -1,7 +1,7 @@
 ---
 document_id: PROC-0001
 title: Engineering Work Order Execution Procedure
-version: 1.16
+version: 1.17
 status: Draft
 owner: Engineering Governance
 created: 2026-07-09
@@ -10,7 +10,7 @@ phase: Engineering Execution Interface Standardization
 domain: Engineering Governance
 classification: Engineering Procedure
 source_of_truth: true
-predecessor_revision: PROC-0001@1.15
+predecessor_revision: PROC-0001@1.16
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -356,6 +356,23 @@ Required gates:
 * clean working tree unless an explicit controlled exception identifies the
   pre-existing paths, isolation method, and permitted overlap; and
 * no active conflicting Git or lifecycle operation.
+
+For publication work, the initiation record shall also resolve PROC-0005 and
+the repository–EOS synchronization procedure, then record the Initial
+Validation, Publication, Synchronization, and Final Validation Boundaries
+before execution. EOS comparison is read-only during initiation. Repository
+content remains authoritative, EOS remains a derived projection, and a
+repository commit does not automatically synchronize EOS.
+
+If repository authority advanced inside an authorized publication sequence
+before its declared Synchronization Boundary, classify an otherwise exact
+repository-to-EOS mismatch as `EXPECTED_PUBLICATION_DRIFT`. Do not invoke an
+auto-repairing resume or qualification path and do not synchronize. At the
+declared boundary classify the condition as `SYNCHRONIZATION_REQUIRED`, pause
+publication advancement, and require separately established synchronization
+authority and prerequisites. Source, synchronization, and runtime failures
+shall use `AUTHORITATIVE_SOURCE_FAILURE`, `SYNCHRONIZATION_FAILURE`, and
+`RUNTIME_STATE_FAILURE` respectively.
 
 ### Category B — Local Engineering Environment Work
 
@@ -1125,3 +1142,4 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.14 | 2026-07-28 | Candidate: defined independent Zeus mission-assurance verification across preflight, execution, synchronization, and closeout while preserving this procedure's process ownership. |
 | 1.15 candidate | 2026-07-28 | Added deterministic mission admission, activation-request, atomic reconciliation, rollback, interruption recovery, cardinality, and shared authority-reporting workflow. |
 | 1.16 | 2026-07-29 | Added Governance Bootstrap consultation and normal-authority re-entry; defined independent Governance and execution state, Governance-only admission and activation, and resumable blocked missions. |
+| 1.17 | 2026-07-29 | Corrected publication Work Initiation to declare four repository–EOS boundaries, preserve repository authority, classify expected publication drift, and require separate synchronization authority. |

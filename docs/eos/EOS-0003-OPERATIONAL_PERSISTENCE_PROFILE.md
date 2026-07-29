@@ -1,14 +1,14 @@
 ---
 document_id: EOS-0003
 title: EOS Operational Persistence Profile
-version: 1.3
+version: 1.4
 status: Draft
 owner: Homelab Infrastructure
 created: 2026-07-13
 last_updated: 2026-07-28
 phase: Repository–EOS State Integration
 classification: EOS Operational Record
-predecessor_revision: EOS-0003@1.2
+predecessor_revision: EOS-0003@1.3
 successor_revision: null
 approval_status: Pending
 approval_authority: Engineering Governance
@@ -91,9 +91,35 @@ Temporary sibling files are fully rendered and flushed before atomic
 replacement. Unsupported schemas and missing or ambiguous sources fail before
 mutation.
 
-Derived and cache drift may be repaired automatically. Runtime checkpoint
-records are validated and preserved. Any attempted EOS-to-repository authority
-flow fails closed.
+Outside a declared publication sequence, derived and cache drift may be
+repaired automatically only through an invocation carrying the established
+operational synchronization authority. Runtime checkpoint records are
+validated and preserved. Any attempted EOS-to-repository authority flow fails
+closed.
+
+A repository commit or publication does not automatically synchronize EOS.
+Publication and synchronization are distinct authorized operations. The
+publication procedure shall declare its Initial Validation, Publication,
+Synchronization, and Final Validation Boundaries before execution. Until the
+declared Synchronization Boundary is reached, an exact comparison failure
+caused solely by an advancing authorized repository publication is
+`EXPECTED_PUBLICATION_DRIFT`; it is not an EOS failure and shall not trigger
+automatic repair.
+
+The projection terms are:
+
+- working-tree projection: the render implied by current working-tree sources;
+- committed projection: the render implied by the selected local commit;
+- published projection: the render implied by the completed published
+  repository baseline; and
+- synchronized EOS projection: the bytes persisted in EOS by a separately
+  authorized synchronization and verified against its selected baseline.
+
+Only an operator or automation identity holding explicit EOS synchronization
+authority may invoke `engctl eos synchronize`. Publication, commit, push,
+repository write, or validation authority does not imply that authority.
+Required prerequisites and post-synchronization checks are defined by
+`engineering/operations/repository-eos-synchronization.md` and PROC-0005.
 
 # Engineering State Freshness
 
@@ -136,8 +162,11 @@ The aggregate Engineering Platform validator invokes this control.
 
 The integrated validator executes repository validation, synchronization
 validation, EOS runtime validation, and integrated platform validation in that
-order. Resume performs synchronization and the same verification chain before
-rendering mission context.
+order. Outside a declared publication sequence, resume may perform
+synchronization under its established operational authority and then execute
+the same verification chain before rendering mission context. A publication
+boundary uses the read-only validation route and shall not use resume to repair
+expected drift.
 
 ---
 
@@ -149,3 +178,4 @@ rendering mission context.
 | 1.1 | 2026-07-15 | Applied STD-0004 freshness, authoritative-state precedence, reconciliation-before-checkpoint, and resume-conflict requirements. |
 | 1.2 | 2026-07-15 | Defined checkpoint identity, selected-repository applicability, strict commit verification, and not-applicable multi-repository resume behavior. |
 | 1.3 | 2026-07-28 | Established repository-authoritative deterministic EOS projections, the authority matrix, one-way atomic synchronization, layered validation, and integrated resume while retaining checkpoints as runtime evidence. |
+| 1.4 | 2026-07-29 | Separated repository publication from explicitly authorized EOS synchronization; defined projection semantics, publication synchronization boundaries, and expected intermediate publication drift. |

@@ -1,0 +1,361 @@
+[
+  {
+    "commit_message": "docs(governance): publish mission lifecycle baseline\n\nPublish the coordinated governance baseline, index, milestone, and documentation qualifications that define mission initiation, admission, stabilization, and authority restoration.\n\nEngineering rationale: preserve ZH-GOV-MISSION-LIFECYCLE-002, Operational Alpha Governance Baseline 1.0 as a reviewable publication boundary without partial lifecycle state or rewritten evidence.\n\nValidation: python3 scripts/validate_controlled_documents.py; python3 scripts/tests/test-governance-baseline-documentation.py; python3 scripts/tests/test-governance-bootstrap-documentation.py; python3 scripts/tests/test-governance-mission-admission-documentation.py; git diff --check.\nAffected OA gates: OA-01 through OA-30 governance envelope; no gate transition.\nRelated investigations: none.\nControlled-document impact: Updates CHAR-0001, POL-0001, EDR-0002, GEN-0001, PROC-0001/0002/0007, SPEC-0005/0011, DOC-0001, and adds the baseline milestone.",
+    "dependencies": [],
+    "id": "PU-01",
+    "objective": "Publish the coordinated governance baseline, index, milestone, and documentation qualifications that define mission initiation, admission, stabilization, and authority restoration.",
+    "publish_order": 1,
+    "review_size": "large (15 paths)",
+    "risk": "high",
+    "title": "docs(governance): publish mission lifecycle baseline",
+    "validation": [
+      "python3 scripts/validate_controlled_documents.py",
+      "python3 scripts/tests/test-governance-baseline-documentation.py",
+      "python3 scripts/tests/test-governance-bootstrap-documentation.py",
+      "python3 scripts/tests/test-governance-mission-admission-documentation.py",
+      "git diff --check"
+    ],
+    "status": "completed",
+    "commit": "a85893930e83c2a0579e465f4951499965441f11",
+    "published_paths": [
+      "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md",
+      "docs/charters/CHAR-0001-ENGINEERING_CHARTER.md",
+      "docs/edr/EDR-0002-ENGINEERING_AUTHORITY_MODEL.md",
+      "docs/genesis/GEN-0001-GENESIS_GOVERNANCE_RECORD.md",
+      "docs/policies/POL-0001-ENGINEERING_GOVERNANCE_POLICY.md",
+      "docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md",
+      "docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md",
+      "docs/procedures/PROC-0007-GOVERNANCE-STABILIZATION-PROCEDURE.md",
+      "docs/project/milestones/2026-07-29-operational-alpha-governance-baseline-1.0.md",
+      "docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md",
+      "docs/specifications/SPEC-0011-PRODUCTION-AUTHORITY-RESTORATION-SPECIFICATION.md",
+      "engineering/evidence/2026-07-29-zh-gov-mission-lifecycle-002-corrective-handoff.md",
+      "scripts/tests/test-governance-baseline-documentation.py",
+      "scripts/tests/test-governance-bootstrap-documentation.py",
+      "scripts/tests/test-governance-mission-admission-documentation.py"
+    ],
+    "candidate_paths": []
+  },
+  {
+    "id": "PU-01A",
+    "publish_order": 2,
+    "title": "docs(platform): publish corrected EOS publication protocol",
+    "objective": "Publish the coordinated repository-authoritative EOS protocol correction, stop/reconciliation evidence, and authoritative regenerated publication plan as the prerequisite for resumed execution.",
+    "paths": [
+      "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md",
+      "docs/eos/EOS-0003-OPERATIONAL_PERSISTENCE_PROFILE.md",
+      "docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md",
+      "docs/procedures/PROC-0005-CONTROLLED_DOCUMENT_PUBLICATION_PROCEDURE.md",
+      "docs/standards/STD-0004-ENGINEERING_STATE_FRESHNESS_STANDARD.md",
+      "engineering/evidence/2026-07-29-zh-publication-protocol-correction-001-change-matrix.md",
+      "engineering/evidence/2026-07-29-zh-publication-protocol-correction-001.md",
+      "engineering/evidence/2026-07-29-zh-publication-resume-002.md",
+      "engineering/evidence/2026-07-29-zh-publication-plan-reconciliation-001.md",
+      "engineering/evidence/2026-07-29-zh-publication-plan-reconciliation-001-change-matrix.md",
+      "engineering/evidence/2026-07-29-zh-publication-plan-reconciliation-001-manifest.json",
+      "engineering/evidence/2026-07-29-zh-publication-plan-001.md",
+      "engineering/evidence/2026-07-29-zh-publication-plan-001.json",
+      "engineering/operations/repository-eos-synchronization.md"
+    ],
+    "dependencies": [
+      "PU-01"
+    ],
+    "review_size": "large controlled prerequisite (14 paths)",
+    "risk": "high",
+    "validation": [
+      "python3 scripts/validate_controlled_documents.py",
+      "python3 scripts/tests/test-governance-baseline-documentation.py",
+      "python3 -m json.tool engineering/evidence/2026-07-29-zh-publication-plan-001.json",
+      "python3 -m json.tool engineering/evidence/2026-07-29-zh-publication-plan-reconciliation-001-manifest.json",
+      "verify exact PU-01A staged path set and manifest digests",
+      "git diff --check"
+    ],
+    "commit_message": "docs(platform): publish corrected EOS publication protocol\n\nPublish the coordinated repository-authoritative EOS protocol correction, stop/reconciliation evidence, and authoritative regenerated publication plan as the prerequisite for resumed execution.\n\nEngineering rationale: preserve ZH-PUBLICATION-PROTOCOL-CORRECTION-001, ZH-PUBLICATION-RESUME-002, and ZH-PUBLICATION-PLAN-RECONCILIATION-001 as one reviewable governing boundary before runtime publication resumes.\n\nValidation: python3 scripts/validate_controlled_documents.py; python3 scripts/tests/test-governance-baseline-documentation.py; parse and verify publication JSON/manifest; verify exact staged paths and digests; git diff --check.\nAffected OA gates: No gate transition.\nRelated investigations: EOS Publication Contract investigation.\nControlled-document impact: Updates DOC-0001, PROC-0001/0005, STD-0004, EOS-0003, and the operational synchronization procedure."
+  },
+  {
+    "commit_message": "feat(zeus): implement cumulative OA-01 through OA-05 runtime\n\nPublish the indivisible cumulative Zeus implementation: operational context, authority, discovery, resolution, Stage 1 staging, CLI, PMCT contracts, package metadata, documentation, and regressions.\n\nEngineering rationale: preserve REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001, ZH-OA01-IMPLEMENTATION-003, ZH-OA02-CONTROLLED-MISSION-AUTHORITY-001, ZH-OA03-MISSION-CONTRACT-DISCOVERY-001, ZH-OA04-MISSION-RESOLUTION-001, ZH-OA05-MISSION-STAGING-001, ZH-OA05-MISSION-COUNT-INVESTIGATION-001, ZH-001 Stage 1 as a reviewable publication boundary without partial lifecycle state or rewritten evidence.\n\nValidation: bash engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/verify-package.sh; python3 scripts/tests/test-zeus-progressive-oa.py; python3 scripts/tests/test-zeus-stage1-runtime.py; python3 scripts/tests/test-zeus-oa05-mission-staging.py; python3 scripts/tests/test-zeus-mission-count-status.py; python3 -m py_compile <affected modules>; git diff --check.\nAffected OA gates: Implements and verifies OA-01 through OA-05; leaves acceptance projection unpublished.\nRelated investigations: ZH-OA05-MISSION-COUNT-INVESTIGATION-001.\nControlled-document impact: No controlled-document lifecycle mutation; implements PU-01 contracts and updates operational/package documentation.",
+    "dependencies": [
+      "PU-01A"
+    ],
+    "id": "PU-02",
+    "objective": "Publish the indivisible cumulative Zeus implementation: operational context, authority, discovery, resolution, Stage 1 staging, CLI, PMCT contracts, package metadata, documentation, and regressions.",
+    "paths": [
+      "engineering/docs/architecture/ZEUS-STAGE1-RUNTIME.md",
+      "engineering/docs/cli/ZEUS-USER-GUIDE.md",
+      "engineering/execution/execution-interface.yaml",
+      "engineering/operations/authority-ownership-specification.md",
+      "engineering/operations/zeus-mission-admission-runtime.md",
+      "engineering/operations/zeus-mission-execution-runtime.md",
+      "engineering/operations/zeus-oa01-mission-verification.md",
+      "engineering/operations/zeus-operational-runtime.md",
+      "engineering/operations/zeus-operator-interface.md",
+      "engineering/tests/zeus-operational-alpha/PMCT-CAPABILITY-MATRIX.yaml",
+      "engineering/tests/zeus-operational-alpha/PMCT-CONTRACT.md",
+      "engineering/tests/zeus-operational-alpha/tests/test-result-model.py",
+      "engineering/tests/zeus-operational-alpha/tests/test-state-protection.py",
+      "engineering/tests/zeus-operational-alpha/tests/test_discovery.py",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/MANIFEST.sha256",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-05/implementation.md",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-05/verification.md",
+      "scripts/lib/emp/controlled_mission_authority.py",
+      "scripts/lib/emp/mission_contract_discovery.py",
+      "scripts/lib/emp/mission_resolution.py",
+      "scripts/lib/emp/oa01_gate_verification.py",
+      "scripts/lib/emp/oa01_implementation.py",
+      "scripts/lib/emp/oa01_verification.py",
+      "scripts/lib/emp/oa02_gate_verification.py",
+      "scripts/lib/emp/oa02_implementation.py",
+      "scripts/lib/emp/oa03_gate_verification.py",
+      "scripts/lib/emp/oa03_implementation.py",
+      "scripts/lib/emp/oa04_gate_verification.py",
+      "scripts/lib/emp/oa04_implementation.py",
+      "scripts/lib/emp/oa05_gate_verification.py",
+      "scripts/lib/emp/oa05_implementation.py",
+      "scripts/lib/emp/progressive_oa.py",
+      "scripts/lib/emp/project_operational_context.py",
+      "scripts/lib/emp/stage1_runtime.py",
+      "scripts/tests/test-zeus-mission-count-status.py",
+      "scripts/tests/test-zeus-oa01-implementation.py",
+      "scripts/tests/test-zeus-oa01-verification.py",
+      "scripts/tests/test-zeus-oa02-controlled-authority.py",
+      "scripts/tests/test-zeus-oa02-lifecycle.py",
+      "scripts/tests/test-zeus-oa03-mission-contract-discovery.py",
+      "scripts/tests/test-zeus-oa04-context-reconstruction.py",
+      "scripts/tests/test-zeus-oa04-mission-resolution.py",
+      "scripts/tests/test-zeus-oa05-mission-staging.py",
+      "scripts/tests/test-zeus-progressive-oa.py",
+      "scripts/tests/test-zeus-stage1-runtime.py",
+      "scripts/tests/test_discovery.py",
+      "scripts/verify.sh",
+      "scripts/zeus",
+      "services/eens/README.md"
+    ],
+    "publish_order": 3,
+    "review_size": "oversized but atomic (49 paths)",
+    "risk": "high",
+    "title": "feat(zeus): implement cumulative OA-01 through OA-05 runtime",
+    "validation": [
+      "bash engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/verify-package.sh",
+      "python3 scripts/tests/test-zeus-progressive-oa.py",
+      "python3 scripts/tests/test-zeus-stage1-runtime.py",
+      "python3 scripts/tests/test-zeus-oa05-mission-staging.py",
+      "python3 scripts/tests/test-zeus-mission-count-status.py",
+      "python3 -m py_compile <affected modules>",
+      "git diff --check"
+    ]
+  },
+  {
+    "commit_message": "docs(oa): preserve OA-01 acceptance evidence\n\nPublish OA-01 implementation, verification attempts, corrective completion, accepted receipt, qualification, and admission-initiation evidence as an immutable set.\n\nEngineering rationale: preserve ZH-OA01-IMPLEMENTATION-003, ZH-OA01-QUALIFICATION-002, ZH-OA01-VERIFICATION-CORRECTIVE-004, ZH-ZEUS-OA-ADMISSION-001 as a reviewable publication boundary without partial lifecycle state or rewritten evidence.\n\nValidation: scripts/zeus gate receipt OA-01; JSON parse and digest review of OA-01 evidence; git diff --check.\nAffected OA gates: OA-01 evidence only; acceptance already occurred.\nRelated investigations: none.\nControlled-document impact: Evidence-only; no controlled-document revision.",
+    "dependencies": [
+      "PU-02"
+    ],
+    "id": "PU-03",
+    "objective": "Publish OA-01 implementation, verification attempts, corrective completion, accepted receipt, qualification, and admission-initiation evidence as an immutable set.",
+    "paths": [
+      "engineering/evidence/2026-07-29-zh-oa01-implementation-003.md",
+      "engineering/evidence/2026-07-29-zh-oa01-qualification-002.md",
+      "engineering/evidence/2026-07-29-zh-zeus-oa-admission-001-work-initiation.md",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-01/accepted.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/IMPLEMENTATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/VERIFIED",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/ZH-OA01-VERIFICATION-CORRECTIVE-004-COMPLETION.md",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/attempts/0c721f239604ca12d5d59af0db2c857b097b8cbdec44c045f36058d790b13c91/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/attempts/0c721f239604ca12d5d59af0db2c857b097b8cbdec44c045f36058d790b13c91/VERIFIED",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/attempts/a337b7ade99bb67790d51e0bc09a07777ae06096454540af005adb99dfa4024d/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/attempts/a337b7ade99bb67790d51e0bc09a07777ae06096454540af005adb99dfa4024d/VERIFIED"
+    ],
+    "publish_order": 4,
+    "review_size": "medium (12 paths)",
+    "risk": "medium",
+    "title": "docs(oa): preserve OA-01 acceptance evidence",
+    "validation": [
+      "scripts/zeus gate receipt OA-01",
+      "JSON parse and digest review of OA-01 evidence",
+      "git diff --check"
+    ]
+  },
+  {
+    "commit_message": "docs(oa): preserve OA-02 acceptance evidence\n\nPublish OA-02 controlled-mission-authority implementation and verification history together with its accepted receipt.\n\nEngineering rationale: preserve ZH-OA02-CONTROLLED-MISSION-AUTHORITY-001 as a reviewable publication boundary without partial lifecycle state or rewritten evidence.\n\nValidation: scripts/zeus gate receipt OA-02; JSON parse and digest review of OA-02 evidence; git diff --check.\nAffected OA gates: OA-02 evidence only; depends on OA-01 history.\nRelated investigations: none.\nControlled-document impact: Evidence-only; no controlled-document revision.",
+    "dependencies": [
+      "PU-03"
+    ],
+    "id": "PU-04",
+    "objective": "Publish OA-02 controlled-mission-authority implementation and verification history together with its accepted receipt.",
+    "paths": [
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-02/accepted.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-02/IMPLEMENTATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-02/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-02/VERIFIED",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-02/ZH-OA02-CONTROLLED-MISSION-AUTHORITY-001-COMPLETION.md",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-02/attempts/2fe7fb97fab8e62a70167a71048cf35de1080fc11b9a6a44f43d5cbcaa9ac92d/IMPLEMENTATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-02/attempts/af955eb13c8a91130651c74ca91f6e8cbd6a44ca814926c0ca2f06d1856f5f7d/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-02/attempts/af955eb13c8a91130651c74ca91f6e8cbd6a44ca814926c0ca2f06d1856f5f7d/VERIFIED"
+    ],
+    "publish_order": 5,
+    "review_size": "small (8 paths)",
+    "risk": "medium",
+    "title": "docs(oa): preserve OA-02 acceptance evidence",
+    "validation": [
+      "scripts/zeus gate receipt OA-02",
+      "JSON parse and digest review of OA-02 evidence",
+      "git diff --check"
+    ]
+  },
+  {
+    "commit_message": "docs(oa): preserve OA-03 acceptance evidence\n\nPublish OA-03 mission-contract-discovery implementation, verification, completion report, and accepted receipt.\n\nEngineering rationale: preserve ZH-OA03-MISSION-CONTRACT-DISCOVERY-001 as a reviewable publication boundary without partial lifecycle state or rewritten evidence.\n\nValidation: scripts/zeus gate receipt OA-03; JSON parse and digest review of OA-03 evidence; git diff --check.\nAffected OA gates: OA-03 evidence only; depends on OA-01 and OA-02 history.\nRelated investigations: none.\nControlled-document impact: Evidence-only; no controlled-document revision.",
+    "dependencies": [
+      "PU-04"
+    ],
+    "id": "PU-05",
+    "objective": "Publish OA-03 mission-contract-discovery implementation, verification, completion report, and accepted receipt.",
+    "paths": [
+      "engineering/evidence/2026-07-29-zh-oa03-mission-contract-discovery-001-completion-report.md",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-03/accepted.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-03/IMPLEMENTATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-03/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-03/VERIFIED",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-03/attempts/d87249a0cc7e04fa895a696a801da5bfe41b04e3b08b04c844ded6890db7237a/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-03/attempts/d87249a0cc7e04fa895a696a801da5bfe41b04e3b08b04c844ded6890db7237a/VERIFIED"
+    ],
+    "publish_order": 6,
+    "review_size": "small (7 paths)",
+    "risk": "medium",
+    "title": "docs(oa): preserve OA-03 acceptance evidence",
+    "validation": [
+      "scripts/zeus gate receipt OA-03",
+      "JSON parse and digest review of OA-03 evidence",
+      "git diff --check"
+    ]
+  },
+  {
+    "commit_message": "docs(oa): preserve OA-04 corrected acceptance chain\n\nPublish OA-04 mission-resolution evidence, all attempts, original and corrected receipts, and explicit supersedence without rewriting history.\n\nEngineering rationale: preserve ZH-OA04-MISSION-RESOLUTION-001, ZH-OA04-ACCEPTANCE-REPLAY-CORRECTIVE-001, ZH-OA04-CONTRACT-CONFORMANCE-REVIEW-001 as a reviewable publication boundary without partial lifecycle state or rewritten evidence.\n\nValidation: scripts/zeus gate receipt OA-04; Verify original/corrected receipt and supersedence linkage; JSON parse and digest review of OA-04 evidence; git diff --check.\nAffected OA gates: OA-04 corrected evidence chain only.\nRelated investigations: none.\nControlled-document impact: Evidence-only; supersedence record is additive and immutable.",
+    "dependencies": [
+      "PU-05"
+    ],
+    "id": "PU-06",
+    "objective": "Publish OA-04 mission-resolution evidence, all attempts, original and corrected receipts, and explicit supersedence without rewriting history.",
+    "paths": [
+      "engineering/evidence/2026-07-29-zh-oa04-acceptance-replay-corrective-001.md",
+      "engineering/evidence/2026-07-29-zh-oa04-contract-conformance-review-001.md",
+      "engineering/evidence/2026-07-29-zh-oa04-mission-resolution-001-completion-report.md",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-04/accepted-59cbfe3e60b09f1483fe165276f3b247577ccc83bcd084ea212fa78689f972c0.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-04/accepted.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-04/superseded-by-contract-correction.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/IMPLEMENTATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/VERIFIED",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/attempts/0b538ce2262bf9a7a33a88e47ebd12b48becfc0a675701fb72e96a5679225e55/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/attempts/0b538ce2262bf9a7a33a88e47ebd12b48becfc0a675701fb72e96a5679225e55/VERIFIED",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/attempts/1734b9295a029c9ecddb6440cd86d1faf7aee7af1d2269d33180876e0a188b87/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/attempts/1734b9295a029c9ecddb6440cd86d1faf7aee7af1d2269d33180876e0a188b87/VERIFIED",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/attempts/23cc5af0c6b56b31f1fb92108cac3150fb4d58578f1f148d8e534b9c2335565a/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/attempts/23cc5af0c6b56b31f1fb92108cac3150fb4d58578f1f148d8e534b9c2335565a/VERIFIED",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/attempts/37cd9ee4f0e0e9a4d91d3289d2a4694ef5da9474dc979293673e9aa68353d7c0/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/attempts/37cd9ee4f0e0e9a4d91d3289d2a4694ef5da9474dc979293673e9aa68353d7c0/VERIFIED",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/attempts/8996960699a4970b2fda196eecc043ddcda1608ffd3321ee90531cc5c55091e3/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/attempts/8996960699a4970b2fda196eecc043ddcda1608ffd3321ee90531cc5c55091e3/VERIFIED",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/attempts/95d3457565ff128521e19305444a1e80613598c9a9f51a715eb4ed9d81f03c6f/IMPLEMENTATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/attempts/cdbf93a74bc687fa622dbea84b011f37d5b0879d95523c7f5c473663cf92deee/IMPLEMENTATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/attempts/dbbab47a902ee5c431bfd824ef1ead1a9d423e377f3443b258a80724314e97d3/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-04/attempts/dbbab47a902ee5c431bfd824ef1ead1a9d423e377f3443b258a80724314e97d3/VERIFIED"
+    ],
+    "publish_order": 7,
+    "review_size": "large historical set (23 paths)",
+    "risk": "high",
+    "title": "docs(oa): preserve OA-04 corrected acceptance chain",
+    "validation": [
+      "scripts/zeus gate receipt OA-04",
+      "Verify original/corrected receipt and supersedence linkage",
+      "JSON parse and digest review of OA-04 evidence",
+      "git diff --check"
+    ]
+  },
+  {
+    "commit_message": "docs(oa): preserve OA-05 staging acceptance evidence\n\nPublish OA-05 staging and mission-count investigation evidence, Stage 1 completion record, attempts, and accepted receipt.\n\nEngineering rationale: preserve ZH-OA05-MISSION-STAGING-001, ZH-OA05-MISSION-COUNT-INVESTIGATION-001, ZH-001 Stage 1 as a reviewable publication boundary without partial lifecycle state or rewritten evidence.\n\nValidation: scripts/zeus gate receipt OA-05; python3 scripts/tests/test-zeus-mission-count-status.py; JSON parse and digest review of OA-05 evidence; git diff --check.\nAffected OA gates: OA-05 evidence only; OA-06 remains pending.\nRelated investigations: ZH-OA05-MISSION-COUNT-INVESTIGATION-001.\nControlled-document impact: Evidence-only; no controlled-document revision.",
+    "dependencies": [
+      "PU-06"
+    ],
+    "id": "PU-07",
+    "objective": "Publish OA-05 staging and mission-count investigation evidence, Stage 1 completion record, attempts, and accepted receipt.",
+    "paths": [
+      "engineering/evidence/2026-07-28-zeus-operational-alpha-stage1-completion-report.md",
+      "engineering/evidence/2026-07-29-zh-oa05-contract-conformance-review-001.md",
+      "engineering/evidence/2026-07-29-zh-oa05-mission-count-investigation-001.md",
+      "engineering/evidence/2026-07-29-zh-oa05-mission-staging-001-completion-report.md",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-05/accepted-31c196a0ef998f1e9cc59988eac81eaa015d134bf1a1ee1a9d15cb401d274be9.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-05/IMPLEMENTATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-05/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-05/VERIFIED",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-05/attempts/1c96738d313cb6f3759be8f3c62e44da199bc85cd3b1aec61918964ad639fa62/VERIFICATION.json",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-05/attempts/1c96738d313cb6f3759be8f3c62e44da199bc85cd3b1aec61918964ad639fa62/VERIFIED"
+    ],
+    "publish_order": 8,
+    "review_size": "medium (10 paths)",
+    "risk": "medium",
+    "title": "docs(oa): preserve OA-05 staging acceptance evidence",
+    "validation": [
+      "scripts/zeus gate receipt OA-05",
+      "python3 scripts/tests/test-zeus-mission-count-status.py",
+      "JSON parse and digest review of OA-05 evidence",
+      "git diff --check"
+    ]
+  },
+  {
+    "commit_message": "chore(zeus): reconcile OA-06 pending state projection\n\nAtomically publish Project State, Work Registry revision 85, OA progress, runtime state, and their count-sensitive regressions after all accepted receipts exist.\n\nEngineering rationale: preserve Progressive OA state reconciliation, ZH-OA05-MISSION-COUNT-INVESTIGATION-001 as a reviewable publication boundary without partial lifecycle state or rewritten evidence.\n\nValidation: scripts/zeus status --json; scripts/engctl registry validate; scripts/engctl eos sync-validate homelab; scripts/engctl platform validate homelab; python3 scripts/tests/test-emp-registry.py; python3 scripts/tests/test-zeus-mission-assurance.py; bash scripts/verify.sh; git diff --check.\nAffected OA gates: Projects OA-01..OA-05 ACCEPTED and OA-06 PENDING; performs no transition.\nRelated investigations: ZH-OA05-MISSION-COUNT-INVESTIGATION-001.\nControlled-document impact: Updates PROJ-0001 state projection; registry/progress/runtime/test paths must publish together.",
+    "dependencies": [
+      "PU-01",
+      "PU-02",
+      "PU-03",
+      "PU-04",
+      "PU-05",
+      "PU-06",
+      "PU-07"
+    ],
+    "id": "PU-08",
+    "objective": "Atomically publish Project State, Work Registry revision 85, OA progress, runtime state, and their count-sensitive regressions after all accepted receipts exist.",
+    "paths": [
+      "docs/project/PROJ-0001-PROJECT_STATE.md",
+      "engineering/operations/zeus-operational-alpha-progress.md",
+      "engineering/registry/work-registry.yaml",
+      "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/state.json",
+      "scripts/tests/test-emp-registry.py",
+      "scripts/tests/test-zeus-mission-assurance.py"
+    ],
+    "publish_order": 9,
+    "review_size": "small but tightly coupled (6 paths)",
+    "risk": "high",
+    "title": "chore(zeus): reconcile OA-06 pending state projection",
+    "validation": [
+      "scripts/zeus status --json",
+      "scripts/engctl registry validate",
+      "scripts/engctl eos sync-validate homelab",
+      "scripts/engctl platform validate homelab",
+      "python3 scripts/tests/test-emp-registry.py",
+      "python3 scripts/tests/test-zeus-mission-assurance.py",
+      "bash scripts/verify.sh",
+      "git diff --check"
+    ]
+  },
+  {
+    "commit_message": "docs(evidence): preserve working-tree reconciliation audit\n\nPublish the historical working-tree reconciliation report and its original digest inventory after the candidate they describe has been published and synchronized.\n\nEngineering rationale: preserve ZH-WORKING-TREE-RECONCILIATION-001 as an independently reviewable historical audit boundary.\n\nValidation: parse the historical inventory; verify its internal consistency; git diff --check.\nAffected OA gates: No gate impact.\nRelated investigations: none.\nControlled-document impact: Evidence-only; no controlled-document revision.",
+    "dependencies": [
+      "PU-08"
+    ],
+    "id": "PU-09",
+    "objective": "Publish the historical working-tree reconciliation report and its original digest inventory after the candidate they describe has been published and synchronized.",
+    "paths": [
+      "engineering/evidence/2026-07-29-zh-working-tree-reconciliation-001.md",
+      "engineering/evidence/2026-07-29-zh-working-tree-reconciliation-001-inventory.json"
+    ],
+    "publish_order": 10,
+    "review_size": "small audit set (2 paths)",
+    "risk": "low",
+    "title": "docs(evidence): preserve working-tree reconciliation audit",
+    "validation": [
+      "python3 -m json.tool engineering/evidence/2026-07-29-zh-working-tree-reconciliation-001-inventory.json",
+      "verify historical inventory internal consistency",
+      "git diff --check"
+    ]
+  }
+]

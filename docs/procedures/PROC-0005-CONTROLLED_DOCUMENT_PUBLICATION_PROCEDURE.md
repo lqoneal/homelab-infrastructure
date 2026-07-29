@@ -1,7 +1,7 @@
 ---
 document_id: PROC-0005
 title: Controlled Document Publication Procedure
-version: 1.3
+version: 1.5
 status: Draft
 owner: Engineering Governance
 created: 2026-07-18
@@ -9,7 +9,7 @@ last_updated: 2026-07-28
 phase: Governance Stabilization Procedure Integration
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: PROC-0005@1.2
+predecessor_revision: PROC-0005@1.4
 successor_revision: null
 approval_status: Pending
 approval_authority: null
@@ -33,6 +33,8 @@ relationships:
   - type: implements
     target: STD-0002
   - type: conforms_to
+    target: STD-0004
+  - type: conforms_to
     target: SPEC-0001
   - type: related_to
     target: PROC-0001
@@ -46,6 +48,8 @@ relationships:
     target: PROC-0007
   - type: related_to
     target: TPL-0002
+  - type: related_to
+    target: EOS-0003
   - type: indexed_by
     target: DOC-0001
 tags:
@@ -156,6 +160,59 @@ publish, or convert a publication outcome into a Governance or baseline state.
   described by a controlled document. Publication does not provide it.
 - **Immutable baseline:** The verified repository locator that preserves the
   exact published revision and its atomic supporting updates.
+
+### 4.1 Repository–EOS publication contract
+
+Repository content remains authoritative. EOS is a derived projection for
+runtime consumption and never becomes authoritative over repository state. A
+repository working-tree change, commit, tag, or push does not automatically
+synchronize EOS. Publication authority and EOS synchronization authority are
+separate.
+
+Every publication plan and authorization shall use these terms consistently:
+
+- **Working-tree projection:** EOS bytes implied by the current working-tree
+  sources.
+- **Committed projection:** EOS bytes implied by a selected local commit.
+- **Published projection:** EOS bytes implied by the repository baseline that
+  completed its authorized publication operation.
+- **Synchronized EOS projection:** EOS bytes persisted by a separately
+  authorized synchronization and verified against the selected authoritative
+  repository baseline.
+
+Before Stage 6 begins, the plan shall identify:
+
+1. **Initial Validation Boundary** — read-only verification of repository
+   identity, baseline, health, registry, package, diff, and current EOS
+   comparison;
+2. **Publication Boundary** — the exact authorized repository paths and
+   persistence operations;
+3. **Synchronization Boundary** — the separately authorized phase, if any,
+   after specified publication units at which a selected repository baseline
+   may project to EOS; and
+4. **Final Validation Boundary** — final repository validation and, only when
+   synchronization was authorized and performed, exact synchronized-EOS and
+   runtime verification.
+
+Omitting a Synchronization Boundary means synchronization is out of scope. A
+boundary shall identify the operator, authority reference, prerequisites,
+selected repository baseline, target project, validation commands, and stop
+conditions. An auto-repairing resume or qualification command shall not be
+used as read-only publication validation.
+
+### 4.2 Drift classifications
+
+| Classification | Required interpretation and action |
+| --- | --- |
+| `EXPECTED_PUBLICATION_DRIFT` | The repository advanced within the authorized sequence before its Synchronization Boundary. Record both baselines, do not synchronize, and continue only to the next authorized publication unit. |
+| `SYNCHRONIZATION_REQUIRED` | The declared Synchronization Boundary has been reached with prerequisites satisfied. Pause publication advancement until explicit synchronization authority is verified. |
+| `SYNCHRONIZATION_FAILURE` | Authorized synchronization or its exact post-check failed. Preserve repository authority and evidence; stop and repair/retry only under applicable EOS operational authority. |
+| `AUTHORITATIVE_SOURCE_FAILURE` | Repository identity, health, registry, package, source schema/content, diff, or committed-boundary validation failed. Stop publication; correct repository sources under separate authority and never repair them from EOS. |
+| `RUNTIME_STATE_FAILURE` | Authoritative repository sources and deterministic projection validate, but EOS runtime, cache, checkpoint, or persistence state fails. Stop runtime-dependent work and repair only the runtime domain under applicable authority. |
+
+Binary aligned/drifted output from a tool is an observation that the operator
+shall map to one of these classifications using the declared boundaries and
+source evidence.
 
 ## 5. Roles and Authority Model
 
@@ -498,10 +555,12 @@ in the publication authority when performed.
 
 ### Activities and Validation
 
-1. Reconstruct and record the starting repository baseline.
+1. At the Initial Validation Boundary, reconstruct and record the starting
+   repository baseline and run read-only repository health, registry,
+   applicable package, diff, and EOS comparison checks.
 2. Inventory every tracked, staged, unstaged, and untracked change.
-3. Establish the exact publication boundary before modifying publication
-   state.
+3. Establish the Publication, Synchronization, and Final Validation Boundaries
+   before modifying publication state.
 4. Verify controlled identifier availability through the authoritative index
    process; never infer availability from numbering alone.
 5. Apply only authorized metadata, identity, canonical placement,
@@ -515,8 +574,19 @@ in the publication authority when performed.
    persistence transaction.
 10. Resolve and record the full immutable locator and subject blob identity.
 11. Verify the committed path set, index state, repository integrity,
-    reconstruction, and complete post-publication validation.
-12. Confirm every excluded change remains outside the transaction.
+    reconstruction, and unit-specific post-publication validation. Read-only
+    EOS comparison drift shall be classified; expected intermediate drift
+    shall not trigger synchronization.
+12. At the declared Synchronization Boundary, stop and verify separate
+    synchronization authority and all prerequisites. If authorized, the named
+    operator may invoke synchronization and shall immediately run exact
+    synchronization, EOS state, persistence, and applicable integrated
+    platform validation.
+13. At the Final Validation Boundary, verify repository health, registry,
+    package and committed-path integrity, all required final publication
+    checks, and either the synchronized EOS projection or the explicitly
+    recorded out-of-scope/expected-drift disposition.
+14. Confirm every excluded change remains outside the transaction.
 
 If the repository cannot provide a true atomic transaction across all required
 effects, stop unless Engineering Governance has approved an explicit ordered
@@ -531,10 +601,13 @@ publication protocol and its observable intermediate-state controls.
 - controlled identity and canonical placement;
 - metadata, relationship, lifecycle, and index changes;
 - pre-publication validation;
+- four declared synchronization boundaries and authority allocation;
 - exact staged-boundary verification;
 - immutable commit or equivalent locator and subject blob identity;
 - committed-path verification;
 - post-publication validation and repository-integrity result; and
+- drift classifications, synchronization evidence when applicable, and final
+  repository/EOS baseline comparison; and
 - qualified Completion Report.
 
 ### Exit Criteria
@@ -712,6 +785,13 @@ authorize publication.
 | Historical reconstruction succeeds | Where predecessor applies | Required |
 | Deferred work remains unauthorized | Required | Required |
 | Repository integrity passes | Required | Required |
+| Repository health | Initial Validation Boundary | Each Publication Boundary and Final Validation Boundary |
+| Registry validation | Initial Validation Boundary | After an affected unit and at Final Validation Boundary |
+| Package verification | Initial Validation Boundary when applicable | During each affected unit and at Final Validation Boundary |
+| Diff / exact path verification | Before persistence | During staging, after each commit, and at Final Validation Boundary |
+| EOS comparison (`sync-validate`) | Initial Validation Boundary, read-only | Classify after publication units and verify exactly at Synchronization and Final Validation Boundaries |
+| EOS synchronization | Prohibited as validation | Only at the declared Synchronization Boundary under separate authority |
+| EOS runtime and persistence validation | Observe initially when required | Required immediately after synchronization and at Final Validation Boundary when EOS is in scope |
 
 Validation failure is never converted to PASS merely because a repository
 operation succeeded.
@@ -870,6 +950,9 @@ A publication conforms to this procedure when:
 - metadata, relationships, lifecycle, discovery, and persistence agree;
 - the immutable baseline and subject revision reconstruct deterministically;
 - pre- and post-publication validation pass;
+- all four boundaries are declared, every EOS comparison is classified, and
+  synchronization occurs only under separate authority at its declared
+  boundary;
 - evidence supports every gate and transition; and
 - the Completion Report accurately certifies the observed outcome.
 
@@ -940,3 +1023,4 @@ state, or replace the publication transaction and its existing owners.
 | 1.2 | 2026-07-18 | Integrated Active PROC-0007 as an optional source of qualified and authorized reconciliation publication packages while preserving PROC-0005 publication ownership. |
 | 1.3 | 2026-07-28 | Draft successor adds profile resolution, criterion-to-evidence traceability, completeness and unresolved-criterion summaries, automation coverage, command evidence, fail-closed semantic disposition, additive synchronization, repository-wide implementation coverage, and Engineering Contract conformance evidence without changing publication ownership. |
 | 1.4 | 2026-07-28 | Adds optional Engineering Assurance evidence consumption and canonical report preservation without changing publication authority, lifecycle ownership, or execution. |
+| 1.5 | 2026-07-29 | Established the repository-authoritative EOS publication contract, four explicit boundaries, projection semantics, five drift classifications, synchronization authority, and phase-specific validation sequencing. |
