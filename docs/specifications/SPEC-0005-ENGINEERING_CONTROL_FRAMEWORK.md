@@ -293,6 +293,30 @@ Project wrappers SHALL:
 
 # 10. Validation
 
+## 10.1 Mission Activation Service Candidate
+
+The Mission Activation Service SHALL implement this ordered pipeline:
+
+`Approved Mission -> Admission -> Activation Request -> Approval Verification
+-> Mission Contract Resolution -> Atomic Activation Transaction -> Registry
+Reconciliation -> EOS Synchronization -> Operational Mission`.
+
+Admission SHALL deterministically qualify mission eligibility, WOP,
+repository, baseline, roles, approval, dependencies, and scope. The result
+vocabulary is `ADMIT` or `DENY`; denial includes stable reason codes.
+
+Activation SHALL use a repository lock, request idempotency, expected-state
+comparison, one-active-contract cardinality, durable before-images, atomic
+replacement, post-write resolution, and a transaction journal. Canonical
+repository records are the Mission Contract, Work Registry, Project State, and
+activation evidence. EOS is derived and must synchronize before commit.
+Failure or interruption SHALL restore all canonical before-images and
+resynchronize EOS. Partial activation and direct lifecycle activation are
+prohibited.
+
+The resolver output is the single operational authorization result consumed by
+both `engctl resume` and execution snapshots.
+
 The Engineering Control Framework is compliant when:
 
 - one global controller can invoke core EOS services;
@@ -316,3 +340,4 @@ All future EOS controllers SHALL conform to this specification.
 | 1.1 | 2026-07-28 | Activated the Command Authority Standard and standardized engctl Engineering Execution Interface routing. |
 | 1.2 | 2026-07-28 | Candidate: defined the Engineering Execution Contract, separated command permission from decision authority, and required non-reusable framework review and approval gates. |
 | 1.2 candidate reconciliation | 2026-07-28 | Added controlled-owner mission-assurance declarations and required generic, fail-closed Zeus evaluation through the canonical execution resolver. |
+| 1.3 candidate | 2026-07-28 | Added the Mission Activation Service, admission qualifications, atomic transaction boundary, reconciliation, rollback, recovery, and resolver cardinality requirements. |

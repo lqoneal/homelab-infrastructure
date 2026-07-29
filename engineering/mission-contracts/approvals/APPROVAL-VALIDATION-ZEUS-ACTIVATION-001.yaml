@@ -1,0 +1,21 @@
+schema_version: 1
+document_type: MissionActivationApproval
+approval_id: APPROVAL-VALIDATION-ZEUS-ACTIVATION-001
+decision: approved
+mission_id: VALIDATION-AND-ZEUS-CANDIDATE-PUBLICATION-001
+contract_id: MC-VALIDATION-ZEUS-PUBLICATION-001
+authorizer: repository_owner
+recorded_at: '2026-07-28T23:00:00-07:00'
+source: Human corrective-continuation request in the current repository session
+scope:
+  - mission admission
+  - Mission Contract activation
+  - activation reconciliation
+excluded:
+  - publication mission execution
+  - push
+  - merge
+  - release
+  - publication
+  - controlled-document activation
+  - bootstrap closeout

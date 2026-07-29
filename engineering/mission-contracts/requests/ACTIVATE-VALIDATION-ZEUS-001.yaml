@@ -1,0 +1,12 @@
+schema_version: 1
+document_type: MissionActivationRequest
+request_id: ACTIVATE-VALIDATION-ZEUS-001
+mission_id: VALIDATION-AND-ZEUS-CANDIDATE-PUBLICATION-001
+contract_id: MC-VALIDATION-ZEUS-PUBLICATION-001
+actor: repository_owner
+expected_lifecycle: candidate
+approval:
+  locator: engineering/mission-contracts/approvals/APPROVAL-VALIDATION-ZEUS-ACTIVATION-001.yaml
+  digest: 1e654549f1dbd21ff66dc3f31a72634c02887a531f8283a598e9307e303bbbe9
+requested_outcome: operational_activation_only
+publication_execution: prohibited

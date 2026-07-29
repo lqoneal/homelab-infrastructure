@@ -82,6 +82,16 @@ class MissionContractTests(unittest.TestCase):
         self.write(value)
         self.assertEqual(Resolver(self.root).resolve()["resolution"], "BASELINE_MISMATCH")
 
+    def test_authorized_commit_descending_from_activation_baseline(self):
+        self.write(self.contract())
+        (self.root / "later").write_text("later\n")
+        subprocess.run(["git", "add", "later"], cwd=self.root, check=True)
+        subprocess.run(
+            ["git", "commit", "-m", "authorized descendant"],
+            cwd=self.root, check=True, capture_output=True,
+        )
+        self.assertEqual(Resolver(self.root).resolve()["resolution"], "AUTHORIZED")
+
     def test_missing_wop_is_invalid(self):
         value = self.contract(); value["wop"]["locator"] = "missing"
         self.assertIn("wop.locator: unresolved", validate(value, self.root))

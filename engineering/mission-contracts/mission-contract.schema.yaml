@@ -60,3 +60,17 @@ transitions:
   revoked: []
   superseded: []
   invalid: []
+activation_architecture:
+  admission_result: [ADMIT, DENY]
+  request_schema: engineering/mission-contracts/activation-request.schema.yaml
+  approval_schema: engineering/mission-contracts/activation-approval.schema.yaml
+  transaction_states: [PREPARED, REPOSITORY_WRITTEN, COMMITTED, ROLLED_BACK]
+  canonical_records:
+    - Mission Contract
+    - Work Registry
+    - Project State
+    - activation evidence
+  derived_records:
+    - EOS
+  cardinality: exactly_one_active_contract_per_repository
+  direct_candidate_to_active_transition: prohibited_outside_activation_transaction

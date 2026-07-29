@@ -1,0 +1,11 @@
+{
+  "contract_id": "MC-VALIDATION-ZEUS-PUBLICATION-001",
+  "evidence_type": "mission-activation",
+  "mission_id": "VALIDATION-AND-ZEUS-CANDIDATE-PUBLICATION-001",
+  "registry_id": "EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001",
+  "request_id": "ACTIVATE-VALIDATION-ZEUS-001",
+  "result": "COMMITTED",
+  "schema_version": 1,
+  "timestamp": "2026-07-29T05:53:14+00:00",
+  "transaction_id": "TX-ACTIVATE-VALIDATION-ZEUS-001"
+}

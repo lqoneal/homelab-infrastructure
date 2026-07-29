@@ -999,6 +999,28 @@ Authority not explicitly granted remains prohibited.
 
 ## Success Criteria
 
+### Mission Admission and Activation Candidate
+
+Before operational execution, an approved mission shall pass deterministic
+mission admission. Admission shall qualify the mission lifecycle, WOP,
+repository, baseline, roles, attributable approval, dependencies, and scope,
+and shall return only `ADMIT` or `DENY` with stable reason codes.
+
+An admitted mission becomes operational only through a durable activation
+request. The activation service shall lock the repository boundary, verify
+that no conflicting active Mission Contract exists, and atomically reconcile
+the Mission Contract, Work Registry, Project State, and activation evidence.
+EOS is a derived projection and shall synchronize and validate before the
+transaction is complete. Any failure shall restore repository before-images
+and regenerate EOS from the restored records. Direct candidate-to-active
+lifecycle mutation is prohibited.
+
+After interruption, an incomplete activation journal shall be recovered before
+new activation is attempted. A committed request is idempotent. A terminal
+Mission Contract cannot reactivate. Operational execution shall begin only
+when exactly one active Mission Contract resolves and resume and execution
+snapshot interfaces report identical authority.
+
 This procedure is complete when every implementation agent can execute an Active Engineering Work Order deterministically, consistently, and within the approved governance framework from document verification through completion reporting.
 
 ---
@@ -1022,3 +1044,4 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.12 | 2026-07-28 | Standardized the repository-authoritative Engineering Execution Interface, Mission Snapshot, minimal handoff consumption, mission-delta reporting, repository-only resume, and command-authority integration. |
 | 1.13 | 2026-07-28 | Candidate: routed canonical discovery, authority, snapshot, and handoff validation through the SPEC-0005 Engineering Execution Contract with mandatory framework review gates. |
 | 1.14 | 2026-07-28 | Candidate: defined independent Zeus mission-assurance verification across preflight, execution, synchronization, and closeout while preserving this procedure's process ownership. |
+| 1.15 candidate | 2026-07-28 | Added deterministic mission admission, activation-request, atomic reconciliation, rollback, interruption recovery, cardinality, and shared authority-reporting workflow. |

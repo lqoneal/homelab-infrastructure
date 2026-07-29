@@ -185,7 +185,14 @@ class Resolver:
             return "REPOSITORY_MISMATCH"
         if git("branch", "--show-current") != repo["branch"]:
             return "BRANCH_MISMATCH"
-        if git("rev-parse", "HEAD") != repo["baseline"]:
+        baseline = str(repo["baseline"])
+        try:
+            subprocess.run(
+                ["git", "-C", str(self.root), "merge-base", "--is-ancestor",
+                 baseline, "HEAD"],
+                check=True, capture_output=True, text=True,
+            )
+        except subprocess.CalledProcessError:
             return "BASELINE_MISMATCH"
         dirty = bool(git("status", "--porcelain=v1"))
         if dirty and value["dirty_tree"]["policy"] == "CLEAN_REQUIRED":

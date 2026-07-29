@@ -3,17 +3,25 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts.lib.eos.mission_contract import MissionContractError, Resolver, load, transition, validate
+from scripts.lib.eos.mission_activation import ActivationService, Admission
 
 p = argparse.ArgumentParser()
 s = p.add_subparsers(dest="command", required=True)
 for name in ("inspect", "validate", "resolve"):
     q = s.add_parser(name); q.add_argument("--mission")
+q = s.add_parser("admit")
+q.add_argument("--request", required=True)
+q = s.add_parser("activate-request")
+q.add_argument("--request", required=True)
+q = s.add_parser("recover")
+q.add_argument("--transaction", required=True)
 for name in ("activate", "suspend", "resume", "revoke", "complete"):
     q = s.add_parser(name); q.add_argument("--contract", required=True)
     q.add_argument("--mission", required=True); q.add_argument("--actor", required=True)
@@ -27,7 +35,32 @@ try:
         result = [{"path": str(x.relative_to(ROOT)), "contract": y} for x, y in resolver.contracts(a.mission)]
     elif a.command == "validate":
         result = [{"path": str(x.relative_to(ROOT)), "errors": validate(y, ROOT)} for x, y in resolver.contracts(a.mission)]
+    elif a.command == "admit":
+        request_path = ROOT / a.request
+        request = __import__("yaml").safe_load(request_path.read_text())
+        contract_path = ROOT / "engineering/mission-contracts/contracts" / f"{request['contract_id']}.yaml"
+        result = Admission(ROOT).decide(contract_path, request)
+    elif a.command in {"activate-request", "recover"}:
+        def eos_sync():
+            subprocess.run(
+                [str(ROOT / "scripts/engctl"), "eos", "synchronize", "homelab"],
+                check=True,
+            )
+            subprocess.run(
+                [str(ROOT / "scripts/engctl"), "eos", "sync-validate", "homelab"],
+                check=True,
+            )
+        service = ActivationService(ROOT, eos_sync=eos_sync)
+        result = (
+            service.activate(ROOT / a.request)
+            if a.command == "activate-request"
+            else service.recover(a.transaction)
+        )
     else:
+        if a.command == "activate":
+            raise MissionContractError(
+                "direct activation is prohibited; use activate-request after admit"
+            )
         path = ROOT / "engineering/mission-contracts/contracts" / f"{a.contract}.yaml"
         value = load(path)
         if value.get("mission_id") != a.mission:

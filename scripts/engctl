@@ -45,7 +45,7 @@ Usage:
   engctl validate [project]
   engctl platform {status|validate|qualify} [project]
   engctl execution {inventory|snapshot [--mission ID]|validate-handoff FILE}
-  engctl mission contract {inspect|validate|resolve|activate|suspend|resume|revoke|complete}
+  engctl mission contract {inspect|validate|resolve|admit|activate-request|recover|activate|suspend|resume|revoke|complete}
   engctl codex [--ewo EWO-XXXXXX] [--timeout SECONDS] [--] [codex arguments ...]
   engctl version
 EOF

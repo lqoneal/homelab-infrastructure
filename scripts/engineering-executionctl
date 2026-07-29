@@ -8,8 +8,12 @@ sys.path.insert(0, str(ROOT))
 from scripts.lib.eos.execution_interface import main
 from scripts.lib.eos.mission_contract import Resolver
 
-if sys.argv[1:2] == ["snapshot"] and "--mission" in sys.argv:
-    mission = sys.argv[sys.argv.index("--mission") + 1]
+if sys.argv[1:2] == ["snapshot"]:
+    mission = (
+        sys.argv[sys.argv.index("--mission") + 1]
+        if "--mission" in sys.argv
+        else None
+    )
     result = Resolver(ROOT).resolve(mission)
     if result["candidate_count"]:
         import json

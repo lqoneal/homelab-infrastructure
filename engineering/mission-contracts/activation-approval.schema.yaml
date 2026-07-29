@@ -1,0 +1,16 @@
+schema_version: 1
+document_type: MissionActivationApprovalSchema
+required:
+  - schema_version
+  - document_type
+  - approval_id
+  - decision
+  - mission_id
+  - contract_id
+  - authorizer
+  - recorded_at
+decisions:
+  - approved
+  - denied
+binding: one approval binds exactly one mission and one Mission Contract
+separation: execution agent cannot be the human authorizer

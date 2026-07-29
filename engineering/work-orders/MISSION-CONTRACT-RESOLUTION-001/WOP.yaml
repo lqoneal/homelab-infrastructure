@@ -14,7 +14,7 @@ execution_order:
   - implement lifecycle and interfaces
   - validate positive and negative cases
   - prepare inactive publication contract
-  - complete bootstrap and revoke authority
+  - retain active bootstrap pending separately authorized publication
 interruption_recovery:
   locator: /data/engineering/recovery/mission-contract-bootstrap-001/pre-bootstrap
   behavior: Revalidate authorization, repository, baseline, path manifest, and prior evidence before resume.
@@ -27,7 +27,8 @@ evidence_requirements:
   - final path audit
   - bootstrap completion report
 closeout:
-  - bootstrap lifecycle completed
-  - bootstrap transactional authority revoked
-  - publication contract remains candidate
+  - bootstrap lifecycle remains active
+  - bootstrap transactional authority remains active pending publication
+  - publication contract activated through the normal framework
+  - publication mission execution remains prohibited
   - no push, publication, qualification, or controlled-document activation

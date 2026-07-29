@@ -1,0 +1,22 @@
+schema_version: 1
+document_type: MissionActivationRequestSchema
+required:
+  - schema_version
+  - document_type
+  - request_id
+  - mission_id
+  - contract_id
+  - actor
+  - expected_lifecycle
+  - approval
+expected_lifecycle: candidate
+approval_required:
+  - locator
+  - digest
+result_states:
+  - PREPARED
+  - REPOSITORY_WRITTEN
+  - COMMITTED
+  - ROLLED_BACK
+idempotency: request_id
+cardinality: exactly_one_active_contract_per_repository
