@@ -16,7 +16,7 @@ synchronizations:
       object_type: directory
       coverage_scope: recursive
       fingerprints:
-        - {strategy: repository_inventory, value: 2d7601f8dedd44679a0c7cb86e9434415f61cc7bebb6a6e57a0dd5574256f95d}
+        - {strategy: repository_inventory, value: e806e70345a36495c76c36989c95c3137bbbc04d194621df14875ab2d5a6b557}
     ownership: {documentation: Engineering Governance, implementation: Engineering Platform}
     validation_scope: repository engineering controllers, execution engines, libraries, interfaces, and verification
     synchronization_strategy: recursive_artifact_coverage
@@ -78,7 +78,7 @@ synchronizations:
     documentation:
       document_id: GH-ZEUS-OA-PROGRESSIVE-001-ROADMAP
       repository_locator: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
-      fingerprint: {strategy: sha256, value: 2ff819ed68676a9de32b00212492a403ac0cc748adc8ecccc47bbbaf513e5ceb}
+      fingerprint: {strategy: sha256, value: df2656c6d81d119286243849e6da34e40920480bfb0dee23eefd38741256eaad}
     implementation:
       repository_locator: scripts/lib/emp/progressive_oa.py
       object_type: library
