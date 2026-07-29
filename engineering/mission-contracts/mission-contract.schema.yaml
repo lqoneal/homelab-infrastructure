@@ -1,0 +1,62 @@
+schema_version: 1
+document_type: MissionContractSchema
+authority_owner: Engineering Platform
+required:
+  - schema_version
+  - document_type
+  - contract_id
+  - mission_id
+  - registry_id
+  - wop
+  - repository
+  - scope
+  - permissions
+  - roles
+  - approvals
+  - dirty_tree
+  - lifecycle
+  - activation
+  - interruption
+  - closeout
+lifecycles: [candidate, active, suspended, expired, completed, revoked, superseded, invalid]
+terminal_lifecycles: [expired, completed, revoked, superseded, invalid]
+dirty_tree_policies:
+  - CLEAN_REQUIRED
+  - CLASSIFIED_DIRTY_ALLOWED
+  - PATH_SCOPED_DIRTY_ALLOWED
+  - ISOLATED_WORKTREE_REQUIRED
+  - PATCH_ONLY
+  - READ_ONLY
+permissions:
+  - inspect
+  - modify
+  - generate_evidence
+  - reconcile_metadata
+  - stage
+  - commit
+  - create_branch
+  - push
+  - publish
+  - rollback
+  - reconcile_state
+  - close_mission
+roles:
+  - human_authorizer
+  - repository_operator
+  - orchestration_agent
+  - execution_agent
+  - implementation_owner
+  - document_owner
+  - review_owner
+  - qualification_owner
+  - publication_owner
+  - evidence_reviewer
+transitions:
+  candidate: [active, invalid]
+  active: [suspended, completed, revoked, expired, superseded]
+  suspended: [active, revoked, expired]
+  expired: []
+  completed: []
+  revoked: []
+  superseded: []
+  invalid: []

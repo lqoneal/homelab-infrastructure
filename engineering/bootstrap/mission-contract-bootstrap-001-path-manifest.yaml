@@ -1,0 +1,27 @@
+schema_version: 1
+bootstrap_id: MISSION-CONTRACT-BOOTSTRAP-001
+dirty_tree_policy: PATH_SCOPED_DIRTY_ALLOWED
+classification_manifest: engineering/evidence/worktree-classification-and-publication-001-manifest.json
+classification_manifest_sha256: 7dd3ef471d415afd92c80655f0a3d14fce817b33cdb22b4372b9a951f0e9a376
+recovery_locator: /data/engineering/recovery/mission-contract-bootstrap-001/pre-bootstrap
+allowed_paths:
+  - engineering/bootstrap/mission-contract-bootstrap-001-authorization.yaml
+  - engineering/bootstrap/mission-contract-bootstrap-001-path-manifest.yaml
+  - engineering/mission-contracts/
+  - engineering/work-orders/MISSION-CONTRACT-RESOLUTION-001/
+  - scripts/lib/eos/mission_contract.py
+  - scripts/mission-contractctl
+  - scripts/engctl
+  - scripts/engineering-executionctl
+  - scripts/tests/test-mission-contract.py
+  - engineering/evidence/2026-07-28-mission-contract-bootstrap-001-completion-report.md
+excluded_paths:
+  - engineering/work-orders/GH-ZEUS-OA-CERTIFICATION-001/
+  - engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/
+  - docs/procedures/PROC-0005-CONTROLLED_DOCUMENT_PUBLICATION_PROCEDURE.md
+  - docs/procedures/PROC-0006-GOVERNANCE-QUALIFICATION-PROCEDURE.md
+  - docs/project/PROJ-0001-PROJECT_STATE.md
+  - docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md
+  - engineering/registry/work-registry.yaml
+overlaps_with_classified_candidate: []
+scope_expansion_rule: STOP_AND_REQUEST_AUTHORIZATION

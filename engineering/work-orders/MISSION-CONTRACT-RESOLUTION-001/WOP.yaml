@@ -1,0 +1,33 @@
+schema_version: 1
+document_type: BootstrapWOP
+wop_id: WOP-MISSION-CONTRACT-RESOLUTION-001
+mission_id: MISSION-CONTRACT-RESOLUTION-001
+authority_reference: engineering/bootstrap/mission-contract-bootstrap-001-authorization.yaml
+lifecycle: active
+repository: homelab-infrastructure
+baseline: bcdd0b1a19045654d470bc65383c05a976bae2a6
+dirty_tree_policy: PATH_SCOPED_DIRTY_ALLOWED
+path_manifest: engineering/bootstrap/mission-contract-bootstrap-001-path-manifest.yaml
+execution_order:
+  - preserve recovery snapshot
+  - implement schema and resolver
+  - implement lifecycle and interfaces
+  - validate positive and negative cases
+  - prepare inactive publication contract
+  - complete bootstrap and revoke authority
+interruption_recovery:
+  locator: /data/engineering/recovery/mission-contract-bootstrap-001/pre-bootstrap
+  behavior: Revalidate authorization, repository, baseline, path manifest, and prior evidence before resume.
+rollback:
+  behavior: Restore only bootstrap paths from the verified pre-bootstrap snapshot or reverse local bootstrap commits.
+evidence_requirements:
+  - initiation result
+  - schema and resolver tests
+  - lifecycle transition tests
+  - final path audit
+  - bootstrap completion report
+closeout:
+  - bootstrap lifecycle completed
+  - bootstrap transactional authority revoked
+  - publication contract remains candidate
+  - no push, publication, qualification, or controlled-document activation

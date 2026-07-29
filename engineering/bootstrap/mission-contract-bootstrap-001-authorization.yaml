@@ -1,0 +1,20 @@
+schema_version: 1
+document_type: BootstrapAuthorization
+bootstrap_id: MISSION-CONTRACT-BOOTSTRAP-001
+mission_id: MISSION-CONTRACT-RESOLUTION-001
+authority_type: ONE_TIME_HUMAN_AUTHORIZATION
+authorizer: repository_owner
+repository_id: homelab-infrastructure
+baseline: bcdd0b1a19045654d470bc65383c05a976bae2a6
+lifecycle: completed
+scope: MISSION_CONTRACT_SUBSYSTEM_ONLY
+publication_authority: false
+qualification_authority: false
+controlled_document_activation_authority: false
+force_push_authority: false
+self_renewal: false
+source: Human Bootstrap Authorization MISSION-CONTRACT-BOOTSTRAP-001
+closeout:
+  transactional_authority: revoked
+  reusable: false
+  publication_mission_contract_activated: false

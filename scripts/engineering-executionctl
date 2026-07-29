@@ -6,5 +6,14 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from scripts.lib.eos.execution_interface import main
+from scripts.lib.eos.mission_contract import Resolver
+
+if sys.argv[1:2] == ["snapshot"] and "--mission" in sys.argv:
+    mission = sys.argv[sys.argv.index("--mission") + 1]
+    result = Resolver(ROOT).resolve(mission)
+    if result["candidate_count"]:
+        import json
+        print(json.dumps(result, indent=2, sort_keys=True))
+        raise SystemExit(0 if result["resolution"] == "AUTHORIZED" else 78)
 
 raise SystemExit(main(["--repository", str(ROOT), *sys.argv[1:]]))

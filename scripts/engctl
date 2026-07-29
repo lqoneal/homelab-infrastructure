@@ -45,6 +45,7 @@ Usage:
   engctl validate [project]
   engctl platform {status|validate|qualify} [project]
   engctl execution {inventory|snapshot [--mission ID]|validate-handoff FILE}
+  engctl mission contract {inspect|validate|resolve|activate|suspend|resume|revoke|complete}
   engctl codex [--ewo EWO-XXXXXX] [--timeout SECONDS] [--] [codex arguments ...]
   engctl version
 EOF
@@ -77,6 +78,32 @@ case "$cmd" in
         if ! "$SCRIPT_DIR/engineering-executionctl" snapshot 2>/dev/null; then
             echo "No unique active repository Mission Contract is currently resolvable."
         fi
+        echo
+        echo "MISSION CONTRACT AUTHORITY"
+        echo "------------------------------------"
+        contract_json="$("$SCRIPT_DIR/mission-contractctl" resolve 2>/dev/null || true)"
+        python3 - "$contract_json" <<'PY'
+import json, sys
+try:
+    value = json.loads(sys.argv[1])
+except (json.JSONDecodeError, IndexError):
+    value = {"resolution": "NO_AUTHORIZED_WORK", "transactional_authority": False}
+contract = value.get("contract") or {}
+print(f"Authorized Work: {contract.get('mission_id') if value.get('resolution') == 'AUTHORIZED' else 'None'}")
+print(f"Mission Contract: {contract.get('contract_id', 'None') if value.get('resolution') == 'AUTHORIZED' else 'None'}")
+print(f"Resolution: {value.get('resolution', 'NO_AUTHORIZED_WORK')}")
+print(f"Transactional Authority: {'GRANTED' if value.get('transactional_authority') else 'DENIED'}")
+if contract:
+    print(f"Contract State: {str(contract.get('lifecycle', '')).upper()}")
+    print(f"Repository: {(contract.get('repository') or {}).get('identity', '')}")
+    print(f"Baseline: {(contract.get('repository') or {}).get('baseline', '')}")
+    print(f"WOP: {(contract.get('wop') or {}).get('id', '')}")
+    print(f"Dirty Tree Policy: {(contract.get('dirty_tree') or {}).get('policy', '')}")
+    for name in ("modify", "stage", "commit", "push", "publish"):
+        state = "GRANTED" if (contract.get("permissions") or {}).get(name) else "DENIED"
+        print(f"{name.replace('_', ' ').title()} Authority: {state}")
+print("Unresolved Conditions: " + (", ".join(value.get("unresolved_conditions", [])) or "none"))
+PY
         ;;
     status)
         project="${1:-$EOS_PROJECT}"
@@ -144,6 +171,11 @@ case "$cmd" in
         ;;
     execution)
         exec "$SCRIPT_DIR/engineering-executionctl" "$@"
+        ;;
+    mission)
+        [[ "${1:-}" == "contract" ]] || { echo "ERROR: expected mission contract" >&2; exit 2; }
+        shift
+        exec "$SCRIPT_DIR/mission-contractctl" "$@"
         ;;
     codex)
         export NOTIFY_REPOSITORY_ROOT="$(eos_project_root homelab)"
