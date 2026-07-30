@@ -1,0 +1,12 @@
+schema_version: 1
+document_type: MissionActivationRequest
+request_id: ACTIVATE-ZEUS-ARCHITECTURE-BASELINE-COMPLETION-001
+mission_id: ZEUS-ARCHITECTURE-BASELINE-COMPLETION-001
+contract_id: MC-ZEUS-ARCHITECTURE-BASELINE-COMPLETION-001
+actor: repository_owner
+expected_lifecycle: candidate
+approval:
+  locator: engineering/mission-contracts/approvals/APPROVAL-ZEUS-ARCHITECTURE-BASELINE-COMPLETION-001.yaml
+  digest: pending
+requested_outcome: architecture_baseline_mission_activation_after_predecessor_disposition
+activation_status: not_requested

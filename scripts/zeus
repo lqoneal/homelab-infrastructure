@@ -28,6 +28,22 @@ from scripts.lib.emp.gate_carry_forward import GateCarryForwardError, create_rec
 from scripts.lib.eos.execution_interface import ExecutionInterface, ExecutionInterfaceError  # noqa: E402
 from scripts.lib.eos.mission_assurance import MissionAssurance, MissionAssuranceError  # noqa: E402
 from scripts.lib.emp import progressive_oa  # noqa: E402
+from scripts.lib.emp.progressive_gate import ProgressiveGateError, ProgressiveGateService  # noqa: E402
+from scripts.lib.emp.stage1_runtime import Stage1Error, Stage1Runtime  # noqa: E402
+from scripts.lib.emp.oa01_verification import OA01MissionVerification, OA01VerificationError  # noqa: E402
+from scripts.lib.emp.oa01_implementation import OA01ImplementationError, qualify as qualify_oa01_implementation  # noqa: E402
+from scripts.lib.emp.oa01_gate_verification import OA01GateVerificationError  # noqa: E402
+from scripts.lib.emp.controlled_mission_authority import ControlledMissionAuthority, ControlledMissionAuthorityError  # noqa: E402
+from scripts.lib.emp.oa02_implementation import OA02ImplementationError, qualify as qualify_oa02_implementation  # noqa: E402
+from scripts.lib.emp.oa02_gate_verification import OA02GateVerificationError  # noqa: E402
+from scripts.lib.emp.oa03_implementation import OA03ImplementationError, qualify as qualify_oa03_implementation  # noqa: E402
+from scripts.lib.emp.oa03_gate_verification import OA03GateVerificationError  # noqa: E402
+from scripts.lib.emp.oa04_implementation import OA04ImplementationError, qualify as qualify_oa04_implementation  # noqa: E402
+from scripts.lib.emp.oa04_gate_verification import OA04GateVerificationError  # noqa: E402
+from scripts.lib.emp.project_operational_context import ContextReconstructionError, require as reconstruct_context  # noqa: E402
+from scripts.lib.emp.oa05_implementation import OA05ImplementationError, qualify as qualify_oa05_implementation  # noqa: E402
+from scripts.lib.emp.oa05_gate_verification import OA05GateVerificationError  # noqa: E402
+from scripts.lib.emp.mission_eligibility import MissionEligibilityError, evaluate_file as evaluate_eligibility  # noqa: E402
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -124,6 +140,12 @@ def status_text(value):
         f"{key.replace('_', ' ').title():22}: {json.dumps(value.get(key, []), sort_keys=True)}"
         for key in mission_keys
     )
+    admission = value.get("mission_admission", {})
+    lines.extend([
+        "", "Mission Admission", "-----------------",
+        f"Mission Count         : {admission.get('mission_count', 0)}",
+        f"Lifecycle States      : {json.dumps(admission.get('states', {}), sort_keys=True)}",
+    ])
     return "\n".join(lines) + "\n"
 
 def main(argv=None):
@@ -167,24 +189,30 @@ def main(argv=None):
     status_parser = sub.add_parser("status")
     status_parser.add_argument("--json", action="store_true")
     authority = sub.add_parser("authority")
-    authority.add_argument("action", choices=("status", "work-lifecycle"))
+    authority.add_argument(
+        "action",
+        choices=("status", "work-lifecycle", "show", "resolve", "validate"),
+    )
     intro = sub.add_parser("intro", help="review operator orientation")
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
-    submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository", required=True); submit.add_argument("--baseline", required=True); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append", required=True); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact", required=True); submit.add_argument("--affected-repository", action="append", required=True); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
+    submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository"); submit.add_argument("--baseline"); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append"); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact"); submit.add_argument("--affected-repository", action="append"); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
-    show = sub.add_parser("mission"); show.add_argument("action", choices=("show","snapshot","qualify","requirements","preflight","verify","synchronization")); show.add_argument("mission_id")
+    show = sub.add_parser("mission"); show.add_argument("action", choices=("list","show","state","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","requirements","preflight","verify","synchronization")); show.add_argument("mission_id", nargs="?")
     assurance = sub.add_parser("assurance"); assurance.add_argument("action", choices=("capabilities",))
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
     accept=sub.add_parser("accept"); accept.add_argument("gate"); accept.add_argument("--reject", action="store_true"); accept.add_argument("--rationale", default=""); accept.add_argument("--at"); accept.add_argument("--yes", action="store_true"); accept.add_argument("--json", action="store_true")
     decline=sub.add_parser("decline"); decline.add_argument("approval_id"); decline.add_argument("--operator", required=True); decline.add_argument("--at")
     verify=sub.add_parser("verify"); verify.add_argument("gate")
     execution=sub.add_parser("execution"); execution.add_argument("action", choices=("status","resolve")); execution.add_argument("identifier")
+    context=sub.add_parser("context"); context.add_argument("action", choices=("reconstruct",))
+    eligibility=sub.add_parser("eligibility"); eligibility.add_argument("action", choices=("evaluate", "show")); eligibility.add_argument("request", type=Path)
     evidence=sub.add_parser("evidence"); evidence.add_argument("action", choices=("show",)); evidence.add_argument("identifier")
     qualification=sub.add_parser("qualification"); qualification.add_argument("action", choices=("show",)); qualification.add_argument("identifier")
     completion=sub.add_parser("completion"); completion.add_argument("action", choices=("show",)); completion.add_argument("identifier")
     sub.add_parser("resume")
     policy=sub.add_parser("policy"); policy.add_argument("action", choices=("configure",)); policy.add_argument("policy_id")
-    show_wop=sub.add_parser("show"); show_wop.add_argument("subject", choices=("wop-template","wop-requirements","wop-example"))
+    show_wop=sub.add_parser("show"); show_wop.add_argument("subject")
+    sub.add_parser("list")
     validate=sub.add_parser("validate"); validate.add_argument("wop_package"); validate.add_argument("--repository", required=True)
     explain=sub.add_parser("explain"); explain.add_argument("subject"); explain.add_argument("record", nargs="?")
     converse=sub.add_parser("converse"); converse.add_argument("request"); converse.add_argument("--context", type=Path, required=True); converse.add_argument("--repository"); converse.add_argument("--package"); converse.add_argument("--rejection")
@@ -204,6 +232,21 @@ def main(argv=None):
         progressive_oa.state_path(ROOT).exists() or progressive_mode == "1"
     )
     try:
+        stage1_directory = Path(
+            os.environ.get("ZEUS_STAGE1_STATE", ROOT / ".zeus/runtime/stage1")
+        )
+        stage1 = Stage1Runtime(ROOT, stage1_directory)
+        if a.command == "submit" and not a.repository:
+            emit(stage1.submit(a.wop_package, at=now(a.at) if a.at else None))
+            return 0
+        if a.command == "list":
+            emit(stage1.list())
+            return 0
+        if a.command == "show" and a.subject not in {
+            "wop-template", "wop-requirements", "wop-example"
+        }:
+            emit(stage1.show(a.subject))
+            return 0
         environment_state = os.environ.get("ZEUS_STATE")
         requested_state = a.state or (Path(environment_state) if environment_state else None)
         if a.command == "bootstrap":
@@ -229,10 +272,40 @@ def main(argv=None):
         if a.command == "assurance":
             emit(MissionAssurance(ROOT).capabilities())
             return 0
+        if a.command == "mission" and (
+            a.action in {
+                "list", "state", "readiness", "eligibility", "blockers",
+                "contract", "authority", "next",
+            }
+            or (
+                a.action == "show"
+                and a.mission_id in {
+                    None,
+                    "current",
+                    "MISSION-CONTRACT-PUBLICATION-001",
+                    "MC-MISSION-CONTRACT-PUBLICATION-001",
+                    "EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001",
+                    "EMP-MISSION-ZEUS-OPERATIONAL-ALPHA",
+                    "WOP-8e6c4ab8-4c85-5d6c-9c90-10b8814bdf99",
+                    "GH-ZEUS-OA-PROGRESSIVE-001",
+                }
+            )
+        ):
+            emit(OA01MissionVerification(ROOT).command(a.action, a.mission_id))
+            return 0
         if a.command == "explain" and a.subject.upper().startswith("OA-"):
             emit(progressive_oa.explain(ROOT, a.subject))
             return 0
         if a.command == "authority":
+            if a.action in ("show", "resolve", "validate"):
+                service = ControlledMissionAuthority(ROOT)
+                value = (
+                    service.require(boundary=f"authority_{a.action}")
+                    if a.action == "validate"
+                    else service.resolve(boundary=f"authority_{a.action}")
+                )
+                emit(value)
+                return 0 if value["authorized"] else 77
             decision = resolve_next_action(ROOT)
             lifecycle = resolve_oa02(ROOT)
             if a.action == "status":
@@ -321,6 +394,34 @@ def main(argv=None):
             return 0
         if a.command == "verify":
             if progressive_enabled:
+                service = ProgressiveGateService(ROOT)
+                if a.gate.upper() == "OA-01":
+                    emit(service.verify(a.gate))
+                    return 0
+                if a.gate.upper() == "OA-02":
+                    ControlledMissionAuthority(ROOT).require(
+                        boundary="oa02_verification_dispatch"
+                    )
+                    emit(service.verify(a.gate))
+                    return 0
+                if a.gate.upper() == "OA-03":
+                    ControlledMissionAuthority(
+                        ROOT, expected_gate="OA-03"
+                    ).require(boundary="oa03_verification_dispatch")
+                    emit(service.verify(a.gate))
+                    return 0
+                if a.gate.upper() == "OA-04":
+                    ControlledMissionAuthority(
+                        ROOT, expected_gate="OA-04"
+                    ).require(boundary="oa04_verification_dispatch")
+                    emit(service.verify(a.gate))
+                    return 0
+                if a.gate.upper() == "OA-05":
+                    ControlledMissionAuthority(
+                        ROOT, expected_gate="OA-05"
+                    ).require(boundary="oa05_verification_dispatch")
+                    emit(service.verify(a.gate))
+                    return 0
                 item = progressive_oa.show(ROOT, a.gate)
                 emit({"gate_id": item["gate_id"], "result": "IMPLEMENTATION_REQUIRED",
                       "verification_guide": item["verification_guide"]})
@@ -332,6 +433,12 @@ def main(argv=None):
                 print(f"OA02_IDEMPOTENT_REPLAY={'YES' if replay else 'NO'}")
                 return 0 if record["result"]=="PASS" else 77
             return verify_command(GateApprovalService.configured(ROOT), a.gate)
+        if a.command == "context":
+            emit(reconstruct_context(ROOT))
+            return 0
+        if a.command == "eligibility":
+            emit(evaluate_eligibility(a.request))
+            return 0
         if a.command == "accept":
             service = GateApprovalService.configured(ROOT)
             summary = review_gate(service, a.gate)
@@ -353,15 +460,15 @@ def main(argv=None):
             return 0
         if (a.command == "approve" and a.approval_id.upper().startswith("OA-")
                 and progressive_enabled):
-            record, replay = progressive_oa.decide(
-                ROOT, a.approval_id, "ACCEPTED", a.operator, a.at
+            record, replay = ProgressiveGateService(ROOT).approve(
+                a.approval_id, a.operator, a.at
             )
             emit({"decision": record, "idempotent_replay": replay})
             return 0
         if (a.command == "decline" and a.approval_id.upper().startswith("OA-")
                 and progressive_enabled):
-            record, replay = progressive_oa.decide(
-                ROOT, a.approval_id, "REJECTED", a.operator, a.at
+            record, replay = ProgressiveGateService(ROOT).decline(
+                a.approval_id, a.operator, a.at
             )
             emit({"decision": record, "idempotent_replay": replay})
             return 0
@@ -383,19 +490,78 @@ def main(argv=None):
         o=MissionOrchestrator(OrchestrationStore(state))
         if a.command=="status":
             if progressive_enabled and not (testing or override):
-                emit(progressive_oa.status(ROOT))
+                value = progressive_oa.status(ROOT)
+                value["mission_admission"] = stage1.status()
+                emit(value)
                 return 0
             value = authority_status(o.status())
+            value["mission_admission"] = stage1.status()
             if a.json or testing or override:
                 emit(value)
             else:
                 print(status_text(value), end="")
         elif a.command=="resume":
             if progressive_enabled:
-                emit(progressive_oa.controller(ROOT))
+                progressive_state = progressive_oa.load_state(ROOT)
+                if (
+                    progressive_state.get("active_gate") == "OA-01"
+                    and progressive_state["gates"]["OA-01"]["state"]
+                    in ("IMPLEMENTATION_REQUIRED", "AWAITING_OPERATOR_VERIFICATION")
+                ):
+                    emit(qualify_oa01_implementation(ROOT))
+                elif (
+                    progressive_state.get("active_gate") == "OA-02"
+                    and progressive_state["gates"]["OA-02"]["state"]
+                    in ("IMPLEMENTATION_REQUIRED", "AWAITING_OPERATOR_VERIFICATION")
+                ):
+                    ControlledMissionAuthority(ROOT).require(
+                        boundary="oa02_resume_dispatch"
+                    )
+                    emit(qualify_oa02_implementation(ROOT))
+                elif (
+                    progressive_state.get("active_gate") == "OA-03"
+                    and progressive_state["gates"]["OA-03"]["state"]
+                    in ("IMPLEMENTATION_REQUIRED", "AWAITING_OPERATOR_VERIFICATION")
+                ):
+                    ControlledMissionAuthority(
+                        ROOT, expected_gate="OA-03"
+                    ).require(boundary="oa03_resume_dispatch")
+                    emit(qualify_oa03_implementation(ROOT))
+                elif (
+                    progressive_state.get("active_gate") == "OA-04"
+                    and progressive_state["gates"]["OA-04"]["state"]
+                    in ("IMPLEMENTATION_REQUIRED", "AWAITING_OPERATOR_VERIFICATION")
+                ):
+                    ControlledMissionAuthority(
+                        ROOT, expected_gate="OA-04"
+                    ).require(boundary="oa04_resume_dispatch")
+                    emit(qualify_oa04_implementation(ROOT))
+                elif (
+                    progressive_state.get("active_gate") == "OA-05"
+                    and progressive_state["gates"]["OA-05"]["state"]
+                    in ("IMPLEMENTATION_REQUIRED", "AWAITING_OPERATOR_VERIFICATION")
+                ):
+                    ControlledMissionAuthority(
+                        ROOT, expected_gate="OA-05"
+                    ).require(boundary="oa05_resume_dispatch")
+                    emit(qualify_oa05_implementation(ROOT))
+                else:
+                    emit(progressive_oa.controller(ROOT))
             else:
                 emit(o.status())
-        elif a.command=="submit": emit(o.submit(admission_record=a.wop_package, repository_identity=a.repository, baseline_commit=a.baseline, priority=a.priority, staging_order=a.order, dependencies=a.dependency, required_approvals=a.approval, resources_available=a.resources_available, blocking_conditions=a.blocking_condition, estimated_impact=a.impact, affected_repositories=a.affected_repository, queue_timestamp=now(a.at)))
+        elif a.command=="submit":
+            missing = [
+                name for name, value in (
+                    ("--baseline", a.baseline), ("--approval", a.approval),
+                    ("--impact", a.impact),
+                    ("--affected-repository", a.affected_repository),
+                ) if not value
+            ]
+            if missing:
+                raise OrchestrationError(
+                    "legacy admission-record submission requires " + ", ".join(missing)
+                )
+            emit(o.submit(admission_record=a.wop_package, repository_identity=a.repository, baseline_commit=a.baseline, priority=a.priority, staging_order=a.order, dependencies=a.dependency, required_approvals=a.approval, resources_available=a.resources_available, blocking_conditions=a.blocking_condition, estimated_impact=a.impact, affected_repositories=a.affected_repository, queue_timestamp=now(a.at)))
         elif a.command=="missions" and a.action=="list":
             if a.repository and a.baseline: o.evaluate(observed_repository=a.repository, observed_baseline=a.baseline, completed_missions=a.completed)
             emit(o.data["missions"])
@@ -561,6 +727,6 @@ def main(argv=None):
                     repository_root=repository,at=resolved_at))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (OrchestrationError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, progressive_oa.ProgressiveOAError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+    except (OrchestrationError, Stage1Error, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ControlledMissionAuthorityError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, ProgressiveGateError, progressive_oa.ProgressiveOAError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr); return 78
 if __name__ == "__main__": raise SystemExit(main())

@@ -1,0 +1,19 @@
+{
+  "authority_digest": "5b58e077a8d7d8c63c4d0efde93f48c2fabaa7c9a1d3d1409a557b58f343ffaf",
+  "branch": "main",
+  "context_digest": "5a794234f0145799a78ab0092b1722f91e0d3f7de8309ae064aab1d53d7511ea",
+  "contract_id": "MC-MISSION-CONTRACT-PUBLICATION-001",
+  "evidence_digest": "4a4262f465844f7965b0ab95e0b3091fd17fda90fe89e5270f9a5995c7ecd214",
+  "execution_definition_digest": "332c08faf60145997ea2f75985b2ca9169195c47ae78b0497d00120dee1a6c1a",
+  "gate_id": "OA-04",
+  "head": "f79462bd837df51f12a103f2ebc69a071c27f45d",
+  "marker_digest": "8996960699a4970b2fda196eecc043ddcda1608ffd3321ee90531cc5c55091e3",
+  "mission_id": "EMP-MISSION-ZEUS-OPERATIONAL-ALPHA",
+  "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
+  "repository_identity": "homelab",
+  "resolution_digest": "0de8343166f43f2c57fbf20db83d4cd9c6e31aef8aafce11120aa026496dd23e",
+  "schema_version": 1,
+  "verification_result": "PASS",
+  "verification_timestamp": "2026-07-29T12:06:43.542385+00:00",
+  "wop_id": "WOP-8e6c4ab8-4c85-5d6c-9c90-10b8814bdf99"
+}

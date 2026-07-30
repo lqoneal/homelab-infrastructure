@@ -1,0 +1,27 @@
+{
+  "active_contract_digest": null,
+  "active_gate": "A",
+  "active_reac_digest": null,
+  "active_wop_digest": null,
+  "evidence_manifest_digest": "100a970c840a84c50627dd3ea3dec3afabc315ae1131203178614bb4b653ebb7",
+  "gate_state": {
+    "A": "IN_PROGRESS",
+    "B": "PENDING",
+    "C": "PENDING",
+    "D": "PENDING",
+    "E": "PENDING",
+    "F": "PENDING",
+    "G": "PENDING"
+  },
+  "gate_status_detail": {
+    "A": "CONSUMER_REDIRECTION_REQUIRED"
+  },
+  "last_completed_operation": "gate_a_consumer_architectural_reachability_classification",
+  "mission_id": "ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001",
+  "next_operation": "plan_bounded_dead_and_transitional_consumer_removal_without_adapter",
+  "operator_boundary": "publication_push_retirement_or_oa06_resume",
+  "repository_head": "d0861dc62b8199de03230152c4ed3cfb687dd9a7",
+  "rollback_boundary": "no_irreversible_effects",
+  "schema_version": 1,
+  "working_tree_digest": "3e5344b39ebe6855e6c8b9f109e27807ceef0615634f9a4469128aeadd2520df"
+}

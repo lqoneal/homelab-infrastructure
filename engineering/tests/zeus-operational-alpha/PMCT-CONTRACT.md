@@ -3,9 +3,25 @@
 Version: 1.0
 Identity: `ZEUS_PROGRESSIVE_MANUAL_CAPABILITY_TEST`
 Authority: ZEUS-P2-020
-Current overall result: `NOT_READY` (OA-01 Codex demonstration `PASS`;
-independent operator verification pending; operator acceptance not recorded;
-OA-02 blocked; OA-02 through OA-30 not accepted)
+Current overall result: `NOT_READY` (OA-01 through OA-03 are verified and
+explicitly accepted; corrected OA-04 is verified and awaits explicit operator
+acceptance; OA-05 through OA-30 are not accepted or eligible)
+
+OA-04 is `Project and Operational Context Reconstruction`, exposed as
+`zeus context reconstruct`. Mission Resolution is subordinate; dispatcher
+activation is not OA-04.
+
+OA-05 is `Mission Staging Contract`, exposed through the production
+`zeus submit`, `zeus list`, and `zeus show` interfaces. A staged candidate
+retains one integrity-bound identity, objective, scope, dependency set,
+priority, and candidate state. Production execution-agent registry is a
+separate later capability and is not a substitute for OA-05.
+
+OA-06 is `Mission Eligibility Evaluation`, exposed through
+`zeus eligibility evaluate` and `zeus eligibility show`. The Progressive WOP
+roadmap and gate specification are authoritative for capability sequencing;
+the retired `GH-ZEUS-OA-CERTIFICATION-001` sequence is historical evidence and
+is not an executable PMCT input.
 
 ## Normative behavior
 

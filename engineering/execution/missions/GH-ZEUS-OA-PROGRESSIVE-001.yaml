@@ -1,0 +1,76 @@
+schema_version: 1
+document_type: MissionContract
+mission_id: GH-ZEUS-OA-PROGRESSIVE-001
+registry_id: EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001
+title: Progressive Zeus Operational Alpha Qualification
+revision: 1
+status: active
+repository_identity: /data/engineering/repositories/homelab
+project_id: EMP-PROJECT-HOMELAB
+mission_record_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+classification: operational-qualification
+objective: Implement and independently verify exactly the current active Progressive OA gate.
+completion_criteria:
+  - OA-06 satisfies the Progressive WOP contract.
+  - Positive, negative, replay, interruption, recovery, and cumulative checks pass.
+  - OA-06 stops at verified awaiting explicit operator acceptance.
+scope:
+  include:
+    - GH-ZEUS-OA-PROGRESSIVE-001 active gate
+    - directly affected engineering execution and reconciliation records
+  preserve:
+    - accepted OA-01 through OA-05 evidence and receipts
+    - retired OA certification package as historical evidence
+  exclude:
+    - OA-07 implementation
+    - Operational Alpha declaration or baseline freeze
+    - governance redesign
+authority:
+  kind: operator-mission-input
+  reference: ZH-OA06-CONTRACT-RECONCILIATION-AND-RESUME-003
+  applies_to: GH-ZEUS-OA-PROGRESSIVE-001
+  reusable_for_other_missions: false
+  engineering_decisions:
+    engineering_reconciliation: approved
+    oa06_implementation: approved
+    operator_acceptance: not_recorded
+    oa07_implementation: prohibited
+command_permissions:
+  automatic:
+    - read
+    - discover
+    - validate
+    - test
+    - generate_evidence
+  mission_scoped:
+    - reconcile_in_scope_records
+    - implement_oa06
+  note: Command permission does not create acceptance or later-gate authority.
+review_gates:
+  contract_reconciliation:
+    required: true
+    state: approved
+    approval_reference: ZH-OA06-CONTRACT-RECONCILIATION-AND-RESUME-003
+  oa06_implementation:
+    required: true
+    state: approved
+    approval_reference: ZH-OA06-CONTRACT-RECONCILIATION-AND-RESUME-003
+  operator_acceptance:
+    required: true
+    state: not_recorded
+wop:
+  applicability: applicable
+  references:
+    - engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/immutable-wop.yaml
+lifecycle:
+  state: active
+  implementation_status: in_progress
+  acceptance_status: not_recorded
+  completion_report: engineering/evidence/2026-07-29-zh-oa06-mission-eligibility-001-completion-report.md
+next_authorized_action: RESUME_OA-06
+source_records:
+  - engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/immutable-wop.yaml
+  - engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gate-specification.yaml
+  - engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+  - engineering/registry/work-registry.yaml

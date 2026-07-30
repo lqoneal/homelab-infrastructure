@@ -118,7 +118,7 @@ class ZeusMissionAssuranceTests(unittest.TestCase):
         duplicate = copy.deepcopy(spec["mission_assurance_requirements"][0])
         procedure = next(
             item for item in documents["PROC-0001"]
-            if str(item.get("version")) == "1.14"
+            if str(item.get("version")) == "1.16"
         )
         procedure["mission_assurance_requirements"].append(duplicate)
         with mock.patch.object(

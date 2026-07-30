@@ -81,11 +81,14 @@ Controlled documentation is the normal operational source of execution
 authority and derives its authority ultimately from Lawrence O'Neal. Zeus
 always attempts normal controlled-document resolution first.
 
-Missing, stale, conflicting, incomplete, or invalid authority is reconciliation
-work under SPEC-0011. Bootstrapping authorization permits reconciliation of
-controlled documentation; it never bypasses controlled authority. After
-reconciliation Zeus validates the repository, re-runs normal authority
-resolution, and executes only under restored controlled-document authority.
+Missing, stale, conflicting, incomplete, or invalid authority is evaluated
+under SPEC-0011. A Governance Bootstrap Condition suspends execution, produces
+a Bootstrap Detection Report, and requires Engineering Governance
+verification. Consultation creates no authority. If Governance determines that
+correction is required, the minimum controlled-document revision proceeds
+through the normal governance process. Zeus then validates the repository,
+re-runs normal authority resolution, and executes only if controlled
+documentation independently resolves authority.
 
 ## Authentication and publication
 

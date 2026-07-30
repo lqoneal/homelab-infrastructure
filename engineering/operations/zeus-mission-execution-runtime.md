@@ -43,6 +43,15 @@ Terminal states are `Completed`, `Failed`, and `Cancelled`. Waiting and
 suspended executions retain their current gate and may resume. Completed gates
 are never rerun.
 
+Before a protected OA-02 operation, the runtime consumes Controlled Mission
+Authority through Zeus and re-resolves it at dispatch, start or resume,
+evidence publication, lifecycle transition, verification, and operator
+decision boundaries. Resolution binds the current Mission Contract, admitted
+WOP and receipt, repository identity/root/branch/HEAD/baselines, predecessor
+acceptance, active gate, work item, operational mission, and required approval
+boundary. Any non-authorized result prevents handler dispatch and protected
+effects.
+
 ## Gate engine
 
 The fixed runtime gates are:
@@ -53,9 +62,11 @@ The fixed runtime gates are:
 4. `VERIFY_COMPLETION`
 
 Validation recomputes the WOP submission digest and applies the existing WOP
-Admission Controller. Preparation verifies that the repository HEAD still
-matches the baseline captured during admission. Execution and verification
-delegate to a typed handler; the runtime passes a stable
+integrity verifier without reconsidering the Governance admission decision.
+Preparation verifies that the repository HEAD still matches the baseline
+captured during admission and that the Mission Contract, authority attribution,
+and execution scope resolve. Failure stops execution while preserving
+admission. Execution and verification delegate to a typed handler; the runtime passes a stable
 `gate_idempotency_key` derived from execution and gate identity.
 
 The runtime persists `GATE_STARTED` before invoking a handler. On recovery it
@@ -114,7 +125,9 @@ test-only and require `ZEUS_TESTING=1`.
 Do not hand-edit an execution state, checkpoint, or evidence entry. On digest
 failure, preserve the affected files for investigation and restore a verified
 whole-state backup. A failed execution is terminal; create a separately
-reviewed retry admission/execution rather than rewriting its history.
+reviewed execution attempt rather than rewriting its history. The mission
+remains admitted, and renewed execution qualification does not require a new
+Mission Admission unless Engineering Governance previously revoked it.
 
 ## Evidence and EENS
 

@@ -1,9 +1,24 @@
 # Zeus Mission Admission Runtime
 
+Admission is a required Controlled Mission Authority input, not standing
+execution authority. Every protected execution boundary independently
+revalidates the integrity-bound admission receipt together with the current
+Mission Contract, WOP, repository, predecessor receipt, and active gate.
+Missing or invalid admission remains admitted only as a governance fact and
+cannot dispatch execution or produce protected effects.
+
 The production operator is Lawrence O'Neal, authenticated as `loneal`.
 Operational admission verifies signed operator-owned authority records; it
 does not seek a second human approver. Zeus remains unable to originate an
 approval or bypass admission policy.
+
+Under the current temporary Governance operating directive, Engineering
+Governance is the sole Mission Admission Authority. Manual WOP submission by
+Engineering Governance is intentional submission and admission. The runtime's
+repository identity, repository integrity, package integrity, qualification,
+and policy stages determine execution readiness only. Their failure records an
+execution blocker; it does not reject, reverse, or invalidate Governance
+admission.
 
 ## Purpose and boundary
 
@@ -31,10 +46,13 @@ The ordered stages are:
 6. `SUBMISSION_ELIGIBILITY`
 7. `ADMISSION_DECISION`
 
-Every completed stage records structured, digest-bound evidence. A transition
-occurs only after the current stage completes. `BLOCKED` preserves the failed
-stage and diagnostics; `INTERRUPTED` preserves the next stage. Resume skips
-completed stages, retries only the current incomplete stage, and returns an
+Every completed stage records structured, digest-bound evidence. For a manual
+Governance submission, `ADMISSION_DECISION` projects the Governance decision;
+it does not create a new execution-agent decision. A transition occurs only
+after the current stage completes. `BLOCKED` preserves the failed stage and
+diagnostics while Governance status remains `ADMITTED`; `INTERRUPTED` preserves
+the next stage. Resume skips completed stages, retries only the current
+incomplete stage, and returns an
 unchanged terminal record when a decided admission is replayed.
 
 The stable runtime interfaces are repository verification, mission-record
@@ -74,12 +92,12 @@ scripts/zeus admit-mission start \
   --repository /data/engineering/repositories/homelab
 ```
 
-Before resolving authority, the coordinator reads publication commissioning
-and owner-enrollment assessments, then invokes the Authority Resolution
-Runtime against the repository-fixed source. Missing enrollment, publication,
-operator approval, identity, baseline, or authority state produces a structured blocker
-and no WOP. An accepted result means only eligibility for separately
-controlled submission; `automatically_submitted` remains false.
+For a manually submitted Governance WOP, failed repository identity,
+repository integrity, or package integrity produces a structured objective
+execution blocker while Mission Status remains `ADMITTED`. Other
+execution-authority facts are evaluated after admission during activation,
+Mission Contract resolution, and execution verification. A later
+execution-verification failure does not reverse the recorded admission.
 `dispatch_permitted` is resolved from the SPEC-0012 production policy,
 baseline-bound activation, qualified agent availability, EENS, evidence,
 reconciliation, WOP and authority dependencies. Every failed condition is
@@ -101,9 +119,9 @@ Repository and authority-source overrides are test-only and require
 `ZEUS_TESTING=1`.
 
 Failure categories distinguish request validation, repository verification,
-mission qualification, enrollment, publication readiness, authority
-resolution, WOP generation, and admission policy. Diagnostics retain the
-underlying subsystem report.
+package integrity, and later execution-verification blockers. Diagnostics
+retain the underlying subsystem report. Execution agents do not perform
+discretionary admission policy interpretation.
 
 If a state digest fails, preserve the record for investigation and restore a
 verified whole-record copy. Do not edit stages or digests by hand. Resume a

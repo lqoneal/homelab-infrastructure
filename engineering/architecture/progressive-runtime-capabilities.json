@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "runtime_model": "Progressive Runtime Layer",
+  "capabilities": [
+    {
+      "capability": "progressive-authority-primitives",
+      "runtime_layers": [1],
+      "runtime_owners": ["scripts.lib.emp.progressive_gate"],
+      "interfaces": [
+        "scripts.lib.emp.progressive_gate",
+        "scripts.lib.emp.progressive_oa"
+      ],
+      "consumers": [
+        "scripts.lib.emp.controlled_mission_authority",
+        "scripts.lib.emp.mission_resolution",
+        "scripts.lib.emp.oa01_gate_verification",
+        "scripts.lib.emp.oa01_implementation",
+        "scripts.lib.emp.oa01_verification",
+        "scripts.lib.emp.oa02_gate_verification",
+        "scripts.lib.emp.oa02_implementation",
+        "scripts.lib.emp.oa03_gate_verification",
+        "scripts.lib.emp.oa03_implementation",
+        "scripts.lib.emp.oa04_gate_verification",
+        "scripts.lib.emp.oa04_implementation",
+        "scripts.lib.emp.oa05_gate_verification",
+        "scripts.lib.emp.oa05_implementation",
+        "scripts.lib.emp.progressive_oa",
+        "scripts.lib.emp.project_operational_context"
+      ]
+    },
+    {
+      "capability": "progressive-decision-authority",
+      "runtime_layers": [2],
+      "runtime_owners": ["scripts.lib.emp.progressive_gate"],
+      "interfaces": [
+        "scripts.lib.emp.progressive_gate",
+        "scripts.lib.emp.progressive_oa"
+      ],
+      "consumers": [
+        "scripts.lib.emp.controlled_mission_authority",
+        "scripts.lib.emp.mission_resolution",
+        "scripts.lib.emp.oa01_gate_verification",
+        "scripts.lib.emp.oa01_implementation",
+        "scripts.lib.emp.oa01_verification",
+        "scripts.lib.emp.oa02_gate_verification",
+        "scripts.lib.emp.oa02_implementation",
+        "scripts.lib.emp.oa03_gate_verification",
+        "scripts.lib.emp.oa03_implementation",
+        "scripts.lib.emp.oa04_gate_verification",
+        "scripts.lib.emp.oa04_implementation",
+        "scripts.lib.emp.oa05_gate_verification",
+        "scripts.lib.emp.oa05_implementation",
+        "scripts.lib.emp.progressive_oa",
+        "scripts.lib.emp.project_operational_context"
+      ]
+    },
+    {
+      "capability": "progressive-lifecycle-projection",
+      "runtime_layers": [3],
+      "runtime_owners": ["scripts.lib.emp.progressive_lifecycle"],
+      "interfaces": [
+        "scripts.lib.emp.oa02_lifecycle",
+        "scripts.lib.emp.progressive_lifecycle"
+      ],
+      "consumers": [
+        "scripts.lib.emp.next_action",
+        "scripts.lib.emp.oa02_lifecycle"
+      ]
+    }
+  ]
+}

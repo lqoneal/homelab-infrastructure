@@ -104,6 +104,13 @@ verification and acceptance current -> RUN_OA-02_PRE_EXECUTION_VERIFICATION
 The last result is conditional evaluation, not OA-02 execution or dispatcher
 commissioning authority.
 
+For the admitted Progressive OA mission, `zeus authority show|resolve|validate`
+is the deterministic Controlled Mission Authority surface. It reports the
+controlling source and digest, exact resolved bindings, every check result,
+failure reason, freshness, and next authorized action. Protected OA-02
+operations revalidate the same contract at each effect boundary; observation
+does not confer approval or acceptance.
+
 Gate verification normally requires a clean tracked worktree. The sole
 permitted tracked runtime reconciliation is an unstaged
 `engineering/runtime/pmct/capability-state.yaml` delta that is reconstructed
@@ -185,6 +192,27 @@ under `operator-approvals/OA-XX/`. Every successor records the exact path and
 SHA-256 digest of its predecessor. Historical receipts remain append-only,
 read-only audit evidence and never authorize a different HEAD, PMCT run, or evidence digest.
 Eligibility accepts only a checksummed receipt bound to the current HEAD.
+
+Progressive OA approval uses the same fail-closed rule through
+`zeus approve OA-XX --operator OPERATOR`. A receipt is an idempotent replay
+only when the gate is already `ACCEPTED`, runtime state references that exact
+receipt, the receipt is present and integrity-valid, no supersedence record
+names its path or digest, and its package, gate, operator, current VERIFIED
+marker, marker digest, and verification-evidence digest all match. Merely
+finding the legacy `runtime/decisions/OA-XX/accepted.json` is never sufficient.
+The runtime lifecycle must also be coherent: its active gate must be later
+than the replayed accepted gate, every intervening gate must be accepted with
+a current receipt binding, and a closed gate sequence is valid only after
+OA-30 acceptance. Missing, regressed, skipped, or malformed lifecycle bindings
+stop replay before receipt evidence is consulted.
+
+New Progressive OA decisions are immutable
+`runtime/decisions/OA-XX/accepted-RECEIPT_DIGEST.json` records. Runtime
+`acceptance_receipt` is the sole current-receipt pointer. Legacy flat receipts
+and their supersedence records remain unchanged as audit history. If receipt
+persistence succeeds but state persistence is interrupted, a retry may finish
+the transition only when exactly one orphan receipt passes every current
+binding check for the same operator; ambiguity stops fail closed.
 
 ## Corruption recovery
 

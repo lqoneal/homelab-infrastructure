@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "runtime_model": "Progressive Runtime Layer",
+  "capability_registry_sha256": "7847b1e98a3ed376a9e4fe4ce55e7a0efce5059c903871465162dd32732f2f48",
+  "authority_levels": [
+    "CONTROLLED_MISSION_AUTHORITY",
+    "GATE_DECISION_AUTHORITY",
+    "READ_ONLY_RUNTIME_AUTHORITY"
+  ],
+  "approval_states": [
+    "NOT_REQUIRED",
+    "REQUIRED"
+  ],
+  "lifecycle_states": [
+    "ACTIVE"
+  ],
+  "failure_behaviors": [
+    "FAIL_CLOSED"
+  ],
+  "policies": [
+    {
+      "policy_identifier": "policy-progressive-authority-primitives",
+      "governed_capability": "progressive-authority-primitives",
+      "required_authority_level": "CONTROLLED_MISSION_AUTHORITY",
+      "approval_requirements": {
+        "state": "NOT_REQUIRED",
+        "authority_level": null
+      },
+      "execution_constraints": [
+        "canonical-interface-only",
+        "canonical-runtime-owner-only",
+        "receipt-and-predecessor-validation-required"
+      ],
+      "lifecycle_state": "ACTIVE",
+      "eligibility_requirements": {
+        "capability_registered": true,
+        "canonical_interface_required": true,
+        "registered_consumer_required": true
+      },
+      "failure_behavior": "FAIL_CLOSED",
+      "runtime_states": [
+        "AUTHORITY_CONTEXT_VALIDATED",
+        "DECISION_AUTHORIZED"
+      ]
+    },
+    {
+      "policy_identifier": "policy-progressive-decision-authority",
+      "governed_capability": "progressive-decision-authority",
+      "required_authority_level": "GATE_DECISION_AUTHORITY",
+      "approval_requirements": {
+        "state": "REQUIRED",
+        "authority_level": "GATE_DECISION_AUTHORITY"
+      },
+      "execution_constraints": [
+        "canonical-decision-facade-only",
+        "canonical-interface-only",
+        "decision-persistence-required"
+      ],
+      "lifecycle_state": "ACTIVE",
+      "eligibility_requirements": {
+        "capability_registered": true,
+        "canonical_interface_required": true,
+        "registered_consumer_required": true
+      },
+      "failure_behavior": "FAIL_CLOSED",
+      "runtime_states": [
+        "DECISION_AUTHORIZED"
+      ]
+    },
+    {
+      "policy_identifier": "policy-progressive-lifecycle-projection",
+      "governed_capability": "progressive-lifecycle-projection",
+      "required_authority_level": "READ_ONLY_RUNTIME_AUTHORITY",
+      "approval_requirements": {
+        "state": "NOT_REQUIRED",
+        "authority_level": null
+      },
+      "execution_constraints": [
+        "canonical-interface-only",
+        "projection-must-remain-read-only",
+        "valid-canonical-state-required"
+      ],
+      "lifecycle_state": "ACTIVE",
+      "eligibility_requirements": {
+        "capability_registered": true,
+        "canonical_interface_required": true,
+        "registered_consumer_required": true
+      },
+      "failure_behavior": "FAIL_CLOSED",
+      "runtime_states": [
+        "AUTHORITY_CONTEXT_VALIDATED",
+        "DECISION_AUTHORIZED",
+        "LIFECYCLE_PROJECTION_ELIGIBLE"
+      ]
+    }
+  ]
+}

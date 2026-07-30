@@ -1,0 +1,436 @@
+{
+  "assertions": {
+    "authority_resolution": "PASS",
+    "interruption_recovery": "PASS",
+    "later_gates_inactive": "PASS",
+    "negative_tests": "PASS",
+    "next_gate_enabled": false,
+    "oa01_acceptance_integrity": "PASS",
+    "oa02_sole_active_gate": "PASS",
+    "operator_acceptance_recorded": false,
+    "positive_tests": "PASS",
+    "protected_external_effect": "NONE",
+    "replay": "PASS"
+  },
+  "authority_digest": "6c0122c692fedfd68b2d68eb1f4d2deca997e9cbfc5ab3a1470ec2b23bfd2e1e",
+  "authority_source": "engineering/mission-contracts/contracts/MC-MISSION-CONTRACT-PUBLICATION-001.yaml",
+  "branch": "main",
+  "canonical_evidence_digest": "893446ffe77d8b74ad28c9fc3a6720d77549c99a1448d1bdde4fabd195b4ef0f",
+  "commands": {
+    "authority_validate": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "authority",
+        "validate"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"active_gate\": \"OA-02\", \"agent_eligibility\": \"NOT_APPLICABLE\", \"authority_digest\": \"6c0122c692fedfd68b2d68eb1f4d2deca997e9cbfc5ab3a1470ec2b23bfd2e1e\", \"authority_source\": \"engineering/mission-contracts/contracts/MC-MISSION-CONTRACT-PUBLICATION-001.yaml\", \"authority_source_digest\": \"18f9f18239c25b0ec2f3de296a5e8fd980f8a8e9c55a7d150a4fdbc58249aa6b\", \"authorized\": true, \"branch\": \"main\", \"checks\": [{\"check\": \"repository_identity\", \"detail\": \"valid\", \"result\": \"PASS\"}, {\"check\": \"mission_contract\", \"detail\": \"valid\", \"result\": \"PASS\"}, {\"check\": \"wop_binding\", \"detail\": \"valid\", \"result\": \"PASS\"}, {\"check\": \"package_admission\", \"detail\": \"valid\", \"result\": \"PASS\"}, {\"check\": \"active_gate\", \"detail\": \"valid\", \"result\": \"PASS\"}, {\"check\": \"oa01_acceptance\", \"detail\": \"valid\", \"result\": \"PASS\"}, {\"check\": \"repository_binding\", \"detail\": \"valid\", \"result\": \"PASS\"}, {\"check\": \"qualified_baseline\", \"detail\": \"valid\", \"result\": \"PASS\"}, {\"check\": \"work_registry\", \"detail\": \"valid\", \"result\": \"PASS\"}], \"contract_authorization_status\": \"AUTHORIZED\", \"contract_baseline\": \"d25d144312b73fc8230113c99f5d0368037b4483\", \"contract_id\": \"MC-MISSION-CONTRACT-PUBLICATION-001\", \"contract_lifecycle\": \"active\", \"current\": true, \"execution_state\": \"ACTIVE\", \"failed_check\": null, \"head\": \"f79462bd837df51f12a103f2ebc69a071c27f45d\", \"mission_id\": \"MISSION-CONTRACT-PUBLICATION-001\", \"next_authorized_action\": \"RESUME_OA-02\", \"oa01_acceptance_digest\": \"c8711b837a04fa44b32e993c2316d7e4300597848a22a1064baa944947bffbf1\", \"oa01_acceptance_receipt\": \"engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-01/accepted.json\", \"operational_mission_id\": \"EMP-MISSION-ZEUS-OPERATIONAL-ALPHA\", \"package_admission_digest\": \"2b24bd2e8385aefb13b22d63576ce1b63aa676b3992ebfe00fbd73252e68af93\", \"package_admission_receipt\": \"engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/admission/ADMISSION-f01c0c2d-8edb-5567-ad19-8d0f4344909f.json\", \"package_id\": \"GH-ZEUS-OA-PROGRESSIVE-001\", \"protected_boundary\": \"authority_validate\", \"protected_effects_allowed\": true, \"qualified_baseline\": \"bcdd0b1a19045654d470bc65383c05a976bae2a6\", \"reason\": \"all controlled mission authority checks passed\", \"repository_identity\": \"homelab\", \"repository_root\": \"/data/engineering/repositories/homelab\", \"required_approvals\": {\"acceptance\": \"EXPLICIT_OPERATOR_DECISION_REQUIRED\", \"implementation\": \"WOP_AUTHORIZED\", \"verification\": \"INDEPENDENT_VERIFICATION_REQUIRED\"}, \"resolution\": \"AUTHORIZED\", \"resolution_timestamp\": \"2026-07-29T10:32:57.546818+00:00\", \"schema_version\": 1, \"upstream\": \"f79462bd837df51f12a103f2ebc69a071c27f45d\", \"wop_admission_state\": \"ACCEPTED\", \"wop_id\": \"WOP-8e6c4ab8-4c85-5d6c-9c90-10b8814bdf99\", \"wop_locator\": \"engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/immutable-wop.yaml\", \"work_item_id\": \"EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001\"}\n",
+      "stdout_sha256": "c1a202d04d849fb1716343da0af319814ee6d5e34ae2f9fe7ab1a75449b79195"
+    },
+    "focused_tests": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "scripts/tests/test-zeus-oa02-controlled-authority.py",
+        "scripts/tests/test-zeus-oa02-lifecycle.py"
+      ],
+      "exit_code": 0,
+      "stderr": "................\n----------------------------------------------------------------------\nRan 16 tests in 0.997s\n\nOK\n",
+      "stderr_sha256": "7466a7cafb5ba2ccc7d8ecbbed2c1faf677b8a161419fb8fac25a66446dd2a60",
+      "stdout": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "oa01_receipt": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "gate",
+        "receipt",
+        "OA-01"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"gate_id\": \"OA-01\", \"integrity\": \"PASS\", \"receipt\": \"/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-01/accepted.json\"}\n",
+      "stdout_sha256": "8033b4ea670fe44ec774f399dc4c658e1e411c0af3a611a95ff1e9cd6738ddf0"
+    },
+    "package_integrity": {
+      "command": [
+        "/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/verify-package.sh"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "BOOTSTRAP.md: OK\nCOMPLETION-REPORT.md: OK\nHISTORICAL-SUPERSEDENCE.md: OK\nRECONCILIATION.md: OK\nRECOVERY.md: OK\nROADMAP.md: OK\nTRACEABILITY.md: OK\nadmission/ADMISSION-f01c0c2d-8edb-5567-ad19-8d0f4344909f.json: OK\ncontroller: OK\ngate-specification.yaml: OK\ngates/OA-01/evidence-template.yaml: OK\ngates/OA-01/implementation.md: OK\ngates/OA-01/objective.yaml: OK\ngates/OA-01/verification.md: OK\ngates/OA-02/evidence-template.yaml: OK\ngates/OA-02/implementation.md: OK\ngates/OA-02/objective.yaml: OK\ngates/OA-02/verification.md: OK\ngates/OA-03/evidence-template.yaml: OK\ngates/OA-03/implementation.md: OK\ngates/OA-03/objective.yaml: OK\ngates/OA-03/verification.md: OK\ngates/OA-04/evidence-template.yaml: OK\ngates/OA-04/implementation.md: OK\ngates/OA-04/objective.yaml: OK\ngates/OA-04/verification.md: OK\ngates/OA-05/evidence-template.yaml: OK\ngates/OA-05/implementation.md: OK\ngates/OA-05/objective.yaml: OK\ngates/OA-05/verification.md: OK\ngates/OA-06/evidence-template.yaml: OK\ngates/OA-06/implementation.md: OK\ngates/OA-06/objective.yaml: OK\ngates/OA-06/verification.md: OK\ngates/OA-07/evidence-template.yaml: OK\ngates/OA-07/implementation.md: OK\ngates/OA-07/objective.yaml: OK\ngates/OA-07/verification.md: OK\ngates/OA-08/evidence-template.yaml: OK\ngates/OA-08/implementation.md: OK\ngates/OA-08/objective.yaml: OK\ngates/OA-08/verification.md: OK\ngates/OA-09/evidence-template.yaml: OK\ngates/OA-09/implementation.md: OK\ngates/OA-09/objective.yaml: OK\ngates/OA-09/verification.md: OK\ngates/OA-10/evidence-template.yaml: OK\ngates/OA-10/implementation.md: OK\ngates/OA-10/objective.yaml: OK\ngates/OA-10/verification.md: OK\ngates/OA-11/evidence-template.yaml: OK\ngates/OA-11/implementation.md: OK\ngates/OA-11/objective.yaml: OK\ngates/OA-11/verification.md: OK\ngates/OA-12/evidence-template.yaml: OK\ngates/OA-12/implementation.md: OK\ngates/OA-12/objective.yaml: OK\ngates/OA-12/verification.md: OK\ngates/OA-13/evidence-template.yaml: OK\ngates/OA-13/implementation.md: OK\ngates/OA-13/objective.yaml: OK\ngates/OA-13/verification.md: OK\ngates/OA-14/evidence-template.yaml: OK\ngates/OA-14/implementation.md: OK\ngates/OA-14/objective.yaml: OK\ngates/OA-14/verification.md: OK\ngates/OA-15/evidence-template.yaml: OK\ngates/OA-15/implementation.md: OK\ngates/OA-15/objective.yaml: OK\ngates/OA-15/verification.md: OK\ngates/OA-16/evidence-template.yaml: OK\ngates/OA-16/implementation.md: OK\ngates/OA-16/objective.yaml: OK\ngates/OA-16/verification.md: OK\ngates/OA-17/evidence-template.yaml: OK\ngates/OA-17/implementation.md: OK\ngates/OA-17/objective.yaml: OK\ngates/OA-17/verification.md: OK\ngates/OA-18/evidence-template.yaml: OK\ngates/OA-18/implementation.md: OK\ngates/OA-18/objective.yaml: OK\ngates/OA-18/verification.md: OK\ngates/OA-19/evidence-template.yaml: OK\ngates/OA-19/implementation.md: OK\ngates/OA-19/objective.yaml: OK\ngates/OA-19/verification.md: OK\ngates/OA-20/evidence-template.yaml: OK\ngates/OA-20/implementation.md: OK\ngates/OA-20/objective.yaml: OK\ngates/OA-20/verification.md: OK\ngates/OA-21/evidence-template.yaml: OK\ngates/OA-21/implementation.md: OK\ngates/OA-21/objective.yaml: OK\ngates/OA-21/verification.md: OK\ngates/OA-22/evidence-template.yaml: OK\ngates/OA-22/implementation.md: OK\ngates/OA-22/objective.yaml: OK\ngates/OA-22/verification.md: OK\ngates/OA-23/evidence-template.yaml: OK\ngates/OA-23/implementation.md: OK\ngates/OA-23/objective.yaml: OK\ngates/OA-23/verification.md: OK\ngates/OA-24/evidence-template.yaml: OK\ngates/OA-24/implementation.md: OK\ngates/OA-24/objective.yaml: OK\ngates/OA-24/verification.md: OK\ngates/OA-25/evidence-template.yaml: OK\ngates/OA-25/implementation.md: OK\ngates/OA-25/objective.yaml: OK\ngates/OA-25/verification.md: OK\ngates/OA-26/evidence-template.yaml: OK\ngates/OA-26/implementation.md: OK\ngates/OA-26/objective.yaml: OK\ngates/OA-26/verification.md: OK\ngates/OA-27/evidence-template.yaml: OK\ngates/OA-27/implementation.md: OK\ngates/OA-27/objective.yaml: OK\ngates/OA-27/verification.md: OK\ngates/OA-28/evidence-template.yaml: OK\ngates/OA-28/implementation.md: OK\ngates/OA-28/objective.yaml: OK\ngates/OA-28/verification.md: OK\ngates/OA-29/evidence-template.yaml: OK\ngates/OA-29/implementation.md: OK\ngates/OA-29/objective.yaml: OK\ngates/OA-29/verification.md: OK\ngates/OA-30/evidence-template.yaml: OK\ngates/OA-30/implementation.md: OK\ngates/OA-30/objective.yaml: OK\ngates/OA-30/verification.md: OK\nimmutable-wop.yaml: OK\nsubmission.yaml: OK\ntemplates/corrective-work.yaml: OK\ntemplates/operator-decision.yaml: OK\nverify-package.sh: OK\nPASS: 30 unique cumulative gates and complete verification contracts\nPASS: Progressive OA package integrity\n",
+      "stdout_sha256": "6d868ace306b19ce8f99bf49b2184845a18eeb0bc68294ab22116536a704c0d7"
+    }
+  },
+  "contract_id": "MC-MISSION-CONTRACT-PUBLICATION-001",
+  "gate_id": "OA-02",
+  "handoff_id": "ZH-OA02-CONTROLLED-MISSION-AUTHORITY-001",
+  "head": "f79462bd837df51f12a103f2ebc69a071c27f45d",
+  "implementation_timestamp": "2026-07-29T10:32:58.721013+00:00",
+  "mission_id": "MISSION-CONTRACT-PUBLICATION-001",
+  "negative_test_results": "PASS",
+  "oa01_acceptance_digest": "c8711b837a04fa44b32e993c2316d7e4300597848a22a1064baa944947bffbf1",
+  "oa01_acceptance_receipt": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-01/accepted.json",
+  "operational_mission_id": "EMP-MISSION-ZEUS-OPERATIONAL-ALPHA",
+  "package_admission_digest": "2b24bd2e8385aefb13b22d63576ce1b63aa676b3992ebfe00fbd73252e68af93",
+  "package_admission_receipt": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/admission/ADMISSION-f01c0c2d-8edb-5567-ad19-8d0f4344909f.json",
+  "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
+  "qualified_baseline": "bcdd0b1a19045654d470bc65383c05a976bae2a6",
+  "reconciliation_results": "PENDING_VERIFICATION",
+  "recovery_results": "PASS",
+  "replay_results": "PASS",
+  "repository_identity": "homelab",
+  "repository_root": "/data/engineering/repositories/homelab",
+  "result": "IMPLEMENTATION_COMPLETE",
+  "schema_version": 1,
+  "test_results": {
+    "focused": "PASS"
+  },
+  "upstream": "f79462bd837df51f12a103f2ebc69a071c27f45d",
+  "wop_id": "WOP-8e6c4ab8-4c85-5d6c-9c90-10b8814bdf99",
+  "working_tree": {
+    "entries": [
+      {
+        "content_sha256": "c177c20e6ece0f6fa891deb4bfff865b871879b6b57f39eaed901a834efe55d6",
+        "path": "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "ef311bc0eea389df776e215b35a7b7a28eb702bbca34bd8b599ffbf893295cb9",
+        "path": "docs/charters/CHAR-0001-ENGINEERING_CHARTER.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "4a84e072e6a428f2a669e3dc4a0803a948bfa3b3485e243be368d1a07b8d32ec",
+        "path": "docs/edr/EDR-0002-ENGINEERING_AUTHORITY_MODEL.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "90607e14b52b9f892532f65eff4aa564f2ac8e07cbbcb5f9567fb3faeb38b497",
+        "path": "docs/genesis/GEN-0001-GENESIS_GOVERNANCE_RECORD.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "c05fe9cb6b517a26e659e971439743082445ea6e80b2ffae6e63409fec5a23dc",
+        "path": "docs/policies/POL-0001-ENGINEERING_GOVERNANCE_POLICY.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "5b07a03d270827361065d9dcd6f8af2c7cc1098654d93f13c9f895d8865aaf0a",
+        "path": "docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "d3aeb98ab0a1566c1b72753c5295d1346e0a06af0551f77ca268bb4602e26fda",
+        "path": "docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "066700fd30c83058537e714f6d092a211dc561fa6d84ca26d46e7adf5b662464",
+        "path": "docs/procedures/PROC-0007-GOVERNANCE-STABILIZATION-PROCEDURE.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "118603c7de4b04f2bd03662b407d1c367736cea10a2a08a653371f5f5789d562",
+        "path": "docs/project/PROJ-0001-PROJECT_STATE.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "8bc29f2ce2e5881a92a53b63a73f871dcb85bf75b32056bdd824d8f253fe8d8d",
+        "path": "docs/project/milestones/2026-07-29-operational-alpha-governance-baseline-1.0.md",
+        "status": "??"
+      },
+      {
+        "content_sha256": "ad6987e0f29e6a1c8da846ce475853766b38e153ef72e28fc668f96a8ff99af5",
+        "path": "docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "924d509338337964f313c519859353daef636652cbff181948515136546bccaa",
+        "path": "docs/specifications/SPEC-0011-PRODUCTION-AUTHORITY-RESTORATION-SPECIFICATION.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "8d44127682c51acb5840db74a94f4c42a66c7a577188d08ee3dbee38b2c782b7",
+        "path": "engineering/docs/architecture/ZEUS-STAGE1-RUNTIME.md",
+        "status": "??"
+      },
+      {
+        "content_sha256": "5165379c367f887fe3bc9e407807fc2b220be4a62196fb72256b42e5428d187c",
+        "path": "engineering/docs/cli/ZEUS-USER-GUIDE.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "bbda40ca9bc102e9af59d6837d08fd82353113940cfaf3c01b9eae50dd081cd4",
+        "path": "engineering/evidence/2026-07-28-zeus-operational-alpha-stage1-completion-report.md",
+        "status": "??"
+      },
+      {
+        "content_sha256": "de612b3ffcc58b26de1050e621269275c6f045ef8fb2d2cb3a378ef8fa080c59",
+        "path": "engineering/evidence/2026-07-29-zh-gov-mission-lifecycle-002-corrective-handoff.md",
+        "status": "??"
+      },
+      {
+        "content_sha256": "b0806665a272096ac2faba5b7b6d47c136c89438da2f5680ab4a4dbec9eb3d3f",
+        "path": "engineering/evidence/2026-07-29-zh-oa01-implementation-003.md",
+        "status": "??"
+      },
+      {
+        "content_sha256": "277a59bf6c7c784f4a26f1e438e1cb8ddad5a101242a893f6ce1269baa080978",
+        "path": "engineering/evidence/2026-07-29-zh-oa01-qualification-002.md",
+        "status": "??"
+      },
+      {
+        "content_sha256": "570ea77f6b9345a7c4740ecdb75e2668080e2a353ddbae00c1beb75caca4e473",
+        "path": "engineering/evidence/2026-07-29-zh-zeus-oa-admission-001-work-initiation.md",
+        "status": "??"
+      },
+      {
+        "content_sha256": "332c08faf60145997ea2f75985b2ca9169195c47ae78b0497d00120dee1a6c1a",
+        "path": "engineering/execution/execution-interface.yaml",
+        "status": " M"
+      },
+      {
+        "content_sha256": "b9b0ba4e1939bcfb5ee515fd29b74a81740d3bdcc845631cd65a0a867b3cb618",
+        "path": "engineering/operations/authority-ownership-specification.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "0378046cb98864a9ca27f47a7dabac6dd25de97a998f38d3f7b057496d76ccb0",
+        "path": "engineering/operations/zeus-mission-admission-runtime.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "32d4f774b59d5607fb2cc5f375656c67b55f8f34b624e617e0b5ec5b2cb659bc",
+        "path": "engineering/operations/zeus-mission-execution-runtime.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "3d9ea8ed8cc254536f9291eff00f3c1c8e41e2d3d2f9982b52f0ae033f5d6bef",
+        "path": "engineering/operations/zeus-oa01-mission-verification.md",
+        "status": "??"
+      },
+      {
+        "content_sha256": "466a470fd04924a71ae99ece3bff0657cd65a1e3b154c8e41df67e0ef3ae8fcf",
+        "path": "engineering/operations/zeus-operational-alpha-progress.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "e7557040380ee0712d32d9669bd99a19f8b750ce819e41f4ce170d8729522eb7",
+        "path": "engineering/operations/zeus-operational-runtime.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "637ebdbcfdfb5661dbc36d79506b52ab7121575a5dd37bf67504348575245e22",
+        "path": "engineering/operations/zeus-operator-interface.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "4b874a6a7e040c2b57cd5ede315645ddcc98928941f921be5ad8e69dd5952598",
+        "path": "engineering/registry/work-registry.yaml",
+        "status": " M"
+      },
+      {
+        "content_sha256": "222e44954cca9ec27a423c4a00e36590e1669ce592ef423e4d6feb1cc47524d0",
+        "path": "engineering/tests/zeus-operational-alpha/PMCT-CAPABILITY-MATRIX.yaml",
+        "status": " M"
+      },
+      {
+        "content_sha256": "1ca751a390dbb004cb6c705c1031c5defc2765d52ed25a252eb64eea9a679fff",
+        "path": "engineering/tests/zeus-operational-alpha/PMCT-CONTRACT.md",
+        "status": " M"
+      },
+      {
+        "content_sha256": "dddafa99d48e7bdca780cc930846df22aa13c0357c10c188aab083fd077aa6b7",
+        "path": "engineering/tests/zeus-operational-alpha/tests/test-result-model.py",
+        "status": " M"
+      },
+      {
+        "content_sha256": "c04380d0ff0cb436f227f2585e4971876cfa5294bda9ab57484596ebd4b9a88a",
+        "path": "engineering/tests/zeus-operational-alpha/tests/test-state-protection.py",
+        "status": " M"
+      },
+      {
+        "content_sha256": "8938ce134450fb5953e328f14fff374c2e3832e56ed45e37d1317e12cd299f02",
+        "path": "engineering/tests/zeus-operational-alpha/tests/test_discovery.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "c8711b837a04fa44b32e993c2316d7e4300597848a22a1064baa944947bffbf1",
+        "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-01/accepted.json",
+        "status": "??"
+      },
+      {
+        "content_sha256": "671a39b843b534e64c5470133dbc09be28ef3a977ceed4ca055e97455e3f2b0b",
+        "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/IMPLEMENTATION.json",
+        "status": "??"
+      },
+      {
+        "content_sha256": "f78bca8c7df96296b4990c45fcee3f67fef5950d272fdc32033de6306a441ef4",
+        "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/VERIFICATION.json",
+        "status": "??"
+      },
+      {
+        "content_sha256": "43626172b97a478afa34f17c1a713e11365ae28f713310dd7dc1d29443c8944b",
+        "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/VERIFIED",
+        "status": "??"
+      },
+      {
+        "content_sha256": "48197fed9c1fa44e43ba319f90416b47c9821e08f25bc5645ebbf3aa828b212a",
+        "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/ZH-OA01-VERIFICATION-CORRECTIVE-004-COMPLETION.md",
+        "status": "??"
+      },
+      {
+        "content_sha256": "262ae9a6b5335c64ab20b4d5be8a7983e2a7952432abb8bdf890f6b6ebd82983",
+        "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/attempts/0c721f239604ca12d5d59af0db2c857b097b8cbdec44c045f36058d790b13c91/VERIFICATION.json",
+        "status": "??"
+      },
+      {
+        "content_sha256": "1b473241cc115bb6d5551f6993e2917f78e997ce49dd2f37c42bfbf13f66acf9",
+        "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/attempts/0c721f239604ca12d5d59af0db2c857b097b8cbdec44c045f36058d790b13c91/VERIFIED",
+        "status": "??"
+      },
+      {
+        "content_sha256": "edaa2180980464ef9a381e584d4b82f48fffcd55a5562ed656dc1f16109ca645",
+        "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/attempts/a337b7ade99bb67790d51e0bc09a07777ae06096454540af005adb99dfa4024d/VERIFICATION.json",
+        "status": "??"
+      },
+      {
+        "content_sha256": "ac2a8b71a9ecbb68b86d78195f19d11d9f6f449a13ab411bc12baeb49521b861",
+        "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/attempts/a337b7ade99bb67790d51e0bc09a07777ae06096454540af005adb99dfa4024d/VERIFIED",
+        "status": "??"
+      },
+      {
+        "content_sha256": "9707d822b261ab173313a6fb7f8b07acd2a043f46a832a5cc0b27aa813fff008",
+        "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-02/IMPLEMENTATION.json",
+        "status": "??"
+      },
+      {
+        "content_sha256": "88cae4493feb805709d23148346ff3d924fd2431810573ea2277630dfcad2adf",
+        "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/state.json",
+        "status": " M"
+      },
+      {
+        "content_sha256": "c893fda80e357209e90df3411348ee53d664d1a9bb7134fd19ea26fbe1332ff6",
+        "path": "scripts/lib/emp/controlled_mission_authority.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "6a84ba94bf4fa2e1f1349c08dde7b815eaacba818b3d943da28d0542380bb90c",
+        "path": "scripts/lib/emp/oa01_gate_verification.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "162396f73b69a6237972aba4070b924b620b981573f12c356fcd317a2117d992",
+        "path": "scripts/lib/emp/oa01_implementation.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "e33b57e781ee9c62f7f1345b7463095c444e2d7158420a0451990224fed74668",
+        "path": "scripts/lib/emp/oa01_verification.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "cc5b96b6412bf8f87a867c28e366f0f629a90ec6d01fa62b9d010403e2c32405",
+        "path": "scripts/lib/emp/oa02_gate_verification.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "27ee9c624b8689354456e4eae3f0e998efbac876b3d21f307c1dd1bc7306103a",
+        "path": "scripts/lib/emp/oa02_implementation.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "0040dfb8153d4244305652a49541beb1bcf4e06981f45088a363f924ed46779a",
+        "path": "scripts/lib/emp/progressive_oa.py",
+        "status": " M"
+      },
+      {
+        "content_sha256": "2afebfe9e2ec60e4042585a8dc2f0c81c4525baaf452a7b9f6ddbe1f4d41b8be",
+        "path": "scripts/lib/emp/stage1_runtime.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "cd5e962feaac413330f43e31096382fc1d542205b7159a98aa7c426ea7e5da56",
+        "path": "scripts/tests/test-emp-registry.py",
+        "status": " M"
+      },
+      {
+        "content_sha256": "56e1f28e843051b0918f22dfbe38be6a083d845363bf7d529a35d991539dcef1",
+        "path": "scripts/tests/test-governance-baseline-documentation.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "50bb8c5858430c7ac1b25df6c3605e8f666b337dcfb6aab47c1f76822f1d6a18",
+        "path": "scripts/tests/test-governance-bootstrap-documentation.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "085ae46db9b2dc0166bbc1b87dfb9efda68409c314993e7dd91593b918ced3ec",
+        "path": "scripts/tests/test-governance-mission-admission-documentation.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "59d4c49b693b3dee4b6b62d9623c6a7c88e38878881957441d3de41bd55a7d0b",
+        "path": "scripts/tests/test-zeus-mission-assurance.py",
+        "status": " M"
+      },
+      {
+        "content_sha256": "7285a2a32078b907636772c9200e03f9fd658652e221bd647c571c1af179185b",
+        "path": "scripts/tests/test-zeus-oa01-implementation.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "0c8ff109fbb223cfc9564d1cbfdbdc70aa5afd374118e25b4becb7a71a9381d2",
+        "path": "scripts/tests/test-zeus-oa01-verification.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "e88b69dddea335215554b1b6a38f863834673828b8aa59f7399acb809c60ba67",
+        "path": "scripts/tests/test-zeus-oa02-controlled-authority.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "8ea8c3be1f1e43ce827657698f52bce92d3df619b629d3fa8cae0060f71fd0e7",
+        "path": "scripts/tests/test-zeus-oa02-lifecycle.py",
+        "status": " M"
+      },
+      {
+        "content_sha256": "14963ae1baa57b0483db1cb65d2f49805bc4adbd380a7686b0a41cd1da503bce",
+        "path": "scripts/tests/test-zeus-progressive-oa.py",
+        "status": " M"
+      },
+      {
+        "content_sha256": "5ac6203f87c71dab3c8937eacd59eadc593333d272cc28c276afd0ce4f329114",
+        "path": "scripts/tests/test-zeus-stage1-runtime.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "cf0daa046330f61dbb63273e3a6f37666f2e1ea77f767d201e1b99726594c51c",
+        "path": "scripts/tests/test_discovery.py",
+        "status": "??"
+      },
+      {
+        "content_sha256": "86c49d95f61207945f0d158d22bc6cd43cbf4486ba7491fbd474a2101b6fdeb1",
+        "path": "scripts/verify.sh",
+        "status": " M"
+      },
+      {
+        "content_sha256": "6c307ee15f5769f1a7bbf6bbe469f424d797d463882bb246b31fae453e7b9433",
+        "path": "scripts/zeus",
+        "status": " M"
+      },
+      {
+        "content_sha256": "45bdfdef1969e0b08dcec940f36c4a0bad9d7ac6ccffb416830df38a0c1a6725",
+        "path": "services/eens/README.md",
+        "status": " M"
+      }
+    ],
+    "inventory_digest": "cd56621b11e38cd1c7bbd7bcaece38ff89e90b1f79056e3d6b3407df2aee0146"
+  }
+}

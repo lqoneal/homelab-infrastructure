@@ -1,29 +1,29 @@
 {
-  "active_gate": "OA-01",
+  "active_gate": "OA-06",
   "gates": {
     "OA-01": {
-      "acceptance_receipt": null,
-      "state": "PENDING"
+      "acceptance_receipt": "/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-01/accepted.json",
+      "state": "ACCEPTED"
     },
     "OA-02": {
-      "acceptance_receipt": null,
-      "state": "PENDING"
+      "acceptance_receipt": "/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-02/accepted.json",
+      "state": "ACCEPTED"
     },
     "OA-03": {
-      "acceptance_receipt": null,
-      "state": "PENDING"
+      "acceptance_receipt": "/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-03/accepted.json",
+      "state": "ACCEPTED"
     },
     "OA-04": {
-      "acceptance_receipt": null,
-      "state": "PENDING"
+      "acceptance_receipt": "/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-04/accepted-59cbfe3e60b09f1483fe165276f3b247577ccc83bcd084ea212fa78689f972c0.json",
+      "state": "ACCEPTED"
     },
     "OA-05": {
-      "acceptance_receipt": null,
-      "state": "PENDING"
+      "acceptance_receipt": "/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-05/accepted-31c196a0ef998f1e9cc59988eac81eaa015d134bf1a1ee1a9d15cb401d274be9.json",
+      "state": "ACCEPTED"
     },
     "OA-06": {
       "acceptance_receipt": null,
-      "state": "PENDING"
+      "state": "IMPLEMENTATION_REQUIRED"
     },
     "OA-07": {
       "acceptance_receipt": null,
@@ -124,5 +124,5 @@
   },
   "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
   "schema_version": 1,
-  "status": "READY"
+  "status": "ACTIVE"
 }

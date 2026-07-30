@@ -22,6 +22,12 @@ be complete; and the evidence directory must contain the generated manifest.
 3. Run `zeus gate evidence OA-05`. Expect the evidence template and runtime directory.
 4. Run `zeus verify OA-05`. Expect all positive, negative, replay, recovery, and
    cumulative checks to report PASS and create `runtime/evidence/OA-05/VERIFIED`.
+   The positive proof must exercise `zeus submit`, `zeus list`, and `zeus show`
+   against an isolated candidate package and compare every stable identity,
+   objective, scope, dependency, priority, state, and digest field. The
+   negative proof must show that each absent or malformed field creates no
+   staged candidate. Replay and restart recovery must preserve one exact
+   contract and create no duplicate mission, event, evidence, or effect.
 5. Run `scripts/engctl repository health`, `scripts/engctl eos sync-validate`,
    `scripts/engctl registry validate`, and `scripts/engctl validate`. Expect PASS.
 6. Run `git status --short --branch` and `git rev-parse HEAD`. Expect the documented

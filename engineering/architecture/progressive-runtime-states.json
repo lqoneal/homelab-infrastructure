@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "runtime_model": "Progressive Runtime Layer",
+  "policy_registry_sha256": "bb5cf059400902aeb3defb5c955bde61a0761724991712a4055392d93c722aa7",
+  "initial_state": "AUTHORITY_CONTEXT_VALIDATED",
+  "states": [
+    {
+      "state_identifier": "AUTHORITY_CONTEXT_VALIDATED",
+      "permitted_predecessor_states": [],
+      "permitted_successor_states": [
+        "DECISION_AUTHORIZED"
+      ],
+      "entry_conditions": [
+        "canonical-authority-receipt-valid",
+        "canonical-predecessor-valid"
+      ],
+      "exit_conditions": [
+        "authority-context-remains-valid"
+      ],
+      "required_invariants": [
+        "canonical-interface-only",
+        "registered-consumer-only",
+        "runtime-integrity-preserved"
+      ],
+      "permitted_runtime_policies": [
+        "policy-progressive-authority-primitives",
+        "policy-progressive-lifecycle-projection"
+      ]
+    },
+    {
+      "state_identifier": "DECISION_AUTHORIZED",
+      "permitted_predecessor_states": [
+        "AUTHORITY_CONTEXT_VALIDATED"
+      ],
+      "permitted_successor_states": [
+        "LIFECYCLE_PROJECTION_ELIGIBLE"
+      ],
+      "entry_conditions": [
+        "authority-context-validated",
+        "gate-decision-approval-satisfied"
+      ],
+      "exit_conditions": [
+        "decision-persistence-complete"
+      ],
+      "required_invariants": [
+        "canonical-interface-only",
+        "decision-authority-remains-valid",
+        "registered-consumer-only",
+        "runtime-integrity-preserved"
+      ],
+      "permitted_runtime_policies": [
+        "policy-progressive-authority-primitives",
+        "policy-progressive-decision-authority",
+        "policy-progressive-lifecycle-projection"
+      ]
+    },
+    {
+      "state_identifier": "LIFECYCLE_PROJECTION_ELIGIBLE",
+      "permitted_predecessor_states": [
+        "DECISION_AUTHORIZED"
+      ],
+      "permitted_successor_states": [],
+      "entry_conditions": [
+        "canonical-lifecycle-state-valid",
+        "decision-persistence-complete"
+      ],
+      "exit_conditions": [
+        "projection-remains-read-only"
+      ],
+      "required_invariants": [
+        "canonical-interface-only",
+        "projection-remains-read-only",
+        "registered-consumer-only",
+        "runtime-integrity-preserved"
+      ],
+      "permitted_runtime_policies": [
+        "policy-progressive-lifecycle-projection"
+      ]
+    }
+  ]
+}

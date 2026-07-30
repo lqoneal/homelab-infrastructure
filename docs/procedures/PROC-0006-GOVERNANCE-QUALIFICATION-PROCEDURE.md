@@ -1,15 +1,15 @@
 ---
 document_id: PROC-0006
 title: Governance Qualification Procedure
-version: 1.2
+version: 1.5
 status: Draft
 owner: Engineering Governance
 created: 2026-07-18
-last_updated: 2026-07-28
+last_updated: 2026-07-29
 phase: Governance Stabilization Procedure Integration
 domain: Engineering Governance
 classification: Engineering Procedure
-predecessor_revision: PROC-0006@1.1
+predecessor_revision: PROC-0006@1.4
 successor_revision: null
 approval_status: Pending
 approval_authority: null
@@ -358,7 +358,23 @@ Create a stable, actionable finding set.
 For each finding record identity, violated or satisfied criterion, evidence,
 severity, impact, affected scope, rationale, and recommended route. Classify
 findings as blocking, non-blocking, or observational. Duplicate findings shall
-be consolidated without losing provenance.
+be consolidated without suppressing their underlying evidence.
+
+Tool exit status and qualification result are distinct evidence fields. When
+publication qualification consumes `git diff --check`, apply the authoritative
+file-type-aware classification in PROC-0005. Preserve the command's raw output
+and non-zero status even when every reported line is confirmed as a permitted
+Markdown hard break. An unclassified, ambiguous, semantic, structural,
+cross-reference, conflict-marker, or repository-integrity finding remains
+blocking.
+
+When the qualified subject is an open publication transaction, the
+qualification report and its change or finding matrix are intrinsic
+transaction outputs. Return their exact identities and classifications to the
+PROC-0005 output ledger. Qualification does not add them to the frozen input
+manifest, choose their persistence boundary, or recursively invoke
+publication. After immutable transaction finalization, qualification evidence
+routes to a linked successor transaction.
 
 #### Evidence and Exit Criteria
 
@@ -684,3 +700,5 @@ The following remain Deferred Execution and require separate authorization:
 | 1.1 | 2026-07-18 | Integrated Active PROC-0007 as an external orchestration caller while preserving PROC-0006 independent qualification ownership and caller-return behavior. |
 | 1.2 | 2026-07-28 | Draft successor requires SPEC-0001 criterion identifiers for independent semantic qualification, evidence sufficiency, semantic coverage, synchronization drift, repository-wide implementation coverage, Engineering Contract conformance, invariant and compatibility evidence, and evidence-based acceptance recommendations. |
 | 1.3 | 2026-07-28 | Adds independent review of Engineering Assurance derived evidence while preserving qualification ownership and all external approval, publication, lifecycle, and operational authorities. |
+| 1.4 | 2026-07-29 | Reconciled qualification finding classification with PROC-0005 by separating preserved validator exit status from the governed disposition of intentional Markdown hard-break findings. |
+| 1.5 | 2026-07-29 | Classified publication qualification reports and finding matrices as intrinsic outputs routed to the active PROC-0005 output ledger or a post-finalization successor transaction. |

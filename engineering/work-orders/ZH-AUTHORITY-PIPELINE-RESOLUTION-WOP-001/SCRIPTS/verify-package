@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+"""Verify the WOP's non-self-referential SHA-256 manifest."""
+from __future__ import annotations
+
+import hashlib
+from pathlib import Path
+
+import yaml
+
+root = Path(__file__).resolve().parents[1]
+manifest = yaml.safe_load((root / "MANIFEST.yaml").read_text(encoding="utf-8"))
+if manifest.get("document_type") != "AuthorityPipelineResolutionWOPManifest":
+    raise SystemExit("invalid manifest type")
+expected = manifest.get("files")
+if not isinstance(expected, dict):
+    raise SystemExit("invalid files map")
+actual_paths = {
+    path.relative_to(root).as_posix()
+    for path in root.rglob("*")
+    if path.is_file()
+    and path.name != "MANIFEST.yaml"
+    and path.relative_to(root).as_posix() != "STATE.json"
+    and not path.relative_to(root).as_posix().startswith("EVIDENCE/")
+    and not path.relative_to(root).as_posix().startswith("PATCHES/")
+    and not path.relative_to(root).as_posix().startswith("ROLLBACK/")
+}
+if actual_paths != set(expected):
+    raise SystemExit(
+        f"manifest path mismatch missing={sorted(set(expected)-actual_paths)} "
+        f"extra={sorted(actual_paths-set(expected))}"
+    )
+for relative, wanted in sorted(expected.items()):
+    actual = hashlib.sha256((root / relative).read_bytes()).hexdigest()
+    if actual != wanted:
+        raise SystemExit(f"digest mismatch: {relative}")
+print("AUTHORITY_PIPELINE_WOP_INTEGRITY_VALID")

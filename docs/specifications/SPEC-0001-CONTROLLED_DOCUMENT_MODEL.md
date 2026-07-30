@@ -1,7 +1,7 @@
 ---
 document_id: SPEC-0001
 title: Controlled Document Representation Specification
-version: 1.6
+version: 1.7
 status: Draft
 owner: EOS Program
 created: 2026-07-08
@@ -10,7 +10,7 @@ phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Specification
 source_of_truth: true
-predecessor_revision: SPEC-0001@1.5
+predecessor_revision: SPEC-0001@1.6
 successor_revision: null
 approval_status: Pending
 approval_authority: null
@@ -552,6 +552,34 @@ Their filenames shall begin with the permanent EWO identifier. Historical and le
 Publication may transform format, reorganize presentation, generate navigation, or create summaries without changing controlled engineering meaning.
 
 Published outputs remain Derived Engineering Views unless separately established as controlled records. Publication shall preserve source identity, version, lifecycle, currency, and transformation traceability sufficient to prevent misinterpretation.
+
+### 16.1 Publication transaction representation
+
+A publication transaction is represented by distinct, non-competing records:
+
+1. an immutable input manifest containing the exact approved publication
+   content and starting repository baseline;
+2. an append-only transaction output ledger containing control artifacts
+   generated while the transaction remains open;
+3. an explicit exclusion inventory;
+4. an ordered persistence ledger containing publication-unit and immutable
+   locator results; and
+5. a final transaction manifest produced when outputs are frozen.
+
+The input manifest is not a claim that execution has already produced all
+evidence needed to close the transaction. A conforming output ledger may add
+only artifacts whose class, owner, canonical location, production event, and
+publication responsibility are defined by PROC-0005. Adding such an output
+does not mutate the input manifest or reclassify it as unexpected publication
+content.
+
+Before an output enters an immutable repository transaction, its exact path,
+bytes, digest, classification, owner, dependency, and destination output
+boundary shall be frozen. The final transaction manifest is authoritative for
+the complete input/output/exclusion/persistence state. An artifact created
+after immutable transaction finalization belongs to a linked successor
+transaction and shall not rewrite the completed manifest or repository
+history.
 
 ---
 
@@ -1115,6 +1143,7 @@ or override the represented behavior.
 | 1.4 | 2026-07-11 | Renamed the document from Controlled Document Model to Controlled Document Representation Specification to distinguish representation responsibility from STD-0000 architecture; reconciled Charter, Governance Authority, Information Authority, AER, approval, relationship, lifecycle, persistence-state, title, validation, and self-conformance semantics. |
 | 1.5 | 2026-07-17 | Defined repository representation for mission classification, Completion Reports, Governance Conformance Reviews, and non-authoritative handoff references under EGR-000002 and EWO-000018. |
 | 1.6 | 2026-07-28 | Draft successor adds reusable semantic validation profiles, permanent completeness criteria, command-interface validation, criterion traceability, machine-readable automation coverage, additive implementation synchronization, deterministic repository-wide implementation coverage, and repository-independent engineering contract conformance with invariant, compatibility, and canonical JSON evidence without changing class, lifecycle, persistence, publication, implementation, or qualification ownership. |
+| 1.7 | 2026-07-29 | Defined publication transactions as immutable inputs, append-only governed outputs, exclusions, persistence results, and one final transaction manifest without recursive input-plan regeneration. |
 
 ---
 

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "runtime_model": "Progressive Runtime Layer",
+  "execution_contract_registry_sha256": "c578249cd9813a90b784f01720a58df8c78867eaf21a51ee6c4af7305a23e4cf",
+  "outcomes": [
+    {
+      "outcome_identifier": "outcome-authority-context-validated-to-decision-authorized-failure",
+      "owning_runtime_execution_contract": "execution-contract-authority-context-validated-to-decision-authorized",
+      "outcome_classification": "FAILURE",
+      "resulting_runtime_state": "AUTHORITY_CONTEXT_VALIDATED",
+      "required_evidence": [
+        "execution-failure-record",
+        "rollback-evidence-record"
+      ],
+      "completion_criteria": [
+        "failure-recorded",
+        "source-state-restored"
+      ],
+      "invariant_requirements": [
+        "canonical-interface-only",
+        "registered-consumer-only",
+        "runtime-integrity-preserved"
+      ],
+      "downstream_authorization_effect": "BLOCKED",
+      "lifecycle_projection_effect": "NO_PROJECTION_CHANGE"
+    },
+    {
+      "outcome_identifier": "outcome-authority-context-validated-to-decision-authorized-success",
+      "owning_runtime_execution_contract": "execution-contract-authority-context-validated-to-decision-authorized",
+      "outcome_classification": "SUCCESS",
+      "resulting_runtime_state": "DECISION_AUTHORIZED",
+      "required_evidence": [
+        "canonical-authority-receipt",
+        "gate-decision-approval"
+      ],
+      "completion_criteria": [
+        "decision-authorized-state-entry-complete",
+        "required-evidence-collected"
+      ],
+      "invariant_requirements": [
+        "canonical-interface-only",
+        "decision-authority-remains-valid",
+        "registered-consumer-only",
+        "runtime-integrity-preserved"
+      ],
+      "downstream_authorization_effect": "ELIGIBLE",
+      "lifecycle_projection_effect": "DECISION_AUTHORIZATION_RECORDED"
+    },
+    {
+      "outcome_identifier": "outcome-decision-authorized-to-lifecycle-projection-eligible-failure",
+      "owning_runtime_execution_contract": "execution-contract-decision-authorized-to-lifecycle-projection-eligible",
+      "outcome_classification": "FAILURE",
+      "resulting_runtime_state": "DECISION_AUTHORIZED",
+      "required_evidence": [
+        "execution-failure-record",
+        "rollback-evidence-record"
+      ],
+      "completion_criteria": [
+        "failure-recorded",
+        "source-state-restored"
+      ],
+      "invariant_requirements": [
+        "canonical-interface-only",
+        "decision-authority-remains-valid",
+        "registered-consumer-only",
+        "runtime-integrity-preserved"
+      ],
+      "downstream_authorization_effect": "BLOCKED",
+      "lifecycle_projection_effect": "NO_PROJECTION_CHANGE"
+    },
+    {
+      "outcome_identifier": "outcome-decision-authorized-to-lifecycle-projection-eligible-success",
+      "owning_runtime_execution_contract": "execution-contract-decision-authorized-to-lifecycle-projection-eligible",
+      "outcome_classification": "SUCCESS",
+      "resulting_runtime_state": "LIFECYCLE_PROJECTION_ELIGIBLE",
+      "required_evidence": [
+        "canonical-lifecycle-state",
+        "decision-persistence-record"
+      ],
+      "completion_criteria": [
+        "lifecycle-projection-eligible-state-entry-complete",
+        "required-evidence-collected"
+      ],
+      "invariant_requirements": [
+        "canonical-interface-only",
+        "projection-remains-read-only",
+        "registered-consumer-only",
+        "runtime-integrity-preserved"
+      ],
+      "downstream_authorization_effect": "TERMINAL",
+      "lifecycle_projection_effect": "PROJECTION_ELIGIBILITY_RECORDED"
+    }
+  ]
+}

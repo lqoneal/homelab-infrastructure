@@ -50,8 +50,10 @@ eos_render_platform() {
 
 eos_platform_legacy_qualify() {
     local project="${1:-homelab}"
-    local root marker marker_path active=0
+    local root marker marker_path active=0 baseline_validator baseline_contract
     root="$(eos_project_root "$project")"
+    baseline_validator="$root/scripts/lib/eos/working_tree_baseline.py"
+    baseline_contract="$root/engineering/execution/controlled-working-tree-baseline.json"
 
     echo "Engineering Work Initiation Qualification"
     echo
@@ -97,12 +99,24 @@ eos_platform_legacy_qualify() {
     fi
 
     echo "Active Git Operation: none"
+
+    if [[ -f "$baseline_contract" ]]; then
+        if PYTHONDONTWRITEBYTECODE=1 python3 "$baseline_validator" \
+            --repository "$root" --contract "$baseline_contract" >/dev/null; then
+            echo "PASS: controlled working-tree baseline (authorized dirty transaction; empty index)"
+        else
+            echo "FAIL: controlled working-tree baseline"
+            return 1
+        fi
+    fi
 }
 
 eos_work_initiation_authorize() {
     local project="${1:-homelab}"
     local legacy_status="${2:-1}"
+    local resolved_bundle="${3:-}"
     local root tool output_dir legacy_decision mode
+    local authority_graph wop state receipt lease revocation expected_authority
     local -a arguments
     root="$(eos_project_root "$project")"
     tool="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/work-initiation-shadow"
@@ -118,23 +132,41 @@ eos_work_initiation_authorize() {
     )
     [[ -n "${EOS_SHADOW_EVALUATION_TIME:-}" ]] \
         && arguments+=(--at "$EOS_SHADOW_EVALUATION_TIME")
-    [[ -n "${EOS_SHADOW_AUTHORITY_GRAPH:-}" ]] \
-        && arguments+=(--authority-graph "$EOS_SHADOW_AUTHORITY_GRAPH")
-    [[ -n "${EOS_SHADOW_WOP:-}" ]] && arguments+=(--wop "$EOS_SHADOW_WOP")
-    [[ -n "${EOS_SHADOW_STATE:-}" ]] && arguments+=(--state "$EOS_SHADOW_STATE")
-    [[ -n "${EOS_SHADOW_RECEIPT:-}" ]] \
-        && arguments+=(--receipt "$EOS_SHADOW_RECEIPT")
-    [[ -n "${EOS_SHADOW_LEASE:-}" ]] && arguments+=(--lease "$EOS_SHADOW_LEASE")
-    [[ -n "${EOS_SHADOW_REVOCATION:-}" ]] \
-        && arguments+=(--revocation "$EOS_SHADOW_REVOCATION")
-    [[ -n "${EOS_SHADOW_EXPECTED_AUTHORITY:-}" ]] \
-        && arguments+=(--expected-authority "$EOS_SHADOW_EXPECTED_AUTHORITY")
+    if [[ -z "$resolved_bundle" ]]; then
+        resolved_bundle="$(eos_authorization_bundle_resolve)" || return 1
+    fi
+    authority_graph="$(jq -r .authority_graph <<<"$resolved_bundle")"
+    wop="$(jq -r .wop <<<"$resolved_bundle")"
+    state="$(jq -r .state <<<"$resolved_bundle")"
+    receipt="$(jq -r .receipt <<<"$resolved_bundle")"
+    lease="$(jq -r '.lease // empty' <<<"$resolved_bundle")"
+    revocation="$(jq -r '.revocation // empty' <<<"$resolved_bundle")"
+    expected_authority="$(jq -r '.expected_authority // empty' <<<"$resolved_bundle")"
+    [[ -n "$authority_graph" ]] && arguments+=(--authority-graph "$authority_graph")
+    [[ -n "$wop" ]] && arguments+=(--wop "$wop")
+    [[ -n "$state" ]] && arguments+=(--state "$state")
+    [[ -n "$receipt" ]] && arguments+=(--receipt "$receipt")
+    [[ -n "$lease" ]] && arguments+=(--lease "$lease")
+    [[ -n "$revocation" ]] && arguments+=(--revocation "$revocation")
+    [[ -n "$expected_authority" ]] \
+        && arguments+=(--expected-authority "$expected_authority")
 
     echo
     echo "Authorization Mode: ${mode^^}"
     if ! "$tool" "${arguments[@]}"; then
         echo "WARN: shadow authorization record generation failed" >&2
         return 1
+    fi
+}
+
+eos_authorization_bundle_resolve() {
+    local resolver bundle
+    resolver="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/lib/work_initiation/authorization_bundle.py"
+    bundle="${EOS_AUTHORIZATION_INPUT_MANIFEST:-}"
+    if [[ -n "$bundle" ]]; then
+        PYTHONDONTWRITEBYTECODE=1 python3 "$resolver" --bundle "$bundle"
+    else
+        PYTHONDONTWRITEBYTECODE=1 python3 "$resolver"
     fi
 }
 
@@ -159,11 +191,17 @@ eos_wop_admission_require() {
 
 eos_platform_qualify() {
     local project="${1:-homelab}"
-    local legacy_status=0 authorization_status=0 mode
+    local legacy_status=0 authorization_status=0 mode resolved_bundle
+    if ! resolved_bundle="$(eos_authorization_bundle_resolve)"; then
+        echo "RESUBMISSION_REQUIRED: authorization bundle resolution failed" >&2
+        return 78
+    fi
+    EOS_WOP_ADMISSION_RECORD="$(jq -r .admission_record <<<"$resolved_bundle")"
+    EOS_WOP_ADMISSION_WOP_ID="$(jq -r .wop_id <<<"$resolved_bundle")"
     eos_wop_admission_require "$project" || return 78
     eos_platform_legacy_qualify "$project" || legacy_status=$?
     mode="${EOS_AUTHORIZATION_MODE:-enforcement}"
-    eos_work_initiation_authorize "$project" "$legacy_status" \
+    eos_work_initiation_authorize "$project" "$legacy_status" "$resolved_bundle" \
         || authorization_status=$?
     case "$mode" in
         rollback|shadow) return "$legacy_status" ;;

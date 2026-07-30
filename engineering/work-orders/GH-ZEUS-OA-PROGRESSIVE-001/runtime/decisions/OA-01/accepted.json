@@ -1,0 +1,10 @@
+{
+  "decided_at": "2026-07-29T10:05:56.635826+00:00",
+  "decision": "ACCEPTED",
+  "evidence_marker_sha256": "43626172b97a478afa34f17c1a713e11365ae28f713310dd7dc1d29443c8944b",
+  "gate_id": "OA-01",
+  "operator": "loneal",
+  "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
+  "receipt_digest": "e2729f17392afb6bf2f0b00948661a48aa3784beabe71f2b69f00f6be599fd4e",
+  "schema_version": 1
+}

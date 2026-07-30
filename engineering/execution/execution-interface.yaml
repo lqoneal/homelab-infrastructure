@@ -13,7 +13,7 @@ semantic_bindings:
     revision: '1.2'
   execution_lifecycle:
     owner: PROC-0001
-    revision: '1.14'
+    revision: '1.19'
   handoff_construction:
     owner: PROC-0004
     revision: '1.6'

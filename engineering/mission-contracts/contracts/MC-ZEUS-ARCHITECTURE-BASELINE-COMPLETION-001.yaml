@@ -1,0 +1,125 @@
+schema_version: 1
+document_type: MissionContract
+contract_id: MC-ZEUS-ARCHITECTURE-BASELINE-COMPLETION-001
+contract_digest: e21cb109f760ec91cb94d2a67b210c73983ca4645ea5f5c8db88bfe42bf22a9e
+mission_id: ZEUS-ARCHITECTURE-BASELINE-COMPLETION-001
+registry_id: EMP-WORK-ZEUS-ARCHITECTURE-BASELINE-COMPLETION-001
+wop:
+  id: ZEUS-ARCHITECTURE-BASELINE-COMPLETION-001
+  locator: engineering/work-orders/ZEUS-ARCHITECTURE-BASELINE-COMPLETION-001/immutable-wop.yaml
+  digest: 93b07023620f5b92a8482e2969fb5e2ca4218bf5141cb506b344054086d71e01
+repository:
+  identity: homelab
+  root: /data/engineering/repositories/homelab
+  remote: git@github.com:lqoneal/homelab-infrastructure.git
+  branch: main
+  baseline: d0861dc62b8199de03230152c4ed3cfb687dd9a7
+  allowed_target_branches:
+    - main
+scope:
+  objective: Complete the controlled Zeus architecture baseline before Operational Alpha roadmap development or implementation planning.
+  phases:
+    - phase_id: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-01-ARCH-0001
+      label: Phase I
+      target: ARCH-0001
+      predecessor: null
+    - phase_id: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-02-ADR-0001
+      label: Phase II
+      target: ADR-0001
+      predecessor: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-01-ARCH-0001
+    - phase_id: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-03-ADR-0001
+      label: Phase III
+      target: ADR-0001
+      predecessor: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-02-ADR-0001
+    - phase_id: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-04-SPEC-0002
+      label: Phase IV
+      target: SPEC-0002
+      predecessor: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-03-ADR-0001
+    - phase_id: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-05-OA-ROADMAP
+      label: Phase V
+      target: OPERATIONAL-ALPHA-ROADMAP
+      predecessor: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-04-SPEC-0002
+  included:
+    - controlled architecture assessment completion and independent review
+    - architecture decision completion and independent review
+    - architecture specification completion and independent review
+    - preparation for separately authorized controlled approval and freeze
+    - Operational Alpha roadmap development after the architecture suite is frozen
+    - lifecycle and planning evidence
+  excluded:
+    - Runtime implementation
+    - qualification logic changes
+    - Operational Alpha implementation planning before architecture freeze
+    - self-approval or self-freeze
+    - publication, commit, tag, push, or EOS synchronization without separate authority
+  exact_path_policy:
+    - docs/architecture/ARCH-0001-ENGINEERING-CONVERGENCE-ASSESSMENT.md
+    - docs/architecture/ADR-0001-ZEUS-CANONICAL-ARCHITECTURE-DECISION.md
+    - docs/specifications/SPEC-0002-ZEUS-CANONICAL-ARCHITECTURE-SPECIFICATION.md
+    - docs/roadmap.md
+    - engineering/evidence/
+supersedence:
+  intended_predecessor_contract: MC-MISSION-CONTRACT-PUBLICATION-001
+  intended_predecessor_mission: MISSION-CONTRACT-PUBLICATION-001
+  requested_effect: supersede predecessor when this contract activates
+  current_service_support: blocked
+  required_governance_disposition: pending
+permissions:
+  inspect: true
+  modify: true
+  generate_evidence: true
+  reconcile_metadata: true
+  stage: false
+  commit: false
+  create_branch: false
+  push: false
+  publish: false
+  rollback: true
+  reconcile_state: true
+  close_mission: false
+roles:
+  human_authorizer: repository_owner
+  repository_operator: repository_owner
+  orchestration_agent: ChatGPT
+  execution_agent: Codex
+  implementation_owner: Engineering Documentation
+  document_owner: applicable_existing_document_owner
+  review_owner: independent_controlled_document_review
+  qualification_owner: independent_verification
+  publication_owner: repository_owner
+  evidence_reviewer: repository_owner
+approvals:
+  admission: pending_attributable_record
+  activation: pending
+  publication: not_authorized
+dirty_tree:
+  policy: PATH_SCOPED_DIRTY_ALLOWED
+  allowed_paths:
+    - docs/architecture/ARCH-0001-ENGINEERING-CONVERGENCE-ASSESSMENT.md
+    - docs/architecture/ADR-0001-ZEUS-CANONICAL-ARCHITECTURE-DECISION.md
+    - docs/specifications/SPEC-0002-ZEUS-CANONICAL-ARCHITECTURE-SPECIFICATION.md
+    - docs/roadmap.md
+    - engineering/evidence/
+  preexisting_overlap_requires_reconciliation: true
+lifecycle: candidate
+admission:
+  governance_state: Submitted
+  authority: Engineering Governance
+  decision_record: pending
+activation:
+  actor: null
+  record: null
+  request: engineering/mission-contracts/requests/ACTIVATE-ZEUS-ARCHITECTURE-BASELINE-COMPLETION-001.yaml
+  transaction: null
+  timestamp: null
+expiration: on_closeout_or_revocation
+interruption:
+  behavior: Re-resolve the contract, predecessor disposition, repository baseline, WOP digest, registry binding, approvals, and phase sequence before continuing.
+closeout:
+  requirements:
+    - ARCH-0001 approved and frozen through separate controlled authority
+    - ADR-0001 approved and frozen through separate controlled authority
+    - SPEC-0002 approved and frozen through separate controlled authority
+    - Operational Alpha roadmap completed without implementation planning
+    - authoritative state reconciled
+    - completion evidence reviewed

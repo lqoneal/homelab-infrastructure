@@ -1,15 +1,15 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.59
+version: 2.74
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-29
+last_updated: 2026-07-30
 phase: Zeus Operational Alpha
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.58
+predecessor_revision: DOC-0001@2.73
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -129,6 +129,14 @@ relationships:
     target: SPEC-0012
   - type: indexes
     target: SPEC-0013
+  - type: indexes
+    target: ARCH-0001
+  - type: indexes
+    target: ADR-0001
+  - type: indexes
+    target: SPEC-0002
+  - type: indexes
+    target: AQR-0001
   - type: indexes
     target: MILESTONE-0006
   - type: indexes
@@ -297,7 +305,8 @@ authority. Class-specific procedures remain additionally applicable.
 | TPL | Engineering document templates |
 | EWO | Engineering Work Orders authorizing mission-specific execution |
 | EGR | Engineering Governance Resolutions recording governance decisions |
-| ADR | Architecture Decision Records |
+| ARCH | Controlled engineering assessments recording evidence, findings, confidence, and nonbinding recommendations |
+| ADR | Architecture-specific Decision Records operating within Engineering Decision Record responsibilities |
 | EDR | Engineering Decision Records |
 | MILESTONE | Engineering milestone records |
 | JOURNAL | Engineering history and milestones |
@@ -347,11 +356,15 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EDR-0001 | Hardware Asset Record Architecture | Approved | Homelab Infrastructure | `docs/edr/EDR-0001-HARDWARE_ASSET_RECORD_ARCHITECTURE.md` |
 | EDR-0002 | Engineering Authority Model | Draft | EOS Program | `docs/edr/EDR-0002-ENGINEERING_AUTHORITY_MODEL.md` |
 | EDR-0003 | Governed Authorization Transaction Architecture | Approved | Engineering Governance | `docs/edr/EDR-0003-GOVERNED-AUTHORIZATION-TRANSACTION-ARCHITECTURE.md` |
+| ARCH-0001 | Engineering Convergence Assessment | Draft | Homelab Infrastructure | `docs/architecture/ARCH-0001-ENGINEERING-CONVERGENCE-ASSESSMENT.md` |
+| ADR-0001 | Zeus Canonical Architecture Decision | Draft | Homelab Infrastructure | `docs/architecture/ADR-0001-ZEUS-CANONICAL-ARCHITECTURE-DECISION.md` |
+| AQR-0001 | Architecture Qualification Report | Draft | Homelab Infrastructure | `docs/architecture/AQR-0001-ARCHITECTURE-QUALIFICATION-REPORT.md` |
 | EOS-0001 | Engineering Operating System Constitution | Draft | EOS Program | `docs/eos/EOS-0001-ENGINEERING_OPERATING_SYSTEM_CONSTITUTION.md` |
 | EOS-0002 | Engineering Operating System Master Plan | Draft | EOS Program | `docs/eos/EOS-0002-ENGINEERING_OPERATING_SYSTEM_MASTER_PLAN.md` |
 | EOS-0003 | EOS Operational Persistence Profile | Draft | Homelab Infrastructure | `docs/eos/EOS-0003-OPERATIONAL_PERSISTENCE_PROFILE.md` |
 | EMP-0001 | Engineering Management Platform Architecture | Active | Engineering Management Platform | `docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md` |
 | SPEC-0001 | Controlled Document Model | Active | EOS Program | `docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md` |
+| SPEC-0002 | Zeus Canonical Architecture Specification | Draft | Homelab Infrastructure | `docs/specifications/SPEC-0002-ZEUS-CANONICAL-ARCHITECTURE-SPECIFICATION.md` |
 | SPEC-0004 | Engineering Context Reconstruction Service | Draft | EOS Program | `docs/specifications/SPEC-0004-ENGINEERING_CONTEXT_RECONSTRUCTION_SERVICE.md` |
 | SPEC-0005 | Engineering Control Framework | Draft | EOS Program | `docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md` |
 | SPEC-0006 | Engineering Work Registry Model | Active | Engineering Management Platform | `docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md` |
@@ -455,6 +468,70 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | MILESTONE-0009 | Operational Alpha Governance Baseline 1.0 and Governance Freeze | Approved | Engineering Governance | `docs/project/milestones/2026-07-29-operational-alpha-governance-baseline-1.0.md` |
 
 This table shall be updated whenever a controlled document is created, superseded, or archived.
+
+---
+
+# Architecture Documentation Discovery
+
+The canonical repository placement for controlled engineering assessments and
+architecture-specific decision records is:
+
+```text
+docs/architecture/
+```
+
+`ARCH` is a registered domain-record subtype under the Domain and Project
+Records responsibility in STD-0000. An ARCH record owns a bounded assessment:
+evidence, method, findings, confidence, maturity, risk, and nonbinding
+recommendations. It shall not establish an architecture decision, technical
+requirement, lifecycle transition, or implementation authority.
+
+`ADR` is the architecture-specific registered subtype of the Engineering
+Decision Record responsibility defined by STD-0000. ADR and EDR do not form
+competing decision hierarchies. ADR is used when the decision subject is a
+system architecture; EDR remains the general engineering-decision class.
+
+`AQR` is a registered domain-record subtype for an Architecture Qualification
+Report. It owns architecture-specific qualification criteria, evidence
+mapping, findings, readiness determinations, and promotion recommendations.
+It does not own architecture decisions, the reusable qualification workflow,
+controlled-document lifecycle transitions, publication, baseline activation,
+or implementation authority. AQR records conform to PROC-0006 and return
+recommendations to the applicable decision owner.
+
+Permanent ARCH, ADR, and AQR identifiers use their class prefix followed by a
+four-digit decimal sequence. Assignment begins with `ARCH-0001`, `ADR-0001`,
+and `AQR-0001`, proceeds monotonically within each namespace, and accounts for
+current, historical, staged, unstaged, untracked, and explicitly reserved
+identifiers. Identifiers are never reused.
+
+Architecture discovery begins with this index, then verifies:
+
+1. identifier, title, status, owner, and canonical path;
+2. YAML metadata, lifecycle, approval, persistence, and relationships;
+3. source evidence and immutable provenance;
+4. assessment-to-decision-to-specification traceability; and
+5. the applicable exact revision before any downstream use.
+
+The initial traceability chain is:
+
+```text
+ENGINEERING-CONVERGENCE-REVIEW-001 (historical evidence)
+    -> ARCH-0001
+    -> ADR-0001
+    -> SPEC-0002
+    -> AQR-0001 (qualification and recommendation only)
+    -> future bounded WOPs
+```
+
+The historical review archive remains evidence only. Draft ARCH, ADR, and SPEC
+records possess no operational authority. Approval, activation, publication,
+and future implementation remain separate controlled decisions.
+
+No separate architecture, ADR, or specification index exists in this
+repository. DOC-0001 is the authoritative controlled-document catalogue and
+namespace coordination record. The EMP Work Registry owns operational
+management state and is not a duplicate controlled-document registry.
 
 ---
 
@@ -792,3 +869,18 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.57 | 2026-07-28 | Registered SPEC-0013 Version 1.0 as the Draft Controlled Mission Assurance Language candidate and bound Zeus assurance interpretation to its exact revision; approval, activation, and controlled publication remain separate decisions. |
 | 2.58 | 2026-07-29 | Registered MILESTONE-0009 as the Operational Alpha constitutional baseline and governance-freeze transition, including mandatory synchronized documentation, qualification, and verification change control. |
 | 2.59 | 2026-07-29 | Reconciled PROC-0001 Version 1.17, PROC-0005 Version 1.5, STD-0004 Version 1.4, and EOS-0003 Version 1.4 with the repository-authoritative EOS publication contract and explicit synchronization boundaries. |
+| 2.60 | 2026-07-29 | Registered SPEC-0012 Version 1.1 as the frozen canonical Progressive authority-primitives, decision-authority, compatibility, and lifecycle-projection implementation baseline. |
+| 2.61 | 2026-07-29 | Registered SPEC-0012 Version 1.2 as the exactly three-layer, architecturally frozen Progressive Runtime Layer baseline. |
+| 2.62 | 2026-07-29 | Registered SPEC-0012 Version 1.3 as the enforced downward-only Progressive Runtime Layer dependency contract and compatibility-isolation baseline. |
+| 2.63 | 2026-07-29 | Registered SPEC-0012 Version 1.4 as the governed Runtime Extension Rule and fail-closed runtime-classification baseline. |
+| 2.64 | 2026-07-29 | Registered SPEC-0012 Version 1.5 as the Runtime Registration Rule and fail-closed runtime-consumer registry synchronization baseline. |
+| 2.65 | 2026-07-29 | Registered SPEC-0012 Version 1.6 as the Runtime Capability Rule and fail-closed runtime-capability traceability baseline. |
+| 2.66 | 2026-07-29 | Registered SPEC-0012 Version 1.7 as the Runtime Policy Rule and fail-closed runtime-policy governance baseline. |
+| 2.67 | 2026-07-29 | Registered SPEC-0012 Version 1.8 as the Runtime State Rule and fail-closed runtime-state governance baseline. |
+| 2.68 | 2026-07-29 | Registered SPEC-0012 Version 1.9 as the Runtime Transition Rule and fail-closed runtime-transition governance baseline. |
+| 2.69 | 2026-07-29 | Registered SPEC-0012 Version 1.10 as the Runtime Execution Contract Rule and fail-closed runtime-execution-contract governance baseline. |
+| 2.70 | 2026-07-29 | Registered SPEC-0012 Version 1.11 as the Runtime Outcome Rule and fail-closed runtime-outcome governance baseline. |
+| 2.71 | 2026-07-29 | Registered SPEC-0012 Version 1.12 and the consolidated Progressive Runtime Governance Baseline v1.0, preserving the accepted three-layer architecture and unchanged runtime behavior. |
+| 2.72 | 2026-07-30 | Registered Draft ARCH-0001, ADR-0001, and SPEC-0002; established ARCH and ADR discovery and numbering; and recorded historical-assessment-to-decision-to-specification traceability without approval, activation, publication, or implementation authority. |
+| 2.73 | 2026-07-30 | Registered Draft AQR-0001 as the architecture-specific qualification criteria, evidence, readiness, and promotion-recommendation record; established AQR discovery and numbering while preserving PROC-0006 qualification, STD-0001 lifecycle, Engineering Governance disposition, and PROC-0005 publication authority. |
+| 2.74 | 2026-07-30 | Reconciled registration for SPEC-0002 Draft 1.3 and AQR-0001 Draft 1.1, including complete ADR component, invariant, interface, and Future Implementation traceability plus observational Repository Convergence Qualification; no architecture decision, repository convergence, lifecycle transition, publication, synchronization, or promotion authority was introduced. |

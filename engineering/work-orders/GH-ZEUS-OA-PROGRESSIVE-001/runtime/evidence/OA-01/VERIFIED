@@ -1,0 +1,14 @@
+{
+  "authority_source": "engineering/mission-contracts/contracts/MC-MISSION-CONTRACT-PUBLICATION-001.yaml",
+  "branch": "main",
+  "evidence_digest": "3ba2ec4f077c4e02dee3eed29fbad10fdcbfe4fcbf0137b22ebbd3f059bd0750",
+  "gate_id": "OA-01",
+  "head": "f79462bd837df51f12a103f2ebc69a071c27f45d",
+  "marker_digest": "742c95dfead7256d375b0a0c1241e146e013c9a1f8498909a63cd78e5b0fadda",
+  "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
+  "repository_identity": "homelab",
+  "repository_root": "/data/engineering/repositories/homelab",
+  "schema_version": 1,
+  "verification_result": "PASS",
+  "verification_timestamp": "2026-07-29T10:02:43.069165+00:00"
+}

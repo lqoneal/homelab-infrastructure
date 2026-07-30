@@ -1,5 +1,11 @@
 # Engineering Event & Notification System
 
+Zeus Controlled Mission Authority is evaluated before any protected EENS
+publication. An authority denial produces no event. OA-02 implementation and
+verification use local append-only evidence only and do not emit admission,
+dispatch, acceptance, next-gate, declaration, or baseline-freeze events;
+idempotent replay therefore has no duplicate EENS effect.
+
 ## Source and Operational Deployment
 
 ### Canonical Source

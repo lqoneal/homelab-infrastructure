@@ -51,18 +51,21 @@ gates:
   state_change: false
 - gate_id: OA-02
   sequence: 2
-  title: First-qualification authority lifecycle
+  title: Controlled Mission Authority
   required_commands:
-  - zeus authority status
-  - zeus authority work-lifecycle
+  - zeus authority show
+  - zeus authority resolve
+  - zeus authority validate
+  - zeus resume
+  - zeus verify OA-02
   optional_commands:
   - zeus status
   prerequisites:
   - OA-01
-  positive_demonstration: Through the authoritative CLI, demonstrate first-qualification authority lifecycle and capture the resulting production-observable state.
+  positive_demonstration: Through the authoritative CLI, prove that no mission may execute without valid, current, discoverable authority and capture every exact mission, contract, WOP, repository, gate, lifecycle, and authority binding.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-02 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-02 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
+  interruption_demonstration: Interrupt before and after each durable authority, evidence, and transition boundary; revalidate authority on resume and prove no duplicate evidence, transition, dispatch, event, receipt, approval, or protected external effect.
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -107,18 +110,18 @@ gates:
   state_change: false
 - gate_id: OA-04
   sequence: 4
-  title: Dispatcher activation
+  title: Project and Operational Context Reconstruction
   required_commands:
-  - zeus dispatcher activation
-  - zeus dispatcher status
+  - zeus context reconstruct
+  - zeus status
   optional_commands:
   - zeus status
   prerequisites:
   - OA-03
-  positive_demonstration: Through the authoritative CLI, demonstrate dispatcher activation and capture the resulting production-observable state.
+  positive_demonstration: Through the authoritative CLI, deterministically reconstruct the complete current project, phase, work, authority, and runtime context from repository sources.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-04 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-04 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
+  interruption_demonstration: Interrupt observation and verify replay reconstructs identical context without authoritative mutation or duplicate effects.
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -134,21 +137,22 @@ gates:
   - BLOCKED
   - NOT_READY
   manual_review_required: true
-  state_change: true
+  state_change: false
 - gate_id: OA-05
   sequence: 5
-  title: Production execution-agent registry
+  title: Mission Staging Contract
   required_commands:
-  - zeus agent registry
-  - zeus agent status
+  - zeus submit
+  - zeus list
+  - zeus show
   optional_commands:
   - zeus status
   prerequisites:
   - OA-04
-  positive_demonstration: Through the authoritative CLI, demonstrate production execution-agent registry and capture the resulting production-observable state.
+  positive_demonstration: Through the authoritative CLI, prove candidate missions are staged with stable identity, objective, scope, dependencies, priority, and state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-05 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-05 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
+  interruption_demonstration: Interrupt before and after validation, admission, and staging persistence boundaries; recover the complete staged contract without duplicate mission, event, evidence, or state.
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -168,18 +172,18 @@ gates:
   state_change: false
 - gate_id: OA-06
   sequence: 6
-  title: Production execution-agent qualification
+  title: Mission Eligibility Evaluation
   required_commands:
-  - zeus agent qualify
-  - zeus agent status
+  - zeus eligibility evaluate
+  - zeus eligibility show
   optional_commands:
   - zeus status
   prerequisites:
   - OA-05
-  positive_demonstration: Through the authoritative CLI, demonstrate production execution-agent qualification and capture the resulting production-observable state.
+  positive_demonstration: Through the authoritative CLI, prove deterministic classification of eligible, blocked, deferred, and ineligible staged missions.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-06 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-06 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
+  interruption_demonstration: Interrupt before and after evaluation evidence persistence; resume from the first incomplete boundary and verify identical classifications without duplicate mission, event, evidence, transition, or protected effect.
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code
@@ -197,7 +201,7 @@ gates:
   - BLOCKED
   - NOT_READY
   manual_review_required: true
-  state_change: true
+  state_change: false
 - gate_id: OA-07
   sequence: 7
   title: Dispatcher-to-agent invocation

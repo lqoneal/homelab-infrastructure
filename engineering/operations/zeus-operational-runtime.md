@@ -177,9 +177,12 @@ documentation.
 
 ## Unified mission admission
 
-ZEUS-P2-007 composes repository verification, mission qualification, owner and
-publication readiness, Authority Resolution, WOP generation, submission
-eligibility, and admission decision into one persistent state machine:
+ZEUS-P2-007 preserves the historical admission state machine. Under the current
+manual operating directive, Engineering Governance owns submission and the
+admission decision. The runtime projects the Governance admission and evaluates
+repository identity, repository integrity, and package integrity as independent
+execution-readiness checks; it does not make a discretionary admission
+decision:
 
 ```text
 scripts/zeus admit-mission start --mode qualification \
@@ -188,9 +191,9 @@ scripts/zeus admit-mission start --mode qualification \
 ```
 
 Operational mode accepts mission, work-item, and principal selectors.
-Qualification and operational paths use the same coordinator and WOP
-interface; only their authority provider differs. Unresolved authority stops
-the path pending restoration. Neither path automatically submits or dispatches.
+Execution authority is evaluated separately through activation, Mission
+Contract resolution, and execution verification. A failure there stops
+execution without reversing admission. Neither path automatically dispatches.
 Stage evidence, interruption, resume, replay, failure categories, and recovery
 are specified in
 `engineering/operations/zeus-mission-admission-runtime.md`.

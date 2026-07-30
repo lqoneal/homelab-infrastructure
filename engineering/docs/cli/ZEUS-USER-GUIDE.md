@@ -1,5 +1,46 @@
 # Zeus User Guide
 
+## Controlled Mission Authority
+
+`zeus authority show`, `zeus authority resolve`, and `zeus authority validate`
+expose the current mission authority source, exact Mission Contract, WOP,
+repository, branch, HEAD, baseline, gate, lifecycle, admission, predecessor
+receipt, checks, decision, blocker, and next authorized action. `validate`
+returns nonzero unless every binding is present, structurally valid,
+unambiguous, current, authorized, and mutually consistent.
+
+Zeus revalidates this authority at OA-02 resume, implementation transition,
+verification, marker validation, and operator-decision boundaries. A prior
+successful result is not cached as authority. Missing, malformed, ambiguous,
+inactive, unauthorized, revoked, stale, mismatched, incomplete, or conflicting
+authority stops fail closed without dispatch, evidence qualification, approval,
+next-gate activation, event publication, or another protected external effect.
+
+`zeus resume` implements the sole active OA-02 gate and stops at
+`AWAITING_OPERATOR_VERIFICATION`. `zeus verify OA-02` creates integrity-bound
+verification evidence and `VERIFIED` but does not accept OA-02 or enable OA-03.
+
+## OA-01 mission verification
+
+OA-01 has a read-only, mission-centric verification surface. Run
+`zeus mission list`, `zeus mission show`, `zeus mission state`,
+`zeus mission readiness`, `zeus mission eligibility`,
+`zeus mission blockers`, `zeus mission contract`,
+`zeus mission authority`, and `zeus mission next`.
+
+These commands compose the existing Work Registry, Mission Contract resolver,
+Progressive WOP runtime, Project State, EOS authority matrix, and Git identity.
+They do not accept a gate, execute a mission, dispatch an agent, or create a
+second state store. The acceptance contract and capability mapping are in
+`engineering/operations/zeus-oa01-mission-verification.md`.
+
+When OA-01 reports `IMPLEMENTATION_REQUIRED`, `zeus resume` runs the bounded
+implementation-completion assessment. On PASS it records integrity-bound
+implementation evidence and changes the existing Progressive runtime to
+`AWAITING_OPERATOR_VERIFICATION`. It does not create the formal `VERIFIED`
+marker, accept OA-01, or enable OA-02. Follow the admitted OA-01 verification
+guide for those separately controlled steps.
+
 ## Architecture and lifecycle role
 
 `zeus` is the operator interface to the Zeus engineering platform. Its launcher
@@ -7,6 +48,55 @@ resolves the authoritative repository and invokes `scripts/zeus`. Zeus observes
 authority publication, PMCT evidence, gate approval, Work Registry, EENS,
 Engineering Work Orders, dispatch, and resume state without weakening their
 separate contracts.
+
+## Stage 1 mission submission
+
+Operators submit a WOP package through `zeus submit PATH`. `PATH` may be a
+directory or a `.tar.gz`/`.tgz` archive. Zeus safely opens the package, verifies
+its bootstrap, roadmap, mission metadata, gates, manifests, declared execution
+files, and optional `SHA256SUMS`, then resolves the package mission through the
+existing Mission Contract resolver. Mission metadata must carry the stable
+mission and WOP identities, objective, scope, dependencies, priority, and
+`CANDIDATE` state. The staged record preserves those values in an
+integrity-bound `staging_contract`. These checks determine execution readiness,
+not Mission Admission. The runtime also verifies repository root, identity,
+branch, baseline ancestry, working-tree policy, and operator identity. A
+failure records the historical runtime label `REJECTED` and exits 78; under the
+governance lifecycle this means execution status `BLOCKED` while Mission Status
+remains `ADMITTED`.
+
+A Governance-admitted submission is projected through `VALIDATING`, `ADMITTED`,
+and `STAGED`. These runtime labels do not authorize an execution agent to
+admit, revoke, or activate a mission.
+Submitting identical mission and package content again returns the existing
+instance with `idempotent_replay: true`; it never creates a second active
+mission. State is stored under `.zeus/runtime/stage1/missions/` with an
+integrity digest and survives process restart. No Stage 1 command dispatches
+an execution agent or executes package content.
+
+Use `zeus list` for staged missions, `zeus show MISSION` for a mission's full
+record and validation evidence, and `zeus status` for the
+`mission_admission` summary alongside the existing operational status.
+The summary is reconstructed from integrity-valid persisted mission records
+on every call: `mission_count` is the record count and `states` groups those
+same records by supported lifecycle state. Its `schema_version` versions the
+summary response. Zero means the live mission store is empty; it is not a
+placeholder. Any corrupt or inconsistent record makes status exit fail closed.
+
+Stage 1 publishes immutable, idempotent EENS projections under
+`.zeus/runtime/stage1/eens/`: `mission.submitted`, `mission.validating`,
+`mission.admitted`, `mission.rejected`, and `mission.staged`. Event identity
+binds the mission instance, lifecycle state, WOP, and timestamp. A
+`mission.rejected` projection reports failed execution qualification and shall
+not be interpreted as revocation of Governance admission.
+
+OA-05 qualifies this interface as the Mission Staging Contract. Its
+implementation and verification execute candidate submission only in isolated
+repositories, require the complete integrity-bound `staging_contract`, and
+prove deterministic replay and restart recovery. The live gate stops at
+`VERIFIED_AWAITING_OPERATOR_ACCEPTANCE`; qualification does not submit a
+production mission, dispatch an agent, execute work, accept OA-05, or enable
+OA-06.
 
 ## Commands and workflows
 
@@ -16,6 +106,16 @@ The governed gate workflow is `zeus verify OA-NN` followed later by
 `zeus accept OA-NN`; verification never implies acceptance. Use
 `zeus accept OA-NN --reject` for the alternate explicit decision. Operator
 identity is derived from the authenticated account; no operator option exists.
+
+The Progressive OA package instead exposes the explicit compatibility command
+`zeus approve OA-NN --operator OPERATOR`. Approval creates a uniquely named,
+append-only receipt bound to the current package manifest, gate, VERIFIED
+marker bytes, marker digest, verification-evidence digest, and operator. Zeus
+reports `idempotent_replay: true` only when the gate is already accepted and
+runtime state points to that exact, integrity-valid, non-superseded receipt
+with every current binding unchanged. Historical `accepted.json` files are
+audit evidence, not current decisions. Use `zeus gate receipt OA-NN` to resolve
+and validate only the receipt referenced by runtime state.
 
 `zeus verify OA-02` performs the pre-execution readiness evaluation without
 authorizing dispatch. Status and next-action resolve the integrity-protected

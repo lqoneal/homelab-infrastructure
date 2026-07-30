@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "runtime_model": "Progressive Runtime Layer",
+  "state_registry_sha256": "9238b03bbdd6a691bde4d7498a260ba20ad1f295d0ad20e7f4b95cce6ec1b00f",
+  "transitions": [
+    {
+      "transition_identifier": "transition-authority-context-validated-to-decision-authorized",
+      "execution_contract_identifier": "execution-contract-authority-context-validated-to-decision-authorized",
+      "source_runtime_state": "AUTHORITY_CONTEXT_VALIDATED",
+      "destination_runtime_state": "DECISION_AUTHORIZED",
+      "governing_runtime_policies": [
+        "policy-progressive-authority-primitives",
+        "policy-progressive-decision-authority",
+        "policy-progressive-lifecycle-projection"
+      ],
+      "guard_conditions": [
+        "authority-context-remains-valid",
+        "authority-context-validated",
+        "gate-decision-approval-satisfied"
+      ],
+      "required_evidence": [
+        "canonical-authority-receipt",
+        "gate-decision-approval"
+      ],
+      "approval_requirements": {
+        "state": "REQUIRED",
+        "authority_level": "GATE_DECISION_AUTHORITY"
+      },
+      "rollback_behavior": {
+        "mode": "RETURN_TO_SOURCE_STATE",
+        "conditions": [
+          "destination-entry-incomplete",
+          "transition-invariant-failure"
+        ]
+      },
+      "transition_invariants": [
+        "canonical-interface-only",
+        "registered-consumer-only",
+        "runtime-integrity-preserved"
+      ]
+    },
+    {
+      "transition_identifier": "transition-decision-authorized-to-lifecycle-projection-eligible",
+      "execution_contract_identifier": "execution-contract-decision-authorized-to-lifecycle-projection-eligible",
+      "source_runtime_state": "DECISION_AUTHORIZED",
+      "destination_runtime_state": "LIFECYCLE_PROJECTION_ELIGIBLE",
+      "governing_runtime_policies": [
+        "policy-progressive-lifecycle-projection"
+      ],
+      "guard_conditions": [
+        "canonical-lifecycle-state-valid",
+        "decision-persistence-complete"
+      ],
+      "required_evidence": [
+        "canonical-lifecycle-state",
+        "decision-persistence-record"
+      ],
+      "approval_requirements": {
+        "state": "NOT_REQUIRED",
+        "authority_level": null
+      },
+      "rollback_behavior": {
+        "mode": "RETURN_TO_SOURCE_STATE",
+        "conditions": [
+          "destination-entry-incomplete",
+          "transition-invariant-failure"
+        ]
+      },
+      "transition_invariants": [
+        "canonical-interface-only",
+        "registered-consumer-only",
+        "runtime-integrity-preserved"
+      ]
+    }
+  ]
+}

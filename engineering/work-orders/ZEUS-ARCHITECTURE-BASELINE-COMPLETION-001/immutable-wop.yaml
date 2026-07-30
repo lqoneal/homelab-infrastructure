@@ -1,0 +1,51 @@
+schema_version: 1
+wop_id: WOP-ZEUS-ARCHITECTURE-BASELINE-COMPLETION-001
+revision: 1
+status: Draft
+mission_id: ZEUS-ARCHITECTURE-BASELINE-COMPLETION-001
+phase_id: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-01-ARCH-0001
+work_item_id: EMP-WORK-ZEUS-ARCHITECTURE-BASELINE-COMPLETION-001
+authority_binding:
+  authority_node_id: null
+  authority_reference: pending-engineering-governance-admission-and-activation
+execution_context:
+  repository: /data/engineering/repositories/homelab
+  qualified_baseline: d0861dc62b8199de03230152c4ed3cfb687dd9a7
+  branch: main
+  principal_id: architecture-baseline-execution-agent
+proposed_effects:
+  - complete and independently review ARCH-0001 without selecting architecture
+  - prepare ARCH-0001 for separately authorized approval and freeze
+  - complete and independently review ADR-0001 after ARCH-0001 is frozen
+  - prepare ADR-0001 for separately authorized approval and freeze
+  - complete and independently review SPEC-0002 after ADR-0001 is frozen
+  - prepare SPEC-0002 for separately authorized approval and freeze
+  - develop the Operational Alpha roadmap only after the architecture suite is frozen
+prohibited_effects:
+  - activate this WOP or Mission Contract without a separate attributable approval
+  - self-approve or self-freeze a controlled document
+  - modify Runtime implementation or qualification logic
+  - begin Operational Alpha implementation planning before the architecture suite is frozen
+  - activate, publish, commit, tag, push, or synchronize without separate authority
+  - mutate Project State, Work Registry, or the current active mission before successful admission
+sequence:
+  - phase_id: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-01-ARCH-0001
+    label: Phase I
+    target: ARCH-0001
+  - phase_id: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-02-ADR-0001
+    label: Phase II
+    target: ADR-0001
+  - phase_id: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-03-ADR-0001
+    label: Phase III
+    target: ADR-0001
+  - phase_id: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-04-SPEC-0002
+    label: Phase IV
+    target: SPEC-0002
+  - phase_id: EMP-PHASE-ZEUS-ARCHITECTURE-BASELINE-05-OA-ROADMAP
+    label: Phase V
+    target: OPERATIONAL-ALPHA-ROADMAP
+ordering: strict
+concurrency: one-active-phase
+admission_record: pending
+activation_record: pending
+completion_boundary: Architecture suite frozen and Operational Alpha roadmap prepared; implementation planning requires separate authority.

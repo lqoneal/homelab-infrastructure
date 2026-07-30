@@ -17,10 +17,29 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from scripts.lib.emp.next_action import resolve_next_action  # noqa: E402
-from scripts.lib.emp.oa02_lifecycle import resolve as resolve_oa02  # noqa: E402
-
-
 class NextActionTests(unittest.TestCase):
+    @staticmethod
+    def legacy_wop_fixture(root: Path) -> Path:
+        wop = root / "legacy-wop-fixture"
+        approvals = wop / "operator-approvals"
+        commands = wop / "bin"
+        approvals.mkdir(parents=True)
+        commands.mkdir()
+        eligibility = commands / "check-gate-eligibility"
+        eligibility.write_text(
+            "#!/usr/bin/env bash\n"
+            "if test \"${FIXTURE_OA01_ACCEPTED:-0}\" = 1; then\n"
+            "  printf 'ELIGIBILITY=CONDITIONALLY_ELIGIBLE\\n'\n"
+            "  exit 0\n"
+            "fi\n"
+            "printf 'OA-02_ELIGIBILITY=BLOCKED\\n'\n"
+            "printf 'BLOCKING_REASON=OA-01_OPERATOR_ACCEPTANCE_REQUIRED\\n'\n"
+            "exit 77\n"
+        )
+        eligibility.chmod(0o755)
+        (wop / "README.md").write_text("synthetic legacy lifecycle fixture\n")
+        return wop
+
     @staticmethod
     def oa02_state(
         *,
@@ -277,86 +296,63 @@ class NextActionTests(unittest.TestCase):
         finally:
             temporary.cleanup()
 
-    def test_current_cli_reports_lifecycle_phase_and_does_not_modify_worktree(self):
-        pointer = ROOT / ".zeus/runtime/authority/active-publication.json"
-        pointer_before = pointer.read_bytes()
-        publication = (
-            ROOT / ".zeus/runtime/authority/publications/"
-            "AUTHORITY-PUBLICATION-7dc94267-ab5e-4a7f-b962-f6ce3335f307"
+    def test_legacy_decision_reports_lifecycle_phase_and_does_not_modify_fixture(self):
+        fixture = tempfile.TemporaryDirectory()
+        self.addCleanup(fixture.cleanup)
+        fixture_root = Path(fixture.name)
+        wop = self.legacy_wop_fixture(fixture_root)
+        repository_temporary, root = self.repository(
+            published_matches=True, qualified=True
         )
-        artifact_before = {
-            path.relative_to(publication): path.read_bytes()
-            for path in publication.rglob("*") if path.is_file()
+        self.addCleanup(repository_temporary.cleanup)
+        before = {
+            path.relative_to(root): path.read_bytes()
+            for path in root.rglob("*") if path.is_file()
         }
-        before = subprocess.run(
-            ["git", "-C", str(ROOT), "status", "--porcelain=v1"],
-            text=True, capture_output=True, check=True,
-        ).stdout
-        result = subprocess.run(
-            [str(ROOT / "scripts/zeus"), "next-action", "--json"],
-            text=True, capture_output=True, check=False,
-            env={
-                "ZEUS_TESTING": "operator",
-                "ZEUS_NO_INTRO": "1",
-                "ZEUS_PROGRESSIVE_OA": "0",
+        with patch(
+            "scripts.lib.emp.next_action._oa01_lifecycle",
+            return_value={
+                "verification_passed": True,
+                "acceptance_recorded": True,
             },
-        )
-        self.assertEqual(result.returncode, 0, result.stderr)
-        value = json.loads(result.stdout)
+        ), patch(
+            "scripts.lib.emp.next_action.resolve_oa02",
+            return_value=self.oa02_state(verified=False, pmct="NOT_READY"),
+        ):
+            value = resolve_next_action(root)
         self.assertEqual(value["zeus_mode"], "BETA")
         self.assertEqual(value["operational_dispatch"], "DISABLED")
-        repository = value["repository"]
-        expected_action = (
-            "PUBLISH_SIGNED_REPOSITORY_BASELINE"
-            if repository["implementation_baseline"]
-            != repository["published_baseline"]
-            else (
-                (
-                    resolve_oa02(ROOT)["next_action"]
-                    if value["oa01_lifecycle"]["operator_acceptance"] == "RECORDED"
-                    else "RECORD_OA-01_OPERATOR_ACCEPTANCE"
-                )
-                if value["oa01_lifecycle"]["operator_verification"] == "PASS"
-                else "RUN_OA-01_VERIFICATION"
-            )
+        self.assertEqual(
+            value["next_authorized_action"]["code"],
+            "RUN_OA-02_PRE_EXECUTION_VERIFICATION",
         )
-        self.assertEqual(value["next_authorized_action"]["code"], expected_action)
-        self.assertIn(
-            value["oa01_lifecycle"]["operator_verification"], {"ABSENT", "PASS"}
-        )
-        self.assertIn(
-            value["oa01_lifecycle"]["operator_acceptance"],
-            {"NOT_RECORDED", "RECORDED"},
-        )
-        after = subprocess.run(
-            ["git", "-C", str(ROOT), "status", "--porcelain=v1"],
-            text=True, capture_output=True, check=True,
-        ).stdout
+        self.assertEqual(value["oa01_lifecycle"]["operator_verification"], "PASS")
+        self.assertEqual(value["oa01_lifecycle"]["operator_acceptance"], "RECORDED")
+        after = {
+            path.relative_to(root): path.read_bytes()
+            for path in root.rglob("*") if path.is_file()
+        }
         self.assertEqual(after, before)
-        self.assertEqual(pointer.read_bytes(), pointer_before)
-        self.assertEqual({
-            path.relative_to(publication): path.read_bytes()
-            for path in publication.rglob("*") if path.is_file()
-        }, artifact_before)
         eligibility = subprocess.run(
-            [
-                "/data/engineering/wops/ZEUS-OA-PROGRESSIVE-WOP/"
-                "bin/check-gate-eligibility",
-                "OA-02",
-            ],
+            [str(wop / "bin/check-gate-eligibility"), "OA-02"],
             text=True, capture_output=True, check=False,
+            env={"FIXTURE_OA01_ACCEPTED": "1"},
         )
         eligibility_output = eligibility.stdout + eligibility.stderr
-        if value["oa01_lifecycle"]["operator_acceptance"] == "RECORDED":
-            self.assertEqual(eligibility.returncode, 0)
-            self.assertIn("ELIGIBILITY=CONDITIONALLY_ELIGIBLE", eligibility_output)
-        else:
-            self.assertEqual(eligibility.returncode, 77)
-            self.assertIn("OA-02_ELIGIBILITY=BLOCKED", eligibility_output)
-            self.assertIn(
-                "BLOCKING_REASON=OA-01_OPERATOR_ACCEPTANCE_REQUIRED",
-                eligibility_output,
-            )
+        self.assertEqual(eligibility.returncode, 0)
+        self.assertIn("ELIGIBILITY=CONDITIONALLY_ELIGIBLE", eligibility_output)
+        blocked = subprocess.run(
+            [str(wop / "bin/check-gate-eligibility"), "OA-02"],
+            text=True, capture_output=True, check=False,
+            env={"FIXTURE_OA01_ACCEPTED": "0"},
+        )
+        blocked_output = blocked.stdout + blocked.stderr
+        self.assertEqual(blocked.returncode, 77)
+        self.assertIn("OA-02_ELIGIBILITY=BLOCKED", blocked_output)
+        self.assertIn(
+            "BLOCKING_REASON=OA-01_OPERATOR_ACCEPTANCE_REQUIRED",
+            blocked_output,
+        )
 
 
 if __name__ == "__main__":

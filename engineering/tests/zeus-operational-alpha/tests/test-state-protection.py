@@ -70,7 +70,7 @@ class ProtectionTests(unittest.TestCase):
         checks = []
         service = unittest.mock.Mock()
         service.binding.return_value = object()
-        service._matching_receipt.return_value = None
+        service.gate_milestone.return_value = {"acceptance": "NOT_RECORDED"}
         capability = {"gates": {"OA-01": {
             "status": "PASS", "operator_acceptance": "RECORDED"
         }}}
@@ -91,7 +91,7 @@ class ProtectionTests(unittest.TestCase):
         }}
         service = unittest.mock.Mock()
         service.binding.return_value = object()
-        service._matching_receipt.return_value = {"decision": "ACCEPT"}
+        service.gate_milestone.return_value = {"acceptance": "RECORDED"}
         capability = {"gates": {"OA-01": {
             "status": "PASS", "operator_acceptance": "NOT_RECORDED"
         }}}

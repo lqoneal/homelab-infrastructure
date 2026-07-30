@@ -1,0 +1,52 @@
+{
+  "document_type": "ExternalWOPUniqueRecordClassification",
+  "external_root": "/data/engineering/wops/ZEUS-OA-PROGRESSIVE-WOP",
+  "groups": [
+    {
+      "classification": "OBSOLETE_EXECUTABLE_COMPATIBILITY_TREE",
+      "paths": [
+        "BOOTSTRAP-AND-EXECUTION.md",
+        "CODEX-HANDOFF.md",
+        "README.md",
+        "WOP.md",
+        "bin/check-gate-eligibility",
+        "bin/check-gate-eligibility.pre-p2-037-repair.bak",
+        "bin/record-operator-approval",
+        "bin/resume-status"
+      ],
+      "disposition": "PRESERVE_MANIFEST_REDIRECT_CONSUMERS_RETIRE_LATER"
+    },
+    {
+      "classification": "OBSOLETE_DERIVED_GATE_PROJECTION",
+      "path_pattern": "gates/OA-02..OA-30/{README.md,STATUS.json}",
+      "record_count": 58,
+      "disposition": "PRESERVE_HISTORICAL_SNAPSHOT_DO_NOT_IMPORT_CURRENT_STATE"
+    },
+    {
+      "classification": "UNIQUE_HISTORICAL_OPERATOR_EVIDENCE",
+      "path_patterns": [
+        "operator-approvals/**",
+        "operator-decisions/**"
+      ],
+      "disposition": "PRESERVE_IMMUTABLE_MAP_IDENTITIES_BEFORE_ARCHIVAL"
+    },
+    {
+      "classification": "UNIQUE_LEGACY_VERIFICATION_EVIDENCE",
+      "path_pattern": "operator-verifications/**",
+      "disposition": "PRESERVE_IMMUTABLE_NEVER_USE_AS_CURRENT_OA06_AUTHORITY"
+    },
+    {
+      "classification": "NONAUTHORITATIVE_TEMPLATE",
+      "path_pattern": "templates/**",
+      "disposition": "RETAIN_ONLY_FOR_HISTORICAL_RECOVERY_NEED"
+    },
+    {
+      "classification": "DIVERGENT_EXTERNAL_MANIFEST",
+      "paths": [
+        "MANIFEST.sha256"
+      ],
+      "disposition": "PRESERVE_WITH_EXTERNAL_PACKAGE_NEVER_REPLACE_CANONICAL_MANIFEST"
+    }
+  ],
+  "schema_version": 1
+}

@@ -1,0 +1,12 @@
+{
+  "decision": "SUPERSEDED",
+  "gate_id": "OA-04",
+  "historical_receipt": "accepted.json",
+  "historical_receipt_digest": "fd578e57b4d67f6eb7102fed3951e682653263efee701f7d42b15c629612d08d",
+  "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
+  "reason": "The receipt predates the OA-04 Project and Operational Context Reconstruction contract correction and does not bind the corrected verification evidence.",
+  "replacement_required": "Explicit operator acceptance of the corrected OA-04 verification",
+  "schema_version": 1,
+  "superseded_at": "2026-07-29T12:00:00-07:00",
+  "superseded_by": "ZH-OA04-CONTRACT-CONFORMANCE-REVIEW-001"
+}

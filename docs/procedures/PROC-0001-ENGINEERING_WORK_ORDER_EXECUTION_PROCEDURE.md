@@ -1,7 +1,7 @@
 ---
 document_id: PROC-0001
 title: Engineering Work Order Execution Procedure
-version: 1.17
+version: 1.19
 status: Draft
 owner: Engineering Governance
 created: 2026-07-09
@@ -10,7 +10,7 @@ phase: Engineering Execution Interface Standardization
 domain: Engineering Governance
 classification: Engineering Procedure
 source_of_truth: true
-predecessor_revision: PROC-0001@1.16
+predecessor_revision: PROC-0001@1.18
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -618,7 +618,10 @@ Engineering Work Order.
 5. For every validator, distinguish partial output from terminal completion.
    Capture the terminal exit status and do not claim a conclusion until the
    validator has completed. A pipeline or subsequent successful command shall
-   not mask the validator status.
+   not mask the validator status. When a governing procedure defines
+   file-type-aware finding classification, record both the raw exit status and
+   the governed classification; do not relabel, suppress, or silently repair
+   the raw result.
 6. Complete mission status, scope compliance, completion criteria, and the
    execution/results boundary required by STD-0003.
 7. Present Findings, Analysis, Recommendations, Final Certification, and
@@ -692,6 +695,14 @@ Engineering State verification, evidence collection, Completion Reports,
 Commit Classification, and Commit Reconstruction Planning. PROC-0005 owns the
 common publication gates, frozen publication content, exact publication
 boundary, controlled publication transaction, and post-publication verification.
+
+Execution-generated publication control artifacts shall be routed to the
+active PROC-0005 transaction output ledger when their production event occurs.
+Their creation does not modify the frozen publication-input manifest. PROC-0001
+records the artifact identity, class, owner, generating event, and handoff to
+the declared transaction output boundary. If immutable transaction
+finalization has already occurred, PROC-0001 routes the artifact to a linked
+corrective successor transaction instead of reopening or rewriting history.
 
 The publication transaction may begin only after the applicable PROC-0005
 authorization gate passes. Neither procedure supplies Governance approval,
@@ -1143,3 +1154,5 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.15 candidate | 2026-07-28 | Added deterministic mission admission, activation-request, atomic reconciliation, rollback, interruption recovery, cardinality, and shared authority-reporting workflow. |
 | 1.16 | 2026-07-29 | Added Governance Bootstrap consultation and normal-authority re-entry; defined independent Governance and execution state, Governance-only admission and activation, and resumable blocked missions. |
 | 1.17 | 2026-07-29 | Corrected publication Work Initiation to declare four repository–EOS boundaries, preserve repository authority, classify expected publication drift, and require separate synchronization authority. |
+| 1.18 | 2026-07-29 | Required validator evidence to preserve raw exit status while applying only explicitly governed file-type-aware finding classifications. |
+| 1.19 | 2026-07-29 | Routed execution-generated publication control artifacts to the active PROC-0005 output ledger or, after immutable finalization, to a linked corrective successor transaction. |

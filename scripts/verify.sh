@@ -156,11 +156,47 @@ check_tools() {
 check_controlled_documents() {
     header "Controlled Documents"
 
-    if python3 "$SCRIPT_DIR/validate_controlled_documents.py"; then
-        pass "controlled-document discovery and EGR framework valid"
-    else
-        fail "controlled-document discovery or EGR framework invalid"
-    fi
+    local qualification
+    local -a qualifications=(
+        "$SCRIPT_DIR/validate_controlled_documents.py"
+        "$SCRIPT_DIR/tests/test-controlled-document-relationships.py"
+        "$SCRIPT_DIR/tests/test-controlled-document-semantic-validation.py"
+        "$SCRIPT_DIR/tests/test-governance-bootstrap-documentation.py"
+        "$SCRIPT_DIR/tests/test-governance-mission-admission-documentation.py"
+        "$SCRIPT_DIR/tests/test-governance-baseline-documentation.py"
+    )
+
+    for qualification in "${qualifications[@]}"; do
+        if PYTHONDONTWRITEBYTECODE=1 python3 "$qualification"; then
+            pass "$(basename "$qualification")"
+        else
+            fail "$(basename "$qualification")"
+        fi
+    done
+}
+
+check_progressive_runtime_architecture() {
+    header "Progressive Runtime Architecture"
+
+    local qualification
+    local -a qualifications=(
+        "$SCRIPT_DIR/tests/test-progressive-runtime-dependencies.py"
+        "$SCRIPT_DIR/tests/test-progressive-runtime-registration.py"
+        "$SCRIPT_DIR/tests/test-progressive-runtime-capabilities.py"
+        "$SCRIPT_DIR/tests/test-progressive-runtime-policies.py"
+        "$SCRIPT_DIR/tests/test-progressive-runtime-states.py"
+        "$SCRIPT_DIR/tests/test-progressive-runtime-transitions.py"
+        "$SCRIPT_DIR/tests/test-progressive-runtime-execution-contracts.py"
+        "$SCRIPT_DIR/tests/test-progressive-runtime-outcomes.py"
+    )
+
+    for qualification in "${qualifications[@]}"; do
+        if PYTHONPATH="$SCRIPT_DIR/.." PYTHONDONTWRITEBYTECODE=1 python3 "$qualification"; then
+            pass "$(basename "$qualification")"
+        else
+            fail "$(basename "$qualification")"
+        fi
+    done
 }
 
 ########################################
@@ -206,6 +242,7 @@ main() {
     check_storage
     check_tools
     check_controlled_documents
+    check_progressive_runtime_architecture
 
     summary
 }

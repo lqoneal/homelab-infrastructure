@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "runtime_model": "Progressive Runtime Layer",
+  "transition_registry_sha256": "4935a6d172f8e12e5f616d524fa5e4d89cf7dee5953dde7a23a9dbfe845141d2",
+  "execution_contracts": [
+    {
+      "execution_contract_identifier": "execution-contract-authority-context-validated-to-decision-authorized",
+      "owning_runtime_transition": "transition-authority-context-validated-to-decision-authorized",
+      "runtime_outcome_identifiers": [
+        "outcome-authority-context-validated-to-decision-authorized-failure",
+        "outcome-authority-context-validated-to-decision-authorized-success"
+      ],
+      "execution_phases": [
+        "PREPARE",
+        "VERIFY_PRECONDITIONS",
+        "EXECUTE",
+        "COLLECT_EVIDENCE",
+        "VERIFY_COMPLETION",
+        "FINALIZE"
+      ],
+      "execution_preconditions": [
+        "authority-context-remains-valid",
+        "authority-context-validated",
+        "gate-decision-approval-satisfied"
+      ],
+      "execution_checkpoints": [
+        {
+          "checkpoint_identifier": "checkpoint-authority-context-preconditions",
+          "order": 1,
+          "phase": "VERIFY_PRECONDITIONS",
+          "required_evidence": [
+            "canonical-authority-receipt"
+          ]
+        },
+        {
+          "checkpoint_identifier": "checkpoint-decision-authorization-completion",
+          "order": 2,
+          "phase": "VERIFY_COMPLETION",
+          "required_evidence": [
+            "gate-decision-approval"
+          ]
+        }
+      ],
+      "required_evidence": [
+        "canonical-authority-receipt",
+        "gate-decision-approval"
+      ],
+      "interruption_behavior": {
+        "interruptible_phases": [
+          "PREPARE",
+          "VERIFY_PRECONDITIONS",
+          "COLLECT_EVIDENCE",
+          "VERIFY_COMPLETION"
+        ],
+        "restart_phase": "VERIFY_PRECONDITIONS",
+        "interruption_evidence": [
+          "execution-interruption-record"
+        ]
+      },
+      "resume_behavior": {
+        "resume_phase": "VERIFY_PRECONDITIONS",
+        "resume_prerequisites": [
+          "execution-interruption-record-valid",
+          "source-state-remains-valid"
+        ]
+      },
+      "completion_criteria": [
+        "decision-authorized-state-entry-complete",
+        "required-evidence-collected"
+      ],
+      "failure_criteria": [
+        "execution-precondition-failed",
+        "required-evidence-incomplete",
+        "transition-invariant-failed"
+      ],
+      "rollback_triggers": [
+        {
+          "trigger": "destination-entry-incomplete",
+          "rollback_checkpoint": "checkpoint-authority-context-preconditions",
+          "rollback_completion_criteria": [
+            "rollback-evidence-recorded",
+            "source-state-restored"
+          ]
+        },
+        {
+          "trigger": "transition-invariant-failure",
+          "rollback_checkpoint": "checkpoint-authority-context-preconditions",
+          "rollback_completion_criteria": [
+            "rollback-evidence-recorded",
+            "source-state-restored"
+          ]
+        }
+      ]
+    },
+    {
+      "execution_contract_identifier": "execution-contract-decision-authorized-to-lifecycle-projection-eligible",
+      "owning_runtime_transition": "transition-decision-authorized-to-lifecycle-projection-eligible",
+      "runtime_outcome_identifiers": [
+        "outcome-decision-authorized-to-lifecycle-projection-eligible-failure",
+        "outcome-decision-authorized-to-lifecycle-projection-eligible-success"
+      ],
+      "execution_phases": [
+        "PREPARE",
+        "VERIFY_PRECONDITIONS",
+        "EXECUTE",
+        "COLLECT_EVIDENCE",
+        "VERIFY_COMPLETION",
+        "FINALIZE"
+      ],
+      "execution_preconditions": [
+        "canonical-lifecycle-state-valid",
+        "decision-persistence-complete"
+      ],
+      "execution_checkpoints": [
+        {
+          "checkpoint_identifier": "checkpoint-decision-persistence-preconditions",
+          "order": 1,
+          "phase": "VERIFY_PRECONDITIONS",
+          "required_evidence": [
+            "decision-persistence-record"
+          ]
+        },
+        {
+          "checkpoint_identifier": "checkpoint-lifecycle-projection-completion",
+          "order": 2,
+          "phase": "VERIFY_COMPLETION",
+          "required_evidence": [
+            "canonical-lifecycle-state"
+          ]
+        }
+      ],
+      "required_evidence": [
+        "canonical-lifecycle-state",
+        "decision-persistence-record"
+      ],
+      "interruption_behavior": {
+        "interruptible_phases": [
+          "PREPARE",
+          "VERIFY_PRECONDITIONS",
+          "COLLECT_EVIDENCE",
+          "VERIFY_COMPLETION"
+        ],
+        "restart_phase": "VERIFY_PRECONDITIONS",
+        "interruption_evidence": [
+          "execution-interruption-record"
+        ]
+      },
+      "resume_behavior": {
+        "resume_phase": "VERIFY_PRECONDITIONS",
+        "resume_prerequisites": [
+          "execution-interruption-record-valid",
+          "source-state-remains-valid"
+        ]
+      },
+      "completion_criteria": [
+        "lifecycle-projection-eligible-state-entry-complete",
+        "required-evidence-collected"
+      ],
+      "failure_criteria": [
+        "execution-precondition-failed",
+        "required-evidence-incomplete",
+        "transition-invariant-failed"
+      ],
+      "rollback_triggers": [
+        {
+          "trigger": "destination-entry-incomplete",
+          "rollback_checkpoint": "checkpoint-decision-persistence-preconditions",
+          "rollback_completion_criteria": [
+            "rollback-evidence-recorded",
+            "source-state-restored"
+          ]
+        },
+        {
+          "trigger": "transition-invariant-failure",
+          "rollback_checkpoint": "checkpoint-decision-persistence-preconditions",
+          "rollback_completion_criteria": [
+            "rollback-evidence-recorded",
+            "source-state-restored"
+          ]
+        }
+      ]
+    }
+  ]
+}

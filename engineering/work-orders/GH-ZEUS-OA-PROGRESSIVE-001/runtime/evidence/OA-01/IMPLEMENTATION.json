@@ -1,0 +1,154 @@
+{
+  "authority_boundary": "Implementation evidence does not verify or accept OA-01 and does not authorize OA-02.",
+  "checks": {
+    "eos_synchronization": {
+      "command": [
+        "scripts/engctl",
+        "eos",
+        "sync-validate"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "364d9c77ff7f9972fc8a318621283577b44abf0397cef50b055e834fc22692d3"
+    },
+    "focused_tests": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "scripts/tests/test-zeus-oa01-verification.py",
+        "scripts/tests/test-zeus-progressive-oa.py",
+        "scripts/tests/test-zeus-stage1-runtime.py"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e71de4d71ce35165644b2d43f532c4a1447c2444e9fc253205d747065fa7a381",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "package_integrity": {
+      "command": [
+        "/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/verify-package.sh"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "6d868ace306b19ce8f99bf49b2184845a18eeb0bc68294ab22116536a704c0d7"
+    },
+    "repository_health": {
+      "command": [
+        "scripts/engctl",
+        "repository",
+        "health"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "11059a0fa6b32b4dc4387748b5d6cfa65bc3294f6a9bc11afbab24604c0b2f59"
+    },
+    "work_registry": {
+      "command": [
+        "scripts/engctl",
+        "registry",
+        "validate"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "948cf5436bfbba9ea7755e6ef2951df2af0fdfaa9f6b11eee58944a753921603"
+    }
+  },
+  "commands": {
+    "authority": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "mission",
+        "authority"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "0b1856d9c6adb1bccfb92172077dfd9e6679f3c07487944fa1770be1465d2020"
+    },
+    "blockers": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "mission",
+        "blockers"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "b3f6ae936d396894fedc37e2111a8e610117dcb1717067337aaf2f2c2597cca4"
+    },
+    "contract": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "mission",
+        "contract"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "412c32ebc19f36bef6d7ff173b10a9fb7612d8e66cb4fe1d0d44f1f4bb19d612"
+    },
+    "eligibility": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "mission",
+        "eligibility"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "5f90633d4c7a2f3d19b73ac79523789ac4d3597d727e1b8506260b52059505e2"
+    },
+    "list": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "mission",
+        "list"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "f16c5a4a07e149a423f7bc490fb5f1b76052ba248f9e472c8945435eebc2ca36"
+    },
+    "next": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "mission",
+        "next"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "ad03d5ae5657adf9aa0737acca95d7e6e8bcc436e66afc9b508aca832a591474"
+    },
+    "readiness": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "mission",
+        "readiness"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "ea48f478d06edab6cfc2310e8bcbd400ec5bc7cdf6718977894f84c852969965"
+    },
+    "show": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "mission",
+        "show"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "959d6feee1bea1af2470d2b1065ab9de3acd04a25523e3bf476fed48160c2b8a"
+    },
+    "state": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "mission",
+        "state"
+      ],
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "7283a6043b7d58a5750ed5eba22984506efffadf80f082474f7bef9ef99a6fb4"
+    }
+  },
+  "evidence_digest": "5793c25c12868d3efcd86502211b22469c05b1f8707d18373eb536bc3fb4c0e7",
+  "gate_id": "OA-01",
+  "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
+  "projection_digest": "44ec0db6118d0bc34729899aed3107b5ac8970759e4e20aeac1f439151f9a0c1",
+  "result": "IMPLEMENTATION_COMPLETE",
+  "schema_version": 1
+}

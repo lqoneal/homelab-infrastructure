@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "contract_id": "ZH-CONTROLLED-WORKING-TREE-BASELINE-001",
+  "baseline_head": "d0861dc62b8199de03230152c4ed3cfb687dd9a7",
+  "baseline_path_count": 128,
+  "baseline_status_sha256": "37a5270cc4c9fc63b0b0cc37141603449bbfb82980716dec6056caf57ed380c2",
+  "authorization": "current dirty working tree is the controlled publication transaction",
+  "index_policy": "EMPTY_REQUIRED",
+  "handoff_paths": [
+    "engineering/authorization/authorization-bundle.schema.yaml",
+    "engineering/docs/architecture/authorization-bundle-contract.md",
+    "engineering/docs/architecture/ZEUS-CONTROLLED-DOCUMENTATION-ARCHITECTURE.md",
+    "engineering/evidence/2026-07-29-zh-controlled-working-tree-baseline-001.md",
+    "engineering/evidence/2026-07-29-zh-authorization-bundle-contract-001.md",
+    "engineering/evidence/2026-07-29-zh-zeus-controlled-document-architecture-001.md",
+    "engineering/execution/controlled-working-tree-baseline.json",
+    "engineering/execution/execution-interface.yaml",
+    "engineering/execution/missions/GH-ZEUS-OA-PROGRESSIVE-001.yaml",
+    "engineering/tests/zeus-operational-alpha/PMCT-CAPABILITY-MATRIX.yaml",
+    "engineering/tests/zeus-operational-alpha/PMCT-CONTRACT.md",
+    "engineering/work-orders/GH-ZEUS-OA-CERTIFICATION-001/BOOTSTRAP.md",
+    "scripts/lib/eos/platform.sh",
+    "scripts/lib/eos/working_tree_baseline.py",
+    "scripts/lib/emp/mission_eligibility.py",
+    "scripts/lib/work_initiation/authorization_bundle.py",
+    "scripts/tests/test-authorization-bundle.py",
+    "scripts/tests/test-working-tree-baseline.py",
+    "scripts/tests/test-zeus-oa06-mission-eligibility.py",
+    "scripts/zeus"
+  ],
+  "preserved_artifacts": [
+    {
+      "path": "engineering/evidence/2026-07-29-zh-publication-plan-002-manifest.json",
+      "sha256": "8b28d8d3b4eaeef258d060991d6dbf3a131b4e1fe8192fe8c1a653e21d7268f5"
+    },
+    {
+      "path": "engineering/evidence/2026-07-29-zh-publication-plan-002.json",
+      "sha256": "bea86013d2c6fab67640ce0bb6bfb1a611da3448307e2b30dc6771ca7be57af4"
+    }
+  ]
+}

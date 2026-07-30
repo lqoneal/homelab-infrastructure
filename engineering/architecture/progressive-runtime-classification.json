@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "runtime_model": "Progressive Runtime Layer",
+  "runtime_layers": [
+    {
+      "layer": 1,
+      "name": "Progressive Authority Primitives",
+      "modules": [
+        "scripts.lib.emp.progressive_gate"
+      ]
+    },
+    {
+      "layer": 2,
+      "name": "Progressive Decision Authority",
+      "modules": [
+        "scripts.lib.emp.progressive_gate"
+      ]
+    },
+    {
+      "layer": 3,
+      "name": "Progressive Lifecycle Projection",
+      "modules": [
+        "scripts.lib.emp.progressive_lifecycle"
+      ]
+    }
+  ],
+  "foundational_shared_utilities": [
+    "scripts.lib.emp.progressive_runtime_support"
+  ],
+  "compatibility_adapters": [
+    "scripts.lib.emp.oa02_lifecycle",
+    "scripts.lib.emp.progressive_oa"
+  ],
+  "qualification_infrastructure": [
+    "scripts.lib.authority_pipeline.progressive_runtime_capabilities",
+    "scripts.lib.authority_pipeline.progressive_runtime_consolidation",
+    "scripts.lib.authority_pipeline.progressive_runtime_dependencies",
+    "scripts.lib.authority_pipeline.progressive_runtime_execution_contracts",
+    "scripts.lib.authority_pipeline.progressive_runtime_outcomes",
+    "scripts.lib.authority_pipeline.progressive_runtime_policies",
+    "scripts.lib.authority_pipeline.progressive_runtime_registration",
+    "scripts.lib.authority_pipeline.progressive_runtime_states",
+    "scripts.lib.authority_pipeline.progressive_runtime_transitions",
+    "scripts.tests.test-progressive-runtime-capabilities",
+    "scripts.tests.test-progressive-runtime-consolidation",
+    "scripts.tests.test-progressive-runtime-dependencies",
+    "scripts.tests.test-progressive-runtime-execution-contracts",
+    "scripts.tests.test-progressive-runtime-implementation-synchronization",
+    "scripts.tests.test-progressive-runtime-outcomes",
+    "scripts.tests.test-progressive-runtime-policies",
+    "scripts.tests.test-progressive-runtime-registration",
+    "scripts.tests.test-progressive-runtime-states",
+    "scripts.tests.test-progressive-runtime-transitions"
+  ]
+}

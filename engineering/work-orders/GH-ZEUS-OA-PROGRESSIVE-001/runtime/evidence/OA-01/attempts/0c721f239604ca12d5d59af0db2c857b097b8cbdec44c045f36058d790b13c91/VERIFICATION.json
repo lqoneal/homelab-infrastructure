@@ -1,0 +1,389 @@
+{
+  "assertions": {
+    "controlled_record_reconciliation": "PASS",
+    "cumulative_regression_through": "OA-01",
+    "interruption_recovery": "PASS",
+    "negative_fail_closed": "PASS",
+    "next_gate_enabled": false,
+    "operator_acceptance_recorded": false,
+    "positive": "PASS",
+    "replay": "PASS"
+  },
+  "authoritative_inputs": {
+    "admission_digest": "2b24bd2e8385aefb13b22d63576ce1b63aa676b3992ebfe00fbd73252e68af93",
+    "admission_receipt": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/admission/ADMISSION-f01c0c2d-8edb-5567-ad19-8d0f4344909f.json",
+    "bindings": {
+      "authority_digest": "18f9f18239c25b0ec2f3de296a5e8fd980f8a8e9c55a7d150a4fdbc58249aa6b",
+      "authority_source": "engineering/mission-contracts/contracts/MC-MISSION-CONTRACT-PUBLICATION-001.yaml",
+      "branch": "main",
+      "contract_id": "MC-MISSION-CONTRACT-PUBLICATION-001",
+      "head": "f79462bd837df51f12a103f2ebc69a071c27f45d",
+      "mission_id": "MISSION-CONTRACT-PUBLICATION-001",
+      "qualified_baseline": "bcdd0b1a19045654d470bc65383c05a976bae2a6",
+      "remote": "git@github.com:lqoneal/homelab-infrastructure.git",
+      "repository_identity": "homelab",
+      "repository_root": "/data/engineering/repositories/homelab",
+      "upstream": "f79462bd837df51f12a103f2ebc69a071c27f45d",
+      "wop_digest": "278e15fc91c5df59c0ab4ccc62032df34bdc623871704e6f4ea6ce6218ae1752",
+      "wop_id": "WOP-8e6c4ab8-4c85-5d6c-9c90-10b8814bdf99"
+    },
+    "implementation_digest": "5793c25c12868d3efcd86502211b22469c05b1f8707d18373eb536bc3fb4c0e7",
+    "implementation_evidence": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/IMPLEMENTATION.json",
+    "package_manifest_digest": "a88f08792e654561e38238602eea7b08c18fa757b941360f372e5dfb2349aa6d",
+    "working_tree": {
+      "digest": "0574f838d56e38c0bc0374a8b940419d4b570169ae7f41fcdad0a8640d663e11",
+      "entries": [
+        {
+          "path": "docs/charters/CHAR-0001-ENGINEERING_CHARTER.md",
+          "status": " M"
+        },
+        {
+          "path": "docs/edr/EDR-0002-ENGINEERING_AUTHORITY_MODEL.md",
+          "status": " M"
+        },
+        {
+          "path": "docs/genesis/GEN-0001-GENESIS_GOVERNANCE_RECORD.md",
+          "status": " M"
+        },
+        {
+          "path": "docs/policies/POL-0001-ENGINEERING_GOVERNANCE_POLICY.md",
+          "status": " M"
+        },
+        {
+          "path": "docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md",
+          "status": " M"
+        },
+        {
+          "path": "docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md",
+          "status": " M"
+        },
+        {
+          "path": "docs/procedures/PROC-0007-GOVERNANCE-STABILIZATION-PROCEDURE.md",
+          "status": " M"
+        },
+        {
+          "path": "docs/project/PROJ-0001-PROJECT_STATE.md",
+          "status": " M"
+        },
+        {
+          "path": "docs/project/milestones/2026-07-29-operational-alpha-governance-baseline-1.0.md",
+          "status": "??"
+        },
+        {
+          "path": "docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md",
+          "status": " M"
+        },
+        {
+          "path": "docs/specifications/SPEC-0011-PRODUCTION-AUTHORITY-RESTORATION-SPECIFICATION.md",
+          "status": " M"
+        },
+        {
+          "path": "engineering/docs/architecture/ZEUS-STAGE1-RUNTIME.md",
+          "status": "??"
+        },
+        {
+          "path": "engineering/docs/cli/ZEUS-USER-GUIDE.md",
+          "status": " M"
+        },
+        {
+          "path": "engineering/evidence/2026-07-28-zeus-operational-alpha-stage1-completion-report.md",
+          "status": "??"
+        },
+        {
+          "path": "engineering/evidence/2026-07-29-zh-gov-mission-lifecycle-002-corrective-handoff.md",
+          "status": "??"
+        },
+        {
+          "path": "engineering/evidence/2026-07-29-zh-oa01-implementation-003.md",
+          "status": "??"
+        },
+        {
+          "path": "engineering/evidence/2026-07-29-zh-oa01-qualification-002.md",
+          "status": "??"
+        },
+        {
+          "path": "engineering/evidence/2026-07-29-zh-zeus-oa-admission-001-work-initiation.md",
+          "status": "??"
+        },
+        {
+          "path": "engineering/operations/authority-ownership-specification.md",
+          "status": " M"
+        },
+        {
+          "path": "engineering/operations/zeus-mission-admission-runtime.md",
+          "status": " M"
+        },
+        {
+          "path": "engineering/operations/zeus-mission-execution-runtime.md",
+          "status": " M"
+        },
+        {
+          "path": "engineering/operations/zeus-oa01-mission-verification.md",
+          "status": "??"
+        },
+        {
+          "path": "engineering/operations/zeus-operational-runtime.md",
+          "status": " M"
+        },
+        {
+          "path": "engineering/registry/work-registry.yaml",
+          "status": " M"
+        },
+        {
+          "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01/IMPLEMENTATION.json",
+          "status": "??"
+        },
+        {
+          "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/state.json",
+          "status": " M"
+        },
+        {
+          "path": "ocs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md",
+          "status": "M "
+        },
+        {
+          "path": "scripts/lib/emp/oa01_gate_verification.py",
+          "status": "??"
+        },
+        {
+          "path": "scripts/lib/emp/oa01_implementation.py",
+          "status": "??"
+        },
+        {
+          "path": "scripts/lib/emp/oa01_verification.py",
+          "status": "??"
+        },
+        {
+          "path": "scripts/lib/emp/progressive_oa.py",
+          "status": " M"
+        },
+        {
+          "path": "scripts/lib/emp/stage1_runtime.py",
+          "status": "??"
+        },
+        {
+          "path": "scripts/tests/test-emp-registry.py",
+          "status": " M"
+        },
+        {
+          "path": "scripts/tests/test-governance-baseline-documentation.py",
+          "status": "??"
+        },
+        {
+          "path": "scripts/tests/test-governance-bootstrap-documentation.py",
+          "status": "??"
+        },
+        {
+          "path": "scripts/tests/test-governance-mission-admission-documentation.py",
+          "status": "??"
+        },
+        {
+          "path": "scripts/tests/test-zeus-oa01-implementation.py",
+          "status": "??"
+        },
+        {
+          "path": "scripts/tests/test-zeus-oa01-verification.py",
+          "status": "??"
+        },
+        {
+          "path": "scripts/tests/test-zeus-progressive-oa.py",
+          "status": " M"
+        },
+        {
+          "path": "scripts/tests/test-zeus-stage1-runtime.py",
+          "status": "??"
+        },
+        {
+          "path": "scripts/verify.sh",
+          "status": " M"
+        },
+        {
+          "path": "scripts/zeus",
+          "status": " M"
+        }
+      ]
+    }
+  },
+  "commands": {
+    "eos_synchronization": {
+      "command": [
+        "scripts/engctl",
+        "eos",
+        "sync-validate"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "Repository\u2013EOS synchronization validation passed.\n",
+      "stdout_sha256": "364d9c77ff7f9972fc8a318621283577b44abf0397cef50b055e834fc22692d3"
+    },
+    "focused_regression": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "scripts/tests/test-zeus-oa01-verification.py",
+        "scripts/tests/test-zeus-oa01-implementation.py",
+        "scripts/tests/test-zeus-progressive-oa.py",
+        "scripts/tests/test-zeus-stage1-runtime.py"
+      ],
+      "exit_code": 0,
+      "stderr": ".............\n----------------------------------------------------------------------\nRan 13 tests in 4.397s\n\nOK\n",
+      "stderr_sha256": "29720b736c2329da9bed7d267bc7ce1e91c330a673eb1ddf13632d1a785b50fb",
+      "stdout": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "full_validation": {
+      "command": [
+        "scripts/engctl",
+        "validate"
+      ],
+      "exit_code": 0,
+      "stderr": "....\n----------------------------------------------------------------------\nRan 4 tests in 42.916s\n\nOK\n",
+      "stderr_sha256": "68bc33604270412e794387349e8a8c15139b52a5f45a5c3ec045035199b4fe1d",
+      "stdout": "VALIDATION STAGE 1 \u2014 REPOSITORY\n--------------------------------\nPASS: repository integrity\nPASS: repository controlled-document validation\n\nVALIDATION STAGE 2 \u2014 SYNCHRONIZATION\n-------------------------------------\nPASS: repository\u2013EOS synchronization\n\nVALIDATION STAGE 3 \u2014 EOS RUNTIME\n--------------------------------\nPASS: /data/engineering/eos/state/EOS-ID.md\nPASS: /data/engineering/eos/state/EOS-STATE.md\nPASS: /data/engineering/eos/state/EOS-MANIFEST.md\nPASS: EOS state identity and lifecycle\nPASS: EOS checkpoint directory\nPASS: EOS checkpoint inventory (2)\nPASS: homelab repository\nPASS: homelab project state\nEOS state validation passed.\nPASS: EOS projected state\nPASS: Governance Foundation tag\n\nVALIDATION STAGE 4 \u2014 INTEGRATED PLATFORM\n-----------------------------------------\nPASS: EOS runtime regression tests\nPASS: Engineering Transaction Profile validation fixtures\nPASS: Engineering Work Registry validation\nPASS: Engineering Work Registry regression tests\nPASS: EMP operational management regression tests\nPASS: checkpoint validation\nPASS: synchronized operational state\nPASS: EOS persistence model\nPASS: repository operational health\nPASS: engineering context generation\nPASS: registry context contribution\nPASS: management status context contribution\nEngineering Platform validation passed.\n",
+      "stdout_sha256": "8e58988d147248a64885aa1d622cb57fedd364fcc6c346b930e2c4118429b577"
+    },
+    "gate_evidence_OA-01": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "gate",
+        "evidence",
+        "OA-01"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"gate_id\": \"OA-01\", \"requirements\": [\"repository identity, branch, exact HEAD, upstream, and working-tree inventory\", \"authority, mission, WOP, execution, gate, agent, and timestamp bindings\", \"commands, stdout, stderr, exit codes, assertions, and checksums\", \"positive, negative, replay, interruption, recovery, and cumulative regression results\", \"controlled-record reconciliation report and VERIFIED marker\"], \"runtime_directory\": \"/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-01\", \"template\": \"/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-01/evidence-template.yaml\"}\n",
+      "stdout_sha256": "ba3db5d627334a332d971e55e86326a43155e3e6a67b2f25de7ecb8b90dcfa4c"
+    },
+    "gate_objective_OA-01": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "gate",
+        "objective",
+        "OA-01"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"capability_being_established\": \"Authoritative Baseline and Repository Identity\", \"gate_id\": \"OA-01\", \"mission_objective\": \"Prove that Zeus operates from one identified, synchronized, integrity-valid repository and qualified baseline.\", \"source_references\": [\"docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md\", \"engineering/execution/execution-interface.yaml\", \"engineering/operations/zeus-operational-alpha-progress.md\", \"engineering/tests/zeus-operational-alpha/PMCT-CONTRACT.md\", \"engineering/tests/zeus-operational-alpha/PMCT-CAPABILITY-MATRIX.yaml\", \"engineering/operations/zeus-mission-admission-runtime.md\", \"engineering/operations/zeus-mission-execution-runtime.md\", \"engineering/operations/zeus-operator-interface.md\", \"services/eens/README.md\", \"docs/project/PROJ-0001-PROJECT_STATE.md\", \"engineering/registry/work-registry.yaml\"], \"title\": \"Authoritative Baseline and Repository Identity\"}\n",
+      "stdout_sha256": "85cb6625468d54ff973d8d1bb87a65e2bb9d72a291fa7d88f8b994555f31a13b"
+    },
+    "gate_show_OA-01": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "gate",
+        "show",
+        "OA-01"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"authoritative_source_references\": [\"docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md\", \"engineering/execution/execution-interface.yaml\", \"engineering/operations/zeus-operational-alpha-progress.md\", \"engineering/tests/zeus-operational-alpha/PMCT-CONTRACT.md\", \"engineering/tests/zeus-operational-alpha/PMCT-CAPABILITY-MATRIX.yaml\", \"engineering/operations/zeus-mission-admission-runtime.md\", \"engineering/operations/zeus-mission-execution-runtime.md\", \"engineering/operations/zeus-operator-interface.md\", \"services/eens/README.md\", \"docs/project/PROJ-0001-PROJECT_STATE.md\", \"engineering/registry/work-registry.yaml\"], \"capability_being_established\": \"Authoritative Baseline and Repository Identity\", \"completion_marker\": \"runtime/evidence/OA-01/VERIFIED plus integrity-valid operator decision receipt\", \"entry_prerequisites\": [\"package admission receipt integrity PASS\", \"repository identity and authority bindings current\", \"exactly this gate is the first incomplete eligible gate\"], \"exact_success_criteria\": [\"Prove that Zeus operates from one identified, synchronized, integrity-valid repository and qualified baseline.\", \"all required tests PASS and all negative cases fail closed\", \"evidence manifest integrity PASS\", \"records reconcile with no conflict\", \"operator acceptance receipt is valid before next-gate eligibility\"], \"gate_id\": \"OA-01\", \"idempotency_and_replay_tests\": [\"Repeat identical observations and requests; prove stable result and no duplicate transition, receipt, evidence, event, or dispatch.\"], \"implementation_procedure\": \"/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-01/implementation.md\", \"inherited_design_requirements\": [\"Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface semantics.\", \"Use owning interfaces; never infer authority, acceptance, completion, or reconciliation.\", \"Retain prior OA artifacts only as supporting historical evidence; confer no new-gate status.\"], \"manual_verification_procedure\": \"gates/OA-01/verification.md\", \"mission_objective\": \"Prove that Zeus operates from one identified, synchronized, integrity-valid repository and qualified baseline.\", \"negative_and_fail_closed_test_cases\": [\"Reject missing, malformed, ambiguous, unauthorized, stale, mismatched, and incomplete inputs without state advance.\", \"Prove later gates remain ineligible and no protected external effect occurs.\"], \"next_gate_enabled\": \"OA-02\", \"operator_acceptance_procedure\": [\"zeus approve OA-01 --operator OPERATOR\", \"zeus gate receipt OA-01\", \"zeus resume\"], \"positive_test_cases\": [\"Demonstrate Prove that Zeus operates from one identified, synchronized, integrity-valid repository and qualified baseline. through the authoritative Zeus interface.\"], \"prohibited_effects\": [\"begin any later gate\", \"inherit prior OA acceptance or completion\", \"self-approve or infer operator acceptance\", \"mutate historical OA evidence\", \"declare Operational Alpha or freeze the baseline\"], \"rationale\": \"Authoritative Baseline and Repository Identity is a cumulative prerequisite for a trustworthy supervised Operational Alpha lifecycle.\", \"records_reconciled\": [\"Zeus runtime\", \"EMP\", \"PMCT\", \"EENS\", \"Project State\", \"Work Registry\", \"EOS\", \"controlled documents\"], \"regression_suite\": [\"OA-01 through OA-01\", \"scripts/tests\", \"engineering/tests/zeus-operational-alpha/tests\"], \"required_evidence\": [\"repository identity, branch, exact HEAD, upstream, and working-tree inventory\", \"authority, mission, WOP, execution, gate, agent, and timestamp bindings\", \"commands, stdout, stderr, exit codes, assertions, and checksums\", \"positive, negative, replay, interruption, recovery, and cumulative regression results\", \"controlled-record reconciliation report and VERIFIED marker\"], \"required_implementation_work\": [\"Implement or reconcile the production capability needed to satisfy OA-01.\", \"Add deterministic positive, negative, replay, interruption, and cumulative regression tests.\", \"Persist append-only evidence and reconcile every affected controlled record.\"], \"safety_and_recovery_tests\": [\"Interrupt before and after each durable boundary; preserve incomplete state and resume at the first incomplete operation.\"], \"sequence\": 1, \"state_transitions\": [\"PENDING -> IMPLEMENTATION_REQUIRED -> AWAITING_OPERATOR_VERIFICATION\", \"AWAITING_OPERATOR_VERIFICATION -> ACCEPTED | REJECTED\", \"ACCEPTED -> enable OA-02\", \"failure, stale authority, invalid evidence, conflict, or interruption -> STOPPED_FAIL_CLOSED\"], \"title\": \"Authoritative Baseline and Repository Identity\", \"verification_guide\": \"/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-01/verification.md\"}\n",
+      "stdout_sha256": "bced729b43686b585e5c5790e58cdb4da76f1997f29595ac5d7d9cf6fd2dbf50"
+    },
+    "mission_blockers": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "mission",
+        "blockers"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"blockers\": [\"OA-01_OPERATOR_VERIFICATION_REQUIRED\"], \"mission_id\": \"MISSION-CONTRACT-PUBLICATION-001\"}\n",
+      "stdout_sha256": "f3664e0918ad4cdf70bddff6827392f8181074b1d58934046da7676906e02632"
+    },
+    "mission_next": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "mission",
+        "next"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"blockers\": [\"OA-01_OPERATOR_VERIFICATION_REQUIRED\"], \"mission_id\": \"MISSION-CONTRACT-PUBLICATION-001\", \"next_authorized_action\": \"VERIFY_AND_DECIDE_OA-01\"}\n",
+      "stdout_sha256": "2317dc077fa9ad88e2781ca00247c75acb3dfe34a10e536acfaf5d7af6738c0b"
+    },
+    "mission_readiness": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "mission",
+        "readiness"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"blockers\": [\"OA-01_OPERATOR_VERIFICATION_REQUIRED\"], \"mission_id\": \"MISSION-CONTRACT-PUBLICATION-001\", \"readiness\": \"BLOCKED\", \"required_approvals\": {\"active_gate\": {\"gate_id\": \"OA-01\", \"requirement\": \"operator verification followed by integrity-valid explicit operator acceptance\", \"state\": \"AWAITING_OPERATOR_VERIFICATION\"}}}\n",
+      "stdout_sha256": "16aa534035324bdf108367a64354b056521bad2a1f6caa7e33a9dcae0562cddd"
+    },
+    "mission_show": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "mission",
+        "show"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"authority_source\": \"engineering/mission-contracts/contracts/MC-MISSION-CONTRACT-PUBLICATION-001.yaml\", \"blockers\": [\"OA-01_OPERATOR_VERIFICATION_REQUIRED\"], \"current_mission\": {\"contract_id\": \"MC-MISSION-CONTRACT-PUBLICATION-001\", \"mission_id\": \"MISSION-CONTRACT-PUBLICATION-001\", \"operational_mission_id\": \"EMP-MISSION-ZEUS-OPERATIONAL-ALPHA\", \"progressive_package_id\": \"GH-ZEUS-OA-PROGRESSIVE-001\", \"progressive_wop_id\": \"WOP-8e6c4ab8-4c85-5d6c-9c90-10b8814bdf99\", \"work_item_id\": \"EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001\"}, \"eligibility\": \"ELIGIBLE\", \"execution_state\": \"ACTIVE\", \"governance_state\": \"AUTHORIZED\", \"mission_contract\": {\"contract_id\": \"MC-MISSION-CONTRACT-PUBLICATION-001\", \"lifecycle\": \"active\", \"resolution\": \"AUTHORIZED\", \"wop_id\": \"GH-ZEUS-OA-PROGRESSIVE-001\", \"wop_locator\": \"engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/immutable-wop.yaml\"}, \"mission_status\": \"ACTIVE\", \"next_authorized_action\": \"VERIFY_AND_DECIDE_OA-01\", \"progressive_wop\": {\"accepted_gates\": [], \"active_gate\": \"OA-01\", \"active_gate_state\": \"AWAITING_OPERATOR_VERIFICATION\", \"package_id\": \"GH-ZEUS-OA-PROGRESSIVE-001\", \"status\": \"ACTIVE\"}, \"projection_digest\": \"3965662adfd01ea15d9a84c2eec307ec2fe200fe9c42a39696a0a63ada0821d2\", \"readiness\": \"BLOCKED\", \"repository\": {\"branch\": \"main\", \"head\": \"f79462bd837df51f12a103f2ebc69a071c27f45d\", \"identity\": \"homelab\", \"qualified_baseline\": \"d25d144312b73fc8230113c99f5d0368037b4483\", \"root\": \"/data/engineering/repositories/homelab\", \"working_tree\": \"MODIFIED\"}, \"required_approvals\": {\"active_gate\": {\"gate_id\": \"OA-01\", \"requirement\": \"operator verification followed by integrity-valid explicit operator acceptance\", \"state\": \"AWAITING_OPERATOR_VERIFICATION\"}}, \"schema_version\": 1, \"sources\": {\"eos_matrix\": \"engineering/eos/repository-eos-authority.yaml\", \"governance\": \"engineering/mission-contracts/contracts/MC-MISSION-CONTRACT-PUBLICATION-001.yaml\", \"progressive_state\": \"engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/state.json\", \"project_state\": \"docs/project/PROJ-0001-PROJECT_STATE.md\", \"work_registry\": \"engineering/registry/work-registry.yaml\"}}\n",
+      "stdout_sha256": "927c3a4d855bfae3058d938ab5499579365c3e8a22c41ba799756d0c92436c8c"
+    },
+    "negative_unknown_mission": {
+      "command": [
+        "/data/engineering/repositories/homelab/scripts/zeus",
+        "mission",
+        "show",
+        "UNKNOWN-OA01-MISSION"
+      ],
+      "exit_code": 78,
+      "stderr": "FAIL: semantic owner PROC-0001@1.14 for execution_lifecycle resolved 0 times\n",
+      "stderr_sha256": "5db99208d47856a729de138e50111113ba1e4309c49627ee5e92b0bd2bd0af2a",
+      "stdout": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "package_integrity": {
+      "command": [
+        "/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/verify-package.sh"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "BOOTSTRAP.md: OK\nCOMPLETION-REPORT.md: OK\nHISTORICAL-SUPERSEDENCE.md: OK\nRECONCILIATION.md: OK\nRECOVERY.md: OK\nROADMAP.md: OK\nTRACEABILITY.md: OK\nadmission/ADMISSION-f01c0c2d-8edb-5567-ad19-8d0f4344909f.json: OK\ncontroller: OK\ngate-specification.yaml: OK\ngates/OA-01/evidence-template.yaml: OK\ngates/OA-01/implementation.md: OK\ngates/OA-01/objective.yaml: OK\ngates/OA-01/verification.md: OK\ngates/OA-02/evidence-template.yaml: OK\ngates/OA-02/implementation.md: OK\ngates/OA-02/objective.yaml: OK\ngates/OA-02/verification.md: OK\ngates/OA-03/evidence-template.yaml: OK\ngates/OA-03/implementation.md: OK\ngates/OA-03/objective.yaml: OK\ngates/OA-03/verification.md: OK\ngates/OA-04/evidence-template.yaml: OK\ngates/OA-04/implementation.md: OK\ngates/OA-04/objective.yaml: OK\ngates/OA-04/verification.md: OK\ngates/OA-05/evidence-template.yaml: OK\ngates/OA-05/implementation.md: OK\ngates/OA-05/objective.yaml: OK\ngates/OA-05/verification.md: OK\ngates/OA-06/evidence-template.yaml: OK\ngates/OA-06/implementation.md: OK\ngates/OA-06/objective.yaml: OK\ngates/OA-06/verification.md: OK\ngates/OA-07/evidence-template.yaml: OK\ngates/OA-07/implementation.md: OK\ngates/OA-07/objective.yaml: OK\ngates/OA-07/verification.md: OK\ngates/OA-08/evidence-template.yaml: OK\ngates/OA-08/implementation.md: OK\ngates/OA-08/objective.yaml: OK\ngates/OA-08/verification.md: OK\ngates/OA-09/evidence-template.yaml: OK\ngates/OA-09/implementation.md: OK\ngates/OA-09/objective.yaml: OK\ngates/OA-09/verification.md: OK\ngates/OA-10/evidence-template.yaml: OK\ngates/OA-10/implementation.md: OK\ngates/OA-10/objective.yaml: OK\ngates/OA-10/verification.md: OK\ngates/OA-11/evidence-template.yaml: OK\ngates/OA-11/implementation.md: OK\ngates/OA-11/objective.yaml: OK\ngates/OA-11/verification.md: OK\ngates/OA-12/evidence-template.yaml: OK\ngates/OA-12/implementation.md: OK\ngates/OA-12/objective.yaml: OK\ngates/OA-12/verification.md: OK\ngates/OA-13/evidence-template.yaml: OK\ngates/OA-13/implementation.md: OK\ngates/OA-13/objective.yaml: OK\ngates/OA-13/verification.md: OK\ngates/OA-14/evidence-template.yaml: OK\ngates/OA-14/implementation.md: OK\ngates/OA-14/objective.yaml: OK\ngates/OA-14/verification.md: OK\ngates/OA-15/evidence-template.yaml: OK\ngates/OA-15/implementation.md: OK\ngates/OA-15/objective.yaml: OK\ngates/OA-15/verification.md: OK\ngates/OA-16/evidence-template.yaml: OK\ngates/OA-16/implementation.md: OK\ngates/OA-16/objective.yaml: OK\ngates/OA-16/verification.md: OK\ngates/OA-17/evidence-template.yaml: OK\ngates/OA-17/implementation.md: OK\ngates/OA-17/objective.yaml: OK\ngates/OA-17/verification.md: OK\ngates/OA-18/evidence-template.yaml: OK\ngates/OA-18/implementation.md: OK\ngates/OA-18/objective.yaml: OK\ngates/OA-18/verification.md: OK\ngates/OA-19/evidence-template.yaml: OK\ngates/OA-19/implementation.md: OK\ngates/OA-19/objective.yaml: OK\ngates/OA-19/verification.md: OK\ngates/OA-20/evidence-template.yaml: OK\ngates/OA-20/implementation.md: OK\ngates/OA-20/objective.yaml: OK\ngates/OA-20/verification.md: OK\ngates/OA-21/evidence-template.yaml: OK\ngates/OA-21/implementation.md: OK\ngates/OA-21/objective.yaml: OK\ngates/OA-21/verification.md: OK\ngates/OA-22/evidence-template.yaml: OK\ngates/OA-22/implementation.md: OK\ngates/OA-22/objective.yaml: OK\ngates/OA-22/verification.md: OK\ngates/OA-23/evidence-template.yaml: OK\ngates/OA-23/implementation.md: OK\ngates/OA-23/objective.yaml: OK\ngates/OA-23/verification.md: OK\ngates/OA-24/evidence-template.yaml: OK\ngates/OA-24/implementation.md: OK\ngates/OA-24/objective.yaml: OK\ngates/OA-24/verification.md: OK\ngates/OA-25/evidence-template.yaml: OK\ngates/OA-25/implementation.md: OK\ngates/OA-25/objective.yaml: OK\ngates/OA-25/verification.md: OK\ngates/OA-26/evidence-template.yaml: OK\ngates/OA-26/implementation.md: OK\ngates/OA-26/objective.yaml: OK\ngates/OA-26/verification.md: OK\ngates/OA-27/evidence-template.yaml: OK\ngates/OA-27/implementation.md: OK\ngates/OA-27/objective.yaml: OK\ngates/OA-27/verification.md: OK\ngates/OA-28/evidence-template.yaml: OK\ngates/OA-28/implementation.md: OK\ngates/OA-28/objective.yaml: OK\ngates/OA-28/verification.md: OK\ngates/OA-29/evidence-template.yaml: OK\ngates/OA-29/implementation.md: OK\ngates/OA-29/objective.yaml: OK\ngates/OA-29/verification.md: OK\ngates/OA-30/evidence-template.yaml: OK\ngates/OA-30/implementation.md: OK\ngates/OA-30/objective.yaml: OK\ngates/OA-30/verification.md: OK\nimmutable-wop.yaml: OK\nsubmission.yaml: OK\ntemplates/corrective-work.yaml: OK\ntemplates/operator-decision.yaml: OK\nverify-package.sh: OK\nPASS: 30 unique cumulative gates and complete verification contracts\nPASS: Progressive OA package integrity\n",
+      "stdout_sha256": "6d868ace306b19ce8f99bf49b2184845a18eeb0bc68294ab22116536a704c0d7"
+    },
+    "registry_validation": {
+      "command": [
+        "scripts/engctl",
+        "registry",
+        "validate"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "PASS: registry schema and YAML serialization (85 objects)\nPASS: registry identifiers, hierarchy, ordering, states, deferrals, and dependencies\nPASS: registry authority boundary\n",
+      "stdout_sha256": "948cf5436bfbba9ea7755e6ef2951df2af0fdfaa9f6b11eee58944a753921603"
+    },
+    "repository_health": {
+      "command": [
+        "scripts/engctl",
+        "repository",
+        "health"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "PASS: repository discovery\nPASS: repository integrity\nPASS: active branch main\nRepository State: modified (42 path(s))\nUpstream State: aligned (origin/main)\nRepository health passed.\n",
+      "stdout_sha256": "7f96cc7a039245394fb7764ae43cee7807388ddb93ff479cd9e4e8542df2d0f7"
+    }
+  },
+  "evidence_digest": "349ee6a4bb1667c8e4ec7c1c8b510ec138bebc22f3c1597101c6925f406028ef",
+  "gate_id": "OA-01",
+  "handoff_id": "ZH-OA01-VERIFICATION-CORRECTIVE-004",
+  "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-07-29T09:57:00.279309+00:00"
+}

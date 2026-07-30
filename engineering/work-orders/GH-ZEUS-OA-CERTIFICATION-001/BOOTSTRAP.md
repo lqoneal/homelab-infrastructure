@@ -1,11 +1,21 @@
-# GH-ZEUS-OA-CERTIFICATION-001 Authoritative Bootstrap
+# GH-ZEUS-OA-CERTIFICATION-001 Historical Bootstrap
 
-This directory is the complete execution package for Zeus Operational Alpha
+Status: Retired and non-executable.
+
+This package is preserved as historical engineering evidence. It was
+superseded by `GH-ZEUS-OA-PROGRESSIVE-001`; none of its gate sequencing,
+PMCT mappings, admission state, or instructions may be used to resolve current
+Operational Alpha work.
+
+This directory was the execution package for Zeus Operational Alpha
 certification. `submission.yaml`, its ACCEPTED admission record, and
 `immutable-wop.yaml` establish eligibility; none of them records OA execution,
 operator acceptance, a PMCT transition, baseline freeze, or OA-30 completion.
 
-## Binding order
+## Historical binding order
+
+The following is retained only to explain the superseded package. It is not an
+active execution procedure.
 
 1. Verify repository identity, `main`, exact admitted baseline, clean worktree,
    `origin/main` alignment, EOS synchronization, Project State, PMCT state, Work

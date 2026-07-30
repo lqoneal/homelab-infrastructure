@@ -1,15 +1,15 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 9.3
+version: 9.9
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-28
+last_updated: 2026-07-29
 mission: Zeus Operational Alpha
 phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@9.2
+predecessor_revision: PROJ-0001@9.8
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -370,21 +370,21 @@ Preserve the commissioned authority, P2-019 execution foundation, P2-020 PMCT,
 and P2-027 OA-01 verification-deadlock correction. The active runtime
 publication is `AUTHORITY-PUBLICATION-50d661ec-2776-4d7c-8ea4-f34db35367d5`
 and publishes baseline `787367bf82976e28cf929878cd30eacfffcba7ff`.
-OA-01 implementation is
-complete and its Codex PMCT demonstration is `PASS`, but independent operator
-verification is pending and operator acceptance is not recorded. OA-01 gate
-status is `AWAITING_OPERATOR_VERIFICATION`. Dispatcher activation is
+OA-01 through OA-05 have integrity-bound operator acceptance receipts. OA-06
+is the sole active gate and remains `PENDING`; OA-07 and later remain pending
+and ineligible. The live Stage 1 mission store is empty, so the derived Zeus
+mission-admission status correctly reports `mission_count: 0` and zero for
+every supported state. No
+execution agent was dispatched and no mission was executed. Dispatcher activation is
 `PREPARED`, and the production agent registry is empty. Operational Alpha
 remains incomplete.
 
 **Next Immediate Step:**
 
-Begin `GH-ZEUS-OA-PROGRESSIVE-001` under ACCEPTED Admission Record
-`ADMISSION-f01c0c2d-8edb-5567-ad19-8d0f4344909f` by running its package
-preflight. The previous `GH-ZEUS-OA-CERTIFICATION-001` package is suspended and
-preserved as historical evidence because its gates lacked complete objectives.
-The new OA-01 is ready and unstarted; no gate status is inherited. Do not begin
-OA-02 until new OA-01 verification and explicit operator acceptance pass.
+Retain OA-06 at `PENDING` until a separately authorized OA-06 implementation
+handoff is initiated. Do not submit a live mission, dispatch, execute, accept
+OA-06, declare Operational Alpha, or freeze a baseline.
+`GH-ZEUS-OA-CERTIFICATION-001` package remains suspended historical evidence.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -686,6 +686,12 @@ When resuming this project:
 | 9.1     | 2026-07-28 | Admitted the self-contained GH-ZEUS-OA-CERTIFICATION-001 WOP, registered certification as ready and unstarted, and preserved all OA, PMCT, acceptance, baseline-freeze, and OA-30 declaration boundaries. |
 | 9.2     | 2026-07-28 | Suspended the incomplete historical OA certification package, established the controlled thirty-gate Progressive OA roadmap and admitted WOP, and made the new OA-01 ready without executing any OA gate or authorizing declaration/freeze. |
 | 9.3     | 2026-07-28 | Published and remotely qualified the Mission Contract subsystem and activation architecture at `a539f312dff6f70eef203fb42add111dfd847ff6`, revoked bootstrap authority, and retained exactly one active normal Mission Contract for operational authority. |
+| 9.4     | 2026-07-28 | Implemented Zeus Operational Alpha Stage 1 package submission, Mission Contract and repository verification, idempotent admission and staging, durable runtime state, admission lifecycle events, status surfaces, tests, and operator documentation under handoff ZH-001; execution-agent dispatch remains deferred. |
+| 9.5     | 2026-07-29 | Implemented and independently verified OA-03 deterministic Mission Contract discovery with fail-closed rejection, boundary revalidation, append-only evidence, and an integrity-bound VERIFIED marker; OA-03 awaits explicit operator acceptance and OA-04 remains ineligible. |
+| 9.6     | 2026-07-29 | Implemented and independently verified OA-04 deterministic Mission Resolution across one discovered contract, executable mission, WOP, execution definition, and authority chain; no mission execution or dispatch occurred, OA-04 awaits acceptance, and OA-05 remains ineligible. |
+| 9.7     | 2026-07-29 | Qualified the OA-05 Mission Staging Contract before eligibility; corrected PMCT substitution of execution-agent registry, required integrity-bound identity/objective/scope/dependencies/priority/state, preserved the superseded pre-correction OA-04 receipt as historical evidence, and retained OA-04 as verified awaiting explicit acceptance with OA-05 pending and ineligible. |
+| 9.8     | 2026-07-29 | Executed and independently verified OA-05 Mission Staging Contract after corrected OA-04 acceptance; proved deterministic staging, persistence, replay, restart recovery, malformed candidate rejection, authorization enforcement, and fail-closed behavior; retained OA-06 and later pending with no dispatch or execution. |
+| 9.9     | 2026-07-29 | Confirmed Zeus mission-admission counts are deterministically reconstructed from persisted Stage 1 mission records, verified the live empty store correctly reports zero, and added fail-closed validation for integrity-valid but structurally inconsistent records while retaining OA-06 pending. |
 
 ## Operational Mission Activation
 
@@ -696,3 +702,14 @@ When resuming this project:
 - Bootstrap lifecycle: `COMPLETED`
 - Bootstrap authority: `REVOKED`
 - Operational authority: Mission Contract framework
+
+## Zeus Operational Alpha Stage 1
+
+- Handoff: `ZH-001`
+- Capability: WOP submission, validation, admission, and staging
+- Runtime states: `VALIDATING`, `REJECTED`, `ADMITTED`, `STAGED`
+- Persistence: `.zeus/runtime/stage1/`
+- Operator entry point: `zeus submit <path-to-wop>`
+- Execution-agent dispatch: deferred to Stage 2
+- Completion evidence:
+  `engineering/evidence/2026-07-28-zeus-operational-alpha-stage1-completion-report.md`

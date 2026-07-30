@@ -25,7 +25,7 @@ class ResultTests(unittest.TestCase):
         )
         self.assertNotEqual(result, "PASS")
 
-    def test_controlled_state_records_only_demonstrated_oa01_pass(self):
+    def test_controlled_state_records_current_demonstrated_passes(self):
         state = pmct.load_state()
         self.assertEqual(state["overall_result"], "NOT_READY")
         self.assertEqual(
@@ -39,7 +39,7 @@ class ResultTests(unittest.TestCase):
             gate for gate, item in state["gates"].items()
             if item["status"] == "PASS"
         ]
-        self.assertEqual(passed, ["OA-01"])
+        self.assertEqual(passed, ["OA-01", "OA-02"])
 
     def test_completed_run_atomically_updates_capability_state(self):
         with tempfile.TemporaryDirectory(dir=pmct.REPOSITORY) as temporary:
@@ -51,11 +51,17 @@ class ResultTests(unittest.TestCase):
             isolated_state.update({
                 "published_baseline": isolated_state["head"],
                 "baseline_matches": True,
+                "dispatcher_active": False,
+                "dispatcher_status": "PREPARED",
+                "production_agent_count": 0,
+                "production_qualified_agent_count": 0,
                 "oa01_operator_verification_readiness": "READY",
                 "oa01_operator_verification_evidence": "ABSENT",
             })
             isolated_state["next_action_probe"] = {
                 **isolated_state["next_action_probe"],
+                "zeus_mode": "BETA",
+                "operational_dispatch": "DISABLED",
                 "next_authorized_action": {
                     "code": "RUN_OA-01_VERIFICATION",
                 },

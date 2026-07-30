@@ -1,0 +1,15 @@
+{
+  "authority_digest": "991baa50833882cd1e1de56726c97c0345dc774f42e1911e6021ac5cc3da5b4b",
+  "branch": "main",
+  "contract_id": "MC-MISSION-CONTRACT-PUBLICATION-001",
+  "discovery_digest": "23aa0bd4d68d71ab69d277c65340158f682c1febfeb251162544b5d11ce2e697",
+  "evidence_digest": "ea5437d7cd2bfc60eb2bd5e8f4117dbcc6d94e863a99ba5baf5b17e8a143b729",
+  "gate_id": "OA-03",
+  "head": "f79462bd837df51f12a103f2ebc69a071c27f45d",
+  "marker_digest": "d87249a0cc7e04fa895a696a801da5bfe41b04e3b08b04c844ded6890db7237a",
+  "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
+  "repository_identity": "homelab",
+  "schema_version": 1,
+  "verification_result": "PASS",
+  "verification_timestamp": "2026-07-29T11:10:53.584668+00:00"
+}

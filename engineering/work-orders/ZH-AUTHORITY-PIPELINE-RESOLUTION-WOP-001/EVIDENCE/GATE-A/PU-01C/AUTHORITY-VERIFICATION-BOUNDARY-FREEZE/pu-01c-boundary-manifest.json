@@ -1,0 +1,1036 @@
+{
+  "schema_version": 1,
+  "manifest_id": "PU-01C-PUBLICATION-BOUNDARY-2026-07-29",
+  "publication_unit": "PU-01C",
+  "repository": {
+    "root": "/data/engineering/repositories/homelab",
+    "remote": "git@github.com:lqoneal/homelab-infrastructure.git",
+    "branch": "main",
+    "head": "d0861dc62b8199de03230152c4ed3cfb687dd9a7",
+    "upstream": "origin/main"
+  },
+  "authority_owner": "engineering/evidence/2026-07-29-zh-publication-plan-002-manifest.json",
+  "publication_scope": "Independent Progressive Runtime Governance Baseline v1.0",
+  "qualification": {
+    "family": "Independent Progressive Runtime Governance",
+    "scope": "GOVERNANCE_DECLARATIONS",
+    "test_count": 145,
+    "result": "PASS",
+    "fingerprint": "b171bec8ae27eb25f2f4c10f5eb0bad88860b69aed11eed1f3d2087143e19d61"
+  },
+  "exact_path_status": "FROZEN",
+  "included_path_count": 140,
+  "included_paths": [
+    {
+      "path": "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md",
+      "sha256": "7c5164f7e4f56f4c7dec83b3b5a7abbea866ea7af9ab282aabc0d0ddc9bb43c7",
+      "classification": "controlled_document"
+    },
+    {
+      "path": "docs/specifications/SPEC-0012-PRODUCTION-EXECUTION-FOUNDATION.md",
+      "sha256": "0a34f5895cd3555ee562f4288b5b5afcb97d0339209be968b9007dea0f8656a6",
+      "classification": "controlled_document"
+    },
+    {
+      "path": "engineering/architecture/progressive-runtime-capabilities.json",
+      "sha256": "7847b1e98a3ed376a9e4fe4ce55e7a0efce5059c903871465162dd32732f2f48",
+      "classification": "governance_declaration"
+    },
+    {
+      "path": "engineering/architecture/progressive-runtime-classification.json",
+      "sha256": "3dc0e64e8ef0afb69aca756d58831132c0fe02d8ed7c0d8e6804efcd04908012",
+      "classification": "governance_declaration"
+    },
+    {
+      "path": "engineering/architecture/progressive-runtime-consumers.json",
+      "sha256": "a5de9c28b1e7922c5d12339773b743b6824f9fd48a0628dc9a116f5aadb85e65",
+      "classification": "governance_declaration"
+    },
+    {
+      "path": "engineering/architecture/progressive-runtime-execution-contracts.json",
+      "sha256": "c578249cd9813a90b784f01720a58df8c78867eaf21a51ee6c4af7305a23e4cf",
+      "classification": "governance_declaration"
+    },
+    {
+      "path": "engineering/architecture/progressive-runtime-outcomes.json",
+      "sha256": "a18d5d840dc9ee6faf30d436c695746e40f9cf2987aa2b95f3d4e183ca5cce6c",
+      "classification": "governance_declaration"
+    },
+    {
+      "path": "engineering/architecture/progressive-runtime-policies.json",
+      "sha256": "bb5cf059400902aeb3defb5c955bde61a0761724991712a4055392d93c722aa7",
+      "classification": "governance_declaration"
+    },
+    {
+      "path": "engineering/architecture/progressive-runtime-states.json",
+      "sha256": "9238b03bbdd6a691bde4d7498a260ba20ad1f295d0ad20e7f4b95cce6ec1b00f",
+      "classification": "governance_declaration"
+    },
+    {
+      "path": "engineering/architecture/progressive-runtime-transitions.json",
+      "sha256": "4935a6d172f8e12e5f616d524fa5e4d89cf7dee5953dde7a23a9dbfe845141d2",
+      "classification": "governance_declaration"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/GOVERNANCE-BASELINE-INDEPENDENCE/boundary-verification-report.md",
+      "sha256": "5d22af525c223e4cabb2b7407cdb3233807a16c529ba7af34b4fdf9dd0f80dde",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/GOVERNANCE-BASELINE-INDEPENDENCE/completion-report.md",
+      "sha256": "976e392c36f3630041611f378e3f746ae8ead077c21a752535b5db2733fe36f0",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/GOVERNANCE-BASELINE-INDEPENDENCE/determinism-report.md",
+      "sha256": "a4553bb0f3f608d474a7e812fa24ab2dc4669a3a6b27dc1b5a8191572dc6698b",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/GOVERNANCE-BASELINE-INDEPENDENCE/governance-independence-assessment.md",
+      "sha256": "d8c7658be8071d93050479249bf86f1eef915410a5e7235bfd7e4563396510a1",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/GOVERNANCE-BASELINE-INDEPENDENCE/qualification-dependency-report.md",
+      "sha256": "22a604a3b9a8c8a3747b11e539d3c25f42348e128a195974c4ef30fe666391eb",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/GOVERNANCE-BASELINE-INDEPENDENCE/qualification-refactoring-report.md",
+      "sha256": "75bab817a607b21f33e759e333e94be7e9f864b555bf771e125a26d539e0ddf8",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/GOVERNANCE-BASELINE-INDEPENDENCE/updated-qualification-evidence.md",
+      "sha256": "5d7a451fd33d45f6f4abc085a7a1293f426658e81a3d44b0d71f1fb34d0097d7",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/GOVERNANCE-BASELINE-INDEPENDENCE/updated-qualification-fingerprint.md",
+      "sha256": "c7d704d57a739c947d1d620065c1cb990c6dca852ff5c25aa6f325a11ee51d83",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/PUBLICATION-CONTRACT-RECONCILIATION/completion-report.md",
+      "sha256": "6552fee61db35de9cf5d14997e1eca6bd9f9ebefadf3cddf6368b784046fd7e6",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/PUBLICATION-CONTRACT-RECONCILIATION/lifecycle-reconciliation-report.md",
+      "sha256": "ed0865e5651508e4223648007a7a6a0204acd02a84985f214526b2a38f753715",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/PUBLICATION-CONTRACT-RECONCILIATION/publication-contract-reconciliation-report.md",
+      "sha256": "b7b86baa2c5aa8457440417caaafdc7be39abf2bbb7745280596b4c6b74513b2",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/PUBLICATION-CONTRACT-RECONCILIATION/publication-inventory-reconciliation-report.md",
+      "sha256": "82de0f183893ef1a3137b722462f96a742e0d140a3373ff5382f171f2a64c784",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/PUBLICATION-CONTRACT-RECONCILIATION/publication-readiness-report.md",
+      "sha256": "f4efca60b1035ae4b75c405b4db03f5fa88ed31c7e9a140413cef0296891ee1c",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/PUBLICATION-CONTRACT-RECONCILIATION/qualification-lineage-reconciliation-report.md",
+      "sha256": "e9441e00a5266f90cd14d2fe77191ae31ffc4eeb92d475c730657c9f83c26ef0",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/PUBLICATION-CONTRACT-RECONCILIATION/runtime-preservation-report.md",
+      "sha256": "274e62037433e0f51e115d04c92f0392d3527cbfe31b556379bb699c798632be",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/PUBLICATION-CONTRACT-RECONCILIATION/semantic-validation-assessment.md",
+      "sha256": "c58db439b49cf92de0c8711c9e555ff0f2d769109381d8f00e0e5483aae657eb",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/completion-report.md",
+      "sha256": "a39f320a314e33c0d01a0c4c48c97a21b92e81fbf1026330448c225c0835dc3f",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/controlled-documentation-reconciliation-report.md",
+      "sha256": "452d6bbb8c2eb57925e02cb525fbfe937af0e2488ae33c584a381ed8da493af8",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/cross-reference-validation-report.md",
+      "sha256": "c5749f663f2ae2ff1d8676fa149bbaef2443d33a8e2b35f792e003125d956661",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/publication-dependency-report.md",
+      "sha256": "a8716c35a3db850b1657db88e00289e6f971e1820ed2cb4ab9d2987aeb4bf69d",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/publication-inventory-reconciliation-report.md",
+      "sha256": "a202e9c07e50c13628a700b2db0acae9199769d8b59cdf1590a465fad7981453",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/runtime-publication-boundary-freeze-blocker-report.md",
+      "sha256": "a7f082613f73dd90fef7c5a3f3de1da82699b16de8204084f8d41239ff2c574a",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T04/completion-report.md",
+      "sha256": "802811be61c7d94e6dfe05d9bd4e2ecdff9be36ceec890de8c48aa4cdbcbca8b",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T04/consumer-impact-assessment.md",
+      "sha256": "8ff4813ab33001d1d4a56088b68b64843b31135390972a499c31f2e267ac6e35",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T04/controlled-document-revision.md",
+      "sha256": "b2e81fc9b78c66c5b09414f2b30a4c75249b61f16f8e5e2ce4e5c36b661eb4ac",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T04/qualification-report.md",
+      "sha256": "e0bf53b2b5f27aaef21d39fc28bd67db884365d8647de73fc6e042ddebc4e52b",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T04/regression-report.md",
+      "sha256": "8736dc40c50bb24244c4f2b2908e3e249ef18b52b7fb254bb6decd812b1219a3",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T04/runtime-consumer-migration-report.md",
+      "sha256": "3f77f0b4cceea52b14a25886ae7ed24c04c25bee5ad5ab1f769beb61d0801919",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T04/runtime-layer-architecture-update.md",
+      "sha256": "97665c78fe499487e36e1b0e826a248371a0fe4412efa357223ecbdac17e89d3",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T04/t04-implementation-report.md",
+      "sha256": "3f4ac389f5a11363d60bcd94451c32eda0492a3f8449b8780cb49aafc53433d3",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T05/completion-report.md",
+      "sha256": "64f07f842a18843eca35d2a1b6d300f95608f8db52faf5dd5e71d5124e2abf6f",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T05/consumer-impact-assessment.md",
+      "sha256": "aa8b9f67c7ec4f4d7675275126bf06dabc30cd8cb0d4aea01fd008d73dd742e3",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T05/controlled-document-revision.md",
+      "sha256": "91666372b5e1a2e11170dd87f8777c173c205671f42a7777d3e63f36e9c671c0",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T05/qualification-report.md",
+      "sha256": "2d2d8e04ecca0d09ffec6da1f3cdad67d34cafaa1ac545d7bbac7e740196b7ec",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T05/regression-report.md",
+      "sha256": "65a443022d0d6ac6aed541e61dc318ce9d63b083e097510a86961309f87039f3",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T05/runtime-dependency-analysis.md",
+      "sha256": "2fc2c29dcd24f3d153064b21803f2ce693829aa7da3ca51678c33b0e7dbae39d",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T05/runtime-dependency-validation-report.md",
+      "sha256": "6fe3d6fb5cd2098cf519c271878fcf02a32228785876d6aac19d78f7f2feaecc",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T05/t05-implementation-report.md",
+      "sha256": "c1b4ca2ad9e1d21396c5a43104f6d181a406ab12839a2ab283b12f92bd7f192e",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T06/completion-report.md",
+      "sha256": "3c8e05162f816e72007a7b49353cf48141a23c2955bdcbf420d3220737ebeab4",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T06/consumer-impact-assessment.md",
+      "sha256": "563388183da664bb15705dbecdac76489aaa84fb437d3b8a7c74f681e780b622",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T06/controlled-document-revision.md",
+      "sha256": "479af52a3be97153af6a4e5ad8169a92a051b3fc90c6fb0ad68af951a9573204",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T06/qualification-report.md",
+      "sha256": "21e38dedbf9627599753f781549269bf1c00f099977d77fa0a7ebdc1f89c9786",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T06/regression-report.md",
+      "sha256": "8b06486d40e780de52ec529dd1318157477bcb1116e4756eb0508ff15eae49e7",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T06/runtime-classification-report.md",
+      "sha256": "b30e05f5c7544f059d8fe3f287fe5b167295bbbcc1c28b54963bbc16f3bf8111",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T06/runtime-extension-analysis.md",
+      "sha256": "6b0ec1b011f6a198e20f65d39f16d8c5c99027fe51c1b7ce511e3b2c13cdeb89",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T06/t06-implementation-report.md",
+      "sha256": "9d8153900839b276ee9288073cf3c26ebfbb71928c31a68708df571fa30c47fe",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T07/completion-report.md",
+      "sha256": "1bad64f76e5b4b04d5423cedbc9cbc9b96366192a110fe2aa50d161c01c89898",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T07/consumer-impact-assessment.md",
+      "sha256": "8291503ea0ffa1fe1153d51573d0aea9e71758419983b42aa64b9d71e3dcde03",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T07/controlled-document-revision.md",
+      "sha256": "b0ea037e24451d65410f2963ab24b8342e2ab424aca629780e2b9fe08345db7f",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T07/qualification-report.md",
+      "sha256": "74ab40112382fa9f6578ff4780601160f76a3b88aaab88bb325c5f1feb240d18",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T07/regression-report.md",
+      "sha256": "9fe4073c9f3cb6151756120bbf6505367ba51b6bc2f92cb54279aee9eec6adc4",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T07/runtime-registration-analysis.md",
+      "sha256": "dea97707c111c3d1ef16a5057f9ebefbc92000c9d27e8ca2f084acc5abad7bc5",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T07/runtime-registration-validation-report.md",
+      "sha256": "7aa09311e14e54b80273fbdcdcfd948133cfa903631e0d66c62b46227ae477d8",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T07/t07-implementation-report.md",
+      "sha256": "6d4eecb3cfcd25981a737274f5d822b5c2fdf901fa09aa31c7914afd5aebb94a",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T08/completion-report.md",
+      "sha256": "8c031744ebff3c30c2f68dd7ead8650a338d078ae9f4d6da82adef5a3711580d",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T08/consumer-impact-assessment.md",
+      "sha256": "485dd6141fa0a009cf9ec3e34688e281ec80913ed2f55c3b861c04c7857cbe9c",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T08/controlled-document-revision.md",
+      "sha256": "6598d93c08c38197e6158fc79eb77a077435d578bbf46f140d9603192992fcf9",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T08/qualification-report.md",
+      "sha256": "b796a9176c3fe7bdb24afe7f5fad4241a14546fdd096c2d7ff1d5b4e10f9640e",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T08/regression-report.md",
+      "sha256": "fad7f8beba415567562b1ea5cb28ea6d2e47491365d502263c2e12477980486d",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T08/runtime-capability-analysis.md",
+      "sha256": "46df99ccdbd4a712933dfa70af9881a6ff665a57bce04ede7892a6895c9f875f",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T08/runtime-capability-validation-report.md",
+      "sha256": "b0b08e42f83d40841f8d517c9806d9865e818b8f5b705b8b32da28e65c42596f",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T08/t08-implementation-report.md",
+      "sha256": "6876e9ff1113c2db535906fd8a2e3c75b9ce0092430afc59179cada187d569ee",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T09/completion-report.md",
+      "sha256": "fe1b3b352efd4f2c4347bd1a397bac9ad5a6ce206caf6d38d3c30c371dfa184d",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T09/consumer-impact-assessment.md",
+      "sha256": "bc4b6710bb870fe785ed8f0fafc3d1235e336d76d34a09c4ab002f8c961ee436",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T09/controlled-document-revision.md",
+      "sha256": "4aeec51e7de19cd2853de2c37ea2403933f2ec2afabfaef5b436a425fc63fef7",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T09/qualification-report.md",
+      "sha256": "ae3134c6a8d3adc8ed5649aadc751898332f5de201e730939424a7675ae2b284",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T09/regression-report.md",
+      "sha256": "75f73382ada0ee13194d216c9821542cf2219e3acb5c9b30622b9b735f6e0330",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T09/runtime-policy-analysis.md",
+      "sha256": "51dc636d13480a1c72ccf40eef6bb2f111e4a57c5ced0d4b4f1bb98ce108eb69",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T09/runtime-policy-validation-report.md",
+      "sha256": "8b2728d62ba934a7ddeeb51b2504c0160c7c821f1ed9d06982758f5aad4bdcb8",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T09/t09-implementation-report.md",
+      "sha256": "c3df9b03e3db292519067c6b4b02b19718c19002d83b6ffeaf5efc1dfcc1878a",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T10/completion-report.md",
+      "sha256": "9a4867ba167ad0882e3855283a6f511fbe8e09e151f89c3f07079623e050918f",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T10/consumer-impact-assessment.md",
+      "sha256": "a17edfe3ea7ccf9b0f8f604b9f21418339b06a2d2e949ea1ff1b52be4378973e",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T10/controlled-document-revision.md",
+      "sha256": "ba7441b665621084c0ac4668fb5a09deb4b670a0f5165a8b8a5aee1c5933ed73",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T10/qualification-report.md",
+      "sha256": "83ca4d3002d5c05ee2ce0b4ef1c3be913cf5b1f093a695fe9b37a82fc26edfaf",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T10/regression-report.md",
+      "sha256": "9be74c94cea3da7c5e069f1766e10f96a7c1f3bd6848bfbe900eb04d2b491f6e",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T10/runtime-state-analysis.md",
+      "sha256": "3af83f13ae5449414d37365dd18ba6aec5cbd6935e0f5ade17b92ca1924b8101",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T10/runtime-state-validation-report.md",
+      "sha256": "1ebf0ef9feb1f81c09c6d776b4a27025935e879a50226e03a63b2c32e69c1147",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T10/t10-implementation-report.md",
+      "sha256": "22fa759a3dc5ac050a1b060085e8ea32fa2e791110875763d0147dbe6b889ec4",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T11/completion-report.md",
+      "sha256": "7fc900fe9f0bcc2f4339c51f0acda1f7fd03e820a56a762a8c10c7d09590381e",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T11/consumer-impact-assessment.md",
+      "sha256": "26bb64acbf85a4ade91a32dd24f43e2189b0ecba2626c547a89a21c71bf80fb2",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T11/controlled-document-revision.md",
+      "sha256": "ea3fe2ecf970ceef50cbb38a26d54f6f69d3bc503f8876ca6168cf06ca5aef3b",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T11/qualification-report.md",
+      "sha256": "d2cfa856c29de89114532c0ec6d4d9a9f37eba5770750e8ce8db13e06d95d281",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T11/regression-report.md",
+      "sha256": "eed4d84fd97a86342b0a1953e202fa451d2a652364abaa57c7cef8ba887a0568",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T11/runtime-transition-analysis.md",
+      "sha256": "4b80b3513c3c8d810b3028ee1c43b98aa6289c80f57b085d6cb1ec87b782db2d",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T11/runtime-transition-validation-report.md",
+      "sha256": "2d62007f267ee127ed6e00640102f9e28c5e76ade44633c81d16dd7e60a31daa",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T11/t11-implementation-report.md",
+      "sha256": "8db3b1179e647b5f022684c745e2ad38a534e5ef7f6bd54a86ef949dcf5a1d77",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T12/completion-report.md",
+      "sha256": "b987717f560d3e54f6326c531007ec45c07314cc3f9364fd0318daab2d5d6617",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T12/consumer-impact-assessment.md",
+      "sha256": "17f3c19e1cce7d0fe5f2b47ca265a7d6756ae5e610b8e451862c2964554556e1",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T12/controlled-document-revision.md",
+      "sha256": "24b7894a0d646565b96cfb54372da3b0e40d55498c967f1bae46e080626d1c43",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T12/qualification-report.md",
+      "sha256": "cf4dfdca7ccee15266ba2045f4527a0ab590d01fbecf423fa352dba9bc3bcd8f",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T12/regression-report.md",
+      "sha256": "04619acb784c78d7ef0b1a49bab5fe6588937824d4b621ce4255b55254ea6ab7",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T12/runtime-execution-contract-analysis.md",
+      "sha256": "23bf99ce5338bec8266b9510f2295338421c18d529caaa043ab3e01f1e82eb94",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T12/runtime-execution-contract-validation-report.md",
+      "sha256": "efbfca9c8aa7097cfc4444ed35f872e375c5e77e129477643250a0f25966de06",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T12/t12-implementation-report.md",
+      "sha256": "e8690504acc341c66db2f1dd994043d908682b8990beb1ca3b7c19cd03b308ea",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T13/completion-report.md",
+      "sha256": "c30f96dd15ce5b407a271ebde23fbd09c119e573d9f1e27b4db8b7ccc9da602a",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T13/consumer-impact-assessment.md",
+      "sha256": "9b0bdebcea6c120264ebe82e51d29b591df48266a52e27d2b2bd06d1eeb5ada7",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T13/controlled-document-revision.md",
+      "sha256": "53dd96e891109c44c18d3b087d62421430d196e75d1af36f0f63e7c174cd703a",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T13/qualification-report.md",
+      "sha256": "08f0e9c2a693f04bb7da47862510b27b46287e93d2a3bd88fcd2bab3d0911156",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T13/regression-report.md",
+      "sha256": "571683bb53531f9d55f10357f93e50fc04f089154c42905099f4eb5ccd6f32b9",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T13/runtime-outcome-analysis.md",
+      "sha256": "824e6a62f8ce259ef05a5af5cc6c0f30a05902503751424bcb139b335f6d4de7",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T13/runtime-outcome-validation-report.md",
+      "sha256": "07f57a383e5511602f864e9eb0fc1903e49f92dd8ce8be6afee6bacf90a7a04a",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T13/t13-implementation-report.md",
+      "sha256": "b40981b0594ddb36b02195bfb80b901bfe225dcb4df72c7431cf1df91d9f963d",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T15/completion-report.md",
+      "sha256": "1f42340f1ded9bf73c824f1447d4448c8953a16f97e9c14ff56d80f34e4589b2",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T15/controlled-document-reconciliation-report.md",
+      "sha256": "6940b7b6922df476008063f09101d2af5ccb80a81862d93efd5d1e692b64e814",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T15/cross-registry-validation-report.md",
+      "sha256": "365dd72ad4e69e08785e8f2089f45ff2df7b19d7a39ffd1fe76a082e7f63277b",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T15/progressive-runtime-consolidation-report.md",
+      "sha256": "339c67dee6c6db30ad6a3be60b7045cd919de94785049b74a878f3fb6d50454a",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T15/qualification-report.md",
+      "sha256": "c4a9420c1db20d1758b784c185c65d9b0ae525ac2533eec1d226f091716c54de",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T15/regression-report.md",
+      "sha256": "f44993194507834d7f99a88611b2e519577fc716420b5367280c0d2111727512",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T15/runtime-boundary-verification-report.md",
+      "sha256": "27dc44cc9f69cff34a1fa622d682ec522223c307988f15c4d2792960af2a37dc",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T15/runtime-determinism-report.md",
+      "sha256": "d3ba41efdf3af30b3cf76de2dab50128a011e1442b0ee1deb404bbfbc5e1e8e5",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T15/runtime-traceability-report.md",
+      "sha256": "264cb206e3c21fd25ef84572cf02b8a70ea860685403bc0b9ae390f6676f6522",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/T15/technical-debt-assessment.md",
+      "sha256": "bbe9ffd635512d9fe2fb8f82a255bd4406c4b114d7f03529712f11b3f24f83fb",
+      "classification": "engineering_evidence"
+    },
+    {
+      "path": "scripts/lib/authority_pipeline/progressive_runtime_capabilities.py",
+      "sha256": "e6c2d2a2a87afb84519b0eb9ec99d91264aa8f0007946d7b1462286e2d595730",
+      "classification": "governance_validator"
+    },
+    {
+      "path": "scripts/lib/authority_pipeline/progressive_runtime_consolidation.py",
+      "sha256": "f5b8a684abc4f54e69af619396dec32e5ec5bcc7e5a268fc9789c64e9d37422d",
+      "classification": "governance_validator"
+    },
+    {
+      "path": "scripts/lib/authority_pipeline/progressive_runtime_dependencies.py",
+      "sha256": "a0491f0f5b3aa91fef8db0272d3923c6e09c8e827a8d688b03000a99af6d4686",
+      "classification": "governance_validator"
+    },
+    {
+      "path": "scripts/lib/authority_pipeline/progressive_runtime_execution_contracts.py",
+      "sha256": "963375996ebdd7e640ecf2857cf4df73dbc2da9f39f44add07dc4452813a84c6",
+      "classification": "governance_validator"
+    },
+    {
+      "path": "scripts/lib/authority_pipeline/progressive_runtime_outcomes.py",
+      "sha256": "8f3c72b1832f7340ed9df869f4bbf436c22a0ea8a2b59211465c523b079e21ff",
+      "classification": "governance_validator"
+    },
+    {
+      "path": "scripts/lib/authority_pipeline/progressive_runtime_policies.py",
+      "sha256": "a3cb44c00e3fee6f5a191cbcdc9053381433051c2e2cabbbfc103971bd42c350",
+      "classification": "governance_validator"
+    },
+    {
+      "path": "scripts/lib/authority_pipeline/progressive_runtime_registration.py",
+      "sha256": "fd37e65524966ff765d540330e1d0d9548b68ab3f1df12f38d9e8c583a06dedb",
+      "classification": "governance_validator"
+    },
+    {
+      "path": "scripts/lib/authority_pipeline/progressive_runtime_states.py",
+      "sha256": "14a57bcf76827616f5d6f6e5d14ff48320974930f51bd7c7096eb2db2b1bd36a",
+      "classification": "governance_validator"
+    },
+    {
+      "path": "scripts/lib/authority_pipeline/progressive_runtime_transitions.py",
+      "sha256": "dae70d3eec228a5064a3ee8316ebfecf210bc2c3281192da54ab35b15c107c03",
+      "classification": "governance_validator"
+    },
+    {
+      "path": "scripts/tests/test-progressive-runtime-capabilities.py",
+      "sha256": "b6254473723385c0d63627f60729286db3280d5e11a50daf425fcb8e07ddd3f4",
+      "classification": "qualification_test"
+    },
+    {
+      "path": "scripts/tests/test-progressive-runtime-consolidation.py",
+      "sha256": "0815fccbd6e362a7e062d55b2e739de928225d01f9c704543d077bc7e147c567",
+      "classification": "qualification_test"
+    },
+    {
+      "path": "scripts/tests/test-progressive-runtime-dependencies.py",
+      "sha256": "cfe1587618541e1e40fe7ab584fa45893759247661857e447d4034eadae0e2fc",
+      "classification": "qualification_test"
+    },
+    {
+      "path": "scripts/tests/test-progressive-runtime-execution-contracts.py",
+      "sha256": "83a1e1be1ec9473b587e7723229b7cd7a7b260b8dfe44f1630741cf0d4309900",
+      "classification": "qualification_test"
+    },
+    {
+      "path": "scripts/tests/test-progressive-runtime-outcomes.py",
+      "sha256": "a3c39fc519495aa4a1655eae1743a8a319fd13044b42481925bcef5a27edb0fe",
+      "classification": "qualification_test"
+    },
+    {
+      "path": "scripts/tests/test-progressive-runtime-policies.py",
+      "sha256": "8aac80e03b4ca189be5bb2999a7dc6b84ad217eceffbe444518b866978e62448",
+      "classification": "qualification_test"
+    },
+    {
+      "path": "scripts/tests/test-progressive-runtime-registration.py",
+      "sha256": "13d4743c02c09a39c736e3f5eadd17ebaacc2125289fc90708c1c77a40aa6532",
+      "classification": "qualification_test"
+    },
+    {
+      "path": "scripts/tests/test-progressive-runtime-states.py",
+      "sha256": "c629d14cb2de3e638a45c4dbec768824f8b77d662f2a0e096db3a784aa622dc4",
+      "classification": "qualification_test"
+    },
+    {
+      "path": "scripts/tests/test-progressive-runtime-transitions.py",
+      "sha256": "223b4f558899424907003cf152a414b95bb38a4d75955c9dacdc93dbd6e30236",
+      "classification": "qualification_test"
+    }
+  ],
+  "exclusions": [
+    {
+      "path": "engineering/docs/architecture/ZEUS-STAGE1-RUNTIME.md",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/docs/cli/ZEUS-USER-GUIDE.md",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/execution/execution-interface.yaml",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/operations/authority-ownership-specification.md",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/operations/zeus-mission-admission-runtime.md",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/operations/zeus-mission-execution-runtime.md",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/operations/zeus-oa01-mission-verification.md",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/operations/zeus-operational-runtime.md",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/operations/zeus-operator-interface.md",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/tests/zeus-operational-alpha/PMCT-CAPABILITY-MATRIX.yaml",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/tests/zeus-operational-alpha/PMCT-CONTRACT.md",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/tests/zeus-operational-alpha/tests/test-result-model.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/tests/zeus-operational-alpha/tests/test-state-protection.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/tests/zeus-operational-alpha/tests/test_discovery.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/MANIFEST.sha256",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-05/implementation.md",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-05/verification.md",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/controlled_mission_authority.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/mission_contract_discovery.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/mission_resolution.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/oa01_gate_verification.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/oa01_implementation.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/oa01_verification.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/oa02_gate_verification.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/oa02_implementation.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/oa03_gate_verification.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/oa03_implementation.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/oa04_gate_verification.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/oa04_implementation.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/oa05_gate_verification.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/oa05_implementation.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/progressive_oa.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/project_operational_context.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/lib/emp/stage1_runtime.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/tests/test-zeus-mission-count-status.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/tests/test-zeus-oa01-implementation.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/tests/test-zeus-oa01-verification.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/tests/test-zeus-oa02-controlled-authority.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/tests/test-zeus-oa02-lifecycle.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/tests/test-zeus-oa03-mission-contract-discovery.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/tests/test-zeus-oa04-context-reconstruction.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/tests/test-zeus-oa04-mission-resolution.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/tests/test-zeus-oa05-mission-staging.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/tests/test-zeus-progressive-oa.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/tests/test-zeus-stage1-runtime.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/tests/test_discovery.py",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/verify.sh",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/zeus",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "services/eens/README.md",
+      "classification": "EXCLUDED_EXISTING_PU-02_OWNERSHIP",
+      "reason": "Owned by PU-02; ownership and ordering preserved."
+    },
+    {
+      "path": "scripts/tests/test-progressive-runtime-consumer-migration.py",
+      "classification": "EXCLUDED_OUTSIDE_QUALIFICATION_SCOPE",
+      "reason": "Not an input to the 145-test independent governance fingerprint."
+    },
+    {
+      "path": "scripts/tests/test-progressive-runtime-implementation-synchronization.py",
+      "classification": "EXCLUDED_OUTSIDE_QUALIFICATION_SCOPE",
+      "reason": "Not an input to the 145-test independent governance fingerprint."
+    },
+    {
+      "path": "scripts/lib/authority_pipeline/__init__.py",
+      "classification": "EXCLUDED_OUTSIDE_QUALIFICATION_SCOPE",
+      "reason": "Not an input to the 145-test independent governance fingerprint."
+    },
+    {
+      "path": "scripts/lib/authority_pipeline/external_wop_inventory.py",
+      "classification": "EXCLUDED_OUTSIDE_QUALIFICATION_SCOPE",
+      "reason": "Not an input to the 145-test independent governance fingerprint."
+    },
+    {
+      "path": "scripts/lib/authority_pipeline/repository.py",
+      "classification": "EXCLUDED_OUTSIDE_QUALIFICATION_SCOPE",
+      "reason": "Not an input to the 145-test independent governance fingerprint."
+    },
+    {
+      "path": "scripts/zeus",
+      "classification": "EXCLUDED_RUNTIME_IMPLEMENTATION",
+      "reason": "Runtime implementation is outside PU-01C governance-declaration scope and remains in PU-02."
+    },
+    {
+      "path": "scripts/verify.sh",
+      "classification": "EXCLUDED_RUNTIME_INTEGRATION",
+      "reason": "Repository-wide integration wrapper is outside the independent fingerprint."
+    },
+    {
+      "path": "scripts/lib/emp/oa02_lifecycle.py",
+      "classification": "EXCLUDED_RUNTIME_IMPLEMENTATION",
+      "reason": "Runtime consumer implementation is outside the frozen governance boundary."
+    },
+    {
+      "path": "scripts/lib/emp/progressive_lifecycle.py",
+      "classification": "EXCLUDED_FOUNDATIONAL_T01_T03",
+      "reason": "Foundational runtime implementation is not assigned to PU-01C T04-T15."
+    },
+    {
+      "path": "scripts/lib/emp/progressive_gate.py",
+      "classification": "EXCLUDED_FOUNDATIONAL_T01_T03",
+      "reason": "Foundational runtime implementation is not assigned to PU-01C T04-T15."
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/STATE.json",
+      "classification": "EXCLUDED_MISSION_LIFECYCLE_STATE",
+      "reason": "Mission execution state is not publication-unit authority or PU-01C content."
+    },
+    {
+      "path": "engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/EVIDENCE/GATE-A/PU-01C/AUTHORITY-VERIFICATION-BOUNDARY-FREEZE/",
+      "classification": "EXCLUDED_TRANSACTION_CONTROL_OUTPUTS",
+      "reason": "Freeze reports and this manifest describe the boundary and are not recursively included in it."
+    }
+  ],
+  "ordering": "lexicographic_by_repository_relative_path",
+  "digest_algorithm": "sha256",
+  "aggregate_digest": "7c9b3ce14b8d6d864b8e3a8a149155995e52c3fcd2f867e2de0319a50d9048e5",
+  "aggregate_digest_algorithm": "sha256 over UTF-8 lines '<sha256>  <path>\\n' in included_paths order"
+}

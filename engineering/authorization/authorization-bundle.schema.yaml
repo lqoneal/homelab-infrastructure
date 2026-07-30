@@ -1,0 +1,43 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: engineering/authorization/authorization-bundle.schema.yaml
+title: Zeus Authorization Bundle
+description: Canonical authorization-input interface for Engineering Work Initiation.
+type: object
+additionalProperties: false
+required:
+  - schema_version
+  - document_type
+  - admission_record
+  - authority_graph
+  - wop
+  - state
+  - receipt
+properties:
+  schema_version:
+    const: 1
+  document_type:
+    const: ZeusAuthorizationBundle
+  admission_record:
+    type: string
+    minLength: 1
+  authority_graph:
+    type: string
+    minLength: 1
+  wop:
+    type: string
+    minLength: 1
+  state:
+    type: string
+    minLength: 1
+  receipt:
+    type: string
+    minLength: 1
+  lease:
+    type: string
+    minLength: 1
+  revocation:
+    type: string
+    minLength: 1
+  expected_authority:
+    type: string
+    minLength: 1

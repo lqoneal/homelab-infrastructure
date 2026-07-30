@@ -61,18 +61,23 @@ reconciliation authority.
 Current Operational Alpha lifecycle:
 
 ```text
-OA-01_IMPLEMENTATION=COMPLETE
-OA-01_CODEX_VALIDATION=PASS
-OA-01_OPERATOR_VERIFICATION=PASS
-OA-01_OPERATOR_ACCEPTANCE=RECORDED
-OA-02_PMCT_READINESS=PASS
-OA-02_VERIFICATION=PASS
-QUALIFIED_PRODUCTION_AGENTS=1
-ZEUS_NEXT_ACTION=AUTHORIZE_DISPATCH
-ZEUS_NEXT_ACTION_RESULT=READY
+OA-01_STATE=ACCEPTED
+OA-02_STATE=ACCEPTED
+OA-03_STATE=ACCEPTED
+OA-04_STATE=ACCEPTED
+OA-04_CURRENT_ACCEPTANCE_RECEIPT=INTEGRITY_VALID
+OA-04_HISTORICAL_RECEIPT=SUPERSEDED
+OA-05_STATE=ACCEPTED
+OA-05_CURRENT_ACCEPTANCE_RECEIPT=INTEGRITY_VALID
+OA-06_STATE=PENDING
+OA-07_AND_LATER=PENDING
+LIVE_MISSION_COUNT=0
 DISPATCHER_STATE=PREPARED
 OPERATIONAL_DISPATCH=DISABLED
-PROGRESSIVE_WOP=AWAITING_DISPATCH_AUTHORIZATION
+MISSION_EXECUTION=NOT_PERFORMED
+OPERATIONAL_ALPHA_DECLARATION=NOT_AUTHORIZED
+BASELINE_FREEZE=NOT_PERFORMED
+PROGRESSIVE_WOP=OA06_PENDING
 ```
 
 ## Backlog
@@ -143,5 +148,26 @@ PROGRESSIVE_WOP=AWAITING_DISPATCH_AUTHORIZATION
 Recommended next engineering action: authorize a bounded EENS integration
 mission toward Zeus Operational Alpha. No EENS implementation or activation
 authority is inferred by this recommendation.
-Dispatcher commissioning, OA-02 execution, and WOP resumption remain
-prohibited until the OA-01 boundary is satisfied.
+OA-01 through OA-05 are integrity-verified and explicitly accepted. OA-06 is
+the sole active gate under `GH-ZEUS-OA-PROGRESSIVE-001` and remains `PENDING`;
+OA-07 and later remain pending and ineligible. No execution agent was
+dispatched, no mission was executed, and no Operational Alpha declaration or
+baseline freeze is implied.
+
+`ZH-OA04-ACCEPTANCE-REPLAY-CORRECTIVE-001` corrected the approval path without
+performing acceptance. The superseded flat receipt is immutable history.
+Future acceptance creates a uniquely named receipt bound to the corrected
+OA-04 package, gate, operator, marker, and evidence, and runtime state becomes
+its explicit current-receipt index only after integrity validation.
+
+`ZH-OA05-MISSION-STAGING-001` exercised the production Stage 1 owning
+interfaces in isolated candidates and proved stable mission/WOP identity,
+objective, scope, normalized dependencies, priority, candidate state, and
+canonical staging-contract digest. Qualification did not stage a production
+mission or invoke dispatch.
+
+`ZH-OA05-MISSION-COUNT-INVESTIGATION-001` confirmed `zeus status` reconstructs
+mission-admission counts from the integrity-protected live Stage 1 mission
+store. The store contains zero mission records, so all zero counts are current
+and correct. Status now also rejects structurally inconsistent records even
+when their digest was recomputed.

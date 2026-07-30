@@ -1,8 +1,8 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 78
-updated_at: '2026-07-29T06:11:33+00:00'
+revision: 85
+updated_at: '2026-07-29T18:20:00+00:00'
 serialization: yaml
 mutation_history:
 - revision: 2
@@ -548,6 +548,62 @@ mutation_history:
   actor: repository_owner
   action: reconcile published Mission Contract baseline
   reason: Record remote qualification of a539f312dff6f70eef203fb42add111dfd847ff6 and retirement of bootstrap authority while retaining normal Mission Contract authority.
+- revision: 79
+  previous_revision: 78
+  at: '2026-07-28T23:59:00-07:00'
+  actor: Zeus Stage 1 implementation agent
+  action: complete ZH-001 Zeus Operational Alpha Stage 1
+  reason: Record qualified WOP submission, validation, admission, staging, persistence, status, and EENS admission-event implementation while deferring execution dispatch.
+- revision: 80
+  previous_revision: 79
+  at: '2026-07-29T11:11:27+00:00'
+  actor: ZH-OA03-MISSION-CONTRACT-DISCOVERY-001 implementation agent
+  action: verify OA-03 Mission Contract Discovery
+  reason: Record deterministic exactly-one Mission Contract discovery, cumulative
+    OA-01 through OA-03 regression PASS, and integrity-bound verification while
+    preserving explicit operator acceptance and OA-04 ineligibility.
+- revision: 81
+  previous_revision: 80
+  at: '2026-07-29T11:23:52+00:00'
+  actor: ZH-OA04-MISSION-RESOLUTION-001 implementation agent
+  action: verify OA-04 Mission Resolution
+  reason: Record deterministic exactly-one mission, WOP, execution-definition,
+    and authority-chain resolution with cumulative OA-01 through OA-04 PASS,
+    no execution or dispatch, and OA-05 ineligibility.
+- revision: 82
+  previous_revision: 81
+  at: '2026-07-29T12:00:00-07:00'
+  actor: ZH-OA05-CONTRACT-CONFORMANCE-REVIEW-001 qualification agent
+  action: qualify OA-05 Mission Staging Contract before eligibility
+  reason: Correct the PMCT execution-agent-registry substitution, require stable
+    candidate identity, objective, scope, dependencies, priority, and state,
+    preserve the superseded OA-04 receipt as history, and retain OA-04 awaiting
+    explicit acceptance with OA-05 pending and ineligible.
+- revision: 83
+  previous_revision: 82
+  at: '2026-07-29T12:16:00-07:00'
+  actor: ZH-OA04-ACCEPTANCE-REPLAY-CORRECTIVE-001 implementation agent
+  action: correct Progressive OA acceptance receipt replay
+  reason: Require lifecycle-, state-, package-, evidence-, marker-, operator-,
+    supersedence-, and integrity-bound replay; preserve the historical OA-04
+    receipt and leave corrected OA-04 awaiting explicit operator acceptance.
+- revision: 84
+  previous_revision: 83
+  at: '2026-07-29T18:05:00+00:00'
+  actor: ZH-OA05-MISSION-STAGING-001 implementation agent
+  action: implement and verify OA-05 Mission Staging Contract
+  reason: Prove deterministic integrity-bound candidate staging, persistence,
+    replay, restart recovery, malformed-input rejection, authorization
+    enforcement, and fail-closed behavior while retaining OA-06 and later
+    pending and prohibiting dispatch and execution.
+- revision: 85
+  previous_revision: 84
+  at: '2026-07-29T18:20:00+00:00'
+  actor: ZH-OA05-MISSION-COUNT-INVESTIGATION-001 investigation agent
+  action: verify and harden mission-admission status reconstruction
+  reason: Confirm live zero counts derive from an empty persisted mission
+    store and require integrity-valid records to have supported lifecycle
+    states and consistent instance, mission, WOP, and path identities.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -3286,8 +3342,8 @@ entities:
     - type: related_to
       target: EMP-WORK-GH-ZEUS-OA-CERTIFICATION-001
     created_at: '2026-07-29T05:00:00+00:00'
-    updated_at: '2026-07-29T05:53:14+00:00'
-    revision: 2
+    updated_at: '2026-07-29T11:23:52+00:00'
+    revision: 4
     transition_history:
     - from: null
       to: ready
@@ -3312,6 +3368,38 @@ entities:
     priority: 0
     completion_criteria: OA-01 through OA-30 are independently implemented, verified,
       and accepted in order; OA-30 stops at separately authorized declaration preparation.
+    queue_ids: []
+  - registry_id: EMP-WORK-ZEUS-OPERATIONAL-ALPHA-STAGE1
+    object_type: WorkItem
+    title: Zeus Operational Alpha Stage 1 Mission Admission
+    management_state: completed
+    owner: Engineering Platform
+    scope: ZH-001
+    authority_reference: ZH-001
+    source_records:
+    - PROJ-0001
+    - PHASE-0001
+    relationships:
+    - type: related_to
+      target: EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001
+    created_at: '2026-07-28T12:00:00-07:00'
+    updated_at: '2026-07-28T23:59:00-07:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: completed
+      at: '2026-07-28T23:59:00-07:00'
+      actor: Zeus Stage 1 implementation agent
+      reason: ZH-001 implementation and automated verification completed.
+      authority_reference: ZH-001
+    project_id: EMP-PROJECT-HOMELAB
+    order: 48
+    mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+    phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+    sprint_id: null
+    work_type: runtime-implementation
+    priority: 0
+    completion_criteria: Zeus validates and authorizes WOP packages, verifies repository state, idempotently admits and stages missions, persists runtime records, and publishes admission lifecycle events without dispatching execution agents.
     queue_ids: []
   queues:
   - registry_id: EMP-QUEUE-PORTFOLIO-ROADMAP

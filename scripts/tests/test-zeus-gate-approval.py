@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import textwrap
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
@@ -36,6 +37,95 @@ def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def synthetic_approval_primitive() -> str:
+    return textwrap.dedent(
+        """\
+        #!/usr/bin/env python3
+        import hashlib
+        import json
+        import os
+        import pathlib
+        import subprocess
+        import sys
+        from datetime import datetime, timezone
+
+        if len(sys.argv) != 4:
+            raise SystemExit(64)
+        gate, run_id, confirmation_mode = sys.argv[1:]
+        if not gate.startswith("OA-") or confirmation_mode not in {
+            "INTERACTIVE", "NONINTERACTIVE"
+        }:
+            raise SystemExit(64)
+        root = pathlib.Path(__file__).resolve().parents[1]
+        repository = pathlib.Path(os.environ["ZEUS_APPROVAL_REPOSITORY"]).resolve()
+        operator = os.environ["ZEUS_APPROVAL_OPERATOR"]
+        verification = root / "operator-verifications" / f"{gate}.verification.json"
+        receipt = pathlib.Path(os.environ["ZEUS_APPROVAL_RECEIPT"])
+        predecessor_text = os.environ["ZEUS_APPROVAL_PREDECESSOR"]
+        predecessor_digest = os.environ["ZEUS_APPROVAL_PREDECESSOR_DIGEST"]
+
+        if receipt.exists():
+            raise SystemExit(73)
+        if predecessor_text != "NONE":
+            predecessor = pathlib.Path(predecessor_text)
+            checksum = pathlib.Path(str(predecessor) + ".sha256")
+            if (
+                not predecessor.is_file()
+                or not checksum.is_file()
+                or hashlib.sha256(predecessor.read_bytes()).hexdigest()
+                != predecessor_digest
+            ):
+                raise SystemExit(77)
+        verification_checksum = pathlib.Path(str(verification) + ".sha256")
+        if not verification.is_file() or not verification_checksum.is_file():
+            raise SystemExit(77)
+        expected_verification = verification_checksum.read_text().split()[0]
+        verification_digest = hashlib.sha256(verification.read_bytes()).hexdigest()
+        if verification_digest != expected_verification:
+            raise SystemExit(77)
+        record = json.loads(verification.read_text())
+        required = {
+            "gate": gate,
+            "pmct_run_id": run_id,
+            "repository": str(repository),
+            "operator": operator,
+            "verification_result": "PASS",
+        }
+        if any(record.get(key) != value for key, value in required.items()):
+            raise SystemExit(77)
+        head = subprocess.run(
+            ["git", "-C", str(repository), "rev-parse", "HEAD"],
+            text=True, capture_output=True, check=True,
+        ).stdout.strip()
+        if record.get("qualified_repository_head") != head:
+            raise SystemExit(77)
+        receipt.parent.mkdir(parents=True, exist_ok=True)
+        fields = {
+            "gate": gate,
+            "pmct_run_id": run_id,
+            "repository": str(repository),
+            "approved_head": head,
+            "evidence_digest": record["evidence_digest"],
+            "operator": operator,
+            "operator_verification_record": str(verification),
+            "operator_verification_digest": verification_digest,
+            "approved_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "confirmation_mode": confirmation_mode,
+            "predecessor_receipt": predecessor_text,
+            "predecessor_receipt_digest": predecessor_digest,
+        }
+        receipt.write_text("".join(f"{key}={value}\\n" for key, value in fields.items()))
+        receipt.chmod(0o444)
+        checksum = pathlib.Path(str(receipt) + ".sha256")
+        checksum.write_text(
+            f"{hashlib.sha256(receipt.read_bytes()).hexdigest()}  {receipt.name}\\n"
+        )
+        print(f"APPROVAL_RECEIPT={receipt}")
+        print("APPROVAL_RECEIPT_VERIFICATION=PASS")
+        """
+    )
+
+
 class GateApprovalTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
@@ -47,9 +137,8 @@ class GateApprovalTests(unittest.TestCase):
         self.run.mkdir(parents=True)
         (self.wop / "bin").mkdir(parents=True)
         (self.wop / "operator-approvals").mkdir()
-        shutil.copy2(
-            Path("/data/engineering/wops/ZEUS-OA-PROGRESSIVE-WOP/bin/record-operator-approval"),
-            self.wop / "bin/record-operator-approval",
+        (self.wop / "bin/record-operator-approval").write_text(
+            synthetic_approval_primitive()
         )
         (self.wop / "bin/resume-status").write_text(
             "#!/usr/bin/env bash\nprintf 'RESUME_STATUS=PAUSED\\n'\n"
