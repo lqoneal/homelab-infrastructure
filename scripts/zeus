@@ -649,7 +649,7 @@ def main(argv=None):
                 {"model": "CONVERGENCE_AUTHORITY", "dispatch_permitted": True,
                  "authority_receipt": convergence_flow["authority_receipt"]["receipt_digest"]}
                 if convergence_flow else
-                dispatch_readiness(repository=str(ROOT),baseline=baseline,
+                (dispatch_readiness(repository=str(ROOT),baseline=baseline,
                     activation_path=ROOT/"engineering/dispatch/dispatcher-activation.json",
                     registry_path=runtime_registry_path(ROOT),
                     mission_class="engineering",required_paths=(
@@ -659,6 +659,8 @@ def main(argv=None):
                         ROOT/"engineering/reconciliation/production-reconciliation-policy.yaml",
                         ROOT/".zeus/runtime"),
                     allowed_signers=ROOT/"engineering/authority/allowed-signers")
+                 if a.action in {"start", "resume"} else
+                 {"model": "READ_ONLY_STATUS", "dispatch_permitted": False})
             )
             execution_runtime=MissionExecutionRuntime(ROOT,execution_store,
                 AdmissionStateStore(admission_directory),
