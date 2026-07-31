@@ -7,8 +7,14 @@ metadata_model:
   source: engineering/metadata/operational-alpha-emm.yaml
 authority_resolution:
   model: SPEC-0014
-  revision: '1.1'
+  revision: '1.2'
   implementation_wop_source: engineering/work-orders/*/immutable-wop.yaml
+  manual_governance_policy:
+    entity_type: ManualGovernanceWOPAuthorityPolicy
+    entity_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
+    revision: '1.0'
+    source: engineering/authority/manual-governance-wop-authority-policy.yaml
+    autonomous_wops_require_authority_record: true
 operational_execution_contract:
   owner: OPERATIONAL-ALPHA-EXECUTION-CONTRACT
   revision: '1.0'
@@ -34,10 +40,10 @@ semantic_bindings:
     revision: '1.6'
   convergence_authority:
     owner: SPEC-0014
-    revision: '1.1'
+    revision: '1.2'
   implementation_wop:
     owner: STD-0003
-    revision: '2.0'
+    revision: '2.1'
   implementation_wop_structure:
     owner: TPL-0001
     revision: '2.0'

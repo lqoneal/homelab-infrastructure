@@ -32,3 +32,24 @@ entities:
     classification: Authoritative
     source: engineering/registry/runtime-baselines/ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0.yaml
     source_digest: 0f4b4f97392e58a02e5539103c304eb0adf9496e5ec4b128b76a47cfe47e5fe2
+  - entity_type: ManualGovernanceWOPAuthorityPolicy
+    entity_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
+    revision: 1.0
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/authority/manual-governance-wop-authority-policy.yaml
+    source_digest: 073277ec16872534fc5ed8d3da6f5ced7e3013a8497a8a28bec636a9e54ea913
+  - entity_type: ImplementationWOP
+    entity_id: WOP-OA-01-ROOT-ADMISSION-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/work-orders/OA-01-ROOT-ADMISSION-001/immutable-wop.yaml
+    source_digest: 860be1c4c098502c9eb633bde7b8c839b10d310fcac041585bf008033cc52920
+  - entity_type: BootstrapGateActionSpecification
+    entity_id: OA-01-BOOTSTRAP-GATE-ACTIONS
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/execution/bootstrap-gate-actions/OA-01-BOOTSTRAP-GATE-ACTIONS.yaml
+    source_digest: af94ccb15296cd84c9a7dcdb208ec116e8776f0faa4582148ff5a5d87554e5c6

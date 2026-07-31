@@ -1,7 +1,7 @@
 ---
 document_id: SPEC-0014
 title: Operational Alpha Convergence Authority Model
-version: 1.1
+version: 1.2
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-30
@@ -70,6 +70,23 @@ one outcome: `RESOLVED`, `NOT_FOUND`, `AMBIGUOUS_RESOLUTION`,
 
 Only `RESOLVED` permits the next lifecycle operation. The receipt is derived
 and expires with any bound source revision, baseline, or Authority Record.
+
+## Manual-governance WOP authority policy
+
+While `MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY@1.0` remains `ACTIVE`, an
+explicitly submitted Engineering Governance WOP may be the root authority for
+its own bounded, allowlisted actions. It is not an inferred exception: the WOP
+must be EMM-registered and contain an exact governance-submission attestation,
+an active delegation state, the governing policy identity, and its permitted
+action list. The resolver records that mode and submission identity in its
+receipt.
+
+This temporary path admits only the root WOP actions needed to create or
+validate the subordinate artifacts it explicitly delegates. Those artifacts
+must bind back to that exact WOP, revision, policy, and submission identity.
+An autonomous WOP, or a WOP with an incomplete or inactive attestation,
+continues to require the normal Authority Record contract. The runtime never
+infers manual authority from a title, operator identity, or command.
 
 ## Operational execution contract
 
@@ -151,5 +168,6 @@ acceptance or later execution.
 Conformance requires exactly one owner for every authoritative fact; exact
 baseline and version resolution; no authority or synchronization cycles;
 directional synchronization; reproducible projections; sealed qualification;
-and no execution action without an Authority Record that resolves for the
-specific WOP, action, and baseline.
+and either an Authority Record that resolves for the specific WOP, action, and
+baseline or an active, EMM-resolved manual-governance WOP policy with an exact
+allowlisted submission.

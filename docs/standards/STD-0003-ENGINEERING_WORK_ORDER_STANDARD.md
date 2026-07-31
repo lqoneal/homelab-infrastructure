@@ -1,7 +1,7 @@
 ---
 document_id: STD-0003
 title: Operational Alpha Work Authorization Standard
-version: 2.0
+version: 2.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
@@ -57,7 +57,9 @@ Contract pair is retained only for historical traceability and shall not be
 used to resolve a new Operational Alpha action. The current authority is the
 version-pinned Authority Record and published Implementation WOP resolved from
 EMM under SPEC-0014. A `READY` WOP is non-executing; only a resolver-confirmed
-Authority Record may make a WOP `ACTIVE`.
+Authority Record may make a WOP `ACTIVE`, except for the bounded root actions
+of an explicitly submitted manual-governance WOP while the active
+manual-governance policy applies.
 
 ## Purpose
 
@@ -82,7 +84,11 @@ This standard applies to every Engineering Work Order executed within the Engine
 ### Principle 1 — Explicit Authorization
 
 Operational Alpha work shall be performed only under an `ACTIVE` Implementation
-WOP whose specific action is resolved by a valid Authority Record.
+WOP whose specific action is resolved by a valid Authority Record. During the
+active manual-governance phase, an exact EMM-resolved governance-submitted WOP
+may instead resolve its explicitly allowlisted root actions under
+`MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY`; autonomous WOPs do not qualify for
+this exception.
 
 ---
 
@@ -371,3 +377,4 @@ This standard is complete when every Engineering Work Order activated under the 
 | 1.3 | 2026-07-18 | Institutionalized execution-first Completion Reports, mandatory execution/results separation, ordered findings through follow-on work, Final Certification placement, and TPL-0002 structural ownership. |
 | 1.4 | 2026-07-28 | Standardized the repository Mission Contract and its Work Registry/WOP composition for deterministic discovery, execution, and resume. |
 | 2.0 | 2026-07-30 | Migrated Operational Alpha authority to SPEC-0014's EMM-resolved Authority Record and Implementation WOP model; legacy EWO/Work Registry resolution is historical only for Operational Alpha. |
+| 2.1 | 2026-07-30 | Added the temporary, explicit manual-governance WOP root-authority model for bounded allowlisted actions before autonomous WOP generation is declared capable. |

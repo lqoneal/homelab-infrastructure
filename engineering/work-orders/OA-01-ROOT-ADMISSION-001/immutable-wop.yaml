@@ -1,0 +1,59 @@
+schema_version: 1
+wop_id: WOP-OA-01-ROOT-ADMISSION-001
+revision: 1
+status: READY
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: ZEUS-OPERATIONAL-ALPHA
+work_item_id: EMP-WORK-OA-01-ROOT-ADMISSION-001
+title: OA-01 Manual-Governance Root Admission and Bootstrap Artifact Publication
+owner: Engineering Governance
+objective: >-
+  Publish and validate the bounded pre-execution artifacts required to admit
+  OA-01 under the active Manual-Governance WOP Authority Policy.
+scope:
+  - publish this root WOP and its EMM identity
+  - publish and validate the OA-01 bootstrap gate-action specification
+  - resolve the prerequisites without creating an Authority Record, Operational Gate Plan, activation, or execution state
+prohibited_effects:
+  - create an OA-01 Authority Record
+  - create an Operational Gate Plan
+  - activate or execute OA-01
+  - alter historical Operational Alpha evidence
+  - modify ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0
+execution_context:
+  repository: /data/engineering/repositories/homelab
+  baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+  qualified_baseline: 5706307c1fdf9d4e0601c9cc578181f6d916e0a8
+  branch: main
+manual_governance_authority:
+  policy_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
+  policy_revision: '1.0'
+  delegation_state: ACTIVE
+  governance_submission:
+    submitted: true
+    submitted_by: Engineering Governance
+    submission_id: WOP-OA-01-ROOT-ADMISSION-001
+    directive_id: WOP-OA-01-BOOTSTRAP-ARTIFACTS-001
+  permitted_actions:
+    - verify_bootstrap_action_specification
+    - create_authority_record
+    - generate_operational_gate_plan
+    - activate_oa01
+    - generate_implementation_wop
+    - execute_first_gate
+bootstrap_gate_action_specification:
+  entity_id: OA-01-BOOTSTRAP-GATE-ACTIONS
+  revision: 1
+entry_criteria:
+  - active EMM-resolved Manual-Governance WOP Authority Policy
+  - exact OA implementation WOP and baseline identities resolve
+  - repository and EOS synchronization validation pass
+completion_criteria:
+  - root WOP and bootstrap action specification resolve from EMM
+  - action specification validates against the operational handler contract
+  - no OA lifecycle state or subordinate authority artifact is created
+traceability:
+  governing_directive: WOP-OA-01-BOOTSTRAP-ARTIFACTS-001
+  manual_governance_policy: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY@1.0
+  execution_authority: SPEC-0014@1.2
+  oa01_evidence_template: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-01/evidence-template.yaml

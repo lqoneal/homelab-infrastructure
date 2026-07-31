@@ -149,6 +149,76 @@ class ConvergenceRuntime:
             raise ConvergenceRuntimeError("Operational Gate Plan binding or lifecycle is invalid")
         return entity, plan_record, source_digest
 
+    def bootstrap_gate_action_specification(
+        self, *, root_wop_id: str, revision: str | int, correlation_id: str
+    ) -> dict[str, Any]:
+        """Resolve a handler-validated bootstrap action specification.
+
+        A bootstrap action specification is deliberately not an Operational
+        Gate Plan: it may prove that pre-execution action payloads are complete
+        but cannot create an execution context or advance lifecycle state.
+        """
+        receipt = self.resolve(
+            wop_id=root_wop_id,
+            revision=revision,
+            action="verify_bootstrap_action_specification",
+            correlation_id=correlation_id,
+        )
+        if receipt["outcome"] != "RESOLVED":
+            raise ConvergenceRuntimeError(
+                "bootstrap root WOP is not resolved: " + ", ".join(receipt["reasons"])
+            )
+        entity, root_wop, _ = self._wop(root_wop_id, revision)
+        reference = root_wop.get("bootstrap_gate_action_specification")
+        if not isinstance(reference, Mapping):
+            raise ConvergenceRuntimeError("bootstrap root WOP lacks action specification reference")
+        spec_entity = self._entity(
+            "BootstrapGateActionSpecification",
+            str(reference.get("entity_id", "")),
+            reference.get("revision"),
+        )
+        if (
+            spec_entity.get("classification") != "Authoritative"
+            or not spec_entity.get("source_digest")
+        ):
+            raise ConvergenceRuntimeError("bootstrap action specification lacks authoritative source identity")
+        spec_path, spec_digest = self._source(spec_entity)
+        specification = load_mapping(spec_path)
+        root_binding = specification.get("root_wop")
+        target_binding = specification.get("target_implementation_wop")
+        if (
+            specification.get("artifact_id") != spec_entity["entity_id"]
+            or str(specification.get("revision")) != str(spec_entity["revision"])
+            or specification.get("classification") != "Authoritative"
+            or specification.get("baseline_id") != self.emm()["baseline_id"]
+            or str(specification.get("lifecycle_state", "")).upper() != "READY"
+            or not isinstance(root_binding, Mapping)
+            or root_binding.get("wop_id") != root_wop_id
+            or str(root_binding.get("revision")) != str(revision)
+            or not isinstance(target_binding, Mapping)
+            or not target_binding.get("wop_id")
+            or target_binding.get("revision") is None
+            or not isinstance(specification.get("gate_actions"), Mapping)
+        ):
+            raise ConvergenceRuntimeError("bootstrap action specification binding is invalid")
+        from scripts.lib.emp.operational_gate_handler import OperationalExecutionContextService
+
+        OperationalExecutionContextService._validate_plan(specification["gate_actions"])
+        return {
+            "schema_version": 1,
+            "outcome": "RESOLVED",
+            "classification": "BootstrapGateActionSpecification",
+            "authority_receipt": receipt,
+            "root_wop": {"id": root_wop_id, "revision": str(revision),
+                         "owner": entity["authoritative_owner"]},
+            "target_implementation_wop": dict(target_binding),
+            "action_specification": {"id": spec_entity["entity_id"],
+                                     "revision": str(spec_entity["revision"]),
+                                     "source_digest": spec_digest},
+            "handler": specification.get("handler"),
+            "lifecycle_effect": "NONE",
+        }
+
     def _wop(self, wop_id: str, revision: str | int) -> tuple[dict[str, Any], dict[str, Any], str]:
         entity = self._entity("ImplementationWOP", wop_id, revision)
         path, source_digest = self._source(entity)
@@ -173,6 +243,77 @@ class ConvergenceRuntime:
             raise ConvergenceRuntimeError("Authority Record identity differs from EMM")
         return record, source_digest
 
+    def _manual_governance_authority(
+        self, *, wop: Mapping[str, Any], action: str
+    ) -> tuple[dict[str, Any], str] | None:
+        """Resolve an explicit manual-governance root delegation, if present.
+
+        This is intentionally stricter than a submitter-name check.  The WOP
+        must carry a complete attestation and the active policy must be an
+        EMM-resolved authoritative source.  Absence returns ``None`` so the
+        normal Authority Record contract remains the default.
+        """
+        delegation = wop.get("manual_governance_authority")
+        if delegation is None:
+            return None
+        if not isinstance(delegation, Mapping):
+            raise ConvergenceRuntimeError("manual-governance delegation must be a mapping")
+
+        entity = self._entity(
+            "ManualGovernanceWOPAuthorityPolicy",
+            "MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY",
+            "1.0",
+        )
+        if (
+            entity.get("classification") != "Authoritative"
+            or entity.get("authoritative_owner") != "Engineering Governance"
+            or not entity.get("source_digest")
+        ):
+            raise ConvergenceRuntimeError("manual-governance policy EMM identity is invalid")
+        policy_path, policy_digest = self._source(entity)
+        policy = load_mapping(policy_path)
+        if (
+            policy.get("policy_id") != "MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY"
+            or str(policy.get("revision")) != "1.0"
+            or policy.get("classification") != "Authoritative"
+            or policy.get("authoritative_owner") != "Engineering Governance"
+            or str(policy.get("lifecycle_state", "")).upper() != "ACTIVE"
+            or policy.get("mode") != "MANUAL_GOVERNANCE"
+        ):
+            raise ConvergenceRuntimeError("manual-governance policy is not active")
+
+        submission = delegation.get("governance_submission")
+        permitted = delegation.get("permitted_actions")
+        required = (
+            delegation.get("policy_id") == policy["policy_id"],
+            str(delegation.get("policy_revision")) == str(policy["revision"]),
+            str(delegation.get("delegation_state", "")).upper() == "ACTIVE",
+            isinstance(submission, Mapping),
+            isinstance(permitted, list) and bool(permitted),
+        )
+        if not all(required):
+            raise ConvergenceRuntimeError("manual-governance delegation is incomplete")
+        assert isinstance(submission, Mapping)
+        if (
+            submission.get("submitted") is not True
+            or submission.get("submitted_by") != "Engineering Governance"
+            or not isinstance(submission.get("submission_id"), str)
+            or not submission["submission_id"].strip()
+            or not isinstance(submission.get("directive_id"), str)
+            or not submission["directive_id"].strip()
+        ):
+            raise ConvergenceRuntimeError("manual-governance submission attestation is invalid")
+        if action not in permitted:
+            raise ConvergenceRuntimeError("manual-governance delegation does not permit requested action")
+        return {
+            "policy_id": policy["policy_id"],
+            "policy_revision": str(policy["revision"]),
+            "policy_digest": policy_digest,
+            "submission_id": submission["submission_id"],
+            "directive_id": submission["directive_id"],
+            "permitted_action": action,
+        }, policy_digest
+
     def resolve(self, *, wop_id: str, revision: str | int, action: str,
                 correlation_id: str, authority_record_id: str | None = None) -> dict[str, Any]:
         """Resolve the exact governed chain without causing any lifecycle effect."""
@@ -191,7 +332,16 @@ class ConvergenceRuntime:
             })
             authority = self._authority(authority_record_id)
             if authority is None:
-                receipt["reasons"].append("AUTHORITY_RECORD_REQUIRED")
+                manual_governance = self._manual_governance_authority(
+                    wop=wop, action=action
+                )
+                if manual_governance is None:
+                    receipt["reasons"].append("AUTHORITY_RECORD_REQUIRED")
+                else:
+                    delegation, _ = manual_governance
+                    receipt["inputs"]["manual_governance_wop"] = delegation
+                    receipt["authority_mode"] = "MANUAL_GOVERNANCE_WOP"
+                    receipt["outcome"] = "RESOLVED"
             else:
                 record, authority_digest = authority
                 receipt["inputs"]["authority_record"] = {
@@ -359,6 +509,25 @@ class ConvergenceRuntime:
         receipt = flow["authority_receipt"]
         source = self._wop(receipt["inputs"]["implementation_wop"]["id"],
                            receipt["inputs"]["implementation_wop"]["revision"])[1]
+        authority_input = receipt["inputs"].get("authority_record")
+        manual_input = receipt["inputs"].get("manual_governance_wop")
+        if isinstance(authority_input, Mapping):
+            approval_reference = authority_input["id"]
+            authority_lineage: dict[str, Any] = {
+                "mode": "AUTHORITY_RECORD", "authority_record_id": approval_reference,
+            }
+        elif isinstance(manual_input, Mapping):
+            approval_reference = str(manual_input["submission_id"])
+            authority_lineage = {
+                "mode": "MANUAL_GOVERNANCE_WOP",
+                "root_implementation_wop": receipt["inputs"]["implementation_wop"],
+                "policy_id": manual_input["policy_id"],
+                "policy_revision": manual_input["policy_revision"],
+                "submission_id": manual_input["submission_id"],
+                "directive_id": manual_input["directive_id"],
+            }
+        else:
+            raise ConvergenceRuntimeError("resolved flow lacks an authority lineage")
         wop_id = "WOP-" + str(uuid.uuid5(uuid.NAMESPACE_URL, canonical_json({
             "flow": flow["flow_digest"], "intent": intent.strip()})))
         sections = {name: f"Convergence-derived: {intent.strip()}" for name in CONTRACT["required_sections"]}
@@ -366,13 +535,14 @@ class ConvergenceRuntime:
                  "mission_id": source["mission_id"], "phase_id": source["phase_id"], "revision": 1,
                  "status": "Active", "title": intent.strip(), "repository_identity": str(self.root),
                  "submitter_identity": "convergence-runtime", "approval": {
-                     "authority": "Governance", "reference": receipt["inputs"]["authority_record"]["id"],
+                     "authority": "Engineering Governance", "reference": approval_reference,
                      "date": "1970-01-01T00:00:00+00:00", "authorized_lifecycle_state": "Active"},
                  "execution_package_references": {
                      "authority_node_id": receipt["receipt_digest"],
                      "authorization_decision_record": flow["qualification"]["qualification_digest"],
                      "immutable_wop": source["wop_id"]},
                  "authoritative_references": [CONTRACT["procedure"], CONTRACT["template"], *CONTRACT["standards"]],
+                 "authority_lineage": authority_lineage,
                  "sections": sections, "convergence_flow_digest": flow["flow_digest"]}
         value["submission_digest"] = submission_digest(value)
         return {"wop": value, "authority_resolved": True, "review_required": True,

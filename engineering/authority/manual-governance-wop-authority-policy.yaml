@@ -1,0 +1,31 @@
+schema_version: 1
+policy_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
+revision: '1.0'
+classification: Authoritative
+authoritative_owner: Engineering Governance
+lifecycle_state: ACTIVE
+mode: MANUAL_GOVERNANCE
+purpose: >-
+  Define the temporary admission model for WOPs explicitly submitted by
+  Engineering Governance before autonomous WOP generation is declared capable.
+activation_condition: >-
+  Engineering Governance declares Zeus capable of autonomous WOP generation
+  and replaces or supersedes this policy through a controlled directive.
+manual_submission_requirements:
+  - exact EMM-registered ImplementationWOP identity and revision
+  - governance_submission.submitted is true
+  - governance_submission.submitted_by is Engineering Governance
+  - governance_submission.submission_id is non-empty
+  - governance_submission.directive_id is non-empty
+  - delegation_state is ACTIVE
+  - non-empty permitted_actions allowlist
+runtime_rules:
+  - A conforming manual-governance WOP is the root authority only for its allowlisted actions.
+  - A derived Authority Record is not required to admit an allowlisted root action.
+  - All subordinate artifacts must retain the exact WOP identity, revision, policy id, and submission id.
+  - Autonomous WOPs and manual WOPs without every required submission field require the normal Authority Record contract.
+  - The runtime never infers a manual-governance submission from a WOP title, submitter string, or command invocation.
+traceability:
+  directive: Controlled Change Directive — Manual Governance WOP Authority Policy
+  convergence_authority: SPEC-0014@1.2
+  work_authorization_standard: STD-0003@2.1

@@ -1,11 +1,11 @@
 ---
 document_id: POL-0001
 title: Engineering Governance Policy
-version: 1.4
+version: 1.5
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-29
+last_updated: 2026-07-30
 phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Governance Policy
@@ -176,6 +176,17 @@ system. It does not invent approvals or self-authorize. When normal controlled
 authority cannot be resolved, Zeus shall treat the condition as authority
 restoration work under SPEC-0011. Bootstrapping authorizes reconciliation of
 controlled documentation, never execution outside it.
+
+### Manual Governance WOP Authority
+
+Until Engineering Governance declares Zeus capable of autonomous WOP
+generation, an explicitly submitted Engineering Governance WOP may serve as
+the bounded root authority for its declared and allowlisted scope. The WOP
+must be resolved from EMM and validate against the active
+`MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY`; the runtime shall retain complete
+lineage from every subordinate artifact to that WOP submission. This exception
+does not apply to autonomous WOPs or incomplete manual-submission records,
+which continue to require the normal Authority Record contract.
 
 ### Governance Bootstrap Continuity
 
@@ -492,3 +503,4 @@ and provides the policy-level governing foundation for all Engineering Operating
 | 1.2 | 2026-07-26 | Reconciled the production authority ownership and authority-restoration model with SPEC-0011. |
 | 1.3 | 2026-07-29 | Defined governance bootstrap as mandatory suspension and Engineering Governance consultation; separated Governance-owned Mission Admission and Mission Activation from objective execution readiness and blocked-mission state. |
 | 1.4 | 2026-07-29 | Established the Operational Alpha Governance Baseline and freeze policy, required explicit authorization for constitutional change, and mandated synchronized documentation, qualification, and verification updates. |
+| 1.5 | 2026-07-30 | Added the temporary, explicit manual-governance WOP root-authority policy for allowlisted work until autonomous WOP generation is declared capable. |

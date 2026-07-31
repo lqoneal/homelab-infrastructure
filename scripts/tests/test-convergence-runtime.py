@@ -54,6 +54,84 @@ class ConvergenceRuntimeTests(unittest.TestCase):
         self.assertFalse(flow["execution_admitted"])
         self.assertEqual("PRECONDITION_FAILED", flow["authority_receipt"]["outcome"])
 
+    def test_explicit_manual_governance_wop_resolves_only_allowlisted_action(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "engineering/metadata").mkdir(parents=True)
+            (root / "engineering/work-orders/manual").mkdir(parents=True)
+            (root / "engineering/authority").mkdir(parents=True)
+            policy = {
+                "policy_id": "MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY", "revision": "1.0",
+                "classification": "Authoritative", "authoritative_owner": "Engineering Governance",
+                "lifecycle_state": "ACTIVE", "mode": "MANUAL_GOVERNANCE",
+            }
+            wop = {
+                "wop_id": "WOP-MANUAL", "revision": 1, "status": "READY",
+                "mission_id": "MISSION-MANUAL", "phase_id": "PHASE-MANUAL",
+                "execution_context": {"baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0"},
+                "manual_governance_authority": {
+                    "policy_id": policy["policy_id"], "policy_revision": "1.0",
+                    "delegation_state": "ACTIVE",
+                    "governance_submission": {
+                        "submitted": True, "submitted_by": "Engineering Governance",
+                        "submission_id": "WOP-MANUAL", "directive_id": "CCD-MANUAL-001",
+                    },
+                    "permitted_actions": ["create_authority_record"],
+                },
+            }
+            policy_path = root / "engineering/authority/manual-policy.yaml"
+            wop_path = root / "engineering/work-orders/manual/immutable-wop.yaml"
+            policy_path.write_text(yaml.safe_dump(policy, sort_keys=True))
+            wop_path.write_text(yaml.safe_dump(wop, sort_keys=True))
+            digest = lambda path: __import__("hashlib").sha256(path.read_bytes()).hexdigest()
+            emm = {"schema_version": 1, "emm_id": "TEST", "version": "1.1",
+                   "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0", "entities": [
+                {"entity_type": "ImplementationWOP", "entity_id": "WOP-MANUAL", "revision": 1,
+                 "authoritative_owner": "WOP Owner", "classification": "Authoritative",
+                 "source": "engineering/work-orders/manual/immutable-wop.yaml", "source_digest": digest(wop_path)},
+                {"entity_type": "ManualGovernanceWOPAuthorityPolicy",
+                 "entity_id": policy["policy_id"], "revision": "1.0",
+                 "authoritative_owner": "Engineering Governance", "classification": "Authoritative",
+                 "source": "engineering/authority/manual-policy.yaml", "source_digest": digest(policy_path)},
+            ]}
+            (root / "engineering/metadata/operational-alpha-emm.yaml").write_text(
+                yaml.safe_dump(emm, sort_keys=True)
+            )
+            runtime = ConvergenceRuntime(root)
+            resolved = runtime.resolve(
+                wop_id="WOP-MANUAL", revision=1, action="create_authority_record",
+                correlation_id="manual-governance",
+            )
+            self.assertEqual("RESOLVED", resolved["outcome"])
+            self.assertEqual("MANUAL_GOVERNANCE_WOP", resolved["authority_mode"])
+            generated = runtime.operational_wop(
+                intent="create subordinate artifact",
+                flow=runtime.execution_flow(
+                    wop_id="WOP-MANUAL", revision=1,
+                    action="create_authority_record", correlation_id="manual-wop",
+                ),
+            )
+            self.assertEqual(
+                "MANUAL_GOVERNANCE_WOP", generated["wop"]["authority_lineage"]["mode"]
+            )
+            self.assertEqual("WOP-MANUAL", generated["wop"]["authority_lineage"]["submission_id"])
+            denied = runtime.resolve(
+                wop_id="WOP-MANUAL", revision=1, action="execute",
+                correlation_id="manual-governance-denied",
+            )
+            self.assertEqual("INTEGRITY_FAILURE", denied["outcome"])
+            self.assertIn("does not permit", denied["reasons"][0])
+
+    def test_repository_bootstrap_artifacts_resolve_without_lifecycle_effect(self):
+        value = self.runtime.bootstrap_gate_action_specification(
+            root_wop_id="WOP-OA-01-ROOT-ADMISSION-001", revision=1,
+            correlation_id="test-bootstrap-artifacts",
+        )
+        self.assertEqual("RESOLVED", value["outcome"])
+        self.assertEqual("NONE", value["lifecycle_effect"])
+        self.assertEqual("OA-01-BOOTSTRAP-GATE-ACTIONS", value["action_specification"]["id"])
+        self.assertEqual("MANUAL_GOVERNANCE_WOP", value["authority_receipt"]["authority_mode"])
+
     def test_active_authority_and_wop_resolve_only_when_exactly_bound(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

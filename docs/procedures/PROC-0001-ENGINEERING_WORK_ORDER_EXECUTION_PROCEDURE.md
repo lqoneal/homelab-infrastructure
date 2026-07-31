@@ -1,7 +1,7 @@
 ---
 document_id: PROC-0001
 title: Operational Alpha Work Initiation and Execution Procedure
-version: 2.0
+version: 2.1
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
@@ -174,9 +174,13 @@ mission_assurance_requirements:
 For Operational Alpha, this procedure is interpreted through SPEC-0014. The
 former Work Registry Mission Contract and Active Engineering Work Order
 admission path is superseded for new actions. Historical records remain
-read-only evidence. The initiation authority chain is Governance Decision →
-Authority Record → EMM → published Implementation WOP → resolution receipt →
-preflight qualification. No step in this procedure activates a WOP by itself.
+read-only evidence. The normal initiation authority chain is Governance
+Decision → Authority Record → EMM → published Implementation WOP → resolution
+receipt → preflight qualification. During the active manual-governance phase,
+an explicitly submitted, EMM-resolved WOP may instead resolve its exact
+allowlisted root actions under `MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY`; all
+autonomous WOPs use the normal chain. No step in this procedure activates a
+WOP by itself.
 
 ## Purpose
 
@@ -230,7 +234,7 @@ Every Engineering Work Order shall execute according to the following workflow:
 ```text
 Canonical Metadata Resolution
         ↓
-Authority Record Verification
+Authority Record or Manual-Governance Root Verification
         ↓
 Implementation WOP / Baseline Verification
         ↓
@@ -277,10 +281,13 @@ action, blockers, and source records without prompt history. Conversational
 context may identify the requested mission but shall not supply missing
 procedure, authority, state, or completion semantics.
 
-The resolved authority contract is the SPEC-0014 Authority Record, exact EMM
-entity revisions, and the baseline-bound Implementation WOP. The Work Registry
-and historical EWOs may be consumed as traceability inputs but cannot grant,
-deny, or replace this contract for Operational Alpha.
+The normal resolved authority contract is the SPEC-0014 Authority Record, exact
+EMM entity revisions, and the baseline-bound Implementation WOP. While the
+manual-governance policy is active, an exact EMM-resolved WOP may instead be
+the root authority for its own explicit allowlisted actions if its governance
+submission and active delegation validate. The Work Registry and historical
+EWOs may be consumed as traceability inputs but cannot grant, deny, or replace
+either current contract for Operational Alpha.
 
 ## Mission-Assurance Verification
 
@@ -495,9 +502,11 @@ engctl registry validate
 engctl execution snapshot --mission <MISSION-ID>
 ```
 
-A missing, ambiguous, stale, or conflicting SPEC-0014 resolution receipt,
-Authority Record, EMM revision, or Implementation WOP blocks Operational Alpha
-implementation. Legacy Mission Contract failures are traceability observations,
+A missing, ambiguous, stale, or conflicting SPEC-0014 resolution receipt, EMM
+revision, or Implementation WOP blocks Operational Alpha implementation. A
+missing Authority Record also blocks unless the exact WOP has a valid active
+manual-governance submission and its requested action is explicitly
+allowlisted. Legacy Mission Contract failures are traceability observations,
 not authority-resolution inputs. Resolve a current failure as follows:
 
 1. preserve the normal authority-resolution result;
@@ -1151,6 +1160,7 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.3 | 2026-07-15 | Integrated STD-0004 freshness qualification and reconciliation gating into Work Initiation and resume after interruption. |
 | 1.4 | 2026-07-15 | Established mandatory Commit Classification, traceability, validation, dependency ordering, commit boundaries, and milestone publication controls after Engineering State Reconciliation. |
 | 2.0 | 2026-07-30 | Migrated Operational Alpha initiation, authority resolution, lifecycle, synchronization, qualification, and completion routing to SPEC-0014. |
+| 2.1 | 2026-07-30 | Added the active manual-governance WOP root-authority exception for exact allowlisted actions, preserving normal Authority Record requirements for autonomous WOPs. |
 | 1.5 | 2026-07-15 | Established Commit Reconstruction Planning, approved reconstruction methods, execution gates, persistent planning artifacts, and proportional planning governance. |
 | 1.6 | 2026-07-17 | Added the Mission Classification Gate, risk-proportional Category A/B/C initiation, exact Completion Report standard, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
 | 1.7 | 2026-07-17 | Required repository-governed Codex missions to launch through `engctl codex`, added initiation-time bypass detection and exception controls, and defined the mandatory notification lifecycle under EWO-000019. |

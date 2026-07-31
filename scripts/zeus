@@ -214,7 +214,7 @@ def main(argv=None):
     accept=sub.add_parser("accept"); accept.add_argument("gate"); accept.add_argument("--reject", action="store_true"); accept.add_argument("--rationale", default=""); accept.add_argument("--at"); accept.add_argument("--yes", action="store_true"); accept.add_argument("--json", action="store_true")
     decline=sub.add_parser("decline"); decline.add_argument("approval_id"); decline.add_argument("--operator", required=True); decline.add_argument("--at")
     verify=sub.add_parser("verify"); verify.add_argument("gate"); verify.add_argument("--wop"); verify.add_argument("--revision", default="1"); verify.add_argument("--authority-record"); verify.add_argument("--correlation-id", default="zeus-gate-verification")
-    execution=sub.add_parser("execution"); execution.add_argument("action", choices=("status","resolve")); execution.add_argument("identifier"); execution.add_argument("--revision", default="1"); execution.add_argument("--requested-action", default="execute"); execution.add_argument("--authority-record"); execution.add_argument("--correlation-id", default="zeus-execution")
+    execution=sub.add_parser("execution"); execution.add_argument("action", choices=("status","resolve","bootstrap-actions")); execution.add_argument("identifier"); execution.add_argument("--revision", default="1"); execution.add_argument("--requested-action", default="execute"); execution.add_argument("--authority-record"); execution.add_argument("--correlation-id", default="zeus-execution")
     context=sub.add_parser("context"); context.add_argument("action", choices=("reconstruct",))
     eligibility=sub.add_parser("eligibility"); eligibility.add_argument("action", choices=("evaluate", "show")); eligibility.add_argument("request", type=Path)
     evidence=sub.add_parser("evidence"); evidence.add_argument("action", choices=("show",)); evidence.add_argument("identifier")
@@ -536,6 +536,12 @@ def main(argv=None):
         elif a.command=="execution":
             if a.action == "status":
                 emit({"execution_id": a.identifier, "status": "USE_EXECUTE_MISSION_STATUS"})
+                return 0
+            if a.action == "bootstrap-actions":
+                emit(ConvergenceRuntime(ROOT).bootstrap_gate_action_specification(
+                    root_wop_id=a.identifier, revision=a.revision,
+                    correlation_id=a.correlation_id,
+                ))
                 return 0
             flow = ConvergenceRuntime(ROOT).execution_flow(
                 wop_id=a.identifier, revision=a.revision, action=a.requested_action,

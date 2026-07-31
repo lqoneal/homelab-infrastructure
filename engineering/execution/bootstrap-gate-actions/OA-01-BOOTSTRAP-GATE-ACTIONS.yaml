@@ -1,0 +1,37 @@
+schema_version: 1
+artifact_id: OA-01-BOOTSTRAP-GATE-ACTIONS
+revision: 1
+classification: Authoritative
+authoritative_owner: Engineering Governance
+lifecycle_state: READY
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+root_wop:
+  wop_id: WOP-OA-01-ROOT-ADMISSION-001
+  revision: 1
+target_implementation_wop:
+  wop_id: WOP-OA-01-IMPLEMENTATION-001
+  revision: 1
+handler:
+  handler_id: zeus.operational.artifact
+  version: 1.0.0
+purpose: >-
+  Define the handler-compatible, pre-execution OA-01 bootstrap action payload.
+  This specification is not an Operational Gate Plan and cannot authorize
+  activation or execution.
+source_requirements:
+  - OA-01 evidence-template.yaml completion marker
+  - PMCT-CAPABILITY-MATRIX.yaml OA-01 state_change false
+gate_actions:
+  gates:
+    EXECUTE_WORK:
+      dependencies: []
+      actions:
+        - action_id: oa01-verification-marker
+          action_type: create_artifact
+          path: runtime/evidence/OA-01/VERIFIED
+          content: "OA-01 verification completion marker\n"
+          content_digest: 78673d15e22299e01c9eca59f7138384e8a2351036b927ebe5c5cebf53f94633
+traceability:
+  evidence_template: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-01/evidence-template.yaml
+  capability_matrix: engineering/tests/zeus-operational-alpha/PMCT-CAPABILITY-MATRIX.yaml
+  governing_root_wop: WOP-OA-01-ROOT-ADMISSION-001@1
