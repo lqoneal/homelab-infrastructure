@@ -1,0 +1,27 @@
+{
+  "admission_decision": "ACCEPTED",
+  "admission_id": "ADMISSION-8cc485f6-732b-59ce-afe7-6b6568df0b7d",
+  "authoritative_references": [
+    "PROC-0001@1.11",
+    "TPL-0001@1.7",
+    "STD-0000",
+    "STD-0001",
+    "STD-0002",
+    "STD-0003",
+    "STD-0004"
+  ],
+  "deterministic_checksum": "e7ef3e33cbdb08adde1aaaf1be267f640fdd70280ca065bae5ae2c85942bd752",
+  "evaluation_timestamp": "2026-07-31T20:00:00Z",
+  "mission_id": "EMP-MISSION-ZEUS-OPERATIONAL-ALPHA",
+  "repository_identity": "/data/engineering/repositories/homelab",
+  "schema_version": 1,
+  "submission_digest": "c27ccd567a15cb431bee70e96a7a0c1cc88539b893dd150454d166473b6239a4",
+  "submitter_identity": "Engineering Governance",
+  "validation_failures": [],
+  "validation_summary": {
+    "failure_count": 0,
+    "reason_codes": []
+  },
+  "validator_version": "1",
+  "wop_id": "WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a"
+}

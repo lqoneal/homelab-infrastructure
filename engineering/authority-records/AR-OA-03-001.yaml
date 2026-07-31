@@ -1,0 +1,22 @@
+schema_version: 1
+authority_record_id: AR-OA-03-001
+revision: 1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop:
+  wop_id: WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a
+  revision: 1
+permitted_actions:
+  - admit_mission
+  - generate_wop
+  - execute_mission
+authority_lineage:
+  root_wop:
+    wop_id: WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a
+    revision: 1
+  authority_mode: MANUAL_GOVERNANCE_WOP
+  governing_policy: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY@1.0
+  governing_directive: WOP-OA-03-EXECUTION-001
+traceability:
+  controlled_objective: ZEUS-OA-GATE-SPEC-002
+  execution_first_policy: SPEC-0014@1.6

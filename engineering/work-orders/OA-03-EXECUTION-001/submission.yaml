@@ -1,0 +1,43 @@
+schema_version: 1
+document_type: EngineeringWorkOrder
+wop_id: WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: OA-03-MISSION-CONTRACT-DISCOVERY
+revision: 1
+status: Active
+title: OA-03 Deterministic Mission Contract Discovery
+repository_identity: /data/engineering/repositories/homelab
+submitter_identity: Engineering Governance
+approval:
+  authority: Engineering Governance
+  reference: WOP-OA-03-EXECUTION-001
+  date: '2026-07-31T00:00:00-07:00'
+  authorized_lifecycle_state: Active
+execution_package_references:
+  authority_node_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY@1.0
+  authorization_decision_record: WOP-OA-03-EXECUTION-001
+  immutable_wop: engineering/work-orders/OA-03-EXECUTION-001/immutable-wop.yaml
+authoritative_references:
+  - PROC-0001@1.11
+  - TPL-0001@1.7
+  - STD-0000
+  - STD-0001
+  - STD-0002
+  - STD-0003
+  - STD-0004
+sections:
+  purpose_and_expected_outcome: Execute the published OA-03 Mission Contract Discovery objective and close it with qualified capability evidence.
+  mission_classification: Category A repository-governed Operational Alpha execution under the published WOP-based initiation model.
+  governing_references: Published OA-03 gate objective and implementation procedure, PROC-0001, SPEC-0014, EMM, and the listed controlled authorities.
+  scope: Create authorized subordinate artifacts; execute, capability-qualify, reconcile, and close OA-03 only; reconcile the existing procedure without creating a duplicate.
+  explicit_authority: This submitted WOP is the manual-governance root for its exact allowlisted actions; no authority is inferred beyond its published scope.
+  prohibited_activities: Do not alter the certified runtime baseline, alter historical evidence, initiate OA-04, or introduce foundational architecture.
+  dependencies_and_entry_criteria: OA-02 completion, OA-03 eligibility, convergence authority, repository baseline, EOS, EMM, registry, and an accepted admission record.
+  deliverables: Authority Record, Operational Gate Plan, Activation Record, runtime WOP, deterministic discovery evidence, Capability Qualification Report, synchronization and reconciliation evidence, and Completion Report.
+  execution_sequence: Validate and accept this immutable submission; publish authorized artifacts; admit and execute the bounded OA-03 plan; qualify capabilities and reconcile before closeout.
+  success_and_acceptance_criteria: OA-03 completes with deterministic discovery evidence, canonical procedure reconciliation, capability qualification, EOS and EMM validation, and no OA-04 initiation.
+  validation_profile: WOP admission validation, convergence resolution, mission admission and execution evidence, OA-03 deterministic discovery tests, EOS synchronization, EMM health, registry validation, and controlled-document checks.
+  publication_and_synchronization: Publish only scoped OA-03 artifacts, procedure reconciliation, and evidence; synchronize authoritative state to EOS after publication validation.
+  stop_resume_and_escalation: Fail closed on integrity or authority failure; preserve evidence and use the Operator Resolution Protocol for any non-automatic corrective decision.
+  completion_report_requirement: Publish the repository-standard Completion Report with capability qualification, synchronization, reconciliation, and closeout evidence.
+submission_digest: c27ccd567a15cb431bee70e96a7a0c1cc88539b893dd150454d166473b6239a4

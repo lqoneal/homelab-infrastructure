@@ -1,0 +1,38 @@
+schema_version: 1
+plan_id: WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a
+revision: 1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop:
+  wop_id: WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a
+  revision: 1
+authority_lineage:
+  root_wop:
+    wop_id: WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a
+    revision: 1
+  authority_record: AR-OA-03-001@1
+  authority_mode: MANUAL_GOVERNANCE_WOP
+  governing_directive: WOP-OA-03-EXECUTION-001
+gate_plan:
+  gates:
+    EXECUTE_WORK:
+      dependencies: []
+      actions:
+        - action_id: oa03-discovery-marker
+          action_type: create_artifact
+          path: runtime/evidence/OA-03/MISSION-CONTRACT-DISCOVERY-QUALIFIED
+          content: "OA-03 deterministic Mission Contract discovery qualified\\n"
+          content_digest: 0157109cc1e1924971981feb4752f53ef03bb0c36ef3e1f01aca1008cd59537c
+    VERIFY_COMPLETION:
+      dependencies:
+        - EXECUTE_WORK
+      actions:
+        - action_id: verify-oa03-discovery-marker
+          action_type: verify_artifact
+          path: runtime/evidence/OA-03/MISSION-CONTRACT-DISCOVERY-QUALIFIED
+          content_digest: 0157109cc1e1924971981feb4752f53ef03bb0c36ef3e1f01aca1008cd59537c
+traceability:
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-03/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-03/implementation.md
+  execution_contract: OPERATIONAL-ALPHA-EXECUTION-CONTRACT@1.0
+  execution_first_policy: SPEC-0014@1.6

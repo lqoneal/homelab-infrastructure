@@ -1,6 +1,6 @@
 schema_version: 1
 emm_id: OPERATIONAL-ALPHA-EMM
-version: 1.3
+version: 1.4
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
 authoritative_owner: Homelab Infrastructure
 entities:
@@ -160,6 +160,13 @@ entities:
     classification: Authoritative
     source: engineering/work-orders/OA-02-ADMISSION-ACTIVATION-AND-EXECUTION-001/immutable-wop.yaml
     source_digest: b333eef3634a8ee14bb51a7a30c1e262cd9fecc7913f0729790662d9a9d55cda
+  - entity_type: ImplementationWOP
+    entity_id: WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/work-orders/OA-03-EXECUTION-001/immutable-wop.yaml
+    source_digest: 75319c6342ad7a055770d1cd23cedcb259d3d6a340fffb8b4460eaee375e873c
   - entity_type: ImplementationWOPLifecycleTransition
     entity_id: OA-02-READY-TO-ACTIVE
     revision: 1
@@ -190,3 +197,33 @@ entities:
     classification: Authoritative
     source: engineering/activation-records/ACT-OA-02-001.yaml
     source_digest: e35bf890291ef2c32139559203971c973d122ca1aa85ba9b0a5a36b8a5d54344
+  - entity_type: ImplementationWOPLifecycleTransition
+    entity_id: OA-03-READY-TO-ACTIVE
+    revision: 1
+    implementation_wop_id: WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a
+    implementation_wop_revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/lifecycle-transitions/records/OA-03-READY-TO-ACTIVE.yaml
+    source_digest: dfbc774d0c40bed6b29436a136a2fff72b86b2c30d14230fdbb370fd4370e5f0
+  - entity_type: AuthorityRecord
+    entity_id: AR-OA-03-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/authority-records/AR-OA-03-001.yaml
+    source_digest: 6cba86c76c6394f9feee7e635787d9f0879168f2cab8dd8d7a0ed3f9e9936c27
+  - entity_type: OperationalGatePlan
+    entity_id: WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/execution/plans/WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a.yaml
+    source_digest: 390e74d8cb1eb7fb64d899e1df03be97f0ba9ccb9dd1b8dfacb10019af437044
+  - entity_type: ActivationRecord
+    entity_id: ACT-OA-03-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/activation-records/ACT-OA-03-001.yaml
+    source_digest: 741df8024a02f48cbb4538a2504292ba848c3aaf2a2d3874099b8511969f697f

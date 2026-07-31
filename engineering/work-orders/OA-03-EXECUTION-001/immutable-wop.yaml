@@ -1,0 +1,59 @@
+schema_version: 1
+wop_id: WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a
+revision: 1
+status: READY
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: OA-03-MISSION-CONTRACT-DISCOVERY
+work_item_id: EMP-WORK-OA-03-MISSION-CONTRACT-DISCOVERY-001
+title: OA-03 Deterministic Mission Contract Discovery
+owner: Engineering Governance
+objective: >-
+  Prove deterministic discovery of exactly one applicable Mission Contract.
+scope:
+  - execute the published OA-03 controlled gate objective
+  - reconcile the existing canonical WOP execution procedure with validated Operational Alpha behavior
+  - add Capability Qualification requirements to the existing procedure
+  - publish qualification, synchronization, reconciliation, and closeout evidence
+prohibited_effects:
+  - alter the certified runtime baseline
+  - alter historical Progressive Operational Alpha evidence
+  - initiate OA-04 or any later Operational Alpha gate
+  - introduce a new execution-procedure owner, authority model, or foundational architecture
+execution_context:
+  repository: /data/engineering/repositories/homelab
+  baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+  qualified_baseline: 5706307c1fdf9d4e0601c9cc578181f6d916e0a8
+  branch: main
+manual_governance_authority:
+  policy_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
+  policy_revision: '1.0'
+  delegation_state: ACTIVE
+  governance_submission:
+    submitted: true
+    submitted_by: Engineering Governance
+    submission_id: WOP-OA-03-EXECUTION-001
+    directive_id: WOP-OA-03-EXECUTION-001
+  permitted_actions:
+    - create_authority_record
+    - generate_operational_gate_plan
+    - activate_oa01
+    - admit_mission
+    - generate_wop
+    - execute_mission
+entry_criteria:
+  - accepted immutable WOP Admission Record
+  - active EMM-resolved Manual-Governance WOP Authority Policy
+  - OA-02 completion and OA-03 eligibility resolved from published controlled records
+  - repository, EOS, EMM, registry, and runtime preflight pass
+completion_criteria:
+  - OA-03 is executed, capability-qualified, reconciled, and closed
+  - PROC-0001 remains the single canonical WOP execution-procedure owner
+  - no later Operational Alpha gate is initiated
+traceability:
+  governing_directive: WOP-OA-03-EXECUTION-001
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-03/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-03/implementation.md
+  execution_procedure: PROC-0001@2.4
+  execution_first_policy: SPEC-0014@1.6
+lifecycle:
+  execution_state: NOT_STARTED
