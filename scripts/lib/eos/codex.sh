@@ -40,10 +40,10 @@ Work Order: $work_order"
 
 eos_codex_usage() {
     cat <<'EOF'
-Usage: engctl codex [--ewo EWO-XXXXXX] [--timeout SECONDS] [--] [codex arguments ...]
+Usage: engctl codex [--wop WOP-ID] [--timeout SECONDS] [--] [codex arguments ...]
 
 Environment:
-  CODEX_EWO       Default Work Order when --ewo is omitted.
+  CODEX_WOP       Optional controlled WOP provenance when --wop is omitted.
   CODEX_BIN       Underlying Codex executable; intended for controlled tests.
   CODEX_TIMEOUT   Optional positive mission timeout in seconds; zero disables.
   NTFY_CONFIG_FILE  Explicit local notification configuration.
@@ -51,20 +51,20 @@ EOF
 }
 
 eos_codex_completion_contract() {
-    local work_order="$1"
-    if [[ "$work_order" == "Not specified" ]]; then
-        printf '%s' 'This engctl codex session is non-EWO work. Do not imply ETP governance or Engineering Work Order authority.'
+    local wop="$1"
+    if [[ "$wop" == "Not specified" ]]; then
+        printf '%s' 'This repository session has no WOP provenance marker. Resolve authority from the published Operational Alpha authority chain; do not imply authorization from the session itself.'
         return 0
     fi
 
-    printf '%s' "This repository session references $work_order. Reconstruct every mission from the repository Engineering Execution Interface and Mission Snapshot; do not rely on conversational recall or duplicate repository procedures in a handoff. Resolve exact controlled-owner identities and candidate revisions through engineering/execution/execution-interface.yaml. Produce a mission-delta Completion Report using the resolved Completion Report owner; candidate documents are not activated by consumption."
+    printf '%s' "This repository session references $wop. Reconstruct every mission from the repository Engineering Execution Interface and Mission Snapshot; resolve authority through the published Operational Alpha WOP chain and EMM; do not rely on conversational recall or duplicate repository procedures in a handoff. Resolve exact controlled-owner identities and candidate revisions through engineering/execution/execution-interface.yaml. Produce a mission-delta Completion Report using the resolved Completion Report owner; candidate documents are not activated by consumption."
 }
 
 eos_codex_report_qualification_summary() {
     local state="$1" governance="$2"
     local total passed failed
     if [[ "$governance" != "governed" ]]; then
-        printf 'Report Qualification: NOT APPLICABLE (non-EWO session)\n'
+        printf 'Report Qualification: NOT APPLICABLE (unbound WOP session)\n'
         return 0
     fi
 
@@ -77,28 +77,8 @@ eos_codex_report_qualification_summary() {
     [[ "$total" -gt 0 && "$failed" -eq 0 ]]
 }
 
-eos_codex_wrapper_gate() {
-    local operation="${1:-repository-governed engineering initiation}"
-
-    # Non-Codex operators and automation are outside the Codex launch contract.
-    [[ -n "${CODEX_THREAD_ID:-}" ]] || return 0
-    if [[ "${ENGINEERING_CODEX_WRAPPER:-}" == "engctl-codex-v1" ]]; then
-        return 0
-    fi
-    if [[ "${ENGINEERING_CODEX_WRAPPER_EXCEPTION:-}" == "EWO-000019-bootstrap" ]]; then
-        printf 'WARNING: documented EWO-000019 wrapper-enforcement bootstrap exception active.\n' >&2
-        return 0
-    fi
-
-    printf 'ERROR: Codex wrapper bypass detected during %s; repository-governed Codex missions SHALL launch through engctl codex.\n' "$operation" >&2
-    eos_codex_notification \
-        "Codex Wrapper Bypass" "Wrapper bypass detected" \
-        "$(eos_codex_repository_name)" "${CODEX_EWO:-Not specified}" "$(hostname)" || true
-    return 78
-}
-
 eos_codex_run() {
-    local work_order="${CODEX_EWO:-Not specified}"
+    local work_order="${CODEX_WOP:-Not specified}"
     local codex_bin="${CODEX_BIN:-codex}"
     local mission_timeout="${CODEX_TIMEOUT:-0}"
     local repository host start_epoch end_epoch elapsed duration governance
@@ -108,9 +88,9 @@ eos_codex_run() {
 
     while (($#)); do
         case "$1" in
-            --ewo)
+            --wop)
                 if (($# < 2)) || [[ -z "$2" ]]; then
-                    printf 'ERROR: --ewo requires an identifier.\n' >&2
+                    printf 'ERROR: --wop requires an identifier.\n' >&2
                     return 64
                 fi
                 work_order="$2"
@@ -140,10 +120,6 @@ eos_codex_run() {
         esac
     done
 
-    if [[ "$work_order" != "Not specified" && ! "$work_order" =~ ^EWO-[0-9]{6}$ ]]; then
-        printf 'ERROR: Work Order must match EWO-XXXXXX.\n' >&2
-        return 64
-    fi
     if [[ ! "$mission_timeout" =~ ^[0-9]+$ ]]; then
         printf 'ERROR: CODEX_TIMEOUT must be zero or a positive number of seconds.\n' >&2
         return 64
@@ -163,7 +139,7 @@ eos_codex_run() {
     trap 'rm -rf "$qualification_root"' RETURN
 
     if [[ "$work_order" == "Not specified" ]]; then
-        governance="non-ewo"
+        governance="wop-unbound"
     else
         governance="governed"
     fi
@@ -200,7 +176,7 @@ eos_codex_run() {
     trap 'eos_codex_interrupted HUP 1; return $?' HUP
 
     export ENGINEERING_CODEX_WRAPPER="engctl-codex-v1"
-    export ENGINEERING_CODEX_EWO="$work_order"
+    export ENGINEERING_CODEX_WOP="$work_order"
     if ((mission_timeout > 0)); then
         timeout --preserve-status --signal=TERM --kill-after=5 \
             "$mission_timeout" "$codex_bin" "${codex_args[@]}" <&0 &

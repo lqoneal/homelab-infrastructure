@@ -161,7 +161,7 @@ Engineering Governance is the controlled function used to:
 * approve specifications;
 * approve procedures;
 * approve templates;
-* approve and activate Engineering Work Orders that authorize bounded engineering execution;
+* approve bounded engineering execution through the applicable controlled authority model;
 * establish Governance Baselines;
 * qualify Governance Baselines;
 * designate operational Governance Baselines;
@@ -169,7 +169,7 @@ Engineering Governance is the controlled function used to:
 * accept completed engineering work;
 * authorize governance revisions.
 
-Implementation agents possess only the bounded execution authority explicitly granted by an approved and active Engineering Work Order.
+Implementation agents possess only the bounded execution authority explicitly resolved from the applicable controlled authority model. For Operational Alpha this is the published convergence authority chain and its authorized WOP; historical EWOs do not grant or block Operational Alpha execution.
 
 Zeus is the authority-resolution, validation, reconciliation, and execution
 system. It does not invent approvals or self-authorize. When normal controlled

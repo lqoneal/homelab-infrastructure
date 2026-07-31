@@ -110,9 +110,10 @@ The service shall preserve these boundaries:
 - EOS owns authoritative engineering-state persistence within its existing
   scope. A notification outbox may be an EOS persistence integration, but the
   Notification Service shall not redefine the EOS data model.
-- Governance records and Active EWOs remain the only applicable sources of
-  execution authority. Events, subscriptions, notifications, acknowledgements,
-  and delivery receipts never grant or expand authority.
+- Published controlled authority, mission eligibility, convergence authority,
+  EMM, and the applicable WOP remain the only Operational Alpha execution
+  sources. Events, subscriptions, notifications, acknowledgements, delivery
+  receipts, and historical EWOs never grant or expand Operational Alpha authority.
 - The Work Registry remains a management projection and is not a notification
   authorization source.
 - The qualified `engctl codex` implementation remains the operational baseline.
@@ -1099,7 +1100,6 @@ wrapper continues regardless of notification result
 
 | Trigger | Location | Timing | Result |
 | --- | --- | --- | --- |
-| Wrapper bypass | `eos_codex_wrapper_gate` | At protected resume/qualification entry when a Codex thread lacks the wrapper marker | Attempts `Codex Wrapper Bypass`; gate returns 78 |
 | Process start | `eos_codex_run` | Immediately before launching the child | Attempts `Codex Started` |
 | Signal | nested `eos_codex_interrupted` | After forwarding INT/TERM/HUP and waiting for child | Attempts `Codex Interrupted` |
 | Timeout | `eos_codex_run` terminal branch | After timeout returns status 143 | Attempts `Codex Timed Out` |

@@ -1,15 +1,15 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.77
+version: 2.78
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-30
+last_updated: 2026-07-31
 phase: Zeus Operational Alpha
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.76
+predecessor_revision: DOC-0001@2.77
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -220,10 +220,14 @@ ritual. Category A performs the complete ritual. Category B or C performs the
 repository-specific steps only when the mission consumes or affects repository
 state; otherwise repository cleanliness is recorded as informational.
 
-Every repository-governed Codex mission shall first be launched through
-`engctl codex --ewo EWO-XXXXXX`. Resume and qualification shall stop and report
-the condition when a Codex session lacks the wrapper marker, unless an approved
-Active EWO records a bounded exception.
+For Operational Alpha, an authorized WOP is the execution artifact. Its
+authority is resolved through published controlled documentation, mission
+eligibility, convergence authority, the EMM, and applicable runtime
+verification. `engctl codex` may provide notification and optional WOP
+provenance (`--wop WOP-ID`), but it neither grants execution authority nor
+requires an EWO. An accepted WOP Admission Record remains the fail-closed
+admission requirement when the published Operational Alpha lifecycle requires
+one.
 
 For Category A, review the repository in the following order.
 
@@ -893,3 +897,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.75 | 2026-07-30 | Registered MILESTONE-0010 and the `OA-IMPLEMENTATION-BASELINE-1.0` adoption trace. The entry establishes an implementation-planning baseline from HF-012 without activating Draft architecture records or authorizing implementation. |
 | 2.76 | 2026-07-30 | Registered SPEC-0014 and synchronized the controlled Operational Alpha authority migration across STD-0003, PROC-0001, SPEC-0005, PROC-0006, TPL-0001, and TPL-0002. |
 | 2.77 | 2026-07-30 | Registered MILESTONE-0011 and the certified `ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0` registry trace; Operational Alpha remains blocked at OA-01 until its separately controlled execution prerequisites exist. |
+| 2.78 | 2026-07-31 | Reconciled Operational Alpha initiation to the published WOP and convergence-authority model; historical EWOs no longer gate repository-governed Operational Alpha execution. |

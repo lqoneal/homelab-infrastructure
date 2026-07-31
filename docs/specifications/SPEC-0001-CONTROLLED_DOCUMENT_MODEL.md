@@ -432,7 +432,13 @@ Only Engineering Governance may authorize lifecycle transitions unless superior 
 
 ### 9.1 Engineering Work Order Authority
 
-An Engineering Work Order authorizes execution only while Active. It shall identify its controlled revision, governing baseline, scope, authority, prohibitions, success criteria, stop conditions, evidence, reporting, and resume requirements.
+Engineering Work Orders are historical controlled records. For Operational Alpha,
+execution authority resolves only through the published convergence chain:
+controlled mission plan, eligibility, Authority Record (or an exact
+manual-governance root WOP where applicable), EMM, and the authoritative WOP.
+An EWO identifier does not authorize or block that chain. A WOP shall identify
+its controlled revision, governing baseline, scope, authority, prohibitions,
+success criteria, stop conditions, evidence, reporting, and resume requirements.
 
 Completion reporting describes execution outcome and does not independently change lifecycle state.
 

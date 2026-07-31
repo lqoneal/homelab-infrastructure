@@ -49,7 +49,7 @@ cat > "$QUALIFY_BIN" <<'EOF'
 #!/usr/bin/env bash
 if [[ "${CODEX_TEST_EXPECT_MARKER:-0}" == "1" ]]; then
     [[ "${ENGINEERING_CODEX_WRAPPER:-}" == "engctl-codex-v1" ]]
-    [[ "${ENGINEERING_CODEX_EWO:-}" == "EWO-000019" ]]
+    [[ "${ENGINEERING_CODEX_WOP:-}" == "WOP-TEST-001" ]]
 fi
 notify_json=""
 while [[ "${1:-}" == "-c" ]]; do
@@ -133,30 +133,25 @@ EOF
 notify_ntfy_load_config "$ROOT"
 : > "$MOCK_CURL_CONFIG"
 
-CODEX_TEST_REPORT="$QUALIFIED_REPORT" CODEX_BIN="$QUALIFY_BIN" "$ENGCTL" codex --ewo EWO-000017 --
+CODEX_TEST_REPORT="$QUALIFIED_REPORT" CODEX_BIN="$QUALIFY_BIN" "$ENGCTL" codex --wop WOP-TEST-001 --
 [[ $? -eq 0 ]]
 
 set +e
-CODEX_TEST_REPORT="$QUALIFIED_REPORT" CODEX_TEST_EXIT=1 CODEX_BIN="$QUALIFY_BIN" "$ENGCTL" codex --ewo EWO-000017 --
+CODEX_TEST_REPORT="$QUALIFIED_REPORT" CODEX_TEST_EXIT=1 CODEX_BIN="$QUALIFY_BIN" "$ENGCTL" codex --wop WOP-TEST-001 --
 false_status=$?
 set -e
 [[ $false_status -eq 1 ]]
 
 CODEX_TEST_REPORT="$QUALIFIED_REPORT" CODEX_TEST_EXPECT_MARKER=1 \
-    CODEX_BIN="$QUALIFY_BIN" "$ENGCTL" codex --ewo EWO-000019 --
+    CODEX_BIN="$QUALIFY_BIN" "$ENGCTL" codex --wop WOP-TEST-001 --
 
 CODEX_TEST_REPORT="$QUALIFIED_REPORT" CODEX_TEST_TURN=resumed \
-    CODEX_BIN="$QUALIFY_BIN" "$ENGCTL" codex --ewo EWO-000019 -- resume test-session
+    CODEX_BIN="$QUALIFY_BIN" "$ENGCTL" codex --wop WOP-TEST-001 -- resume test-session
 
-# A Codex-context initiation outside the wrapper is rejected and reports a
-# value-free bypass condition. The accepted marker permits the same operation.
-set +e
+# Direct Codex-context initiation remains usable when authority is resolved by
+# the published WOP chain; the wrapper is optional orchestration, not a gate.
 CODEX_THREAD_ID=controlled-bypass-test ENGINEERING_CODEX_WRAPPER= \
-    "$ENGCTL" resume >/dev/null 2>"$TEST_ROOT/bypass.error"
-bypass_status=$?
-set -e
-[[ $bypass_status -eq 78 ]]
-rg -q 'Codex wrapper bypass detected' "$TEST_ROOT/bypass.error"
+    "$ENGCTL" resume >/dev/null
 CODEX_THREAD_ID=controlled-wrapper-test ENGINEERING_CODEX_WRAPPER=engctl-codex-v1 \
     "$ENGCTL" resume >/dev/null
 
@@ -171,12 +166,12 @@ actual = pathlib.Path(sys.argv[1]).read_bytes().split(b"\0")[:-1]
 expected = [b"--flag", b"value", b"argument with spaces", b"quoted value"]
 if actual[-4:] != expected or actual[:1] != [b"-c"]:
     raise SystemExit(f"argument mismatch: {actual!r}")
-if b"non-EWO work" not in actual[1]:
+if b"no WOP provenance marker" not in actual[1]:
     raise SystemExit(f"session classification missing: {actual[1]!r}")
 PY
 
 source "$ROOT/scripts/lib/eos/codex.sh"
-governed_contract="$(eos_codex_completion_contract EWO-000019)"
+governed_contract="$(eos_codex_completion_contract WOP-TEST-001)"
 grep -Fq 'candidate revisions through engineering/execution/execution-interface.yaml' <<<"$governed_contract"
 grep -Fq 'mission-delta Completion Report' <<<"$governed_contract"
 
@@ -201,13 +196,13 @@ grep -Fq $'bad\tFAIL\texact-heading' "$NONCONFORMING_STATE"
 
 set +e
 CODEX_TEST_REPORT='Implementation complete.' CODEX_BIN="$QUALIFY_BIN" \
-    "$ENGCTL" codex --ewo EWO-000017 --
+    "$ENGCTL" codex --wop WOP-TEST-001 --
 qualification_failure_status=$?
 set -e
 [[ $qualification_failure_status -eq 65 ]]
 
 set +e
-CODEX_BIN="$LONG_BIN" "$ENGCTL" codex --ewo EWO-000017 -- 300 &
+CODEX_BIN="$LONG_BIN" "$ENGCTL" codex --wop WOP-TEST-001 -- 300 &
 wrapper_pid=$!
 sleep 1
 child_pid="$(pgrep -P "$wrapper_pid" -f "$LONG_BIN|sleep 300" | head -1)"
@@ -223,13 +218,13 @@ fi
 
 set +e
 MOCK_CURL_EXIT=28 CODEX_TEST_REPORT="$QUALIFIED_REPORT" CODEX_BIN="$QUALIFY_BIN" \
-    "$ENGCTL" codex --ewo EWO-000017 --
+    "$ENGCTL" codex --wop WOP-TEST-001 --
 notification_failure_status=$?
 set -e
 [[ $notification_failure_status -eq 0 ]]
 
 set +e
-CODEX_BIN="$LONG_BIN" "$ENGCTL" codex --ewo EWO-000019 --timeout 1 -- 300
+CODEX_BIN="$LONG_BIN" "$ENGCTL" codex --wop WOP-TEST-001 --timeout 1 -- 300
 timeout_status=$?
 set -e
 [[ $timeout_status -eq 143 ]]
@@ -247,6 +242,5 @@ rg -q 'Title: Codex Report Qualification Failed' "$MOCK_CURL_CONFIG"
 rg -q 'Title: Codex Failed' "$MOCK_CURL_CONFIG"
 rg -q 'Title: Codex Interrupted' "$MOCK_CURL_CONFIG"
 rg -q 'Title: Codex Timed Out' "$MOCK_CURL_CONFIG"
-rg -q 'Title: Codex Wrapper Bypass' "$MOCK_CURL_CONFIG"
 
 printf 'PASS: Codex lifecycle notification controlled tests\n'

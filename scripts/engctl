@@ -46,7 +46,7 @@ Usage:
   engctl platform {status|validate|qualify} [project]
   engctl execution {inventory|snapshot [--mission ID]|validate-handoff FILE}
   engctl mission contract {inspect|validate|resolve|admit|activate-request|recover|activate|suspend|resume|revoke|complete}
-  engctl codex [--ewo EWO-XXXXXX] [--timeout SECONDS] [--] [codex arguments ...]
+  engctl codex [--wop WOP-ID] [--timeout SECONDS] [--] [codex arguments ...]
   engctl version
 EOF
 }
@@ -56,7 +56,6 @@ shift || true
 
 case "$cmd" in
     resume)
-        eos_codex_wrapper_gate "Engineering Work Initiation resume" || exit $?
         project="${1:-$EOS_PROJECT}"
         echo "REPOSITORY–EOS INTEGRATED VERIFICATION"
         echo "------------------------------------"
@@ -165,7 +164,7 @@ PY
         case "$action" in
             status) eos_render_platform "$project" ;;
             validate) eos_platform_validate "$project" ;;
-            qualify) eos_codex_wrapper_gate "Engineering Work Initiation qualification" || exit $?; eos_platform_qualify "$project" ;;
+            qualify) eos_platform_qualify "$project" ;;
             *) echo "ERROR: unknown platform action: $action" >&2; usage; exit 1 ;;
         esac
         ;;

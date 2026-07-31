@@ -184,17 +184,17 @@ WOP by itself.
 
 ## Purpose
 
-This procedure defines the approved method for executing an Engineering Work Order within the Engineering Operating System.
+This procedure defines the approved method for executing Operational Alpha work through the published authority chain within the Engineering Operating System.
 
 It translates the requirements established by the Engineering Governance Policy and Engineering Work Order Standard into a repeatable operational workflow.
 
-This procedure defines how an implementation agent executes an Active Engineering Work Order.
+This procedure defines how an implementation agent executes an authorized Implementation WOP or an exact, EMM-resolved manual-governance root WOP.
 
 ---
 
 ## Scope
 
-This procedure applies to every Engineering Work Order executed under the Engineering Operating System.
+For Operational Alpha, this procedure applies to every authorized WOP executed under the Engineering Operating System. Historical EWO records remain traceability evidence and are not an execution prerequisite.
 
 ---
 
@@ -229,7 +229,7 @@ Operational Alpha implementation WOPs shall be executed:
 
 ## Execution Workflow
 
-Every Engineering Work Order shall execute according to the following workflow:
+Every authorized Operational Alpha WOP shall execute according to the following workflow:
 
 ```text
 Canonical Metadata Resolution
@@ -325,30 +325,21 @@ authority, synchronization, or a lifecycle transition.
 
 ---
 
-## Codex Launch Enforcement
+## Codex Invocation
 
-Every repository-governed Codex engineering mission SHALL launch through:
+`engctl codex` may provide notification and report-qualification orchestration,
+but it is not an authority gate. When used, it may carry WOP provenance:
 
 ```bash
-engctl codex --ewo EWO-XXXXXX -- [codex arguments ...]
+engctl codex --wop WOP-ID -- [codex arguments ...]
 ```
 
-The wrapper establishes the notification lifecycle and an inherited execution
-marker. `homelabctl resume`, `engctl resume`, and Engineering Work Initiation
-qualification detect a Codex context without that marker, report a wrapper
-bypass engineering condition, attempt a value-free bypass notification, and
-stop with exit status 78. A bypass is not converted into authority by setting
-environment variables manually.
-
-An exception must be explicit in an approved Active EWO, identify why wrapper
-launch is technically impossible, define equivalent notification and evidence
-controls, and be reported in the Completion Report. EWO-000019 itself is the
-one-time bootstrap exception needed to establish this enforcement.
-
-Wrapper start, completion, failure, timeout, and interruption events are
-operational metadata only. Prompts, output, diffs, repository content, private
-configuration, topics, endpoints, tokens, and credentials shall not enter the
-notification body.
+Execution authority is resolved from published controlled documentation,
+mission eligibility, convergence authority, EMM, and the applicable
+Implementation WOP or manual-governance root WOP. An EWO identifier is neither
+required nor sufficient for Operational Alpha execution. Wrapper start,
+completion, failure, timeout, and interruption events are operational metadata
+only and do not grant authority.
 
 ---
 
@@ -427,7 +418,7 @@ required. Diagnostics do not authorize remediation.
 
 ### Mixed or Ambiguous Missions
 
-Use the most restrictive applicable category unless the Active EWO separates
+Use the most restrictive applicable category unless the authorized WOP separates
 the work into independently authorized and gated phases. If classification is
 ambiguous or would materially change the applicable controls, stop and obtain
 Engineering Governance disposition. Record classification and gate results in
@@ -443,11 +434,11 @@ Verify the execution contract.
 
 Verify:
 
-* Engineering Work Order identifier;
-* revision;
-* approval status;
-* Active lifecycle state;
-* no newer Active revision supersedes the current revision.
+* Implementation WOP or Manual-Governance Root WOP identifier;
+* revision and EMM source digest;
+* authoritative resolution and lifecycle eligibility;
+* mission eligibility and convergence-authority result; and
+* no newer authoritative WOP revision supersedes the resolved revision.
 
 If verification fails:
 
@@ -571,7 +562,7 @@ For Category A, examples include:
 * remote configuration;
 * working tree state.
 
-Verify all mission-specific baseline requirements defined by the Engineering Work Order.
+Verify all mission-specific baseline requirements defined by the resolved WOP and the controlled mission plan.
 
 For Categories B and C, apply the classification-specific gates above and all
 mission-specific baseline requirements. Repository cleanliness is not promoted
@@ -588,7 +579,7 @@ Engineering Governance authorization is required.
 
 ## Step 6 — Engineering Phase Execution
 
-Execute only the engineering activities authorized by the Engineering Work Order.
+Execute only the engineering activities authorized by the resolved WOP.
 
 Do not:
 
@@ -597,7 +588,7 @@ Do not:
 * redesign governance;
 * modify prohibited engineering assets.
 
-Execute phases sequentially unless the Engineering Work Order explicitly authorizes another execution model.
+Execute phases sequentially unless the resolved WOP explicitly authorizes another execution model.
 
 ---
 
@@ -612,7 +603,7 @@ Evidence shall be:
 * attributable;
 * traceable.
 
-Evidence shall correspond to the Engineering Work Order objectives.
+Evidence shall correspond to the controlled mission objective and resolved WOP scope.
 
 ---
 

@@ -2,15 +2,15 @@
 
 document_id: INF-0001
 title: Engineering Infrastructure Baseline
-version: 2.7
+version: 2.8
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-21
+last_updated: 2026-07-31
 phase: EENS Operational Infrastructure Reconciliation
 domain: Infrastructure
 classification: Global Infrastructure Baseline
-predecessor_revision: INF-0001@2.6
+predecessor_revision: INF-0001@2.7
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -377,7 +377,7 @@ EWO-000017 establishes Codex lifecycle notifications as shared Engineering
 Operations infrastructure owned by Homelab. The global entry point is:
 
 ```bash
-engctl codex [--ewo EWO-XXXXXX] [--timeout SECONDS] [--] [codex arguments ...]
+engctl codex [--wop WOP-ID] [--timeout SECONDS] [--] [codex arguments ...]
 ```
 
 The controller records start time, repository, host, optional Work Order, and
@@ -393,13 +393,14 @@ Notification delivery failure prints a warning but never replaces the Codex
 result. Signal handling forwards the signal, waits for the child, and prevents
 an orphaned Codex process.
 
-Repository-governed Codex missions are required to use this entry point. The
-wrapper exports an inherited marker and Work Order identity. Resume and
-Engineering Work Initiation qualification reject a detected Codex session that
-lacks the marker with exit status 78, emit a value-free engineering condition,
-and attempt a non-fatal bypass notification. This detects procedural bypass at
-the first governed initiation gate; it is not cryptographic process attestation
-and cannot force an already-running external Codex host to relaunch itself.
+The entry point is an optional orchestration and notification interface. It may
+export a WOP provenance marker, but it does not establish Operational Alpha
+execution authority and absence of the marker does not reject Work Initiation.
+Operational Alpha authority is instead resolved through published controlled
+documentation, mission eligibility, convergence authority, the EMM, and the
+applicable authorized WOP. An accepted WOP Admission Record remains required
+where the published lifecycle defines it. Historical EWOs are neither necessary
+nor sufficient for Operational Alpha execution.
 
 `--timeout` or `CODEX_TIMEOUT` applies an optional mission runtime bound. A
 timed-out child receives `SIGTERM`, retains the resulting status, and produces
@@ -431,7 +432,7 @@ invoking curl and reports only a value-free engineering diagnostic.
 
 ### Operation and troubleshooting
 
-Use `--ewo` or `CODEX_EWO`; absent either, notifications report `Work Order:
+Use `--wop` or `CODEX_WOP`; absent either, notifications report `Work Order:
 Not specified`. Use `CODEX_BIN` only for controlled validation. Missing config,
 mode other than `0600`, non-HTTPS base URL, missing `curl`, timeout, HTTP
 failure, or rejected credentials produce bounded diagnostics without exposing
@@ -693,3 +694,5 @@ These targets describe the intended engineering direction and shall be updated a
 | 2.4     | 2026-07-17 | Recorded value-free example rejection and completed controlled live acceptance of the Stage 1 notification workflow. |
 | 2.5     | 2026-07-17 | Required wrapper use for repository-governed Codex missions, added initiation-time bypass detection, and added bounded mission-timeout notification behavior. |
 | 2.6     | 2026-07-19 | Distinguished authoritative host state from sandbox constraints; required execution-environment and write-capability verification; codified asset-oriented infrastructure qualification, evidence-based storage decisions, incidental-asset handling, preservation sequencing, and one-variable hardware isolation. |
+| 2.7     | 2026-07-21 | Recorded the canonical EENS source, qualified LOpi deployment, systemd runtime, SQLite WAL state, ntfy transport, secret boundary, and deferred HNS architecture. |
+| 2.8     | 2026-07-31 | Reconciled Codex orchestration to optional WOP provenance; removed the EWO-wrapper initiation gate from Operational Alpha execution. |

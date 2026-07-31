@@ -63,7 +63,7 @@ manual-governance policy applies.
 
 ## Purpose
 
-This standard defines the mandatory requirements for all Engineering Work Orders activated under the Engineering Operating System.
+This standard defines the mandatory requirements for historical Engineering Work Orders and their Operational Alpha WOP successor model.
 
 It establishes what every Engineering Work Order shall contain, what authority it conveys, and the minimum requirements for engineering execution.
 
@@ -75,7 +75,7 @@ It does not define operational execution procedures or document formatting.
 
 ## Scope
 
-This standard applies to every Engineering Work Order executed within the Engineering Operating System.
+For Operational Alpha, this standard applies to every Implementation WOP or manual-governance root WOP resolved through SPEC-0014 and EMM. EWO records remain historical unless another controlled domain explicitly uses them.
 
 ---
 
@@ -94,13 +94,13 @@ this exception.
 
 ### Principle 2 — Mission Specificity
 
-Each Engineering Work Order shall authorize only one defined engineering mission or clearly bounded scope.
+Each Operational Alpha WOP shall authorize only one defined engineering mission or clearly bounded scope.
 
 ---
 
 ### Principle 3 — Defined Authority
 
-Every Engineering Work Order shall explicitly define the authority granted to the implementation agent.
+Every Operational Alpha WOP shall explicitly define or resolve the authority granted to the implementation agent.
 
 Authority not explicitly granted is prohibited.
 
