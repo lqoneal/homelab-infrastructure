@@ -1,7 +1,7 @@
 ---
 document_id: SPEC-0014
 title: Operational Alpha Convergence Authority Model
-version: 1.4
+version: 1.5
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-30
@@ -150,6 +150,23 @@ transition, Authority Record, Operational Gate Plan, Activation Record, or
 execution state.
 
 ## Runtime contracts
+
+### Dispatcher admission simplification
+
+Operational Alpha dispatcher admission resolves exclusively from a successful
+convergence receipt for the requested WOP and action. The receipt binds the
+EMM, exact Implementation WOP, Authority Record or active allowlisted
+Manual-Governance Root WOP, and published Operational Gate Plan. Progressive
+PMCT, legacy authority publications, production-dispatcher activation, and
+legacy agent qualification may remain available for historical evidence or
+compatibility diagnostics, but they shall not grant, deny, or modify an
+Operational Alpha admission decision.
+
+Operational Alpha follows an execution-first engineering policy: existing
+published convergence capabilities are exercised, corrected, simplified, or
+consolidated before any foundational architecture is proposed. Superseded
+Progressive dispatcher authority is retired from Operational Alpha execution;
+its retained PMCT tooling is non-authoritative compatibility support only.
 
 All interfaces carry contract version, correlation id, producer/consumer
 owners, exact input manifest, output digest, and a durable receipt.

@@ -345,11 +345,15 @@ class MissionAdmissionRuntime:
                 decision["admission_decision"] == "ACCEPTED"
             )
             decision["automatically_submitted"] = False
-            readiness = self.dispatch_probe(
-                repository=str(self.root),
-                baseline=state["artifacts"]["repository_baseline"],
-                mission_class=str(wop.get("mission_class", "engineering")),
-            )
+            # Operational Alpha admission is governed by the convergence flow
+            # resolved above.  The Progressive PMCT/production-agent dispatcher
+            # is a retained compatibility capability, not an OA authority input.
+            readiness = {
+                "model": "CONVERGENCE_AUTHORITY",
+                "dispatch_permitted": bool(authority.get("execution_admitted")),
+                "authority_receipt": authority["authority_receipt"]["receipt_digest"],
+                "baseline_id": authority["authority_receipt"]["baseline_id"],
+            }
             decision["dispatch_permitted"] = readiness["dispatch_permitted"]
             decision["dispatch_readiness"] = readiness
             decision["decision_scope"] = "AUTHORITY_BASELINE_ADMISSION_ONLY"

@@ -74,6 +74,18 @@ class OperationalAlphaStatusTests(unittest.TestCase):
         self.assertEqual("READY", value["status"])
         self.assertEqual("EXCLUDED_EVIDENCE_ONLY", value["historical_progressive_runtime"])
 
+    def test_dispatcher_status_uses_convergence_prerequisites_not_pmct(self) -> None:
+        result = subprocess.run(
+            [str(ROOT / "scripts/zeus"), "dispatcher", "status"], cwd=ROOT,
+            env={**os.environ, "ZEUS_NO_INTRO": "1"}, text=True,
+            capture_output=True, check=False,
+        )
+        self.assertEqual(0, result.returncode, result.stderr)
+        value = json.loads(result.stdout)
+        self.assertEqual("CONVERGENCE_AUTHORITY", value["model"])
+        self.assertFalse(value["dispatch_permitted"])
+        self.assertEqual(["CONVERGENCE_PREREQUISITES_INCOMPLETE"], value["blocking_reasons"])
+
 
 if __name__ == "__main__":
     unittest.main()

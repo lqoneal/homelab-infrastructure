@@ -98,9 +98,13 @@ execution blocker while Mission Status remains `ADMITTED`. Other
 execution-authority facts are evaluated after admission during activation,
 Mission Contract resolution, and execution verification. A later
 execution-verification failure does not reverse the recorded admission.
-`dispatch_permitted` is resolved from the SPEC-0012 production policy,
-baseline-bound activation, qualified agent availability, EENS, evidence,
-reconciliation, WOP and authority dependencies. Every failed condition is
+For Operational Alpha, `dispatch_permitted` is resolved only from the published
+convergence authority receipt: an exact EMM-bound Implementation WOP, applicable
+Authority Record or allowlisted Manual-Governance Root WOP, and published
+Operational Gate Plan. Progressive PMCT, legacy authority publication,
+baseline-bound production dispatcher activation, and legacy agent qualification
+remain compatibility or historical qualification capabilities; they are not
+Operational Alpha admission inputs. Every failed convergence prerequisite is
 retained as a reason-coded blocker.
 
 Production authority was commissioned by ZEUS-P2-014 through the separate
