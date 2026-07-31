@@ -32,6 +32,8 @@ properties:
   execution_package_references: {type: object}
   authoritative_references: {type: array}
   sections: {type: object}
+  authority_lineage: {type: object}
+  convergence_flow_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
   submission_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
 additionalProperties: false
 x-zeus-authoritative-contract:

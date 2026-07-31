@@ -115,6 +115,15 @@ class AdmissionTests(unittest.TestCase):
         self.assertIn("UNSUPPORTED_SCHEMA_VERSION", codes)
         self.assertIn("UNRECOGNIZED_TOP_LEVEL_FIELD", codes)
 
+    def test_convergence_lineage_fields_are_admissible(self):
+        value = self.valid_submission()
+        value["authority_lineage"] = {
+            "mode": "AUTHORITY_RECORD", "authority_record_id": "AR-OA-01-001"
+        }
+        value["convergence_flow_digest"] = "a" * 64
+        value["submission_digest"] = submission_digest(value)
+        self.assertEqual("ACCEPTED", self.decide(value).data["admission_decision"])
+
     def test_ledger_is_immutable_and_idempotent(self):
         decision = self.decide(self.valid_submission())
         with tempfile.TemporaryDirectory() as directory:

@@ -59,6 +59,10 @@ REQUIRED_SUBMISSION_FORMAT = {
     "sections": {key: "<non-empty content>" for key in REQUIRED_SECTIONS},
     "submission_digest": "<sha256 of canonical submission without this field>",
 }
+OPTIONAL_CONVERGENCE_FIELDS = {
+    "authority_lineage",
+    "convergence_flow_digest",
+}
 
 
 def canonical_json(value: Any) -> str:
@@ -264,7 +268,20 @@ class AdmissionController:
                 "submission digest does not match canonical content",
                 "Recompute SHA-256 over canonical JSON excluding submission_digest."
             ))
-        allowed = set(REQUIRED_SUBMISSION_FORMAT)
+        if "authority_lineage" in submission and not isinstance(submission.get("authority_lineage"), Mapping):
+            failures.append(ValidationFailure(
+                "INVALID_AUTHORITY_LINEAGE", "authority_lineage",
+                "authority_lineage must be an object when supplied",
+                "Provide the convergence authority lineage as an object."
+            ))
+        flow_digest = submission.get("convergence_flow_digest")
+        if flow_digest is not None and not re.fullmatch(r"[0-9a-f]{64}", str(flow_digest)):
+            failures.append(ValidationFailure(
+                "INVALID_CONVERGENCE_FLOW_DIGEST", "convergence_flow_digest",
+                "convergence_flow_digest must be a SHA-256 digest when supplied",
+                "Provide the 64-character convergence flow digest."
+            ))
+        allowed = set(REQUIRED_SUBMISSION_FORMAT) | OPTIONAL_CONVERGENCE_FIELDS
         extras = sorted(set(submission) - allowed)
         for field in extras:
             failures.append(ValidationFailure(
