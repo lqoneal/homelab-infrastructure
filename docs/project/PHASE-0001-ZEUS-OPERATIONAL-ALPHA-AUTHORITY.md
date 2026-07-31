@@ -1,15 +1,15 @@
 ---
 document_id: PHASE-0001
 title: Zeus Operational Alpha Authority
-version: 1.0
+version: 1.1
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-25
-last_updated: 2026-07-25
+last_updated: 2026-07-30
 phase: Zeus Operational Alpha
 domain: Project Execution
 classification: Mission and Phase Authority Record
-predecessor_revision: null
+predecessor_revision: PHASE-0001@1.0
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -29,6 +29,8 @@ relationships:
     target: STD-0004
   - type: related_to
     target: SPEC-0009
+  - type: related_to
+    target: MILESTONE-0010
 tags:
   - zeus
   - operational-alpha
@@ -58,6 +60,11 @@ autonomous execution, feature development, or Work Package execution.
 **Authoritative Project State:** PROJ-0001
 
 **Operational Management Projection:** `EMP-MISSION-ZEUS-OPERATIONAL-ALPHA`
+
+**Implementation Planning Baseline:** `OA-IMPLEMENTATION-BASELINE-1.0`,
+recorded by `MILESTONE-0010`. This baseline is a planning and conformance
+reference only; it does not alter this authority's prohibition on
+implementation or Work Package execution.
 
 ## Objective
 
@@ -128,3 +135,4 @@ read-only next-action interface. OA-02 through OA-30 remain unpassed.
 | Version | Date | Description |
 | --- | --- | --- |
 | 1.0 | 2026-07-25 | Established Zeus Operational Alpha as the current Homelab authority baseline without authorizing implementation. |
+| 1.1 | 2026-07-30 | Added the controlled cross-reference to the HF-012-qualified implementation-planning baseline while preserving all implementation and execution prohibitions. |

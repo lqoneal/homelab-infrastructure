@@ -1,15 +1,15 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 9.9
+version: 10.0
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-29
+last_updated: 2026-07-30
 mission: Zeus Operational Alpha
 phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@9.8
+predecessor_revision: PROJ-0001@9.9
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -63,6 +63,8 @@ relationships:
   - type: related_to
     target: MILESTONE-0007
   - type: related_to
+    target: MILESTONE-0010
+  - type: related_to
     target: EMP-0001
   - type: related_to
     target: SPEC-0006
@@ -95,6 +97,12 @@ It summarizes the current project state and identifies the next approved enginee
 # Last Updated
 
 **Date:** 2026-07-15
+
+**Baseline adoption update (2026-07-30):** `MILESTONE-0010` records
+`OA-IMPLEMENTATION-BASELINE-1.0` as the HF-012-qualified implementation
+planning baseline. Implementation work remains unstarted and requires separate
+authorization. Repository-to-EOS runtime synchronization remains a separately
+owned post-publication action; no runtime state is changed by this record.
 
 **Session Summary:**
 

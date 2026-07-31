@@ -1,0 +1,25 @@
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+version: 1.0
+status: adopted_pending_publication_finalization
+authoritative_owner: Homelab Infrastructure
+adoption_authority: OA-ROADMAP-HF-013A
+qualification_reference: OA-ROADMAP-HF-012
+source_series:
+  - OA-ROADMAP-HF-005
+  - OA-ROADMAP-HF-006
+  - OA-ROADMAP-HF-007
+  - OA-ROADMAP-HF-008
+  - OA-ROADMAP-HF-009
+  - OA-ROADMAP-HF-010
+  - OA-ROADMAP-HF-011
+  - OA-ROADMAP-HF-012
+controlled_adoption_record: MILESTONE-0010
+repository_locator: pending_publication_finalization
+tag: pending_publication_finalization
+implementation_status: planning_complete_implementation_not_authorized
+synchronization:
+  source: repository baseline registry
+  direction: repository_to_derived_consumers
+  eos_runtime_status: synchronization_required_not_performed
+  reconciliation_owner: EOS owner
+conformance_requirement: separate authorized implementation packages must cite this baseline

@@ -1,7 +1,7 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.74
+version: 2.75
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,7 +9,7 @@ last_updated: 2026-07-30
 phase: Zeus Operational Alpha
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.73
+predecessor_revision: DOC-0001@2.74
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -165,6 +165,8 @@ relationships:
     target: MILESTONE-0008
   - type: indexes
     target: MILESTONE-0009
+  - type: indexes
+    target: MILESTONE-0010
   - type: related_to
     target: EWO-000018
 tags:
@@ -466,6 +468,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | MILESTONE-0007-PUBLICATION-VERIFICATION | MILESTONE-0007 Publication Verification Report | Active | Engineering Governance | `docs/project/milestones/MILESTONE-0007-PUBLICATION-VERIFICATION-REPORT.md` |
 | MILESTONE-0008 | Engineering Governance Framework Version 1.0 Operationally Qualified | Approved | Engineering Governance | `docs/project/milestones/2026-07-18-engineering-governance-framework-1.0-operationally-qualified.md` |
 | MILESTONE-0009 | Operational Alpha Governance Baseline 1.0 and Governance Freeze | Approved | Engineering Governance | `docs/project/milestones/2026-07-29-operational-alpha-governance-baseline-1.0.md` |
+| MILESTONE-0010 | Operational Alpha Implementation Baseline 1.0 Adoption | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-30-operational-alpha-implementation-baseline-1.0.md` |
 
 This table shall be updated whenever a controlled document is created, superseded, or archived.
 
@@ -521,6 +524,7 @@ ENGINEERING-CONVERGENCE-REVIEW-001 (historical evidence)
     -> ADR-0001
     -> SPEC-0002
     -> AQR-0001 (qualification and recommendation only)
+    -> MILESTONE-0010 (HF-012-qualified implementation-planning baseline)
     -> future bounded WOPs
 ```
 
@@ -884,3 +888,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.72 | 2026-07-30 | Registered Draft ARCH-0001, ADR-0001, and SPEC-0002; established ARCH and ADR discovery and numbering; and recorded historical-assessment-to-decision-to-specification traceability without approval, activation, publication, or implementation authority. |
 | 2.73 | 2026-07-30 | Registered Draft AQR-0001 as the architecture-specific qualification criteria, evidence, readiness, and promotion-recommendation record; established AQR discovery and numbering while preserving PROC-0006 qualification, STD-0001 lifecycle, Engineering Governance disposition, and PROC-0005 publication authority. |
 | 2.74 | 2026-07-30 | Reconciled registration for SPEC-0002 Draft 1.3 and AQR-0001 Draft 1.1, including complete ADR component, invariant, interface, and Future Implementation traceability plus observational Repository Convergence Qualification; no architecture decision, repository convergence, lifecycle transition, publication, synchronization, or promotion authority was introduced. |
+| 2.75 | 2026-07-30 | Registered MILESTONE-0010 and the `OA-IMPLEMENTATION-BASELINE-1.0` adoption trace. The entry establishes an implementation-planning baseline from HF-012 without activating Draft architecture records or authorizing implementation. |
