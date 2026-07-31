@@ -1,0 +1,20 @@
+{
+  "authority_source": "engineering/missions/operational-alpha-mission-knowledge.yaml",
+  "execution_constraints": [
+    "controlled-wop-only",
+    "exact-repository-baseline",
+    "no-unreviewed-external-effects"
+  ],
+  "expected_evidence_outputs": [
+    "dispatch-contract",
+    "capability-qualification",
+    "operator-capability-summary",
+    "synchronization-report",
+    "validation-report"
+  ],
+  "mission_id": "OA-10",
+  "required_capabilities": [
+    "ZEUS-OA-CAP-008"
+  ],
+  "selected_execution_agent": "zeus-local-loneal-01"
+}

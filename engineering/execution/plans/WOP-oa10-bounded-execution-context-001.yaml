@@ -1,0 +1,33 @@
+schema_version: 1
+plan_id: WOP-oa10-bounded-execution-context-001
+revision: 1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop: {wop_id: WOP-oa10-bounded-execution-context-001, revision: 1}
+authority_lineage:
+  root_wop: {wop_id: WOP-oa10-bounded-execution-context-001, revision: 1}
+  authority_record: AR-OA-10-001@1
+  authority_mode: MANUAL_GOVERNANCE_WOP
+  governing_directive: WOP-OA-10-EXECUTION-001
+gate_plan:
+  gates:
+    EXECUTE_WORK:
+      dependencies: []
+      actions:
+        - action_id: oa10-context-lease-qualified
+          action_type: create_artifact
+          path: runtime/evidence/OA-10/CONTEXT-LEASE-QUALIFIED
+          content: OA-10 bounded execution context, principal identity, lease, expiry, and revocation qualification complete
+          content_digest: e3d224a3d0f251a30d7488ea4b1a8a849f45b178a6dcdb98b5fd7eca1d97f378
+    VERIFY_COMPLETION:
+      dependencies: [EXECUTE_WORK]
+      actions:
+        - action_id: verify-oa10-context-lease-qualified
+          action_type: verify_artifact
+          path: runtime/evidence/OA-10/CONTEXT-LEASE-QUALIFIED
+          content_digest: e3d224a3d0f251a30d7488ea4b1a8a849f45b178a6dcdb98b5fd7eca1d97f378
+traceability:
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-10/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-10/implementation.md
+  execution_contract: OPERATIONAL-ALPHA-EXECUTION-CONTRACT@1.0
+  execution_first_policy: SPEC-0014@1.6

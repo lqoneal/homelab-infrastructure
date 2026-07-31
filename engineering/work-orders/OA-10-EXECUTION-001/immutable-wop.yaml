@@ -1,0 +1,32 @@
+schema_version: 1
+wop_id: WOP-oa10-bounded-execution-context-001
+revision: 1
+status: READY
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: OA-10-BOUNDED-EXECUTION-CONTEXT
+work_item_id: EMP-WORK-OA-10-BOUNDED-CONTEXT-001
+title: OA-10 Bounded Execution Context and Authority Lease Qualification
+owner: Engineering Governance
+objective: Prove bounded execution context, principal identity, authority lease, expiry, and revocation behavior.
+scope: [execute the published OA-10 controlled gate objective, qualify bounded context and lease controls, publish end-to-end readiness evidence]
+prohibited_effects: [alter certified runtime baseline, alter completed OA-09 artifacts, introduce a parallel authority owner]
+execution_context:
+  repository: /data/engineering/repositories/homelab
+  baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+  qualified_baseline: b552d57d591c2eeb7521f56974210603b431fcb2
+  branch: main
+manual_governance_authority:
+  policy_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
+  policy_revision: '1.0'
+  delegation_state: ACTIVE
+  governance_submission: {submitted: true, submitted_by: Engineering Governance, submission_id: WOP-OA-10-EXECUTION-001, directive_id: WOP-OA-10-EXECUTION-001}
+  permitted_actions: [create_authority_record, generate_operational_gate_plan, admit_mission, generate_wop, execute_mission, verify]
+entry_criteria: [OA-09 accepted, OA-10 eligibility resolved, repository EOS EMM registry and runtime preflight pass]
+completion_criteria: [OA-10 context and lease qualified, evidence reconciled and published, Operational Alpha complete]
+traceability:
+  governing_directive: WOP-OA-10-EXECUTION-001
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-10/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-10/implementation.md
+  execution_procedure: PROC-0001@2.7
+  execution_first_policy: SPEC-0014@1.6
+lifecycle: {execution_state: NOT_STARTED}

@@ -1,0 +1,58 @@
+{
+  "assertions": {
+    "authority_lease": "PASS",
+    "bounded_context": "PASS",
+    "end_to_end_workflow": "PASS",
+    "expiry_and_revocation": "PASS",
+    "fail_closed": "PASS",
+    "principal_identity": "PASS",
+    "recovery": "PASS"
+  },
+  "authoritative_inputs": {
+    "dispatch": {
+      "authority_source": "engineering/missions/operational-alpha-mission-knowledge.yaml",
+      "execution_constraints": [
+        "controlled-wop-only",
+        "exact-repository-baseline",
+        "no-unreviewed-external-effects"
+      ],
+      "expected_evidence_outputs": [
+        "dispatch-contract",
+        "capability-qualification",
+        "operator-capability-summary",
+        "synchronization-report",
+        "validation-report"
+      ],
+      "mission_id": "OA-10",
+      "required_capabilities": [
+        "ZEUS-OA-CAP-008"
+      ],
+      "selected_execution_agent": "zeus-local-loneal-01"
+    },
+    "flow_digest": "6ae2b8bcff209a19ef901cfa2820c978a049712d94c7ddd5e65c15ebf707bb64",
+    "qualified_agent": "zeus-local-loneal-01"
+  },
+  "canonical_evidence_digest": "8c6e1dc85af9cdc6b28cbae08aa0e1f373a25d0b513ace3505ddaf1df3940265",
+  "execution": {
+    "execute_post": {
+      "checkpoint_digest": "3ef1a78a15f6a846042ae9d5105771f4a499a19fa09609c0bbf1f141af710e80",
+      "result_digest": "157b7c7a1cccea17214ca32c6865cb3aeb0c66a22a53096fdf40f96436c08d1d",
+      "verification": "PASS",
+      "verified_actions": [
+        "oa10-context-lease-qualified"
+      ]
+    },
+    "verify_post": {
+      "checkpoint_digest": "0d94f7d95ed4ec1c5dcce41906d2f9f00f399fcebe4d81bea7e814ba9e27e1a0",
+      "result_digest": "a9ae49f709171fdab342bc90fbfe37e605fd180055910f5ac19c744ad1e913d1",
+      "verification": "PASS",
+      "verified_actions": [
+        "verify-oa10-context-lease-qualified"
+      ]
+    }
+  },
+  "gate_id": "OA-10",
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-07-31T11:18:39.649194+00:00"
+}

@@ -1,0 +1,18 @@
+schema_version: 1
+transition_id: OA-10-READY-TO-ACTIVE
+revision: 1
+implementation_wop_id: WOP-oa10-bounded-execution-context-001
+implementation_wop_revision: 1
+from_state: READY
+to_state: ACTIVE
+prerequisites: [OA-09_ACCEPTED, AR-OA-10-001, WOP-oa10-bounded-execution-context-001]
+authoritative_owner: Engineering Governance
+classification: Authoritative
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop: {wop_id: WOP-oa10-bounded-execution-context-001, revision: 1}
+source_lifecycle_state: READY
+target_lifecycle_state: ACTIVE
+execution_state: NOT_STARTED
+authority_lineage: {root_wop: WOP-oa10-bounded-execution-context-001@1, authority_record: AR-OA-10-001@1, authority_mode: MANUAL_GOVERNANCE_WOP}
+reconciliation: {owner: Engineering Governance, synchronized_sources: [project_state, eos, emm]}

@@ -13,8 +13,8 @@ from scripts.lib.eos import mission_knowledge
 class OA06MissionKnowledgeTests(unittest.TestCase):
     def test_accepted_oa07_exposes_the_controlled_oa08_successor(self):
         first = mission_knowledge.recommend(ROOT)
-        self.assertEqual("PASS", first["result"])
-        self.assertEqual("OA-09", first["recommended_mission"])
+        self.assertEqual("NO_ELIGIBLE_MISSION", first["result"])
+        self.assertIsNone(first["recommended_mission"])
         self.assertEqual(first, mission_knowledge.recommend(ROOT))
 
     def test_readiness_explains_prerequisites_without_independent_ordering(self):

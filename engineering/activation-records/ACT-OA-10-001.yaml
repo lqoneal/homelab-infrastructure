@@ -1,0 +1,13 @@
+schema_version: 1
+activation_record_id: ACT-OA-10-001
+revision: 1
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+gate_id: OA-10
+authority_record: AR-OA-10-001@1
+operational_gate_plan: WOP-oa10-bounded-execution-context-001@1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop: {wop_id: WOP-oa10-bounded-execution-context-001, revision: 1}
+transition: {from: READY, to: ACTIVE}
+authority_lineage: {root_wop: WOP-oa10-bounded-execution-context-001@1, authority_mode: MANUAL_GOVERNANCE_WOP, governing_directive: WOP-OA-10-EXECUTION-001}
+reconciliation: {lifecycle_transition: OA-10-READY-TO-ACTIVE@1, status: RECONCILED}

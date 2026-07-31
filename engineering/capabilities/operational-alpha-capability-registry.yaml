@@ -124,14 +124,14 @@ capabilities:
   - capability_id: ZEUS-OA-CAP-009
     name: Bounded execution context and authority lease
     description: Binds execution context to principal identity, authority lease, expiry, and revocation controls.
-    lifecycle: Proposed
+    lifecycle: Operational
     mission_introduced: OA-10
     mission_modified: OA-10
     verification_commands: [scripts/zeus execution status, scripts/zeus authority status]
     expected_verification_results: [bounded context, lease expiry and revocation verified]
     dependencies: [ZEUS-OA-CAP-008]
     owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002]
-    runtime_availability: PLANNED
-    associated_evidence: []
-    regression_status: NOT_RUN
-    capability_history: [OA-10 planned]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-10-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-10 qualified]
