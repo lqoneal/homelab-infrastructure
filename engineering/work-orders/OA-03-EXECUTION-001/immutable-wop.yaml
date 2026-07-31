@@ -56,4 +56,4 @@ traceability:
   execution_procedure: PROC-0001@2.4
   execution_first_policy: SPEC-0014@1.6
 lifecycle:
-  execution_state: NOT_STARTED
+  execution_state: COMPLETED

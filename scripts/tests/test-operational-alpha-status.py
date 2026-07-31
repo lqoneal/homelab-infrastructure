@@ -60,7 +60,7 @@ class OperationalAlphaStatusTests(unittest.TestCase):
         self.assertEqual("RESOLVED", value["outcome"])
         self.assertEqual("OA-03", value["active_gate"])
         self.assertEqual("ACTIVE", value["status"])
-        self.assertEqual("NOT_STARTED", value["execution_state"])
+        self.assertEqual("COMPLETED", value["execution_state"])
         self.assertEqual("ELIGIBLE", value["authority_record_creation_eligibility"])
         self.assertEqual("NOT_EVALUATED", value["successor_eligibility"])
         self.assertEqual("EXCLUDED_EVIDENCE_ONLY", value["historical_progressive_runtime"])
