@@ -1,7 +1,7 @@
 ---
 document_id: SPEC-0005
 title: Engineering Control Framework
-version: 2.0
+version: 2.2
 status: Active
 owner: EOS Program
 created: 2026-07-08
@@ -380,3 +380,4 @@ All future EOS controllers SHALL conform to this specification.
 | 1.3 candidate | 2026-07-28 | Added the Mission Activation Service, admission qualifications, atomic transaction boundary, reconciliation, rollback, recovery, and resolver cardinality requirements. |
 | 1.4 candidate | 2026-07-29 | Reconciled Governance-only admission and activation, independent Governance and execution state, execution-readiness blockers, and resumable blocked missions without adding runtime behavior. |
 | 2.0 | 2026-07-30 | Migrated Operational Alpha command authority, resolver consumption, lifecycle activation, synchronization, and recovery to SPEC-0014. |
+| 2.2 | 2026-07-31 | Registered the active controlled document revision required by the published execution-interface semantic-owner binding; no architecture or roadmap behavior changed. |

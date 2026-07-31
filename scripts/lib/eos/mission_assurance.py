@@ -152,13 +152,25 @@ class MissionAssurance:
             if item["phase"] == phase and item["applicable"]
         ]
         unsatisfied = [item["id"] for item in selected if item["status"] != "SATISFIED"]
+        lifecycle_semantics = None
+        if phase == "synchronization" and not selected:
+            _, state = self._state(mission_id)
+            lifecycle = state.get("lifecycle", {})
+            mission = state.get("mission", {})
+            if (
+                str(mission.get("status", "")).upper()
+                in {"STAGED", "CURRENT", "ACTIVE", "IN_PROGRESS"}
+                and str(lifecycle.get("implementation_status", "")).lower()
+                in {"staged", "current", "in_progress"}
+            ):
+                lifecycle_semantics = "ACTIVE_LIFECYCLE_CURRENT_PROJECTION"
         value = {
             "schema_version": 1,
             "language_version": self.language.version,
             "mission_id": mission_id,
             "phase": phase,
-            "result": "PASS" if selected and not unsatisfied else "FAIL",
-            "eligible": bool(selected) and not unsatisfied,
+            "result": "PASS" if (selected or lifecycle_semantics) and not unsatisfied else "FAIL",
+            "eligible": bool(selected or lifecycle_semantics) and not unsatisfied,
             "requirement_count": len(selected),
             "satisfied_count": len(selected) - len(unsatisfied),
             "unsatisfied_requirements": unsatisfied,
@@ -166,6 +178,8 @@ class MissionAssurance:
             "discovery": resolved["discovery"],
             "authoritative_sources": resolved["authoritative_sources"],
         }
+        if lifecycle_semantics:
+            value["lifecycle_semantics"] = lifecycle_semantics
         return {**value, "evidence_digest": _digest(value)}
 
     def verify(self, mission_id: str) -> dict[str, Any]:

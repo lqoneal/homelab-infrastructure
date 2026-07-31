@@ -123,6 +123,36 @@ def health(root: Path | str) -> dict[str, Any]:
             "recommended_mission": recommend(root)["recommended_mission"],
             "authoritative_source": PATH}
 
+def synchronization(root: Path | str, mission_id: str) -> dict[str, Any]:
+    """Project synchronization semantics from the authoritative mission model."""
+    value, by_id, capabilities = _missions(root)
+    mission = by_id.get(mission_id)
+    if mission is None:
+        raise MissionKnowledgeError("MISSION_NOT_FOUND")
+    lifecycle = str(mission.get("lifecycle", "")).upper()
+    sources = [str(mission["objective_source"])]
+    sources.extend(str(item) for item in mission.get("evidence_relationships", []))
+    missing_sources = [item for item in sources if not (Path(root) / item).exists()]
+    missing_capabilities = sorted(
+        set(mission.get("capability_prerequisites", [])) - capabilities
+    )
+    blockers = sorted(mission.get("blocking_conditions", []))
+    terminal = lifecycle in {"COMPLETED", "ACCEPTED", "ARCHIVED"}
+    result = "PASS" if not missing_sources and not missing_capabilities and not blockers else "FAIL"
+    return {
+        "schema_version": 1,
+        "mission_id": mission_id,
+        "lifecycle": lifecycle,
+        "synchronization_mode": "TERMINAL_COMPLETION_PROJECTION" if terminal else "CURRENT_LIFECYCLE_PROJECTION",
+        "result": result,
+        "authoritative_source": PATH,
+        "objective_source": mission["objective_source"],
+        "evidence_relationships": mission.get("evidence_relationships", []),
+        "missing_sources": missing_sources,
+        "missing_capabilities": missing_capabilities,
+        "blocking_conditions": blockers,
+    }
+
 def orchestration_verification(root: Path | str) -> dict[str, Any]:
     """Verify the canonical, read-only orchestration transaction.
 

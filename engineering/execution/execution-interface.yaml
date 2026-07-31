@@ -65,7 +65,7 @@ semantic_bindings:
     revision: '1.5'
   command_control:
     owner: SPEC-0005
-    revision: '2.0'
+    revision: '2.2'
   progressive_verification:
     owner: PMCT-CONTRACT
     revision: '1.0'
