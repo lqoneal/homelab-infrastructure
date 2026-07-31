@@ -219,7 +219,7 @@ entities:
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/execution/plans/WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a.yaml
-    source_digest: 390e74d8cb1eb7fb64d899e1df03be97f0ba9ccb9dd1b8dfacb10019af437044
+    source_digest: 6c41e8ea292a411ae4351db623edd70b95aa8fe3bb0d02a73fba9cf868297f91
   - entity_type: ActivationRecord
     entity_id: ACT-OA-03-001
     revision: 1
