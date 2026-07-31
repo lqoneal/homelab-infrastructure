@@ -123,3 +123,33 @@ entities:
     classification: Authoritative
     source: engineering/work-orders/OA-01-LIFECYCLE-TRANSITION-001/immutable-wop.yaml
     source_digest: cd4d60fd2e44050ec7764a9fdd7d5ab9770009ff75c77278f0cbedef28e07343
+  - entity_type: ImplementationWOPLifecycleTransition
+    entity_id: OA-01-READY-TO-ACTIVE
+    revision: 1
+    implementation_wop_id: WOP-OA-01-IMPLEMENTATION-001
+    implementation_wop_revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/lifecycle-transitions/records/OA-01-READY-TO-ACTIVE.yaml
+    source_digest: 41f8c57ccac69010055a4fb3ffa9f3b280d23e40a07440234f2f159dd7681c9e
+  - entity_type: AuthorityRecord
+    entity_id: AR-OA-01-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/authority-records/AR-OA-01-001.yaml
+    source_digest: d48aa45a2675603a2c1325ab6dc561b42266b198092062f402352c93ae6aad4c
+  - entity_type: OperationalGatePlan
+    entity_id: WOP-OA-01-IMPLEMENTATION-001
+    revision: 1
+    authoritative_owner: Homelab Infrastructure
+    classification: Authoritative
+    source: engineering/execution/plans/WOP-OA-01-IMPLEMENTATION-001.yaml
+    source_digest: b774c754f8ab242843dd8290ede82ae5a48bf599ad1dd8beebae7dcd9d075448
+  - entity_type: ActivationRecord
+    entity_id: ACT-OA-01-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/activation-records/ACT-OA-01-001.yaml
+    source_digest: e5bc2366f97b98f5d3d6f888f02d3e6317ba1046198b3739335d1e98859665e4

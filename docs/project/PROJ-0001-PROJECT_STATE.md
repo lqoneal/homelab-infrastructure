@@ -384,7 +384,7 @@ OPERATIONAL ALPHA IMPLEMENTATION by `WOP-RUNTIME-CERTIFICATION-002`.
 The current OA-01 implementation record is
 `WOP-OA-01-IMPLEMENTATION-001@1`, bound to
 `OA-IMPLEMENTATION-BASELINE-1.0` at `5706307c1fdf9d4e0601c9cc578181f6d916e0a8`.
-Its lifecycle is `READY`; execution is `NOT_STARTED`. Historical Progressive
+Its lifecycle is `ACTIVE`; execution is `NOT_STARTED`. Historical Progressive
 runtime records and acceptance receipts remain evidence only. OA-02 and later
 are ineligible. No execution agent was dispatched, no mission was executed,
 and Operational Alpha remains incomplete.

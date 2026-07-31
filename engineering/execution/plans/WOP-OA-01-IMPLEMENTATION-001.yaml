@@ -1,0 +1,29 @@
+schema_version: 1
+plan_id: WOP-OA-01-IMPLEMENTATION-001
+revision: 1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop:
+  wop_id: WOP-OA-01-IMPLEMENTATION-001
+  revision: 1
+authority_lineage:
+  root_wop:
+    wop_id: WOP-OA-01-ROOT-ADMISSION-001
+    revision: 2
+  authority_record: AR-OA-01-001@1
+  authority_mode: MANUAL_GOVERNANCE_WOP
+  source_gate_action_specification: OA-01-BOOTSTRAP-GATE-ACTIONS@2
+  governing_directive: WOP-OA-01-ACTIVATION-002
+gate_plan:
+  gates:
+    EXECUTE_WORK:
+      dependencies: []
+      actions:
+        - action_id: oa01-verification-marker
+          action_type: create_artifact
+          path: runtime/evidence/OA-01/VERIFIED
+          content: "OA-01 verification completion marker\n"
+          content_digest: 78673d15e22299e01c9eca59f7138384e8a2351036b927ebe5c5cebf53f94633
+traceability:
+  execution_contract: OPERATIONAL-ALPHA-EXECUTION-CONTRACT@1.0
+  execution_first_policy: SPEC-0014@1.6
