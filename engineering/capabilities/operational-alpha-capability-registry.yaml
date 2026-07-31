@@ -1,0 +1,67 @@
+schema_version: 1
+registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
+revision: 1.0
+classification: Authoritative
+authoritative_owner: Engineering Governance
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+purpose: Canonical, EMM-bound inventory of current Zeus Operational Alpha capabilities.
+generation:
+  derived_outputs: [Capability Qualification Report, Operator Capability Summary]
+  rule: Derived reports cite registry identifiers and do not become capability inventories.
+capabilities:
+  - capability_id: ZEUS-OA-CAP-001
+    name: Convergence authority resolution
+    description: Resolves current WOP authority through EMM and published controlled artifacts.
+    lifecycle: Operational
+    mission_introduced: OA-01
+    mission_modified: OA-02
+    verification_commands: [scripts/zeus status --json, scripts/zeus authority status]
+    expected_verification_results: [CONVERGENCE_AUTHORITY, authoritative current lifecycle]
+    dependencies: [OPERATIONAL-ALPHA-EMM, SPEC-0014@1.6]
+    owning_controlled_documentation: [SPEC-0014@1.6, PROC-0001@2.6]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-01-execution-first-publication-001/]
+    regression_status: PASS
+    capability_history: [OA-01 introduced, OA-02 reconciled]
+  - capability_id: ZEUS-OA-CAP-002
+    name: Runtime mission lifecycle execution
+    description: Admits and executes EMM-bound Operational Alpha WOP gate plans verification-first.
+    lifecycle: Operational
+    mission_introduced: OA-01
+    mission_modified: OA-04
+    verification_commands: [scripts/zeus execute-mission status, scripts/zeus status --json]
+    expected_verification_results: [four-gate runtime lifecycle, current completed execution]
+    dependencies: [ZEUS-OA-CAP-001, OPERATIONAL-ALPHA-EXECUTION-CONTRACT@1.0]
+    owning_controlled_documentation: [PROC-0001@2.6]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-04-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-01 introduced, OA-04 qualified]
+  - capability_id: ZEUS-OA-CAP-003
+    name: Capability qualification and operator summary
+    description: Produces derived operator-facing capability qualification and closeout summaries.
+    lifecycle: Operational
+    mission_introduced: OA-03
+    mission_modified: OA-05
+    verification_commands: [scripts/zeus capability list, scripts/zeus capability verify]
+    expected_verification_results: [registry resolves, all listed capabilities verify]
+    dependencies: [OPERATIONAL-ALPHA-CAPABILITY-REGISTRY, PROC-0001@2.6]
+    owning_controlled_documentation: [PROC-0001@2.6]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-05-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-03 introduced, OA-05 registry-backed]
+  - capability_id: ZEUS-OA-CAP-004
+    name: Mission staging contract
+    description: Stages candidate missions with stable identity, objective, scope, dependencies, priority, and state.
+    lifecycle: Operational
+    mission_introduced: OA-05
+    mission_modified: OA-05
+    verification_commands: [scripts/zeus capability show ZEUS-OA-CAP-004, scripts/zeus capability verify ZEUS-OA-CAP-004]
+    expected_verification_results: [exact registry record, PASS]
+    dependencies: [ZEUS-OA-CAP-001]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.6]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-05-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-05 introduced]

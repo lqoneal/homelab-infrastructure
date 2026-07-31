@@ -1,0 +1,34 @@
+schema_version: 1
+plan_id: WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f
+revision: 1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop: {wop_id: WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f, revision: 1}
+authority_lineage:
+  root_wop: {wop_id: WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f, revision: 1}
+  authority_record: AR-OA-05-001@1
+  authority_mode: MANUAL_GOVERNANCE_WOP
+  governing_directive: WOP-OA-05-EXECUTION-001
+gate_plan:
+  gates:
+    EXECUTE_WORK:
+      dependencies: []
+      actions:
+        - action_id: oa05-staging-marker
+          action_type: create_artifact
+          path: runtime/evidence/OA-05/MISSION-STAGING-CONTRACT-QUALIFIED
+          content: |
+            OA-05 Mission Staging Contract and capability registry qualified
+          content_digest: f3a9ad0bd6dc9905869cab693307de091cd22819c76195bba7f0b2ba65064184
+    VERIFY_COMPLETION:
+      dependencies: [EXECUTE_WORK]
+      actions:
+        - action_id: verify-oa05-staging-marker
+          action_type: verify_artifact
+          path: runtime/evidence/OA-05/MISSION-STAGING-CONTRACT-QUALIFIED
+          content_digest: f3a9ad0bd6dc9905869cab693307de091cd22819c76195bba7f0b2ba65064184
+traceability:
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-05/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-05/implementation.md
+  execution_contract: OPERATIONAL-ALPHA-EXECUTION-CONTRACT@1.0
+  execution_first_policy: SPEC-0014@1.6

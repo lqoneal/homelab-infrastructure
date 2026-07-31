@@ -1,0 +1,16 @@
+schema_version: 1
+transition_id: OA-05-READY-TO-ACTIVE
+revision: 1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop: {wop_id: WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f, revision: 1}
+source_lifecycle_state: READY
+target_lifecycle_state: ACTIVE
+execution_state: NOT_STARTED
+authority_lineage:
+  root_wop: {wop_id: WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f, revision: 1}
+  authority_mode: MANUAL_GOVERNANCE_WOP
+  governing_policy: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY@1.0
+  governing_directive: WOP-OA-05-EXECUTION-001
+reconciliation: {controlled_project_state: docs/project/PROJ-0001-PROJECT_STATE.md, operational_alpha_projection: engineering/operations/zeus-operational-alpha-progress.md, eos_projection: authoritative_to_derived, status: RECONCILED}
+traceability: {transition_specification: OPERATIONAL-ALPHA-IMPLEMENTATION-WOP-LIFECYCLE-TRANSITION@1.0, execution_first_policy: SPEC-0014@1.6}

@@ -3,7 +3,7 @@ interface_id: ENGINEERING-EXECUTION-INTERFACE
 operational_owner: engctl
 metadata_model:
   owner: OPERATIONAL-ALPHA-EMM
-  revision: '1.3'
+  revision: '1.6'
   source: engineering/metadata/operational-alpha-emm.yaml
 authority_resolution:
   model: SPEC-0014
@@ -44,7 +44,7 @@ semantic_bindings:
     revision: '2.2'
   execution_lifecycle:
     owner: PROC-0001
-    revision: '2.4'
+    revision: '2.6'
   handoff_construction:
     owner: PROC-0004
     revision: '1.6'

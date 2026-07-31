@@ -32,6 +32,7 @@ from scripts.lib.eos.operational_alpha_status import (  # noqa: E402
     OperationalAlphaStatusError, resolve as resolve_operational_alpha_status,
 )
 from scripts.lib.eos.mission_assurance import MissionAssurance, MissionAssuranceError  # noqa: E402
+from scripts.lib.eos import capability_registry  # noqa: E402
 from scripts.lib.emp import progressive_oa  # noqa: E402
 from scripts.lib.emp.progressive_gate import ProgressiveGateError, ProgressiveGateService  # noqa: E402
 from scripts.lib.emp.stage1_runtime import Stage1Error, Stage1Runtime  # noqa: E402
@@ -230,6 +231,10 @@ def main(argv=None):
     lifecycle_view.add_argument("wop_id")
     lifecycle_view.add_argument("--revision", default="1")
     capabilities_view = sub.add_parser("capabilities")
+    capability = sub.add_parser("capability")
+    capability.add_argument("action", choices=("list", "show", "verify", "history", "diff"))
+    capability.add_argument("identifier", nargs="?")
+    capability.add_argument("other", nargs="?")
     state_view = sub.add_parser("state")
     health_view = sub.add_parser("health")
     intro = sub.add_parser("intro", help="review operator orientation")
@@ -310,6 +315,7 @@ def main(argv=None):
                     "OA-01": ("INITIATE_OA-02", "Initiate OA-02 — Controlled Mission Authority"),
                     "OA-02": ("INITIATE_OA-03", "Initiate OA-03 — Mission Contract Discovery"),
                     "OA-03": ("INITIATE_OA-04", "Initiate OA-04 — Project and Operational Context Reconstruction"),
+                    "OA-04": ("INITIATE_OA-05", "Initiate OA-05 — Mission Staging Contract"),
                 }
                 code, description = successor_actions.get(
                     current["active_gate"],
@@ -379,6 +385,18 @@ def main(argv=None):
         if a.command == "capabilities":
             emit(ConvergenceRuntime(ROOT).capabilities())
             return 0
+        if a.command == "capability":
+            if a.action == "list": value = capability_registry.list_capabilities(ROOT)
+            elif a.action == "show":
+                if not a.identifier: raise OrchestrationError("capability identifier is required")
+                value = capability_registry.show(ROOT, a.identifier)
+            elif a.action == "verify": value = capability_registry.verify(ROOT, a.identifier)
+            elif a.action == "history": value = capability_registry.history(ROOT)
+            else:
+                if not a.identifier or not a.other: raise OrchestrationError("two registry revisions are required")
+                value = capability_registry.diff(ROOT, a.identifier, a.other)
+            emit(value)
+            return 0 if value.get("result", "PASS") in ("PASS", "NO_DIFFERENCE") else 77
         if a.command == "lifecycle":
             receipt = ConvergenceRuntime(ROOT).resolve(
                 wop_id=a.wop_id, revision=a.revision, action="lifecycle_inspection",

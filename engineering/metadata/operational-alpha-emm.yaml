@@ -1,6 +1,6 @@
 schema_version: 1
 emm_id: OPERATIONAL-ALPHA-EMM
-version: 1.5
+version: 1.6
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
 authoritative_owner: Homelab Infrastructure
 entities:
@@ -264,3 +264,47 @@ entities:
     classification: Authoritative
     source: engineering/activation-records/ACT-OA-04-001.yaml
     source_digest: 6f820bff4320cbb08200ad917b6eddba680a00d6e8aed8d384972a71ec0d9936
+  - entity_type: CapabilityRegistry
+    entity_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
+    revision: 1.0
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/capabilities/operational-alpha-capability-registry.yaml
+    source_digest: 72b3aa2fb15dcd1d6c20d372f424c0ce165fc12f5928f9d2d03ebbdcc3f96e38
+  - entity_type: ImplementationWOP
+    entity_id: WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/work-orders/OA-05-EXECUTION-001/immutable-wop.yaml
+    source_digest: b6ddfebd72886e0f5ab0a530ccc0a6467f86529917830c87a3d632be06256b90
+  - entity_type: ImplementationWOPLifecycleTransition
+    entity_id: OA-05-READY-TO-ACTIVE
+    revision: 1
+    implementation_wop_id: WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f
+    implementation_wop_revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/lifecycle-transitions/records/OA-05-READY-TO-ACTIVE.yaml
+    source_digest: 008314fb9520824f4c5c71aff3670a38c07997673bab2581569667e6669a1990
+  - entity_type: AuthorityRecord
+    entity_id: AR-OA-05-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/authority-records/AR-OA-05-001.yaml
+    source_digest: ef2578fa220aa3b5f4f17777df0c5fb20c4dcf9b3f9c20a29a37c4744253f8af
+  - entity_type: OperationalGatePlan
+    entity_id: WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/execution/plans/WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f.yaml
+    source_digest: 40315e85800235a594e47713798552686cc05282992d8158186314018c01b038
+  - entity_type: ActivationRecord
+    entity_id: ACT-OA-05-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/activation-records/ACT-OA-05-001.yaml
+    source_digest: 9444ce37a7a23f1195707158653b27a779556c159b50aed2f373cbdd01afedaf

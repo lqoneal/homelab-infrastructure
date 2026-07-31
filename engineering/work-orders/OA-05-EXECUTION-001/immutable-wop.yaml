@@ -1,0 +1,35 @@
+schema_version: 1
+wop_id: WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f
+revision: 1
+status: READY
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: OA-05-MISSION-STAGING-CONTRACT
+work_item_id: EMP-WORK-OA-05-MISSION-STAGING-001
+title: OA-05 Mission Staging Contract and Capability Registry
+owner: Engineering Governance
+objective: Prove candidate missions are staged with stable identity, objective, scope, dependencies, priority, and state.
+scope:
+  - execute the published OA-05 controlled gate objective
+  - establish the sole EMM-bound Operational Alpha Capability Registry and derived runtime services
+  - publish capability qualification, autonomy metrics, synchronization, reconciliation, and closeout evidence
+prohibited_effects: [alter certified runtime baseline, alter historical Progressive evidence, initiate OA-06 or later, introduce unrelated foundational architecture]
+execution_context:
+  repository: /data/engineering/repositories/homelab
+  baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+  qualified_baseline: 5706307c1fdf9d4e0601c9cc578181f6d916e0a8
+  branch: main
+manual_governance_authority:
+  policy_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
+  policy_revision: '1.0'
+  delegation_state: ACTIVE
+  governance_submission: {submitted: true, submitted_by: Engineering Governance, submission_id: WOP-OA-05-EXECUTION-001, directive_id: WOP-OA-05-EXECUTION-001}
+  permitted_actions: [create_authority_record, generate_operational_gate_plan, admit_mission, generate_wop, execute_mission]
+entry_criteria: [OA-04 completion, OA-05 objective resolved, repository EOS EMM registry and runtime preflight pass]
+completion_criteria: [OA-05 executed capability-qualified reconciled and closed, capability registry is authoritative, no later gate initiated]
+traceability:
+  governing_directive: WOP-OA-05-EXECUTION-001
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-05/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-05/implementation.md
+  execution_procedure: PROC-0001@2.6
+  execution_first_policy: SPEC-0014@1.6
+lifecycle: {execution_state: COMPLETED}

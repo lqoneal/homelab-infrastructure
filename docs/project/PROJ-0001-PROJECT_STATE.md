@@ -381,17 +381,17 @@ The Convergence Program is closed. The certified Zeus operational runtime is
 `OA-IMPLEMENTATION-BASELINE-1.0` and independently certified READY FOR
 OPERATIONAL ALPHA IMPLEMENTATION by `WOP-RUNTIME-CERTIFICATION-002`.
 
-The current OA-04 implementation record is
-`WOP-48f1d7d1-4995-5f3e-9b5e-fb2f69595111@1`, bound to
-`OA-IMPLEMENTATION-BASELINE-1.0`. Its lifecycle is `ACTIVE`; execution is `COMPLETED`. OA-04 — Project and Operational Context Reconstruction — completed as
-`MISSION-EXECUTION-1941743f-dd36-5963-a109-7f100ef8d9ae` under
-`WOP-OA-04-EXECUTION-001`. Historical Progressive runtime records and acceptance
+The current OA-05 implementation record is
+`WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f@1`, bound to
+`OA-IMPLEMENTATION-BASELINE-1.0`. Its lifecycle is `ACTIVE`; execution is `COMPLETED`. OA-05 — Mission Staging Contract — completed as
+`MISSION-EXECUTION-0e321014-5a57-5696-9765-5d8171f29064` under
+`WOP-OA-05-EXECUTION-001`. Historical Progressive runtime records and acceptance
 receipts remain evidence only.
 
 **Next Immediate Step:**
 
-Preserve OA-04 completion evidence and current-state projection. Do not evaluate
-or initiate OA-05 under this WOP.
+Preserve OA-05 completion evidence and current-state projection. Do not evaluate
+or initiate OA-06 under this WOP.
 `GH-ZEUS-OA-CERTIFICATION-001` package remains suspended historical evidence.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
