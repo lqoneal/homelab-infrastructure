@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "gate_id": "OA-08",
+  "decision": "ACCEPTED",
+  "wop_id": "WOP-oa08-deterministic-resolution-001",
+  "wop_revision": 1,
+  "authority_record": "AR-OA-08-001@1",
+  "verification_marker": "WOP-RESOLUTION-QUALIFIED",
+  "objective": "Prove deterministic resolution of the selected mission to one immutable WOP.",
+  "evidence": "engineering/evidence/2026-07-31-wop-oa-08-execution-001/",
+  "next_mission": "OA-09",
+  "immutable": true
+}

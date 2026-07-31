@@ -93,3 +93,45 @@ capabilities:
     associated_evidence: [engineering/evidence/2026-07-31-wop-oa-07-execution-001/]
     regression_status: PASS
     capability_history: [OA-07 introduced]
+  - capability_id: ZEUS-OA-CAP-007
+    name: Deterministic multi-mission portfolio management
+    description: Maintains an authoritative inventory of staged missions, independent lifecycle state, dependency integrity, deterministic queueing, and explainable portfolio health from the Mission Knowledge Model.
+    lifecycle: Operational
+    mission_introduced: OA-08
+    mission_modified: OA-08
+    verification_commands: [scripts/zeus mission portfolio, scripts/zeus mission list, scripts/zeus mission queue, scripts/zeus mission health]
+    expected_verification_results: [all staged missions classified, deterministic queue, portfolio health PASS]
+    dependencies: [OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, ZEUS-OA-CAP-006]
+    owning_controlled_documentation: [PROC-0001@2.7, ZEUS-OA-GATE-SPEC-002]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-08-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-08 introduced]
+  - capability_id: ZEUS-OA-CAP-008
+    name: WOP integrity and admission evaluation
+    description: Validates immutable WOP package integrity, schema validity, admission prerequisites, and fail-closed rejection.
+    lifecycle: Proposed
+    mission_introduced: OA-09
+    mission_modified: OA-09
+    verification_commands: [scripts/zeus validate, scripts/zeus gate validate-carry-forward]
+    expected_verification_results: [package integrity PASS, invalid package rejected]
+    dependencies: [ZEUS-OA-CAP-007]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002]
+    runtime_availability: PLANNED
+    associated_evidence: []
+    regression_status: NOT_RUN
+    capability_history: [OA-09 planned]
+  - capability_id: ZEUS-OA-CAP-009
+    name: Bounded execution context and authority lease
+    description: Binds execution context to principal identity, authority lease, expiry, and revocation controls.
+    lifecycle: Proposed
+    mission_introduced: OA-10
+    mission_modified: OA-10
+    verification_commands: [scripts/zeus execution status, scripts/zeus authority status]
+    expected_verification_results: [bounded context, lease expiry and revocation verified]
+    dependencies: [ZEUS-OA-CAP-008]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002]
+    runtime_availability: PLANNED
+    associated_evidence: []
+    regression_status: NOT_RUN
+    capability_history: [OA-10 planned]

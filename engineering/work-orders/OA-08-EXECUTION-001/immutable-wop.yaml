@@ -1,0 +1,28 @@
+schema_version: 1
+wop_id: WOP-oa08-deterministic-resolution-001
+revision: 1
+status: READY
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: OA-08-WOP-RESOLUTION
+work_item_id: EMP-WORK-OA-08-WOP-RESOLUTION-001
+title: OA-08 Deterministic Mission-to-WOP Resolution and Portfolio Qualification
+owner: Engineering Governance
+objective: Prove deterministic resolution of the selected mission to one immutable WOP.
+scope: [execute the published OA-08 controlled gate objective, qualify authoritative portfolio management, deterministic queueing, WOP resolution, and publish reconciliation evidence]
+prohibited_effects: [alter certified runtime baseline, alter completed OA-07 artifacts, initiate OA-09 or OA-10, introduce a duplicate portfolio owner]
+execution_context: {repository: /data/engineering/repositories/homelab, baseline_id: OA-IMPLEMENTATION-BASELINE-1.0, qualified_baseline: e8e1ec06b4b2bdcf8c2b6d3491d139792674edc6, branch: main}
+manual_governance_authority:
+  policy_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
+  policy_revision: '1.0'
+  delegation_state: ACTIVE
+  governance_submission: {submitted: true, submitted_by: Engineering Governance, submission_id: WOP-OA-08-EXECUTION-001, directive_id: WOP-OA-08-EXECUTION-001}
+  permitted_actions: [create_authority_record, generate_operational_gate_plan, admit_mission, generate_wop, execute_mission]
+entry_criteria: [OA-07 accepted, OA-08 eligibility resolved, repository EOS EMM registry and runtime preflight pass]
+completion_criteria: [OA-08 executed capability-qualified reconciled and closed, deterministic WOP resolution evidence published, OA-09 eligible, no later gate initiated]
+traceability:
+  governing_directive: WOP-OA-08-EXECUTION-001
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-08/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-08/implementation.md
+  execution_procedure: PROC-0001@2.7
+  execution_first_policy: SPEC-0014@1.6
+lifecycle: {execution_state: COMPLETED}

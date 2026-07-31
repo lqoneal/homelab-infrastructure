@@ -381,19 +381,19 @@ The Convergence Program is closed. The certified Zeus operational runtime is
 `OA-IMPLEMENTATION-BASELINE-1.0` and independently certified READY FOR
 OPERATIONAL ALPHA IMPLEMENTATION by `WOP-RUNTIME-CERTIFICATION-002`.
 
-The current OA-07 implementation record is
-`WOP-72d7c7f0-4632-5721-8fbf-65dbf89c7b1a@1`, bound to
+The current OA-08 implementation record is
+`WOP-oa08-deterministic-resolution-001@1`, bound to
 `OA-IMPLEMENTATION-BASELINE-1.0`. Its lifecycle is `ACTIVE`; execution is `COMPLETED`. OA-06 — Mission Eligibility Evaluation — completed through the EMM-bound mission knowledge and recommendation runtime under
-`WOP-OA-07-EXECUTION-001`. OA-07 completion was independently verified against
-the immutable completed convergence WOP and accepted through the controlled
-Progressive acceptance receipt. The EMM-bound Mission Knowledge Model now
-projects OA-08 — WOP Resolution — as the eligible successor. Historical
-Progressive runtime records remain evidence only; the OA-06 receipt is the
+`WOP-OA-08-EXECUTION-001`. OA-07 and OA-08 completion were independently verified against
+their immutable completed convergence WOPs and accepted through controlled
+acceptance receipts. The EMM-bound Mission Knowledge Model now
+projects OA-09 — WOP Integrity and Admission — as the eligible successor. Historical
+Progressive runtime records remain evidence only; the OA-08 receipt is the
 controlled predecessor-acceptance evidence for that successor projection.
 
 **Next Immediate Step:**
 
-Preserve OA-06 and OA-07 completion and acceptance evidence. OA-08 is eligible for a
+Preserve OA-06 through OA-08 completion and acceptance evidence. OA-09 is eligible for a
 separately authorized mission WOP; this reconciliation does not initiate it.
 `GH-ZEUS-OA-CERTIFICATION-001` package remains suspended historical evidence.
 

@@ -1,0 +1,9 @@
+schema_version: 1
+transition_id: OA-08-READY-TO-ACTIVE
+implementation_wop_id: WOP-oa08-deterministic-resolution-001
+implementation_wop_revision: 1
+from_state: READY
+to_state: ACTIVE
+prerequisites: [OA-07_ACCEPTED, AR-OA-08-001, WOP-oa08-deterministic-resolution-001]
+authoritative_owner: Engineering Governance
+classification: Authoritative

@@ -242,7 +242,7 @@ def main(argv=None):
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
     submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository"); submit.add_argument("--baseline"); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append"); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact"); submit.add_argument("--affected-repository", action="append"); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
-    show = sub.add_parser("mission"); show.add_argument("action", choices=("list","show","state","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependency-graph")); show.add_argument("mission_id", nargs="?")
+    show = sub.add_parser("mission"); show.add_argument("action", choices=("list","show","state","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependency-graph","portfolio","queue","health")); show.add_argument("mission_id", nargs="?")
     assurance = sub.add_parser("assurance"); assurance.add_argument("action", choices=("capabilities",))
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
     accept=sub.add_parser("accept"); accept.add_argument("gate"); accept.add_argument("--reject", action="store_true"); accept.add_argument("--rationale", default=""); accept.add_argument("--at"); accept.add_argument("--yes", action="store_true"); accept.add_argument("--json", action="store_true")
@@ -348,9 +348,18 @@ def main(argv=None):
         if a.command == "assurance":
             emit(MissionAssurance(ROOT).capabilities())
             return 0
+        if a.command == "mission" and a.action in ("portfolio", "list", "queue", "health"):
+            if a.action in ("portfolio", "list"):
+                value = mission_knowledge.portfolio(ROOT) if a.action == "portfolio" else mission_knowledge.list_missions(ROOT)
+            elif a.action == "queue":
+                value = mission_knowledge.queue(ROOT)
+            else:
+                value = mission_knowledge.health(ROOT)
+            emit(value)
+            return 0 if value.get("result", "PASS") in ("PASS", "NO_ELIGIBLE_MISSION") else 77
         if a.command == "mission" and (
             a.action in {
-                "list", "state", "eligibility", "blockers",
+                "state", "eligibility", "blockers",
                 "contract", "authority", "next",
             }
             or (

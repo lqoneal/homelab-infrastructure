@@ -1,0 +1,9 @@
+schema_version: 1
+activation_record_id: ACT-OA-08-001
+revision: 1
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+gate_id: OA-08
+authority_record: AR-OA-08-001@1
+operational_gate_plan: WOP-oa08-deterministic-resolution-001@1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE

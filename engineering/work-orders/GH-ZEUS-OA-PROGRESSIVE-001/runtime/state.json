@@ -1,5 +1,5 @@
 {
-  "active_gate": "OA-08",
+  "active_gate": "OA-09",
   "gates": {
     "OA-01": {
       "acceptance_receipt": "/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-01/accepted.json",
@@ -30,8 +30,8 @@
       "state": "ACCEPTED"
     },
     "OA-08": {
-      "acceptance_receipt": null,
-      "state": "PENDING"
+      "acceptance_receipt": "/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-08/accepted-oa08-deterministic-resolution.json",
+      "state": "ACCEPTED"
     },
     "OA-09": {
       "acceptance_receipt": null,

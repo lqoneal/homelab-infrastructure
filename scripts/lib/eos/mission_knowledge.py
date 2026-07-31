@@ -59,3 +59,66 @@ def prerequisites(root: Path | str, mission_id: str) -> dict[str, Any]:
 
 def dependency_graph(root: Path | str) -> dict[str, Any]:
     value, by_id, _ = _missions(root); return {"model_id": value["model_id"], "nodes": value["mission_sequence"], "edges": [{"from": dep, "to": mission_id} for mission_id, item in by_id.items() for dep in item["dependencies"]], "result": "PASS"}
+
+def _classification(item: dict[str, Any], readiness_result: dict[str, Any]) -> str:
+    if item.get("lifecycle") == "COMPLETED":
+        return "COMPLETED"
+    if item.get("lifecycle") == "UNAUTHORIZED":
+        return "UNAUTHORIZED"
+    if readiness_result.get("classification") == "ELIGIBLE":
+        return "ELIGIBLE"
+    if item.get("lifecycle") == "STAGED":
+        return "NOT_READY"
+    if item.get("lifecycle") == "CURRENT":
+        return "BLOCKED" if readiness_result.get("blocking_conditions") else "NOT_READY"
+    return "NOT_READY"
+
+def portfolio(root: Path | str) -> dict[str, Any]:
+    value, by_id, _ = _missions(root)
+    missions = []
+    for mission_id in value["mission_sequence"]:
+        item = by_id[mission_id]
+        readiness_result = readiness(root, mission_id)
+        missions.append({
+            "mission_id": mission_id,
+            "lifecycle": item.get("lifecycle"),
+            "classification": _classification(item, readiness_result),
+            "dependencies": list(item.get("dependencies", [])),
+            "missing_dependencies": readiness_result["missing_dependencies"],
+            "capability_prerequisites": list(item.get("capability_prerequisites", [])),
+            "missing_capabilities": readiness_result["missing_capabilities"],
+            "objective_source": item["objective_source"],
+            "blocking_conditions": readiness_result["blocking_conditions"],
+        })
+    return {
+        "model_id": value["model_id"], "revision": str(value["revision"]),
+        "result": "PASS", "missions": missions,
+        "authoritative_source": PATH,
+        "owner": value.get("authoritative_owner"),
+    }
+
+def list_missions(root: Path | str) -> dict[str, Any]:
+    result = portfolio(root)
+    return {"result": result["result"], "model_id": result["model_id"],
+            "revision": result["revision"], "missions": result["missions"],
+            "authoritative_source": result["authoritative_source"]}
+
+def queue(root: Path | str) -> dict[str, Any]:
+    result = portfolio(root)
+    eligible = [item for item in result["missions"] if item["classification"] == "ELIGIBLE"]
+    eligible.sort(key=lambda item: (item["mission_id"]))
+    return {"result": "PASS" if eligible else "NO_ELIGIBLE_MISSION",
+            "queue": [item["mission_id"] for item in eligible],
+            "selection_rule": "controlled mission sequence, then mission identifier",
+            "authoritative_source": PATH}
+
+def health(root: Path | str) -> dict[str, Any]:
+    result = portfolio(root)
+    counts: dict[str, int] = {}
+    for item in result["missions"]:
+        counts[item["classification"]] = counts.get(item["classification"], 0) + 1
+    graph = dependency_graph(root)
+    return {"result": "PASS", "inventory_count": len(result["missions"]),
+            "classification_counts": counts, "dependency_integrity": graph["result"],
+            "recommended_mission": recommend(root)["recommended_mission"],
+            "authoritative_source": PATH}

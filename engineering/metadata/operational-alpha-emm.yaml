@@ -270,7 +270,7 @@ entities:
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/capabilities/operational-alpha-capability-registry.yaml
-    source_digest: 1db7ae1c65a9bbd7c71446ff52e20b02ff8411c78ee615def931e9abe561b3e4
+    source_digest: 34fcaa80092aa81509a755ef26da29a67e7f855f7080d9eb70ce970f77df353b
   - entity_type: ImplementationWOP
     entity_id: WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f
     revision: 1
@@ -310,11 +310,11 @@ entities:
     source_digest: 9444ce37a7a23f1195707158653b27a779556c159b50aed2f373cbdd01afedaf
   - entity_type: MissionKnowledgeModel
     entity_id: OPERATIONAL-ALPHA-MISSION-KNOWLEDGE
-    revision: 1.1
+    revision: 1.2
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/missions/operational-alpha-mission-knowledge.yaml
-    source_digest: 3236c53dc3f64caa7010d0c62b943a3ab00b77f9a14da45db44899c38539879d
+    source_digest: dc92d1155664abdaede1b866cc9ecbb45c535e631caa239356cf3216877fa82f
   - entity_type: ImplementationWOP
     entity_id: WOP-9ed7762f-c143-5a58-9a21-63fae5a06c05
     revision: 1
@@ -389,3 +389,40 @@ entities:
     classification: Authoritative
     source: engineering/activation-records/ACT-OA-07-001.yaml
     source_digest: 3822191606dfb9c02ea4a06ea2de8f9ea3229c44f2d02f27d171360a81659fe4
+  - entity_type: ImplementationWOP
+    entity_id: WOP-oa08-deterministic-resolution-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/work-orders/OA-08-EXECUTION-001/immutable-wop.yaml
+    source_digest: 060cba8da55b2b541443a28cb825bfd9bb90cd9e65d0dc0ba0a13cd3f4b64382
+  - entity_type: ImplementationWOPLifecycleTransition
+    entity_id: OA-08-READY-TO-ACTIVE
+    revision: 1
+    implementation_wop_id: WOP-oa08-deterministic-resolution-001
+    implementation_wop_revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/lifecycle-transitions/records/OA-08-READY-TO-ACTIVE.yaml
+    source_digest: 623993539c65d23fa6405075f29a87802c6979af6d0b9766b4215d22c86104c1
+  - entity_type: AuthorityRecord
+    entity_id: AR-OA-08-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/authority-records/AR-OA-08-001.yaml
+    source_digest: 9ecd9d92a3b65dc11862049431a38608ec4e016aa6215f8a91528d939ae95c69
+  - entity_type: OperationalGatePlan
+    entity_id: WOP-oa08-deterministic-resolution-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/execution/plans/WOP-oa08-deterministic-resolution-001.yaml
+    source_digest: 3aaa4ef5248671021b7b937d4889fdd6ede8e39e6b6808dd836b87a6463923c4
+  - entity_type: ActivationRecord
+    entity_id: ACT-OA-08-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/activation-records/ACT-OA-08-001.yaml
+    source_digest: 2c4418c0930edec77a47bdf36edf21d8bb07546f24527999d893567d0170e54f

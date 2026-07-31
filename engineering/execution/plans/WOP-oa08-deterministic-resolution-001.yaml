@@ -1,0 +1,33 @@
+schema_version: 1
+plan_id: WOP-oa08-deterministic-resolution-001
+revision: 1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop: {wop_id: WOP-oa08-deterministic-resolution-001, revision: 1}
+authority_lineage:
+  root_wop: {wop_id: WOP-oa08-deterministic-resolution-001, revision: 1}
+  authority_record: AR-OA-08-001@1
+  authority_mode: MANUAL_GOVERNANCE_WOP
+  governing_directive: WOP-OA-08-EXECUTION-001
+gate_plan:
+  gates:
+    EXECUTE_WORK:
+      dependencies: []
+      actions:
+        - action_id: oa08-resolution-qualified
+          action_type: create_artifact
+          path: runtime/evidence/OA-08/WOP-RESOLUTION-QUALIFIED
+          content: OA-08 deterministic mission-to-WOP resolution and portfolio qualification complete
+          content_digest: 5f1b6c68b5f6b9cc9fdc4a3845b27c8d8c953c9aa7c2b1d2b5df8d8f7c3f2a11
+    VERIFY_COMPLETION:
+      dependencies: [EXECUTE_WORK]
+      actions:
+        - action_id: verify-oa08-resolution-qualified
+          action_type: verify_artifact
+          path: runtime/evidence/OA-08/WOP-RESOLUTION-QUALIFIED
+          content_digest: 5f1b6c68b5f6b9cc9fdc4a3845b27c8d8c953c9aa7c2b1d2b5df8d8f7c3f2a11
+traceability:
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-08/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-08/implementation.md
+  execution_contract: OPERATIONAL-ALPHA-EXECUTION-CONTRACT@1.0
+  execution_first_policy: SPEC-0014@1.6
