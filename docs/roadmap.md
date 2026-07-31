@@ -14,6 +14,13 @@ baseline only. No Zeus runtime implementation, production modification,
 autonomous execution, feature development, or Work Package execution is
 authorized.
 
+OA-01 implementation readiness is owned by
+`WOP-OA-01-IMPLEMENTATION-001@1`, bound to
+`OA-IMPLEMENTATION-BASELINE-1.0` at
+`5706307c1fdf9d4e0601c9cc578181f6d916e0a8`. Its state is `READY` and
+`NOT_STARTED`; it is not an execution authorization. Historical Progressive
+OA runtime records remain evidence only.
+
 ZEUS-P2-013 establishes the production ownership model: Lawrence O'Neal is the
 sole human owner of every operational authority domain and `loneal` is the
 production principal. The authenticated Zeus CLI is the authoritative

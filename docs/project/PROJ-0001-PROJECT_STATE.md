@@ -1,7 +1,7 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 10.0
+version: 10.1
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,7 +9,7 @@ last_updated: 2026-07-30
 mission: Zeus Operational Alpha
 phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@9.9
+predecessor_revision: PROJ-0001@10.0
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -374,24 +374,19 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
-Preserve the commissioned authority, P2-019 execution foundation, P2-020 PMCT,
-and P2-027 OA-01 verification-deadlock correction. The active runtime
-publication is `AUTHORITY-PUBLICATION-50d661ec-2776-4d7c-8ea4-f34db35367d5`
-and publishes baseline `787367bf82976e28cf929878cd30eacfffcba7ff`.
-OA-01 through OA-05 have integrity-bound operator acceptance receipts. OA-06
-is the sole active gate and remains `PENDING`; OA-07 and later remain pending
-and ineligible. The live Stage 1 mission store is empty, so the derived Zeus
-mission-admission status correctly reports `mission_count: 0` and zero for
-every supported state. No
-execution agent was dispatched and no mission was executed. Dispatcher activation is
-`PREPARED`, and the production agent registry is empty. Operational Alpha
-remains incomplete.
+The current OA-01 implementation record is
+`WOP-OA-01-IMPLEMENTATION-001@1`, bound to
+`OA-IMPLEMENTATION-BASELINE-1.0` at `5706307c1fdf9d4e0601c9cc578181f6d916e0a8`.
+Its lifecycle is `READY`; execution is `NOT_STARTED`. Historical Progressive
+runtime records and acceptance receipts remain evidence only. OA-02 and later
+are ineligible. No execution agent was dispatched, no mission was executed,
+and Operational Alpha remains incomplete.
 
 **Next Immediate Step:**
 
-Retain OA-06 at `PENDING` until a separately authorized OA-06 implementation
-handoff is initiated. Do not submit a live mission, dispatch, execute, accept
-OA-06, declare Operational Alpha, or freeze a baseline.
+Do not activate or execute `WOP-OA-01-IMPLEMENTATION-001` until separately
+authorized. Do not submit a live mission, dispatch, execute, accept any OA
+gate, declare Operational Alpha, or freeze a baseline.
 `GH-ZEUS-OA-CERTIFICATION-001` package remains suspended historical evidence.
 
 EWO-000017 completed value-blind local configuration qualification, controlled

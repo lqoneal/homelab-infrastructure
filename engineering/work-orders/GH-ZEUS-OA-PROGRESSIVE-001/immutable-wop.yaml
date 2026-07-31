@@ -1,7 +1,7 @@
 schema_version: 1
 wop_id: WOP-8e6c4ab8-4c85-5d6c-9c90-10b8814bdf99
-revision: 1
-status: Active
+revision: 2
+status: Superseded
 mission_id: REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001
 phase_id: EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
 work_item_id: EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001
@@ -10,7 +10,7 @@ authority_binding:
   authority_reference: REBUILD-ZEUS-OA-PROGRESSIVE-WOP-001
 execution_context:
   repository: /data/engineering/repositories/homelab
-  qualified_baseline: bcdd0b1a19045654d470bc65383c05a976bae2a6
+  qualified_baseline: 5706307c1fdf9d4e0601c9cc578181f6d916e0a8
   branch: main
   principal_id: progressive-oa-execution-agent
 authorized_effects:
@@ -42,4 +42,5 @@ contracts:
   recovery: RECOVERY.md
   reconciliation: RECONCILIATION.md
 admission_record: admission/ADMISSION-f01c0c2d-8edb-5567-ad19-8d0f4344909f.json
-completion_boundary: OA-30 declaration preparation; separate authority required for declaration and freeze
+superseded_by: engineering/work-orders/OA-01-IMPLEMENTATION-001/immutable-wop.yaml
+completion_boundary: Superseded for future OA-01 work; historical evidence remains immutable.

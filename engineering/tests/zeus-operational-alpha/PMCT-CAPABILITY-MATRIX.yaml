@@ -26,13 +26,15 @@ production_cli_contract:
 gates:
 - gate_id: OA-01
   sequence: 1
-  title: Assessment recognition and controlled mission transition
+  title: Authoritative Baseline and Repository Identity
   required_commands:
   - zeus status
   - zeus next-action
+  - scripts/engctl repository health
+  - scripts/engctl eos sync-validate
   optional_commands: []
   prerequisites: []
-  positive_demonstration: Through the authoritative CLI, demonstrate assessment recognition and controlled mission transition and capture the resulting production-observable state.
+  positive_demonstration: Through the authoritative interfaces, prove Zeus operates from one identified, synchronized, integrity-valid repository and OA-IMPLEMENTATION-BASELINE-1.0 qualified baseline, and capture the resulting state.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-01 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-01 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
   interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'

@@ -1,0 +1,49 @@
+schema_version: 1
+wop_id: WOP-OA-01-IMPLEMENTATION-001
+revision: 1
+status: READY
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: ZEUS-OPERATIONAL-ALPHA
+work_item_id: EMP-WORK-OA-01-IMPLEMENTATION-001
+title: OA-01 Authoritative Baseline and Repository Identity Implementation
+owner: Homelab Infrastructure
+authority_binding:
+  authority_reference: WOP-OA-01-001
+  authority_scope: establish-and-publish-ready-wop-only
+execution_context:
+  repository: /data/engineering/repositories/homelab
+  baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+  qualified_baseline: 5706307c1fdf9d4e0601c9cc578181f6d916e0a8
+  branch: main
+objective: Prove that Zeus operates from one identified, synchronized, integrity-valid repository and qualified baseline.
+scope:
+  - implement only the OA-01 capability after a separate activation authorization
+  - execute the complete OA-01 evidence template after activation
+prohibited_effects:
+  - execute, activate, or progress OA-01 under this READY record
+  - execute any later OA gate
+  - infer operator acceptance
+  - alter historical OA evidence
+  - declare Operational Alpha or freeze a baseline
+entry_criteria:
+  - this WOP is READY and its baseline binding resolves
+  - separate activation authorization identifies this WOP revision
+  - repository, EOS, registry, Mission Contract, and state freshness preflight pass
+  - exactly one current OA-01 lifecycle record resolves
+deliverables:
+  - OA-01 capability implementation
+  - complete evidence template artifacts
+  - reconciliation report
+  - Completion Report conforming to TPL-0002
+validation_profile:
+  - engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-01/evidence-template.yaml
+  - engineering/tests/zeus-operational-alpha/PMCT-CONTRACT.md
+  - docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md
+lifecycle:
+  current: READY
+  next_permitted_transition: ACTIVE only under separate attributable activation authorization
+  execution_state: NOT_STARTED
+traceability:
+  baseline: OA-IMPLEMENTATION-BASELINE-1.0
+  discovery: engineering/evidence/2026-07-30-wop-oa-01-000/OA-01-CONTROLLED-REQUIREMENTS-DISCOVERY.md
+  reconciliation: engineering/evidence/2026-07-30-wop-oa-01-001/OA-01-BASELINE-RECONCILIATION-REPORT.md

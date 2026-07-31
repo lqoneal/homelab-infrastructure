@@ -3,9 +3,10 @@
 Version: 1.0
 Identity: `ZEUS_PROGRESSIVE_MANUAL_CAPABILITY_TEST`
 Authority: ZEUS-P2-020
-Current overall result: `NOT_READY` (OA-01 through OA-03 are verified and
-explicitly accepted; corrected OA-04 is verified and awaits explicit operator
-acceptance; OA-05 through OA-30 are not accepted or eligible)
+Current overall result: `NOT_READY`. Historical PMCT runs remain evidence only.
+The current OA-01 implementation lifecycle is owned by
+`WOP-OA-01-IMPLEMENTATION-001@1` at `READY`; it has not been executed,
+verified, or accepted.
 
 OA-04 is `Project and Operational Context Reconstruction`, exposed as
 `zeus context reconstruct`. Mission Resolution is subordinate; dispatcher

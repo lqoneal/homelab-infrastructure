@@ -1,0 +1,14 @@
+schema_version: 1
+document_type: EngineeringWorkOrder
+wop_id: WOP-OA-01-IMPLEMENTATION-001
+revision: 1
+status: READY
+title: OA-01 Implementation WOP
+approval:
+  authority: WOP-OA-01-001
+  reference: OA-IMPLEMENTATION-BASELINE-1.0
+  date: '2026-07-30'
+  authorized_lifecycle_state: READY
+purpose_and_expected_outcome: Establish a traceable non-executing OA-01 implementation WOP.
+scope: No execution; activation and implementation require separate authority.
+immutable_wop: engineering/work-orders/OA-01-IMPLEMENTATION-001/immutable-wop.yaml

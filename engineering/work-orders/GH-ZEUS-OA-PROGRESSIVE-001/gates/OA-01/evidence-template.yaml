@@ -11,12 +11,49 @@ bindings:
   execution: null
   agent: null
 tests:
-  positive: []
-  negative: []
-  replay: []
-  recovery: []
-  regression: []
-commands: []
-artifacts: []
-reconciliation: {}
-completion_marker: null
+  positive:
+    - prove one identified, synchronized, integrity-valid repository and OA-IMPLEMENTATION-BASELINE-1.0 binding
+  negative:
+    - reject missing, malformed, stale, mismatched, ambiguous, or unauthorized repository/baseline bindings without lifecycle advance
+  replay:
+    - repeat the same repository/baseline observation with no duplicate evidence, event, receipt, or transition
+  recovery:
+    - interrupt before and after evidence durability; preserve incomplete state and resume the first incomplete operation
+  regression:
+    - OA-01 cumulative regression
+    - scripts/tests
+    - engineering/tests/zeus-operational-alpha/tests
+commands:
+  - scripts/engctl repository health
+  - scripts/engctl eos sync-validate
+  - scripts/engctl registry validate
+  - scripts/engctl validate
+  - zeus status
+  - zeus next-action
+  - zeus gate show OA-01
+  - zeus gate objective OA-01
+  - zeus gate evidence OA-01
+  - zeus verify OA-01
+  - zeus explain OA-01
+  - git status --short --branch
+  - git rev-parse HEAD
+artifacts:
+  - repository identity, branch, HEAD, upstream, and working-tree inventory
+  - authority, mission, WOP, execution, gate, agent, and timestamp bindings
+  - command stdout, stderr, exit codes, assertions, and checksums
+  - positive, negative, replay, recovery, and regression results
+  - integrity-valid evidence manifest
+  - independent verification record
+  - operator decision receipt when separately approved
+reconciliation:
+  targets:
+    - Zeus runtime
+    - EMP
+    - PMCT
+    - EENS
+    - Project State
+    - Work Registry
+    - EOS
+    - controlled documents
+  rule: compare before and after; retain conflicts; synchronize EOS only through its owning interface
+completion_marker: runtime/evidence/OA-01/VERIFIED

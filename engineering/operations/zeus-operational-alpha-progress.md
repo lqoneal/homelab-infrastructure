@@ -61,16 +61,11 @@ reconciliation authority.
 Current Operational Alpha lifecycle:
 
 ```text
-OA-01_STATE=ACCEPTED
-OA-02_STATE=ACCEPTED
-OA-03_STATE=ACCEPTED
-OA-04_STATE=ACCEPTED
-OA-04_CURRENT_ACCEPTANCE_RECEIPT=INTEGRITY_VALID
-OA-04_HISTORICAL_RECEIPT=SUPERSEDED
-OA-05_STATE=ACCEPTED
-OA-05_CURRENT_ACCEPTANCE_RECEIPT=INTEGRITY_VALID
-OA-06_STATE=PENDING
-OA-07_AND_LATER=PENDING
+OA-01_IMPLEMENTATION_WOP=WOP-OA-01-IMPLEMENTATION-001@1
+OA-01_STATE=READY
+OA-01_EXECUTION_STATE=NOT_STARTED
+OA-02_AND_LATER=INELIGIBLE
+HISTORICAL_PROGRESSIVE_RUNTIME=EVIDENCE_ONLY
 LIVE_MISSION_COUNT=0
 DISPATCHER_STATE=PREPARED
 OPERATIONAL_DISPATCH=DISABLED
@@ -148,11 +143,11 @@ PROGRESSIVE_WOP=OA06_PENDING
 Recommended next engineering action: authorize a bounded EENS integration
 mission toward Zeus Operational Alpha. No EENS implementation or activation
 authority is inferred by this recommendation.
-OA-01 through OA-05 are integrity-verified and explicitly accepted. OA-06 is
-the sole active gate under `GH-ZEUS-OA-PROGRESSIVE-001` and remains `PENDING`;
-OA-07 and later remain pending and ineligible. No execution agent was
-dispatched, no mission was executed, and no Operational Alpha declaration or
-baseline freeze is implied.
+Historical OA acceptance records are retained as evidence only.
+`WOP-OA-01-IMPLEMENTATION-001@1` is the sole current OA-01 implementation
+record, is `READY`, and has not started execution. OA-02 and later are
+ineligible. No execution agent was dispatched, no mission was executed, and no
+Operational Alpha declaration or baseline freeze is implied.
 
 `ZH-OA04-ACCEPTANCE-REPLAY-CORRECTIVE-001` corrected the approval path without
 performing acceptance. The superseded flat receipt is immutable history.
