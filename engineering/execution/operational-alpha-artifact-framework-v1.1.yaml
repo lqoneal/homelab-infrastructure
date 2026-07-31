@@ -4,6 +4,7 @@ revision: '1.1'
 classification: Authoritative
 authoritative_owner: Homelab Infrastructure
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+infrastructure_baseline_id: OA-INFRA-BASELINE-001
 lifecycle_state: READY
 artifacts:
   authority_record:

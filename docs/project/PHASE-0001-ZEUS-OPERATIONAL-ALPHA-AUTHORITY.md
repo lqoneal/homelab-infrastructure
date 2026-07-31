@@ -1,15 +1,15 @@
 ---
 document_id: PHASE-0001
 title: Zeus Operational Alpha Authority
-version: 1.1
+version: 1.2
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-25
-last_updated: 2026-07-30
+last_updated: 2026-07-31
 phase: Zeus Operational Alpha
 domain: Project Execution
 classification: Mission and Phase Authority Record
-predecessor_revision: PHASE-0001@1.0
+predecessor_revision: PHASE-0001@1.1
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -62,9 +62,13 @@ autonomous execution, feature development, or Work Package execution.
 **Operational Management Projection:** `EMP-MISSION-ZEUS-OPERATIONAL-ALPHA`
 
 **Implementation Planning Baseline:** `OA-IMPLEMENTATION-BASELINE-1.0`,
-recorded by `MILESTONE-0010`. This baseline is a planning and conformance
-reference only; it does not alter this authority's prohibition on
-implementation or Work Package execution.
+recorded by `MILESTONE-0010`.
+
+**Operational Alpha Infrastructure Baseline:** `OA-INFRA-BASELINE-001`,
+published at commit `259b3f5d88b25da3cdc09893b01df64adf856453`. Future
+Operational Alpha WOPs inherit this qualified infrastructure baseline until a
+new immutable qualified baseline supersedes it. This binding does not alter
+this authority's prohibition on implementation or Work Package execution.
 
 ## Objective
 
@@ -136,3 +140,4 @@ read-only next-action interface. OA-02 through OA-30 remain unpassed.
 | --- | --- | --- |
 | 1.0 | 2026-07-25 | Established Zeus Operational Alpha as the current Homelab authority baseline without authorizing implementation. |
 | 1.1 | 2026-07-30 | Added the controlled cross-reference to the HF-012-qualified implementation-planning baseline while preserving all implementation and execution prohibitions. |
+| 1.2 | 2026-07-31 | Bound future Operational Alpha WOP resume and initiation to the qualified OA-INFRA-BASELINE-001 infrastructure publication without changing implementation authority. |
