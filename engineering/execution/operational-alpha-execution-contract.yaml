@@ -43,6 +43,6 @@ runtime_context:
   generation: Metadata Engine resolution followed by Zeus derived context assembly
   persistence: derived-and-ephemeral
 traceability:
-  governing_specification: SPEC-0014@1.1
+  governing_specification: SPEC-0014@1.3
   execution_interface: engineering/execution/execution-interface.yaml
   emm: engineering/metadata/operational-alpha-emm.yaml

@@ -1,0 +1,21 @@
+schema_version: 1
+schema_id: OPERATIONAL-ALPHA-ACTIVATION-RECORD
+classification: Authoritative
+authoritative_owner: Engineering Governance
+required:
+  - activation_record_id
+  - revision
+  - baseline_id
+  - lifecycle_state
+  - implementation_wop
+  - authority_record
+  - operational_gate_plan
+  - transition
+rules:
+  baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+  lifecycle_states: [DRAFT, ACTIVE, SUPERSEDED, ARCHIVED]
+  transition: READY_to_ACTIVE_only
+  authority_record: exact_active_emm_authority_record_identity
+  operational_gate_plan: exact_active_emm_operational_gate_plan_identity
+  publication: source_digest_registered_in_emm
+  reconciliation: required_before_eos_projection

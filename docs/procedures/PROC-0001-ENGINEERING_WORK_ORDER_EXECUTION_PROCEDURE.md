@@ -1,7 +1,7 @@
 ---
 document_id: PROC-0001
 title: Operational Alpha Work Initiation and Execution Procedure
-version: 2.1
+version: 2.2
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
@@ -288,6 +288,12 @@ the root authority for its own explicit allowlisted actions if its governance
 submission and active delegation validate. The Work Registry and historical
 EWOs may be consumed as traceability inputs but cannot grant, deny, or replace
 either current contract for Operational Alpha.
+
+Authority Records, Operational Gate Plans, and Activation Records are
+constructed and published through `OPERATIONAL-ALPHA-CONTROLLED-ARTIFACT-
+FRAMEWORK@1.0`. A generated candidate is not a controlled record and cannot
+advance lifecycle until its source digest is registered in EMM and runtime
+resolution validates the published source.
 
 ## Mission-Assurance Verification
 

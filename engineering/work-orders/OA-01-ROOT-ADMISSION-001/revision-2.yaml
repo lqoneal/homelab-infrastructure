@@ -1,0 +1,59 @@
+schema_version: 1
+wop_id: WOP-OA-01-ROOT-ADMISSION-001
+revision: 2
+status: READY
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: ZEUS-OPERATIONAL-ALPHA
+work_item_id: EMP-WORK-OA-01-ROOT-ADMISSION-001
+title: OA-01 Manual-Governance Root Admission
+owner: Engineering Governance
+objective: >-
+  Serve as the bounded manual-governance root authority for creating and
+  validating the exact subordinate OA-01 admission artifacts listed below.
+scope:
+  - create and publish an OA-01 Authority Record
+  - generate and publish an OA-01 Operational Gate Plan
+  - create and publish an OA-01 Activation Record only after validation
+  - generate a subordinate implementation WOP and execute its explicitly bound first gate
+prohibited_effects:
+  - alter historical Operational Alpha evidence
+  - modify ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0
+  - infer actions, scope, or artifact content not represented by controlled sources
+execution_context:
+  repository: /data/engineering/repositories/homelab
+  baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+  qualified_baseline: 5706307c1fdf9d4e0601c9cc578181f6d916e0a8
+  branch: main
+manual_governance_authority:
+  policy_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
+  policy_revision: '1.0'
+  delegation_state: ACTIVE
+  governance_submission:
+    submitted: true
+    submitted_by: Engineering Governance
+    submission_id: WOP-OA-01-ROOT-ADMISSION-001
+    directive_id: WOP-OA-01-BOOTSTRAP-CAPABILITY-001
+  permitted_actions:
+    - verify_bootstrap_action_specification
+    - create_authority_record
+    - generate_operational_gate_plan
+    - activate_oa01
+    - generate_implementation_wop
+    - execute_first_gate
+bootstrap_gate_action_specification:
+  entity_id: OA-01-BOOTSTRAP-GATE-ACTIONS
+  revision: 2
+artifact_framework:
+  entity_id: OPERATIONAL-ALPHA-CONTROLLED-ARTIFACT-FRAMEWORK
+  revision: '1.0'
+entry_criteria:
+  - active EMM-resolved Manual-Governance WOP Authority Policy
+  - exact OA implementation WOP and baseline identities resolve
+  - controlled artifact framework and schemas resolve
+completion_criteria:
+  - each subordinate artifact binds to this exact root WOP revision
+  - no OA lifecycle transition occurs without a published Activation Record
+traceability:
+  supersedes: WOP-OA-01-ROOT-ADMISSION-001@1 publication-only scope
+  governing_root_policy: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY@1.0
+  execution_authority: SPEC-0014@1.3

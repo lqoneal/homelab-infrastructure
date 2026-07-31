@@ -241,7 +241,98 @@ class ConvergenceRuntime:
         record = load_mapping(path)
         if record.get("authority_record_id") != authority_id:
             raise ConvergenceRuntimeError("Authority Record identity differs from EMM")
+        if (
+            record.get("baseline_id") != self.emm()["baseline_id"]
+            or not isinstance(record.get("implementation_wop"), Mapping)
+            or not isinstance(record.get("permitted_actions"), list)
+            or not record["permitted_actions"]
+        ):
+            raise ConvergenceRuntimeError("Authority Record contract is invalid")
         return record, source_digest
+
+    def controlled_artifact_framework(self) -> tuple[dict[str, Any], dict[str, Any], str]:
+        """Resolve the controlled artifact framework; it never creates state."""
+        entity = self._entity(
+            "ControlledArtifactFramework", "OPERATIONAL-ALPHA-CONTROLLED-ARTIFACT-FRAMEWORK", "1.0"
+        )
+        if entity.get("classification") != "Authoritative" or not entity.get("source_digest"):
+            raise ConvergenceRuntimeError("controlled artifact framework lacks authoritative identity")
+        path, source_digest = self._source(entity)
+        framework = load_mapping(path)
+        if (
+            framework.get("framework_id") != entity["entity_id"]
+            or str(framework.get("revision")) != str(entity["revision"])
+            or framework.get("baseline_id") != self.emm()["baseline_id"]
+            or str(framework.get("lifecycle_state", "")).upper() != "READY"
+            or not isinstance(framework.get("artifacts"), Mapping)
+        ):
+            raise ConvergenceRuntimeError("controlled artifact framework contract is invalid")
+        return entity, framework, source_digest
+
+    def artifact_candidate(
+        self, *, kind: str, root_wop_id: str, root_revision: str | int,
+        target_wop_id: str, target_revision: str | int, identifier: str,
+        permitted_actions: list[str] | None = None, gate_plan: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Return a deterministic, non-persisted candidate artifact.
+
+        Publication remains an explicit controlled operation: callers must place
+        the candidate at its framework-defined source and register its exact
+        digest in EMM before resolution can consume it.
+        """
+        _, framework, framework_digest = self.controlled_artifact_framework()
+        root_receipt = self.resolve(
+            wop_id=root_wop_id, revision=root_revision,
+            action={"authority_record": "create_authority_record",
+                    "operational_gate_plan": "generate_operational_gate_plan",
+                    "activation_record": "activate_oa01"}.get(kind, ""),
+            correlation_id=f"candidate:{kind}:{identifier}",
+        )
+        if root_receipt.get("outcome") != "RESOLVED":
+            raise ConvergenceRuntimeError("root WOP cannot create requested candidate")
+        if kind not in framework["artifacts"]:
+            raise ConvergenceRuntimeError("unsupported controlled artifact kind")
+        binding = {"wop_id": target_wop_id, "revision": int(target_revision)}
+        lineage = {"root_wop": {"wop_id": root_wop_id, "revision": int(root_revision)},
+                   "root_receipt": root_receipt["receipt_digest"],
+                   "framework_digest": framework_digest}
+        common = {"schema_version": 1, "revision": 1,
+                  "baseline_id": self.emm()["baseline_id"], "lifecycle_state": "DRAFT",
+                  "implementation_wop": binding, "authority_lineage": lineage}
+        if kind == "authority_record":
+            value = {**common, "authority_record_id": identifier,
+                     "permitted_actions": list(permitted_actions or [])}
+            if not value["permitted_actions"]:
+                raise ConvergenceRuntimeError("Authority Record candidate requires permitted actions")
+        elif kind == "operational_gate_plan":
+            if not isinstance(gate_plan, Mapping):
+                raise ConvergenceRuntimeError("Operational Gate Plan candidate requires gate plan")
+            from scripts.lib.emp.operational_gate_handler import OperationalExecutionContextService
+            value = {**common, "plan_id": identifier, "gate_plan": OperationalExecutionContextService._validate_plan(gate_plan)}
+        elif kind == "activation_record":
+            value = {**common, "activation_record_id": identifier,
+                     "authority_record": None, "operational_gate_plan": None,
+                     "transition": {"from": "READY", "to": "ACTIVE"}}
+        else:
+            raise ConvergenceRuntimeError("unsupported controlled artifact kind")
+        value["candidate_digest"] = digest(value)
+        return {"classification": kind, "candidate": value, "publication_required": True,
+                "lifecycle_effect": "NONE", "root_receipt": root_receipt}
+
+    def activation_record(self, *, activation_id: str) -> tuple[dict[str, Any], dict[str, Any], str]:
+        entity = self._entity("ActivationRecord", activation_id)
+        path, source_digest = self._source(entity)
+        record = load_mapping(path)
+        required = (record.get("activation_record_id") == activation_id,
+                    record.get("baseline_id") == self.emm()["baseline_id"],
+                    str(record.get("lifecycle_state", "")).upper() == "ACTIVE",
+                    isinstance(record.get("implementation_wop"), Mapping),
+                    isinstance(record.get("authority_record"), Mapping),
+                    isinstance(record.get("operational_gate_plan"), Mapping),
+                    record.get("transition") == {"from": "READY", "to": "ACTIVE"})
+        if not all(required):
+            raise ConvergenceRuntimeError("Activation Record contract is invalid")
+        return entity, record, source_digest
 
     def _manual_governance_authority(
         self, *, wop: Mapping[str, Any], action: str

@@ -1,0 +1,20 @@
+schema_version: 1
+schema_id: OPERATIONAL-ALPHA-OPERATIONAL-GATE-PLAN
+classification: Authoritative
+authoritative_owner: assigned WOP owner
+required:
+  - plan_id
+  - revision
+  - baseline_id
+  - lifecycle_state
+  - implementation_wop
+  - gate_plan
+  - authority_lineage
+rules:
+  baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+  lifecycle_states: [DRAFT, READY, ACTIVE, SUPERSEDED, ARCHIVED]
+  implementation_wop: exact_emm_implementation_wop_identity
+  gate_plan: handler_compatible_non_empty_gate_mapping
+  authority_lineage: exact_authority_record_or_manual_root_binding
+  publication: source_digest_registered_in_emm
+  activation: ACTIVE_plan_must_bind_active_wop

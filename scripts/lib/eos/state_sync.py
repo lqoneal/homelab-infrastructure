@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import os
+import re
 import subprocess
 import tempfile
 from pathlib import Path
@@ -49,6 +50,23 @@ def frontmatter(path: Path) -> dict[str, Any]:
     return value
 
 
+def operational_alpha_lifecycle(path: Path) -> dict[str, str]:
+    """Read the current controlled OA lifecycle for a derived EOS projection."""
+    values = dict(re.findall(
+        r"^([A-Z0-9_-]+)=([^\n]+)$", path.read_text(encoding="utf-8"), re.MULTILINE
+    ))
+    required = (
+        "OA-01_IMPLEMENTATION_WOP", "OA-01_STATE", "OA-01_EXECUTION_STATE",
+        "OA-02_AND_LATER", "HISTORICAL_PROGRESSIVE_RUNTIME",
+    )
+    missing = [field for field in required if not values.get(field)]
+    if missing:
+        raise SynchronizationError(
+            "Operational Alpha lifecycle projection is incomplete: " + ", ".join(missing)
+        )
+    return {field: values[field] for field in required}
+
+
 def git(root: Path, *args: str) -> str:
     try:
         return subprocess.run(
@@ -69,7 +87,10 @@ def render(root: Path, eos_workspace: Path, project: str) -> dict[Path, bytes]:
     registry_path = root / "engineering/registry/work-registry.yaml"
     interface_path = root / "engineering/execution/execution-interface.yaml"
     emm_path = root / "engineering/metadata/operational-alpha-emm.yaml"
+    progress_path = root / "engineering/operations/zeus-operational-alpha-progress.md"
     sources = [matrix_path, project_path, registry_path, interface_path]
+    if progress_path.is_file():
+        sources.append(progress_path)
     if emm_path.is_file():
         sources.append(emm_path)
     for source in sources:
@@ -89,6 +110,7 @@ def render(root: Path, eos_workspace: Path, project: str) -> dict[Path, bytes]:
     registry = load_yaml(registry_path)
     interface = load_yaml(interface_path)
     emm = load_yaml(emm_path) if emm_path.is_file() else None
+    oa_lifecycle = operational_alpha_lifecycle(progress_path) if progress_path.is_file() else None
     if interface.get("schema_version") == 3 and (
         not isinstance(emm, dict) or emm.get("schema_version") != 1 or not emm.get("emm_id")
     ):
@@ -130,7 +152,12 @@ def render(root: Path, eos_workspace: Path, project: str) -> dict[Path, bytes]:
         f"project_state_sha256: {source_digests[str(project_path.relative_to(root))]}\n"
         f"registry_revision: {registry.get('revision')}\n"
         f"execution_interface_schema: {interface.get('schema_version')}\n"
-    ) + (f"emm_id: {emm.get('emm_id')}\n"
+    ) + (f"operational_alpha_wop: {oa_lifecycle['OA-01_IMPLEMENTATION_WOP']}\n"
+         f"operational_alpha_lifecycle: {oa_lifecycle['OA-01_STATE']}\n"
+         f"operational_alpha_execution_state: {oa_lifecycle['OA-01_EXECUTION_STATE']}\n"
+         f"operational_alpha_successor_eligibility: {oa_lifecycle['OA-02_AND_LATER']}\n"
+         f"historical_progressive_runtime: {oa_lifecycle['HISTORICAL_PROGRESSIVE_RUNTIME']}\n"
+         if oa_lifecycle else "") + (f"emm_id: {emm.get('emm_id')}\n"
          f"emm_version: {emm.get('version')}\n" if emm else "") + (
         "---\n\n"
         "# EOS Engineering State Projection\n\n"

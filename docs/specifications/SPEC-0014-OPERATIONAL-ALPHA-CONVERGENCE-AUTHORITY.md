@@ -1,7 +1,7 @@
 ---
 document_id: SPEC-0014
 title: Operational Alpha Convergence Authority Model
-version: 1.2
+version: 1.3
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-30
@@ -106,6 +106,16 @@ binding, or invalid payload fails closed. The runtime may assemble an
 ephemeral execution context from this authoritative plan and the resolved
 receipt, but it shall never synthesize actions, scope, content, dependencies,
 or a plan from a WOP, a generated artifact, or a runtime assumption.
+
+## Controlled artifact framework
+
+`OPERATIONAL-ALPHA-CONTROLLED-ARTIFACT-FRAMEWORK@1.0` defines the sole
+publication model for Authority Records, Operational Gate Plans, and Activation
+Records. Each source validates its controlled schema, binds the exact WOP and
+baseline, and has one EMM entity carrying its exact source digest. The Metadata
+Engine may produce deterministic `DRAFT` candidates, but candidates are
+non-authoritative until controlled publication registers their source. The
+framework never permits a candidate or resolver to advance OA lifecycle state.
 
 ## Lifecycle and activation
 

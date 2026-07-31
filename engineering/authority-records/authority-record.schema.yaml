@@ -1,0 +1,20 @@
+schema_version: 1
+schema_id: OPERATIONAL-ALPHA-AUTHORITY-RECORD
+classification: Authoritative
+authoritative_owner: Engineering Governance
+required:
+  - authority_record_id
+  - revision
+  - baseline_id
+  - lifecycle_state
+  - implementation_wop
+  - permitted_actions
+  - authority_lineage
+rules:
+  baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+  lifecycle_states: [DRAFT, READY, ACTIVE, SUPERSEDED, ARCHIVED]
+  implementation_wop: exact_emm_implementation_wop_identity
+  permitted_actions: non_empty_unique_strings
+  authority_lineage: exact_manual_governance_or_governance_decision_binding
+  publication: source_digest_registered_in_emm
+  activation: ACTIVE_authority_must_precede_active_wop

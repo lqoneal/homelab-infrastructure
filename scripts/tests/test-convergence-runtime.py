@@ -132,6 +132,18 @@ class ConvergenceRuntimeTests(unittest.TestCase):
         self.assertEqual("OA-01-BOOTSTRAP-GATE-ACTIONS", value["action_specification"]["id"])
         self.assertEqual("MANUAL_GOVERNANCE_WOP", value["authority_receipt"]["authority_mode"])
 
+    def test_published_framework_creates_only_nonpersisted_candidates(self):
+        candidate = self.runtime.artifact_candidate(
+            kind="authority_record", root_wop_id="WOP-OA-01-ROOT-ADMISSION-001",
+            root_revision=2, target_wop_id="WOP-OA-01-IMPLEMENTATION-001",
+            target_revision=1, identifier="AR-OA-01-TEST",
+            permitted_actions=["execute_first_gate"],
+        )
+        self.assertTrue(candidate["publication_required"])
+        self.assertEqual("NONE", candidate["lifecycle_effect"])
+        self.assertEqual("DRAFT", candidate["candidate"]["lifecycle_state"])
+        self.assertEqual("AR-OA-01-TEST", candidate["candidate"]["authority_record_id"])
+
     def test_active_authority_and_wop_resolve_only_when_exactly_bound(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

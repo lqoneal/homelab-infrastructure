@@ -1,7 +1,7 @@
 ---
 document_id: STD-0003
 title: Operational Alpha Work Authorization Standard
-version: 2.1
+version: 2.2
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
@@ -310,6 +310,12 @@ the applicable SPEC-0014 Authority Record resolves before execution. Neither
 the WOP alone nor its `READY` state conveys execution authority.
 
 Lifecycle state transitions remain the responsibility of Engineering Governance.
+
+The controlled artifact framework is the mandatory source model for an
+Operational Alpha Authority Record, Operational Gate Plan, and Activation
+Record. Every source binds the exact WOP revision and baseline, is
+EMM-registered by source digest, and has one named owner. A runtime-generated
+candidate has no lifecycle authority before controlled publication.
 
 ## Repository Mission Contract
 

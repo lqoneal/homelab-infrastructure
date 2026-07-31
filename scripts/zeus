@@ -27,6 +27,9 @@ from scripts.lib.emp.agent_qualification import AgentQualificationError, qualify
 from scripts.lib.emp.gate_carry_forward import GateCarryForwardError, create_record as carry_gate  # noqa: E402
 from scripts.lib.eos.execution_interface import ExecutionInterface, ExecutionInterfaceError  # noqa: E402
 from scripts.lib.eos.convergence_runtime import ConvergenceRuntime  # noqa: E402
+from scripts.lib.eos.operational_alpha_status import (  # noqa: E402
+    OperationalAlphaStatusError, resolve as resolve_operational_alpha_status,
+)
 from scripts.lib.eos.mission_assurance import MissionAssurance, MissionAssuranceError  # noqa: E402
 from scripts.lib.emp import progressive_oa  # noqa: E402
 from scripts.lib.emp.progressive_gate import ProgressiveGateError, ProgressiveGateService  # noqa: E402
@@ -146,6 +149,30 @@ def status_text(value):
         f"Mission Count         : {admission.get('mission_count', 0)}",
         f"Lifecycle States      : {json.dumps(admission.get('states', {}), sort_keys=True)}",
     ])
+    return "\n".join(lines) + "\n"
+
+def operational_alpha_status_text(value):
+    """Render current Operational Alpha status without legacy projections."""
+    admission = value.get("mission_admission", {})
+    lines = [
+        "Repository", "----------",
+        "Status Sources                 : " + ", ".join(value["authoritative_sources"]),
+        "", "Authority", "---------",
+        f"Authority Record               : {value['authority_record']}",
+        "Authority Record Eligibility   : " + value["authority_record_creation_eligibility"],
+        "", "PMCT", "----",
+        "Historical Progressive Runtime : " + value["historical_progressive_runtime"],
+        "", "Operational Gates", "-----------------",
+        f"Active Gate                    : {value['active_gate']}",
+        f"Lifecycle                      : {value['status']}",
+        f"Execution State                : {value['execution_state']}",
+        "Successor Eligibility          : " + value["successor_eligibility"],
+        f"Operational Gate Plan           : {value['operational_gate_plan']}",
+        f"Activation                      : {value['activation']}",
+        "", "Mission Engine", "--------------",
+        f"Mission Count                  : {admission.get('mission_count', 0)}",
+        "Lifecycle States               : " + json.dumps(admission.get("states", {}), sort_keys=True),
+    ]
     return "\n".join(lines) + "\n"
 
 def main(argv=None):
@@ -477,10 +504,13 @@ def main(argv=None):
             )
         o=MissionOrchestrator(OrchestrationStore(state))
         if a.command=="status":
-            if progressive_enabled and not (testing or override):
-                value = progressive_oa.status(ROOT)
+            if not (testing or override):
+                value = resolve_operational_alpha_status(ROOT)
                 value["mission_admission"] = stage1.status()
-                emit(value)
+                if a.json:
+                    emit(value)
+                else:
+                    print(operational_alpha_status_text(value), end="")
                 return 0
             value = authority_status(o.status())
             value["mission_admission"] = stage1.status()
@@ -704,6 +734,6 @@ def main(argv=None):
                 emit(ConvergenceRuntime(Path(a.repository)).operational_wop(intent=a.intent,flow=flow))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (OrchestrationError, Stage1Error, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, ProgressiveGateError, progressive_oa.ProgressiveOAError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+    except (OrchestrationError, Stage1Error, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr); return 78
 if __name__ == "__main__": raise SystemExit(main())

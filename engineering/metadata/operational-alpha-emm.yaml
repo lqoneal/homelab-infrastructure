@@ -24,7 +24,7 @@ entities:
     authoritative_owner: Homelab Infrastructure
     classification: Authoritative
     source: engineering/execution/operational-alpha-execution-contract.yaml
-    source_digest: fed1b146f70c8127648974868714ec18d6f7e45e3e21d9304b992fa7cab5ed18
+    source_digest: 5a1ec406be396bff16a5f4b08b7699f56aee05dd8755a1b53f1fdb6c31261aec
   - entity_type: RuntimeBaseline
     entity_id: ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0
     revision: 1.0
@@ -53,3 +53,45 @@ entities:
     classification: Authoritative
     source: engineering/execution/bootstrap-gate-actions/OA-01-BOOTSTRAP-GATE-ACTIONS.yaml
     source_digest: af94ccb15296cd84c9a7dcdb208ec116e8776f0faa4582148ff5a5d87554e5c6
+  - entity_type: ControlledArtifactFramework
+    entity_id: OPERATIONAL-ALPHA-CONTROLLED-ARTIFACT-FRAMEWORK
+    revision: 1.0
+    authoritative_owner: Homelab Infrastructure
+    classification: Authoritative
+    source: engineering/execution/operational-alpha-artifact-framework.yaml
+    source_digest: c4280f21cdd9589cb51931c1a060c34411f53ebd8a35a92186e2f0f3d0e662f3
+  - entity_type: ArtifactSchema
+    entity_id: OPERATIONAL-ALPHA-AUTHORITY-RECORD
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/authority-records/authority-record.schema.yaml
+    source_digest: 902ac13430a1809ebd235a42239848adea34107f7f49d78c02da263f69c8d5f0
+  - entity_type: ArtifactSchema
+    entity_id: OPERATIONAL-ALPHA-OPERATIONAL-GATE-PLAN
+    revision: 1
+    authoritative_owner: assigned WOP owner
+    classification: Authoritative
+    source: engineering/execution/plans/operational-gate-plan.schema.yaml
+    source_digest: a674718e0cfc0c15f0dda4e067953813b873d4fc17d85ad2b9268c3b5e1cf5f5
+  - entity_type: ArtifactSchema
+    entity_id: OPERATIONAL-ALPHA-ACTIVATION-RECORD
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/activation-records/activation-record.schema.yaml
+    source_digest: 32ce85138c3e981b7eb749253fd11b5aedc995b43c27ab7cc68416e6c59fc6fc
+  - entity_type: ImplementationWOP
+    entity_id: WOP-OA-01-ROOT-ADMISSION-001
+    revision: 2
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/work-orders/OA-01-ROOT-ADMISSION-001/revision-2.yaml
+    source_digest: a743df33a9b4cb47b6506fe0bac6611bcb3dcaac93c9ff6ad26a1914fda894a3
+  - entity_type: BootstrapGateActionSpecification
+    entity_id: OA-01-BOOTSTRAP-GATE-ACTIONS
+    revision: 2
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/execution/bootstrap-gate-actions/OA-01-BOOTSTRAP-GATE-ACTIONS-v2.yaml
+    source_digest: 8ca0d3f001940b1f0ca71141b5c8bcbfbcf407b74fddda2928b9d7e4d66db628
