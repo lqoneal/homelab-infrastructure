@@ -21,7 +21,8 @@ gate_plan:
         - action_id: oa03-discovery-marker
           action_type: create_artifact
           path: runtime/evidence/OA-03/MISSION-CONTRACT-DISCOVERY-QUALIFIED
-          content: "OA-03 deterministic Mission Contract discovery qualified\\n"
+          content: |
+            OA-03 deterministic Mission Contract discovery qualified
           content_digest: 5f3903e944c1585e86b103470877712a22213af1053d1cbaedc1d7b378472ff0
     VERIFY_COMPLETION:
       dependencies:
