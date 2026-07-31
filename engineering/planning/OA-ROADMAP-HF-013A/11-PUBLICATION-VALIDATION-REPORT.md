@@ -10,12 +10,20 @@ and tagged. It records the staged-path proof, immutable locators, validation
 results, exclusions, and synchronization disposition without asserting runtime
 synchronization or implementation execution.
 
-## Required finalization entries
+## Finalization evidence
 
-- starting baseline and final baseline locator;
-- exact staged paths and exclusion check;
-- document/reference validation result;
-- baseline registry resolution result;
-- annotated tag locator;
-- repository-to-EOS synchronization disposition; and
-- statement that no implementation artifacts or runtime execution occurred.
+| Item | Result |
+| --- | --- |
+| Starting baseline | `7e3bf67345e53591036aa0ca103f78aa9844f93c` |
+| Adoption content locator | `e60c185d925e0dedeab8f0764764a058cd2a9988` |
+| Staged path count | 121; all fall inside the declared inclusion set |
+| Excluded path check | PASS; AQR-0001, its HF-002 evidence, and HF-001–HF-004 were not staged |
+| Whitespace and controlled-document validation | PASS; 2,850 checks, 0 failures |
+| Registry and reference resolution | PASS; baseline registry, MILESTONE-0010, DOC-0001, PHASE-0001, and PROJ-0001 agree |
+| Release tag | `oa-implementation-baseline-1.0`, created at transaction finalization |
+| EOS/runtime synchronization | `SYNCHRONIZATION_REQUIRED`; no runtime write performed |
+| Implementation/runtime execution | PASS; none created or started |
+
+The final baseline consists of this finalization record and its predecessor
+adoption-content commit. The annotated release tag is the immutable baseline
+locator for consumers.

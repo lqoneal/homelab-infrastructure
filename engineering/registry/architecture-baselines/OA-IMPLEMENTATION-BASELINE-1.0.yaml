@@ -1,6 +1,6 @@
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
 version: 1.0
-status: adopted_pending_publication_finalization
+status: adopted_published
 authoritative_owner: Homelab Infrastructure
 adoption_authority: OA-ROADMAP-HF-013A
 qualification_reference: OA-ROADMAP-HF-012
@@ -14,8 +14,8 @@ source_series:
   - OA-ROADMAP-HF-011
   - OA-ROADMAP-HF-012
 controlled_adoption_record: MILESTONE-0010
-repository_locator: pending_publication_finalization
-tag: pending_publication_finalization
+repository_locator: e60c185d925e0dedeab8f0764764a058cd2a9988
+tag: oa-implementation-baseline-1.0
 implementation_status: planning_complete_implementation_not_authorized
 synchronization:
   source: repository baseline registry
