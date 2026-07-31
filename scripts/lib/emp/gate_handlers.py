@@ -361,3 +361,13 @@ def qualification_framework(repository_root: Path | str):
     registry.register(QualificationGateHandler())
     registry.discover(Path(repository_root) / "engineering/handlers")
     return GateHandlerFramework(registry)
+
+
+def operational_framework(repository_root: Path | str):
+    """Resolve the published operational artifact handler without legacy dispatch."""
+    from scripts.lib.emp.operational_gate_handler import OperationalArtifactGateHandler
+
+    registry = HandlerRegistry()
+    registry.register(OperationalArtifactGateHandler())
+    registry.discover(Path(repository_root) / "engineering/handlers/operational")
+    return GateHandlerFramework(registry)

@@ -18,6 +18,7 @@ from scripts.lib.emp.authority_resolution import AuthorityResolutionError  # noq
 from scripts.lib.emp.wop_service import OperationalWopService  # noqa: E402
 from scripts.lib.emp.mission_admission_runtime import AdmissionStateStore, MissionAdmissionError, MissionAdmissionRuntime  # noqa: E402
 from scripts.lib.emp.mission_execution_runtime import ExecutionStateStore, MissionExecutionError, MissionExecutionRuntime  # noqa: E402
+from scripts.lib.emp.gate_handlers import operational_framework  # noqa: E402
 from scripts.lib.emp.production_execution import dispatch_readiness, load_json, load_registry  # noqa: E402
 from scripts.lib.emp.next_action import NextActionError, human_text as next_action_text, resolve_next_action  # noqa: E402
 from scripts.lib.emp.gate_approval import GateApprovalError, GateApprovalService, approve_command, verify_command  # noqa: E402
@@ -661,6 +662,7 @@ def main(argv=None):
             )
             execution_runtime=MissionExecutionRuntime(ROOT,execution_store,
                 AdmissionStateStore(admission_directory),
+                handler_framework=operational_framework(ROOT) if convergence_flow else None,
                 operational_dispatch_enabled=dispatch_state["dispatch_permitted"],
                 operational_context_provider=(
                     (lambda state, wop: ConvergenceRuntime(ROOT).operational_execution_context(

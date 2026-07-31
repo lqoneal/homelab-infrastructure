@@ -19,6 +19,7 @@ from scripts.lib.emp.authority_resolution import digest  # noqa: E402
 from scripts.lib.emp.gate_handlers import (  # noqa: E402
     GateHandlerFramework,
     HandlerRegistry,
+    operational_framework,
 )
 from scripts.lib.emp.mission_admission_runtime import (  # noqa: E402
     AdmissionStateStore,
@@ -200,6 +201,13 @@ class OperationalGateHandlerTests(unittest.TestCase):
             all(item["payload"]["result"]["verification_first"] for item in delegated)
         )
         self.assertEqual(sink.store.count(), len(state["evidence"]))
+
+    def test_published_operational_framework_resolves_artifact_handler(self):
+        framework = operational_framework(ROOT)
+        self.assertEqual(
+            ["zeus.operational.artifact"],
+            [item["handler_id"] for item in framework.registry.inventory()],
+        )
 
     def test_action_checkpoint_resume_skips_completed_action(self):
         runtime = self.runtime()
