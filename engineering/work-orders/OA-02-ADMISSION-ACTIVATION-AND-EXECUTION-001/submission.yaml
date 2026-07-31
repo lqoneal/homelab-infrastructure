@@ -1,0 +1,43 @@
+schema_version: 1
+document_type: EngineeringWorkOrder
+wop_id: WOP-502ce342-7fc9-577c-b906-07b00bf2a615
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: OA-02-CONTROLLED-MISSION-AUTHORITY
+revision: 1
+status: Active
+title: OA-02 Admission, Activation, and Execution
+repository_identity: /data/engineering/repositories/homelab
+submitter_identity: Engineering Governance
+approval:
+  authority: Engineering Governance
+  reference: WOP-OA-02-ADMISSION-ACTIVATION-AND-EXECUTION-001
+  date: '2026-07-31T00:00:00-07:00'
+  authorized_lifecycle_state: Active
+execution_package_references:
+  authority_node_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY@1.0
+  authorization_decision_record: WOP-OA-02-ADMISSION-ACTIVATION-AND-EXECUTION-001
+  immutable_wop: engineering/work-orders/OA-02-ADMISSION-ACTIVATION-AND-EXECUTION-001/immutable-wop.yaml
+authoritative_references:
+  - PROC-0001@1.11
+  - TPL-0001@1.7
+  - STD-0000
+  - STD-0001
+  - STD-0002
+  - STD-0003
+  - STD-0004
+sections:
+  purpose_and_expected_outcome: Execute the published OA-02 Controlled Mission Authority objective and close it with qualified evidence.
+  mission_classification: Category A repository-governed Operational Alpha execution under the published WOP-based initiation model.
+  governing_references: Published Operational Alpha project state, OA-02 objective and implementation procedure, SPEC-0014, EMM, and the listed controlled authorities.
+  scope: Create the authorized OA-02 subordinate artifacts; admit, activate, execute, qualify, reconcile, and close OA-02 only.
+  explicit_authority: This submitted WOP is the manual-governance root for its exact allowlisted actions; no authority is inferred beyond its published scope.
+  prohibited_activities: Do not modify the certified runtime baseline, alter historical evidence, initiate OA-03, or introduce architecture.
+  dependencies_and_entry_criteria: OA-02 and Authority Record eligibility, convergence authority, repository baseline, EOS, EMM, registry, and an accepted admission record.
+  deliverables: Authority Record, Operational Gate Plan, Activation Record, runtime WOP, execution evidence, qualification, synchronization and drift report, reconciliation, and Completion Report.
+  execution_sequence: Validate and accept this immutable submission; publish authoritative artifacts; admit and execute the bounded OA-02 plan; qualify and reconcile before closeout.
+  success_and_acceptance_criteria: OA-02 completes with authoritative records, deterministic runtime evidence, EOS and EMM validation, and no OA-03 initiation.
+  validation_profile: WOP admission validation, convergence resolution, mission admission and execution evidence, EOS synchronization, EMM health, registry validation, and OA-02 verification procedure.
+  publication_and_synchronization: Publish only scoped OA-02 artifacts and evidence; synchronize authoritative state to EOS after publication validation.
+  stop_resume_and_escalation: Fail closed on integrity or authority failure; preserve evidence and use the Operator Resolution Protocol for any non-automatic corrective decision.
+  completion_report_requirement: Publish the repository-standard Completion Report with qualification, synchronization, reconciliation, and closeout evidence.
+submission_digest: 879a99876a8d2d697983b03306ca7f3767863be95f986fb80ac228250acbadcc

@@ -1,6 +1,6 @@
 schema_version: 1
 emm_id: OPERATIONAL-ALPHA-EMM
-version: 1.1
+version: 1.2
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
 authoritative_owner: Homelab Infrastructure
 entities:
@@ -153,3 +153,10 @@ entities:
     classification: Authoritative
     source: engineering/activation-records/ACT-OA-01-001.yaml
     source_digest: e5bc2366f97b98f5d3d6f888f02d3e6317ba1046198b3739335d1e98859665e4
+  - entity_type: ImplementationWOP
+    entity_id: WOP-502ce342-7fc9-577c-b906-07b00bf2a615
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/work-orders/OA-02-ADMISSION-ACTIVATION-AND-EXECUTION-001/immutable-wop.yaml
+    source_digest: 60445d1316a9343d52ccfef9bab48b5a7eaeccbd7106e90410d714a662e0f14c

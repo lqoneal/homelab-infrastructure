@@ -1,0 +1,56 @@
+schema_version: 1
+wop_id: WOP-502ce342-7fc9-577c-b906-07b00bf2a615
+revision: 1
+status: READY
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: OA-02-CONTROLLED-MISSION-AUTHORITY
+work_item_id: EMP-WORK-OA-02-CONTROLLED-MISSION-AUTHORITY-001
+title: OA-02 Admission, Activation, and Execution
+owner: Engineering Governance
+objective: >-
+  Execute the controlled OA-02 objective resolved from the published gate
+  specification: prove that no mission may execute without valid, current,
+  discoverable authority.
+scope:
+  - create and publish the OA-02 Authority Record, Operational Gate Plan, and Activation Record
+  - admit and execute OA-02 through the published convergence runtime
+  - publish qualification, synchronization, reconciliation, and closeout evidence
+prohibited_effects:
+  - alter the certified runtime baseline
+  - create or execute OA-03 work
+  - infer a mission objective outside the published OA-02 gate specification
+  - alter historical Operational Alpha evidence
+execution_context:
+  repository: /data/engineering/repositories/homelab
+  baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+  qualified_baseline: 5706307c1fdf9d4e0601c9cc578181f6d916e0a8
+  branch: main
+manual_governance_authority:
+  policy_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
+  policy_revision: '1.0'
+  delegation_state: ACTIVE
+  governance_submission:
+    submitted: true
+    submitted_by: Engineering Governance
+    submission_id: WOP-OA-02-ADMISSION-ACTIVATION-AND-EXECUTION-001
+    directive_id: WOP-OA-02-ADMISSION-ACTIVATION-AND-EXECUTION-001
+  permitted_actions:
+    - create_authority_record
+    - generate_operational_gate_plan
+    - activate_oa01
+    - admit_mission
+    - generate_wop
+    - execute_mission
+entry_criteria:
+  - accepted immutable WOP Admission Record
+  - active EMM-resolved Manual-Governance WOP Authority Policy
+  - OA-02 eligibility and Authority Record eligibility are ELIGIBLE
+  - repository, EOS, EMM, registry, and runtime preflight pass
+completion_criteria:
+  - OA-02 is executed, qualified, reconciled, and closed
+  - no later Operational Alpha gate is initiated
+traceability:
+  governing_directive: WOP-OA-02-ADMISSION-ACTIVATION-AND-EXECUTION-001
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-02/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-02/implementation.md
+  execution_first_policy: SPEC-0014@1.6
