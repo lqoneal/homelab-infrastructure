@@ -63,6 +63,7 @@ wop:
   applicability: applicable
   references:
     - engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/immutable-wop.yaml
+  reason: ''
 lifecycle:
   state: active
   implementation_status: in_progress
