@@ -43,6 +43,16 @@ The pre-existing AQR, OA-01, and HF-001 through HF-004 working-tree changes
 remain isolated and unmodified. No OA-02 authority, plan, activation, mission
 admission, implementation WOP, or execution record was created.
 
+## Publication and Reconciliation
+
+The scoped correction was published as
+`5efcc2e658f6d92754f5e4ec8428ae13eb9df762`
+(`fix(oa): remove legacy EWO initiation dependency`). Local `main` and
+`origin/main` resolve to that commit. EOS synchronization then updated
+`EOS-STATE.md` and `EOS-MANIFEST.md`; synchronization validation, EMM health,
+registry validation, convergence dispatcher validation, and regression tests
+all passed.
+
 ## Final Certification
 
 PASS — the EWO initiation dependency has been removed from the authoritative
