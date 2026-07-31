@@ -1,15 +1,15 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 10.2
+version: 10.3
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-30
+last_updated: 2026-07-31
 mission: Zeus Operational Alpha
 phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@10.1
+predecessor_revision: PROJ-0001@10.2
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -380,6 +380,10 @@ The Convergence Program is closed. The certified Zeus operational runtime is
 `ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0`, bound to
 `OA-IMPLEMENTATION-BASELINE-1.0` and independently certified READY FOR
 OPERATIONAL ALPHA IMPLEMENTATION by `WOP-RUNTIME-CERTIFICATION-002`.
+The corrected Operational Alpha infrastructure baseline is
+`OA-INFRA-BASELINE-001`, published at
+`259b3f5d88b25da3cdc09893b01df64adf856453`; future Operational Alpha WOPs
+inherit it until formally superseded.
 
 The current OA-08 implementation record is
 `WOP-oa08-deterministic-resolution-001@1`, bound to
@@ -704,6 +708,7 @@ When resuming this project:
 | 9.8     | 2026-07-29 | Executed and independently verified OA-05 Mission Staging Contract after corrected OA-04 acceptance; proved deterministic staging, persistence, replay, restart recovery, malformed candidate rejection, authorization enforcement, and fail-closed behavior; retained OA-06 and later pending with no dispatch or execution. |
 | 9.9     | 2026-07-29 | Confirmed Zeus mission-admission counts are deterministically reconstructed from persisted Stage 1 mission records, verified the live empty store correctly reports zero, and added fail-closed validation for integrity-valid but structurally inconsistent records while retaining OA-06 pending. |
 | 10.2 | 2026-07-30 | Closed the Convergence Program, recorded `ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0` as the certified Zeus Operational Alpha runtime baseline, reconciled repository-controlled state, and retained OA-01 as READY / NOT_STARTED pending its authoritative execution prerequisites. |
+| 10.3 | 2026-07-31 | Recorded OA-INFRA-BASELINE-001 at the qualified corrected OA-10 publication commit and bound future Operational Alpha resume and initiation to its inheritance rules. |
 
 ## Operational Mission Activation
 

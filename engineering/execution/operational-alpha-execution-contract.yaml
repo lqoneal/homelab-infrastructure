@@ -4,6 +4,7 @@ revision: '1.0'
 classification: Authoritative
 authoritative_owner: Homelab Infrastructure
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+infrastructure_baseline_id: OA-INFRA-BASELINE-001
 lifecycle_state: READY
 purpose: >-
   Define the authoritative, WOP-bound gate-plan artifact required to construct

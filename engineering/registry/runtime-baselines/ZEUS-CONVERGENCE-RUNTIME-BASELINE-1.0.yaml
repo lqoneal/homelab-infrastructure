@@ -8,6 +8,9 @@ architecture_baseline:
   id: OA-IMPLEMENTATION-BASELINE-1.0
   repository_locator: 5706307c1fdf9d4e0601c9cc578181f6d916e0a8
   tag: oa-implementation-baseline-1.0
+infrastructure_baseline:
+  id: OA-INFRA-BASELINE-001
+  repository_locator: 259b3f5d88b25da3cdc09893b01df64adf856453
 runtime_qualification:
   status: READY_FOR_OPERATIONAL_ALPHA_IMPLEMENTATION
   decision: engineering/evidence/2026-07-30-wop-runtime-certification-002/OPERATIONAL-RUNTIME-CERTIFICATION-DECISION.md

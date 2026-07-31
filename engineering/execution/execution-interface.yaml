@@ -3,7 +3,7 @@ interface_id: ENGINEERING-EXECUTION-INTERFACE
 operational_owner: engctl
 metadata_model:
   owner: OPERATIONAL-ALPHA-EMM
-  revision: '1.7'
+  revision: '1.8'
   source: engineering/metadata/operational-alpha-emm.yaml
 authority_resolution:
   model: SPEC-0014

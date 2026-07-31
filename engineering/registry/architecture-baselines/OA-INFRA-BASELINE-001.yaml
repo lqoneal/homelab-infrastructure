@@ -1,0 +1,45 @@
+baseline_id: OA-INFRA-BASELINE-001
+version: 1.0
+status: published_qualified
+classification: Operational Alpha Infrastructure Baseline
+authoritative_owner: Homelab Infrastructure
+authority: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+repository_identity: homelab
+repository_root: /data/engineering/repositories/homelab
+branch: main
+remote: git@github.com:lqoneal/homelab-infrastructure.git
+published_commit: 259b3f5d88b25da3cdc09893b01df64adf856453
+published_at: '2026-07-31'
+predecessor_baseline: OA-IMPLEMENTATION-BASELINE-1.0
+predecessor_commit: e5ada5855cc85879ea480ed37167f08904630001
+qualification_status: QUALIFIED
+qualification_evidence:
+  - engineering/evidence/2026-07-31-wop-baseline-semantic-reconciliation-001/
+  - engineering/evidence/2026-07-31-wop-p2-038-synchronization-lifecycle-semantics-001/
+  - engineering/evidence/2026-07-31-wop-oa-10-execution-001/
+qualification_controls:
+  - SPEC-0005@2.2 semantic-owner resolution
+  - lifecycle-aware synchronization projection
+  - repository and EOS synchronization
+  - Registry validation
+  - Capability Registry verification
+  - git diff --check
+inheritance:
+  default_for_future_operational_alpha_wops: true
+  applies_until: superseded_by_new_qualified_infrastructure_baseline
+  supersession_rule: publish a new immutable baseline record; never overwrite this record
+  historical_records: retain original baseline bindings and provenance unchanged
+  oa11_authorization: separate authority required
+verification_commands:
+  - zeus mission synchronization
+  - zeus mission synchronization OA-10
+  - scripts/engctl validate homelab
+  - scripts/engctl eos validate homelab
+  - scripts/engctl registry validate
+  - zeus capability verify
+  - git diff --check
+synchronization:
+  source: repository baseline registry
+  direction: repository_to_derived_consumers
+  reconciliation_owner: Homelab Infrastructure
+  eos_projection_required: true

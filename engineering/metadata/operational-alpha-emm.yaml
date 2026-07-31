@@ -1,7 +1,8 @@
 schema_version: 1
 emm_id: OPERATIONAL-ALPHA-EMM
-version: 1.7
+version: 1.8
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+infrastructure_baseline_id: OA-INFRA-BASELINE-001
 authoritative_owner: Homelab Infrastructure
 entities:
   - entity_type: ArchitectureBaseline
@@ -11,6 +12,13 @@ entities:
     classification: Authoritative
     source: engineering/registry/architecture-baselines/OA-IMPLEMENTATION-BASELINE-1.0.yaml
     source_digest: e2f0101c4876052203fd730d2053d5091d57a8d7e2be9f5be5d91f96487deecf
+  - entity_type: OperationalAlphaInfrastructureBaseline
+    entity_id: OA-INFRA-BASELINE-001
+    revision: 1.0
+    authoritative_owner: Homelab Infrastructure
+    classification: Authoritative
+    source: engineering/registry/architecture-baselines/OA-INFRA-BASELINE-001.yaml
+    source_digest: 47dd47ca98faa43fd0774f1a4a7bbc63bddad6726c7859da1df8d2765563246f
   - entity_type: ImplementationWOP
     entity_id: WOP-OA-01-IMPLEMENTATION-001
     revision: 1
@@ -24,14 +32,14 @@ entities:
     authoritative_owner: Homelab Infrastructure
     classification: Authoritative
     source: engineering/execution/operational-alpha-execution-contract.yaml
-    source_digest: 0830bd10ea5fc3e1ad1744d7433d4c6da7536b384e3218a2eb75c2c27bdcd9f7
+    source_digest: ed4ea280cf906803757073646c4bcf98bd01a5e85b77b510bfd3c80103cc430a
   - entity_type: RuntimeBaseline
     entity_id: ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0
     revision: 1.0
     authoritative_owner: Homelab Infrastructure
     classification: Authoritative
     source: engineering/registry/runtime-baselines/ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0.yaml
-    source_digest: 0f4b4f97392e58a02e5539103c304eb0adf9496e5ec4b128b76a47cfe47e5fe2
+    source_digest: 233ff3f23ff1309e1c0fe5e26f362ecb3e870a55419a06d07cbfb48ebe95fd7a
   - entity_type: ManualGovernanceWOPAuthorityPolicy
     entity_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
     revision: 1.0
@@ -101,7 +109,7 @@ entities:
     authoritative_owner: Homelab Infrastructure
     classification: Authoritative
     source: engineering/execution/operational-alpha-artifact-framework-v1.1.yaml
-    source_digest: d27116240db6ab21e2a4e11a40af2e2a4aa7757954104ed357ee89ec37a93c02
+    source_digest: 270bf38d46c6d448d536a1529bfe27aade179041b39dbc22fa5a5d8d85229a1a
   - entity_type: ArtifactSchema
     entity_id: OPERATIONAL-ALPHA-IMPLEMENTATION-WOP-LIFECYCLE-TRANSITION
     revision: 1
