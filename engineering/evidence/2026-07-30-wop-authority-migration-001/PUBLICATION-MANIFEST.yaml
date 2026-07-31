@@ -1,0 +1,34 @@
+publication_id: WOP-AUTHORITY-MIGRATION-001-PUBLICATION-1
+date: 2026-07-30
+scope: controlled Operational Alpha convergence-authority migration only
+baseline: OA-IMPLEMENTATION-BASELINE-1.0@5706307c1fdf9d4e0601c9cc578181f6d916e0a8
+authority: WOP-AUTHORITY-MIGRATION-001
+included_paths:
+  - docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md
+  - docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md
+  - docs/procedures/PROC-0006-GOVERNANCE-QUALIFICATION-PROCEDURE.md
+  - docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md
+  - docs/specifications/SPEC-0014-OPERATIONAL-ALPHA-CONVERGENCE-AUTHORITY.md
+  - docs/standards/STD-0003-ENGINEERING_WORK_ORDER_STANDARD.md
+  - docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md
+  - docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md
+  - engineering/evidence/2026-07-30-wop-authority-migration-001/
+excluded_preexisting_paths:
+  - docs/architecture/AQR-0001-ARCHITECTURE-QUALIFICATION-REPORT.md
+  - engineering/evidence/2026-07-30-aqr-0001-hf-002-architecture-qualification-matrix.md
+  - engineering/evidence/2026-07-30-aqr-0001-hf-002-architecture-readiness-report.md
+  - engineering/evidence/2026-07-30-aqr-0001-hf-002-change-summary.md
+  - engineering/evidence/2026-07-30-aqr-0001-hf-002-independent-qualification-report.md
+  - engineering/evidence/2026-07-30-aqr-0001-hf-002-repository-convergence-qualification-matrix.md
+  - engineering/evidence/2026-07-30-aqr-0001-hf-002-validation.md
+  - engineering/evidence/2026-07-30-wop-oa-01-000/OA-01-CONTROLLED-REQUIREMENTS-REASSESSMENT.md
+  - engineering/planning/OA-ROADMAP-HF-001/
+  - engineering/planning/OA-ROADMAP-HF-002/
+  - engineering/planning/OA-ROADMAP-HF-003/
+  - engineering/planning/OA-ROADMAP-HF-004/
+validation:
+  - git diff --check
+  - controlled document index registration
+  - baseline-to-controlled traceability review
+  - no Operational Alpha implementation or WOP activation
+publication_status: published

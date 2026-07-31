@@ -1,11 +1,11 @@
 ---
 document_id: SPEC-0005
 title: Engineering Control Framework
-version: 1.2
-status: Draft
+version: 2.0
+status: Active
 owner: EOS Program
 created: 2026-07-08
-last_updated: 2026-07-28
+last_updated: 2026-07-30
 governed_by: EOS-0001
 implements:
   - EDR-0002
@@ -51,6 +51,14 @@ mission_assurance_requirements:
 ---
 
 # Engineering Control Framework
+
+## Operational Alpha convergence migration
+
+SPEC-0014 is the controlled authority owner for Operational Alpha. This
+framework consumes its resolver result; it does not recreate a legacy
+Work-Registry/EWO authority chain. `zeus mission snapshot`, `zeus mission
+qualify`, and `zeus execution resolve` must use the exact version-pinned EMM
+resolution receipt and fail closed on every non-`RESOLVED` outcome.
 
 ---
 
@@ -107,9 +115,9 @@ Command output SHALL be considered a derived engineering view.
 
 ## 5.1 Command Authority Standard
 
-The authority owner is the repository Mission Contract and, when applicable,
-its active WOP. Classification determines whether recorded authority is
-sufficient; it never creates authority.
+For Operational Alpha, the authority owner is the SPEC-0014 Authority Record
+and its resolved baseline-bound Implementation WOP. Classification determines
+whether recorded authority is sufficient; it never creates authority.
 
 ### Automatic
 
@@ -172,12 +180,12 @@ validates identities and revisions, derives blockers and next action, and
 fails closed. Zeus consumes the resolved contract for its own qualified
 lifecycle and SHALL NOT infer dispatch authority from implementation state.
 
-The Mission Contract binds repository identity, mission and registry identity,
-scope, objective, completion criteria, authority input, WOP applicability,
-review gates, lifecycle, evidence and reconciliation obligations, and the next
-authorized action. An applicable WOP supplies bounded effect authority; a
-non-applicable result requires a recorded reason. Neither a WOP nor workspace
-permission creates an engineering decision.
+The resolved Operational Alpha contract binds repository identity and baseline,
+Authority Record, exact EMM revisions, Implementation WOP, scope, objective,
+lifecycle position, capability, evidence, reconciliation obligations, and next
+authorized action. A WOP is a bounded execution package only after Authority
+Record resolution; neither a WOP nor workspace permission creates an
+engineering decision.
 
 Required inputs are the repository identity and HEAD, exact controlled-owner
 identities and revisions, the unique Mission Contract and registry record,
@@ -302,13 +310,11 @@ Repository Identity Verification -> Repository Integrity Verification ->
 Package Integrity Verification -> Mission Activation -> Mission Contract
 Resolution -> Execution Verification -> Mission Execution`.
 
-Engineering Governance SHALL be the sole Mission Admission Authority and
-Mission Activation Authority until a controlled-document revision explicitly
-supersedes this temporary operating directive. Manual Governance submission
-SHALL establish intentional mission submission and Mission Admission.
-Admission SHALL mean only that Engineering Governance intentionally accepted
-the mission into the Engineering Operating System. Admission SHALL remain valid
-until explicitly revoked through Engineering Governance.
+For Operational Alpha, admission and activation are SPEC-0014 lifecycle
+operations. Governance produces the Authority Record, the Metadata Engine
+resolves it with the exact baseline-bound WOP, and qualification determines
+whether the requested capability is eligible. A `READY` WOP is not activated
+and authorization cannot be inferred from admission, a command, or prior work.
 
 Admission SHALL NOT imply repository readiness, package validity, execution
 authority, activation, Mission Contract resolution, authority resolution, or
@@ -335,14 +341,15 @@ A blocked mission SHALL remain admitted, attributable, auditable, and eligible
 to resume execution qualification after correction without a new Mission
 Admission. Execution agents SHALL NOT reinterpret `BLOCKED` as not admitted.
 
-Activation processing SHALL use a repository lock, request idempotency, expected-state
-comparison, one-active-contract cardinality, durable before-images, atomic
-replacement, post-write resolution, and a transaction journal. Canonical
-repository records are the Mission Contract, Work Registry, Project State, and
-activation evidence. EOS is derived and must synchronize before commit.
-Failure or interruption SHALL restore all canonical before-images and
-resynchronize EOS. Partial activation and direct lifecycle activation are
-prohibited.
+Activation processing SHALL use a correlation id, idempotency key,
+expected-state comparison, one resolved Authority Record/WOP cardinality,
+durable before-images, atomic authoritative-record update, post-write
+resolution, and a transaction journal. Canonical records are the Authority
+Record, EMM publication index, Implementation WOP, lifecycle receipt, and
+Project State. EOS is derived and must synchronize through a receipt after the
+authoritative transaction. Failure or interruption restores before-images and
+rebuilds derived projections. Partial activation and direct lifecycle
+activation are prohibited.
 
 The resolver output is the single operational authorization result consumed by
 both `engctl resume` and execution snapshots.
@@ -372,3 +379,4 @@ All future EOS controllers SHALL conform to this specification.
 | 1.2 candidate reconciliation | 2026-07-28 | Added controlled-owner mission-assurance declarations and required generic, fail-closed Zeus evaluation through the canonical execution resolver. |
 | 1.3 candidate | 2026-07-28 | Added the Mission Activation Service, admission qualifications, atomic transaction boundary, reconciliation, rollback, recovery, and resolver cardinality requirements. |
 | 1.4 candidate | 2026-07-29 | Reconciled Governance-only admission and activation, independent Governance and execution state, execution-readiness blockers, and resumable blocked missions without adding runtime behavior. |
+| 2.0 | 2026-07-30 | Migrated Operational Alpha command authority, resolver consumption, lifecycle activation, synchronization, and recovery to SPEC-0014. |

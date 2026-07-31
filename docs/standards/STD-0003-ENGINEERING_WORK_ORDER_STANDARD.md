@@ -1,11 +1,11 @@
 ---
 document_id: STD-0003
-title: Engineering Work Order Standard
-version: 1.5
-status: Draft
+title: Operational Alpha Work Authorization Standard
+version: 2.0
+status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-28
+last_updated: 2026-07-30
 phase: Engineering Execution Interface Standardization
 domain: Engineering Governance
 classification: Engineering Standard
@@ -47,7 +47,17 @@ mission_assurance_requirements:
               operator: not_empty
 ---
 
-# Engineering Work Order Standard
+# Operational Alpha Work Authorization Standard
+
+## Operational Alpha convergence migration
+
+For Operational Alpha, SPEC-0014 is the controlling execution-authority
+model. The legacy Active Engineering Work Order / Work Registry Mission
+Contract pair is retained only for historical traceability and shall not be
+used to resolve a new Operational Alpha action. The current authority is the
+version-pinned Authority Record and published Implementation WOP resolved from
+EMM under SPEC-0014. A `READY` WOP is non-executing; only a resolver-confirmed
+Authority Record may make a WOP `ACTIVE`.
 
 ## Purpose
 
@@ -71,7 +81,8 @@ This standard applies to every Engineering Work Order executed within the Engine
 
 ### Principle 1 — Explicit Authorization
 
-Engineering work shall be performed only under an Active Engineering Work Order.
+Operational Alpha work shall be performed only under an `ACTIVE` Implementation
+WOP whose specific action is resolved by a valid Authority Record.
 
 ---
 
@@ -288,7 +299,9 @@ Engineering Work Orders shall comply with:
 * Engineering Document Lifecycle Standard;
 * Engineering Document Persistence Standard.
 
-Implementation agents verify that the Engineering Work Order is Active before execution. Only an Active Engineering Work Order conveys execution authority.
+Implementation agents verify that the Implementation WOP is `ACTIVE` and that
+the applicable SPEC-0014 Authority Record resolves before execution. Neither
+the WOP alone nor its `READY` state conveys execution authority.
 
 Lifecycle state transitions remain the responsibility of Engineering Governance.
 
@@ -357,3 +370,4 @@ This standard is complete when every Engineering Work Order activated under the 
 | 1.2 | 2026-07-17 | Required repository-governed mission classification, the exact Completion Report title, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
 | 1.3 | 2026-07-18 | Institutionalized execution-first Completion Reports, mandatory execution/results separation, ordered findings through follow-on work, Final Certification placement, and TPL-0002 structural ownership. |
 | 1.4 | 2026-07-28 | Standardized the repository Mission Contract and its Work Registry/WOP composition for deterministic discovery, execution, and resume. |
+| 2.0 | 2026-07-30 | Migrated Operational Alpha authority to SPEC-0014's EMM-resolved Authority Record and Implementation WOP model; legacy EWO/Work Registry resolution is historical only for Operational Alpha. |

@@ -1,11 +1,11 @@
 ---
 document_id: TPL-0001
-title: Engineering Work Order Template
-version: 1.9
-status: Draft
+title: Operational Alpha Implementation WOP Template
+version: 2.0
+status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-28
+last_updated: 2026-07-30
 phase: Engineering Execution Interface Standardization
 domain: Engineering Governance
 classification: Engineering Template
@@ -33,7 +33,11 @@ tags:
   - engineering-operating-system
 ---
 
-# Engineering Work Order Template
+# Operational Alpha Implementation WOP Template
+
+For Operational Alpha, instantiate this structure as an Implementation WOP
+under SPEC-0014. Historical EWO fields are retained only where needed to
+identify retained evidence; they do not establish current authority.
 
 This template owns only the reusable structure of a concise,
 transaction-specific authorization contract. Construct Engineering Handoffs
@@ -53,7 +57,7 @@ Mission: `<Mission Identifier>`
 
 Phase: `<Phase Identifier>`
 
-Engineering Work Order: `<EWO Identifier>`
+Implementation WOP: `<WOP Identifier>`
 
 Revision: `<Revision Number>`
 
@@ -63,7 +67,11 @@ Status: `<Draft | Review | Approved | Active | Superseded | Archived>`
 
 Execution Mode: `<Execution Mode>`
 
-Repository Mission Contract: `<Work Registry work-item locator>`
+Baseline Binding: `<OA-IMPLEMENTATION-BASELINE identifier and immutable locator>`
+
+Authority Record: `<Authority Record identifier, exact revision, and digest>`
+
+EMM Resolution Receipt: `<Resolution receipt identifier and digest>`
 
 Engineering Execution Interface: `engineering/execution/execution-interface.yaml`
 
@@ -75,7 +83,7 @@ Approval Reference: `<Controlled authorization reference>`
 
 Approval Date: `<Date>`
 
-Authorized Lifecycle State: `<Approved | Active>`
+Authorized Lifecycle State: `<READY | ACTIVE>`
 
 Authorization Statement: `<Exact bounded authorization granted by this Work Order>`
 
@@ -211,7 +219,7 @@ through PROC-0001 rather than redefined by this Work Order.
 
 Publication Requirement: `<Atomic publication boundary, separate publication, or None>`
 
-Synchronization Targets: `<DOC-0001, Project State, Work Registry, EOS, checkpoint, or None>`
+Synchronization Targets: `<EMM publication index, Project State, EOS, EENS, generated artifacts, receipts, or None>`
 
 Required Repository History Action: `<Commit, tag, push, or None>`
 
@@ -271,3 +279,4 @@ Approval Date: `<Date>`
 | 1.6 | 2026-07-18 | Added structural fields for an explicitly selected ETP and frozen resolved manifest while assigning model and resolution semantics to SPEC-0008 and PROC-0004. |
 | 1.7 | 2026-07-18 | Corrected the controlled-publication workflow reference to PROC-0005 while preserving PROC-0001 ownership of Engineering Work Order execution. |
 | 1.8 | 2026-07-28 | Added repository Mission Contract and Engineering Execution Interface locators without duplicating their semantics. |
+| 2.0 | 2026-07-30 | Migrated Operational Alpha WOP identity, authority, resolution, baseline, and synchronization fields to SPEC-0014. |

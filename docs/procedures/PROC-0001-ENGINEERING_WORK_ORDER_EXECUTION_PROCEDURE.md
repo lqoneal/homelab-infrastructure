@@ -1,11 +1,11 @@
 ---
 document_id: PROC-0001
-title: Engineering Work Order Execution Procedure
-version: 1.19
-status: Draft
+title: Operational Alpha Work Initiation and Execution Procedure
+version: 2.0
+status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-29
+last_updated: 2026-07-30
 phase: Engineering Execution Interface Standardization
 domain: Engineering Governance
 classification: Engineering Procedure
@@ -167,7 +167,16 @@ mission_assurance_requirements:
           value: completed
 ---
 
-# Engineering Work Order Execution Procedure
+# Operational Alpha Work Initiation and Execution Procedure
+
+## Operational Alpha convergence migration
+
+For Operational Alpha, this procedure is interpreted through SPEC-0014. The
+former Work Registry Mission Contract and Active Engineering Work Order
+admission path is superseded for new actions. Historical records remain
+read-only evidence. The initiation authority chain is Governance Decision →
+Authority Record → EMM → published Implementation WOP → resolution receipt →
+preflight qualification. No step in this procedure activates a WOP by itself.
 
 ## Purpose
 
@@ -203,7 +212,7 @@ Execution shall conform to:
 
 ## Execution Principles
 
-Engineering Work Orders shall be executed:
+Operational Alpha implementation WOPs shall be executed:
 
 * deterministically;
 * within approved scope;
@@ -219,23 +228,19 @@ Engineering Work Orders shall be executed:
 Every Engineering Work Order shall execute according to the following workflow:
 
 ```text
-Mission Classification Gate
+Canonical Metadata Resolution
         ↓
-Engineering Document Verification
+Authority Record Verification
         ↓
-Operational Inventory
+Implementation WOP / Baseline Verification
         ↓
-Operational Preparation
+Preflight Qualification
         ↓
-Baseline Verification
+Authorized Capability Execution
         ↓
-Engineering Phase Execution
+Evidence, Synchronization, and Reconciliation
         ↓
-Engineering Evidence Collection
-        ↓
-Completion Report
-        ↓
-Engineering Governance Review
+Completion Report and Qualification
 ```
 
 ## Repository-Authoritative Engineering Execution Interface
@@ -243,17 +248,17 @@ Engineering Governance Review
 This procedure owns the canonical lifecycle:
 
 ```text
-Repository Discovery
+Governance Decision
         ↓
-Mission Contract
+Authority Record
         ↓
-Execution Authority
+EMM Resolution
         ↓
-Execution
+Implementation WOP
         ↓
-Verification
+Qualified Capability Execution
         ↓
-Reconciliation
+Verification and Reconciliation
         ↓
 Completion Report
         ↓
@@ -272,10 +277,10 @@ action, blockers, and source records without prompt history. Conversational
 context may identify the requested mission but shall not supply missing
 procedure, authority, state, or completion semantics.
 
-The Mission Contract is the current Work Registry work item plus any applicable
-WOP. The Work Registry identifies objective and lifecycle; a WOP supplies
-bounded effect authority when required. Neither substitutes for the other.
-Future handoffs invoke this interface and shall not reproduce its procedures.
+The resolved authority contract is the SPEC-0014 Authority Record, exact EMM
+entity revisions, and the baseline-bound Implementation WOP. The Work Registry
+and historical EWOs may be consumed as traceability inputs but cannot grant,
+deny, or replace this contract for Operational Alpha.
 
 ## Mission-Assurance Verification
 
@@ -490,8 +495,10 @@ engctl registry validate
 engctl execution snapshot --mission <MISSION-ID>
 ```
 
-A missing, ambiguous, stale, or conflicting Mission Contract blocks
-implementation. Resolve the failure as follows:
+A missing, ambiguous, stale, or conflicting SPEC-0014 resolution receipt,
+Authority Record, EMM revision, or Implementation WOP blocks Operational Alpha
+implementation. Legacy Mission Contract failures are traceability observations,
+not authority-resolution inputs. Resolve a current failure as follows:
 
 1. preserve the normal authority-resolution result;
 2. evaluate every Governance Bootstrap Condition predicate defined by
@@ -502,13 +509,11 @@ implementation. Resolve the failure as follows:
    PROC-0002.
 
 Bootstrap detection does not create execution authority. During suspension an
-execution agent shall not modify an active Mission Contract, invent or expand
-authority, implement a product or feature, complete or accept a gate, or
-advance a gate, create or amend a Mission Contract, reinterpret controlled
-documentation, or change repository content. Resume is permitted only after
-Engineering Governance determines correction is required, the minimum revision
-becomes authoritative through the normal controlled-document process, and
-normal Mission Contract resolution independently succeeds.
+execution agent shall not modify authoritative metadata, invent or expand
+authority, implement a product or feature, complete or accept a gate, advance
+a gate, reinterpret controlled documentation, or change repository content.
+Resume is permitted only after the correcting successor fact is published and
+SPEC-0014 resolution independently succeeds.
 
 ---
 
@@ -1045,7 +1050,11 @@ Authority not explicitly granted remains prohibited.
 
 ## Success Criteria
 
-### Mission Admission and Activation Candidate
+### Operational Alpha Admission and Activation
+
+For Operational Alpha, this entire section is superseded by SPEC-0014's
+Authority Record and WOP lifecycle. The historical terminology retained below
+documents provenance only and shall not be evaluated by the runtime resolver.
 
 Engineering Governance is the sole Mission Admission Authority until
 controlled documentation explicitly establishes another model. A WOP manually
@@ -1141,6 +1150,7 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.2 | 2026-07-15 | Required recovery work initiated under this procedure to consume PROC-0003 without expanding mission authority. |
 | 1.3 | 2026-07-15 | Integrated STD-0004 freshness qualification and reconciliation gating into Work Initiation and resume after interruption. |
 | 1.4 | 2026-07-15 | Established mandatory Commit Classification, traceability, validation, dependency ordering, commit boundaries, and milestone publication controls after Engineering State Reconciliation. |
+| 2.0 | 2026-07-30 | Migrated Operational Alpha initiation, authority resolution, lifecycle, synchronization, qualification, and completion routing to SPEC-0014. |
 | 1.5 | 2026-07-15 | Established Commit Reconstruction Planning, approved reconstruction methods, execution gates, persistent planning artifacts, and proportional planning governance. |
 | 1.6 | 2026-07-17 | Added the Mission Classification Gate, risk-proportional Category A/B/C initiation, exact Completion Report standard, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
 | 1.7 | 2026-07-17 | Required repository-governed Codex missions to launch through `engctl codex`, added initiation-time bypass detection and exception controls, and defined the mandatory notification lifecycle under EWO-000019. |

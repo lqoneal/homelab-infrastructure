@@ -1,11 +1,11 @@
 ---
 document_id: TPL-0002
 title: Completion Report Template
-version: 1.4
-status: Draft
+version: 2.0
+status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-28
+last_updated: 2026-07-30
 phase: Engineering Execution Interface Standardization
 domain: Engineering Governance
 classification: Engineering Template
@@ -57,6 +57,10 @@ Engineering Operating System:
 Engineering Work Order or Authority:
 
 `<Identifier and revision>`
+
+Operational Alpha Baseline / Authority Record / Resolution Receipt:
+
+`<Baseline identifier and immutable locator; exact Authority Record; EMM receipt digest, or Not Applicable>`
 
 Mission and Phase:
 

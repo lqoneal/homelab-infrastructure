@@ -127,6 +127,12 @@ PROC-0007, and PROC-0007 does not select or alter the qualification result.
 
 ## 4. Authority Model
 
+For Operational Alpha, qualification invocation is permitted only by a
+SPEC-0014 `RESOLVED` receipt for the exact Authority Record, baseline-bound
+Implementation WOP, sealed subject manifest, and requested qualification
+capability. The former Active Engineering Work Order condition below is
+historical for Operational Alpha and does not resolve a current invocation.
+
 An Active Engineering Work Order or superior explicit authorization is required
 to execute qualification. Holding a qualification role conveys no authority
 assigned to another role.
