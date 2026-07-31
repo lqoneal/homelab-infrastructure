@@ -11,15 +11,15 @@ sys.path.insert(0, str(ROOT))
 from scripts.lib.eos import mission_knowledge
 
 class OA06MissionKnowledgeTests(unittest.TestCase):
-    def test_oa06_is_deterministically_recommended(self):
+    def test_completed_current_sequence_has_no_unauthorized_successor(self):
         first = mission_knowledge.recommend(ROOT)
-        self.assertEqual("PASS", first["result"])
-        self.assertEqual("OA-06", first["recommended_mission"])
+        self.assertEqual("NO_ELIGIBLE_MISSION", first["result"])
+        self.assertIsNone(first["recommended_mission"])
         self.assertEqual(first, mission_knowledge.recommend(ROOT))
 
     def test_readiness_explains_prerequisites_without_independent_ordering(self):
         value = mission_knowledge.readiness(ROOT, "OA-06")
-        self.assertEqual("ELIGIBLE", value["classification"])
+        self.assertEqual("COMPLETED", value["classification"])
         self.assertEqual(["OA-05"], value["dependencies"])
         self.assertEqual([], value["missing_dependencies"])
         self.assertEqual([], value["missing_capabilities"])

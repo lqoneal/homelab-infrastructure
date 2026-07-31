@@ -398,7 +398,7 @@ def main(argv=None):
                 if not a.identifier or not a.other: raise OrchestrationError("two registry revisions are required")
                 value = capability_registry.diff(ROOT, a.identifier, a.other)
             emit(value)
-            return 0 if value.get("result", "PASS") in ("PASS", "NO_DIFFERENCE") else 77
+            return 0 if value.get("result", "PASS") in ("PASS", "NO_DIFFERENCE", "NO_ELIGIBLE_MISSION") else 77
         if a.command == "mission" and a.action in ("recommend", "explain", "readiness", "prerequisites", "dependency-graph"):
             if a.action == "recommend": value = mission_knowledge.recommend(ROOT)
             elif a.action == "dependency-graph": value = mission_knowledge.dependency_graph(ROOT)
@@ -406,7 +406,7 @@ def main(argv=None):
                 if not a.mission_id: raise OrchestrationError("mission identifier is required")
                 value = getattr(mission_knowledge, a.action.replace("-", "_"))(ROOT, a.mission_id)
             emit(value)
-            return 0 if value.get("result", "PASS") in ("PASS", "NO_DIFFERENCE") else 77
+            return 0 if value.get("result", "PASS") in ("PASS", "NO_DIFFERENCE", "NO_ELIGIBLE_MISSION") else 77
         if a.command == "lifecycle":
             receipt = ConvergenceRuntime(ROOT).resolve(
                 wop_id=a.wop_id, revision=a.revision, action="lifecycle_inspection",

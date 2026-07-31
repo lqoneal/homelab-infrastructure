@@ -72,7 +72,7 @@ missions:
     controlled_document_relationships: [PROC-0001@2.6, SPEC-0014@1.6]
     runtime_state_relationships: [ImplementationWOP, AuthorityRecord, OperationalGatePlan, ActivationRecord]
   - mission_id: OA-06
-    lifecycle: CURRENT
+    lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-06/objective.yaml
     capability_prerequisites: [ZEUS-OA-CAP-001, ZEUS-OA-CAP-002, ZEUS-OA-CAP-003, ZEUS-OA-CAP-004]

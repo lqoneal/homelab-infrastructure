@@ -314,7 +314,7 @@ entities:
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/missions/operational-alpha-mission-knowledge.yaml
-    source_digest: 1bd07b1b671a1c04a3cf2311f7330bfefdea070639ea58d4d9a818522f280861
+    source_digest: cf7db07562c15546c2e43fd09fa336a0a66c7b75010d8dc1ba8cf15d93890a2b
   - entity_type: ImplementationWOP
     entity_id: WOP-9ed7762f-c143-5a58-9a21-63fae5a06c05
     revision: 1
