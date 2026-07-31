@@ -22,7 +22,7 @@ gate_plan:
           action_type: create_artifact
           path: runtime/evidence/OA-03/MISSION-CONTRACT-DISCOVERY-QUALIFIED
           content: "OA-03 deterministic Mission Contract discovery qualified\\n"
-          content_digest: d4671bafc94b13b061c93ef56c610c89a5497736a89f4d3ac6a1e31d01172267
+          content_digest: 5f3903e944c1585e86b103470877712a22213af1053d1cbaedc1d7b378472ff0
     VERIFY_COMPLETION:
       dependencies:
         - EXECUTE_WORK
@@ -30,7 +30,7 @@ gate_plan:
         - action_id: verify-oa03-discovery-marker
           action_type: verify_artifact
           path: runtime/evidence/OA-03/MISSION-CONTRACT-DISCOVERY-QUALIFIED
-          content_digest: d4671bafc94b13b061c93ef56c610c89a5497736a89f4d3ac6a1e31d01172267
+          content_digest: 5f3903e944c1585e86b103470877712a22213af1053d1cbaedc1d7b378472ff0
 traceability:
   controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-03/objective.yaml
   implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-03/implementation.md
