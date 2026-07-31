@@ -1,0 +1,39 @@
+schema_version: 1
+plan_id: WOP-502ce342-7fc9-577c-b906-07b00bf2a615
+revision: 1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop:
+  wop_id: WOP-502ce342-7fc9-577c-b906-07b00bf2a615
+  revision: 1
+authority_lineage:
+  root_wop:
+    wop_id: WOP-502ce342-7fc9-577c-b906-07b00bf2a615
+    revision: 1
+  authority_record: AR-OA-02-001@1
+  root_receipt: 8314679f97970529b5a2ba5b13d7b5f580c699274cc0dabbb28f5fa5a8d6a0ae
+  framework_digest: d27116240db6ab21e2a4e11a40af2e2a4aa7757954104ed357ee89ec37a93c02
+  authority_mode: MANUAL_GOVERNANCE_WOP
+  governing_directive: WOP-OA-02-ADMISSION-ACTIVATION-AND-EXECUTION-001
+gate_plan:
+  gates:
+    EXECUTE_WORK:
+      dependencies: []
+      actions:
+        - action_id: oa02-authority-marker
+          action_type: create_artifact
+          path: runtime/evidence/OA-02/AUTHORITY-VERIFIED
+          content: "OA-02 controlled mission authority verified\n"
+          content_digest: 13aed29c2837c77998d4c5288023ba8cfc1b0db7ee1ab22772af7a7d9346f9cf
+    VERIFY_COMPLETION:
+      dependencies:
+        - EXECUTE_WORK
+      actions:
+        - action_id: verify-oa02-authority-marker
+          action_type: verify_artifact
+          path: runtime/evidence/OA-02/AUTHORITY-VERIFIED
+          content_digest: 13aed29c2837c77998d4c5288023ba8cfc1b0db7ee1ab22772af7a7d9346f9cf
+traceability:
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-02/objective.yaml
+  execution_contract: OPERATIONAL-ALPHA-EXECUTION-CONTRACT@1.0
+  execution_first_policy: SPEC-0014@1.6
