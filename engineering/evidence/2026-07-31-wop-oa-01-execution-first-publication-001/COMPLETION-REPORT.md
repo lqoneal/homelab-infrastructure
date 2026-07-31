@@ -17,5 +17,6 @@ Execution-First controlled documentation only.
 
 ## Completion state
 
-Publication and EOS synchronization receipts are populated after publication.
-No activation, admission, lifecycle transition, or mission execution occurred.
+Publication completed at `21aa062a39af4ed19473779786a20b814aeff05b`; EOS
+synchronization and validation passed. No activation, admission, lifecycle
+transition, or mission execution occurred.
