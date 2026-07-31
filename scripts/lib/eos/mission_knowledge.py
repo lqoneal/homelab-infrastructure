@@ -122,3 +122,41 @@ def health(root: Path | str) -> dict[str, Any]:
             "classification_counts": counts, "dependency_integrity": graph["result"],
             "recommended_mission": recommend(root)["recommended_mission"],
             "authoritative_source": PATH}
+
+def orchestration_verification(root: Path | str) -> dict[str, Any]:
+    """Verify the canonical, read-only orchestration transaction.
+
+    Mission Knowledge Model remains the sole owner: this is a deterministic
+    projection and never creates authority, WOP, dispatch, or mission state.
+    """
+    decision = recommend(root)
+    if decision["result"] != "PASS":
+        return {"result": "NO_ELIGIBLE_MISSION", "decision": decision}
+    from scripts.lib.emp.agent_qualification import registry as agent_registry
+    registry = agent_registry(Path(root))
+    agents = [item for item in registry.get("agents", [])
+              if item.get("active") is True and item.get("qualification_status") == "QUALIFIED"]
+    if len(agents) != 1:
+        return {"result": "NO_QUALIFIED_EXECUTION_AGENT", "decision": decision,
+                "qualified_agents": sorted(item.get("agent_id", "") for item in agents),
+                "authoritative_source": PATH}
+    mission = decision["readiness"]
+    agent = agents[0]
+    contract = {
+        "mission_id": decision["recommended_mission"],
+        "selected_execution_agent": agent["agent_id"],
+        "required_capabilities": mission["prerequisite_capabilities"],
+        "authority_source": PATH,
+        "execution_constraints": agent.get("execution_constraints", []),
+        "expected_evidence_outputs": ["dispatch-contract", "capability-qualification", "operator-capability-summary", "synchronization-report", "validation-report"],
+    }
+    return {"result": "PASS", "transaction": "DETERMINISTIC_ORCHESTRATION",
+            "decision_trace": {"recommendation": decision, "agent_count": len(agents)},
+            "dispatch_contract": contract, "authoritative_source": PATH}
+
+def dispatch_verification(root: Path | str) -> dict[str, Any]:
+    result = orchestration_verification(root)
+    return {"result": result["result"], "dispatch": result.get("dispatch_contract"),
+            "qualified_agents": result.get("qualified_agents", ([result["dispatch_contract"]["selected_execution_agent"]] if result.get("dispatch_contract") else [])),
+            "authoritative_source": result.get("authoritative_source", PATH),
+            "decision_trace": result.get("decision_trace")}

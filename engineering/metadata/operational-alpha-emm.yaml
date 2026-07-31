@@ -398,13 +398,13 @@ entities:
     source_digest: 060cba8da55b2b541443a28cb825bfd9bb90cd9e65d0dc0ba0a13cd3f4b64382
   - entity_type: ImplementationWOPLifecycleTransition
     entity_id: OA-08-READY-TO-ACTIVE
-    revision: 1
+    revision: 2
     implementation_wop_id: WOP-oa08-deterministic-resolution-001
     implementation_wop_revision: 1
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/lifecycle-transitions/records/OA-08-READY-TO-ACTIVE.yaml
-    source_digest: 623993539c65d23fa6405075f29a87802c6979af6d0b9766b4215d22c86104c1
+    source_digest: b44d31199871bd9f9dfd997aa57820f89211dbf9118f83f3f0f946fb5c4af908
   - entity_type: AuthorityRecord
     entity_id: AR-OA-08-001
     revision: 1

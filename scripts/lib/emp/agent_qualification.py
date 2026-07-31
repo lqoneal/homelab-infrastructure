@@ -134,8 +134,12 @@ def qualification_inputs(repository: Path) -> dict[str, Any]:
         "eens_integration": (
             root / "engineering/eens/production-eens-policy.yaml"
         ).is_file(),
-        "lifecycle_compatibility": (
-            binding["mission_knowledge"]["recommended_mission"] == "OA-07"
+        # Qualification remains valid across the published Operational Alpha
+        # sequence.  Binding it to OA-07 made a previously qualified agent
+        # disappear as soon as the authoritative mission advanced.
+        "lifecycle_compatibility": bool(
+            binding["mission_knowledge"].get("recommended_mission")
+            and binding["mission_knowledge"]["recommended_mission"].startswith("OA-")
         ),
     }
     return {

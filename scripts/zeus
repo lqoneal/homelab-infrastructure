@@ -265,7 +265,9 @@ def main(argv=None):
     admit_mission=sub.add_parser("admit-mission"); admit_mission.add_argument("action", choices=("start","resume","status")); admit_mission.add_argument("--admission-id"); admit_mission.add_argument("--mode", choices=("qualification","operational")); admit_mission.add_argument("--intent"); admit_mission.add_argument("--mission"); admit_mission.add_argument("--phase"); admit_mission.add_argument("--work-item"); admit_mission.add_argument("--principal"); admit_mission.add_argument("--submitter"); admit_mission.add_argument("--repository", default=str(ROOT)); admit_mission.add_argument("--at"); admit_mission.add_argument("--max-stages", type=int); admit_mission.add_argument("--wop"); admit_mission.add_argument("--revision", default="1"); admit_mission.add_argument("--authority-record"); admit_mission.add_argument("--correlation-id", default="zeus-mission-admission")
     execute_mission=sub.add_parser("execute-mission"); execute_mission.add_argument("action", choices=("start","resume","status","suspend","cancel")); execute_mission.add_argument("--admission-id"); execute_mission.add_argument("--execution-id"); execute_mission.add_argument("--reason", default="OPERATOR"); execute_mission.add_argument("--at"); execute_mission.add_argument("--max-gates", type=int); execute_mission.add_argument("--wop"); execute_mission.add_argument("--revision", default="1"); execute_mission.add_argument("--authority-record"); execute_mission.add_argument("--correlation-id", default="zeus-mission-execution")
     dispatcher=sub.add_parser("dispatcher"); dispatcher.add_argument("action", choices=("status","agents","assignment","execution","eens","evidence","reconciliation")); dispatcher.add_argument("--identifier")
-    agent=sub.add_parser("agent"); agent.add_argument("action", choices=("registry","status","qualify","revoke")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--json", action="store_true")
+    dispatch=sub.add_parser("dispatch"); dispatch.add_argument("action", choices=("verify",))
+    orchestrate=sub.add_parser("orchestrate"); orchestrate.add_argument("action", choices=("verify",))
+    agent=sub.add_parser("agent"); agent.add_argument("action", choices=("list","registry","status","qualify","revoke")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--json", action="store_true")
     gate=sub.add_parser("gate"); gate.add_argument("action", choices=("show", "objective", "evidence", "receipt", "carry-forward", "validate-carry-forward")); gate.add_argument("gate_id")
     next_action=sub.add_parser("next-action"); next_action.add_argument("--json", action="store_true")
     a=p.parse_args(arguments)
@@ -357,6 +359,14 @@ def main(argv=None):
                 value = mission_knowledge.health(ROOT)
             emit(value)
             return 0 if value.get("result", "PASS") in ("PASS", "NO_ELIGIBLE_MISSION") else 77
+        if a.command == "dispatch":
+            value = mission_knowledge.dispatch_verification(ROOT)
+            emit(value)
+            return 0 if value.get("result") == "PASS" else 77
+        if a.command == "orchestrate":
+            value = mission_knowledge.orchestration_verification(ROOT)
+            emit(value)
+            return 0 if value.get("result") == "PASS" else 77
         if a.command == "mission" and (
             a.action in {
                 "state", "eligibility", "blockers",
