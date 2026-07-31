@@ -12,9 +12,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from scripts.lib.emp.gate_approval import GateApprovalError, GateApprovalService
 from scripts.lib.emp.authority_resolution import authoritative_source_path
 from scripts.lib.emp.production_execution import digest, validate_agent
+from scripts.lib.eos import capability_registry, mission_knowledge
 import yaml
 
 
@@ -80,59 +80,42 @@ def _binding(repository: Path) -> dict[str, Any]:
         if Path(value["canonical_locator"]).resolve() == repository
     )
     try:
-        service = GateApprovalService.configured(repository)
-        oa01 = service.binding("OA-01", require_clean=False)
-    except GateApprovalError as error:
-        raise AgentQualificationError(str(error)) from error
+        recommendation = mission_knowledge.recommend(repository)
+        capabilities = capability_registry.load(repository)
+    except Exception as error:
+        raise AgentQualificationError(
+            "convergence mission and capability state is unavailable"
+        ) from error
     return {
         "repository_identity": str(repository),
         "repository_head": head,
         "published_baseline": published,
         "authority_publication": pointer["transaction_id"],
-        "pmct_run": _current_oa02_run(repository, service),
-        "oa01_pmct_run": oa01.run_id,
+        "mission_knowledge": {
+            "model_id": recommendation["model_id"],
+            "revision": recommendation["readiness"]["revision"],
+            "recommended_mission": recommendation["recommended_mission"],
+            "readiness_digest": recommendation["readiness"]["readiness_digest"],
+        },
+        "capability_registry": {
+            "registry_id": capabilities["registry_id"],
+            "revision": str(capabilities["revision"]),
+        },
     }
-
-
-def _current_oa02_run(
-    repository: Path, service: GateApprovalService | None = None
-) -> str:
-    service = service or GateApprovalService.configured(repository)
-    state = yaml.safe_load(
-        (repository / "engineering/runtime/pmct/capability-state.yaml").read_text()
-    )
-    if state.get("last_evaluated_gate") != "OA-02":
-        return "NONE"
-    run_id = state.get("last_run_id", "NONE")
-    return (
-        run_id
-        if any(path.name == run_id for path in service._candidate_directories("OA-02"))
-        else "NONE"
-    )
 
 
 def qualification_inputs(repository: Path) -> dict[str, Any]:
     root = repository.resolve()
     binding = _binding(root)
-    service = GateApprovalService.configured(root)
-    oa01 = service.binding("OA-01", require_clean=False)
-    milestone = service.gate_milestone(oa01)
-    verification = milestone["verification"] == "PASS"
-    acceptance = milestone["acceptance"] == "RECORDED"
     checks = {
         "agent_identity": bool(getpass.getuser() and socket.gethostname()),
         "repository_access": os.access(root, os.R_OK | os.W_OK),
         "repository_identity": binding["repository_identity"]
         == "/data/engineering/repositories/homelab",
-        "published_baseline_compatibility": (
-            binding["repository_head"] == binding["published_baseline"]
-        ),
+        "convergence_mission_knowledge": bool(binding["mission_knowledge"]),
+        "capability_registry_compatibility": bool(binding["capability_registry"]),
         "engineering_authority_compatibility": bool(
             binding["authority_publication"]
-        ),
-        "current_pmct_binding_compatibility": (
-            binding["oa01_pmct_run"] != "NONE"
-            and binding["pmct_run"] != "NONE"
         ),
         "runtime_dependencies": all(
             (root / path).exists()
@@ -152,7 +135,7 @@ def qualification_inputs(repository: Path) -> dict[str, Any]:
             root / "engineering/eens/production-eens-policy.yaml"
         ).is_file(),
         "lifecycle_compatibility": (
-            verification and acceptance
+            binding["mission_knowledge"]["recommended_mission"] == "OA-07"
         ),
     }
     return {

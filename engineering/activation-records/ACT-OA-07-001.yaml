@@ -1,0 +1,15 @@
+schema_version: 1
+activation_record_id: ACT-OA-07-001
+revision: 1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop: {wop_id: WOP-72d7c7f0-4632-5721-8fbf-65dbf89c7b1a, revision: 1}
+authority_record: {authority_record_id: AR-OA-07-001, revision: 1}
+operational_gate_plan: {plan_id: WOP-72d7c7f0-4632-5721-8fbf-65dbf89c7b1a, revision: 1}
+transition: {from: READY, to: ACTIVE}
+authority_lineage:
+  root_wop: {wop_id: WOP-72d7c7f0-4632-5721-8fbf-65dbf89c7b1a, revision: 1}
+  authority_mode: MANUAL_GOVERNANCE_WOP
+  governing_directive: WOP-OA-07-EXECUTION-001
+reconciliation: {lifecycle_transition: OA-07-READY-TO-ACTIVE@1, status: RECONCILED}
+traceability: {execution_first_policy: SPEC-0014@1.6}

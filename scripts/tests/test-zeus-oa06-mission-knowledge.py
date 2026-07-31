@@ -14,7 +14,7 @@ class OA06MissionKnowledgeTests(unittest.TestCase):
     def test_accepted_oa06_exposes_the_controlled_oa07_successor(self):
         first = mission_knowledge.recommend(ROOT)
         self.assertEqual("PASS", first["result"])
-        self.assertEqual("OA-07", first["recommended_mission"])
+        self.assertEqual("OA-08", first["recommended_mission"])
         self.assertEqual(first, mission_knowledge.recommend(ROOT))
 
     def test_readiness_explains_prerequisites_without_independent_ordering(self):

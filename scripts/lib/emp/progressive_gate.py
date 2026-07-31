@@ -48,6 +48,7 @@ _VERIFIERS = {
         for number in range(1, 6)
     },
     "OA-06": "scripts.lib.emp.oa06_gate_verification",
+    "OA-07": "scripts.lib.emp.oa07_gate_verification",
 }
 
 

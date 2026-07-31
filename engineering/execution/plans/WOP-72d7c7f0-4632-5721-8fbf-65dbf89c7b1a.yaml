@@ -1,0 +1,33 @@
+schema_version: 1
+plan_id: WOP-72d7c7f0-4632-5721-8fbf-65dbf89c7b1a
+revision: 1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop: {wop_id: WOP-72d7c7f0-4632-5721-8fbf-65dbf89c7b1a, revision: 1}
+authority_lineage:
+  root_wop: {wop_id: WOP-72d7c7f0-4632-5721-8fbf-65dbf89c7b1a, revision: 1}
+  authority_record: AR-OA-07-001@1
+  authority_mode: MANUAL_GOVERNANCE_WOP
+  governing_directive: WOP-OA-07-EXECUTION-001
+gate_plan:
+  gates:
+    EXECUTE_WORK:
+      dependencies: []
+      actions:
+        - action_id: oa07-mission-selection-marker
+          action_type: create_artifact
+          path: runtime/evidence/OA-07/MISSION-SELECTION-QUALIFIED
+          content: OA-07 deterministic mission selection and dispatch qualification complete
+          content_digest: c104f7b53261a8d277a71deb8bd81cf53fa070d4c09ad105c02a4daccd3586df
+    VERIFY_COMPLETION:
+      dependencies: [EXECUTE_WORK]
+      actions:
+        - action_id: verify-oa07-mission-selection-marker
+          action_type: verify_artifact
+          path: runtime/evidence/OA-07/MISSION-SELECTION-QUALIFIED
+          content_digest: c104f7b53261a8d277a71deb8bd81cf53fa070d4c09ad105c02a4daccd3586df
+traceability:
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-07/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-07/implementation.md
+  execution_contract: OPERATIONAL-ALPHA-EXECUTION-CONTRACT@1.0
+  execution_first_policy: SPEC-0014@1.6

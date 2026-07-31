@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "mission_id": "EMP-MISSION-ZEUS-OPERATIONAL-ALPHA",
+  "gate_id": "OA-07",
+  "selected_execution_agent": "zeus-local-loneal-01",
+  "runtime_wop": "WOP-72d7c7f0-4632-5721-8fbf-65dbf89c7b1a@1",
+  "required_capabilities": ["ZEUS-OA-CAP-005", "ZEUS-OA-CAP-006"],
+  "authority_source": "AR-OA-07-001@1",
+  "execution_constraints": ["controlled-wop-only", "exact-repository-baseline", "no-unreviewed-external-effects"],
+  "expected_evidence_outputs": ["dispatch-contract", "capability-qualification", "operator-capability-summary", "synchronization-report", "validation-report"],
+  "selection_reason": "first eligible mission under controlled priority; sole active qualified agent matching engineering scope",
+  "selection_inputs": {"mission_knowledge_revision": "1.1", "capability_registry_revision": "1.0"},
+  "fail_closed_rule": "no qualified agent or ambiguous eligible mission rejects dispatch",
+  "dispatch_status": "QUALIFIED"
+}

@@ -270,7 +270,7 @@ entities:
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/capabilities/operational-alpha-capability-registry.yaml
-    source_digest: bfd8e0d3ef641fe4400b587b4c2ebfc4c146dae73bcefe54e3c4c2ddc1a373c7
+    source_digest: 1db7ae1c65a9bbd7c71446ff52e20b02ff8411c78ee615def931e9abe561b3e4
   - entity_type: ImplementationWOP
     entity_id: WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f
     revision: 1
@@ -314,7 +314,7 @@ entities:
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/missions/operational-alpha-mission-knowledge.yaml
-    source_digest: 0c86ea077fae4bf18c85b05c85666e52838a313fe8da289f77afae7a13045ff5
+    source_digest: 3236c53dc3f64caa7010d0c62b943a3ab00b77f9a14da45db44899c38539879d
   - entity_type: ImplementationWOP
     entity_id: WOP-9ed7762f-c143-5a58-9a21-63fae5a06c05
     revision: 1
@@ -352,3 +352,40 @@ entities:
     classification: Authoritative
     source: engineering/activation-records/ACT-OA-06-001.yaml
     source_digest: 766efc5d62aff19b854c777454470855bd8ded7777ff57fc451ac3e4022d9094
+  - entity_type: ImplementationWOP
+    entity_id: WOP-72d7c7f0-4632-5721-8fbf-65dbf89c7b1a
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/work-orders/OA-07-EXECUTION-001/immutable-wop.yaml
+    source_digest: da676d4f4ab2957b4f752768b8bb70cce68781c6089cada2324ff08ab39fdd50
+  - entity_type: ImplementationWOPLifecycleTransition
+    entity_id: OA-07-READY-TO-ACTIVE
+    revision: 1
+    implementation_wop_id: WOP-72d7c7f0-4632-5721-8fbf-65dbf89c7b1a
+    implementation_wop_revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/lifecycle-transitions/records/OA-07-READY-TO-ACTIVE.yaml
+    source_digest: 2f8b421791133ed690e5d12128180b099f76ced15c6b3e164b4d11932efdfd6c
+  - entity_type: AuthorityRecord
+    entity_id: AR-OA-07-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/authority-records/AR-OA-07-001.yaml
+    source_digest: d9fc691c444ce467b470dafc0c9d01b5762bf3a6485147e7aba81f9181ceaa6f
+  - entity_type: OperationalGatePlan
+    entity_id: WOP-72d7c7f0-4632-5721-8fbf-65dbf89c7b1a
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/execution/plans/WOP-72d7c7f0-4632-5721-8fbf-65dbf89c7b1a.yaml
+    source_digest: 22640b4be6ed00a036ae4b8c955fde9802f1840f1f68bd96afa44fd82bb72de7
+  - entity_type: ActivationRecord
+    entity_id: ACT-OA-07-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/activation-records/ACT-OA-07-001.yaml
+    source_digest: 3822191606dfb9c02ea4a06ea2de8f9ea3229c44f2d02f27d171360a81659fe4

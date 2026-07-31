@@ -79,3 +79,17 @@ capabilities:
     associated_evidence: [engineering/evidence/2026-07-31-wop-oa-06-execution-001/]
     regression_status: PASS
     capability_history: [OA-06 introduced]
+  - capability_id: ZEUS-OA-CAP-006
+    name: Explainable mission selection and execution-agent dispatch
+    description: Selects exactly one eligible staged mission and one qualified execution agent, producing an immutable explainable dispatch contract.
+    lifecycle: Operational
+    mission_introduced: OA-07
+    mission_modified: OA-07
+    verification_commands: [scripts/zeus mission recommend, scripts/zeus agent registry --json, scripts/zeus dispatcher agents]
+    expected_verification_results: [OA-07 recommendation is eligible, exactly one qualified agent, deterministic dispatch contract]
+    dependencies: [ZEUS-OA-CAP-005, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE]
+    owning_controlled_documentation: [PROC-0001@2.7, ZEUS-OA-GATE-SPEC-002]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-07-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-07 introduced]

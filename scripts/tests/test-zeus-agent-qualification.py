@@ -20,8 +20,16 @@ class AgentQualificationTests(unittest.TestCase):
             "repository_head": "a" * 40,
             "published_baseline": "a" * 40,
             "authority_publication": "AUTHORITY-PUBLICATION-test",
-            "pmct_run": "PMCT-20260727T000000Z-000000000000",
-            "oa01_pmct_run": "PMCT-20260727T000001Z-000000000000",
+            "mission_knowledge": {
+                "model_id": "OPERATIONAL-ALPHA-MISSION-KNOWLEDGE",
+                "revision": "1.1",
+                "recommended_mission": "OA-07",
+                "readiness_digest": "a" * 64,
+            },
+            "capability_registry": {
+                "registry_id": "OPERATIONAL-ALPHA-CAPABILITY-REGISTRY",
+                "revision": "1.0",
+            },
         }
         self.agent = {
             "agent_id": "zeus-local-test-01",

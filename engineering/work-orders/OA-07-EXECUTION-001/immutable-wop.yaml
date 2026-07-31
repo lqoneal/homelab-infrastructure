@@ -1,0 +1,28 @@
+schema_version: 1
+wop_id: WOP-72d7c7f0-4632-5721-8fbf-65dbf89c7b1a
+revision: 1
+status: READY
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: OA-07-MISSION-SELECTION-AND-DISPATCH
+work_item_id: EMP-WORK-OA-07-MISSION-SELECTION-001
+title: OA-07 Explainable Mission Selection and Execution-Agent Dispatch
+owner: Engineering Governance
+objective: Prove Zeus selects only an eligible staged mission according to controlled priority and policy.
+scope: [execute the published OA-07 controlled gate objective, qualify deterministic recommendation and one qualified execution-agent selection, publish immutable dispatch evidence and capability qualification, reconcile authoritative state and closeout evidence]
+prohibited_effects: [alter certified runtime baseline, alter completed OA-06 artifacts, initiate OA-08 or later, introduce unrelated foundational architecture]
+execution_context: {repository: /data/engineering/repositories/homelab, baseline_id: OA-IMPLEMENTATION-BASELINE-1.0, qualified_baseline: 67de5861d43cf5417e7b05de85d7cd302372391b, branch: main}
+manual_governance_authority:
+  policy_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
+  policy_revision: '1.0'
+  delegation_state: ACTIVE
+  governance_submission: {submitted: true, submitted_by: Engineering Governance, submission_id: WOP-OA-07-EXECUTION-001, directive_id: WOP-OA-07-EXECUTION-001}
+  permitted_actions: [create_authority_record, generate_operational_gate_plan, admit_mission, generate_wop, execute_mission]
+entry_criteria: [OA-06 accepted, OA-07 eligibility resolved, repository EOS EMM registry and runtime preflight pass]
+completion_criteria: [OA-07 executed capability-qualified reconciled and closed, deterministic mission selection and dispatch evidence published, OA-08 eligible, no later gate initiated]
+traceability:
+  governing_directive: WOP-OA-07-EXECUTION-001
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-07/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-07/implementation.md
+  execution_procedure: PROC-0001@2.7
+  execution_first_policy: SPEC-0014@1.6
+lifecycle: {execution_state: COMPLETED}

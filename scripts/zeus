@@ -498,7 +498,7 @@ def main(argv=None):
                 value = {"gate": a.gate.upper(), "qualification": flow["qualification"],
                          "authority_receipt": flow["authority_receipt"],
                          "execution_admitted": flow["execution_admitted"]}
-                if flow["execution_admitted"] and a.gate.upper() == "OA-06":
+                if flow["execution_admitted"] and a.gate.upper() in {"OA-06", "OA-07"}:
                     from scripts.lib.emp.progressive_gate import ProgressiveGateService
                     value["progressive_verification"] = ProgressiveGateService(ROOT).verify(
                         a.gate.upper()

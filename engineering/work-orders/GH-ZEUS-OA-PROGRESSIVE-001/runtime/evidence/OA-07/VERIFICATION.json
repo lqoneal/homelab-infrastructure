@@ -1,0 +1,34 @@
+{
+  "assertions": {
+    "cumulative_oa01_through_oa07": "PASS",
+    "deterministic_dispatch": "PASS",
+    "eligible_mission": "PASS",
+    "later_gates_inactive": "PASS",
+    "negative": "PASS",
+    "operator_acceptance_recorded": false,
+    "qualified_agent": "PASS",
+    "replay": "PASS"
+  },
+  "authoritative_inputs": {
+    "authority_record": "engineering/authority-records/AR-OA-07-001.yaml",
+    "authority_record_digest": "d9fc691c444ce467b470dafc0c9d01b5762bf3a6485147e7aba81f9181ceaa6f",
+    "convergence_receipt_digest": "0f0661d7c99fa7cc4b0575e8ae946a448855f105842183575d0356578c6f4d78",
+    "implementation_wop": "engineering/work-orders/OA-07-EXECUTION-001/immutable-wop.yaml",
+    "implementation_wop_digest": "da676d4f4ab2957b4f752768b8bb70cce68781c6089cada2324ff08ab39fdd50",
+    "qualified_agent": "zeus-local-loneal-01",
+    "reports": {
+      "CAPABILITY-QUALIFICATION-REPORT.md": "0604dc765430d1f4ecec6126fc2fbf73d17bc0808237efe57697ce0ba161e92e",
+      "COMPLETION-REPORT.md": "ba6e5c031fff360c2eb937f9c6c16e3b0e3f6e6691757e535f9c5e783bf62c23",
+      "DISPATCH-CONTRACT.json": "484ccb2f6c5bafb5749964835c516d5f08c591e5b5fa361be16003440b0d3741",
+      "OPERATOR-CAPABILITY-SUMMARY.md": "d095cc4a5548cecce6c5a99404aeb73bf2df6f011a089d6d8312e78f9534b26f",
+      "SYNCHRONIZATION-REPORT.md": "31de304d49e8ba6662f076cf26343dd7b809da401f01c7140ee16ced6fdb2885",
+      "VALIDATION-REPORT.md": "1ee345b1c51201d2b7ff8d0c5ec001c18f6c94cd190a69d8ffccd0623af03a33"
+    }
+  },
+  "canonical_evidence_digest": "c88e4d035b813a5e1bb3e4878007e07502dada87df0dc3041f182791d6c9c023",
+  "gate_id": "OA-07",
+  "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-07-31T10:27:20.832136+00:00"
+}
