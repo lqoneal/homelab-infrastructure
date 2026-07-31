@@ -16,5 +16,14 @@ decision. No new foundational architecture was introduced.
 
 ## Publication identity
 
-The immutable commit identity and remote publication receipt are recorded by
-the post-publication amendment to this report.
+| Field | Value |
+| --- | --- |
+| Publication commit | `b9b56d0a9e82a699f8a6978c74008f6be4d5acb6` |
+| Branch | `main` |
+| Remote | `origin/main` |
+| Push result | `b27f5ef..b9b56d0  main -> main` |
+| Identity verification | Local `HEAD` and `origin/main` both resolved to `b9b56d0a9e82a699f8a6978c74008f6be4d5acb6` immediately after push. |
+
+The published commit contains the exact boundary declared in
+`PUBLICATION-BOUNDARY-MANIFEST.md`. Excluded user work was neither staged nor
+included in the publication.

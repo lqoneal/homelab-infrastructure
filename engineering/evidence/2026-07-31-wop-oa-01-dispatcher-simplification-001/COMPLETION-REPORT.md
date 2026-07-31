@@ -58,7 +58,7 @@ Scope Compliance:
 
 Definition of Done and Acceptance Criteria:
 
-`MET, pending publication and EOS synchronization.`
+`MET — published dispatcher simplification and EOS synchronization validated.`
 
 Stop Conditions Encountered:
 
@@ -72,7 +72,7 @@ Starting Repository State:
 
 Ending Repository State:
 
-`Scoped simplification sources and evidence pending publication.`
+`Dispatcher simplification published at b9b56d0a9e82a699f8a6978c74008f6be4d5acb6; post-publication evidence retained in this package.`
 
 Repository Integrity:
 
@@ -104,7 +104,7 @@ Files Added, Modified, or Removed:
 
 Commits or Tags Created:
 
-`None at report preparation.`
+`b9b56d0a9e82a699f8a6978c74008f6be4d5acb6 — fix(oa): simplify convergence dispatcher admission.`
 
 Runtime Changes:
 
@@ -192,7 +192,7 @@ To be completed by Engineering Governance.
 
 Disposition:
 
-`Pending publication verification.`
+`Published and verified.`
 
 Acceptance:
 

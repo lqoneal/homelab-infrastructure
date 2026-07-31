@@ -13,5 +13,8 @@ convergence capability precede any new foundational architecture. The
 Progressive dispatcher authority is retired from Operational Alpha execution;
 PMCT remains non-authoritative compatibility tooling.
 
+These reconciled controlled records were published in
+`b9b56d0a9e82a699f8a6978c74008f6be4d5acb6`.
+
 No document class, framework, lifecycle object, authority layer, admission
 mechanism, or runtime capability was introduced.

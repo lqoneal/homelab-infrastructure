@@ -5,6 +5,9 @@
 `PASS` — all 17 EMM entities declaring a source digest resolve to an existing
 source whose SHA-256 digest matches the registered value.
 
+The verification was completed before publication and the verified source set
+was published in commit `b9b56d0a9e82a699f8a6978c74008f6be4d5acb6`.
+
 ## Reconciled entity
 
 | Entity | Source | Result |
