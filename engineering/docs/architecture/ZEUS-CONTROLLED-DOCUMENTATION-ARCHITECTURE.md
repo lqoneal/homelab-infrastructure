@@ -24,6 +24,17 @@ authority.
 
 ## 2. Observed framework
 
+### Controller presentation ownership
+
+The existing Zeus operator-interface contract is extended as the single
+controller presentation owner. Zeus controllers resolve one authoritative
+state and expose it as an operator summary by default, a deterministic
+qualification view with `--verify`, or structured output only with `--json`.
+The shared presentation layer owns formatting only; it does not duplicate
+mission, capability, authority, dispatch, orchestration, EMM, EOS, or Registry
+state. Qualification and governance remain owned by the applicable controlled
+procedures.
+
 The repository currently assigns:
 
 - `CHAR-0001`, `POL-0001`, `STD-0000`, `STD-0001`, and `STD-0002` to

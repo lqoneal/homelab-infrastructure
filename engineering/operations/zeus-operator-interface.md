@@ -1,5 +1,40 @@
 # Zeus Operator Interface
 
+## Controller interface standard
+
+This is the single Zeus controller presentation standard. Every controller
+uses one authoritative state resolver and presents that same value in three
+explicitly separated modes:
+
+| Invocation | Contract |
+| --- | --- |
+| default | concise human-readable operator summary |
+| `--verify` | deterministic machine-verifiable qualification result |
+| `--json` | structured machine output for an ordinary read-only view |
+
+The renderer is shared by the controllers and is presentation-only; it cannot
+create or alter mission, capability, authority, dispatch, orchestration, EMM,
+EOS, or Registry state. Verification and JSON modes never select a different
+source of truth. Existing automation must request `--verify` or `--json`
+explicitly. Controller qualification remains owned by the applicable
+controlled qualification procedure; this interface only reports its result.
+
+Examples:
+
+```text
+zeus mission roadmap
+zeus mission roadmap --verify
+zeus mission roadmap --json
+zeus mission readiness OA-11
+zeus mission readiness OA-11 --verify
+zeus capability list --json
+zeus capability verify
+zeus dispatch status
+zeus dispatch verify
+zeus orchestrate status
+zeus orchestrate verify
+```
+
 For Zeus Operational Alpha, the operator is Lawrence O'Neal and the production
 principal is `loneal`. The authenticated Zeus CLI is the authoritative
 interface through which Lawrence O'Neal exercises engineering authority,
