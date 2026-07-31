@@ -63,6 +63,15 @@ GATES = (
 TERMINAL_STATES = {"Completed", "Failed", "Cancelled"}
 
 
+def operational_workspace_path(repository_root: Path | str, execution_id: str) -> Path:
+    """Return a stable derived workspace outside the controlled repository."""
+    repository = Path(repository_root).resolve()
+    workspace = (Path(tempfile.gettempdir()) / "zeus-operational-workspaces" / execution_id).resolve()
+    if workspace == repository or repository in workspace.parents:
+        raise MissionExecutionError("operational handler workspace must be isolated from repository")
+    return workspace
+
+
 def execution_identifier(admission_id: str, wop_digest: str) -> str:
     return "MISSION-EXECUTION-" + str(
         uuid.uuid5(

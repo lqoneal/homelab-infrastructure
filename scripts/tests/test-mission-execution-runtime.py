@@ -27,6 +27,7 @@ from scripts.lib.emp.mission_execution_runtime import (  # noqa: E402
     GATES,
     MissionExecutionError,
     MissionExecutionRuntime,
+    operational_workspace_path,
 )
 
 AT = datetime(2026, 7, 27, 7, 0, tzinfo=timezone.utc)
@@ -74,6 +75,11 @@ class MissionExecutionRuntimeTests(unittest.TestCase):
         return MissionExecutionRuntime(
             ROOT, self.executions, self.admissions, **options
         )
+
+    def test_operational_workspace_is_outside_controlled_repository(self):
+        workspace = operational_workspace_path(ROOT, "MISSION-EXECUTION-DEMO")
+        self.assertNotEqual(workspace, ROOT)
+        self.assertNotIn(ROOT, workspace.parents)
 
     def test_qualification_completes_all_gates_with_immutable_evidence(self):
         state = self.runtime().start(self.admission["admission_id"], at=AT)
