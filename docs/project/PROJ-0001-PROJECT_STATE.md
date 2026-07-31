@@ -381,24 +381,18 @@ The Convergence Program is closed. The certified Zeus operational runtime is
 `OA-IMPLEMENTATION-BASELINE-1.0` and independently certified READY FOR
 OPERATIONAL ALPHA IMPLEMENTATION by `WOP-RUNTIME-CERTIFICATION-002`.
 
-The current OA-01 implementation record is
-`WOP-OA-01-IMPLEMENTATION-001@1`, bound to
-`OA-IMPLEMENTATION-BASELINE-1.0` at `5706307c1fdf9d4e0601c9cc578181f6d916e0a8`.
-Its lifecycle is `ACTIVE`; execution is `NOT_STARTED`. The immutable WOP
-declaration remains the current lifecycle projection; its completed operational
-execution is recorded by `MISSION-EXECUTION-a4a702e6-4944-5d67-b9b1-f423a691d344`
-and the OA-01 Mission Closeout Record. Historical Progressive runtime records
-and acceptance receipts remain evidence only. OA-01 bootstrap is complete.
-The published Operational Alpha sequence identifies OA-02 — Controlled Mission
-Authority — as the next eligible gate. OA-02 still requires its own mission
-records before activation; that eligibility must be resolved from the current
-convergence projection, never from Progressive evidence.
+The current OA-02 implementation record is
+`WOP-502ce342-7fc9-577c-b906-07b00bf2a615@1`, bound to
+`OA-IMPLEMENTATION-BASELINE-1.0`. Its lifecycle is `ACTIVE`; execution is `COMPLETED`. The completed operational execution is recorded by
+`MISSION-EXECUTION-a092e053-e2b0-5f29-90db-935b1f31c738`. OA-02 — Controlled
+Mission Authority — is complete. Historical Progressive runtime records and
+acceptance receipts remain evidence only. OA-03 is not evaluated or initiated
+by this WOP.
 
 **Next Immediate Step:**
 
-Use the published convergence runtime to initiate OA-02 from the controlled
-Operational Alpha sequence. Create no OA-02 mission record until its admission
-procedure has resolved the required current authority and planning inputs.
+Preserve the OA-02 completion evidence and current-state projection. Do not
+evaluate or initiate OA-03 under this WOP.
 `GH-ZEUS-OA-CERTIFICATION-001` package remains suspended historical evidence.
 
 EWO-000017 completed value-blind local configuration qualification, controlled

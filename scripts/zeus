@@ -305,14 +305,21 @@ def main(argv=None):
                     print(f"Package: {decision['package_id']}\nActive Gate: {decision['active_gate']}\nNext Action: {decision['next_action']}")
                 return 0
             current = resolve_operational_alpha_status(ROOT)
+            if current["successor_eligibility"] == "ELIGIBLE":
+                next_action = {
+                    "code": "INITIATE_OA-02",
+                    "description": "Initiate OA-02 — Controlled Mission Authority",
+                }
+            else:
+                next_action = {
+                    "code": "NO_SUCCESSOR_AUTHORIZED",
+                    "description": "No successor mission is authorized by the current lifecycle projection",
+                }
             decision = {
                 "resolver": current["resolver"],
                 "active_gate": current["active_gate"],
                 "successor_eligibility": current["successor_eligibility"],
-                "next_authorized_action": {
-                    "code": "INITIATE_OA-02",
-                    "description": "Initiate OA-02 — Controlled Mission Authority",
-                },
+                "next_authorized_action": next_action,
                 "historical_progressive_runtime": current["historical_progressive_runtime"],
                 "result": "READY" if current["successor_eligibility"] == "ELIGIBLE" else "NOT_READY",
             }

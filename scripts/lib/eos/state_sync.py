@@ -56,8 +56,8 @@ def operational_alpha_lifecycle(path: Path) -> dict[str, str]:
         r"^([A-Z0-9_-]+)=([^\n]+)$", path.read_text(encoding="utf-8"), re.MULTILINE
     ))
     required = (
-        "OA-01_IMPLEMENTATION_WOP", "OA-01_STATE", "OA-01_EXECUTION_STATE",
-        "OA-02_AND_LATER", "HISTORICAL_PROGRESSIVE_RUNTIME",
+        "CURRENT_IMPLEMENTATION_WOP", "CURRENT_GATE", "CURRENT_GATE_STATE",
+        "CURRENT_EXECUTION_STATE", "SUCCESSOR_ELIGIBILITY", "HISTORICAL_PROGRESSIVE_RUNTIME",
     )
     missing = [field for field in required if not values.get(field)]
     if missing:
@@ -152,10 +152,10 @@ def render(root: Path, eos_workspace: Path, project: str) -> dict[Path, bytes]:
         f"project_state_sha256: {source_digests[str(project_path.relative_to(root))]}\n"
         f"registry_revision: {registry.get('revision')}\n"
         f"execution_interface_schema: {interface.get('schema_version')}\n"
-    ) + (f"operational_alpha_wop: {oa_lifecycle['OA-01_IMPLEMENTATION_WOP']}\n"
-         f"operational_alpha_lifecycle: {oa_lifecycle['OA-01_STATE']}\n"
-         f"operational_alpha_execution_state: {oa_lifecycle['OA-01_EXECUTION_STATE']}\n"
-         f"operational_alpha_successor_eligibility: {oa_lifecycle['OA-02_AND_LATER']}\n"
+    ) + (f"operational_alpha_wop: {oa_lifecycle['CURRENT_IMPLEMENTATION_WOP']}\n"
+         f"operational_alpha_lifecycle: {oa_lifecycle['CURRENT_GATE_STATE']}\n"
+         f"operational_alpha_execution_state: {oa_lifecycle['CURRENT_EXECUTION_STATE']}\n"
+         f"operational_alpha_successor_eligibility: {oa_lifecycle['SUCCESSOR_ELIGIBILITY']}\n"
          f"historical_progressive_runtime: {oa_lifecycle['HISTORICAL_PROGRESSIVE_RUNTIME']}\n"
          if oa_lifecycle else "") + (f"emm_id: {emm.get('emm_id')}\n"
          f"emm_version: {emm.get('version')}\n" if emm else "") + (

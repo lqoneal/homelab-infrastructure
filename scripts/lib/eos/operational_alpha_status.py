@@ -20,9 +20,7 @@ class OperationalAlphaStatusError(ValueError):
 
 PROGRESS_PATH = Path("engineering/operations/zeus-operational-alpha-progress.md")
 PROJECT_STATE_PATH = Path("docs/project/PROJ-0001-PROJECT_STATE.md")
-WOP_PATH = Path("engineering/work-orders/OA-01-IMPLEMENTATION-001/immutable-wop.yaml")
 EMM_PATH = Path("engineering/metadata/operational-alpha-emm.yaml")
-CURRENT_WOP = "WOP-OA-01-IMPLEMENTATION-001"
 
 
 def _read(path: Path) -> str:
@@ -39,10 +37,11 @@ def _read(path: Path) -> str:
 def _progress_values(text: str) -> dict[str, str]:
     values = dict(re.findall(r"^([A-Z0-9_-]+)=([^\n]+)$", text, re.MULTILINE))
     required = (
-        "OA-01_IMPLEMENTATION_WOP",
-        "OA-01_STATE",
-        "OA-01_EXECUTION_STATE",
-        "OA-02_AND_LATER",
+        "CURRENT_IMPLEMENTATION_WOP",
+        "CURRENT_GATE",
+        "CURRENT_GATE_STATE",
+        "CURRENT_EXECUTION_STATE",
+        "SUCCESSOR_ELIGIBILITY",
         "HISTORICAL_PROGRESSIVE_RUNTIME",
     )
     missing = [field for field in required if not values.get(field)]
@@ -69,7 +68,7 @@ def _wop(path: Path) -> Mapping[str, object]:
     return value
 
 
-def _artifact_state(root: Path, entity_type: str) -> str:
+def _artifact_state(root: Path, entity_type: str, wop_id: str) -> str:
     """Read one published artifact state without treating it as authority."""
     if not (root / EMM_PATH).is_file():
         return "ABSENT"
@@ -78,9 +77,17 @@ def _artifact_state(root: Path, entity_type: str) -> str:
     except yaml.YAMLError as error:
         raise OperationalAlphaStatusError(f"STATUS_EMM_INVALID: {error}") from error
     entities = emm.get("entities") if isinstance(emm, Mapping) else None
-    matches = [item for item in entities or [] if isinstance(item, Mapping)
-               and item.get("entity_type") == entity_type
-               and item.get("entity_id") in {CURRENT_WOP, "AR-OA-01-001", "ACT-OA-01-001"}]
+    matches = []
+    for item in entities or []:
+        if not isinstance(item, Mapping) or item.get("entity_type") != entity_type:
+            continue
+        source = item.get("source")
+        if not isinstance(source, str):
+            continue
+        value = _wop(root / source)
+        binding = value.get("implementation_wop")
+        if isinstance(binding, Mapping) and binding.get("wop_id") == wop_id:
+            matches.append(item)
     if not matches:
         return "ABSENT"
     if len(matches) != 1:
@@ -111,12 +118,15 @@ def resolve(root: Path | str) -> dict[str, object]:
     """Resolve exactly one current OA lifecycle or fail with actionable options."""
     repository = Path(root).resolve()
     progress = _progress_values(_read(repository / PROGRESS_PATH))
-    wop = _wop(repository / WOP_PATH)
+    current = progress["CURRENT_IMPLEMENTATION_WOP"]
+    if "@" not in current:
+        raise OperationalAlphaStatusError("STATUS_WOP_PROJECTION_INVALID")
+    current_wop, revision = current.rsplit("@", 1)
     if (repository / EMM_PATH).is_file():
         try:
             from scripts.lib.eos.convergence_runtime import ConvergenceRuntime
 
-            _, wop, _ = ConvergenceRuntime(repository)._wop(CURRENT_WOP, wop.get("revision", ""))
+            _, wop, _ = ConvergenceRuntime(repository)._wop(current_wop, revision)
         except Exception as error:
             raise OperationalAlphaStatusError(
                 "STATUS_LIFECYCLE_TRANSITION_INVALID: " + str(error) + "; "
@@ -131,18 +141,16 @@ def resolve(root: Path | str) -> dict[str, object]:
     revision = str(wop.get("revision", ""))
     lifecycle = str(wop.get("status", "")).upper()
     execution = str((wop.get("lifecycle") or {}).get("execution_state", "")).upper()
-    expected_wop = f"{CURRENT_WOP}@{revision}"
+    expected_wop = f"{current_wop}@{revision}"
     conflicts: list[str] = []
-    if wop_id != CURRENT_WOP:
+    if wop_id != current_wop:
         conflicts.append("WOP_IDENTITY")
-    if progress["OA-01_IMPLEMENTATION_WOP"] != expected_wop:
+    if progress["CURRENT_IMPLEMENTATION_WOP"] != expected_wop:
         conflicts.append("WOP_PROJECTION")
-    if progress["OA-01_STATE"] != lifecycle or project_lifecycle != lifecycle:
+    if progress["CURRENT_GATE_STATE"] != lifecycle or project_lifecycle != lifecycle:
         conflicts.append("LIFECYCLE")
-    if progress["OA-01_EXECUTION_STATE"] != execution or project_execution != execution:
+    if progress["CURRENT_EXECUTION_STATE"] != execution or project_execution != execution:
         conflicts.append("EXECUTION")
-    if progress["OA-02_AND_LATER"] != "ELIGIBLE":
-        conflicts.append("SUCCESSOR_ELIGIBILITY")
     if progress["HISTORICAL_PROGRESSIVE_RUNTIME"] != "EVIDENCE_ONLY":
         conflicts.append("HISTORICAL_BOUNDARY")
     if conflicts:
@@ -157,18 +165,18 @@ def resolve(root: Path | str) -> dict[str, object]:
         "resolver": "operational-alpha-current-state/1",
         "outcome": "RESOLVED",
         "status": lifecycle,
-        "active_gate": "OA-01",
+        "active_gate": progress["CURRENT_GATE"],
         "active_gate_state": lifecycle,
         "execution_state": execution,
         "implementation_wop": {"id": wop_id, "revision": revision},
-        "successor_eligibility": "ELIGIBLE",
-        "authority_record": _artifact_state(repository, "AuthorityRecord"),
-        "operational_gate_plan": _artifact_state(repository, "OperationalGatePlan"),
-        "activation": _artifact_state(repository, "ActivationRecord"),
+        "successor_eligibility": progress["SUCCESSOR_ELIGIBILITY"],
+        "authority_record": _artifact_state(repository, "AuthorityRecord", wop_id),
+        "operational_gate_plan": _artifact_state(repository, "OperationalGatePlan", wop_id),
+        "activation": _artifact_state(repository, "ActivationRecord", wop_id),
         "authority_record_creation_eligibility": "ELIGIBLE",
         "historical_progressive_runtime": "EXCLUDED_EVIDENCE_ONLY",
         "authoritative_sources": [
-            str(WOP_PATH), str(PROJECT_STATE_PATH), str(PROGRESS_PATH),
+            "EMM-resolved current Implementation WOP", str(PROJECT_STATE_PATH), str(PROGRESS_PATH),
         ] + (["EMM-resolved ImplementationWOPLifecycleTransition"]
              if wop.get("effective_lifecycle_transition") else []),
         "status_resolution_precedence": [

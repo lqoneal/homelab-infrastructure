@@ -159,7 +159,7 @@ entities:
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/work-orders/OA-02-ADMISSION-ACTIVATION-AND-EXECUTION-001/immutable-wop.yaml
-    source_digest: 60445d1316a9343d52ccfef9bab48b5a7eaeccbd7106e90410d714a662e0f14c
+    source_digest: b333eef3634a8ee14bb51a7a30c1e262cd9fecc7913f0729790662d9a9d55cda
   - entity_type: ImplementationWOPLifecycleTransition
     entity_id: OA-02-READY-TO-ACTIVE
     revision: 1

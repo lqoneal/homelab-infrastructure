@@ -54,3 +54,5 @@ traceability:
   controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-02/objective.yaml
   implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-02/implementation.md
   execution_first_policy: SPEC-0014@1.6
+lifecycle:
+  execution_state: COMPLETED
