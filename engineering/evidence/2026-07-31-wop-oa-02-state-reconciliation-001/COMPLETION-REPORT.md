@@ -2,7 +2,7 @@
 
 ## Disposition
 
-PASS, pending scoped publication and EOS synchronization.
+PASS.
 
 ## Scope completed
 
@@ -11,6 +11,8 @@ PASS, pending scoped publication and EOS synchronization.
 - Reconciled SPEC-0014 synchronization and drift-detection wording.
 - Preserved OA-01 state, historical Progressive evidence, and unrelated working
   tree changes.
+- Published reconciliation commit `6f5ef857c0f029a9585108ce39604158b6b23df3`
+  to `origin/main`; EOS synchronization and EMM validation passed.
 
 No new foundational architecture, authority record, gate plan, activation,
 mission admission, or execution was created.
