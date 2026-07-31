@@ -1,0 +1,28 @@
+schema_version: 1
+wop_id: WOP-9ed7762f-c143-5a58-9a21-63fae5a06c05
+revision: 1
+status: READY
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: OA-06-MISSION-ELIGIBILITY-EVALUATION
+work_item_id: EMP-WORK-OA-06-MISSION-ELIGIBILITY-001
+title: OA-06 Mission Eligibility Evaluation and Mission Knowledge
+owner: Engineering Governance
+objective: Prove deterministic classification of eligible, blocked, deferred, and ineligible missions.
+scope: [execute published OA-06 controlled gate objective, establish sole EMM-bound Mission Knowledge Model, provide runtime mission reasoning and recommendation services, publish qualification synchronization reconciliation and closeout evidence]
+prohibited_effects: [alter certified runtime baseline, alter historical Progressive evidence, initiate OA-07 or later, introduce unrelated foundational architecture]
+execution_context: {repository: /data/engineering/repositories/homelab, baseline_id: OA-IMPLEMENTATION-BASELINE-1.0, qualified_baseline: 5706307c1fdf9d4e0601c9cc578181f6d916e0a8, branch: main}
+manual_governance_authority:
+  policy_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
+  policy_revision: '1.0'
+  delegation_state: ACTIVE
+  governance_submission: {submitted: true, submitted_by: Engineering Governance, submission_id: WOP-OA-06-EXECUTION-001, directive_id: WOP-OA-06-EXECUTION-001}
+  permitted_actions: [create_authority_record, generate_operational_gate_plan, admit_mission, generate_wop, execute_mission]
+entry_criteria: [OA-05 completion, OA-06 objective resolved, repository EOS EMM registry and runtime preflight pass]
+completion_criteria: [OA-06 executed capability-qualified reconciled and closed, Mission Knowledge Model authoritative, no later gate initiated]
+traceability:
+  governing_directive: WOP-OA-06-EXECUTION-001
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-06/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-06/implementation.md
+  execution_procedure: PROC-0001@2.7
+  execution_first_policy: SPEC-0014@1.6
+lifecycle: {execution_state: COMPLETED}

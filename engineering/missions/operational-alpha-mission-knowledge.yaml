@@ -1,0 +1,89 @@
+schema_version: 1
+model_id: OPERATIONAL-ALPHA-MISSION-KNOWLEDGE
+revision: 1.0
+classification: Authoritative
+authoritative_owner: Engineering Governance
+purpose: Canonical EMM-bound mission knowledge for Operational Alpha lifecycle reasoning.
+mission_sequence: [OA-01, OA-02, OA-03, OA-04, OA-05, OA-06]
+missions:
+  - mission_id: OA-01
+    lifecycle: COMPLETED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-01/objective.yaml
+    capability_prerequisites: []
+    capability_outcomes: [ZEUS-OA-CAP-001, ZEUS-OA-CAP-002]
+    dependencies: []
+    eligibility_criteria: [published_controlled_objective, convergence_authority, repository_and_eos_synchronized]
+    blocking_conditions: []
+    completion_criteria: [runtime_lifecycle_execution_qualified]
+    evidence_relationships: [engineering/evidence/2026-07-31-wop-oa-01-activation-001/]
+    controlled_document_relationships: [PROC-0001@2.6, SPEC-0014@1.6]
+    runtime_state_relationships: [ImplementationWOP, AuthorityRecord, OperationalGatePlan, ActivationRecord]
+  - mission_id: OA-02
+    lifecycle: COMPLETED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-02/objective.yaml
+    capability_prerequisites: [ZEUS-OA-CAP-001]
+    capability_outcomes: [ZEUS-OA-CAP-001]
+    dependencies: [OA-01]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized]
+    blocking_conditions: []
+    completion_criteria: [controlled_mission_authority_qualified]
+    evidence_relationships: [engineering/evidence/2026-07-31-wop-oa-02-admission-activation-and-execution-001/]
+    controlled_document_relationships: [PROC-0001@2.6, SPEC-0014@1.6]
+    runtime_state_relationships: [ImplementationWOP, AuthorityRecord, OperationalGatePlan, ActivationRecord]
+  - mission_id: OA-03
+    lifecycle: COMPLETED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-03/objective.yaml
+    capability_prerequisites: [ZEUS-OA-CAP-001]
+    capability_outcomes: [ZEUS-OA-CAP-003]
+    dependencies: [OA-02]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized]
+    blocking_conditions: []
+    completion_criteria: [mission_contract_discovery_qualified]
+    evidence_relationships: [engineering/evidence/2026-07-31-wop-oa-03-execution-001/]
+    controlled_document_relationships: [PROC-0001@2.6, SPEC-0014@1.6]
+    runtime_state_relationships: [ImplementationWOP, AuthorityRecord, OperationalGatePlan, ActivationRecord]
+  - mission_id: OA-04
+    lifecycle: COMPLETED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-04/objective.yaml
+    capability_prerequisites: [ZEUS-OA-CAP-001, ZEUS-OA-CAP-003]
+    capability_outcomes: [ZEUS-OA-CAP-002]
+    dependencies: [OA-03]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized]
+    blocking_conditions: []
+    completion_criteria: [project_context_reconstruction_qualified]
+    evidence_relationships: [engineering/evidence/2026-07-31-wop-oa-04-execution-001/]
+    controlled_document_relationships: [PROC-0001@2.6, SPEC-0014@1.6]
+    runtime_state_relationships: [ImplementationWOP, AuthorityRecord, OperationalGatePlan, ActivationRecord]
+  - mission_id: OA-05
+    lifecycle: COMPLETED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-05/objective.yaml
+    capability_prerequisites: [ZEUS-OA-CAP-001, ZEUS-OA-CAP-002, ZEUS-OA-CAP-003]
+    capability_outcomes: [ZEUS-OA-CAP-004]
+    dependencies: [OA-04]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized]
+    blocking_conditions: []
+    completion_criteria: [mission_staging_contract_qualified]
+    evidence_relationships: [engineering/evidence/2026-07-31-wop-oa-05-execution-001/]
+    controlled_document_relationships: [PROC-0001@2.6, SPEC-0014@1.6]
+    runtime_state_relationships: [ImplementationWOP, AuthorityRecord, OperationalGatePlan, ActivationRecord]
+  - mission_id: OA-06
+    lifecycle: CURRENT
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-06/objective.yaml
+    capability_prerequisites: [ZEUS-OA-CAP-001, ZEUS-OA-CAP-002, ZEUS-OA-CAP-003, ZEUS-OA-CAP-004]
+    capability_outcomes: [ZEUS-OA-CAP-005]
+    dependencies: [OA-05]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [deterministic_mission_classification_qualified, recommendation_service_qualified]
+    evidence_relationships: [engineering/evidence/2026-07-31-wop-oa-06-execution-001/]
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [ImplementationWOP, AuthorityRecord, OperationalGatePlan, ActivationRecord]
+generation:
+  derived_outputs: [mission_recommendation, mission_readiness, mission_dependency_graph, Operator Capability Summary]
+  rule: Derived mission views consume this model and the EMM-bound Capability Registry; they never author mission state.

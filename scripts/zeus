@@ -33,6 +33,7 @@ from scripts.lib.eos.operational_alpha_status import (  # noqa: E402
 )
 from scripts.lib.eos.mission_assurance import MissionAssurance, MissionAssuranceError  # noqa: E402
 from scripts.lib.eos import capability_registry  # noqa: E402
+from scripts.lib.eos import mission_knowledge  # noqa: E402
 from scripts.lib.emp import progressive_oa  # noqa: E402
 from scripts.lib.emp.progressive_gate import ProgressiveGateError, ProgressiveGateService  # noqa: E402
 from scripts.lib.emp.stage1_runtime import Stage1Error, Stage1Runtime  # noqa: E402
@@ -241,7 +242,7 @@ def main(argv=None):
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
     submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository"); submit.add_argument("--baseline"); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append"); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact"); submit.add_argument("--affected-repository", action="append"); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
-    show = sub.add_parser("mission"); show.add_argument("action", choices=("list","show","state","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","requirements","preflight","verify","synchronization")); show.add_argument("mission_id", nargs="?")
+    show = sub.add_parser("mission"); show.add_argument("action", choices=("list","show","state","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependency-graph")); show.add_argument("mission_id", nargs="?")
     assurance = sub.add_parser("assurance"); assurance.add_argument("action", choices=("capabilities",))
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
     accept=sub.add_parser("accept"); accept.add_argument("gate"); accept.add_argument("--reject", action="store_true"); accept.add_argument("--rationale", default=""); accept.add_argument("--at"); accept.add_argument("--yes", action="store_true"); accept.add_argument("--json", action="store_true")
@@ -316,6 +317,7 @@ def main(argv=None):
                     "OA-02": ("INITIATE_OA-03", "Initiate OA-03 — Mission Contract Discovery"),
                     "OA-03": ("INITIATE_OA-04", "Initiate OA-04 — Project and Operational Context Reconstruction"),
                     "OA-04": ("INITIATE_OA-05", "Initiate OA-05 — Mission Staging Contract"),
+                    "OA-05": ("INITIATE_OA-06", "Initiate OA-06 — Mission Eligibility Evaluation"),
                 }
                 code, description = successor_actions.get(
                     current["active_gate"],
@@ -347,7 +349,7 @@ def main(argv=None):
             return 0
         if a.command == "mission" and (
             a.action in {
-                "list", "state", "readiness", "eligibility", "blockers",
+                "list", "state", "eligibility", "blockers",
                 "contract", "authority", "next",
             }
             or (
@@ -395,6 +397,14 @@ def main(argv=None):
             else:
                 if not a.identifier or not a.other: raise OrchestrationError("two registry revisions are required")
                 value = capability_registry.diff(ROOT, a.identifier, a.other)
+            emit(value)
+            return 0 if value.get("result", "PASS") in ("PASS", "NO_DIFFERENCE") else 77
+        if a.command == "mission" and a.action in ("recommend", "explain", "readiness", "prerequisites", "dependency-graph"):
+            if a.action == "recommend": value = mission_knowledge.recommend(ROOT)
+            elif a.action == "dependency-graph": value = mission_knowledge.dependency_graph(ROOT)
+            else:
+                if not a.mission_id: raise OrchestrationError("mission identifier is required")
+                value = getattr(mission_knowledge, a.action.replace("-", "_"))(ROOT, a.mission_id)
             emit(value)
             return 0 if value.get("result", "PASS") in ("PASS", "NO_DIFFERENCE") else 77
         if a.command == "lifecycle":

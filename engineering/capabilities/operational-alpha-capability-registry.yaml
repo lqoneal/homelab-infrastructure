@@ -65,3 +65,17 @@ capabilities:
     associated_evidence: [engineering/evidence/2026-07-31-wop-oa-05-execution-001/]
     regression_status: PASS
     capability_history: [OA-05 introduced]
+  - capability_id: ZEUS-OA-CAP-005
+    name: Capability-based mission reasoning
+    description: Resolves Operational Alpha mission readiness, dependencies, blockers, and recommendations from EMM-bound mission knowledge and the Capability Registry.
+    lifecycle: Operational
+    mission_introduced: OA-06
+    mission_modified: OA-06
+    verification_commands: [scripts/zeus mission recommend, scripts/zeus mission readiness OA-06, scripts/zeus mission dependency-graph]
+    expected_verification_results: [OA-06 recommended when prerequisites are operational, deterministic readiness, PASS dependency graph]
+    dependencies: [OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-CAPABILITY-REGISTRY, ZEUS-OA-CAP-004]
+    owning_controlled_documentation: [PROC-0001@2.7, ZEUS-OA-GATE-SPEC-002]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-06-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-06 introduced]
