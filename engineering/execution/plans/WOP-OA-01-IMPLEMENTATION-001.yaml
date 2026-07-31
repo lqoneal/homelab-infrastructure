@@ -24,6 +24,14 @@ gate_plan:
           path: runtime/evidence/OA-01/VERIFIED
           content: "OA-01 verification completion marker\n"
           content_digest: 78673d15e22299e01c9eca59f7138384e8a2351036b927ebe5c5cebf53f94633
+    VERIFY_COMPLETION:
+      dependencies:
+        - EXECUTE_WORK
+      actions:
+        - action_id: verify-oa01-verification-marker
+          action_type: verify_artifact
+          path: runtime/evidence/OA-01/VERIFIED
+          content_digest: 78673d15e22299e01c9eca59f7138384e8a2351036b927ebe5c5cebf53f94633
 traceability:
   execution_contract: OPERATIONAL-ALPHA-EXECUTION-CONTRACT@1.0
   execution_first_policy: SPEC-0014@1.6

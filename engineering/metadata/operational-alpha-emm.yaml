@@ -145,7 +145,7 @@ entities:
     authoritative_owner: Homelab Infrastructure
     classification: Authoritative
     source: engineering/execution/plans/WOP-OA-01-IMPLEMENTATION-001.yaml
-    source_digest: b774c754f8ab242843dd8290ede82ae5a48bf599ad1dd8beebae7dcd9d075448
+    source_digest: 05679bb91527cd077d8e4c959ec06f2e0b19c3462f8dbe905e696cd6754b85c8
   - entity_type: ActivationRecord
     entity_id: ACT-OA-01-001
     revision: 1
