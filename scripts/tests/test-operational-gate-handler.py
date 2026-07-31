@@ -67,7 +67,7 @@ class OperationalGateHandlerTests(unittest.TestCase):
             },
         ).start(
             {
-                "mode": "operational",
+                "mode": "qualification",
                 "intent": "Qualify bounded operational artifact gates",
                 "mission_id": fixture["MISSION"],
                 "work_item_id": fixture["WORK"],
@@ -76,6 +76,19 @@ class OperationalGateHandlerTests(unittest.TestCase):
             },
             at=self.at,
         )
+        # This suite qualifies the isolated handler boundary.  Admission is
+        # represented as an already-decided fixture so the tests do not
+        # exercise the separate convergence-authority admission resolver.
+        # Production admission remains fail-closed on that resolver.
+        self.admission["request"]["mode"] = "operational"
+        self.admission["status"] = "DECIDED"
+        self.admission["failure"] = None
+        self.admission["artifacts"]["admission_decision"] = {
+            "admission_decision": "ACCEPTED",
+            "dispatch_permitted": False,
+        }
+        self.admissions.save(self.admission)
+        self.admission = self.admissions.load(self.admission["admission_id"])
         self.registry = HandlerRegistry()
         self.handler = OperationalArtifactGateHandler()
         self.registry.register(self.handler)

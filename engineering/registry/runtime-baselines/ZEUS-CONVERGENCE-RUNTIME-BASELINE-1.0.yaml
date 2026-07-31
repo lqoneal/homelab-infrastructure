@@ -1,0 +1,38 @@
+runtime_baseline_id: ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0
+version: 1.0
+status: frozen_certified
+classification: Authoritative
+authoritative_owner: Homelab Infrastructure
+scope: Zeus Operational Alpha convergence runtime
+architecture_baseline:
+  id: OA-IMPLEMENTATION-BASELINE-1.0
+  repository_locator: 5706307c1fdf9d4e0601c9cc578181f6d916e0a8
+  tag: oa-implementation-baseline-1.0
+runtime_qualification:
+  status: READY_FOR_OPERATIONAL_ALPHA_IMPLEMENTATION
+  decision: engineering/evidence/2026-07-30-wop-runtime-certification-002/OPERATIONAL-RUNTIME-CERTIFICATION-DECISION.md
+  report: engineering/evidence/2026-07-30-wop-runtime-certification-002/FINAL-RUNTIME-CERTIFICATION-REPORT.md
+  validation: engineering/evidence/2026-07-30-wop-runtime-certification-002/VALIDATION-REPORT.md
+  qualification_wop: WOP-RUNTIME-CERTIFICATION-002
+runtime_contract:
+  authority_model: SPEC-0014@1.1
+  metadata_model: OPERATIONAL-ALPHA-EMM@1.1
+  execution_contract: OPERATIONAL-ALPHA-EXECUTION-CONTRACT@1.0
+  execution_chain: Authority Record -> EMM -> Implementation WOP -> Operational Gate Plan -> Qualified Capability -> Action
+operational_alpha_transition:
+  program_status: active_engineering_program
+  convergence_program_status: closed
+  implementation_status: prerequisites_pending
+  blocked_prerequisites:
+    - Authority Record
+    - active Implementation WOP
+    - authoritative Operational Gate Plan
+    - separate action authorization
+synchronization:
+  direction: authoritative_registry_to_derived_consumers
+  verification: source-digest-and-read-only-runtime-probe
+  live_runtime_mutation: prohibited_by_closeout_scope
+  reconciliation_owner: Homelab Infrastructure
+traceability:
+  closeout_record: MILESTONE-0011
+  closeout_evidence: engineering/evidence/2026-07-30-wop-convergence-closeout-001/

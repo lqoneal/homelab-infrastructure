@@ -1,7 +1,22 @@
-schema_version: 2
+schema_version: 3
 interface_id: ENGINEERING-EXECUTION-INTERFACE
 operational_owner: engctl
-mission_contracts:
+metadata_model:
+  owner: OPERATIONAL-ALPHA-EMM
+  revision: '1.1'
+  source: engineering/metadata/operational-alpha-emm.yaml
+authority_resolution:
+  model: SPEC-0014
+  revision: '1.1'
+  implementation_wop_source: engineering/work-orders/*/immutable-wop.yaml
+operational_execution_contract:
+  owner: OPERATIONAL-ALPHA-EXECUTION-CONTRACT
+  revision: '1.0'
+  source: engineering/execution/operational-alpha-execution-contract.yaml
+  gate_plan_entity_type: OperationalGatePlan
+# Mission Contracts are retained only as historical read-only projections for
+# existing mission reporting. They are not an Operational Alpha authority input.
+legacy_mission_projection:
   search_paths:
     - engineering/execution/missions/*.yaml
 semantic_bindings:
@@ -10,28 +25,31 @@ semantic_bindings:
     revision: '1.0'
   execution_contract:
     owner: SPEC-0005
-    revision: '1.2'
+    revision: '2.0'
   execution_lifecycle:
     owner: PROC-0001
-    revision: '1.19'
+    revision: '2.0'
   handoff_construction:
     owner: PROC-0004
     revision: '1.6'
-  mission_contract:
+  convergence_authority:
+    owner: SPEC-0014
+    revision: '1.1'
+  implementation_wop:
     owner: STD-0003
-    revision: '1.5'
-  mission_contract_structure:
+    revision: '2.0'
+  implementation_wop_structure:
     owner: TPL-0001
-    revision: '1.9'
+    revision: '2.0'
   completion_report:
     owner: TPL-0002
-    revision: '1.4'
+    revision: '2.0'
   repository_context:
     owner: SPEC-0004
     revision: '1.5'
   command_control:
     owner: SPEC-0005
-    revision: '1.2'
+    revision: '2.0'
   progressive_verification:
     owner: PMCT-CONTRACT
     revision: '1.0'
@@ -41,5 +59,6 @@ routes:
   snapshot: scripts/lib/eos/execution_interface.py
   qualification: scripts/lib/eos/execution_interface.py
   authority_resolution: scripts/lib/eos/execution_interface.py
+  convergence_runtime: scripts/lib/eos/convergence_runtime.py
   handoff_validation: scripts/lib/eos/execution_interface.py
   controller: scripts/engineering-executionctl

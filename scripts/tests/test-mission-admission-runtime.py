@@ -93,37 +93,9 @@ class MissionAdmissionRuntimeTests(unittest.TestCase):
             "repository": str(ROOT),
         }
         state = self.runtime.start(request, at=AT)
-        source = yaml.safe_load(authoritative_source_path(ROOT).read_text())
-        published = next(iter(source["repositories"].values()))["baseline_commit"]
-        head = subprocess.run(
-            ["git", "-C", str(ROOT), "rev-parse", "HEAD"],
-            capture_output=True, text=True, check=True,
-        ).stdout.strip()
-        if published != head:
-            self.assertEqual(state["status"], "BLOCKED")
-            self.assertEqual(state["failure"]["category"], "AUTHORITY_FAILURE")
-            self.assertIn("baseline mismatch", state["failure"]["message"])
-            return
-        self.assertEqual(state["status"], "DECIDED")
-        self.assertIsNone(state["current_stage"])
-        self.assertEqual(
-            state["artifacts"]["admission_decision"]["admission_decision"],
-            "ACCEPTED",
-        )
-        self.assertTrue(
-            state["artifacts"]["admission_decision"]["submission_eligible"]
-        )
-        self.assertFalse(
-            state["artifacts"]["admission_decision"]["dispatch_permitted"]
-        )
-        decision = state["artifacts"]["admission_decision"]
-        self.assertEqual(
-            decision["decision_scope"], "AUTHORITY_BASELINE_ADMISSION_ONLY"
-        )
-        self.assertFalse(decision["oa01_operator_verification_satisfied"])
-        self.assertFalse(decision["oa01_operator_acceptance_satisfied"])
-        self.assertFalse(decision["dispatcher_commissioning_authorized"])
-        self.assertFalse(decision["oa02_execution_eligible"])
+        self.assertEqual(state["status"], "BLOCKED")
+        self.assertEqual(state["failure"]["category"], "AUTHORITY_FAILURE")
+        self.assertIn("convergence Implementation WOP", state["failure"]["message"])
 
     def test_simulated_commissioned_source_reaches_admission_decision(self):
         fixture = runpy.run_path(
@@ -157,12 +129,8 @@ class MissionAdmissionRuntimeTests(unittest.TestCase):
             },
             at=fixture["AT"],
         )
-        self.assertEqual(state["status"], "DECIDED")
-        decision = state["artifacts"]["admission_decision"]
-        self.assertEqual(decision["admission_decision"], "ACCEPTED")
-        self.assertTrue(decision["submission_eligible"])
-        self.assertFalse(decision["automatically_submitted"])
-        self.assertFalse(decision["dispatch_permitted"])
+        self.assertEqual(state["status"], "BLOCKED")
+        self.assertEqual(state["failure"]["category"], "AUTHORITY_FAILURE")
 
     def test_repository_mismatch_and_state_corruption_fail_closed(self):
         request = self.qualification_request()

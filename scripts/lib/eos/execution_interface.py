@@ -13,6 +13,7 @@ from typing import Any, Mapping
 import yaml
 
 from scripts.lib.eos.assurance_language import AssuranceLanguage, AssuranceLanguageError
+from scripts.lib.eos.convergence_runtime import ConvergenceRuntime
 
 
 class ExecutionInterfaceError(ValueError):
@@ -42,7 +43,7 @@ class ExecutionInterface:
         self.registry_path = self.root / "engineering/registry/work-registry.yaml"
         self.manifest = _load(self.manifest_path)
         self.registry = _load(self.registry_path)
-        if self.manifest.get("schema_version") != 2:
+        if self.manifest.get("schema_version") not in {2, 3}:
             raise ExecutionInterfaceError("unsupported execution-interface schema")
 
     def _git(self, *arguments: str) -> str:
@@ -57,6 +58,21 @@ class ExecutionInterface:
                 result.stderr.strip() or "repository inspection failed"
             )
         return result.stdout.strip()
+
+    def convergence(self) -> ConvergenceRuntime:
+        """Return the SPEC-0014 runtime; it is independent of legacy projections."""
+        if self.manifest.get("schema_version") != 3:
+            raise ExecutionInterfaceError("convergence runtime requires interface schema 3")
+        return ConvergenceRuntime(self.root)
+
+    def resolve_implementation_wop(
+        self, *, wop_id: str, revision: str | int, action: str,
+        correlation_id: str, authority_record_id: str | None = None,
+    ) -> dict[str, Any]:
+        return self.convergence().resolve(
+            wop_id=wop_id, revision=revision, action=action,
+            correlation_id=correlation_id, authority_record_id=authority_record_id,
+        )
 
     def _controlled_documents(self) -> dict[str, list[dict[str, Any]]]:
         records: dict[str, list[dict[str, Any]]] = {}
@@ -234,7 +250,7 @@ class ExecutionInterface:
 
     def _contract_paths(self) -> list[Path]:
         paths: list[Path] = []
-        patterns = self.manifest.get("mission_contracts", {}).get("search_paths", [])
+        patterns = self.manifest.get("legacy_mission_projection", {}).get("search_paths", [])
         if not isinstance(patterns, list) or not patterns:
             raise ExecutionInterfaceError("mission contract discovery is not configured")
         for pattern in patterns:
@@ -256,7 +272,7 @@ class ExecutionInterface:
             candidates.append(str(path.relative_to(self.root)))
         return {
             "search_paths": list(
-                self.manifest.get("mission_contracts", {}).get("search_paths", [])
+                self.manifest.get("legacy_mission_projection", {}).get("search_paths", [])
             ),
             "candidate_paths": sorted(candidates),
             "count": len(candidates),

@@ -14,13 +14,11 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from scripts.lib.emp.authority_publication import commissioning_status
-from scripts.lib.emp.authority_resolution import authoritative_source_path
 from scripts.lib.emp.authority_resolution import (
-    AuthorityResolutionRuntime,
     canonical_json,
     digest,
-    load_authority_state,
 )
+from scripts.lib.eos.convergence_runtime import ConvergenceRuntime
 from scripts.lib.emp.owner_enrollment import enrollment_status
 from scripts.lib.emp.production_execution import dispatch_readiness
 from scripts.lib.emp.reasoning import WopGenerator
@@ -113,11 +111,7 @@ class MissionAdmissionRuntime:
     ):
         self.root = Path(repository_root).resolve()
         self.store = store
-        self.authority_state_path = (
-            Path(authority_state_path)
-            if authority_state_path is not None
-            else authoritative_source_path(self.root)
-        )
+        self.authority_state_path = None
         self.commissioning_probe = commissioning_probe or commissioning_status
         self.enrollment_probe = enrollment_probe or enrollment_status
         self.dispatch_probe = dispatch_probe or self._production_dispatch_readiness
@@ -267,32 +261,20 @@ class MissionAdmissionRuntime:
                 "authority_mode": "qualification-placeholder",
                 "operational_authority_allocated": False,
             }
-        commissioning = self.commissioning_probe(self.root)
-        owners = self.enrollment_probe(self.root)
-        if commissioning["commissioning_state"] != "READY":
-            raise StageBlocked(
-                "OPERATIONAL_READINESS_BLOCKER",
-                "operational authority infrastructure is not commissioned",
-                {"commissioning": commissioning, "owner_enrollment": owners},
-            )
-        try:
-            bundle = AuthorityResolutionRuntime(
-                self.root, load_authority_state(self.authority_state_path)
-            ).resolve(
-                mission_id=request["mission_id"],
-                work_item_id=request["work_item_id"],
-                principal_id=request["principal_id"],
-                issued_at=at,
-            )
-        except ValueError as error:
-            raise StageBlocked(
-                "AUTHORITY_FAILURE", str(error), {"source": str(self.authority_state_path)}
-            ) from error
-        state["artifacts"]["authority_context"] = bundle
+        if not request.get("implementation_wop_id"):
+            raise StageBlocked("AUTHORITY_FAILURE", "convergence Implementation WOP is required")
+        flow = ConvergenceRuntime(self.root).execution_flow(
+            wop_id=request["implementation_wop_id"], revision=request["implementation_wop_revision"],
+            action="admit_mission", correlation_id=request["correlation_id"],
+            authority_record_id=request.get("authority_record_id"),
+        )
+        if not flow["execution_admitted"]:
+            raise StageBlocked("AUTHORITY_FAILURE", "convergence authority is not resolved", flow["authority_receipt"])
+        state["artifacts"]["authority_context"] = flow
         return {
             "authority_mode": "operational",
-            "resolution_id": bundle["resolution_id"],
-            "bundle_digest": bundle["bundle_digest"],
+            "resolution_id": flow["authority_receipt"]["receipt_digest"],
+            "bundle_digest": flow["flow_digest"],
         }
 
     def _stage_wop_generation(self, state, at):
@@ -314,12 +296,8 @@ class MissionAdmissionRuntime:
                 immutable_wop_reference=authority["immutable_wop_reference"],
             )
         else:
-            result = OperationalWopService().generate(
-                intent=request["intent"],
-                bundle=authority,
-                repository_root=self.root,
-                at=at,
-            )
+            result = ConvergenceRuntime(self.root).operational_wop(
+                intent=request["intent"], flow=authority)
         state["artifacts"]["wop_result"] = result
         return {
             "wop_id": result["wop"]["wop_id"],
@@ -444,6 +422,10 @@ class MissionAdmissionRuntime:
             "repository": str(Path(str(request.get("repository", ""))).resolve())
             if request.get("repository")
             else "",
+            "implementation_wop_id": request.get("implementation_wop_id"),
+            "implementation_wop_revision": str(request.get("implementation_wop_revision", "1")),
+            "authority_record_id": request.get("authority_record_id"),
+            "correlation_id": request.get("correlation_id", "mission-admission"),
         }
         if value["mode"] not in {"qualification", "operational"}:
             raise MissionAdmissionError("mode must be qualification or operational")

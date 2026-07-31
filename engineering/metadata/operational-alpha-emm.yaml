@@ -1,0 +1,34 @@
+schema_version: 1
+emm_id: OPERATIONAL-ALPHA-EMM
+version: 1.1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+authoritative_owner: Homelab Infrastructure
+entities:
+  - entity_type: ArchitectureBaseline
+    entity_id: OA-IMPLEMENTATION-BASELINE-1.0
+    revision: 1.0
+    authoritative_owner: Homelab Infrastructure
+    classification: Authoritative
+    source: engineering/registry/architecture-baselines/OA-IMPLEMENTATION-BASELINE-1.0.yaml
+    source_digest: e2f0101c4876052203fd730d2053d5091d57a8d7e2be9f5be5d91f96487deecf
+  - entity_type: ImplementationWOP
+    entity_id: WOP-OA-01-IMPLEMENTATION-001
+    revision: 1
+    authoritative_owner: Homelab Infrastructure
+    classification: Authoritative
+    source: engineering/work-orders/OA-01-IMPLEMENTATION-001/immutable-wop.yaml
+    source_digest: 5b41645d2ffa521c6231a6e8d45410337421917468396f5a3222c827f87036fc
+  - entity_type: OperationalExecutionContract
+    entity_id: OPERATIONAL-ALPHA-EXECUTION-CONTRACT
+    revision: 1.0
+    authoritative_owner: Homelab Infrastructure
+    classification: Authoritative
+    source: engineering/execution/operational-alpha-execution-contract.yaml
+    source_digest: fed1b146f70c8127648974868714ec18d6f7e45e3e21d9304b992fa7cab5ed18
+  - entity_type: RuntimeBaseline
+    entity_id: ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0
+    revision: 1.0
+    authoritative_owner: Homelab Infrastructure
+    classification: Authoritative
+    source: engineering/registry/runtime-baselines/ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0.yaml
+    source_digest: 0f4b4f97392e58a02e5539103c304eb0adf9496e5ec4b128b76a47cfe47e5fe2

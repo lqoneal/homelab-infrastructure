@@ -1,0 +1,48 @@
+schema_version: 1
+contract_id: OPERATIONAL-ALPHA-EXECUTION-CONTRACT
+revision: '1.0'
+classification: Authoritative
+authoritative_owner: Homelab Infrastructure
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: READY
+purpose: >-
+  Define the authoritative, WOP-bound gate-plan artifact required to construct
+  an Operational Alpha handler context. This contract defines the artifact
+  boundary only; it does not contain a gate plan or authorize execution.
+synchronization:
+  direction: authoritative_to_derived
+  owner: Metadata Engine
+  trigger: published-source-revision
+  verification: source-digest-and-emm-identity
+  reconciliation_owner: Homelab Infrastructure
+gate_plan_resolution:
+  entity_type: OperationalGatePlan
+  entity_id: implementation_wop_id
+  revision: implementation_wop_revision
+  classification: Authoritative
+  authoritative_owner: assigned WOP owner
+  source_requirements:
+    - exact baseline binding
+    - exact Implementation WOP binding
+    - immutable source digest in EMM
+    - lifecycle state ACTIVE
+    - handler-compatible gate_plan payload
+  absence_behavior: PRECONDITION_FAILED
+  mismatch_behavior: INTEGRITY_FAILURE
+runtime_context:
+  consumer: zeus.operational.artifact
+  required_fields:
+    - execution_id
+    - mission_id
+    - repository
+    - repository_baseline
+    - wop_submission_digest
+    - isolated_workspace
+    - authorization
+    - gate_plan
+  generation: Metadata Engine resolution followed by Zeus derived context assembly
+  persistence: derived-and-ephemeral
+traceability:
+  governing_specification: SPEC-0014@1.1
+  execution_interface: engineering/execution/execution-interface.yaml
+  emm: engineering/metadata/operational-alpha-emm.yaml

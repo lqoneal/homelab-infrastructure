@@ -153,15 +153,14 @@ class MissionExecutionRuntimeTests(unittest.TestCase):
             },
             at=fixture["AT"],
         )
-        state = self.runtime(gate_handler=RecordingHandler()).start(
-            admission["admission_id"], at=fixture["AT"]
-        )
-        self.assertEqual(state["state"], "Waiting")
-        self.assertEqual(state["current_gate"], "EXECUTE_WORK")
+        self.assertEqual(admission["status"], "BLOCKED")
         self.assertEqual(
-            state["wait_reason"]["category"], "OPERATIONAL_DISPATCH_DISABLED"
+            admission["failure"]["category"], "AUTHORITY_FAILURE"
         )
-        self.assertNotIn("EXECUTE_WORK", state["completed_gates"])
+        self.assertIn(
+            "convergence Implementation WOP is required",
+            admission["failure"]["message"],
+        )
 
     def test_eens_adapter_receives_idempotent_execution_events(self):
         sink = EensExecutionSink(ROOT, self.directory / "eens.sqlite3")

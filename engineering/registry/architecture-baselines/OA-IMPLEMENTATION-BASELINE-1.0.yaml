@@ -1,6 +1,6 @@
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
 version: 1.0
-status: adopted_published
+status: adopted_published_runtime_certified
 authoritative_owner: Homelab Infrastructure
 adoption_authority: OA-ROADMAP-HF-013A
 qualification_reference: OA-ROADMAP-HF-012
@@ -16,10 +16,15 @@ source_series:
 controlled_adoption_record: MILESTONE-0010
 repository_locator: e60c185d925e0dedeab8f0764764a058cd2a9988
 tag: oa-implementation-baseline-1.0
-implementation_status: planning_complete_implementation_not_authorized
+implementation_status: runtime_certified_implementation_prerequisites_pending
+runtime_implementation_baseline: ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0
+runtime_qualification_baseline: WOP-RUNTIME-CERTIFICATION-002
+runtime_qualification_status: READY_FOR_OPERATIONAL_ALPHA_IMPLEMENTATION
+runtime_qualification_evidence: engineering/evidence/2026-07-30-wop-runtime-certification-002/
+runtime_closeout_record: MILESTONE-0011
 synchronization:
   source: repository baseline registry
   direction: repository_to_derived_consumers
-  eos_runtime_status: synchronization_required_not_performed
+  eos_runtime_status: read_only_runtime_consistency_verified
   reconciliation_owner: EOS owner
 conformance_requirement: separate authorized implementation packages must cite this baseline

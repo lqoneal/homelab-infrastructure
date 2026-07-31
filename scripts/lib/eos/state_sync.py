@@ -68,7 +68,10 @@ def render(root: Path, eos_workspace: Path, project: str) -> dict[Path, bytes]:
     project_path = root / "docs/project/PROJ-0001-PROJECT_STATE.md"
     registry_path = root / "engineering/registry/work-registry.yaml"
     interface_path = root / "engineering/execution/execution-interface.yaml"
-    sources = (matrix_path, project_path, registry_path, interface_path)
+    emm_path = root / "engineering/metadata/operational-alpha-emm.yaml"
+    sources = [matrix_path, project_path, registry_path, interface_path]
+    if emm_path.is_file():
+        sources.append(emm_path)
     for source in sources:
         if not source.is_file():
             raise SynchronizationError(f"canonical source missing: {source}")
@@ -85,6 +88,11 @@ def render(root: Path, eos_workspace: Path, project: str) -> dict[Path, bytes]:
 
     registry = load_yaml(registry_path)
     interface = load_yaml(interface_path)
+    emm = load_yaml(emm_path) if emm_path.is_file() else None
+    if interface.get("schema_version") == 3 and (
+        not isinstance(emm, dict) or emm.get("schema_version") != 1 or not emm.get("emm_id")
+    ):
+        raise SynchronizationError("valid Operational Alpha EMM is required")
     head = git(root, "rev-parse", "HEAD")
     branch = git(root, "branch", "--show-current")
     remote = git(root, "remote", "get-url", "origin") if git(root, "remote") else ""
@@ -108,7 +116,7 @@ def render(root: Path, eos_workspace: Path, project: str) -> dict[Path, bytes]:
         "engineering authority.\n"
     ).encode()
 
-    state = (
+    state_header = (
         "---\n"
         "document_id: EOS-STATE\n"
         "schema_version: 1\n"
@@ -122,11 +130,14 @@ def render(root: Path, eos_workspace: Path, project: str) -> dict[Path, bytes]:
         f"project_state_sha256: {source_digests[str(project_path.relative_to(root))]}\n"
         f"registry_revision: {registry.get('revision')}\n"
         f"execution_interface_schema: {interface.get('schema_version')}\n"
+    ) + (f"emm_id: {emm.get('emm_id')}\n"
+         f"emm_version: {emm.get('version')}\n" if emm else "") + (
         "---\n\n"
         "# EOS Engineering State Projection\n\n"
         "This deterministic runtime projection is generated from authoritative\n"
         "repository records. Modify the repository sources, never this file.\n"
-    ).encode()
+    )
+    state = state_header.encode()
 
     projection_digests = {
         "EOS-ID.md": digest(identity),

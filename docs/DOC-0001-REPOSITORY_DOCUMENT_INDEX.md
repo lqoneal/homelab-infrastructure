@@ -1,7 +1,7 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.76
+version: 2.77
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,7 +9,7 @@ last_updated: 2026-07-30
 phase: Zeus Operational Alpha
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.75
+predecessor_revision: DOC-0001@2.76
 successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
@@ -470,6 +470,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | MILESTONE-0008 | Engineering Governance Framework Version 1.0 Operationally Qualified | Approved | Engineering Governance | `docs/project/milestones/2026-07-18-engineering-governance-framework-1.0-operationally-qualified.md` |
 | MILESTONE-0009 | Operational Alpha Governance Baseline 1.0 and Governance Freeze | Approved | Engineering Governance | `docs/project/milestones/2026-07-29-operational-alpha-governance-baseline-1.0.md` |
 | MILESTONE-0010 | Operational Alpha Implementation Baseline 1.0 Adoption | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-30-operational-alpha-implementation-baseline-1.0.md` |
+| MILESTONE-0011 | Operational Alpha Convergence Runtime Closeout and Transition | Approved | Homelab Infrastructure | `docs/project/milestones/2026-07-30-operational-alpha-convergence-runtime-closeout.md` |
 
 This table shall be updated whenever a controlled document is created, superseded, or archived.
 
@@ -891,3 +892,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.74 | 2026-07-30 | Reconciled registration for SPEC-0002 Draft 1.3 and AQR-0001 Draft 1.1, including complete ADR component, invariant, interface, and Future Implementation traceability plus observational Repository Convergence Qualification; no architecture decision, repository convergence, lifecycle transition, publication, synchronization, or promotion authority was introduced. |
 | 2.75 | 2026-07-30 | Registered MILESTONE-0010 and the `OA-IMPLEMENTATION-BASELINE-1.0` adoption trace. The entry establishes an implementation-planning baseline from HF-012 without activating Draft architecture records or authorizing implementation. |
 | 2.76 | 2026-07-30 | Registered SPEC-0014 and synchronized the controlled Operational Alpha authority migration across STD-0003, PROC-0001, SPEC-0005, PROC-0006, TPL-0001, and TPL-0002. |
+| 2.77 | 2026-07-30 | Registered MILESTONE-0011 and the certified `ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0` registry trace; Operational Alpha remains blocked at OA-01 until its separately controlled execution prerequisites exist. |

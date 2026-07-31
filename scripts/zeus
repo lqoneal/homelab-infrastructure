@@ -14,7 +14,7 @@ from scripts.lib.emp.operational_runtime import bootstrap, verify_authoritative_
 from scripts.lib.emp.operator_interface import ORIENTATION, OperatorInterfaceStore, initial_state, status as intro_status  # noqa: E402
 from scripts.lib.emp.reasoning import ContextManager, ConversationEngine, ReasoningError, WopGenerator, WopGuidanceService  # noqa: E402
 from scripts.lib.emp.wop_admission import load_submission  # noqa: E402
-from scripts.lib.emp.authority_resolution import AuthorityResolutionError, AuthorityResolutionRuntime, authoritative_source_path, load_authority_state  # noqa: E402
+from scripts.lib.emp.authority_resolution import AuthorityResolutionError  # noqa: E402
 from scripts.lib.emp.wop_service import OperationalWopService  # noqa: E402
 from scripts.lib.emp.mission_admission_runtime import AdmissionStateStore, MissionAdmissionError, MissionAdmissionRuntime  # noqa: E402
 from scripts.lib.emp.mission_execution_runtime import ExecutionStateStore, MissionExecutionError, MissionExecutionRuntime  # noqa: E402
@@ -26,6 +26,7 @@ from scripts.lib.emp.oa02_lifecycle import resolve as resolve_oa02, verify as ve
 from scripts.lib.emp.agent_qualification import AgentQualificationError, qualify as qualify_agent, registry as agent_registry, revoke as revoke_agent, runtime_registry_path  # noqa: E402
 from scripts.lib.emp.gate_carry_forward import GateCarryForwardError, create_record as carry_gate  # noqa: E402
 from scripts.lib.eos.execution_interface import ExecutionInterface, ExecutionInterfaceError  # noqa: E402
+from scripts.lib.eos.convergence_runtime import ConvergenceRuntime  # noqa: E402
 from scripts.lib.eos.mission_assurance import MissionAssurance, MissionAssuranceError  # noqa: E402
 from scripts.lib.emp import progressive_oa  # noqa: E402
 from scripts.lib.emp.progressive_gate import ProgressiveGateError, ProgressiveGateService  # noqa: E402
@@ -33,7 +34,6 @@ from scripts.lib.emp.stage1_runtime import Stage1Error, Stage1Runtime  # noqa: E
 from scripts.lib.emp.oa01_verification import OA01MissionVerification, OA01VerificationError  # noqa: E402
 from scripts.lib.emp.oa01_implementation import OA01ImplementationError, qualify as qualify_oa01_implementation  # noqa: E402
 from scripts.lib.emp.oa01_gate_verification import OA01GateVerificationError  # noqa: E402
-from scripts.lib.emp.controlled_mission_authority import ControlledMissionAuthority, ControlledMissionAuthorityError  # noqa: E402
 from scripts.lib.emp.oa02_implementation import OA02ImplementationError, qualify as qualify_oa02_implementation  # noqa: E402
 from scripts.lib.emp.oa02_gate_verification import OA02GateVerificationError  # noqa: E402
 from scripts.lib.emp.oa03_implementation import OA03ImplementationError, qualify as qualify_oa03_implementation  # noqa: E402
@@ -193,6 +193,17 @@ def main(argv=None):
         "action",
         choices=("status", "work-lifecycle", "show", "resolve", "validate"),
     )
+    authority.add_argument("--wop")
+    authority.add_argument("--revision")
+    authority.add_argument("--action-name")
+    authority.add_argument("--authority-record")
+    authority.add_argument("--correlation-id", default="zeus-operator")
+    lifecycle_view = sub.add_parser("lifecycle")
+    lifecycle_view.add_argument("wop_id")
+    lifecycle_view.add_argument("--revision", default="1")
+    capabilities_view = sub.add_parser("capabilities")
+    state_view = sub.add_parser("state")
+    health_view = sub.add_parser("health")
     intro = sub.add_parser("intro", help="review operator orientation")
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
     submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository"); submit.add_argument("--baseline"); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append"); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact"); submit.add_argument("--affected-repository", action="append"); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
@@ -202,8 +213,8 @@ def main(argv=None):
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
     accept=sub.add_parser("accept"); accept.add_argument("gate"); accept.add_argument("--reject", action="store_true"); accept.add_argument("--rationale", default=""); accept.add_argument("--at"); accept.add_argument("--yes", action="store_true"); accept.add_argument("--json", action="store_true")
     decline=sub.add_parser("decline"); decline.add_argument("approval_id"); decline.add_argument("--operator", required=True); decline.add_argument("--at")
-    verify=sub.add_parser("verify"); verify.add_argument("gate")
-    execution=sub.add_parser("execution"); execution.add_argument("action", choices=("status","resolve")); execution.add_argument("identifier")
+    verify=sub.add_parser("verify"); verify.add_argument("gate"); verify.add_argument("--wop"); verify.add_argument("--revision", default="1"); verify.add_argument("--authority-record"); verify.add_argument("--correlation-id", default="zeus-gate-verification")
+    execution=sub.add_parser("execution"); execution.add_argument("action", choices=("status","resolve")); execution.add_argument("identifier"); execution.add_argument("--revision", default="1"); execution.add_argument("--requested-action", default="execute"); execution.add_argument("--authority-record"); execution.add_argument("--correlation-id", default="zeus-execution")
     context=sub.add_parser("context"); context.add_argument("action", choices=("reconstruct",))
     eligibility=sub.add_parser("eligibility"); eligibility.add_argument("action", choices=("evaluate", "show")); eligibility.add_argument("request", type=Path)
     evidence=sub.add_parser("evidence"); evidence.add_argument("action", choices=("show",)); evidence.add_argument("identifier")
@@ -216,9 +227,9 @@ def main(argv=None):
     validate=sub.add_parser("validate"); validate.add_argument("wop_package"); validate.add_argument("--repository", required=True)
     explain=sub.add_parser("explain"); explain.add_argument("subject"); explain.add_argument("record", nargs="?")
     converse=sub.add_parser("converse"); converse.add_argument("request"); converse.add_argument("--context", type=Path, required=True); converse.add_argument("--repository"); converse.add_argument("--package"); converse.add_argument("--rejection")
-    generate=sub.add_parser("generate-wop"); generate.add_argument("intent"); generate.add_argument("--mode", choices=("qualification","operational"), default="qualification"); generate.add_argument("--mission", required=True); generate.add_argument("--phase"); generate.add_argument("--repository", required=True); generate.add_argument("--submitter"); generate.add_argument("--approval-authority"); generate.add_argument("--approval-reference"); generate.add_argument("--approval-date"); generate.add_argument("--authority-node"); generate.add_argument("--adr"); generate.add_argument("--immutable-wop"); generate.add_argument("--work-item"); generate.add_argument("--principal"); generate.add_argument("--at")
-    admit_mission=sub.add_parser("admit-mission"); admit_mission.add_argument("action", choices=("start","resume","status")); admit_mission.add_argument("--admission-id"); admit_mission.add_argument("--mode", choices=("qualification","operational")); admit_mission.add_argument("--intent"); admit_mission.add_argument("--mission"); admit_mission.add_argument("--phase"); admit_mission.add_argument("--work-item"); admit_mission.add_argument("--principal"); admit_mission.add_argument("--submitter"); admit_mission.add_argument("--repository", default=str(ROOT)); admit_mission.add_argument("--at"); admit_mission.add_argument("--max-stages", type=int)
-    execute_mission=sub.add_parser("execute-mission"); execute_mission.add_argument("action", choices=("start","resume","status","suspend","cancel")); execute_mission.add_argument("--admission-id"); execute_mission.add_argument("--execution-id"); execute_mission.add_argument("--reason", default="OPERATOR"); execute_mission.add_argument("--at"); execute_mission.add_argument("--max-gates", type=int)
+    generate=sub.add_parser("generate-wop"); generate.add_argument("intent"); generate.add_argument("--mode", choices=("qualification","operational"), default="qualification"); generate.add_argument("--mission", required=True); generate.add_argument("--phase"); generate.add_argument("--repository", required=True); generate.add_argument("--submitter"); generate.add_argument("--approval-authority"); generate.add_argument("--approval-reference"); generate.add_argument("--approval-date"); generate.add_argument("--authority-node"); generate.add_argument("--adr"); generate.add_argument("--immutable-wop"); generate.add_argument("--work-item"); generate.add_argument("--principal"); generate.add_argument("--at"); generate.add_argument("--authority-record"); generate.add_argument("--revision", default="1"); generate.add_argument("--correlation-id", default="zeus-wop-generation")
+    admit_mission=sub.add_parser("admit-mission"); admit_mission.add_argument("action", choices=("start","resume","status")); admit_mission.add_argument("--admission-id"); admit_mission.add_argument("--mode", choices=("qualification","operational")); admit_mission.add_argument("--intent"); admit_mission.add_argument("--mission"); admit_mission.add_argument("--phase"); admit_mission.add_argument("--work-item"); admit_mission.add_argument("--principal"); admit_mission.add_argument("--submitter"); admit_mission.add_argument("--repository", default=str(ROOT)); admit_mission.add_argument("--at"); admit_mission.add_argument("--max-stages", type=int); admit_mission.add_argument("--wop"); admit_mission.add_argument("--revision", default="1"); admit_mission.add_argument("--authority-record"); admit_mission.add_argument("--correlation-id", default="zeus-mission-admission")
+    execute_mission=sub.add_parser("execute-mission"); execute_mission.add_argument("action", choices=("start","resume","status","suspend","cancel")); execute_mission.add_argument("--admission-id"); execute_mission.add_argument("--execution-id"); execute_mission.add_argument("--reason", default="OPERATOR"); execute_mission.add_argument("--at"); execute_mission.add_argument("--max-gates", type=int); execute_mission.add_argument("--wop"); execute_mission.add_argument("--revision", default="1"); execute_mission.add_argument("--authority-record"); execute_mission.add_argument("--correlation-id", default="zeus-mission-execution")
     dispatcher=sub.add_parser("dispatcher"); dispatcher.add_argument("action", choices=("status","agents","assignment","execution","eens","evidence","reconciliation")); dispatcher.add_argument("--identifier")
     agent=sub.add_parser("agent"); agent.add_argument("action", choices=("registry","status","qualify","revoke")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--json", action="store_true")
     gate=sub.add_parser("gate"); gate.add_argument("action", choices=("show", "objective", "evidence", "receipt", "carry-forward", "validate-carry-forward")); gate.add_argument("gate_id")
@@ -297,39 +308,38 @@ def main(argv=None):
             emit(progressive_oa.explain(ROOT, a.subject))
             return 0
         if a.command == "authority":
-            if a.action in ("show", "resolve", "validate"):
-                service = ControlledMissionAuthority(ROOT)
-                value = (
-                    service.require(boundary=f"authority_{a.action}")
-                    if a.action == "validate"
-                    else service.resolve(boundary=f"authority_{a.action}")
+            if a.action in ("resolve", "show", "validate"):
+                if not a.wop or not a.revision or not a.action_name:
+                    raise OrchestrationError("convergence authority resolution requires --wop, --revision, and --action-name")
+                value = ConvergenceRuntime(ROOT).resolve(
+                    wop_id=a.wop, revision=a.revision, action=a.action_name,
+                    correlation_id=a.correlation_id, authority_record_id=a.authority_record,
                 )
                 emit(value)
-                return 0 if value["authorized"] else 77
-            decision = resolve_next_action(ROOT)
-            lifecycle = resolve_oa02(ROOT)
-            if a.action == "status":
-                emit({
-                    "repository_head": decision["repository"]["implementation_baseline"],
-                    "published_baseline": decision["repository"]["published_baseline"],
-                    "baseline_matches": decision["repository"]["baseline_matches"],
-                    "active_publication": lifecycle["active_publication"],
-                    "authority_status": decision["authority"]["status"],
-                    "trust_status": (
-                        "VALID"
-                        if decision["authority"]["operationally_configured"]
-                        else "INVALID"
-                    ),
-                })
-            else:
-                emit({
-                    "oa01_verification": lifecycle["oa01_verification"],
-                    "oa01_acceptance": lifecycle["oa01_acceptance"],
-                    "oa02_state": lifecycle["oa02_state"],
-                    "oa02_pmct_readiness": lifecycle["oa02_pmct_readiness"],
-                    "progressive_wop": lifecycle["progressive_wop"],
-                    "next_authorized_action": lifecycle["next_action"],
-                })
+                return 0 if value["outcome"] == "RESOLVED" else 77
+            emit({"baseline": ConvergenceRuntime(ROOT).emm()["baseline_id"],
+                  "capabilities": ConvergenceRuntime(ROOT).capabilities()})
+            return 0
+        if a.command == "capabilities":
+            emit(ConvergenceRuntime(ROOT).capabilities())
+            return 0
+        if a.command == "lifecycle":
+            receipt = ConvergenceRuntime(ROOT).resolve(
+                wop_id=a.wop_id, revision=a.revision, action="lifecycle_inspection",
+                correlation_id="zeus-lifecycle-inspection",
+            )
+            emit({"wop": receipt["inputs"]["implementation_wop"], "outcome": receipt["outcome"],
+                  "reasons": receipt["reasons"], "receipt_digest": receipt["receipt_digest"]})
+            return 0
+        if a.command == "state":
+            runtime = ConvergenceRuntime(ROOT)
+            emit({"baseline": runtime.emm()["baseline_id"], "emm": runtime.emm()["emm_id"],
+                  "capabilities": runtime.capabilities()})
+            return 0
+        if a.command == "health":
+            runtime = ConvergenceRuntime(ROOT)
+            emit({"result": "PASS", "emm": runtime.emm()["emm_id"],
+                  "capabilities": runtime.capabilities()})
             return 0
         if a.command == "agent":
             if a.action == "qualify":
@@ -393,39 +403,17 @@ def main(argv=None):
             })
             return 0
         if a.command == "verify":
-            if progressive_enabled:
-                service = ProgressiveGateService(ROOT)
-                if a.gate.upper() == "OA-01":
-                    emit(service.verify(a.gate))
-                    return 0
-                if a.gate.upper() == "OA-02":
-                    ControlledMissionAuthority(ROOT).require(
-                        boundary="oa02_verification_dispatch"
-                    )
-                    emit(service.verify(a.gate))
-                    return 0
-                if a.gate.upper() == "OA-03":
-                    ControlledMissionAuthority(
-                        ROOT, expected_gate="OA-03"
-                    ).require(boundary="oa03_verification_dispatch")
-                    emit(service.verify(a.gate))
-                    return 0
-                if a.gate.upper() == "OA-04":
-                    ControlledMissionAuthority(
-                        ROOT, expected_gate="OA-04"
-                    ).require(boundary="oa04_verification_dispatch")
-                    emit(service.verify(a.gate))
-                    return 0
-                if a.gate.upper() == "OA-05":
-                    ControlledMissionAuthority(
-                        ROOT, expected_gate="OA-05"
-                    ).require(boundary="oa05_verification_dispatch")
-                    emit(service.verify(a.gate))
-                    return 0
-                item = progressive_oa.show(ROOT, a.gate)
-                emit({"gate_id": item["gate_id"], "result": "IMPLEMENTATION_REQUIRED",
-                      "verification_guide": item["verification_guide"]})
-                return 77
+            if a.gate.upper().startswith("OA-"):
+                if not a.wop:
+                    raise OrchestrationError("Operational Alpha verification requires --wop convergence binding")
+                flow = ConvergenceRuntime(ROOT).execution_flow(
+                    wop_id=a.wop, revision=a.revision, action="verify",
+                    correlation_id=a.correlation_id, authority_record_id=a.authority_record,
+                )
+                emit({"gate": a.gate.upper(), "qualification": flow["qualification"],
+                      "authority_receipt": flow["authority_receipt"],
+                      "execution_admitted": flow["execution_admitted"]})
+                return 0 if flow["execution_admitted"] else 77
             if a.gate.upper() == "OA-02":
                 record,replay=verify_oa02(ROOT)
                 for key in ("result","repository_head","published_baseline","current_binding_pmct_result","oa02_pmct_readiness","dispatcher_state","production_agent_readiness","blocking_conditions","decision_digest"):
@@ -502,51 +490,9 @@ def main(argv=None):
                 print(status_text(value), end="")
         elif a.command=="resume":
             if progressive_enabled:
-                progressive_state = progressive_oa.load_state(ROOT)
-                if (
-                    progressive_state.get("active_gate") == "OA-01"
-                    and progressive_state["gates"]["OA-01"]["state"]
-                    in ("IMPLEMENTATION_REQUIRED", "AWAITING_OPERATOR_VERIFICATION")
-                ):
-                    emit(qualify_oa01_implementation(ROOT))
-                elif (
-                    progressive_state.get("active_gate") == "OA-02"
-                    and progressive_state["gates"]["OA-02"]["state"]
-                    in ("IMPLEMENTATION_REQUIRED", "AWAITING_OPERATOR_VERIFICATION")
-                ):
-                    ControlledMissionAuthority(ROOT).require(
-                        boundary="oa02_resume_dispatch"
-                    )
-                    emit(qualify_oa02_implementation(ROOT))
-                elif (
-                    progressive_state.get("active_gate") == "OA-03"
-                    and progressive_state["gates"]["OA-03"]["state"]
-                    in ("IMPLEMENTATION_REQUIRED", "AWAITING_OPERATOR_VERIFICATION")
-                ):
-                    ControlledMissionAuthority(
-                        ROOT, expected_gate="OA-03"
-                    ).require(boundary="oa03_resume_dispatch")
-                    emit(qualify_oa03_implementation(ROOT))
-                elif (
-                    progressive_state.get("active_gate") == "OA-04"
-                    and progressive_state["gates"]["OA-04"]["state"]
-                    in ("IMPLEMENTATION_REQUIRED", "AWAITING_OPERATOR_VERIFICATION")
-                ):
-                    ControlledMissionAuthority(
-                        ROOT, expected_gate="OA-04"
-                    ).require(boundary="oa04_resume_dispatch")
-                    emit(qualify_oa04_implementation(ROOT))
-                elif (
-                    progressive_state.get("active_gate") == "OA-05"
-                    and progressive_state["gates"]["OA-05"]["state"]
-                    in ("IMPLEMENTATION_REQUIRED", "AWAITING_OPERATOR_VERIFICATION")
-                ):
-                    ControlledMissionAuthority(
-                        ROOT, expected_gate="OA-05"
-                    ).require(boundary="oa05_resume_dispatch")
-                    emit(qualify_oa05_implementation(ROOT))
-                else:
-                    emit(progressive_oa.controller(ROOT))
+                raise OrchestrationError(
+                    "progressive runtime resume is superseded; use execute-mission with convergence authority"
+                )
             else:
                 emit(o.status())
         elif a.command=="submit":
@@ -588,7 +534,15 @@ def main(argv=None):
             else:
                 emit(interface.snapshot(a.mission_id))
         elif a.command=="execution":
-            emit(ExecutionInterface(ROOT).resolve(a.identifier))
+            if a.action == "status":
+                emit({"execution_id": a.identifier, "status": "USE_EXECUTE_MISSION_STATUS"})
+                return 0
+            flow = ConvergenceRuntime(ROOT).execution_flow(
+                wop_id=a.identifier, revision=a.revision, action=a.requested_action,
+                correlation_id=a.correlation_id, authority_record_id=a.authority_record,
+            )
+            emit(flow)
+            return 0 if flow["execution_admitted"] else 77
         elif a.command in ("approve","decline"):
             if not a.operator:
                 raise OrchestrationError("--operator is required for mission approval")
@@ -623,7 +577,9 @@ def main(argv=None):
                     result=admission_runtime.start({"mode":a.mode,"intent":a.intent,
                         "mission_id":a.mission,"phase_id":a.phase,
                         "work_item_id":a.work_item,"principal_id":a.principal,
-                        "submitter_identity":a.submitter,"repository":a.repository},
+                        "submitter_identity":a.submitter,"repository":a.repository,
+                        "implementation_wop_id":a.wop,"implementation_wop_revision":a.revision,
+                        "authority_record_id":a.authority_record,"correlation_id":a.correlation_id},
                         at=now(a.at),max_stages=a.max_stages)
                 else:
                     if not a.admission_id: raise MissionAdmissionError("--admission-id is required")
@@ -631,6 +587,19 @@ def main(argv=None):
             emit(result)
             if result["status"]=="BLOCKED": return 78
         elif a.command=="execute-mission":
+            convergence_flow = None
+            if a.action in {"start", "resume"}:
+                if not a.wop:
+                    raise MissionExecutionError("convergence execution requires --wop")
+                convergence_flow = ConvergenceRuntime(ROOT).execution_flow(
+                    wop_id=a.wop, revision=a.revision, action="execute_mission",
+                    correlation_id=a.correlation_id, authority_record_id=a.authority_record,
+                )
+                if not convergence_flow["execution_admitted"]:
+                    raise MissionExecutionError(
+                        "convergence authority is not resolved: "
+                        + ", ".join(convergence_flow["authority_receipt"]["reasons"])
+                    )
             admission_directory=ROOT/".zeus/runtime/mission-admissions"
             execution_directory=ROOT/".zeus/runtime/mission-executions"
             if os.environ.get("ZEUS_TESTING")=="1":
@@ -651,7 +620,18 @@ def main(argv=None):
                 allowed_signers=ROOT/"engineering/authority/allowed-signers")
             execution_runtime=MissionExecutionRuntime(ROOT,execution_store,
                 AdmissionStateStore(admission_directory),
-                operational_dispatch_enabled=dispatch_state["dispatch_permitted"])
+                operational_dispatch_enabled=dispatch_state["dispatch_permitted"],
+                operational_context_provider=(
+                    (lambda state, wop: ConvergenceRuntime(ROOT).operational_execution_context(
+                        flow=convergence_flow,
+                        execution_id=state["execution_id"],
+                        mission_id=state["mission_id"],
+                        repository=ROOT,
+                        repository_baseline=state["repository_baseline"],
+                        wop_submission_digest=wop["submission_digest"],
+                        workspace=ROOT / ".zeus/runtime/operational-workspaces" / state["execution_id"],
+                    )) if convergence_flow else None
+                ))
             if a.action=="start":
                 if not a.admission_id: raise MissionExecutionError("--admission-id is required")
                 result=execution_runtime.start(a.admission_id,at=now(a.at),max_gates=a.max_gates)
@@ -708,25 +688,16 @@ def main(argv=None):
                     adr_reference=a.adr or "PLACEHOLDER-ADR",
                     immutable_wop_reference=a.immutable_wop or "PLACEHOLDER-IMMUTABLE-WOP"))
             else:
-                forbidden=(a.phase,a.submitter,a.approval_authority,a.approval_reference,
-                    a.approval_date,a.authority_node,a.adr,a.immutable_wop)
-                if any(value is not None for value in forbidden):
-                    raise AuthorityResolutionError("operational mode rejects caller-supplied authority fields")
-                if not a.work_item or not a.principal:
-                    raise AuthorityResolutionError("operational mode requires --work-item and --principal")
-                repository=Path(a.repository).resolve()
-                resolved_at=now(a.at)
-                source_path=authoritative_source_path(repository)
-                if os.environ.get("ZEUS_TESTING")=="1" and os.environ.get("ZEUS_AUTHORITY_STATE"):
-                    source_path=Path(os.environ["ZEUS_AUTHORITY_STATE"])
-                bundle=AuthorityResolutionRuntime(repository,
-                    load_authority_state(source_path)).resolve(
-                        mission_id=a.mission,work_item_id=a.work_item,
-                        principal_id=a.principal,issued_at=resolved_at)
-                emit(OperationalWopService().generate(intent=a.intent,bundle=bundle,
-                    repository_root=repository,at=resolved_at))
+                if not a.immutable_wop:
+                    raise AuthorityResolutionError("operational mode requires --immutable-wop convergence WOP identifier")
+                flow=ConvergenceRuntime(Path(a.repository)).execution_flow(
+                    wop_id=a.immutable_wop, revision=a.revision, action="generate_wop",
+                    correlation_id=a.correlation_id, authority_record_id=a.authority_record)
+                if not flow["execution_admitted"]:
+                    raise AuthorityResolutionError("convergence authority is not resolved")
+                emit(ConvergenceRuntime(Path(a.repository)).operational_wop(intent=a.intent,flow=flow))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (OrchestrationError, Stage1Error, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ControlledMissionAuthorityError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, ProgressiveGateError, progressive_oa.ProgressiveOAError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+    except (OrchestrationError, Stage1Error, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, ProgressiveGateError, progressive_oa.ProgressiveOAError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr); return 78
 if __name__ == "__main__": raise SystemExit(main())

@@ -1,7 +1,7 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 10.1
+version: 10.2
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -9,7 +9,7 @@ last_updated: 2026-07-30
 mission: Zeus Operational Alpha
 phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@10.0
+predecessor_revision: PROJ-0001@10.1
 successor_revision: null
 approval_status: Approved
 approval_authority: Homelab Infrastructure
@@ -98,11 +98,13 @@ It summarizes the current project state and identifies the next approved enginee
 
 **Date:** 2026-07-15
 
-**Baseline adoption update (2026-07-30):** `MILESTONE-0010` records
-`OA-IMPLEMENTATION-BASELINE-1.0` as the HF-012-qualified implementation
-planning baseline. Implementation work remains unstarted and requires separate
-authorization. Repository-to-EOS runtime synchronization remains a separately
-owned post-publication action; no runtime state is changed by this record.
+**Convergence closeout update (2026-07-30):** `MILESTONE-0011` records
+`ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0` as the certified Zeus Operational
+Alpha runtime implementation baseline. The associated independent
+qualification is `WOP-RUNTIME-CERTIFICATION-002`; repository-controlled
+records and read-only runtime consistency are reconciled. No live runtime
+state was changed by closeout, and OA-01 remains blocked pending its separate
+authoritative execution prerequisites.
 
 **Session Summary:**
 
@@ -374,6 +376,11 @@ The side mission does not replace the current phase or primary task. It shall no
 
 **Current Task:**
 
+The Convergence Program is closed. The certified Zeus operational runtime is
+`ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0`, bound to
+`OA-IMPLEMENTATION-BASELINE-1.0` and independently certified READY FOR
+OPERATIONAL ALPHA IMPLEMENTATION by `WOP-RUNTIME-CERTIFICATION-002`.
+
 The current OA-01 implementation record is
 `WOP-OA-01-IMPLEMENTATION-001@1`, bound to
 `OA-IMPLEMENTATION-BASELINE-1.0` at `5706307c1fdf9d4e0601c9cc578181f6d916e0a8`.
@@ -384,9 +391,10 @@ and Operational Alpha remains incomplete.
 
 **Next Immediate Step:**
 
-Do not activate or execute `WOP-OA-01-IMPLEMENTATION-001` until separately
-authorized. Do not submit a live mission, dispatch, execute, accept any OA
-gate, declare Operational Alpha, or freeze a baseline.
+Do not create an Authority Record, Operational Gate Plan, or activation for
+`WOP-OA-01-IMPLEMENTATION-001` until separately authorized. Do not submit a
+live mission, dispatch, execute, accept any OA gate, or declare Operational
+Alpha.
 `GH-ZEUS-OA-CERTIFICATION-001` package remains suspended historical evidence.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
@@ -406,7 +414,7 @@ EWO-000016 remains a separately selectable bounded side mission. If selected, ex
 
 | Domain | Reconciled state |
 | --- | --- |
-| Zeus Operational Alpha runtime | Authority commissioned at the P2-016 baseline; P2-019 execution foundation qualified but not published, activated, agent-registered, or operationally execution-qualified |
+| Zeus Operational Alpha runtime | `ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0` is certified as the authoritative convergence execution environment; live OA execution remains fail-closed pending an Authority Record, active WOP, authoritative Operational Gate Plan, and separate action authorization |
 | Zeus production authority | Lawrence O'Neal is the sole ultimate engineering authority; production principal `loneal`; the authenticated Zeus CLI is the authoritative interface through which he exercises engineering authority; controlled documentation is the normal operational source of execution authority |
 | Authority restoration | SPEC-0011 requires missing, stale, conflicting, incomplete, or invalid authority to be reconciled, validated, and normally re-resolved before execution; automated restoration coordination remains deferred |
 | First operational WOP | `WOP-3b67fcc0-8218-517f-8c45-5b0f291e0f74`; submission eligible; admission accepted; dispatch prohibited |
@@ -695,6 +703,7 @@ When resuming this project:
 | 9.7     | 2026-07-29 | Qualified the OA-05 Mission Staging Contract before eligibility; corrected PMCT substitution of execution-agent registry, required integrity-bound identity/objective/scope/dependencies/priority/state, preserved the superseded pre-correction OA-04 receipt as historical evidence, and retained OA-04 as verified awaiting explicit acceptance with OA-05 pending and ineligible. |
 | 9.8     | 2026-07-29 | Executed and independently verified OA-05 Mission Staging Contract after corrected OA-04 acceptance; proved deterministic staging, persistence, replay, restart recovery, malformed candidate rejection, authorization enforcement, and fail-closed behavior; retained OA-06 and later pending with no dispatch or execution. |
 | 9.9     | 2026-07-29 | Confirmed Zeus mission-admission counts are deterministically reconstructed from persisted Stage 1 mission records, verified the live empty store correctly reports zero, and added fail-closed validation for integrity-valid but structurally inconsistent records while retaining OA-06 pending. |
+| 10.2 | 2026-07-30 | Closed the Convergence Program, recorded `ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0` as the certified Zeus Operational Alpha runtime baseline, reconciled repository-controlled state, and retained OA-01 as READY / NOT_STARTED pending its authoritative execution prerequisites. |
 
 ## Operational Mission Activation
 

@@ -1,0 +1,175 @@
+#!/usr/bin/env python3
+"""Conformance tests for the SPEC-0014 convergence runtime."""
+
+from __future__ import annotations
+
+import copy
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+import yaml
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from scripts.lib.eos.convergence_runtime import ConvergenceRuntime, ConvergenceRuntimeError
+from scripts.lib.emp.operational_gate_handler import OperationalExecutionContextService
+
+
+class ConvergenceRuntimeTests(unittest.TestCase):
+    def setUp(self):
+        self.runtime = ConvergenceRuntime(ROOT)
+
+    def test_ready_wop_without_authority_fails_closed(self):
+        value = self.runtime.resolve(
+            wop_id="WOP-OA-01-IMPLEMENTATION-001", revision=1,
+            action="activate", correlation_id="test-no-authority",
+        )
+        self.assertEqual("PRECONDITION_FAILED", value["outcome"])
+        self.assertEqual(["AUTHORITY_RECORD_REQUIRED"], value["reasons"])
+        self.assertTrue(value["receipt_digest"])
+
+    def test_artifacts_and_synchronization_are_derived_and_directional(self):
+        artifact = self.runtime.generated_artifact(
+            artifact_id="TEST-PROJECTION",
+            source_entities=[{"entity_type": "ImplementationWOP", "entity_id": "WOP-OA-01-IMPLEMENTATION-001", "revision": "1"}],
+        )
+        self.assertEqual("Derived", artifact["classification"])
+        receipt = self.runtime.resolve(
+            wop_id="WOP-OA-01-IMPLEMENTATION-001", revision=1,
+            action="inspect", correlation_id="test-sync",
+        )
+        plan = self.runtime.synchronization_plan(receipt)
+        self.assertEqual("authoritative_to_derived", plan["direction"])
+        self.assertEqual("convergence.resolution", self.runtime.eens_event(receipt)["event_type"])
+        self.assertEqual("EMP", self.runtime.emp_receipt(receipt)["consumer"])
+        self.assertEqual("NOT_READY", self.runtime.qualify(receipt)["result"])
+
+    def test_execution_flow_is_not_admitted_without_authority(self):
+        flow = self.runtime.execution_flow(
+            wop_id="WOP-OA-01-IMPLEMENTATION-001", revision=1,
+            action="execute", correlation_id="test-execution-flow",
+        )
+        self.assertFalse(flow["execution_admitted"])
+        self.assertEqual("PRECONDITION_FAILED", flow["authority_receipt"]["outcome"])
+
+    def test_active_authority_and_wop_resolve_only_when_exactly_bound(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "engineering/metadata").mkdir(parents=True)
+            (root / "engineering/work-orders/demo").mkdir(parents=True)
+            (root / "engineering/authority-records").mkdir(parents=True)
+            wop = {
+                "wop_id": "WOP-DEMO", "revision": 1, "status": "ACTIVE",
+                "execution_context": {"baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0"},
+            }
+            authority = {
+                "authority_record_id": "AR-DEMO", "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0",
+                "lifecycle_state": "ACTIVE", "permitted_actions": ["inspect"],
+                "implementation_wop": {"wop_id": "WOP-DEMO", "revision": 1},
+            }
+            (root / "engineering/work-orders/demo/immutable-wop.yaml").write_text(yaml.safe_dump(wop))
+            (root / "engineering/authority-records/AR-DEMO.yaml").write_text(yaml.safe_dump(authority))
+            emm = {"schema_version": 1, "emm_id": "TEST", "version": "1.0", "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0", "entities": [
+                {"entity_type": "ImplementationWOP", "entity_id": "WOP-DEMO", "revision": 1, "authoritative_owner": "WOP Owner", "classification": "Authoritative", "source": "engineering/work-orders/demo/immutable-wop.yaml"},
+                {"entity_type": "AuthorityRecord", "entity_id": "AR-DEMO", "revision": 1, "authoritative_owner": "Governance", "classification": "Authoritative", "source": "engineering/authority-records/AR-DEMO.yaml"},
+            ]}
+            (root / "engineering/metadata/operational-alpha-emm.yaml").write_text(yaml.safe_dump(emm))
+            runtime = ConvergenceRuntime(root)
+            resolved = runtime.resolve(wop_id="WOP-DEMO", revision=1, action="inspect", correlation_id="test", authority_record_id="AR-DEMO")
+            self.assertEqual("RESOLVED", resolved["outcome"])
+            flow = runtime.execution_flow(wop_id="WOP-DEMO", revision=1, action="inspect", correlation_id="flow", authority_record_id="AR-DEMO")
+            self.assertTrue(flow["execution_admitted"])
+            self.assertEqual("PASS", flow["qualification"]["result"])
+
+    def test_execution_contract_blocks_without_an_emm_registered_gate_plan(self):
+        with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as workspace:
+            root = Path(directory)
+            (root / "engineering/metadata").mkdir(parents=True)
+            (root / "engineering/work-orders/demo").mkdir(parents=True)
+            (root / "engineering/authority-records").mkdir(parents=True)
+            (root / "engineering/execution").mkdir(parents=True)
+            wop = {"wop_id": "WOP-DEMO", "revision": 1, "status": "ACTIVE",
+                   "execution_context": {"baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0"}}
+            authority = {"authority_record_id": "AR-DEMO", "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0",
+                         "lifecycle_state": "ACTIVE", "permitted_actions": ["execute"],
+                         "implementation_wop": {"wop_id": "WOP-DEMO", "revision": 1}}
+            contract = {"contract_id": "OPERATIONAL-ALPHA-EXECUTION-CONTRACT", "revision": "1.0",
+                        "classification": "Authoritative", "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0",
+                        "lifecycle_state": "READY", "gate_plan_resolution": {"entity_type": "OperationalGatePlan"}}
+            wop_path = root / "engineering/work-orders/demo/immutable-wop.yaml"
+            authority_path = root / "engineering/authority-records/AR-DEMO.yaml"
+            contract_path = root / "engineering/execution/operational-alpha-execution-contract.yaml"
+            for path, value in ((wop_path, wop), (authority_path, authority), (contract_path, contract)):
+                path.write_text(yaml.safe_dump(value, sort_keys=True))
+            digest = lambda path: __import__("hashlib").sha256(path.read_bytes()).hexdigest()
+            emm = {"schema_version": 1, "emm_id": "TEST", "version": "1.1",
+                   "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0", "entities": [
+                {"entity_type": "ImplementationWOP", "entity_id": "WOP-DEMO", "revision": 1,
+                 "authoritative_owner": "WOP Owner", "classification": "Authoritative",
+                 "source": "engineering/work-orders/demo/immutable-wop.yaml", "source_digest": digest(wop_path)},
+                {"entity_type": "AuthorityRecord", "entity_id": "AR-DEMO", "revision": 1,
+                 "authoritative_owner": "Governance", "classification": "Authoritative",
+                 "source": "engineering/authority-records/AR-DEMO.yaml", "source_digest": digest(authority_path)},
+                {"entity_type": "OperationalExecutionContract", "entity_id": "OPERATIONAL-ALPHA-EXECUTION-CONTRACT", "revision": "1.0",
+                 "authoritative_owner": "Infrastructure", "classification": "Authoritative",
+                 "source": "engineering/execution/operational-alpha-execution-contract.yaml", "source_digest": digest(contract_path)},
+            ]}
+            (root / "engineering/metadata/operational-alpha-emm.yaml").write_text(yaml.safe_dump(emm, sort_keys=True))
+            runtime = ConvergenceRuntime(root)
+            flow = runtime.execution_flow(wop_id="WOP-DEMO", revision=1, action="execute", correlation_id="contract", authority_record_id="AR-DEMO")
+            with self.assertRaisesRegex(ConvergenceRuntimeError, "OperationalGatePlan/WOP-DEMO"):
+                runtime.operational_execution_context(
+                    flow=flow, execution_id="EXECUTION-DEMO", mission_id="MISSION-DEMO", repository=root,
+                    repository_baseline="a" * 40, wop_submission_digest="b" * 64, workspace=workspace,
+                )
+
+    def test_execution_contract_builds_context_only_from_authoritative_plan(self):
+        with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as workspace:
+            root = Path(directory)
+            (root / "engineering/metadata").mkdir(parents=True)
+            (root / "engineering/work-orders/demo").mkdir(parents=True)
+            (root / "engineering/authority-records").mkdir(parents=True)
+            (root / "engineering/execution/plans").mkdir(parents=True)
+            wop = {"wop_id": "WOP-DEMO", "revision": 1, "status": "ACTIVE",
+                   "execution_context": {"baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0"}}
+            authority = {"authority_record_id": "AR-DEMO", "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0",
+                         "lifecycle_state": "ACTIVE", "permitted_actions": ["execute"],
+                         "implementation_wop": {"wop_id": "WOP-DEMO", "revision": 1}}
+            contract = {"contract_id": "OPERATIONAL-ALPHA-EXECUTION-CONTRACT", "revision": "1.0",
+                        "classification": "Authoritative", "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0",
+                        "lifecycle_state": "READY", "gate_plan_resolution": {"entity_type": "OperationalGatePlan"}}
+            plan = {"gate_plan_id": "PLAN-DEMO", "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0",
+                    "lifecycle_state": "ACTIVE", "implementation_wop": {"wop_id": "WOP-DEMO", "revision": 1},
+                    "gate_plan": {"gates": {"EXECUTE_WORK": {"dependencies": [], "actions": [{
+                        "action_id": "verify", "action_type": "verify_artifact", "path": "artifact.txt", "content_digest": "c" * 64
+                    }]}}}}
+            wop_path = root / "engineering/work-orders/demo/immutable-wop.yaml"
+            authority_path = root / "engineering/authority-records/AR-DEMO.yaml"
+            contract_path = root / "engineering/execution/operational-alpha-execution-contract.yaml"
+            plan_path = root / "engineering/execution/plans/WOP-DEMO.yaml"
+            for path, value in ((wop_path, wop), (authority_path, authority), (contract_path, contract), (plan_path, plan)):
+                path.write_text(yaml.safe_dump(value, sort_keys=True))
+            digest = lambda path: __import__("hashlib").sha256(path.read_bytes()).hexdigest()
+            emm = {"schema_version": 1, "emm_id": "TEST", "version": "1.1",
+                   "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0", "entities": [
+                {"entity_type": "ImplementationWOP", "entity_id": "WOP-DEMO", "revision": 1, "authoritative_owner": "WOP Owner", "classification": "Authoritative", "source": "engineering/work-orders/demo/immutable-wop.yaml", "source_digest": digest(wop_path)},
+                {"entity_type": "AuthorityRecord", "entity_id": "AR-DEMO", "revision": 1, "authoritative_owner": "Governance", "classification": "Authoritative", "source": "engineering/authority-records/AR-DEMO.yaml", "source_digest": digest(authority_path)},
+                {"entity_type": "OperationalExecutionContract", "entity_id": "OPERATIONAL-ALPHA-EXECUTION-CONTRACT", "revision": "1.0", "authoritative_owner": "Infrastructure", "classification": "Authoritative", "source": "engineering/execution/operational-alpha-execution-contract.yaml", "source_digest": digest(contract_path)},
+                {"entity_type": "OperationalGatePlan", "entity_id": "WOP-DEMO", "revision": 1, "authoritative_owner": "WOP Owner", "classification": "Authoritative", "source": "engineering/execution/plans/WOP-DEMO.yaml", "source_digest": digest(plan_path)},
+            ]}
+            (root / "engineering/metadata/operational-alpha-emm.yaml").write_text(yaml.safe_dump(emm, sort_keys=True))
+            runtime = ConvergenceRuntime(root)
+            flow = runtime.execution_flow(wop_id="WOP-DEMO", revision=1, action="execute", correlation_id="contract", authority_record_id="AR-DEMO")
+            context = runtime.operational_execution_context(
+                flow=flow, execution_id="EXECUTION-DEMO", mission_id="MISSION-DEMO", repository=root,
+                repository_baseline="a" * 40, wop_submission_digest="b" * 64, workspace=workspace,
+            )
+            OperationalExecutionContextService.validate(context)
+            self.assertEqual("PLAN-DEMO", plan["gate_plan_id"])
+            self.assertEqual("EXECUTE_WORK", next(iter(context["gate_plan"]["gates"])))
+
+
+if __name__ == "__main__":
+    unittest.main()

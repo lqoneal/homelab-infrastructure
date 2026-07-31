@@ -1,7 +1,7 @@
 ---
 document_id: SPEC-0014
 title: Operational Alpha Convergence Authority Model
-version: 1.0
+version: 1.1
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-30
@@ -55,6 +55,7 @@ digest-mismatched input fails closed.
 | Implementation WOP | assigned WOP owner | baseline-bound revision in `READY`; `ACTIVE` only after a resolved Authority Record permits activation |
 | Resolution receipt | Metadata Engine | exact input manifest, compatibility result, source digests, outcome |
 | Qualification result | Qualification Engine | sealed criteria, evidence, result, and digest |
+| Operational Gate Plan | assigned WOP owner | exact WOP/baseline binding, lifecycle, source digest, and handler-compatible actions |
 
 ## Deterministic resolver requirements
 
@@ -69,6 +70,25 @@ one outcome: `RESOLVED`, `NOT_FOUND`, `AMBIGUOUS_RESOLUTION`,
 
 Only `RESOLVED` permits the next lifecycle operation. The receipt is derived
 and expires with any bound source revision, baseline, or Authority Record.
+
+## Operational execution contract
+
+The authoritative execution contract is the EMM-registered
+`OperationalExecutionContract` artifact. It defines the resolution boundary
+for an `OperationalGatePlan`; it is not itself a gate plan and it cannot
+authorize an action. An Operational Gate Plan is an authoritative,
+Implementation-WOP-bound artifact owned by the assigned WOP owner. It alone
+supplies the concrete gate actions consumed by an operational gate handler.
+
+The resolver selects a plan only by the exact Implementation WOP identity and
+revision specified in the resolution receipt. The plan must bind the same
+baseline, identify the same WOP and revision, be represented by exactly one
+EMM entity, be in `ACTIVE` lifecycle state, and validate against the handler
+contract. Missing plan, duplicate identity, stale lifecycle, mismatched
+binding, or invalid payload fails closed. The runtime may assemble an
+ephemeral execution context from this authoritative plan and the resolved
+receipt, but it shall never synthesize actions, scope, content, dependencies,
+or a plan from a WOP, a generated artifact, or a runtime assumption.
 
 ## Lifecycle and activation
 
