@@ -97,6 +97,29 @@ class MissionAdmissionRuntimeTests(unittest.TestCase):
         self.assertEqual(state["failure"]["category"], "AUTHORITY_FAILURE")
         self.assertIn("convergence Implementation WOP", state["failure"]["message"])
 
+    def test_convergence_operational_path_reaches_admission_decision(self):
+        state = self.runtime.start(
+            {
+                "mode": "operational",
+                "intent": "Exercise the published convergence admission path",
+                "mission_id": "EMP-MISSION-ZEUS-OPERATIONAL-ALPHA",
+                "phase_id": "ZEUS-OPERATIONAL-ALPHA",
+                "work_item_id": "EMP-WORK-OA-01-IMPLEMENTATION-001",
+                "principal_id": "Engineering Governance",
+                "repository": str(ROOT),
+                "implementation_wop_id": "WOP-OA-01-IMPLEMENTATION-001",
+                "implementation_wop_revision": 1,
+                "authority_record_id": "AR-OA-01-001",
+                "correlation_id": "mission-admission-test-convergence",
+            },
+            at=AT,
+        )
+        self.assertEqual(state["status"], "DECIDED")
+        self.assertEqual(
+            state["artifacts"]["admission_decision"]["admission_decision"], "ACCEPTED"
+        )
+        self.assertTrue(state["artifacts"]["admission_decision"]["dispatch_permitted"])
+
     def test_simulated_commissioned_source_reaches_admission_decision(self):
         fixture = runpy.run_path(
             str(ROOT / "scripts/tests/test-authority-resolution-runtime.py")

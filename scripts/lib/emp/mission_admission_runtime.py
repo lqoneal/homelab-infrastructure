@@ -329,6 +329,7 @@ class MissionAdmissionRuntime:
     def _stage_admission_decision(self, state, at):
         request = state["request"]
         wop = state["artifacts"]["wop_result"]["wop"]
+        authority = state["artifacts"]["authority_context"]
         if request["mode"] == "qualification":
             decision = {
                 "admission_decision": "QUALIFICATION_ONLY",
