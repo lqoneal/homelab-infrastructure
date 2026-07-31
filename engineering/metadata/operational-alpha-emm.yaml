@@ -1,6 +1,6 @@
 schema_version: 1
 emm_id: OPERATIONAL-ALPHA-EMM
-version: 1.4
+version: 1.5
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
 authoritative_owner: Homelab Infrastructure
 entities:
@@ -227,3 +227,40 @@ entities:
     classification: Authoritative
     source: engineering/activation-records/ACT-OA-03-001.yaml
     source_digest: 741df8024a02f48cbb4538a2504292ba848c3aaf2a2d3874099b8511969f697f
+  - entity_type: ImplementationWOP
+    entity_id: WOP-48f1d7d1-4995-5f3e-9b5e-fb2f69595111
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/work-orders/OA-04-EXECUTION-001/immutable-wop.yaml
+    source_digest: 64a29d3a59e79642b970dc21b61869e42d81957091a38304e41db6059b9b8e82
+  - entity_type: ImplementationWOPLifecycleTransition
+    entity_id: OA-04-READY-TO-ACTIVE
+    revision: 1
+    implementation_wop_id: WOP-48f1d7d1-4995-5f3e-9b5e-fb2f69595111
+    implementation_wop_revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/lifecycle-transitions/records/OA-04-READY-TO-ACTIVE.yaml
+    source_digest: dea8991cd835783f06e695aad6afb96e109c6b7d784530cff88faea02da75be1
+  - entity_type: AuthorityRecord
+    entity_id: AR-OA-04-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/authority-records/AR-OA-04-001.yaml
+    source_digest: cfaf4af21258146bca4321f041ad6183da2419ad64f5941dce6ec4ceddc7f474
+  - entity_type: OperationalGatePlan
+    entity_id: WOP-48f1d7d1-4995-5f3e-9b5e-fb2f69595111
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/execution/plans/WOP-48f1d7d1-4995-5f3e-9b5e-fb2f69595111.yaml
+    source_digest: b320486e4387e39e0a9788151b3f314dd36a55d550e330cecbec62def6388a29
+  - entity_type: ActivationRecord
+    entity_id: ACT-OA-04-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/activation-records/ACT-OA-04-001.yaml
+    source_digest: 6f820bff4320cbb08200ad917b6eddba680a00d6e8aed8d384972a71ec0d9936

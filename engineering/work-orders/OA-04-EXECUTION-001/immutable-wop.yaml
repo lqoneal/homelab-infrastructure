@@ -1,0 +1,59 @@
+schema_version: 1
+wop_id: WOP-48f1d7d1-4995-5f3e-9b5e-fb2f69595111
+revision: 1
+status: READY
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: OA-04-PROJECT-AND-OPERATIONAL-CONTEXT-RECONSTRUCTION
+work_item_id: EMP-WORK-OA-04-PROJECT-OPERATIONAL-CONTEXT-001
+title: OA-04 Project and Operational Context Reconstruction
+owner: Engineering Governance
+objective: >-
+  Prove repository-only reconstruction of current project, phase, work,
+  authority, and runtime context.
+scope:
+  - execute the published OA-04 controlled gate objective
+  - reconcile PROC-0001 with the mandatory Operator Capability Summary closeout projection
+  - publish qualification, synchronization, reconciliation, and closeout evidence
+prohibited_effects:
+  - alter the certified runtime baseline
+  - alter historical Progressive Operational Alpha evidence
+  - initiate OA-05 or a later Operational Alpha gate
+  - introduce a new execution-procedure owner or foundational architecture
+execution_context:
+  repository: /data/engineering/repositories/homelab
+  baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+  qualified_baseline: 5706307c1fdf9d4e0601c9cc578181f6d916e0a8
+  branch: main
+manual_governance_authority:
+  policy_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
+  policy_revision: '1.0'
+  delegation_state: ACTIVE
+  governance_submission:
+    submitted: true
+    submitted_by: Engineering Governance
+    submission_id: WOP-OA-04-EXECUTION-001
+    directive_id: WOP-OA-04-EXECUTION-001
+  permitted_actions:
+    - create_authority_record
+    - generate_operational_gate_plan
+    - activate_oa01
+    - admit_mission
+    - generate_wop
+    - execute_mission
+entry_criteria:
+  - accepted immutable WOP Admission Record
+  - active EMM-resolved Manual-Governance WOP Authority Policy
+  - OA-03 completion and OA-04 controlled objective resolved from published records
+  - repository, EOS, EMM, registry, and runtime preflight pass
+completion_criteria:
+  - OA-04 is executed, capability-qualified, reconciled, and closed
+  - PROC-0001 is the sole WOP execution-procedure owner and requires the Operator Capability Summary
+  - no later Operational Alpha gate is initiated
+traceability:
+  governing_directive: WOP-OA-04-EXECUTION-001
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-04/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-04/implementation.md
+  execution_procedure: PROC-0001@2.5
+  execution_first_policy: SPEC-0014@1.6
+lifecycle:
+  execution_state: COMPLETED

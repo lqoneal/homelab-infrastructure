@@ -38,12 +38,17 @@ class OperationalAlphaStatusTests(unittest.TestCase):
             "engineering/operations/zeus-operational-alpha-progress.md",
             "docs/project/PROJ-0001-PROJECT_STATE.md",
             "engineering/work-orders/OA-03-EXECUTION-001/immutable-wop.yaml",
+            "engineering/work-orders/OA-04-EXECUTION-001/immutable-wop.yaml",
             "engineering/metadata/operational-alpha-emm.yaml",
             "engineering/lifecycle-transitions/implementation-wop-lifecycle-transition.spec.yaml",
             "engineering/lifecycle-transitions/records/OA-03-READY-TO-ACTIVE.yaml",
+            "engineering/lifecycle-transitions/records/OA-04-READY-TO-ACTIVE.yaml",
             "engineering/authority-records/AR-OA-03-001.yaml",
+            "engineering/authority-records/AR-OA-04-001.yaml",
             "engineering/execution/plans/WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a.yaml",
+            "engineering/execution/plans/WOP-48f1d7d1-4995-5f3e-9b5e-fb2f69595111.yaml",
             "engineering/activation-records/ACT-OA-03-001.yaml",
+            "engineering/activation-records/ACT-OA-04-001.yaml",
             "engineering/authority-records/AR-OA-01-001.yaml",
             "engineering/authority-records/AR-OA-02-001.yaml",
             "engineering/execution/plans/WOP-OA-01-IMPLEMENTATION-001.yaml",
@@ -58,7 +63,7 @@ class OperationalAlphaStatusTests(unittest.TestCase):
         root = self.fixture()
         value = resolve(root)
         self.assertEqual("RESOLVED", value["outcome"])
-        self.assertEqual("OA-03", value["active_gate"])
+        self.assertEqual("OA-04", value["active_gate"])
         self.assertEqual("ACTIVE", value["status"])
         self.assertEqual("COMPLETED", value["execution_state"])
         self.assertEqual("ELIGIBLE", value["authority_record_creation_eligibility"])
@@ -85,7 +90,7 @@ class OperationalAlphaStatusTests(unittest.TestCase):
         )
         self.assertEqual(0, result.returncode, result.stderr)
         value = json.loads(result.stdout)
-        self.assertEqual("OA-03", value["active_gate"])
+        self.assertEqual("OA-04", value["active_gate"])
         self.assertEqual("ACTIVE", value["status"])
         self.assertEqual("EXCLUDED_EVIDENCE_ONLY", value["historical_progressive_runtime"])
 

@@ -61,8 +61,8 @@ reconciliation authority.
 Current Operational Alpha lifecycle:
 
 ```text
-CURRENT_IMPLEMENTATION_WOP=WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a@1
-CURRENT_GATE=OA-03
+CURRENT_IMPLEMENTATION_WOP=WOP-48f1d7d1-4995-5f3e-9b5e-fb2f69595111@1
+CURRENT_GATE=OA-04
 CURRENT_GATE_STATE=ACTIVE
 CURRENT_EXECUTION_STATE=COMPLETED
 SUCCESSOR_ELIGIBILITY=NOT_EVALUATED
@@ -70,12 +70,16 @@ HISTORICAL_PROGRESSIVE_RUNTIME=EVIDENCE_ONLY
 LIVE_MISSION_COUNT=1
 DISPATCHER_STATE=CONVERGENCE_AUTHORITY
 OPERATIONAL_DISPATCH=AUTHORIZED
-MISSION_EXECUTION=OA-03_COMPLETED
-OPERATIONAL_ALPHA_DECLARATION=OA-03_DETERMINISTIC_MISSION_CONTRACT_DISCOVERY_COMPLETED
+MISSION_EXECUTION=OA-04_COMPLETED
+OPERATIONAL_ALPHA_DECLARATION=OA-04_PROJECT_AND_OPERATIONAL_CONTEXT_RECONSTRUCTION_COMPLETED
 BASELINE_FREEZE=NOT_PERFORMED
 PROGRESSIVE_WOP=OA06_PENDING
 ```
 
+OA-04 completed as `MISSION-EXECUTION-1941743f-dd36-5963-a109-7f100ef8d9ae`
+under `WOP-OA-04-EXECUTION-001` and the same published
+Manual-Governance WOP Authority Policy. Its controlled objective is repository-only
+reconstruction of current project, phase, work, authority, and runtime context.
 OA-03 completed under `MISSION-EXECUTION-6f29b1bc-6dcc-5595-bfda-fd7cd617df75`,
 which completed `VALIDATE_WOP`, `PREPARE_EXECUTION`, `EXECUTE_WORK`, and
 `VERIFY_COMPLETION`. Its authoritative WOP was bound to the published OA-03
@@ -88,8 +92,8 @@ Mission Contract. OA-02 completion is evidenced by
 `VALIDATE_WOP`, `PREPARE_EXECUTION`, `EXECUTE_WORK`, and
 `VERIFY_COMPLETION` under the convergence authority chain. The lifecycle keys
 above are the current EMM-resolved WOP projection; runtime completion is an
-authoritative execution record. OA-04 eligibility is not evaluated by this WOP;
-historical Progressive state is evidence only and cannot select the next action.
+authoritative execution record. OA-04 is the current EMM-resolved WOP projection;
+historical Progressive state remains evidence only and cannot select the next action.
 
 ## Backlog
 

@@ -1,7 +1,7 @@
 ---
 document_id: PROC-0001
 title: Operational Alpha Work Initiation and Execution Procedure
-version: 2.4
+version: 2.5
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
@@ -681,6 +681,22 @@ Completion Reports record mission delta only: relevant starting state, actions
 performed, changed artifacts, terminal verification results, reconciliation,
 remaining work, and final status. They reference rather than restate reusable
 procedures, standards, inventories, or unchanged repository history.
+
+### Operator Capability Summary
+
+Every Operational Alpha mission closeout shall include an **Operator Capability
+Summary**, generated from the mission's Capability Qualification Report and
+included verbatim or by stable appendix reference in the Completion Report. It
+is a derived operator-facing projection; the Capability Qualification Report
+remains the authoritative qualification record.
+
+The summary shall be concise and include: mission completed; capability delta;
+new, modified, and retired capabilities; operator verification commands and
+expected results; regression-verification summary; operational workflow
+changes; current Zeus operational capabilities and limitations; next eligible
+mission; and a recommended operator validation sequence. A missing or stale
+summary blocks closeout in the same way as a missing Capability Qualification
+Report.
 
 ---
 

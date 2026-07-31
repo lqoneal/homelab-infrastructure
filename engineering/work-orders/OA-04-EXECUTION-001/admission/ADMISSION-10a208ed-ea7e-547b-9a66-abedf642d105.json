@@ -1,0 +1,128 @@
+{
+  "admission_decision": "RESUBMISSION_REQUIRED",
+  "admission_id": "ADMISSION-10a208ed-ea7e-547b-9a66-abedf642d105",
+  "authoritative_references": [
+    "PROC-0001@1.11",
+    "TPL-0001@1.7",
+    "STD-0000",
+    "STD-0001",
+    "STD-0002",
+    "STD-0003",
+    "STD-0004"
+  ],
+  "deterministic_checksum": "b880a6b368550806414abfcb61fe3611bcc64e0f10ce4fb6ae6059135b4915b9",
+  "evaluation_timestamp": "2026-07-31T21:00:00Z",
+  "execution_status": [
+    "No engineering work has been accepted.",
+    "No repository modifications have been performed.",
+    "No planning has begun.",
+    "No commands have been executed.",
+    "Resubmit using the authoritative WOP format."
+  ],
+  "mission_id": "EMP-MISSION-ZEUS-OPERATIONAL-ALPHA",
+  "repository_identity": "/data/engineering/repositories/homelab",
+  "required_submission_format": {
+    "approval": {
+      "authority": "<approval authority>",
+      "authorized_lifecycle_state": "Active",
+      "date": "<ISO-8601 date>",
+      "reference": "<approval reference>"
+    },
+    "authoritative_references": [
+      "PROC-0001@1.11",
+      "TPL-0001@1.7",
+      "STD-0000",
+      "STD-0001",
+      "STD-0002",
+      "STD-0003",
+      "STD-0004"
+    ],
+    "document_type": "EngineeringWorkOrder",
+    "execution_package_references": {
+      "authority_node_id": "<authority_node_id>",
+      "authorization_decision_record": "<authorization_decision_record>",
+      "immutable_wop": "<immutable_wop>"
+    },
+    "mission_id": "<mission identifier>",
+    "phase_id": "<phase identifier>",
+    "repository_identity": "<repository identity>",
+    "revision": "<positive integer>",
+    "schema_version": 1,
+    "sections": {
+      "completion_report_requirement": "<non-empty content>",
+      "deliverables": "<non-empty content>",
+      "dependencies_and_entry_criteria": "<non-empty content>",
+      "execution_sequence": "<non-empty content>",
+      "explicit_authority": "<non-empty content>",
+      "governing_references": "<non-empty content>",
+      "mission_classification": "<non-empty content>",
+      "prohibited_activities": "<non-empty content>",
+      "publication_and_synchronization": "<non-empty content>",
+      "purpose_and_expected_outcome": "<non-empty content>",
+      "scope": "<non-empty content>",
+      "stop_resume_and_escalation": "<non-empty content>",
+      "success_and_acceptance_criteria": "<non-empty content>",
+      "validation_profile": "<non-empty content>"
+    },
+    "status": "Active",
+    "submission_digest": "<sha256 of canonical submission without this field>",
+    "submitter_identity": "<submitter identity>",
+    "title": "<title>",
+    "wop_id": "WOP-<UUID>"
+  },
+  "schema_version": 1,
+  "submission_digest": "924ad6b323c51535f4859e0eb2cc2abbe052215441a14e5182fdbc910b7bb5ad",
+  "submitter_identity": "Engineering Governance",
+  "validation_failures": [
+    {
+      "field": "authoritative_references",
+      "message": "required reference PROC-0001@1.11 is missing",
+      "reason_code": "AUTHORITATIVE_REFERENCE_MISSING",
+      "required_correction": "Add PROC-0001@1.11 to authoritative_references."
+    },
+    {
+      "field": "authoritative_references",
+      "message": "required reference TPL-0001@1.7 is missing",
+      "reason_code": "AUTHORITATIVE_REFERENCE_MISSING",
+      "required_correction": "Add TPL-0001@1.7 to authoritative_references."
+    },
+    {
+      "field": "authoritative_references",
+      "message": "required reference STD-0000 is missing",
+      "reason_code": "AUTHORITATIVE_REFERENCE_MISSING",
+      "required_correction": "Add STD-0000 to authoritative_references."
+    },
+    {
+      "field": "authoritative_references",
+      "message": "required reference STD-0001 is missing",
+      "reason_code": "AUTHORITATIVE_REFERENCE_MISSING",
+      "required_correction": "Add STD-0001 to authoritative_references."
+    },
+    {
+      "field": "authoritative_references",
+      "message": "required reference STD-0002 is missing",
+      "reason_code": "AUTHORITATIVE_REFERENCE_MISSING",
+      "required_correction": "Add STD-0002 to authoritative_references."
+    },
+    {
+      "field": "authoritative_references",
+      "message": "required reference STD-0003 is missing",
+      "reason_code": "AUTHORITATIVE_REFERENCE_MISSING",
+      "required_correction": "Add STD-0003 to authoritative_references."
+    },
+    {
+      "field": "authoritative_references",
+      "message": "required reference STD-0004 is missing",
+      "reason_code": "AUTHORITATIVE_REFERENCE_MISSING",
+      "required_correction": "Add STD-0004 to authoritative_references."
+    }
+  ],
+  "validation_summary": {
+    "failure_count": 7,
+    "reason_codes": [
+      "AUTHORITATIVE_REFERENCE_MISSING"
+    ]
+  },
+  "validator_version": "1",
+  "wop_id": "WOP-48f1d7d1-4995-5f3e-9b5e-fb2f69595111"
+}

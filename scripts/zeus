@@ -309,6 +309,7 @@ def main(argv=None):
                 successor_actions = {
                     "OA-01": ("INITIATE_OA-02", "Initiate OA-02 — Controlled Mission Authority"),
                     "OA-02": ("INITIATE_OA-03", "Initiate OA-03 — Mission Contract Discovery"),
+                    "OA-03": ("INITIATE_OA-04", "Initiate OA-04 — Project and Operational Context Reconstruction"),
                 }
                 code, description = successor_actions.get(
                     current["active_gate"],

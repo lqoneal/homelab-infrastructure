@@ -1,0 +1,39 @@
+schema_version: 1
+plan_id: WOP-48f1d7d1-4995-5f3e-9b5e-fb2f69595111
+revision: 1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop:
+  wop_id: WOP-48f1d7d1-4995-5f3e-9b5e-fb2f69595111
+  revision: 1
+authority_lineage:
+  root_wop:
+    wop_id: WOP-48f1d7d1-4995-5f3e-9b5e-fb2f69595111
+    revision: 1
+  authority_record: AR-OA-04-001@1
+  authority_mode: MANUAL_GOVERNANCE_WOP
+  governing_directive: WOP-OA-04-EXECUTION-001
+gate_plan:
+  gates:
+    EXECUTE_WORK:
+      dependencies: []
+      actions:
+        - action_id: oa04-context-marker
+          action_type: create_artifact
+          path: runtime/evidence/OA-04/PROJECT-OPERATIONAL-CONTEXT-QUALIFIED
+          content: |
+            OA-04 repository-only project and operational context reconstruction qualified
+          content_digest: 23b33b3502f6638f70bca007e8a928bbcb1f80198a1c38d18139cc51a3915fdb
+    VERIFY_COMPLETION:
+      dependencies:
+        - EXECUTE_WORK
+      actions:
+        - action_id: verify-oa04-context-marker
+          action_type: verify_artifact
+          path: runtime/evidence/OA-04/PROJECT-OPERATIONAL-CONTEXT-QUALIFIED
+          content_digest: 23b33b3502f6638f70bca007e8a928bbcb1f80198a1c38d18139cc51a3915fdb
+traceability:
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-04/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-04/implementation.md
+  execution_contract: OPERATIONAL-ALPHA-EXECUTION-CONTRACT@1.0
+  execution_first_policy: SPEC-0014@1.6
