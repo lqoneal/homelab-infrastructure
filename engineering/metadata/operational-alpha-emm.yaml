@@ -310,11 +310,11 @@ entities:
     source_digest: 9444ce37a7a23f1195707158653b27a779556c159b50aed2f373cbdd01afedaf
   - entity_type: MissionKnowledgeModel
     entity_id: OPERATIONAL-ALPHA-MISSION-KNOWLEDGE
-    revision: 1.0
+    revision: 1.1
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/missions/operational-alpha-mission-knowledge.yaml
-    source_digest: cf7db07562c15546c2e43fd09fa336a0a66c7b75010d8dc1ba8cf15d93890a2b
+    source_digest: 0c86ea077fae4bf18c85b05c85666e52838a313fe8da289f77afae7a13045ff5
   - entity_type: ImplementationWOP
     entity_id: WOP-9ed7762f-c143-5a58-9a21-63fae5a06c05
     revision: 1

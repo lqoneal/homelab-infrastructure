@@ -318,6 +318,7 @@ def main(argv=None):
                     "OA-03": ("INITIATE_OA-04", "Initiate OA-04 — Project and Operational Context Reconstruction"),
                     "OA-04": ("INITIATE_OA-05", "Initiate OA-05 — Mission Staging Contract"),
                     "OA-05": ("INITIATE_OA-06", "Initiate OA-06 — Mission Eligibility Evaluation"),
+                    "OA-06": ("INITIATE_OA-07", "Initiate OA-07 — Mission Selection"),
                 }
                 code, description = successor_actions.get(
                     current["active_gate"],
@@ -494,9 +495,15 @@ def main(argv=None):
                     wop_id=a.wop, revision=a.revision, action="verify",
                     correlation_id=a.correlation_id, authority_record_id=a.authority_record,
                 )
-                emit({"gate": a.gate.upper(), "qualification": flow["qualification"],
-                      "authority_receipt": flow["authority_receipt"],
-                      "execution_admitted": flow["execution_admitted"]})
+                value = {"gate": a.gate.upper(), "qualification": flow["qualification"],
+                         "authority_receipt": flow["authority_receipt"],
+                         "execution_admitted": flow["execution_admitted"]}
+                if flow["execution_admitted"] and a.gate.upper() == "OA-06":
+                    from scripts.lib.emp.progressive_gate import ProgressiveGateService
+                    value["progressive_verification"] = ProgressiveGateService(ROOT).verify(
+                        a.gate.upper()
+                    )
+                emit(value)
                 return 0 if flow["execution_admitted"] else 77
             if a.gate.upper() == "OA-02":
                 record,replay=verify_oa02(ROOT)
@@ -544,6 +551,21 @@ def main(argv=None):
             )
             emit({"decision": record, "idempotent_replay": replay})
             return 0
+        if a.command == "approve" and a.approval_id.upper().startswith("OA-"):
+            from scripts.lib.emp.progressive_gate import ProgressiveGateService
+            progressive_state = progressive_oa.load_state(ROOT)
+            progressive_gate = progressive_state.get("gates", {}).get(
+                a.approval_id.upper(), {}
+            )
+            if (
+                progressive_state.get("active_gate") == a.approval_id.upper()
+                and progressive_gate.get("state") == "AWAITING_OPERATOR_VERIFICATION"
+            ):
+                record, replay = ProgressiveGateService(ROOT).approve(
+                    a.approval_id, GateApprovalService.configured(ROOT).operator, a.at
+                )
+                emit({"decision": record, "idempotent_replay": replay})
+                return 0
         if a.command == "approve" and a.approval_id.upper().startswith("OA-"):
             if a.operator:
                 raise GateApprovalError(

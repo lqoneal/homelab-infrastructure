@@ -1,10 +1,10 @@
 schema_version: 1
 model_id: OPERATIONAL-ALPHA-MISSION-KNOWLEDGE
-revision: 1.0
+revision: 1.1
 classification: Authoritative
 authoritative_owner: Engineering Governance
 purpose: Canonical EMM-bound mission knowledge for Operational Alpha lifecycle reasoning.
-mission_sequence: [OA-01, OA-02, OA-03, OA-04, OA-05, OA-06]
+mission_sequence: [OA-01, OA-02, OA-03, OA-04, OA-05, OA-06, OA-07]
 missions:
   - mission_id: OA-01
     lifecycle: COMPLETED
@@ -84,6 +84,19 @@ missions:
     evidence_relationships: [engineering/evidence/2026-07-31-wop-oa-06-execution-001/]
     controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
     runtime_state_relationships: [ImplementationWOP, AuthorityRecord, OperationalGatePlan, ActivationRecord]
+  - mission_id: OA-07
+    lifecycle: CURRENT
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-07/objective.yaml
+    capability_prerequisites: [ZEUS-OA-CAP-005]
+    capability_outcomes: []
+    dependencies: [OA-06]
+    eligibility_criteria: [predecessor_accepted, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [eligible_staged_mission_selected_according_to_controlled_priority_and_policy]
+    evidence_relationships: [engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-06/]
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [ProgressiveAcceptanceReceipt, MissionKnowledgeModel, CapabilityRegistry]
 generation:
   derived_outputs: [mission_recommendation, mission_readiness, mission_dependency_graph, Operator Capability Summary]
   rule: Derived mission views consume this model and the EMM-bound Capability Registry; they never author mission state.

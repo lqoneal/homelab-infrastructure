@@ -312,6 +312,54 @@ class ConvergenceRuntimeTests(unittest.TestCase):
             self.assertEqual("PLAN-DEMO", plan["gate_plan_id"])
             self.assertEqual("EXECUTE_WORK", next(iter(context["gate_plan"]["gates"])))
 
+    def test_completed_execution_allows_only_verification_without_authority_mutation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "engineering/metadata").mkdir(parents=True)
+            (root / "engineering/work-orders/demo").mkdir(parents=True)
+            (root / "engineering/authority-records").mkdir(parents=True)
+            wop = {
+                "wop_id": "WOP-COMPLETED", "revision": 1, "status": "ACTIVE",
+                "execution_context": {"baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0"},
+                "lifecycle": {"execution_state": "COMPLETED"},
+            }
+            authority = {
+                "authority_record_id": "AR-COMPLETED",
+                "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0",
+                "lifecycle_state": "ACTIVE", "permitted_actions": ["execute_mission"],
+                "implementation_wop": {"wop_id": "WOP-COMPLETED", "revision": 1},
+            }
+            wop_path = root / "engineering/work-orders/demo/immutable-wop.yaml"
+            authority_path = root / "engineering/authority-records/AR-COMPLETED.yaml"
+            wop_path.write_text(yaml.safe_dump(wop), encoding="utf-8")
+            authority_path.write_text(yaml.safe_dump(authority), encoding="utf-8")
+            digest_path = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
+            emm = {"schema_version": 1, "emm_id": "TEST", "version": "1.0",
+                   "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0", "entities": [
+                       {"entity_type": "ImplementationWOP", "entity_id": "WOP-COMPLETED", "revision": 1,
+                        "authoritative_owner": "WOP Owner", "classification": "Authoritative",
+                        "source": "engineering/work-orders/demo/immutable-wop.yaml", "source_digest": digest_path(wop_path)},
+                       {"entity_type": "AuthorityRecord", "entity_id": "AR-COMPLETED", "revision": 1,
+                        "authoritative_owner": "Governance", "classification": "Authoritative",
+                        "source": "engineering/authority-records/AR-COMPLETED.yaml", "source_digest": digest_path(authority_path)},
+                   ]}
+            (root / "engineering/metadata/operational-alpha-emm.yaml").write_text(
+                yaml.safe_dump(emm), encoding="utf-8"
+            )
+            runtime = ConvergenceRuntime(root)
+            verified = runtime.resolve(
+                wop_id="WOP-COMPLETED", revision=1, action="verify",
+                correlation_id="completed-verification", authority_record_id="AR-COMPLETED",
+            )
+            self.assertEqual("RESOLVED", verified["outcome"])
+            self.assertEqual("COMPLETED_EXECUTION", verified["verification_scope"])
+            rejected = runtime.resolve(
+                wop_id="WOP-COMPLETED", revision=1, action="generate_wop",
+                correlation_id="completed-verification-denied", authority_record_id="AR-COMPLETED",
+            )
+            self.assertEqual("PRECONDITION_FAILED", rejected["outcome"])
+            self.assertIn("AUTHORITY_RECORD_NOT_APPLICABLE", rejected["reasons"])
+
 
 if __name__ == "__main__":
     unittest.main()

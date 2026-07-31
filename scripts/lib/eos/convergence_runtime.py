@@ -513,16 +513,26 @@ class ConvergenceRuntime:
                 }
                 permitted = record.get("permitted_actions", [])
                 binding = record.get("implementation_wop", {})
+                completed_execution_verification = (
+                    action == "verify"
+                    and "execute_mission" in permitted
+                    and isinstance(wop.get("lifecycle"), Mapping)
+                    and str(wop["lifecycle"].get("execution_state", "")).upper()
+                    == "COMPLETED"
+                )
                 if (record.get("baseline_id") != receipt["baseline_id"]
                         or str(binding.get("wop_id")) != wop_id
                         or str(binding.get("revision")) != str(revision)
-                        or action not in permitted):
+                        or (action not in permitted
+                            and not completed_execution_verification)):
                     receipt["reasons"].append("AUTHORITY_RECORD_NOT_APPLICABLE")
                 elif str(record.get("lifecycle_state", "")).upper() != "ACTIVE":
                     receipt["reasons"].append("AUTHORITY_RECORD_NOT_ACTIVE")
                 elif str(wop.get("status", "")).upper() != "ACTIVE":
                     receipt["reasons"].append("WOP_NOT_ACTIVE")
                 else:
+                    if completed_execution_verification:
+                        receipt["verification_scope"] = "COMPLETED_EXECUTION"
                     receipt["outcome"] = "RESOLVED"
             receipt["emm_digest"] = digest(self.emm())
         except ConvergenceRuntimeError as error:

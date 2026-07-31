@@ -384,13 +384,17 @@ OPERATIONAL ALPHA IMPLEMENTATION by `WOP-RUNTIME-CERTIFICATION-002`.
 The current OA-06 implementation record is
 `WOP-9ed7762f-c143-5a58-9a21-63fae5a06c05@1`, bound to
 `OA-IMPLEMENTATION-BASELINE-1.0`. Its lifecycle is `ACTIVE`; execution is `COMPLETED`. OA-06 — Mission Eligibility Evaluation — completed through the EMM-bound mission knowledge and recommendation runtime under
-`WOP-OA-06-EXECUTION-001`. Historical Progressive runtime records and acceptance
-receipts remain evidence only.
+`WOP-OA-06-EXECUTION-001`. OA-06 completion was independently verified against
+the immutable completed convergence WOP and accepted through the controlled
+Progressive acceptance receipt. The EMM-bound Mission Knowledge Model now
+projects OA-07 — Mission Selection — as the eligible successor. Historical
+Progressive runtime records remain evidence only; the OA-06 receipt is the
+controlled predecessor-acceptance evidence for that successor projection.
 
 **Next Immediate Step:**
 
-Preserve OA-06 completion evidence and current-state projection. Do not evaluate
-or initiate OA-07 under this WOP.
+Preserve OA-06 completion and acceptance evidence. OA-07 is eligible for a
+separately authorized mission WOP; this reconciliation does not initiate it.
 `GH-ZEUS-OA-CERTIFICATION-001` package remains suspended historical evidence.
 
 EWO-000017 completed value-blind local configuration qualification, controlled

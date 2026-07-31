@@ -1,0 +1,10 @@
+{
+  "evidence_digest": "0dd73b3f05dc45e1025f32bef0fa34f07a15a23d2bae3452c3d2ec0ef80d0cf7",
+  "gate_id": "OA-06",
+  "marker_digest": "c5aedae525b9be80be3867973ce211fcb0aa080bc7206dd7bcdf29d82e303a48",
+  "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
+  "schema_version": 1,
+  "verification_result": "PASS",
+  "verification_subject": "COMPLETED_CONVERGENCE_WOP",
+  "verification_timestamp": "2026-07-31T10:05:46.528059+00:00"
+}

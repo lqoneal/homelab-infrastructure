@@ -1,0 +1,33 @@
+{
+  "assertions": {
+    "authority_resolution": "PASS",
+    "completed_convergence_wop": "PASS",
+    "completion_evidence": "PASS",
+    "cumulative_oa01_through_oa06": "PASS",
+    "later_gates_inactive": "PASS",
+    "negative": "PASS",
+    "operator_acceptance_recorded": false,
+    "positive": "PASS",
+    "replay": "PASS"
+  },
+  "authoritative_inputs": {
+    "authority_record": "engineering/authority-records/AR-OA-06-001.yaml",
+    "authority_record_digest": "176739bf3984b1f0e1f882f92f1bcd2c3948222336263e758dd7ef23bcee3d09",
+    "completion_reports": {
+      "engineering/evidence/2026-07-31-wop-oa-06-execution-001/CAPABILITY-QUALIFICATION-REPORT.md": "a9e8502401e10703fc4aa9007eccf3a2c9fbce692f8a48725af9f747f5f732d8",
+      "engineering/evidence/2026-07-31-wop-oa-06-execution-001/COMPLETION-REPORT.md": "f7ecc5590887356391a81bd53a216c4a2188553ca6043e5c9db5984b3e3193a6",
+      "engineering/evidence/2026-07-31-wop-oa-06-execution-001/RUNTIME-QUALIFICATION-REPORT.md": "64c642736d9d1ece7e70989b7d2c882791cc35b6bebaf87666f909e18cec3c5a",
+      "engineering/evidence/2026-07-31-wop-oa-06-execution-001/SYNCHRONIZATION-AND-DRIFT-REPORT.md": "94250770a19b30a2d1148f1287e8350342e8984e8a39b0d327dab37a128d9f37",
+      "engineering/evidence/2026-07-31-wop-oa-06-execution-001/VALIDATION-REPORT.md": "2364901eb8edeab305841bfd36ce3056b4c30725bb1c607db19482a46e1ee49d"
+    },
+    "convergence_receipt_digest": "0c0fa772a6b50516bf0f2a42fab125596573d5638d223312660640bc71627199",
+    "implementation_wop": "engineering/work-orders/OA-06-EXECUTION-001/immutable-wop.yaml",
+    "implementation_wop_digest": "3e3eef723effdfa6ba0c0762ead9870e4c326073a79b149008b5b8eb11584034"
+  },
+  "canonical_evidence_digest": "0dd73b3f05dc45e1025f32bef0fa34f07a15a23d2bae3452c3d2ec0ef80d0cf7",
+  "gate_id": "OA-06",
+  "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-07-31T10:05:46.528059+00:00"
+}

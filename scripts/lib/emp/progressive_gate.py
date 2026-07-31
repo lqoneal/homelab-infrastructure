@@ -43,8 +43,11 @@ class GateState:
 
 
 _VERIFIERS = {
-    f"OA-{number:02d}": f"scripts.lib.emp.oa{number:02d}_gate_verification"
-    for number in range(1, 6)
+    **{
+        f"OA-{number:02d}": f"scripts.lib.emp.oa{number:02d}_gate_verification"
+        for number in range(1, 6)
+    },
+    "OA-06": "scripts.lib.emp.oa06_gate_verification",
 }
 
 
