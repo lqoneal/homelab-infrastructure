@@ -1,11 +1,11 @@
 ---
 document_id: SPEC-0014
 title: Operational Alpha Convergence Authority Model
-version: 1.3
+version: 1.4
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-30
-last_updated: 2026-07-30
+last_updated: 2026-07-31
 domain: Operational Alpha
 classification: Engineering Specification
 source_of_truth: true
@@ -131,6 +131,23 @@ There is one valid predecessor for each normal transition. A transition receipt
 records before/after identity, triggering authority, correlation id, evidence
 locator, and reconciliation result. No component may self-accept,
 self-qualify, or advance its own governing authority.
+
+### Immutable Implementation-WOP lifecycle projection
+
+`OPERATIONAL-ALPHA-IMPLEMENTATION-WOP-LIFECYCLE-TRANSITION@1.0` defines the
+only controlled mechanism for changing the effective lifecycle state of an
+immutable Operational Alpha Implementation WOP. The immutable WOP source stays
+unchanged. An EMM-registered, authoritative transition must bind exactly one
+WOP identity and revision, reproduce the source's declared state, carry exact
+authority lineage, and state an allowed `READY → ACTIVE` target with
+`NOT_STARTED` execution. The runtime rejects absent, duplicate, stale,
+digest-mismatched, or non-reconcilable transitions.
+
+The transition is effective only after its controlled source and exact EMM
+digest are published and project, progress, and EOS projections reconcile.
+The lifecycle-transition specification and framework do not create a
+transition, Authority Record, Operational Gate Plan, Activation Record, or
+execution state.
 
 ## Runtime contracts
 

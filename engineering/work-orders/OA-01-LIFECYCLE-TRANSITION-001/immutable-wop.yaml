@@ -1,0 +1,51 @@
+schema_version: 1
+wop_id: WOP-OA-01-LIFECYCLE-TRANSITION-001
+revision: 1
+status: READY
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+phase_id: ZEUS-OPERATIONAL-ALPHA
+work_item_id: EMP-WORK-OA-01-LIFECYCLE-TRANSITION-001
+title: OA-01 Lifecycle Transition Framework
+owner: Engineering Governance
+objective: >-
+  Define, qualify, publish, and register the controlled lifecycle-transition
+  projection required to transition the immutable OA-01 implementation WOP.
+scope:
+  - define and publish the lifecycle-transition specification and schema
+  - register the framework in EMM
+  - implement and qualify read-only runtime transition resolution
+  - reconcile documentation and derived EOS projection
+prohibited_effects:
+  - create an Authority Record
+  - create an Operational Gate Plan
+  - create an Activation Record
+  - create an effective lifecycle transition record
+  - activate or execute OA-01
+  - modify ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0
+execution_context:
+  repository: /data/engineering/repositories/homelab
+  baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+  qualified_baseline: 5706307c1fdf9d4e0601c9cc578181f6d916e0a8
+  branch: main
+manual_governance_authority:
+  policy_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
+  policy_revision: '1.0'
+  delegation_state: ACTIVE
+  governance_submission:
+    submitted: true
+    submitted_by: Engineering Governance
+    submission_id: WOP-OA-01-LIFECYCLE-TRANSITION-001
+    directive_id: WOP-OA-01-LIFECYCLE-TRANSITION-001
+  permitted_actions:
+    - publish_lifecycle_transition_framework
+    - qualify_lifecycle_transition_resolution
+entry_criteria:
+  - OA-01 is READY and NOT_STARTED
+  - no subordinate OA-01 Authority Record, Operational Gate Plan, or Activation Record exists
+  - published bootstrap authority artifacts resolve
+completion_criteria:
+  - lifecycle-transition framework is EMM-resolved and handler-qualified
+  - OA-01 remains READY and NOT_STARTED
+traceability:
+  corrective_finding: BLOCKER-OA01-LIFECYCLE-001
+  prior_initiation: WOP-OA-01-LIFECYCLE-INITIATION-001

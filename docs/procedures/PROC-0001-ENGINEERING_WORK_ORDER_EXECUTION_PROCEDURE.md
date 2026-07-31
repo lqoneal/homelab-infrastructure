@@ -1,11 +1,11 @@
 ---
 document_id: PROC-0001
 title: Operational Alpha Work Initiation and Execution Procedure
-version: 2.2
+version: 2.3
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-30
+last_updated: 2026-07-31
 phase: Engineering Execution Interface Standardization
 domain: Engineering Governance
 classification: Engineering Procedure
@@ -1167,6 +1167,7 @@ This procedure is complete when every implementation agent can execute an Active
 | 1.4 | 2026-07-15 | Established mandatory Commit Classification, traceability, validation, dependency ordering, commit boundaries, and milestone publication controls after Engineering State Reconciliation. |
 | 2.0 | 2026-07-30 | Migrated Operational Alpha initiation, authority resolution, lifecycle, synchronization, qualification, and completion routing to SPEC-0014. |
 | 2.1 | 2026-07-30 | Added the active manual-governance WOP root-authority exception for exact allowlisted actions, preserving normal Authority Record requirements for autonomous WOPs. |
+| 2.3 | 2026-07-31 | Recognized the EMM-controlled immutable Implementation-WOP lifecycle-transition projection defined by SPEC-0014@1.4; transition publication and reconciliation precede any effective ACTIVE state. |
 | 1.5 | 2026-07-15 | Established Commit Reconstruction Planning, approved reconstruction methods, execution gates, persistent planning artifacts, and proportional planning governance. |
 | 1.6 | 2026-07-17 | Added the Mission Classification Gate, risk-proportional Category A/B/C initiation, exact Completion Report standard, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
 | 1.7 | 2026-07-17 | Required repository-governed Codex missions to launch through `engctl codex`, added initiation-time bypass detection and exception controls, and defined the mandatory notification lifecycle under EWO-000019. |

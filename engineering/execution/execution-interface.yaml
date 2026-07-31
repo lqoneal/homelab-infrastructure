@@ -7,7 +7,7 @@ metadata_model:
   source: engineering/metadata/operational-alpha-emm.yaml
 authority_resolution:
   model: SPEC-0014
-  revision: '1.3'
+  revision: '1.4'
   implementation_wop_source: engineering/work-orders/*/immutable-wop.yaml
   manual_governance_policy:
     entity_type: ManualGovernanceWOPAuthorityPolicy
@@ -18,8 +18,13 @@ authority_resolution:
   controlled_artifact_framework:
     entity_type: ControlledArtifactFramework
     entity_id: OPERATIONAL-ALPHA-CONTROLLED-ARTIFACT-FRAMEWORK
-    revision: '1.0'
+    revision: '1.1'
     source: engineering/execution/operational-alpha-artifact-framework.yaml
+  lifecycle_transition_specification:
+    entity_type: ImplementationWOPLifecycleTransitionSpecification
+    entity_id: OPERATIONAL-ALPHA-IMPLEMENTATION-WOP-LIFECYCLE-TRANSITION
+    revision: '1.0'
+    source: engineering/lifecycle-transitions/implementation-wop-lifecycle-transition.spec.yaml
 operational_execution_contract:
   owner: OPERATIONAL-ALPHA-EXECUTION-CONTRACT
   revision: '1.0'
@@ -39,13 +44,13 @@ semantic_bindings:
     revision: '2.2'
   execution_lifecycle:
     owner: PROC-0001
-    revision: '2.0'
+    revision: '2.3'
   handoff_construction:
     owner: PROC-0004
     revision: '1.6'
   convergence_authority:
     owner: SPEC-0014
-    revision: '1.3'
+    revision: '1.4'
   implementation_wop:
     owner: STD-0003
     revision: '2.2'

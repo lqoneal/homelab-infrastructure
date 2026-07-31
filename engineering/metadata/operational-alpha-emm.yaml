@@ -24,7 +24,7 @@ entities:
     authoritative_owner: Homelab Infrastructure
     classification: Authoritative
     source: engineering/execution/operational-alpha-execution-contract.yaml
-    source_digest: 5a1ec406be396bff16a5f4b08b7699f56aee05dd8755a1b53f1fdb6c31261aec
+    source_digest: 8609ea35c389cbd37bb77ebbbeed69638978ad173f2aeb382bf30729d6b28860
   - entity_type: RuntimeBaseline
     entity_id: ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0
     revision: 1.0
@@ -95,3 +95,31 @@ entities:
     classification: Authoritative
     source: engineering/execution/bootstrap-gate-actions/OA-01-BOOTSTRAP-GATE-ACTIONS-v2.yaml
     source_digest: 8ca0d3f001940b1f0ca71141b5c8bcbfbcf407b74fddda2928b9d7e4d66db628
+  - entity_type: ControlledArtifactFramework
+    entity_id: OPERATIONAL-ALPHA-CONTROLLED-ARTIFACT-FRAMEWORK
+    revision: 1.1
+    authoritative_owner: Homelab Infrastructure
+    classification: Authoritative
+    source: engineering/execution/operational-alpha-artifact-framework-v1.1.yaml
+    source_digest: d27116240db6ab21e2a4e11a40af2e2a4aa7757954104ed357ee89ec37a93c02
+  - entity_type: ArtifactSchema
+    entity_id: OPERATIONAL-ALPHA-IMPLEMENTATION-WOP-LIFECYCLE-TRANSITION
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/lifecycle-transitions/implementation-wop-lifecycle-transition.schema.yaml
+    source_digest: 8aed9692abc3d72d1bb617ec9df2c26878b1700c5394ae2d1806c42f9a3c1d58
+  - entity_type: ImplementationWOPLifecycleTransitionSpecification
+    entity_id: OPERATIONAL-ALPHA-IMPLEMENTATION-WOP-LIFECYCLE-TRANSITION
+    revision: 1.0
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/lifecycle-transitions/implementation-wop-lifecycle-transition.spec.yaml
+    source_digest: 159cb33769d9b2d16c546ac9c73b44266aaf06d750cdf27d3517505a8e3f67d0
+  - entity_type: ImplementationWOP
+    entity_id: WOP-OA-01-LIFECYCLE-TRANSITION-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/work-orders/OA-01-LIFECYCLE-TRANSITION-001/immutable-wop.yaml
+    source_digest: cd4d60fd2e44050ec7764a9fdd7d5ab9770009ff75c77278f0cbedef28e07343

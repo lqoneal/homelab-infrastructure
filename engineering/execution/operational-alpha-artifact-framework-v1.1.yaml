@@ -1,0 +1,43 @@
+schema_version: 1
+framework_id: OPERATIONAL-ALPHA-CONTROLLED-ARTIFACT-FRAMEWORK
+revision: '1.1'
+classification: Authoritative
+authoritative_owner: Homelab Infrastructure
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: READY
+artifacts:
+  authority_record:
+    entity_type: AuthorityRecord
+    schema: engineering/authority-records/authority-record.schema.yaml
+    source_directory: engineering/authority-records
+    owner: Engineering Governance
+  operational_gate_plan:
+    entity_type: OperationalGatePlan
+    schema: engineering/execution/plans/operational-gate-plan.schema.yaml
+    source_directory: engineering/execution/plans
+    owner: assigned WOP owner
+  activation_record:
+    entity_type: ActivationRecord
+    schema: engineering/activation-records/activation-record.schema.yaml
+    source_directory: engineering/activation-records
+    owner: Engineering Governance
+  implementation_wop_lifecycle_transition:
+    entity_type: ImplementationWOPLifecycleTransition
+    schema: engineering/lifecycle-transitions/implementation-wop-lifecycle-transition.schema.yaml
+    source_directory: engineering/lifecycle-transitions/records
+    owner: Engineering Governance
+generation:
+  producer: Metadata Engine
+  mode: deterministic_candidate_then_controlled_publication
+  inputs: [exact_emm_wop, authority_lineage, handler_validated_gate_actions, exact_lifecycle_transition_specification]
+  output: authoritative_source_plus_exact_emm_entity
+  synchronization: authoritative_to_derived_only
+  fail_closed: missing_or_ambiguous_source_or_digest
+publication:
+  interface: zeus bootstrap artifact and lifecycle-transition resolution
+  preconditions: [candidate_validation, exact_emm_registration, source_digest_match]
+  postconditions: [runtime_resolution, qualification_receipt, eos_reconciliation]
+traceability:
+  specification: SPEC-0014@1.3
+  execution_contract: OPERATIONAL-ALPHA-EXECUTION-CONTRACT@1.1
+  lifecycle_transition_specification: OPERATIONAL-ALPHA-IMPLEMENTATION-WOP-LIFECYCLE-TRANSITION@1.0

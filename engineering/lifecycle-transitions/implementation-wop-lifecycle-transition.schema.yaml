@@ -1,0 +1,26 @@
+schema_version: 1
+schema_id: OPERATIONAL-ALPHA-IMPLEMENTATION-WOP-LIFECYCLE-TRANSITION
+classification: Authoritative
+authoritative_owner: Engineering Governance
+required:
+  - transition_id
+  - revision
+  - baseline_id
+  - lifecycle_state
+  - implementation_wop
+  - source_lifecycle_state
+  - target_lifecycle_state
+  - execution_state
+  - authority_lineage
+  - reconciliation
+rules:
+  baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+  lifecycle_state: ACTIVE
+  implementation_wop: exact_emm_implementation_wop_identity
+  source_lifecycle_state: immutable_wop_declared_status
+  allowed_transition: READY_to_ACTIVE_only
+  execution_state: NOT_STARTED
+  authority_lineage: exact_manual_governance_wop_or_active_authority_record
+  publication: source_digest_registered_in_emm
+  reconciliation: project_progress_eos_before_effective_status_projection
+  cardinality: exactly_one_active_transition_per_implementation_wop_revision

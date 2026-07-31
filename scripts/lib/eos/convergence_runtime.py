@@ -225,6 +225,7 @@ class ConvergenceRuntime:
         wop = load_mapping(path)
         if wop.get("wop_id") != wop_id or str(wop.get("revision")) != str(revision):
             raise ConvergenceRuntimeError("Implementation WOP identity differs from EMM")
+        wop = self._effective_wop(entity, wop)
         status = str(wop.get("status", "")).upper()
         if status not in WOP_STATES:
             raise ConvergenceRuntimeError("Implementation WOP lifecycle state is invalid")
@@ -253,7 +254,7 @@ class ConvergenceRuntime:
     def controlled_artifact_framework(self) -> tuple[dict[str, Any], dict[str, Any], str]:
         """Resolve the controlled artifact framework; it never creates state."""
         entity = self._entity(
-            "ControlledArtifactFramework", "OPERATIONAL-ALPHA-CONTROLLED-ARTIFACT-FRAMEWORK", "1.0"
+            "ControlledArtifactFramework", "OPERATIONAL-ALPHA-CONTROLLED-ARTIFACT-FRAMEWORK", "1.1"
         )
         if entity.get("classification") != "Authoritative" or not entity.get("source_digest"):
             raise ConvergenceRuntimeError("controlled artifact framework lacks authoritative identity")
@@ -268,6 +269,77 @@ class ConvergenceRuntime:
         ):
             raise ConvergenceRuntimeError("controlled artifact framework contract is invalid")
         return entity, framework, source_digest
+
+    def lifecycle_transition_specification(self) -> tuple[dict[str, Any], dict[str, Any], str]:
+        """Resolve the contract for immutable-WOP lifecycle projections."""
+        entity = self._entity(
+            "ImplementationWOPLifecycleTransitionSpecification",
+            "OPERATIONAL-ALPHA-IMPLEMENTATION-WOP-LIFECYCLE-TRANSITION", "1.0",
+        )
+        if entity.get("classification") != "Authoritative" or not entity.get("source_digest"):
+            raise ConvergenceRuntimeError("lifecycle-transition specification lacks authoritative identity")
+        path, source_digest = self._source(entity)
+        specification = load_mapping(path)
+        artifact = specification.get("transition_artifact")
+        if (
+            specification.get("specification_id") != entity["entity_id"]
+            or str(specification.get("revision")) != str(entity["revision"])
+            or specification.get("baseline_id") != self.emm()["baseline_id"]
+            or str(specification.get("lifecycle_state", "")).upper() != "READY"
+            or not isinstance(artifact, Mapping)
+            or artifact.get("entity_type") != "ImplementationWOPLifecycleTransition"
+        ):
+            raise ConvergenceRuntimeError("lifecycle-transition specification contract is invalid")
+        return entity, specification, source_digest
+
+    def _effective_wop(self, entity: Mapping[str, Any], wop: Mapping[str, Any]) -> dict[str, Any]:
+        """Apply one exact EMM lifecycle projection without mutating the WOP source."""
+        declared = str(wop.get("status", "")).upper()
+        matches = [dict(item) for item in self.emm()["entities"]
+                   if isinstance(item, Mapping)
+                   and item.get("entity_type") == "ImplementationWOPLifecycleTransition"
+                   and item.get("implementation_wop_id") == entity["entity_id"]
+                   and str(item.get("implementation_wop_revision")) == str(entity["revision"])]
+        if not matches:
+            return dict(wop)
+        if len(matches) != 1:
+            raise ConvergenceRuntimeError("Implementation WOP lifecycle transition is ambiguous")
+        transition_entity = matches[0]
+        if transition_entity.get("classification") != "Authoritative" or not transition_entity.get("source_digest"):
+            raise ConvergenceRuntimeError("Implementation WOP lifecycle transition lacks authoritative identity")
+        _, specification, _ = self.lifecycle_transition_specification()
+        path, transition_digest = self._source(transition_entity)
+        transition = load_mapping(path)
+        binding = transition.get("implementation_wop")
+        allowed = specification["transition_artifact"].get("allowed_transitions", [])
+        valid_transition = any(
+            isinstance(item, Mapping)
+            and item.get("from") == transition.get("source_lifecycle_state")
+            and item.get("to") == transition.get("target_lifecycle_state")
+            and item.get("execution_state") == transition.get("execution_state")
+            for item in allowed
+        )
+        if not (
+            transition.get("baseline_id") == self.emm()["baseline_id"]
+            and str(transition.get("lifecycle_state", "")).upper() == "ACTIVE"
+            and isinstance(binding, Mapping)
+            and binding.get("wop_id") == entity["entity_id"]
+            and str(binding.get("revision")) == str(entity["revision"])
+            and transition.get("source_lifecycle_state") == declared
+            and transition.get("target_lifecycle_state") == "ACTIVE"
+            and transition.get("execution_state") == "NOT_STARTED"
+            and isinstance(transition.get("authority_lineage"), Mapping)
+            and isinstance(transition.get("reconciliation"), Mapping)
+            and valid_transition
+        ):
+            raise ConvergenceRuntimeError("Implementation WOP lifecycle transition contract is invalid")
+        effective = dict(wop)
+        effective["status"] = transition["target_lifecycle_state"]
+        effective["effective_lifecycle_transition"] = {
+            "transition_id": transition.get("transition_id"),
+            "source_digest": transition_digest,
+        }
+        return effective
 
     def artifact_candidate(
         self, *, kind: str, root_wop_id: str, root_revision: str | int,

@@ -112,6 +112,17 @@ def resolve(root: Path | str) -> dict[str, object]:
     repository = Path(root).resolve()
     progress = _progress_values(_read(repository / PROGRESS_PATH))
     wop = _wop(repository / WOP_PATH)
+    if (repository / EMM_PATH).is_file():
+        try:
+            from scripts.lib.eos.convergence_runtime import ConvergenceRuntime
+
+            _, wop, _ = ConvergenceRuntime(repository)._wop(CURRENT_WOP, wop.get("revision", ""))
+        except Exception as error:
+            raise OperationalAlphaStatusError(
+                "STATUS_LIFECYCLE_TRANSITION_INVALID: " + str(error) + "; "
+                "resolution options: restore the exact EMM transition, apply a separately "
+                "authorized reconciliation, or close without changes"
+            ) from error
     project_lifecycle, project_execution = _project_lifecycle(
         _read(repository / PROJECT_STATE_PATH)
     )
@@ -160,7 +171,8 @@ def resolve(root: Path | str) -> dict[str, object]:
         "historical_progressive_runtime": "EXCLUDED_EVIDENCE_ONLY",
         "authoritative_sources": [
             str(WOP_PATH), str(PROJECT_STATE_PATH), str(PROGRESS_PATH),
-        ],
+        ] + (["EMM-resolved ImplementationWOPLifecycleTransition"]
+             if wop.get("effective_lifecycle_transition") else []),
         "status_resolution_precedence": [
             "current Implementation WOP",
             "controlled Project State",

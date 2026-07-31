@@ -1,0 +1,56 @@
+schema_version: 1
+specification_id: OPERATIONAL-ALPHA-IMPLEMENTATION-WOP-LIFECYCLE-TRANSITION
+revision: '1.0'
+classification: Authoritative
+authoritative_owner: Engineering Governance
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: READY
+purpose: >-
+  Define the immutable-record preserving, EMM-controlled projection by which
+  an Operational Alpha Implementation WOP may acquire an effective lifecycle
+  state. This specification does not create a transition or change OA state.
+transition_artifact:
+  entity_type: ImplementationWOPLifecycleTransition
+  source_directory: engineering/lifecycle-transitions/records
+  classification: Authoritative
+  required_fields:
+    - transition_id
+    - revision
+    - baseline_id
+    - lifecycle_state
+    - implementation_wop
+    - source_lifecycle_state
+    - target_lifecycle_state
+    - execution_state
+    - authority_lineage
+    - reconciliation
+  allowed_transitions:
+    - from: READY
+      to: ACTIVE
+      execution_state: NOT_STARTED
+  rules:
+    implementation_wop: exact_emm_implementation_wop_identity
+    source_lifecycle_state: immutable_wop_declared_status
+    target_lifecycle_state: allowed_transition_target
+    lifecycle_state: ACTIVE_when_effective
+    authority_lineage: exact_emm_manual_governance_wop_or_active_authority_record
+    publication: source_digest_registered_in_emm
+    single_effective_transition: exactly_one_per_implementation_wop_revision
+    reconciliation: project_progress_eos_before_effective_status_projection
+    replay: same_transition_id_and_source_digest_is_idempotent
+    failure: missing_or_ambiguous_or_mismatched_transition_fails_closed
+runtime:
+  consumer: zeus-convergence-runtime/1
+  resolution: immutable_wop_then_exact_emm_transition_projection
+  precedence: active_exact_transition_over_immutable_declared_status
+  prohibited: transition_must_not_modify_immutable_wop_source
+synchronization:
+  direction: authoritative_transition_to_status_and_eos_projections
+  owner: Homelab Infrastructure
+  trigger: published_transition_source_and_emm_registration
+  verification: exact_source_digest_and_cross_projection_agreement
+  reconciliation_owner: Homelab Infrastructure
+traceability:
+  governing_specification: SPEC-0014@1.3
+  artifact_framework: OPERATIONAL-ALPHA-CONTROLLED-ARTIFACT-FRAMEWORK@1.1
+  corrective_wop: WOP-OA-01-LIFECYCLE-TRANSITION-001

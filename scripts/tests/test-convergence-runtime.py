@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import sys
 import tempfile
 import unittest
@@ -172,6 +173,57 @@ class ConvergenceRuntimeTests(unittest.TestCase):
             flow = runtime.execution_flow(wop_id="WOP-DEMO", revision=1, action="inspect", correlation_id="flow", authority_record_id="AR-DEMO")
             self.assertTrue(flow["execution_admitted"])
             self.assertEqual("PASS", flow["qualification"]["result"])
+
+    def test_emm_lifecycle_transition_projects_active_without_mutating_immutable_wop(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "engineering/metadata").mkdir(parents=True)
+            (root / "engineering/work-orders/demo").mkdir(parents=True)
+            (root / "engineering/lifecycle-transitions/records").mkdir(parents=True)
+            wop = {
+                "wop_id": "WOP-DEMO", "revision": 1, "status": "READY",
+                "execution_context": {"baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0"},
+            }
+            specification = {
+                "specification_id": "OPERATIONAL-ALPHA-IMPLEMENTATION-WOP-LIFECYCLE-TRANSITION",
+                "revision": "1.0", "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0",
+                "lifecycle_state": "READY", "transition_artifact": {
+                    "entity_type": "ImplementationWOPLifecycleTransition",
+                    "allowed_transitions": [{"from": "READY", "to": "ACTIVE", "execution_state": "NOT_STARTED"}],
+                },
+            }
+            transition = {
+                "transition_id": "TR-DEMO", "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0",
+                "lifecycle_state": "ACTIVE", "implementation_wop": {"wop_id": "WOP-DEMO", "revision": 1},
+                "source_lifecycle_state": "READY", "target_lifecycle_state": "ACTIVE",
+                "execution_state": "NOT_STARTED", "authority_lineage": {"receipt": "demo"},
+                "reconciliation": {"state": "complete"},
+            }
+            wop_path = root / "engineering/work-orders/demo/immutable-wop.yaml"
+            spec_path = root / "engineering/lifecycle-transitions/spec.yaml"
+            transition_path = root / "engineering/lifecycle-transitions/records/TR-DEMO.yaml"
+            for path, value in ((wop_path, wop), (spec_path, specification), (transition_path, transition)):
+                path.write_text(yaml.safe_dump(value), encoding="utf-8")
+            digest_path = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
+            emm = {"schema_version": 1, "emm_id": "TEST", "version": "1.0",
+                   "baseline_id": "OA-IMPLEMENTATION-BASELINE-1.0", "entities": [
+                       {"entity_type": "ImplementationWOP", "entity_id": "WOP-DEMO", "revision": 1,
+                        "authoritative_owner": "WOP Owner", "classification": "Authoritative",
+                        "source": "engineering/work-orders/demo/immutable-wop.yaml", "source_digest": digest_path(wop_path)},
+                       {"entity_type": "ImplementationWOPLifecycleTransitionSpecification",
+                        "entity_id": "OPERATIONAL-ALPHA-IMPLEMENTATION-WOP-LIFECYCLE-TRANSITION", "revision": "1.0",
+                        "authoritative_owner": "Governance", "classification": "Authoritative",
+                        "source": "engineering/lifecycle-transitions/spec.yaml", "source_digest": digest_path(spec_path)},
+                       {"entity_type": "ImplementationWOPLifecycleTransition", "entity_id": "TR-DEMO", "revision": 1,
+                        "implementation_wop_id": "WOP-DEMO", "implementation_wop_revision": 1,
+                        "authoritative_owner": "Governance", "classification": "Authoritative",
+                        "source": "engineering/lifecycle-transitions/records/TR-DEMO.yaml", "source_digest": digest_path(transition_path)},
+                   ]}
+            (root / "engineering/metadata/operational-alpha-emm.yaml").write_text(yaml.safe_dump(emm), encoding="utf-8")
+            _, effective, _ = ConvergenceRuntime(root)._wop("WOP-DEMO", 1)
+            self.assertEqual("ACTIVE", effective["status"])
+            self.assertEqual("TR-DEMO", effective["effective_lifecycle_transition"]["transition_id"])
+            self.assertEqual("READY", yaml.safe_load(wop_path.read_text(encoding="utf-8"))["status"])
 
     def test_execution_contract_blocks_without_an_emm_registered_gate_plan(self):
         with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as workspace:
