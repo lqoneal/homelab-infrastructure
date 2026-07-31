@@ -1,0 +1,16 @@
+schema_version: 1
+activation_record_id: ACT-OA-09-001
+revision: 1
+mission_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+gate_id: OA-09
+authority_record: AR-OA-09-001@1
+operational_gate_plan: WOP-oa09-autonomous-orchestration-001@1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop: {wop_id: WOP-oa09-autonomous-orchestration-001, revision: 1}
+transition: {from: READY, to: ACTIVE}
+authority_lineage:
+  root_wop: WOP-oa09-autonomous-orchestration-001@1
+  authority_mode: MANUAL_GOVERNANCE_WOP
+  governing_directive: WOP-OA-09-EXECUTION-001
+reconciliation: {lifecycle_transition: OA-09-READY-TO-ACTIVE@1, status: RECONCILED}

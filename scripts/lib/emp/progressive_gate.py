@@ -49,6 +49,7 @@ _VERIFIERS = {
     },
     "OA-06": "scripts.lib.emp.oa06_gate_verification",
     "OA-07": "scripts.lib.emp.oa07_gate_verification",
+    "OA-09": "scripts.lib.emp.oa09_gate_verification",
 }
 
 

@@ -1,0 +1,33 @@
+schema_version: 1
+plan_id: WOP-oa09-autonomous-orchestration-001
+revision: 1
+baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
+lifecycle_state: ACTIVE
+implementation_wop: {wop_id: WOP-oa09-autonomous-orchestration-001, revision: 1}
+authority_lineage:
+  root_wop: {wop_id: WOP-oa09-autonomous-orchestration-001, revision: 1}
+  authority_record: AR-OA-09-001@1
+  authority_mode: MANUAL_GOVERNANCE_WOP
+  governing_directive: WOP-OA-09-EXECUTION-001
+gate_plan:
+  gates:
+    EXECUTE_WORK:
+      dependencies: []
+      actions:
+        - action_id: oa09-orchestration-qualified
+          action_type: create_artifact
+          path: runtime/evidence/OA-09/ORCHESTRATION-QUALIFIED
+          content: OA-09 autonomous orchestration, deterministic dispatch, and fail-closed recovery qualification complete
+          content_digest: deeff127f1129d075244853880eb76fb2ca86a17b1eeaff547a5e36f81bf8153
+    VERIFY_COMPLETION:
+      dependencies: [EXECUTE_WORK]
+      actions:
+        - action_id: verify-oa09-orchestration-qualified
+          action_type: verify_artifact
+          path: runtime/evidence/OA-09/ORCHESTRATION-QUALIFIED
+          content_digest: deeff127f1129d075244853880eb76fb2ca86a17b1eeaff547a5e36f81bf8153
+traceability:
+  controlled_objective: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-09/objective.yaml
+  implementation_procedure: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-09/implementation.md
+  execution_contract: OPERATIONAL-ALPHA-EXECUTION-CONTRACT@1.0
+  execution_first_policy: SPEC-0014@1.6

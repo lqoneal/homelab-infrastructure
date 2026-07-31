@@ -1,0 +1,118 @@
+{
+  "assertions": {
+    "deterministic_orchestration": "PASS",
+    "fail_closed": "PASS",
+    "later_gates_inactive": "PASS",
+    "portfolio_evaluation": "PASS",
+    "qualified_agent": "PASS",
+    "recovery": "PASS"
+  },
+  "authoritative_inputs": {
+    "dispatch": {
+      "authoritative_source": "engineering/missions/operational-alpha-mission-knowledge.yaml",
+      "decision_trace": {
+        "agent_count": 1,
+        "recommendation": {
+          "authoritative_evidence": [
+            "engineering/missions/operational-alpha-mission-knowledge.yaml",
+            "engineering/capabilities/operational-alpha-capability-registry.yaml"
+          ],
+          "blocked_missions": [
+            {
+              "authoritative_evidence": [
+                "engineering/missions/operational-alpha-mission-knowledge.yaml",
+                "engineering/capabilities/operational-alpha-capability-registry.yaml",
+                "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-10/objective.yaml"
+              ],
+              "blocking_conditions": [
+                "CAPABILITY_PREREQUISITE_MISSING",
+                "DEPENDENCY_UNSATISFIED"
+              ],
+              "classification": "BLOCKED",
+              "completion_criteria": [
+                "bounded_execution_context_and_lease_qualified"
+              ],
+              "dependencies": [
+                "OA-09"
+              ],
+              "missing_capabilities": [
+                "ZEUS-OA-CAP-008"
+              ],
+              "missing_dependencies": [
+                "OA-09"
+              ],
+              "mission_id": "OA-10",
+              "model_id": "OPERATIONAL-ALPHA-MISSION-KNOWLEDGE",
+              "objective_source": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-10/objective.yaml",
+              "prerequisite_capabilities": [
+                "ZEUS-OA-CAP-008"
+              ],
+              "readiness_digest": "55de2216e9d2de0d962059ca692ce2296909dc3d7946eb34e4b6620da8b297ad",
+              "revision": "1.2"
+            }
+          ],
+          "model_id": "OPERATIONAL-ALPHA-MISSION-KNOWLEDGE",
+          "rationale": "first mission in authoritative sequence with completed dependencies and operational prerequisites",
+          "readiness": {
+            "authoritative_evidence": [
+              "engineering/missions/operational-alpha-mission-knowledge.yaml",
+              "engineering/capabilities/operational-alpha-capability-registry.yaml",
+              "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-09/objective.yaml"
+            ],
+            "blocking_conditions": [],
+            "classification": "ELIGIBLE",
+            "completion_criteria": [
+              "package_integrity_and_admission_qualified"
+            ],
+            "dependencies": [
+              "OA-08"
+            ],
+            "missing_capabilities": [],
+            "missing_dependencies": [],
+            "mission_id": "OA-09",
+            "model_id": "OPERATIONAL-ALPHA-MISSION-KNOWLEDGE",
+            "objective_source": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-09/objective.yaml",
+            "prerequisite_capabilities": [
+              "ZEUS-OA-CAP-007"
+            ],
+            "readiness_digest": "b8dfbe02ac2bf2b379cd2eee112072d6b48cc7ab77ca4cd108ee17bcdee6857c",
+            "revision": "1.2"
+          },
+          "recommended_mission": "OA-09",
+          "result": "PASS"
+        }
+      },
+      "dispatch": {
+        "authority_source": "engineering/missions/operational-alpha-mission-knowledge.yaml",
+        "execution_constraints": [
+          "controlled-wop-only",
+          "exact-repository-baseline",
+          "no-unreviewed-external-effects"
+        ],
+        "expected_evidence_outputs": [
+          "dispatch-contract",
+          "capability-qualification",
+          "operator-capability-summary",
+          "synchronization-report",
+          "validation-report"
+        ],
+        "mission_id": "OA-09",
+        "required_capabilities": [
+          "ZEUS-OA-CAP-007"
+        ],
+        "selected_execution_agent": "zeus-local-loneal-01"
+      },
+      "qualified_agents": [
+        "zeus-local-loneal-01"
+      ],
+      "result": "PASS"
+    },
+    "flow_digest": "5c3c4d798ad9ccbd044d8e1fe41a11f4c1fd6f20fe9b735ea532199fef070a8b",
+    "qualified_agent": "zeus-local-loneal-01"
+  },
+  "canonical_evidence_digest": "ea0944a4ea7d7f404454add12435267138800c93c1b417fa39fb43d5b24b5c6d",
+  "gate_id": "OA-09",
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-07-31T11:08:24.587539+00:00"
+}

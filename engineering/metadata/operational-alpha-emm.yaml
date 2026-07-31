@@ -270,7 +270,7 @@ entities:
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/capabilities/operational-alpha-capability-registry.yaml
-    source_digest: 34fcaa80092aa81509a755ef26da29a67e7f855f7080d9eb70ce970f77df353b
+    source_digest: f9d7be5621a39794d697082e79215532b49f919218007e22014a6080123d7b4d
   - entity_type: ImplementationWOP
     entity_id: WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f
     revision: 1
@@ -310,11 +310,11 @@ entities:
     source_digest: 9444ce37a7a23f1195707158653b27a779556c159b50aed2f373cbdd01afedaf
   - entity_type: MissionKnowledgeModel
     entity_id: OPERATIONAL-ALPHA-MISSION-KNOWLEDGE
-    revision: 1.2
+    revision: 1.3
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/missions/operational-alpha-mission-knowledge.yaml
-    source_digest: dc92d1155664abdaede1b866cc9ecbb45c535e631caa239356cf3216877fa82f
+    source_digest: 23e1be163f7cf46f1bb3ce05ab945849bfebbf3f3f7f3792a65bdb7063b7f7d7
   - entity_type: ImplementationWOP
     entity_id: WOP-9ed7762f-c143-5a58-9a21-63fae5a06c05
     revision: 1
@@ -426,3 +426,40 @@ entities:
     classification: Authoritative
     source: engineering/activation-records/ACT-OA-08-001.yaml
     source_digest: 2c4418c0930edec77a47bdf36edf21d8bb07546f24527999d893567d0170e54f
+  - entity_type: ImplementationWOP
+    entity_id: WOP-oa09-autonomous-orchestration-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/work-orders/OA-09-EXECUTION-001/immutable-wop.yaml
+    source_digest: b3088dadb6d9267ea93f09d0a0fbe1ae6987e079df6cbfa6073580bfe958d6b7
+  - entity_type: ImplementationWOPLifecycleTransition
+    entity_id: OA-09-READY-TO-ACTIVE
+    revision: 1
+    implementation_wop_id: WOP-oa09-autonomous-orchestration-001
+    implementation_wop_revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/lifecycle-transitions/records/OA-09-READY-TO-ACTIVE.yaml
+    source_digest: 7064b2073e7f5ccb19961bf5905b9366243be6d3271788b4a34ace2205cc8d88
+  - entity_type: AuthorityRecord
+    entity_id: AR-OA-09-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/authority-records/AR-OA-09-001.yaml
+    source_digest: 07ae77906bcbb231c409a1a9a67538d92d4a50bcf12f7ec975b63b403d083a73
+  - entity_type: OperationalGatePlan
+    entity_id: WOP-oa09-autonomous-orchestration-001
+    revision: 1
+    authoritative_owner: Homelab Infrastructure
+    classification: Authoritative
+    source: engineering/execution/plans/WOP-oa09-autonomous-orchestration-001.yaml
+    source_digest: cb62ab143a5623f94f07ebbb8b365d6c41890e3dea9c6aac07e6365bb0ec9ed4
+  - entity_type: ActivationRecord
+    entity_id: ACT-OA-09-001
+    revision: 1
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/activation-records/ACT-OA-09-001.yaml
+    source_digest: 1854eec47796a62317aad084c487f21b923a5a9667316d5b42f98bbf16141cc4
