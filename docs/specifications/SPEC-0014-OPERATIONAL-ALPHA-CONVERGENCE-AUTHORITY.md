@@ -1,7 +1,7 @@
 ---
 document_id: SPEC-0014
 title: Operational Alpha Convergence Authority Model
-version: 1.5
+version: 1.6
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-30
@@ -31,6 +31,42 @@ No planning document, generated projection, command output, workspace
 permission, or successful verification grants authority. This specification
 does not authorize implementation, dispatch, acceptance, publication, or a
 lifecycle transition.
+
+## Execution-First Engineering Philosophy
+
+The primary objective of the Zeus Engineering Platform is successful execution
+of engineering work. Architecture exists to enable that execution; it is not an
+independent engineering objective.
+
+When execution encounters a blocker, its resolution order is:
+
+1. Reuse existing published capability.
+2. Correct an implementation defect.
+3. Remove obsolete or legacy behavior.
+4. Simplify existing architecture.
+5. Consolidate overlapping architecture.
+6. Introduce new foundational architecture only after the preceding options
+   have been demonstrated insufficient.
+
+The default runtime decision is **execution before expansion**. Execution is
+preferred whenever it preserves engineering authority, evidence integrity,
+repository integrity, security, and controlled engineering records.
+
+### Architectural burden of proof
+
+A proposal introducing a controlled-document class, framework, authority
+layer, lifecycle object, registry, runtime subsystem, execution interface, or
+foundational capability must demonstrate that existing architecture was
+evaluated; reuse, implementation correction, simplification, and
+consolidation are insufficient; and the addition materially improves
+execution. A legacy compatibility mechanism participates in authoritative
+Operational Alpha execution only when this specification explicitly designates
+it authoritative. Where legacy behavior conflicts with the convergence model,
+removal or migration is preferred to preservation through an additional layer.
+
+Every Operational Alpha WOP generated after OA-01 activation inherits this
+section by reference unless its authorizing mission explicitly modifies or
+supersedes it.
 
 ## Canonical authority chain
 
@@ -162,11 +198,9 @@ legacy agent qualification may remain available for historical evidence or
 compatibility diagnostics, but they shall not grant, deny, or modify an
 Operational Alpha admission decision.
 
-Operational Alpha follows an execution-first engineering policy: existing
-published convergence capabilities are exercised, corrected, simplified, or
-consolidated before any foundational architecture is proposed. Superseded
-Progressive dispatcher authority is retired from Operational Alpha execution;
-its retained PMCT tooling is non-authoritative compatibility support only.
+Superseded Progressive dispatcher authority is retired from Operational Alpha
+execution. Its retained PMCT tooling is non-authoritative compatibility support
+only, subject to the Execution-First Engineering Philosophy above.
 
 All interfaces carry contract version, correlation id, producer/consumer
 owners, exact input manifest, output digest, and a durable receipt.

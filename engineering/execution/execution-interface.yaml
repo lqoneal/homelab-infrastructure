@@ -7,7 +7,7 @@ metadata_model:
   source: engineering/metadata/operational-alpha-emm.yaml
 authority_resolution:
   model: SPEC-0014
-  revision: '1.5'
+  revision: '1.6'
   implementation_wop_source: engineering/work-orders/*/immutable-wop.yaml
   manual_governance_policy:
     entity_type: ManualGovernanceWOPAuthorityPolicy
@@ -50,7 +50,7 @@ semantic_bindings:
     revision: '1.6'
   convergence_authority:
     owner: SPEC-0014
-    revision: '1.5'
+    revision: '1.6'
   implementation_wop:
     owner: STD-0003
     revision: '2.2'

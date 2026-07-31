@@ -24,7 +24,7 @@ entities:
     authoritative_owner: Homelab Infrastructure
     classification: Authoritative
     source: engineering/execution/operational-alpha-execution-contract.yaml
-    source_digest: 0fe38dc63fc48d4feb28189988c0a3ca7d1b8498549d5b7f7e670466443d899d
+    source_digest: 0830bd10ea5fc3e1ad1744d7433d4c6da7536b384e3218a2eb75c2c27bdcd9f7
   - entity_type: RuntimeBaseline
     entity_id: ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0
     revision: 1.0
