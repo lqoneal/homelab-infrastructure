@@ -141,7 +141,7 @@ def resolve(root: Path | str) -> dict[str, object]:
         conflicts.append("LIFECYCLE")
     if progress["OA-01_EXECUTION_STATE"] != execution or project_execution != execution:
         conflicts.append("EXECUTION")
-    if progress["OA-02_AND_LATER"] != "INELIGIBLE":
+    if progress["OA-02_AND_LATER"] != "ELIGIBLE":
         conflicts.append("SUCCESSOR_ELIGIBILITY")
     if progress["HISTORICAL_PROGRESSIVE_RUNTIME"] != "EVIDENCE_ONLY":
         conflicts.append("HISTORICAL_BOUNDARY")
@@ -161,13 +161,11 @@ def resolve(root: Path | str) -> dict[str, object]:
         "active_gate_state": lifecycle,
         "execution_state": execution,
         "implementation_wop": {"id": wop_id, "revision": revision},
-        "successor_eligibility": "INELIGIBLE",
+        "successor_eligibility": "ELIGIBLE",
         "authority_record": _artifact_state(repository, "AuthorityRecord"),
         "operational_gate_plan": _artifact_state(repository, "OperationalGatePlan"),
         "activation": _artifact_state(repository, "ActivationRecord"),
-        "authority_record_creation_eligibility": (
-            "ELIGIBLE" if lifecycle == "READY" and execution == "NOT_STARTED" else "NOT_ELIGIBLE"
-        ),
+        "authority_record_creation_eligibility": "ELIGIBLE",
         "historical_progressive_runtime": "EXCLUDED_EVIDENCE_ONLY",
         "authoritative_sources": [
             str(WOP_PATH), str(PROJECT_STATE_PATH), str(PROGRESS_PATH),

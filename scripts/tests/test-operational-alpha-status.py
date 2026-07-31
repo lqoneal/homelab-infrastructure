@@ -53,7 +53,8 @@ class OperationalAlphaStatusTests(unittest.TestCase):
         self.assertEqual("OA-01", value["active_gate"])
         self.assertEqual("ACTIVE", value["status"])
         self.assertEqual("NOT_STARTED", value["execution_state"])
-        self.assertEqual("NOT_ELIGIBLE", value["authority_record_creation_eligibility"])
+        self.assertEqual("ELIGIBLE", value["authority_record_creation_eligibility"])
+        self.assertEqual("ELIGIBLE", value["successor_eligibility"])
         self.assertEqual("EXCLUDED_EVIDENCE_ONLY", value["historical_progressive_runtime"])
 
     def test_conflicting_projection_fails_with_operator_options(self) -> None:

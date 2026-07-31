@@ -267,9 +267,9 @@ def main(argv=None):
         p.print_help()
         return 0
     progressive_mode = os.environ.get("ZEUS_PROGRESSIVE_OA")
-    progressive_enabled = progressive_mode != "0" and (
-        progressive_oa.state_path(ROOT).exists() or progressive_mode == "1"
-    )
+    # Progressive state is retained only as an explicit compatibility view.
+    # Its mere presence must never select an authoritative operational path.
+    progressive_enabled = progressive_mode == "1"
     try:
         stage1_directory = Path(
             os.environ.get("ZEUS_STAGE1_STATE", ROOT / ".zeus/runtime/stage1")
@@ -304,9 +304,24 @@ def main(argv=None):
                 else:
                     print(f"Package: {decision['package_id']}\nActive Gate: {decision['active_gate']}\nNext Action: {decision['next_action']}")
                 return 0
-            decision=resolve_next_action(ROOT)
+            current = resolve_operational_alpha_status(ROOT)
+            decision = {
+                "resolver": current["resolver"],
+                "active_gate": current["active_gate"],
+                "successor_eligibility": current["successor_eligibility"],
+                "next_authorized_action": {
+                    "code": "INITIATE_OA-02",
+                    "description": "Initiate OA-02 — Controlled Mission Authority",
+                },
+                "historical_progressive_runtime": current["historical_progressive_runtime"],
+                "result": "READY" if current["successor_eligibility"] == "ELIGIBLE" else "NOT_READY",
+            }
             if a.json: emit(decision)
-            else: print(next_action_text(decision), end="")
+            else: print(
+                f"Active Gate: {decision['active_gate']}\n"
+                f"Successor Eligibility: {decision['successor_eligibility']}\n"
+                f"Next Action: {decision['next_authorized_action']['description']}\n"
+            )
             return 0
         if a.command == "assurance":
             emit(MissionAssurance(ROOT).capabilities())

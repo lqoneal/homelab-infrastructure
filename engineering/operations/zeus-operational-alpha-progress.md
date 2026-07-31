@@ -64,7 +64,7 @@ Current Operational Alpha lifecycle:
 OA-01_IMPLEMENTATION_WOP=WOP-OA-01-IMPLEMENTATION-001@1
 OA-01_STATE=ACTIVE
 OA-01_EXECUTION_STATE=NOT_STARTED
-OA-02_AND_LATER=INELIGIBLE
+OA-02_AND_LATER=ELIGIBLE
 HISTORICAL_PROGRESSIVE_RUNTIME=EVIDENCE_ONLY
 LIVE_MISSION_COUNT=0
 DISPATCHER_STATE=CONVERGENCE_AUTHORITY
@@ -80,7 +80,10 @@ OA-01 bootstrap completion is evidenced by
 `VALIDATE_WOP`, `PREPARE_EXECUTION`, `EXECUTE_WORK`, and
 `VERIFY_COMPLETION` under the convergence authority chain. The lifecycle keys
 above remain the declared immutable-WOP projection; runtime completion is an
-authoritative execution record. OA-02 requires a separate authorized WOP.
+authoritative execution record. The published OA sequence identifies OA-02 —
+Controlled Mission Authority — as the next eligible gate. Its admission remains
+subject to its own mission records; historical Progressive state is evidence
+only and cannot select the next operational action.
 
 ## Backlog
 

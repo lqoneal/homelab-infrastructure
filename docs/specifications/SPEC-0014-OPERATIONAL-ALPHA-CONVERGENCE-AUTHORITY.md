@@ -225,6 +225,17 @@ its receipt; verifies digest/provenance/freshness; and on non-retryable failure
 quarantines the target and emits a discrepancy. Derived representations never
 write to authoritative facts.
 
+Synchronization is a continuous operational responsibility, not a closeout
+task. The synchronization owner evaluates source events immediately where an
+event contract exists and also performs scheduled checkpoint verification.
+Independent drift detection compares the authoritative repository source with
+runtime and generated projections even when synchronization reports success.
+It classifies a discrepancy by source, ownership, lifecycle impact, and
+recoverability; retains the comparison evidence; assigns reconciliation to the
+source owner; and invokes the Operator Resolution Protocol for a decision,
+protected-state, or unresolved conflict. Drift detection cannot repair or
+overwrite an authoritative fact.
+
 Generated artifacts are reproducible projections of authoritative metadata and
 embed source entities, metadata version, generator version, timestamp,
 synchronization status, and qualification status. Qualification consumes a

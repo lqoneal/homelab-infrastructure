@@ -388,14 +388,17 @@ Its lifecycle is `ACTIVE`; execution is `NOT_STARTED`. The immutable WOP
 declaration remains the current lifecycle projection; its completed operational
 execution is recorded by `MISSION-EXECUTION-a4a702e6-4944-5d67-b9b1-f423a691d344`
 and the OA-01 Mission Closeout Record. Historical Progressive runtime records
-and acceptance receipts remain evidence only. OA-01 bootstrap is complete;
-OA-02 remains subject to its own separately authorized admission.
+and acceptance receipts remain evidence only. OA-01 bootstrap is complete.
+The published Operational Alpha sequence identifies OA-02 — Controlled Mission
+Authority — as the next eligible gate. OA-02 still requires its own mission
+records before activation; that eligibility must be resolved from the current
+convergence projection, never from Progressive evidence.
 
 **Next Immediate Step:**
 
-Retain the OA-01 closeout evidence and use the published convergence runtime
-for subsequent, separately authorized Operational Alpha work. Do not infer
-OA-02 authority or alter the completed OA-01 evidence.
+Use the published convergence runtime to initiate OA-02 from the controlled
+Operational Alpha sequence. Create no OA-02 mission record until its admission
+procedure has resolved the required current authority and planning inputs.
 `GH-ZEUS-OA-CERTIFICATION-001` package remains suspended historical evidence.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
