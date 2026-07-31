@@ -1,6 +1,7 @@
 # Zeus Operational Alpha Roadmap
 
 Controlled ID: ZEUS-OA-ROADMAP-002
+Revision: 1.0
 Status: Controlled
 Supersedes execution sequencing in GH-ZEUS-OA-CERTIFICATION-001 without deleting historical evidence.
 

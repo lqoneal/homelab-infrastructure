@@ -1,9 +1,17 @@
 schema_version: 1
 emm_id: OPERATIONAL-ALPHA-EMM
-version: 1.8
+version: 2.0
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
 infrastructure_baseline_id: OA-INFRA-BASELINE-001
 authoritative_owner: Homelab Infrastructure
+roadmap_governance:
+  roadmap_authority_owner: Engineering Governance
+  roadmap_qualification_owner: PROC-0006
+  roadmap_drift_owner: EMM
+  roadmap_reconciliation_interface: scripts/lib/eos/mission_knowledge.py::roadmap_verification
+  work_initiation_consumer: PROC-0001
+  projection_consumer: zeus mission roadmap
+  duplicate_validation_prohibited: true
 entities:
   - entity_type: ArchitectureBaseline
     entity_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -318,11 +326,18 @@ entities:
     source_digest: 9444ce37a7a23f1195707158653b27a779556c159b50aed2f373cbdd01afedaf
   - entity_type: MissionKnowledgeModel
     entity_id: OPERATIONAL-ALPHA-MISSION-KNOWLEDGE
-    revision: 1.4
+    revision: 2.0
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/missions/operational-alpha-mission-knowledge.yaml
-    source_digest: a8db30dd38d3114a68fb33effa435fd3d1d139569b2ca7e51d87b7442cabbcea
+    source_digest: 052890dc8dbcccaae13f68ded05e61c289a8ac1ce592cb655bd848ce1b1abc18
+  - entity_type: MissionRoadmap
+    entity_id: ZEUS-OA-ROADMAP-002
+    revision: 1.0
+    authoritative_owner: Engineering Governance
+    classification: Authoritative
+    source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    source_digest: a4acba177c48ddba07f7280c37ff326a16c6768201d655a14056616f0aa0a00a
   - entity_type: ImplementationWOP
     entity_id: WOP-9ed7762f-c143-5a58-9a21-63fae5a06c05
     revision: 1

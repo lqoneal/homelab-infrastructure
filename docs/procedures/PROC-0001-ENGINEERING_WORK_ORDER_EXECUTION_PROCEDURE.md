@@ -698,7 +698,24 @@ reliability, and capability-growth deltas from the preceding mission.
 
 `engineering/missions/operational-alpha-mission-knowledge.yaml` is the sole authoritative Operational Alpha mission-knowledge source. It binds every mission to its controlled objective source, lifecycle, authority, capability prerequisites/outcomes, dependencies, eligibility, blockers, completion criteria, evidence, controlled-document, and runtime-state relationships. Zeus derives mission readiness, dependency graphs, and recommendations from this EMM-bound source and the Capability Registry; WOPs and derived views shall not maintain independent mission ordering or eligibility facts. Every closeout shall report the recommendation, rationale, prerequisite status, dependency summary, readiness assessment, and remaining milestones. Operational Autonomy reporting shall include reasoning responsibilities transferred to Zeus, reduction in manual operator and planning-agent decisions, recommendation accuracy, and automated eligibility/prerequisite results.
 
+The controlled roadmap is the authoritative planning fact for roadmap identity,
+revision, sequence, and objectives. EMM is the single owner of roadmap source
+binding, digest comparison, provenance reconciliation, and roadmap drift
+detection. PROC-0006 is the single owner of the qualification determination;
+Zeus may orchestrate and expose the result but cannot qualify the roadmap.
+Work Initiation consumes the EMM reconciliation and PROC-0006 result and shall
+not implement a second roadmap validator. A failed EMM reconciliation is
+fail-closed for mission admission until the roadmap owner publishes an
+authorized successor and the affected subject is requalified.
+
 ### Operator Capability Summary
+
+All Zeus controller examples and operator workflows shall use the shared
+controller interface standard: default output is a concise operator summary,
+`--verify` is deterministic machine-verifiable output, and `--json` is
+structured output only when explicitly requested. Work Initiation and
+qualification consume the controller's authoritative result and shall not
+parse default presentation text or implement a second renderer.
 
 Every Operational Alpha mission closeout shall include an **Operator Capability
 Summary**, generated from the mission's Capability Qualification Report and
@@ -1225,6 +1242,8 @@ This procedure is complete when every implementation agent can execute an Active
 | 2.5 | 2026-07-31 | Added the derived Operator Capability Summary requirement. |
 | 2.6 | 2026-07-31 | Established the EMM-bound Capability Registry as the sole capability inventory and required registry-backed autonomy metrics at closeout. |
 | 2.7 | 2026-07-31 | Established the EMM-bound Mission Knowledge Model as the sole Operational Alpha mission-reasoning source and required recommendation/readiness/autonomy reporting at closeout. |
+| 2.8 | 2026-07-31 | Reconciled roadmap governance: EMM owns roadmap binding and drift reconciliation, PROC-0006 owns qualification determination, and Work Initiation consumes both without duplicate validation. |
+| 2.9 | 2026-07-31 | Standardized Zeus controller presentation: operator-readable default, explicit deterministic verification, explicit structured output, and one shared presentation layer. |
 | 1.5 | 2026-07-15 | Established Commit Reconstruction Planning, approved reconstruction methods, execution gates, persistent planning artifacts, and proportional planning governance. |
 | 1.6 | 2026-07-17 | Added the Mission Classification Gate, risk-proportional Category A/B/C initiation, exact Completion Report standard, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
 | 1.7 | 2026-07-17 | Required repository-governed Codex missions to launch through `engctl codex`, added initiation-time bypass detection and exception controls, and defined the mandatory notification lifecycle under EWO-000019. |

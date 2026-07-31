@@ -678,6 +678,12 @@ result, and missing or stale authority evidence shall fail closed.
 
 ## 15. Completion Criteria
 
+Qualification evidence for a Zeus controller shall exercise the shared
+presentation contract where applicable: the default operator view, explicit
+`--verify` deterministic result, and explicit `--json` structured result must
+consume the same authoritative state. Presentation differences are not
+qualification authority and shall not create duplicate validation logic.
+
 Qualification is operationally complete when the nine stages are accounted
 for; the subject, authority, evidence, findings, remediation, result,
 recommendation, routing, and state domains reconstruct deterministically; the

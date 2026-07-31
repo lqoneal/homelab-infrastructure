@@ -1,15 +1,26 @@
 schema_version: 1
 model_id: OPERATIONAL-ALPHA-MISSION-KNOWLEDGE
-revision: 1.4
+revision: 2.0
 classification: Authoritative
 authoritative_owner: Engineering Governance
 purpose: Canonical EMM-bound mission knowledge for Operational Alpha lifecycle reasoning.
-mission_sequence: [OA-01, OA-02, OA-03, OA-04, OA-05, OA-06, OA-07, OA-08, OA-09, OA-10]
+mission_sequence: [OA-01, OA-02, OA-03, OA-04, OA-05, OA-06, OA-07, OA-08, OA-09, OA-10, OA-11, OA-12, OA-13, OA-14, OA-15, OA-16, OA-17, OA-18, OA-19, OA-20, OA-21, OA-22, OA-23, OA-24, OA-25, OA-26, OA-27, OA-28, OA-29, OA-30]
+roadmap_provenance:
+  controlled_id: ZEUS-OA-ROADMAP-002
+  revision: 1.0
+  digest_algorithm: SHA-256
+  digest: a4acba177c48ddba07f7280c37ff326a16c6768201d655a14056616f0aa0a00a
+  source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+  derivation_chain: [ARCH-0001, ADR-0001, SPEC-0002, ZEUS-OA-ROADMAP-002, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, zeus mission roadmap]
+  derivation_rule: Every mission objective and sequence position is copied from the controlled roadmap; lifecycle, dependencies, and projections are model-owned derived state.
 missions:
   - mission_id: OA-01
     lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-01/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-01
+    roadmap_objective: Prove that Zeus operates from one identified, synchronized, integrity-valid repository and qualified baseline.
     capability_prerequisites: []
     capability_outcomes: [ZEUS-OA-CAP-001, ZEUS-OA-CAP-002]
     dependencies: []
@@ -23,6 +34,9 @@ missions:
     lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-02/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-02
+    roadmap_objective: Prove that no mission may execute without valid, current, discoverable authority.
     capability_prerequisites: [ZEUS-OA-CAP-001]
     capability_outcomes: [ZEUS-OA-CAP-001]
     dependencies: [OA-01]
@@ -36,6 +50,9 @@ missions:
     lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-03/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-03
+    roadmap_objective: Prove deterministic discovery of exactly one applicable Mission Contract.
     capability_prerequisites: [ZEUS-OA-CAP-001]
     capability_outcomes: [ZEUS-OA-CAP-003]
     dependencies: [OA-02]
@@ -49,6 +66,9 @@ missions:
     lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-04/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-04
+    roadmap_objective: Prove repository-only reconstruction of current project, phase, work, authority, and runtime context.
     capability_prerequisites: [ZEUS-OA-CAP-001, ZEUS-OA-CAP-003]
     capability_outcomes: [ZEUS-OA-CAP-002]
     dependencies: [OA-03]
@@ -62,6 +82,9 @@ missions:
     lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-05/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-05
+    roadmap_objective: Prove candidate missions are staged with stable identity, objective, scope, dependencies, priority, and state.
     capability_prerequisites: [ZEUS-OA-CAP-001, ZEUS-OA-CAP-002, ZEUS-OA-CAP-003]
     capability_outcomes: [ZEUS-OA-CAP-004]
     dependencies: [OA-04]
@@ -75,6 +98,9 @@ missions:
     lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-06/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-06
+    roadmap_objective: Prove deterministic classification of eligible, blocked, deferred, and ineligible missions.
     capability_prerequisites: [ZEUS-OA-CAP-001, ZEUS-OA-CAP-002, ZEUS-OA-CAP-003, ZEUS-OA-CAP-004]
     capability_outcomes: [ZEUS-OA-CAP-005]
     dependencies: [OA-05]
@@ -88,6 +114,9 @@ missions:
     lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-07/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-07
+    roadmap_objective: Prove Zeus selects only an eligible staged mission according to controlled priority and policy.
     capability_prerequisites: [ZEUS-OA-CAP-005]
     capability_outcomes: [ZEUS-OA-CAP-006]
     dependencies: [OA-06]
@@ -101,6 +130,9 @@ missions:
     lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-08/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-08
+    roadmap_objective: Prove deterministic resolution of the selected mission to one immutable WOP.
     capability_prerequisites: [ZEUS-OA-CAP-006]
     capability_outcomes: [ZEUS-OA-CAP-007]
     dependencies: [OA-07]
@@ -114,6 +146,9 @@ missions:
     lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-09/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-09
+    roadmap_objective: Prove package integrity, schema validity, admission evaluation, and fail-closed rejection.
     capability_prerequisites: [ZEUS-OA-CAP-007]
     capability_outcomes: [ZEUS-OA-CAP-008]
     dependencies: [OA-08]
@@ -127,6 +162,9 @@ missions:
     lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-10/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-10
+    roadmap_objective: Prove bounded execution context, principal identity, authority lease, expiry, and revocation behavior.
     capability_prerequisites: [ZEUS-OA-CAP-008]
     capability_outcomes: [ZEUS-OA-CAP-009]
     dependencies: [OA-09]
@@ -134,6 +172,326 @@ missions:
     blocking_conditions: []
     completion_criteria: [bounded_execution_context_and_lease_qualified]
     evidence_relationships: [engineering/evidence/2026-07-31-wop-oa-10-execution-001/]
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-11
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-11/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-11
+    roadmap_objective: Prove integrity-bound qualification and repository-preserving registration of execution agents.
+    capability_prerequisites: [ZEUS-OA-CAP-010]
+    capability_outcomes: [ZEUS-OA-CAP-011]
+    dependencies: [OA-10]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-12
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-12/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-12
+    roadmap_objective: Prove Zeus selects only an agent qualified for repository, mission class, tools, and execution profile.
+    capability_prerequisites: [ZEUS-OA-CAP-011]
+    capability_outcomes: [ZEUS-OA-CAP-012]
+    dependencies: [OA-11]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-13
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-13/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-13
+    roadmap_objective: Prove deterministic creation of a dispatch candidate without beginning execution.
+    capability_prerequisites: [ZEUS-OA-CAP-012]
+    capability_outcomes: [ZEUS-OA-CAP-013]
+    dependencies: [OA-12]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-14
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-14/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-14
+    roadmap_objective: Prove explicit authorization, rejection, expiration, and replay-safe dispatch authorization receipts.
+    capability_prerequisites: [ZEUS-OA-CAP-013]
+    capability_outcomes: [ZEUS-OA-CAP-014]
+    dependencies: [OA-13]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-15
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-15/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-15
+    roadmap_objective: Prove Zeus dispatches the admitted WOP to the selected qualified agent exactly once.
+    capability_prerequisites: [ZEUS-OA-CAP-014]
+    capability_outcomes: [ZEUS-OA-CAP-015]
+    dependencies: [OA-14]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-16
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-16/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-16
+    roadmap_objective: Prove durable execution-start state and EENS lifecycle notification.
+    capability_prerequisites: [ZEUS-OA-CAP-015]
+    capability_outcomes: [ZEUS-OA-CAP-016]
+    dependencies: [OA-15]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-17
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-17/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-17
+    roadmap_objective: Prove Zeus observes progress, handoffs, checkpoints, and failures through EENS.
+    capability_prerequisites: [ZEUS-OA-CAP-016]
+    capability_outcomes: [ZEUS-OA-CAP-017]
+    dependencies: [OA-16]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-18
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-18/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-18
+    roadmap_objective: Prove protected actions pause for valid operator approval and cannot bypass the approval boundary.
+    capability_prerequisites: [ZEUS-OA-CAP-017]
+    capability_outcomes: [ZEUS-OA-CAP-018]
+    dependencies: [OA-17]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-19
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-19/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-19
+    roadmap_objective: Prove append-only capture of commands, outputs, state, timestamps, identities, checksums, and completion markers.
+    capability_prerequisites: [ZEUS-OA-CAP-018]
+    capability_outcomes: [ZEUS-OA-CAP-019]
+    dependencies: [OA-18]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-20
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-20/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-20
+    roadmap_objective: Prove evidence binding to repository commit, authority, mission, WOP, execution, gate, and agent.
+    capability_prerequisites: [ZEUS-OA-CAP-019]
+    capability_outcomes: [ZEUS-OA-CAP-020]
+    dependencies: [OA-19]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-21
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-21/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-21
+    roadmap_objective: Prove a qualifier independent of the execution agent evaluates implementation and evidence.
+    capability_prerequisites: [ZEUS-OA-CAP-020]
+    capability_outcomes: [ZEUS-OA-CAP-021]
+    dependencies: [OA-20]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-22
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-22/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-22
+    roadmap_objective: Prove fail-closed handling and bounded generation of separately authorized corrective work.
+    capability_prerequisites: [ZEUS-OA-CAP-021]
+    capability_outcomes: [ZEUS-OA-CAP-022]
+    dependencies: [OA-21]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-23
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-23/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-23
+    roadmap_objective: Prove durable pause behavior without inferred completion or duplicated effects.
+    capability_prerequisites: [ZEUS-OA-CAP-022]
+    capability_outcomes: [ZEUS-OA-CAP-023]
+    dependencies: [OA-22]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-24
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-24/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-24
+    roadmap_objective: Prove reconstruction from durable state and continuation from the first incomplete operation.
+    capability_prerequisites: [ZEUS-OA-CAP-023]
+    capability_outcomes: [ZEUS-OA-CAP-024]
+    dependencies: [OA-23]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-25
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-25/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-25
+    roadmap_objective: Prove reconciliation of Zeus, EMP, PMCT, EENS, Project State, Work Registry, EOS, and controlled records.
+    capability_prerequisites: [ZEUS-OA-CAP-024]
+    capability_outcomes: [ZEUS-OA-CAP-025]
+    dependencies: [OA-24]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-26
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-26/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-26
+    roadmap_objective: Prove mission implementation completion is evidence-calculated and distinct from acceptance.
+    capability_prerequisites: [ZEUS-OA-CAP-025]
+    capability_outcomes: [ZEUS-OA-CAP-026]
+    dependencies: [OA-25]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-27
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-27/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-27
+    roadmap_objective: Prove explicit acceptance or rejection bound to the exact qualified result and evidence manifest.
+    capability_prerequisites: [ZEUS-OA-CAP-026]
+    capability_outcomes: [ZEUS-OA-CAP-027]
+    dependencies: [OA-26]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-28
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-28/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-28
+    roadmap_objective: Prove completion reporting, final reconciliation, execution closure, and removal from active work.
+    capability_prerequisites: [ZEUS-OA-CAP-027]
+    capability_outcomes: [ZEUS-OA-CAP-028]
+    dependencies: [OA-27]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-29
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-29/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-29
+    roadmap_objective: Prove the complete lifecycle using a bounded representative mission from staging through accepted closeout.
+    capability_prerequisites: [ZEUS-OA-CAP-028]
+    capability_outcomes: [ZEUS-OA-CAP-029]
+    dependencies: [OA-28]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
+    controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
+    runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
+  - mission_id: OA-30
+    lifecycle: STAGED
+    authority: MANUAL_GOVERNANCE_WOP
+    objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-30/objective.yaml
+    roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
+    roadmap_entry: OA-30
+    roadmap_objective: Prove OA-01 through OA-29 remain valid, produce a candidate baseline, and prepare separately authorized declaration and freeze.
+    capability_prerequisites: [ZEUS-OA-CAP-029]
+    capability_outcomes: [ZEUS-OA-CAP-030]
+    dependencies: [OA-29]
+    eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
+    blocking_conditions: []
+    completion_criteria: [gate_objective_qualified]
+    evidence_relationships: []
     controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
     runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
 generation:

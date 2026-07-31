@@ -50,6 +50,7 @@ from scripts.lib.emp.project_operational_context import ContextReconstructionErr
 from scripts.lib.emp.oa05_implementation import OA05ImplementationError, qualify as qualify_oa05_implementation  # noqa: E402
 from scripts.lib.emp.oa05_gate_verification import OA05GateVerificationError  # noqa: E402
 from scripts.lib.emp.mission_eligibility import MissionEligibilityError, evaluate_file as evaluate_eligibility  # noqa: E402
+from scripts.lib.emp.controller_presentation import emit as emit_controller  # noqa: E402
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -236,13 +237,15 @@ def main(argv=None):
     capability.add_argument("action", choices=("list", "show", "verify", "history", "diff"))
     capability.add_argument("identifier", nargs="?")
     capability.add_argument("other", nargs="?")
+    capability.add_argument("--json", action="store_true")
+    capability.add_argument("--verify", action="store_true")
     state_view = sub.add_parser("state")
     health_view = sub.add_parser("health")
     intro = sub.add_parser("intro", help="review operator orientation")
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
     submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository"); submit.add_argument("--baseline"); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append"); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact"); submit.add_argument("--affected-repository", action="append"); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
-    show = sub.add_parser("mission"); show.add_argument("action", choices=("list","show","state","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependency-graph","portfolio","queue","health")); show.add_argument("mission_id", nargs="?")
+    show = sub.add_parser("mission"); show.add_argument("action", choices=("list","show","state","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependency-graph","portfolio","queue","health","roadmap")); show.add_argument("mission_id", nargs="?"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true")
     assurance = sub.add_parser("assurance"); assurance.add_argument("action", choices=("capabilities",))
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
     accept=sub.add_parser("accept"); accept.add_argument("gate"); accept.add_argument("--reject", action="store_true"); accept.add_argument("--rationale", default=""); accept.add_argument("--at"); accept.add_argument("--yes", action="store_true"); accept.add_argument("--json", action="store_true")
@@ -265,8 +268,8 @@ def main(argv=None):
     admit_mission=sub.add_parser("admit-mission"); admit_mission.add_argument("action", choices=("start","resume","status")); admit_mission.add_argument("--admission-id"); admit_mission.add_argument("--mode", choices=("qualification","operational")); admit_mission.add_argument("--intent"); admit_mission.add_argument("--mission"); admit_mission.add_argument("--phase"); admit_mission.add_argument("--work-item"); admit_mission.add_argument("--principal"); admit_mission.add_argument("--submitter"); admit_mission.add_argument("--repository", default=str(ROOT)); admit_mission.add_argument("--at"); admit_mission.add_argument("--max-stages", type=int); admit_mission.add_argument("--wop"); admit_mission.add_argument("--revision", default="1"); admit_mission.add_argument("--authority-record"); admit_mission.add_argument("--correlation-id", default="zeus-mission-admission")
     execute_mission=sub.add_parser("execute-mission"); execute_mission.add_argument("action", choices=("start","resume","status","suspend","cancel")); execute_mission.add_argument("--admission-id"); execute_mission.add_argument("--execution-id"); execute_mission.add_argument("--reason", default="OPERATOR"); execute_mission.add_argument("--at"); execute_mission.add_argument("--max-gates", type=int); execute_mission.add_argument("--wop"); execute_mission.add_argument("--revision", default="1"); execute_mission.add_argument("--authority-record"); execute_mission.add_argument("--correlation-id", default="zeus-mission-execution")
     dispatcher=sub.add_parser("dispatcher"); dispatcher.add_argument("action", choices=("status","agents","assignment","execution","eens","evidence","reconciliation")); dispatcher.add_argument("--identifier")
-    dispatch=sub.add_parser("dispatch"); dispatch.add_argument("action", choices=("verify",))
-    orchestrate=sub.add_parser("orchestrate"); orchestrate.add_argument("action", choices=("verify",))
+    dispatch=sub.add_parser("dispatch"); dispatch.add_argument("action", choices=("status", "verify")); dispatch.add_argument("--json", action="store_true")
+    orchestrate=sub.add_parser("orchestrate"); orchestrate.add_argument("action", choices=("status", "verify")); orchestrate.add_argument("--json", action="store_true")
     agent=sub.add_parser("agent"); agent.add_argument("action", choices=("list","registry","status","qualify","revoke")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--json", action="store_true")
     gate=sub.add_parser("gate"); gate.add_argument("action", choices=("show", "objective", "evidence", "receipt", "carry-forward", "validate-carry-forward")); gate.add_argument("gate_id")
     next_action=sub.add_parser("next-action"); next_action.add_argument("--json", action="store_true")
@@ -350,23 +353,29 @@ def main(argv=None):
         if a.command == "assurance":
             emit(MissionAssurance(ROOT).capabilities())
             return 0
-        if a.command == "mission" and a.action in ("portfolio", "list", "queue", "health"):
+        if a.command == "mission" and a.action in ("portfolio", "list", "queue", "health", "roadmap"):
             if a.action in ("portfolio", "list"):
                 value = mission_knowledge.portfolio(ROOT) if a.action == "portfolio" else mission_knowledge.list_missions(ROOT)
+            elif a.action == "roadmap":
+                value = mission_knowledge.roadmap_verification(ROOT) if a.verify else mission_knowledge.roadmap(ROOT)
             elif a.action == "queue":
                 value = mission_knowledge.queue(ROOT)
             else:
                 value = mission_knowledge.health(ROOT)
-            emit(value)
+            emit_controller(value, json_mode=a.json, verify=a.verify, title=f"Mission {a.action}")
             return 0 if value.get("result", "PASS") in ("PASS", "NO_ELIGIBLE_MISSION") else 77
         if a.command == "dispatch":
             value = mission_knowledge.dispatch_verification(ROOT)
-            emit(value)
+            emit_controller(value, json_mode=a.json, verify=a.action == "verify", title="Dispatch")
             return 0 if value.get("result") == "PASS" else 77
         if a.command == "orchestrate":
             value = mission_knowledge.orchestration_verification(ROOT)
-            emit(value)
+            emit_controller(value, json_mode=a.json, verify=a.action == "verify", title="Orchestration")
             return 0 if value.get("result") == "PASS" else 77
+        if a.command == "mission" and a.action == "blockers" and a.mission_id and a.mission_id.upper().startswith("OA-"):
+            value = mission_knowledge.blockers(ROOT, a.mission_id.upper())
+            emit_controller(value, json_mode=a.json, verify=a.verify, title="Mission blockers")
+            return 0 if value.get("result") in ("PASS", "BLOCKED") else 77
         if a.command == "mission" and (
             a.action in {
                 "state", "eligibility", "blockers",
@@ -386,7 +395,8 @@ def main(argv=None):
                 }
             )
         ):
-            emit(OA01MissionVerification(ROOT).command(a.action, a.mission_id))
+            value = OA01MissionVerification(ROOT).command(a.action, a.mission_id)
+            emit_controller(value, json_mode=a.json, verify=a.verify, title=f"Mission {a.action}")
             return 0
         if a.command == "explain" and a.subject.upper().startswith("OA-"):
             emit(progressive_oa.explain(ROOT, a.subject))
@@ -417,7 +427,7 @@ def main(argv=None):
             else:
                 if not a.identifier or not a.other: raise OrchestrationError("two registry revisions are required")
                 value = capability_registry.diff(ROOT, a.identifier, a.other)
-            emit(value)
+            emit_controller(value, json_mode=a.json, verify=a.verify, title=f"Capability {a.action}")
             return 0 if value.get("result", "PASS") in ("PASS", "NO_DIFFERENCE", "NO_ELIGIBLE_MISSION") else 77
         if a.command == "mission" and a.action in ("recommend", "explain", "readiness", "prerequisites", "dependency-graph"):
             if a.action == "recommend": value = mission_knowledge.recommend(ROOT)
@@ -425,7 +435,7 @@ def main(argv=None):
             else:
                 if not a.mission_id: raise OrchestrationError("mission identifier is required")
                 value = getattr(mission_knowledge, a.action.replace("-", "_"))(ROOT, a.mission_id)
-            emit(value)
+            emit_controller(value, json_mode=a.json, verify=a.verify, title=f"Mission {a.action}")
             return 0 if value.get("result", "PASS") in ("PASS", "NO_DIFFERENCE", "NO_ELIGIBLE_MISSION") else 77
         if a.command == "lifecycle":
             receipt = ConvergenceRuntime(ROOT).resolve(

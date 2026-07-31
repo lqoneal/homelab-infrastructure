@@ -10,6 +10,7 @@ import yaml
 from scripts.lib.eos import capability_registry
 
 PATH = "engineering/missions/operational-alpha-mission-knowledge.yaml"
+ROADMAP_PATH = "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md"
 
 class MissionKnowledgeError(ValueError): pass
 
@@ -28,7 +29,53 @@ def load(root: Path | str) -> dict[str, Any]:
         entity = ConvergenceRuntime(root)._entity("MissionKnowledgeModel", value["model_id"], value["revision"])
         ConvergenceRuntime(root)._source(entity); capability_registry.load(root)
     except (ConvergenceRuntimeError, capability_registry.CapabilityRegistryError) as error: raise MissionKnowledgeError(str(error)) from error
+    roadmap = authoritative_roadmap(root)
+    if value.get("roadmap_provenance", {}).get("controlled_id") != roadmap["controlled_id"]:
+        raise MissionKnowledgeError("MISSION_KNOWLEDGE_ROADMAP_BINDING_INVALID")
+    for item in value["missions"]:
+        source = item.get("roadmap_source")
+        if source and (source != ROADMAP_PATH or roadmap["objectives"].get(item.get("mission_id")) != item.get("roadmap_objective")):
+            raise MissionKnowledgeError("MISSION_KNOWLEDGE_ROADMAP_DIVERGED")
     return value
+
+def authoritative_roadmap(root: Path | str) -> dict[str, Any]:
+    """Resolve the EMM-bound roadmap source; this is not projection state."""
+    path = Path(root) / ROADMAP_PATH
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError as error:
+        raise MissionKnowledgeError(f"ROADMAP_UNAVAILABLE: {error}") from error
+    objectives: dict[str, str] = {}
+    revision = next((line.split(":", 1)[1].strip() for line in lines if line.startswith("Revision:")), None)
+    for line in lines:
+        if not line.startswith("| OA-"):
+            continue
+        fields = [field.strip() for field in line.split("|")[1:-1]]
+        if len(fields) == 3 and fields[0].startswith("OA-"):
+            objectives[fields[0]] = fields[1]
+    if list(objectives) != [f"OA-{index:02d}" for index in range(1, 31)]:
+        raise MissionKnowledgeError("ROADMAP_SEQUENCE_INVALID")
+    if not revision:
+        raise MissionKnowledgeError("ROADMAP_REVISION_MISSING")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    return {"controlled_id": "ZEUS-OA-ROADMAP-002", "revision": revision,
+            "source": ROADMAP_PATH, "digest": digest, "objectives": objectives}
+
+
+def _emm_roadmap_binding(root: Path | str, roadmap: dict[str, Any]) -> dict[str, Any]:
+    """Resolve the roadmap entity through EMM before evaluating drift."""
+    from scripts.lib.eos.convergence_runtime import ConvergenceRuntime, ConvergenceRuntimeError
+
+    try:
+        entity = ConvergenceRuntime(Path(root))._entity(
+            "MissionRoadmap", roadmap["controlled_id"], roadmap["revision"]
+        )
+        source, source_digest = ConvergenceRuntime(Path(root))._source(entity)
+    except ConvergenceRuntimeError as error:
+        raise MissionKnowledgeError(f"ROADMAP_EMM_BINDING_INVALID: {error}") from error
+    if source.as_posix() != (Path(root).resolve() / ROADMAP_PATH).as_posix() or source_digest != roadmap["digest"]:
+        raise MissionKnowledgeError("ROADMAP_EMM_SOURCE_DRIFT")
+    return entity
 
 def _missions(root: Path | str):
     value = load(root); by_id = {item["mission_id"]: item for item in value["missions"]}
@@ -56,6 +103,18 @@ def explain(root: Path | str, mission_id: str) -> dict[str, Any]:
 
 def prerequisites(root: Path | str, mission_id: str) -> dict[str, Any]:
     result = readiness(root, mission_id); return {key: result[key] for key in ("mission_id", "dependencies", "missing_dependencies", "prerequisite_capabilities", "missing_capabilities", "blocking_conditions", "authoritative_evidence")}
+
+def blockers(root: Path | str, mission_id: str) -> dict[str, Any]:
+    """Resolve blockers for the requested mission, never an implicit OA-01."""
+    result = readiness(root, mission_id)
+    return {
+        "mission_id": mission_id,
+        "blocking_conditions": result["blocking_conditions"],
+        "missing_capabilities": result["missing_capabilities"],
+        "missing_dependencies": result["missing_dependencies"],
+        "result": "PASS" if not result["blocking_conditions"] else "BLOCKED",
+        "authoritative_evidence": result["authoritative_evidence"],
+    }
 
 def dependency_graph(root: Path | str) -> dict[str, Any]:
     value, by_id, _ = _missions(root); return {"model_id": value["model_id"], "nodes": value["mission_sequence"], "edges": [{"from": dep, "to": mission_id} for mission_id, item in by_id.items() for dep in item["dependencies"]], "result": "PASS"}
@@ -102,6 +161,68 @@ def list_missions(root: Path | str) -> dict[str, Any]:
     return {"result": result["result"], "model_id": result["model_id"],
             "revision": result["revision"], "missions": result["missions"],
             "authoritative_source": result["authoritative_source"]}
+
+def roadmap(root: Path | str) -> dict[str, Any]:
+    """Return a read-only roadmap projection derived exclusively from the Mission Knowledge Model."""
+    value, by_id, _ = _missions(root)
+    source = value["roadmap_provenance"]["source"]
+    controlled = authoritative_roadmap(root)
+    recommended_mission = recommend(root)["recommended_mission"]
+    entries = []
+    for mission_id in value["mission_sequence"]:
+        mission = by_id[mission_id]
+        readiness_result = readiness(root, mission_id)
+        entries.append({
+            "mission_id": mission_id,
+            "lifecycle": mission["lifecycle"],
+            "classification": _classification(mission, readiness_result),
+            "recommendation": mission_id == recommended_mission,
+            "objective": mission["roadmap_objective"],
+            "source_entry": mission["roadmap_entry"],
+            "objective_source": mission["objective_source"],
+            "dependencies": mission["dependencies"],
+            "provenance": value["roadmap_provenance"]["derivation_chain"],
+        })
+    verified = roadmap_verification(root)
+    return {
+        "result": "PASS",
+        "roadmap_id": controlled["controlled_id"],
+        "model_id": value["model_id"],
+        "revision": str(value["revision"]),
+        "source": source,
+        "roadmap_revision": controlled["revision"],
+        "roadmap_digest": controlled["digest"],
+        "mission_knowledge_revision": str(value["revision"]),
+        "provenance_verification": verified,
+        "derivation": "Mission Knowledge Model read-only projection",
+        "authority_chain": value["roadmap_provenance"]["derivation_chain"],
+        "missions": entries,
+    }
+
+def roadmap_verification(root: Path | str) -> dict[str, Any]:
+    """Run the single EMM reconciliation check for roadmap provenance and drift."""
+    value = load(root)
+    controlled = authoritative_roadmap(root)
+    entity = _emm_roadmap_binding(root, controlled)
+    mismatches = []
+    if str(value["roadmap_provenance"].get("revision")) != str(controlled["revision"]):
+        mismatches.append("ROADMAP_REVISION_MISMATCH")
+    if value["roadmap_provenance"].get("digest") != controlled["digest"]:
+        mismatches.append("ROADMAP_DIGEST_MISMATCH")
+    if value["mission_sequence"] != list(controlled["objectives"]):
+        mismatches.append("ROADMAP_SEQUENCE_MISMATCH")
+    for mission in value["missions"]:
+        mission_id = mission.get("mission_id")
+        if mission.get("roadmap_source") != ROADMAP_PATH or mission.get("roadmap_entry") != mission_id:
+            mismatches.append(f"{mission_id}:ROADMAP_PROVENANCE_MISMATCH")
+        if mission.get("roadmap_objective") != controlled["objectives"].get(mission_id):
+            mismatches.append(f"{mission_id}:ROADMAP_OBJECTIVE_MISMATCH")
+    return {"result": "PASS" if not mismatches else "FAIL", "mismatches": mismatches,
+            "roadmap_id": controlled["controlled_id"], "roadmap_revision": controlled["revision"],
+            "roadmap_digest": controlled["digest"], "mission_knowledge_revision": str(value["revision"]),
+            "emm_entity_revision": str(entity.get("revision")),
+            "drift_owner": "EMM",
+            "qualification_owner": "PROC-0006"}
 
 def queue(root: Path | str) -> dict[str, Any]:
     result = portfolio(root)
