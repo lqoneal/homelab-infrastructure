@@ -384,17 +384,18 @@ OPERATIONAL ALPHA IMPLEMENTATION by `WOP-RUNTIME-CERTIFICATION-002`.
 The current OA-01 implementation record is
 `WOP-OA-01-IMPLEMENTATION-001@1`, bound to
 `OA-IMPLEMENTATION-BASELINE-1.0` at `5706307c1fdf9d4e0601c9cc578181f6d916e0a8`.
-Its lifecycle is `ACTIVE`; execution is `NOT_STARTED`. Historical Progressive
-runtime records and acceptance receipts remain evidence only. OA-02 and later
-are ineligible. No execution agent was dispatched, no mission was executed,
-and Operational Alpha remains incomplete.
+Its lifecycle is `ACTIVE`; execution is `NOT_STARTED`. The immutable WOP
+declaration remains the current lifecycle projection; its completed operational
+execution is recorded by `MISSION-EXECUTION-a4a702e6-4944-5d67-b9b1-f423a691d344`
+and the OA-01 Mission Closeout Record. Historical Progressive runtime records
+and acceptance receipts remain evidence only. OA-01 bootstrap is complete;
+OA-02 remains subject to its own separately authorized admission.
 
 **Next Immediate Step:**
 
-Do not create an Authority Record, Operational Gate Plan, or activation for
-`WOP-OA-01-IMPLEMENTATION-001` until separately authorized. Do not submit a
-live mission, dispatch, execute, accept any OA gate, or declare Operational
-Alpha.
+Retain the OA-01 closeout evidence and use the published convergence runtime
+for subsequent, separately authorized Operational Alpha work. Do not infer
+OA-02 authority or alter the completed OA-01 evidence.
 `GH-ZEUS-OA-CERTIFICATION-001` package remains suspended historical evidence.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
