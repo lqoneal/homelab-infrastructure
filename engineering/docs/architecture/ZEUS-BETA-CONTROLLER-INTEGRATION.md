@@ -80,3 +80,13 @@ metrics are not stored as authority and cannot repair a source conflict.
 The published BETA-00 assessment and roadmap identify `ZDCL-01` as the first
 implementation candidate. The controller reports that recommendation as a
 projection only; a separately authorized and resolved WOP remains required.
+
+## Mission-oriented WOP submission
+
+`zeus mission submit <MISSION_ID>` is the single high-level submission
+workflow. It resolves a Beta mission, searches deterministic canonical WOP
+locations, and delegates an existing qualified package to the Stage 1 runtime.
+It never fabricates a package or approval. When the roadmap's approved WOP
+contract is not published, it returns `WOP_PACKAGE_UNAVAILABLE` and the exact
+required action. `zeus submit <WOP_PACKAGE>` remains the lower-level
+compatibility path; admission and execution remain separate protected steps.

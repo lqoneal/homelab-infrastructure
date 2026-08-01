@@ -51,6 +51,17 @@ separate contracts.
 
 ## Stage 1 mission submission
 
+For normal Beta operation, submit by the canonical mission ID:
+
+```text
+zeus mission submit ZDCL-01
+```
+
+Zeus resolves the Beta mission and reuses its authoritative qualified WOP
+package when one is published. If the package or its authority is missing,
+the command fails closed and states the exact required action. It does not
+invent a package, approve work, admit execution, or bypass the queue.
+
 Operators submit a WOP package through `zeus submit PATH`. `PATH` may be a
 directory or a `.tar.gz`/`.tgz` archive. Zeus safely opens the package, verifies
 its bootstrap, roadmap, mission metadata, gates, manifests, declared execution
