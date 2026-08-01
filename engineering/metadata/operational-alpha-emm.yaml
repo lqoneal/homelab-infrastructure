@@ -1,6 +1,6 @@
 schema_version: 1
 emm_id: OPERATIONAL-ALPHA-EMM
-version: 2.3
+version: 2.4
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
 infrastructure_baseline_id: OA-INFRA-BASELINE-001
 authoritative_owner: Homelab Infrastructure
@@ -12,6 +12,15 @@ roadmap_governance:
   work_initiation_consumer: PROC-0001
   projection_consumer: zeus mission roadmap
   duplicate_validation_prohibited: true
+milestone_catalog:
+  authoritative_owner: Engineering Governance
+  supersession_rule: Append-only immutable milestone records; later qualified records supersede without overwriting history.
+  current_milestone:
+    milestone_id: OA-OPERATIONAL-MILESTONE-001
+    revision: 1.0
+    source: engineering/registry/milestones/OA-OPERATIONAL-MILESTONE-001.yaml
+    published_commit: e24ff1db716b2ad30c9e8fd22e7a116c47f0148c
+    mission_boundary: OA-01 through OA-14 complete; OA-15 current
 entities:
   - entity_type: ArchitectureBaseline
     entity_id: OA-IMPLEMENTATION-BASELINE-1.0
