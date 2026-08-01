@@ -12,12 +12,19 @@ No ZDCL runtime implementation is included.
 
    `zeus mission submit ZDCL-01`
 
-2. Record and verify the returned `submission_id`, `wop_id`, `package`, and
-   `package_digest` in the result.
+2. Capture and verify the returned submission record:
+
+   `SUBMISSION_JSON="$(zeus mission submit ZDCL-01 --json)"`
+
+   `printf '%s\n' "$SUBMISSION_JSON"`
 
 3. Inspect the staged queue entry:
 
-   `zeus mission queue show ZDCL-01`
+   `zeus list`
+
+   `zeus show ZDCL-01`
+
+   `zeus status`
 
 4. Inspect readiness and blockers:
 
@@ -27,21 +34,29 @@ No ZDCL runtime implementation is included.
 
 5. Admission is separate and explicit:
 
-   `zeus admit-mission start --mode qualification --mission ZDCL-01 --wop WOP-ZDCL-01-FOUNDATION-001 --submitter operator --principal operator`
+   `ADMISSION_JSON="$(zeus admit-mission start --mode qualification --mission ZDCL-01 --wop WOP-ZDCL-01-FOUNDATION-001 --submitter loneal --principal loneal)"`
+
+   `printf '%s\n' "$ADMISSION_JSON"`
+
+   `ADMISSION_ID="$(printf '%s' "$ADMISSION_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin)["admission_id"])')"`
 
 6. Start execution only after admission succeeds:
 
-   `zeus execute-mission start --admission-id <ADMISSION_ID>`
+   `EXECUTION_JSON="$(zeus execute-mission start --admission-id "$ADMISSION_ID")"`
+
+   `printf '%s\n' "$EXECUTION_JSON"`
+
+   `EXECUTION_ID="$(printf '%s' "$EXECUTION_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin)["execution_id"])')"`
 
 7. Inspect status:
 
-   `zeus admit-mission status --admission-id <ADMISSION_ID>`
+   `zeus admit-mission status --admission-id "$ADMISSION_ID"`
 
-   `zeus execute-mission status --execution-id <EXECUTION_ID>`
+   `zeus execute-mission status --execution-id "$EXECUTION_ID"`
 
 8. Resume after interruption:
 
-   `zeus execute-mission resume --execution-id <EXECUTION_ID>`
+   `zeus execute-mission resume --execution-id "$EXECUTION_ID"`
 
 9. Diagnose a rejected submission:
 
