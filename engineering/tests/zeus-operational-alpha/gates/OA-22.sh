@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Gate identity: OA-22
-# Capability statement: Complete operational WOP construction
+# Capability statement: Failure and Corrective-Work Generation
 # Current applicability: discovered at runtime; unavailable future interfaces produce NOT_READY.
 # Required authority: controlled PMCT observation authority; state changes require --authorized-transition.
 # Required commands: zeus admission evaluate
 # Required artifacts: run manifest, repository, discovery, assertions, result, report, hashes, COMPLETE.
 # Preconditions: exact repository identity and prior gate PASS where required.
-# Positive path: Through the authoritative CLI, demonstrate complete operational wop construction and capture the resulting production-observable state.
+# Positive path: Through the authoritative CLI, prove fail-closed handling and bounded generation of separately authorized corrective work.
 # Negative path: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-22 request and verify Zeus rejects it without advancing state.
 # Idempotency: Repeat the OA-22 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
 # Interruption/recovery: Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.

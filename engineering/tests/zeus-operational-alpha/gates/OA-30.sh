@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Gate identity: OA-30
-# Capability statement: Operational Alpha declaration
+# Capability statement: Operational Alpha Qualification and Declaration Preparation
 # Current applicability: discovered at runtime; unavailable future interfaces produce NOT_READY.
 # Required authority: controlled PMCT observation authority; state changes require --authorized-transition.
 # Required commands: zeus status, zeus next-action
 # Required artifacts: run manifest, repository, discovery, assertions, result, report, hashes, COMPLETE.
 # Preconditions: exact repository identity and prior gate PASS where required.
-# Positive path: Through the authoritative CLI, demonstrate operational alpha declaration and capture the resulting production-observable state.
+# Positive path: Through the authoritative CLI, prove OA-01 through OA-29 remain valid, produce a candidate baseline, and prepare separately authorized declaration and freeze.
 # Negative path: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-30 request and verify Zeus rejects it without advancing state.
 # Idempotency: Repeat the OA-30 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
 # Interruption/recovery: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.

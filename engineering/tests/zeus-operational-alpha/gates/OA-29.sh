@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Gate identity: OA-29
-# Capability statement: Operational Alpha capability qualification
+# Capability statement: End-to-End Representative Mission
 # Current applicability: discovered at runtime; unavailable future interfaces produce NOT_READY.
 # Required authority: controlled PMCT observation authority; state changes require --authorized-transition.
 # Required commands: zeus qualification self-test
 # Required artifacts: run manifest, repository, discovery, assertions, result, report, hashes, COMPLETE.
 # Preconditions: exact repository identity and prior gate PASS where required.
-# Positive path: Through the authoritative CLI, demonstrate operational alpha capability qualification and capture the resulting production-observable state.
+# Positive path: Through the authoritative CLI, prove the complete lifecycle using a bounded representative mission from staging through accepted closeout.
 # Negative path: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-29 request and verify Zeus rejects it without advancing state.
 # Idempotency: Repeat the OA-29 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
 # Interruption/recovery: Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.

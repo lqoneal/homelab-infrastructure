@@ -806,14 +806,17 @@ gates:
   state_change: false
 - gate_id: OA-22
   sequence: 22
-  title: Complete operational WOP construction
+  title: Failure and Corrective-Work Generation
   required_commands:
   - zeus admission evaluate
   optional_commands:
   - zeus status
   prerequisites:
   - OA-21
-  positive_demonstration: Through the authoritative CLI, demonstrate complete operational wop construction and capture the resulting production-observable state.
+  capability_prerequisites:
+  - ZEUS-OA-CAP-021
+  capability_outcome: ZEUS-OA-CAP-022
+  positive_demonstration: Through the authoritative CLI, prove fail-closed handling and bounded generation of separately authorized corrective work.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-22 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-22 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
   interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
@@ -853,7 +856,7 @@ gates:
   state_change: false
 - gate_id: OA-23
   sequence: 23
-  title: Admission with dispatch permitted
+  title: Safe Interruption
   required_commands:
   - zeus admission evaluate
   - zeus dispatcher status
@@ -861,7 +864,10 @@ gates:
   - zeus status
   prerequisites:
   - OA-22
-  positive_demonstration: Through the authoritative CLI, demonstrate admission with dispatch permitted and capture the resulting production-observable state.
+  capability_prerequisites:
+  - ZEUS-OA-CAP-022
+  capability_outcome: ZEUS-OA-CAP-023
+  positive_demonstration: Through the authoritative CLI, prove durable pause behavior without inferred completion or duplicated effects.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-23 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-23 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
   interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
@@ -902,14 +908,17 @@ gates:
   state_change: false
 - gate_id: OA-24
   sequence: 24
-  title: Zeus dispatches a real operational WOP
+  title: Resume and Idempotent Continuation
   required_commands:
   - zeus invocation probe
   optional_commands:
   - zeus status
   prerequisites:
   - OA-23
-  positive_demonstration: Through the authoritative CLI, demonstrate zeus dispatches a real operational wop and capture the resulting production-observable state.
+  capability_prerequisites:
+  - ZEUS-OA-CAP-023
+  capability_outcome: ZEUS-OA-CAP-024
+  positive_demonstration: Through the authoritative CLI, prove reconstruction from durable state and continuation from the first incomplete operation.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-24 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-24 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
   interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
@@ -951,7 +960,7 @@ gates:
   state_change: true
 - gate_id: OA-25
   sequence: 25
-  title: Qualified agent executes the WOP
+  title: Controlled State Reconciliation
   required_commands:
   - zeus agent status
   - zeus eens status
@@ -959,7 +968,10 @@ gates:
   - zeus status
   prerequisites:
   - OA-24
-  positive_demonstration: Through the authoritative CLI, demonstrate qualified agent executes the wop and capture the resulting production-observable state.
+  capability_prerequisites:
+  - ZEUS-OA-CAP-024
+  capability_outcome: ZEUS-OA-CAP-025
+  positive_demonstration: Through the authoritative CLI, prove reconciliation of Zeus, EMP, PMCT, EENS, Project State, Work Registry, EOS, and controlled records.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-25 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-25 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
   interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
@@ -1002,7 +1014,7 @@ gates:
   state_change: true
 - gate_id: OA-26
   sequence: 26
-  title: Independent evidence qualification passes
+  title: Completion Determination
   required_commands:
   - zeus qualification self-test
   - zeus evidence self-test
@@ -1010,7 +1022,10 @@ gates:
   - zeus status
   prerequisites:
   - OA-25
-  positive_demonstration: Through the authoritative CLI, demonstrate independent evidence qualification passes and capture the resulting production-observable state.
+  capability_prerequisites:
+  - ZEUS-OA-CAP-025
+  capability_outcome: ZEUS-OA-CAP-026
+  positive_demonstration: Through the authoritative CLI, prove mission implementation completion is evidence-calculated and distinct from acceptance.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-26 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-26 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
   interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
@@ -1054,14 +1069,17 @@ gates:
   state_change: false
 - gate_id: OA-27
   sequence: 27
-  title: Zeus reconciles authoritative project state
+  title: Operator Acceptance
   required_commands:
   - zeus reconciliation self-test
   optional_commands:
   - zeus status
   prerequisites:
   - OA-26
-  positive_demonstration: Through the authoritative CLI, demonstrate zeus reconciles authoritative project state and capture the resulting production-observable state.
+  capability_prerequisites:
+  - ZEUS-OA-CAP-026
+  capability_outcome: ZEUS-OA-CAP-027
+  positive_demonstration: Through the authoritative CLI, prove explicit acceptance or rejection bound to the exact qualified result and evidence manifest.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-27 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-27 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
   interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
@@ -1106,14 +1124,17 @@ gates:
   state_change: true
 - gate_id: OA-28
   sequence: 28
-  title: Zeus closes the operational mission
+  title: Mission Closeout
   required_commands:
   - zeus status
   - zeus next-action
   optional_commands: []
   prerequisites:
   - OA-27
-  positive_demonstration: Through the authoritative CLI, demonstrate zeus closes the operational mission and capture the resulting production-observable state.
+  capability_prerequisites:
+  - ZEUS-OA-CAP-027
+  capability_outcome: ZEUS-OA-CAP-028
+  positive_demonstration: Through the authoritative CLI, prove completion reporting, final reconciliation, execution closure, and removal from active work.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-28 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-28 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
   interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
@@ -1159,14 +1180,17 @@ gates:
   state_change: true
 - gate_id: OA-29
   sequence: 29
-  title: Operational Alpha capability qualification
+  title: End-to-End Representative Mission
   required_commands:
   - zeus qualification self-test
   optional_commands:
   - zeus status
   prerequisites:
   - OA-28
-  positive_demonstration: Through the authoritative CLI, demonstrate operational alpha capability qualification and capture the resulting production-observable state.
+  capability_prerequisites:
+  - ZEUS-OA-CAP-028
+  capability_outcome: ZEUS-OA-CAP-029
+  positive_demonstration: Through the authoritative CLI, prove the complete lifecycle using a bounded representative mission from staging through accepted closeout.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-29 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-29 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
   interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
@@ -1213,14 +1237,17 @@ gates:
   state_change: false
 - gate_id: OA-30
   sequence: 30
-  title: Operational Alpha declaration
+  title: Operational Alpha Qualification and Declaration Preparation
   required_commands:
   - zeus status
   - zeus next-action
   optional_commands: []
   prerequisites:
   - OA-29
-  positive_demonstration: Through the authoritative CLI, demonstrate operational alpha declaration and capture the resulting production-observable state.
+  capability_prerequisites:
+  - ZEUS-OA-CAP-029
+  capability_outcome: ZEUS-OA-CAP-030
+  positive_demonstration: Through the authoritative CLI, prove OA-01 through OA-29 remain valid, produce a candidate baseline, and prepare separately authorized declaration and freeze.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-30 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-30 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
   interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.

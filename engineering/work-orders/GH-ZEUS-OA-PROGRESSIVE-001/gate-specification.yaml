@@ -1643,6 +1643,9 @@ gates:
   title: Failure and Corrective-Work Generation
   mission_objective: Prove fail-closed handling and bounded generation of separately authorized corrective work.
   capability_being_established: Failure and Corrective-Work Generation
+  capability_prerequisites:
+  - ZEUS-OA-CAP-021
+  capability_outcome: ZEUS-OA-CAP-022
   rationale: Failure and Corrective-Work Generation is a cumulative prerequisite for a trustworthy supervised Operational
     Alpha lifecycle.
   inherited_design_requirements:
@@ -1720,6 +1723,8 @@ gates:
   title: Safe Interruption
   mission_objective: Prove durable pause behavior without inferred completion or duplicated effects.
   capability_being_established: Safe Interruption
+  capability_prerequisites: [ZEUS-OA-CAP-022]
+  capability_outcome: ZEUS-OA-CAP-023
   rationale: Safe Interruption is a cumulative prerequisite for a trustworthy supervised Operational Alpha lifecycle.
   inherited_design_requirements:
   - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
@@ -1796,6 +1801,8 @@ gates:
   title: Resume and Idempotent Continuation
   mission_objective: Prove reconstruction from durable state and continuation from the first incomplete operation.
   capability_being_established: Resume and Idempotent Continuation
+  capability_prerequisites: [ZEUS-OA-CAP-023]
+  capability_outcome: ZEUS-OA-CAP-024
   rationale: Resume and Idempotent Continuation is a cumulative prerequisite for a trustworthy supervised Operational
     Alpha lifecycle.
   inherited_design_requirements:
@@ -1874,6 +1881,8 @@ gates:
   mission_objective: Prove reconciliation of Zeus, EMP, PMCT, EENS, Project State, Work Registry, EOS, and controlled
     records.
   capability_being_established: Controlled State Reconciliation
+  capability_prerequisites: [ZEUS-OA-CAP-024]
+  capability_outcome: ZEUS-OA-CAP-025
   rationale: Controlled State Reconciliation is a cumulative prerequisite for a trustworthy supervised Operational
     Alpha lifecycle.
   inherited_design_requirements:
@@ -1951,6 +1960,8 @@ gates:
   title: Completion Determination
   mission_objective: Prove mission implementation completion is evidence-calculated and distinct from acceptance.
   capability_being_established: Completion Determination
+  capability_prerequisites: [ZEUS-OA-CAP-025]
+  capability_outcome: ZEUS-OA-CAP-026
   rationale: Completion Determination is a cumulative prerequisite for a trustworthy supervised Operational Alpha
     lifecycle.
   inherited_design_requirements:
@@ -2028,6 +2039,8 @@ gates:
   title: Operator Acceptance
   mission_objective: Prove explicit acceptance or rejection bound to the exact qualified result and evidence manifest.
   capability_being_established: Operator Acceptance
+  capability_prerequisites: [ZEUS-OA-CAP-026]
+  capability_outcome: ZEUS-OA-CAP-027
   rationale: Operator Acceptance is a cumulative prerequisite for a trustworthy supervised Operational Alpha lifecycle.
   inherited_design_requirements:
   - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
@@ -2105,6 +2118,8 @@ gates:
   mission_objective: Prove completion reporting, final reconciliation, execution closure, and removal from active
     work.
   capability_being_established: Mission Closeout
+  capability_prerequisites: [ZEUS-OA-CAP-027]
+  capability_outcome: ZEUS-OA-CAP-028
   rationale: Mission Closeout is a cumulative prerequisite for a trustworthy supervised Operational Alpha lifecycle.
   inherited_design_requirements:
   - Preserve existing Zeus, EMP, EENS, WOP, PMCT, authority, evidence, recovery, reconciliation, and execution-interface
@@ -2182,6 +2197,8 @@ gates:
   mission_objective: Prove the complete lifecycle using a bounded representative mission from staging through accepted
     closeout.
   capability_being_established: End-to-End Representative Mission
+  capability_prerequisites: [ZEUS-OA-CAP-028]
+  capability_outcome: ZEUS-OA-CAP-029
   rationale: End-to-End Representative Mission is a cumulative prerequisite for a trustworthy supervised Operational
     Alpha lifecycle.
   inherited_design_requirements:
@@ -2260,6 +2277,8 @@ gates:
   mission_objective: Prove OA-01 through OA-29 remain valid, produce a candidate baseline, and prepare separately
     authorized declaration and freeze.
   capability_being_established: Operational Alpha Qualification and Declaration Preparation
+  capability_prerequisites: [ZEUS-OA-CAP-029]
+  capability_outcome: ZEUS-OA-CAP-030
   rationale: Operational Alpha Qualification and Declaration Preparation is a cumulative prerequisite for a trustworthy
     supervised Operational Alpha lifecycle.
   inherited_design_requirements:

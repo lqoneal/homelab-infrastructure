@@ -1,6 +1,6 @@
 schema_version: 1
 registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-revision: '1.14'
+revision: '1.15'
 classification: Authoritative
 authoritative_owner: Engineering Governance
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -289,3 +289,143 @@ capabilities:
     associated_evidence: [engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-21/]
     regression_status: PASS
     capability_history: [OA-21 independently qualified]
+  - capability_id: ZEUS-OA-CAP-021
+    name: Corrective-Work Authorization
+    description: Defines the separately authorized, fail-closed boundary required before corrective work may be generated.
+    lifecycle: Planned
+    mission_introduced: OA-22
+    mission_modified: OA-22
+    verification_commands: [zeus verify OA-22, zeus capability verify ZEUS-OA-CAP-021]
+    expected_verification_results: [authorization boundary PASS, negative and fail-closed checks PASS, replay and recovery PASS]
+    dependencies: [ZEUS-OA-CAP-020, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: UNAVAILABLE
+    associated_evidence: []
+    regression_status: NOT_STARTED
+    capability_history: [OA-22 prerequisite identity reconciled; qualification not performed]
+  - capability_id: ZEUS-OA-CAP-022
+    name: Failure and Corrective-Work Generation
+    description: Handles failures fail-closed and generates bounded corrective work only when separately authorized.
+    lifecycle: Planned
+    mission_introduced: OA-22
+    mission_modified: OA-22
+    verification_commands: [zeus verify OA-22, zeus capability verify ZEUS-OA-CAP-022]
+    expected_verification_results: [bounded generation PASS, negative and fail-closed checks PASS, replay and recovery PASS]
+    dependencies: [ZEUS-OA-CAP-021, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: UNAVAILABLE
+    associated_evidence: []
+    regression_status: NOT_STARTED
+    capability_history: [OA-22 outcome identity reconciled; qualification not performed]
+  - capability_id: ZEUS-OA-CAP-023
+    name: Safe Interruption
+    description: Preserves durable pause behavior without inferred completion or duplicated effects.
+    lifecycle: Planned
+    mission_introduced: OA-23
+    mission_modified: OA-23
+    verification_commands: [zeus verify OA-23, zeus capability verify ZEUS-OA-CAP-023]
+    expected_verification_results: [durable pause PASS, duplicate-effect rejection PASS, recovery PASS]
+    dependencies: [ZEUS-OA-CAP-022, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: UNAVAILABLE
+    associated_evidence: []
+    regression_status: NOT_STARTED
+    capability_history: [OA-23 identity reconciled; qualification not performed]
+  - capability_id: ZEUS-OA-CAP-024
+    name: Resume and Idempotent Continuation
+    description: Reconstructs durable state and continues from the first incomplete operation.
+    lifecycle: Planned
+    mission_introduced: OA-24
+    mission_modified: OA-24
+    verification_commands: [zeus verify OA-24, zeus capability verify ZEUS-OA-CAP-024]
+    expected_verification_results: [state reconstruction PASS, first-incomplete continuation PASS, replay safety PASS]
+    dependencies: [ZEUS-OA-CAP-023, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: UNAVAILABLE
+    associated_evidence: []
+    regression_status: NOT_STARTED
+    capability_history: [OA-24 identity reconciled; qualification not performed]
+  - capability_id: ZEUS-OA-CAP-025
+    name: Controlled State Reconciliation
+    description: Reconciles Zeus, EMP, PMCT, EENS, Project State, Work Registry, EOS, and controlled records.
+    lifecycle: Planned
+    mission_introduced: OA-25
+    mission_modified: OA-25
+    verification_commands: [zeus verify OA-25, zeus capability verify ZEUS-OA-CAP-025]
+    expected_verification_results: [all controlled records reconcile PASS, drift detection PASS]
+    dependencies: [ZEUS-OA-CAP-024, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: UNAVAILABLE
+    associated_evidence: []
+    regression_status: NOT_STARTED
+    capability_history: [OA-25 identity reconciled; qualification not performed]
+  - capability_id: ZEUS-OA-CAP-026
+    name: Completion Determination
+    description: Determines mission implementation completion from evidence, distinct from acceptance.
+    lifecycle: Planned
+    mission_introduced: OA-26
+    mission_modified: OA-26
+    verification_commands: [zeus verify OA-26, zeus capability verify ZEUS-OA-CAP-026]
+    expected_verification_results: [evidence-calculated completion PASS, acceptance separation PASS]
+    dependencies: [ZEUS-OA-CAP-025, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: UNAVAILABLE
+    associated_evidence: []
+    regression_status: NOT_STARTED
+    capability_history: [OA-26 identity reconciled; qualification not performed]
+  - capability_id: ZEUS-OA-CAP-027
+    name: Operator Acceptance
+    description: Binds explicit acceptance or rejection to the exact qualified result and evidence manifest.
+    lifecycle: Planned
+    mission_introduced: OA-27
+    mission_modified: OA-27
+    verification_commands: [zeus verify OA-27, zeus capability verify ZEUS-OA-CAP-027]
+    expected_verification_results: [exact-result acceptance binding PASS, rejection binding PASS]
+    dependencies: [ZEUS-OA-CAP-026, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: UNAVAILABLE
+    associated_evidence: []
+    regression_status: NOT_STARTED
+    capability_history: [OA-27 identity reconciled; qualification not performed]
+  - capability_id: ZEUS-OA-CAP-028
+    name: Mission Closeout
+    description: Completes reporting, final reconciliation, execution closure, and removal from active work.
+    lifecycle: Planned
+    mission_introduced: OA-28
+    mission_modified: OA-28
+    verification_commands: [zeus verify OA-28, zeus capability verify ZEUS-OA-CAP-028]
+    expected_verification_results: [closeout PASS, final reconciliation PASS, active-work removal PASS]
+    dependencies: [ZEUS-OA-CAP-027, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: UNAVAILABLE
+    associated_evidence: []
+    regression_status: NOT_STARTED
+    capability_history: [OA-28 identity reconciled; qualification not performed]
+  - capability_id: ZEUS-OA-CAP-029
+    name: End-to-End Representative Mission
+    description: Proves the complete lifecycle using a bounded representative mission from staging through accepted closeout.
+    lifecycle: Planned
+    mission_introduced: OA-29
+    mission_modified: OA-29
+    verification_commands: [zeus verify OA-29, zeus capability verify ZEUS-OA-CAP-029]
+    expected_verification_results: [bounded end-to-end lifecycle PASS, accepted closeout PASS]
+    dependencies: [ZEUS-OA-CAP-028, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: UNAVAILABLE
+    associated_evidence: []
+    regression_status: NOT_STARTED
+    capability_history: [OA-29 identity reconciled; qualification not performed]
+  - capability_id: ZEUS-OA-CAP-030
+    name: Operational Alpha Qualification and Declaration Preparation
+    description: Proves OA-01 through OA-29 remain valid and prepares a candidate baseline for separately authorized declaration and freeze.
+    lifecycle: Planned
+    mission_introduced: OA-30
+    mission_modified: OA-30
+    verification_commands: [zeus verify OA-30, zeus capability verify ZEUS-OA-CAP-030]
+    expected_verification_results: [cumulative qualification PASS, candidate baseline PASS, declaration preparation PASS]
+    dependencies: [ZEUS-OA-CAP-029, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: UNAVAILABLE
+    associated_evidence: []
+    regression_status: NOT_STARTED
+    capability_history: [OA-30 identity reconciled; qualification not performed]
