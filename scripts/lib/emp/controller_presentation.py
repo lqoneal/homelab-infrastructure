@@ -129,6 +129,16 @@ def operator_text(value: Any, title: str | None = None) -> str:
                 f"Admission readiness          : {value.get('admission_readiness')}",
                 f"Next authorized action       : {value.get('next_authorized_action')}",
             ])
+        execution = value.get("execution")
+        if execution:
+            lines.extend([
+                f"Execution ID                 : {execution.get('execution_id')}",
+                f"Execution state              : {execution.get('state')}",
+                f"Execution gate               : {execution.get('current_gate')}",
+                f"Execution wait category      : {execution.get('wait_category')}",
+                f"Current WOP validation       : {(execution.get('current_validation') or {}).get('result')}",
+                f"Execution next action        : {execution.get('next_authorized_action')}",
+            ])
         return "\n".join(lines) + "\n"
     for key in ("result", "mission_id", "classification", "lifecycle", "recommended_mission",
                 "roadmap_id", "roadmap_revision", "mission_knowledge_revision", "status"):

@@ -17,6 +17,8 @@ from typing import Any, Mapping
 
 import yaml
 
+from scripts.lib.emp.wop_schema import is_wop_id, validate_optional_approval_date
+
 
 SCHEMA_PATH = (
     Path(__file__).resolve().parents[3]
@@ -34,7 +36,7 @@ REQUIRED_EXECUTION_REFERENCES = tuple(CONTRACT["execution_package_references"])
 REQUIRED_SUBMISSION_FORMAT = {
     "schema_version": 1,
     "document_type": "EngineeringWorkOrder",
-    "wop_id": "WOP-<UUID>",
+    "wop_id": "WOP-<semantic-reference-or-UUID>",
     "mission_id": "<mission identifier>",
     "phase_id": "<phase identifier>",
     "revision": "<positive integer>",
@@ -158,14 +160,11 @@ class AdmissionController:
         ):
             require(field, submission.get(field), f"Provide a non-empty {field}.")
         wop_id = submission.get("wop_id")
-        if wop_id and not re.fullmatch(
-            r"WOP-[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}",
-            str(wop_id),
-        ):
+        if wop_id and not is_wop_id(wop_id):
             failures.append(ValidationFailure(
                 "INVALID_WOP_IDENTIFIER", "wop_id",
-                "wop_id must be WOP- followed by a lowercase RFC 4122 UUID",
-                "Replace wop_id with WOP-<lowercase RFC 4122 UUID>."
+                "wop_id must be a canonical semantic WOP reference or legacy UUID",
+                "Use the published semantic WOP ID or a lowercase RFC 4122 UUID."
             ))
         if not re.fullmatch(r"[A-Z][A-Z0-9]*(?:-[A-Z0-9.]+)+", str(submission.get("mission_id", ""))):
             failures.append(ValidationFailure(
@@ -200,10 +199,10 @@ class AdmissionController:
         if not isinstance(approval, Mapping):
             failures.append(ValidationFailure(
                 "APPROVAL_BLOCK_MISSING", "approval", "approval must be an object",
-                "Provide authority, reference, date, and authorized_lifecycle_state."
+                "Provide authority, reference, and authorized_lifecycle_state; date is optional."
             ))
         else:
-            for field in ("authority", "reference", "date", "authorized_lifecycle_state"):
+            for field in ("authority", "reference", "authorized_lifecycle_state"):
                 require(f"approval.{field}", approval.get(field), f"Provide approval.{field}.")
             if approval.get("authorized_lifecycle_state") != "Active":
                 failures.append(ValidationFailure(
@@ -211,14 +210,11 @@ class AdmissionController:
                     "approval must authorize the Active lifecycle state",
                     "Provide an approval authorizing Active lifecycle state."
                 ))
-            date = str(approval.get("date", ""))
-            try:
-                datetime.fromisoformat(date)
-            except ValueError:
+            if not validate_optional_approval_date(approval.get("date")):
                 failures.append(ValidationFailure(
                     "INVALID_APPROVAL_DATE", "approval.date",
-                    "approval.date must use ISO-8601 format",
-                    "Provide approval.date as an ISO-8601 date."
+                    "approval.date must use ISO-8601 format when supplied",
+                    "Omit approval.date when no authoritative date exists, or provide an ISO-8601 date/time."
                 ))
 
         package = submission.get("execution_package_references")

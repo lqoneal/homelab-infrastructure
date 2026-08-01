@@ -7,6 +7,7 @@ capability authority and never persists derived metrics.
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 import subprocess
 from pathlib import Path
@@ -31,6 +32,58 @@ def _read(root: Path, relative: str) -> str:
 
 def _digest(value: Any) -> str:
     return hashlib.sha256(repr(value).encode()).hexdigest()
+
+
+def _execution_projection(root: Path, mission_id: str) -> dict[str, Any] | None:
+    """Read the existing execution projection without owning its state."""
+    directory = root / ".zeus/runtime/mission-executions"
+    matches = []
+    for path in sorted(directory.glob("MISSION-EXECUTION-*.json")):
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+            supplied = value.pop("state_digest", None)
+            expected = hashlib.sha256(
+                json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+            ).hexdigest()
+            if supplied != expected or value.get("mission_id") != mission_id:
+                continue
+            value["state_digest"] = supplied
+            matches.append(value)
+        except (OSError, ValueError, json.JSONDecodeError):
+            continue
+    if not matches:
+        return None
+    if len(matches) > 1:
+        return {"result": "FAIL", "reason": "MULTIPLE_EXECUTIONS", "execution_ids": [item["execution_id"] for item in matches]}
+    value = matches[0]
+    current_validation = None
+    if value.get("current_gate") == "VALIDATE_WOP":
+        admission_path = root / ".zeus/runtime/mission-admissions" / f"{value.get('admission_id')}.json"
+        try:
+            admission = json.loads(admission_path.read_text(encoding="utf-8"))
+            wop = admission["artifacts"]["wop_result"]["wop"]
+            from scripts.lib.emp.wop_admission import AdmissionController
+            failures = AdmissionController().validate(wop, str(root.resolve()))
+            current_validation = {
+                "result": "PASS" if not failures else "FAIL",
+                "failures": [item.to_mapping() for item in failures],
+                "source": "canonical WOP submission/execution validator",
+            }
+        except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
+            current_validation = {"result": "FAIL", "failures": [{"message": str(error)}]}
+    return {
+        "execution_id": value["execution_id"],
+        "state": value["state"],
+        "current_gate": value.get("current_gate"),
+        "wait_category": (value.get("wait_reason") or {}).get("category"),
+        "wait_reason": value.get("wait_reason"),
+        "current_validation": current_validation,
+        "admission_id": value.get("admission_id"),
+        "next_authorized_action": f"Resume {mission_id}: zeus execute-mission resume --execution-id {value['execution_id']}"
+        if value["state"] in {"Waiting", "Suspended"}
+        else None,
+        "projection": "existing execution record",
+    }
 
 
 def _tag(root: Path, name: str) -> str | None:
@@ -185,10 +238,15 @@ def queue(root: Path | str, view: str = "list") -> dict[str, Any]:
         cards = [card for card in cards if card["lifecycle"] == "COMPLETED"]
     elif view not in {"list", "show"}:
         raise OperationalBetaError("BETA_QUEUE_VIEW_INVALID")
+    executions = {
+        item["mission_id"]: _execution_projection(Path(root), item["mission_id"])
+        for item in cards if _execution_projection(Path(root), item["mission_id"])
+    }
     return {
         "result": value["result"], "operation": "BETA", "queue_scope": "OPERATION",
         "execution_environment": "ADMITTED_MISSION_ATTRIBUTE",
         "missions": cards, "metrics": value["metrics"],
+        "executions": executions,
         "selection_interface": "zeus missions select",
         "authoritative_sources": value["authoritative_sources"],
         "integrity": value["integrity"],
@@ -224,6 +282,7 @@ def mission_state(root: Path | str, mission_id: str) -> dict[str, Any]:
     for card in value["missions"]:
         if card["mission_id"] == selected:
             return {"result": value["result"], **card, "operation": "BETA",
+                    "execution": _execution_projection(Path(root), selected),
                     "authoritative_sources": value["authoritative_sources"]}
     raise OperationalBetaError("BETA_MISSION_NOT_FOUND")
 
@@ -257,7 +316,8 @@ def mission_view(root: Path | str, action: str, mission_id: str) -> dict[str, An
                                          if mission["missing_dependencies"] else []),
                 "production_baseline": "OA-v1.0.0",
                 "development_baseline": "OB-PLAN-v1.0.0",
-                "authority": mission["authoritative_sources"]}
+                "authority": mission["authoritative_sources"],
+                "execution": mission.get("execution")}
     raise OperationalBetaError("BETA_UNSUPPORTED_MISSION_VIEW")
 
 
@@ -267,7 +327,9 @@ def next_action(root: Path | str, subject: str | None = None) -> dict[str, Any]:
     if subject and subject.upper() in value["mission_families"]:
         cards = [card for card in cards if card["family"] == subject.upper()]
     candidate = next((card for card in cards if card["classification"] == "ELIGIBLE"), None)
+    execution = _execution_projection(Path(root), candidate["mission_id"]) if candidate else None
     return {"result": value["result"], "operation": "BETA", "scope": subject.upper() if subject else "BETA",
             "recommended_mission": candidate["mission_id"] if candidate else None,
-            "next_authorized_action": f"Resolve and execute WOP-{candidate['mission_id']}-FOUNDATION-001" if candidate else "Await authoritative predecessor completion",
+            "next_authorized_action": execution["next_authorized_action"] if execution and execution.get("next_authorized_action") else (f"Resolve and execute WOP-{candidate['mission_id']}-FOUNDATION-001" if candidate else "Await authoritative predecessor completion"),
+            "execution": execution,
             "metrics": value["metrics"], "authoritative_sources": value["authoritative_sources"]}
