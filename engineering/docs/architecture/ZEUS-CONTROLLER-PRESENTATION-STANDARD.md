@@ -27,3 +27,15 @@ mission state, metrics, integrity, and the existing EMP selection interface.
 
 Unknown missions, families, missing authority, conflicting state, invalid
 dependencies, and production/development ambiguity fail closed.
+
+## Current versus historical lifecycle state
+
+All mission controllers consume the canonical mission projection. It exposes
+`current_admission`, `current_execution`, `historical_admissions`, and
+`historical_executions` as separate fields. Current execution is resolved from
+active lifecycle state, never from the most recent record. A cancelled,
+completed, failed, or superseded execution appears only in history interfaces.
+
+When an active admission exists but no execution exists, explain and next-action
+report `Execution State: NONE`, `Ready: YES`, and the exact authorized start
+command. Multiple current records fail closed with their conflicting IDs.

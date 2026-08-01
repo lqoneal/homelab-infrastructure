@@ -129,7 +129,15 @@ def operator_text(value: Any, title: str | None = None) -> str:
                 f"Admission readiness          : {value.get('admission_readiness')}",
                 f"Next authorized action       : {value.get('next_authorized_action')}",
             ])
-        execution = value.get("execution")
+        execution = value.get("current_execution") or value.get("execution")
+        current_admission = value.get("current_admission")
+        if current_admission is not None:
+            lines.extend([
+                f"Current admission            : {current_admission.get('admission_id')}",
+                f"Current baseline             : {current_admission.get('current_baseline')}",
+                f"Current WOP                  : {current_admission.get('wop_id')}",
+                f"Current submission           : {current_admission.get('submission_id')}",
+            ])
         if execution:
             lines.extend([
                 f"Execution ID                 : {execution.get('execution_id')}",
@@ -139,6 +147,10 @@ def operator_text(value: Any, title: str | None = None) -> str:
                 f"Current WOP validation       : {(execution.get('current_validation') or {}).get('result')}",
                 f"Execution next action        : {execution.get('next_authorized_action')}",
             ])
+        else:
+            lines.extend(["Execution state              : NONE", "Execution readiness           : YES"])
+        if value.get("historical_executions"):
+            lines.append(f"Historical executions        : {len(value['historical_executions'])} (use history)")
         return "\n".join(lines) + "\n"
     for key in ("result", "mission_id", "classification", "lifecycle", "recommended_mission",
                 "roadmap_id", "roadmap_revision", "mission_knowledge_revision", "status"):
