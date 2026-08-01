@@ -1,0 +1,22 @@
+{
+  "assertions": {
+    "continuation_is_not_completion": "PASS",
+    "durable_reconstruction": "PASS",
+    "first_incomplete_selected": "PASS",
+    "idempotent_continuation": "PASS",
+    "negative_fail_closed": "PASS",
+    "no_repeated_completed_effect": "PASS"
+  },
+  "capability_id": "ZEUS-OA-CAP-024",
+  "continuation_digest": "0980374eb42be3a8ea366adf41df37170956087b831473c971f65af10bbe5a9a",
+  "mission_id": "OA-24",
+  "negative_cases": {
+    "mismatched_baseline": "PASS",
+    "mismatched_mission": "PASS"
+  },
+  "objective": "Prove reconstruction from durable state and continuation from the first incomplete operation.",
+  "qualification_timestamp": "2026-08-01T11:32:42.454018+00:00",
+  "result": "PASS",
+  "schema_version": 1,
+  "state_digest": "34015ac86b17572140c3e4902f1da61237ae2e541d724e20f07d08c2a174ac45"
+}

@@ -1,6 +1,6 @@
 schema_version: 1
 registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-revision: '1.16'
+revision: '1.17'
 classification: Authoritative
 authoritative_owner: Engineering Governance
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -334,17 +334,17 @@ capabilities:
   - capability_id: ZEUS-OA-CAP-024
     name: Resume and Idempotent Continuation
     description: Reconstructs durable state and continues from the first incomplete operation.
-    lifecycle: Planned
+    lifecycle: Operational
     mission_introduced: OA-24
     mission_modified: OA-24
     verification_commands: [zeus verify OA-24, zeus capability verify ZEUS-OA-CAP-024]
     expected_verification_results: [state reconstruction PASS, first-incomplete continuation PASS, replay safety PASS]
     dependencies: [ZEUS-OA-CAP-023, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
     owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
-    runtime_availability: UNAVAILABLE
-    associated_evidence: []
-    regression_status: NOT_STARTED
-    capability_history: [OA-24 identity reconciled; qualification not performed]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-08-01-wop-oa-24-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-24 identity reconciled; independently qualified]
   - capability_id: ZEUS-OA-CAP-025
     name: Controlled State Reconciliation
     description: Reconciles Zeus, EMP, PMCT, EENS, Project State, Work Registry, EOS, and controlled records.

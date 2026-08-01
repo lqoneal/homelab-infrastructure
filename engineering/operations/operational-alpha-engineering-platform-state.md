@@ -40,6 +40,20 @@ pause is a durable, bounded observation state. It does not infer completion,
 apply effects, dispatch work, or create duplicate state on identical replay.
 Malformed, stale, mismatched, or unauthorized pause requests fail closed.
 
+## Human-readable projection performance
+
+Human-readable mission commands are read-only projections of the same
+authoritative model used by machine views. Resolver implementations may load
+the validated Mission Knowledge Model, Capability Registry, EMM, and roadmap
+once per projection request and reuse those immutable-in-request values across
+mission candidates. This optimization must preserve output, digests, authority
+ownership, deterministic ordering, and fail-closed validation.
+
+The OA-24 audit identified repeated model deserialization in readiness,
+blockers, prerequisites, brief, explain, and next-action. Context-local reuse
+is adopted as a low-risk correction; persistent caches, stale-data fallbacks,
+and presentation-owned state remain deferred.
+
 ## Deferred architecture
 
 ZDCL, CAGF, EMP, EENS, distributed execution, and engineering automation remain
