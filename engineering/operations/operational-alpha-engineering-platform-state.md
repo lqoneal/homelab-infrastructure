@@ -58,3 +58,13 @@ and presentation-owned state remain deferred.
 
 ZDCL, CAGF, EMP, EENS, distributed execution, and engineering automation remain
 deferred architectural initiatives. This standard does not implement them.
+
+## Mature execution workflow
+
+End-to-end execution WOPs are the permanent Operational Alpha standard:
+initiation, authority verification, implementation, qualification, controlled
+reconciliation, publication, merge, canonical synchronization, EOS
+synchronization, platform validation, lifecycle advancement, operator
+acceptance, and mission closeout. Workflow changes are limited to verified
+engineering defects or approved architecture changes. Non-critical
+optimization recommendations remain deferred.

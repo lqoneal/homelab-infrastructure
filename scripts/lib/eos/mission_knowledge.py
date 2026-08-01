@@ -343,11 +343,11 @@ def _classification(item: dict[str, Any], readiness_result: dict[str, Any]) -> s
     return "NOT_READY"
 
 def portfolio(root: Path | str) -> dict[str, Any]:
-    value, by_id, _ = _missions(root)
+    value, by_id, capabilities = _missions(root)
     missions = []
     for mission_id in value["mission_sequence"]:
         item = by_id[mission_id]
-        readiness_result = readiness(root, mission_id)
+        readiness_result = _readiness_from_context(value, by_id, capabilities, mission_id)
         missions.append({
             "mission_id": mission_id,
             "lifecycle": item.get("lifecycle"),
@@ -374,14 +374,14 @@ def list_missions(root: Path | str) -> dict[str, Any]:
 
 def roadmap(root: Path | str) -> dict[str, Any]:
     """Return a read-only roadmap projection derived exclusively from the Mission Knowledge Model."""
-    value, by_id, _ = _missions(root)
+    value, by_id, capabilities = _missions(root)
     source = value["roadmap_provenance"]["source"]
     controlled = authoritative_roadmap(root)
-    recommended_mission = recommend(root)["recommended_mission"]
+    recommended_mission = _recommend_from_context(value, by_id, capabilities, _current_from_context(value, by_id))["recommended_mission"]
     entries = []
     for mission_id in value["mission_sequence"]:
         mission = by_id[mission_id]
-        readiness_result = readiness(root, mission_id)
+        readiness_result = _readiness_from_context(value, by_id, capabilities, mission_id)
         entries.append({
             "mission_id": mission_id,
             "lifecycle": mission["lifecycle"],

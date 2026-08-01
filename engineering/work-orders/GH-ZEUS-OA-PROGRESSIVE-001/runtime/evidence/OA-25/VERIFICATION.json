@@ -1,0 +1,89 @@
+{
+  "authoritative_inputs": {
+    "capability_registry_revision": "1.18",
+    "implementation": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-25/implementation.md",
+    "mission_knowledge_revision": "3.9",
+    "objective": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-25/objective.yaml",
+    "outcome": "ZEUS-OA-CAP-025",
+    "predecessor": "OA-24 ACCEPTED",
+    "prerequisite": "ZEUS-OA-CAP-024"
+  },
+  "canonical_evidence_digest": "8dfb4e07be2e9983adfe6aec8fb2b45990d3b537cf62864a76b94767f739b6a4",
+  "gate_id": "OA-25",
+  "objective": "Prove reconciliation of Zeus, EMP, PMCT, EENS, Project State, Work Registry, EOS, and controlled records.",
+  "qualification": {
+    "assertions": {
+      "capability_registry_identity": "PASS",
+      "eens_contract_present": "PASS",
+      "emm_binding": "PASS",
+      "eos_repository": "PASS",
+      "eos_sync_validate": "FAIL",
+      "gate_contract": "PASS",
+      "mkm_objective": "PASS",
+      "pmct_binding": "PASS",
+      "project_state_present": "PASS",
+      "registry_validate": "PASS",
+      "work_registry_present": "PASS"
+    },
+    "capability_id": "ZEUS-OA-CAP-025",
+    "capability_name": "Controlled State Reconciliation",
+    "command_results": [
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": [
+          "scripts/engctl",
+          "eos",
+          "sync-validate"
+        ],
+        "returncode": 1,
+        "stderr": "",
+        "stdout": "DRIFT: /data/engineering/eos/state/EOS-STATE.md\nDRIFT: /data/engineering/eos/state/EOS-MANIFEST.md\n"
+      },
+      {
+        "command": [
+          "scripts/engctl",
+          "registry",
+          "validate"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS: registry schema and YAML serialization (85 objects)\nPASS: registry identifiers, hierarchy, ordering, states, deferrals, and dependencies\nPASS: registry authority boundary\n"
+      }
+    ],
+    "controlled_inputs": {
+      "capability_registry_revision": "1.18",
+      "input_digest": "0d10a8afee82ad91b89059fe8b64d24c4a9af1754ab746b5d2e4a7e685d512a3",
+      "inputs": {
+        "capability_registry": "d19b09bb2ad7a8ea2babd4fee614b275e8b66a88139e9067c90d2a92e8767508",
+        "eens_policy": "d890d02d62acb43db4d1a8fdd2e328b769eb5b8bf175a2ba892a3312aa27ec97",
+        "emm": "7eccf726345215cd0b06dc90eb226458e032ece9a2db63640ebc833ac89f75d9",
+        "gate": "389560b00435ebbfe9b242c0dd70c9ef55e7d5b8a74b90496beeb9da1e8152ae",
+        "implementation": "0b5194057d0894fb8ae8afec4ffa49a02bd0be75dbeecc6e1ed3e193f87fbbf4",
+        "mission_knowledge": "7266e2b484a81f8b55500a6064b51c96d7c99f57ad89d2ca919b39f99c590093",
+        "objective": "20db120e734c5764cb32b8a5ddb9f6f91148f0c3dc0d5820d716eebc30924dd4",
+        "pmct": "12a2599e22684fbe603c8cd1ac916bba61546742d0e989fd3c89b3bb19fe0e76",
+        "project_state": "172de4cd573c21d33beacaf5fc987d1aa27f3a3f922b90cd72ca7e56b1e6c961",
+        "work_registry": "ec2fe14cb425f7670ded621ca6dd0d8cdd63df0b6fbe9870880fbfb4d2c5a3d4"
+      },
+      "mission_knowledge_revision": "3.9"
+    },
+    "mission_id": "OA-25",
+    "objective": "Prove reconciliation of Zeus, EMP, PMCT, EENS, Project State, Work Registry, EOS, and controlled records.",
+    "qualification_digest": "0b2e9fa7d8f41de1ea3ce552902ed011ca7fef38505040ea66fae7b8d055bf05",
+    "qualification_timestamp": "2026-08-01T11:55:31.366795+00:00",
+    "result": "FAIL",
+    "schema_version": 1
+  },
+  "result": "FAIL",
+  "schema_version": 1,
+  "verification_timestamp": "2026-08-01T11:55:31.367305+00:00"
+}

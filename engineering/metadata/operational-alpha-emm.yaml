@@ -1,6 +1,6 @@
 schema_version: 1
 emm_id: OPERATIONAL-ALPHA-EMM
-version: 4.0
+version: 4.1
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
 infrastructure_baseline_id: OA-INFRA-BASELINE-001
 authoritative_owner: Homelab Infrastructure
@@ -291,11 +291,11 @@ entities:
     source_digest: 6f820bff4320cbb08200ad917b6eddba680a00d6e8aed8d384972a71ec0d9936
   - entity_type: CapabilityRegistry
     entity_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-    revision: '1.17'
+    revision: '1.18'
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/capabilities/operational-alpha-capability-registry.yaml
-    source_digest: 0801e5b2e39af04873e6c94c810d8d8deb16c667eac1ef5952bf3efd4c24b7b5
+    source_digest: d19b09bb2ad7a8ea2babd4fee614b275e8b66a88139e9067c90d2a92e8767508
   - entity_type: ImplementationWOP
     entity_id: WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f
     revision: 1
@@ -335,11 +335,11 @@ entities:
     source_digest: 9444ce37a7a23f1195707158653b27a779556c159b50aed2f373cbdd01afedaf
   - entity_type: MissionKnowledgeModel
     entity_id: OPERATIONAL-ALPHA-MISSION-KNOWLEDGE
-    revision: 3.8
+    revision: 3.9
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/missions/operational-alpha-mission-knowledge.yaml
-    source_digest: e84f07a10662eed838302f7c04d66391568bd8552db7ca87575b9b9095b60a98
+    source_digest: 7266e2b484a81f8b55500a6064b51c96d7c99f57ad89d2ca919b39f99c590093
   - entity_type: MissionRoadmap
     entity_id: ZEUS-OA-ROADMAP-002
     revision: 1.0
