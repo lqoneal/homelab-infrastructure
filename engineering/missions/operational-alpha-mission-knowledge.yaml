@@ -1,6 +1,6 @@
 schema_version: 1
 model_id: OPERATIONAL-ALPHA-MISSION-KNOWLEDGE
-revision: 3.3
+revision: 3.4
 classification: Authoritative
 authoritative_owner: Engineering Governance
 purpose: Canonical EMM-bound mission knowledge for Operational Alpha lifecycle reasoning.
@@ -325,8 +325,8 @@ missions:
     roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
     roadmap_entry: OA-20
     roadmap_objective: Prove evidence binding to repository commit, authority, mission, WOP, execution, gate, and agent.
-    capability_prerequisites: [ZEUS-OA-CAP-019]
-    capability_outcomes: [ZEUS-OA-CAP-020]
+    capability_prerequisites: [ZEUS-OA-CAP-018]
+    capability_outcomes: [ZEUS-OA-CAP-019]
     dependencies: [OA-19]
     eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
     blocking_conditions: []
@@ -341,8 +341,8 @@ missions:
     roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
     roadmap_entry: OA-21
     roadmap_objective: Prove a qualifier independent of the execution agent evaluates implementation and evidence.
-    capability_prerequisites: [ZEUS-OA-CAP-020]
-    capability_outcomes: [ZEUS-OA-CAP-021]
+    capability_prerequisites: [ZEUS-OA-CAP-019]
+    capability_outcomes: [ZEUS-OA-CAP-020]
     dependencies: [OA-20]
     eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
     blocking_conditions: []

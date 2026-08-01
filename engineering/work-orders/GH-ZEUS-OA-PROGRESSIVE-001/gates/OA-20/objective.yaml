@@ -4,3 +4,6 @@ mission_objective: Prove evidence binding to repository commit, authority, missi
   WOP, execution, gate, and agent.
 operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
 status: UNSTARTED
+capability_prerequisites:
+- ZEUS-OA-CAP-018
+capability_outcome: ZEUS-OA-CAP-019

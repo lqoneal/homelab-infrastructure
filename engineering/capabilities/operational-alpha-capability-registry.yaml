@@ -1,6 +1,6 @@
 schema_version: 1
 registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-revision: '1.11'
+revision: '1.12'
 classification: Authoritative
 authoritative_owner: Engineering Governance
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -261,3 +261,17 @@ capabilities:
     associated_evidence: [engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-19/]
     regression_status: PASS
     capability_history: [OA-19 identity reconciled; append-only evidence capture qualified]
+  - capability_id: ZEUS-OA-CAP-019
+    name: Evidence Integrity and Provenance
+    description: Binds evidence to the exact repository commit, authority, mission, WOP, execution, gate, and agent without permitting ambiguous, stale, mismatched, or replayed evidence to advance state.
+    lifecycle: Planned
+    mission_introduced: OA-20
+    mission_modified: OA-20
+    verification_commands: [zeus verify OA-20, zeus capability verify ZEUS-OA-CAP-019]
+    expected_verification_results: [repository binding PASS, authority and identity binding PASS, negative and fail-closed checks PASS, replay and recovery PASS]
+    dependencies: [ZEUS-OA-CAP-018, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: UNAVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-20-execution-001/]
+    regression_status: NOT_RUN
+    capability_history: [OA-20 authority reconciled; implementation not started]

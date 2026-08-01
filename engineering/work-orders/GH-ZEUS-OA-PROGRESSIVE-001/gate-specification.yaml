@@ -1486,6 +1486,9 @@ gates:
   mission_objective: Prove evidence binding to repository commit, authority, mission, WOP, execution, gate, and
     agent.
   capability_being_established: Evidence Integrity and Provenance
+  capability_prerequisites:
+  - ZEUS-OA-CAP-018
+  capability_outcome: ZEUS-OA-CAP-019
   rationale: Evidence Integrity and Provenance is a cumulative prerequisite for a trustworthy supervised Operational
     Alpha lifecycle.
   inherited_design_requirements:
