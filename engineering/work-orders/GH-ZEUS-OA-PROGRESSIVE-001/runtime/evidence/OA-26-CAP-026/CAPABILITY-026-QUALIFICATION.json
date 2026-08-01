@@ -1,0 +1,66 @@
+{
+  "assertions": {
+    "acceptance_separation": "PASS",
+    "authority_binding": "PASS",
+    "baseline_binding": "PASS",
+    "eos_sync_validate": "PASS",
+    "interruption_recovery": "PASS",
+    "negative_fail_closed": "PASS",
+    "positive_completion": "PASS",
+    "registry_validate": "PASS",
+    "replay_stability": "PASS",
+    "repository_binding": "PASS"
+  },
+  "capability_id": "ZEUS-OA-CAP-026",
+  "capability_name": "Completion Determination",
+  "command_results": [
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "command": [
+        "scripts/engctl",
+        "eos",
+        "sync-validate"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "Repository\u2013EOS synchronization validation passed.\n"
+    },
+    {
+      "command": [
+        "scripts/engctl",
+        "registry",
+        "validate"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS: registry schema and YAML serialization (85 objects)\nPASS: registry identifiers, hierarchy, ordering, states, deferrals, and dependencies\nPASS: registry authority boundary\n"
+    }
+  ],
+  "completion_calculation": {
+    "acceptance_status": "PENDING",
+    "calculation_digest": "3091e4bf97d1023f1c1449325a1c43413bc31186b3d37dfdbb1149eaa7a0e505",
+    "completion_is_distinct_from_acceptance": true,
+    "completion_status": "COMPLETE",
+    "evidence_manifest_digest": "d1c7fd8d396fbc80c6593bf6c4e9b25e97180c4fca4c138c02fcee75457cb73f"
+  },
+  "mission_id": "OA-26",
+  "negative_cases": {
+    "failed_assertion": "PASS",
+    "mismatched_gate": "PASS",
+    "missing_binding": "PASS"
+  },
+  "objective": "Prove mission implementation completion is evidence-calculated and distinct from acceptance.",
+  "qualification_digest": "5309a36ed5d5b456cd0f93a0ab73d6099e73952bd8455e0648a6664680cb37aa",
+  "qualification_timestamp": "2026-08-01T17:17:24.137322+00:00",
+  "result": "PASS",
+  "schema_version": 1
+}
