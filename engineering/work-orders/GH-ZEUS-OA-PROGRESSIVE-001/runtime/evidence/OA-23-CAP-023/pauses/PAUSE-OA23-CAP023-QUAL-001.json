@@ -1,0 +1,20 @@
+{
+  "authority": "OA-23/SUPERVISED-PAUSE",
+  "baseline": "b740920d7f472f2d213b3b9c10c515dc25f605e2",
+  "completion_inferred": false,
+  "duplicate_effects": false,
+  "effects_applied": false,
+  "expires_at": "2026-08-01T14:00:00Z",
+  "mission_id": "OA-23",
+  "observed_at": "2026-08-01T13:01:00Z",
+  "operator": "OPERATOR",
+  "record_digest": "40e3aee6f58c8201e4dbee8492218e96e7a6b17ff92381a200b55219fc7b68db",
+  "record_type": "ZEUS_SAFE_INTERRUPTION",
+  "repository": "/data/engineering/repositories/homelab",
+  "request_id": "PAUSE-OA23-CAP023-QUAL-001",
+  "requested_at": "2026-08-01T13:00:00Z",
+  "schema_version": 1,
+  "state": "PAUSED",
+  "target": "bounded-operation-001",
+  "telemetry_only": true
+}
