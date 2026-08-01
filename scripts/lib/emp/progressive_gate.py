@@ -68,6 +68,8 @@ _VERIFIERS = {
     "OA-25": "scripts.lib.emp.oa25_gate_verification",
     "OA-26": "scripts.lib.emp.oa26_gate_verification",
     "OA-27": "scripts.lib.emp.oa27_gate_verification",
+    "OA-28": "scripts.lib.emp.oa28_gate_verification",
+    "OA-29": "scripts.lib.emp.oa29_gate_verification",
 }
 
 

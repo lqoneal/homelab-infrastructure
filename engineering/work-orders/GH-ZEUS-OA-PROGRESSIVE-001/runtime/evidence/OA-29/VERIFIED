@@ -1,0 +1,9 @@
+{
+  "evidence_digest": "f3bf878259e0392ea51adc92208ec39efd358cd741a6cfbbb38b40d3768dbb5a",
+  "gate_id": "OA-29",
+  "marker_digest": "9ceb87d0dd19b3b523a1d276e5beb365828fd69bf609b8e89001acd91543acf9",
+  "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
+  "schema_version": 1,
+  "verification_result": "PASS",
+  "verification_timestamp": "2026-08-01T18:07:06.105212+00:00"
+}

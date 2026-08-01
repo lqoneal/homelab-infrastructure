@@ -1,6 +1,6 @@
 schema_version: 1
 registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-revision: '1.20'
+revision: '1.22'
 classification: Authoritative
 authoritative_owner: Engineering Governance
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -390,31 +390,31 @@ capabilities:
   - capability_id: ZEUS-OA-CAP-028
     name: Mission Closeout
     description: Completes reporting, final reconciliation, execution closure, and removal from active work.
-    lifecycle: Planned
+    lifecycle: Operational
     mission_introduced: OA-28
     mission_modified: OA-28
     verification_commands: [zeus verify OA-28, zeus capability verify ZEUS-OA-CAP-028]
     expected_verification_results: [closeout PASS, final reconciliation PASS, active-work removal PASS]
     dependencies: [ZEUS-OA-CAP-027, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
     owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
-    runtime_availability: UNAVAILABLE
-    associated_evidence: []
-    regression_status: NOT_STARTED
-    capability_history: [OA-28 identity reconciled; qualification not performed]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-08-01-wop-oa-28-oa-29-capability-pair-001/]
+    regression_status: PASS
+    capability_history: [OA-28 identity reconciled; independently qualified; locally accepted pending pair publication]
   - capability_id: ZEUS-OA-CAP-029
     name: End-to-End Representative Mission
     description: Proves the complete lifecycle using a bounded representative mission from staging through accepted closeout.
-    lifecycle: Planned
+    lifecycle: Operational
     mission_introduced: OA-29
     mission_modified: OA-29
     verification_commands: [zeus verify OA-29, zeus capability verify ZEUS-OA-CAP-029]
     expected_verification_results: [bounded end-to-end lifecycle PASS, accepted closeout PASS]
     dependencies: [ZEUS-OA-CAP-028, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
     owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
-    runtime_availability: UNAVAILABLE
-    associated_evidence: []
-    regression_status: NOT_STARTED
-    capability_history: [OA-29 identity reconciled; qualification not performed]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-08-01-wop-oa-28-oa-29-capability-pair-001/]
+    regression_status: PASS
+    capability_history: [OA-29 identity reconciled; independently qualified; locally accepted pending pair publication]
   - capability_id: ZEUS-OA-CAP-030
     name: Operational Alpha Qualification and Declaration Preparation
     description: Proves OA-01 through OA-29 remain valid and prepares a candidate baseline for separately authorized declaration and freeze.

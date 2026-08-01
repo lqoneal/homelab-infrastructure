@@ -6,6 +6,14 @@ EMP lifecycle, PMCT state, EENS events, Project State, Work Registry, EOS
 projection, controlled-document revisions, evidence manifests, and operator
 receipts.
 
+Each gate is independently completed and validated before publication. Under
+the default Operational Alpha capability-pair policy, publication is deferred
+until two consecutive authorized gates have completed. The local Engineering
+Platform state, qualification evidence, reconciliation state, and lifecycle
+receipts remain authoritative during that interval. Pair publication must
+contain both complete gates and may not publish a partial bundle. Repeat the
+full validation at the pair publication boundary.
+
 There must be exactly one active gate; its predecessor (if any) must have a
 valid acceptance receipt; no successor may show execution effects. Completion
 and acceptance remain distinct. Stop on ambiguity or conflict, preserve both

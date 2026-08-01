@@ -1,0 +1,86 @@
+{
+  "acceptance_boundary": "bounded lifecycle evidence is independently qualified before operator acceptance",
+  "authoritative_inputs": {
+    "capability_registry_revision": "1.21",
+    "implementation": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-29/implementation.md",
+    "mission_knowledge_revision": "4.2",
+    "objective": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-29/objective.yaml",
+    "outcome": "ZEUS-OA-CAP-029",
+    "predecessor": "OA-28 ACCEPTED",
+    "prerequisite": "ZEUS-OA-CAP-028"
+  },
+  "canonical_evidence_digest": "f3bf878259e0392ea51adc92208ec39efd358cd741a6cfbbb38b40d3768dbb5a",
+  "gate_id": "OA-29",
+  "objective": "Prove the complete lifecycle using a bounded representative mission from staging through accepted closeout.",
+  "qualification": {
+    "assertions": {
+      "acceptance_bound": "PASS",
+      "bounded_lifecycle": "PASS",
+      "eos_sync_validate": "PASS",
+      "negative_fail_closed": "PASS",
+      "registry_validate": "PASS",
+      "replay_stability": "PASS"
+    },
+    "capability_id": "ZEUS-OA-CAP-029",
+    "capability_name": "End-to-End Representative Mission",
+    "command_results": [
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": [
+          "scripts/engctl",
+          "eos",
+          "sync-validate"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "Repository\u2013EOS synchronization validation passed.\n"
+      },
+      {
+        "command": [
+          "scripts/engctl",
+          "registry",
+          "validate"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS: registry schema and YAML serialization (85 objects)\nPASS: registry identifiers, hierarchy, ordering, states, deferrals, and dependencies\nPASS: registry authority boundary\n"
+      }
+    ],
+    "lifecycle_calculation": {
+      "acceptance_status": "ACCEPTED",
+      "evidence_manifest_digest": "e726d123ff5a3ed093ad89ab15d5a94863e15baeda7f177b8576260d0725eb04",
+      "lifecycle_digest": "560c7e48506827e94dde0018a77024505827c392d0544e3c2d629ce84b62b100",
+      "lifecycle_status": "CLOSED",
+      "steps": [
+        "STAGED",
+        "QUALIFIED",
+        "RECONCILED",
+        "ACCEPTED",
+        "CLOSED"
+      ]
+    },
+    "mission_id": "OA-29",
+    "negative_cases": {
+      "mismatched_gate": "PASS",
+      "missing_binding": "PASS",
+      "wrong_order": "PASS"
+    },
+    "objective": "Prove the complete lifecycle using a bounded representative mission from staging through accepted closeout.",
+    "qualification_digest": "5f5d757befc60a3360bd88b9aeceb727f20b298353372d2b5dff6e9f81e158d1",
+    "qualification_timestamp": "2026-08-01T18:07:06.104555+00:00",
+    "result": "PASS",
+    "schema_version": 1
+  },
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-08-01T18:07:06.105212+00:00"
+}

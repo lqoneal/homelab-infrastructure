@@ -96,11 +96,11 @@ gates:
     status: PASS
     reason: explicit acceptance bound to exact qualified result and evidence manifest
   OA-28:
-    status: NOT_READY
-    reason: manual capability demonstration not yet executed
+    status: PASS
+    reason: independently qualified mission closeout; operator acceptance recorded; pair publication pending
   OA-29:
-    status: NOT_READY
-    reason: manual capability demonstration not yet executed
+    status: PASS
+    reason: independently qualified bounded representative lifecycle; operator acceptance recorded; pair publication pending
   OA-30:
     status: NOT_READY
     reason: manual capability demonstration not yet executed
