@@ -44,6 +44,29 @@ class ZeusControllerInterfaceTests(unittest.TestCase):
         self.assertEqual(value["blocking_conditions"], [])
         self.assertEqual(value["missing_capabilities"], [])
 
+    def test_active_controllers_share_current_model_state(self):
+        commands = (
+            ("mission", "state", "OA-15"),
+            ("mission", "explain", "OA-15"),
+            ("mission", "readiness", "OA-15"),
+            ("mission", "blockers", "OA-15"),
+            ("mission", "prerequisites", "OA-15"),
+        )
+        for command in commands:
+            result = self.run_zeus(*command, "--verify")
+            self.assertEqual(result.returncode, 0, command)
+            value = json.loads(result.stdout)
+            self.assertEqual(value["mission_id"], "OA-15", command)
+            self.assertIn("OA-15", json.dumps(value), command)
+            self.assertIn("COMPLETED", json.dumps(value), command)
+
+    def test_next_action_uses_model_current_mission(self):
+        result = self.run_zeus("next-action", "--json")
+        self.assertEqual(result.returncode, 0)
+        value = json.loads(result.stdout)
+        self.assertEqual(value["current_mission"], "OA-16")
+        self.assertIsNone(value["next_authorized_action"]["wop"])
+
 
 if __name__ == "__main__":
     unittest.main()

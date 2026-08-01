@@ -24,6 +24,27 @@ class MissionRoadmapTests(unittest.TestCase):
         self.assertEqual(projection["provenance_verification"]["result"], "PASS")
         self.assertEqual([item["mission_id"] for item in projection["missions"]], [f"OA-{n:02d}" for n in range(1, 31)])
 
+    def test_current_mission_and_blocker_are_model_derived(self):
+        current = mission_knowledge.current(ROOT)
+        self.assertEqual(current["mission_id"], "OA-16")
+        self.assertEqual(current["lifecycle"], "CURRENT")
+        readiness = mission_knowledge.readiness(ROOT, "OA-16")
+        self.assertEqual(readiness["classification"], "BLOCKED")
+        self.assertEqual(readiness["missing_capabilities"], ["ZEUS-OA-CAP-015"])
+        self.assertEqual(readiness["missing_dependencies"], [])
+
+    def test_all_missions_have_consistent_model_projection(self):
+        model = mission_knowledge.load(ROOT)
+        for mission_id in model["mission_sequence"]:
+            value = mission_knowledge.state(ROOT, mission_id)
+            self.assertEqual(value["mission_id"], mission_id)
+            self.assertEqual(value["authoritative_source"], mission_knowledge.PATH)
+
+    def test_next_action_is_current_wop_projection(self):
+        value = mission_knowledge.next_action(ROOT)
+        self.assertEqual(value["current_mission"], "OA-16")
+        self.assertIsNone(value["next_authorized_action"]["wop"])
+
 
 if __name__ == "__main__":
     unittest.main()

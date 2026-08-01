@@ -1,0 +1,29 @@
+{
+  "assignment_checksum": "ec57693c49c930f5697944fa7464aaa502dd3192ccc318e812abcd0c5556b9bc",
+  "assignment_id": "EA-c19f7451-ac35-5490-99a1-2c0ad6f02e01",
+  "authority_chain": [
+    "work-package",
+    "mission",
+    "baseline",
+    "governance",
+    "charter",
+    "organization"
+  ],
+  "authorization_decision_record": "1111111111111111111111111111111111111111111111111111111111111111",
+  "baseline_commit": "553050c7030131a423cc76038a2b5cdd34efd756",
+  "dispatch_timestamp": "2026-07-31T08:00:00Z",
+  "expected_evidence_requirements": [
+    "execution-report",
+    "validation-report"
+  ],
+  "human_approval_reference": "APPROVAL-OA15-001",
+  "intended_execution_agent": "supervised-agent-1",
+  "mission_id": "EMP-MISSION-ZEUS-LIFECYCLE-QUALIFICATION",
+  "repository_identity": "/data/engineering/repositories/homelab",
+  "required_capabilities": [
+    "execute"
+  ],
+  "schema_version": 1,
+  "wop_digest": "dac2d143ae01649e811c3b95e165ad37e2f9214805ccd2daaa881b75de4c5cf9",
+  "wop_id": "WOP-423e4567-e89b-42d3-a456-426614174000"
+}
