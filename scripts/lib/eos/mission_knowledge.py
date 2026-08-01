@@ -465,7 +465,7 @@ def orchestration_verification(root: Path | str) -> dict[str, Any]:
     projection and never creates authority, WOP, dispatch, or mission state.
     """
     decision = recommend(root)
-    if decision["result"] != "PASS":
+    if decision["result"] != "PASS" or decision.get("readiness", {}).get("classification") != "ELIGIBLE":
         return {"result": "NO_ELIGIBLE_MISSION", "decision": decision}
     from scripts.lib.emp.dispatch_candidate import create
     candidate = create(Path(root))
