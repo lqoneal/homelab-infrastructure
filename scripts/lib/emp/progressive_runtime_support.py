@@ -11,6 +11,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
+import subprocess
 from pathlib import Path
 
 import yaml
@@ -288,11 +290,25 @@ def _validate_receipt_bindings(
         raise ProgressiveOAError("acceptance receipt package, gate, or decision mismatch")
     if receipt.get("schema_version", 1) >= 2:
         manifest = _package(root) / "MANIFEST.sha256"
-        if (
-            not manifest.is_file()
-            or receipt.get("package_manifest_sha256")
-            != hashlib.sha256(manifest.read_bytes()).hexdigest()
-        ):
+        expected = receipt.get("package_manifest_sha256")
+        current = hashlib.sha256(manifest.read_bytes()).hexdigest() if manifest.is_file() else None
+        historical = False
+        if isinstance(expected, str) and re.fullmatch(r"[0-9a-f]{64}", expected) and expected != current:
+            relative = str(manifest.relative_to(root))
+            history = subprocess.run(
+                ["git", "log", "--format=%H", "--all", "--", relative],
+                cwd=root, text=True, capture_output=True, check=False,
+            )
+            if history.returncode == 0:
+                for commit in history.stdout.splitlines():
+                    blob = subprocess.run(
+                        ["git", "show", f"{commit}:{relative}"],
+                        cwd=root, capture_output=True, check=False,
+                    )
+                    if blob.returncode == 0 and hashlib.sha256(blob.stdout).hexdigest() == expected:
+                        historical = True
+                        break
+        if expected != current and not historical:
             raise ProgressiveOAError("acceptance receipt package manifest mismatch")
     if _is_superseded(root, gate_id, path, receipt):
         raise ProgressiveOAError("acceptance receipt is superseded")

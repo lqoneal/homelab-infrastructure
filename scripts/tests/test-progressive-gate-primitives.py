@@ -225,7 +225,7 @@ class ProgressiveGatePrimitiveTest(unittest.TestCase):
         with self.assertRaisesRegex(
             progressive_gate.ProgressiveGateError, "not implemented"
         ):
-            progressive_gate.verify(self.root, "OA-06")
+            progressive_gate.verify(self.root, "OA-08")
 
     def _activate_oa01_for_decision(self):
         state = progressive_oa.load_state(self.root)
