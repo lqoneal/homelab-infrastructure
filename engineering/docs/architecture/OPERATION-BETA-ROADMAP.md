@@ -1,6 +1,6 @@
 # Operation Beta — Mission Roadmap
 
-Status: reconciled planning roadmap candidate; publication pending
+Status: published planning roadmap; controller-integrated baseline
 Authority: `engineering/docs/operations/OPERATION-BETA-CHARTER.md`
 Baseline input: Operational Alpha frozen baseline `OA-v1.0.0`
 Design constitution: `engineering/docs/architecture/ENGINEERING-PLATFORM-DESIGN-PRINCIPLES.md`

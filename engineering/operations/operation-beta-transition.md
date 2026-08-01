@@ -1,6 +1,6 @@
 # Operational Alpha → Operation Beta Transition
 
-Status: reconciled transition baseline candidate; publication pending
+Status: published transition baseline; Beta development context active
 
 Operational Alpha is complete at milestone `OA-OPERATIONAL-MILESTONE-006`.
 The frozen baseline is the canonical `main` commit identified by tag
