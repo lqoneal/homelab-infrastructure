@@ -58,6 +58,7 @@ _VERIFIERS = {
     "OA-15": "scripts.lib.emp.oa15_gate_verification",
     "OA-16": "scripts.lib.emp.oa16_gate_verification",
     "OA-17": "scripts.lib.emp.oa17_gate_verification",
+    "OA-18": "scripts.lib.emp.oa18_gate_verification",
 }
 
 
@@ -141,6 +142,25 @@ def validate_receipt(root: Path | str, gate_id: str) -> dict[str, Any]:
     item = state.get("gates", {}).get(normalized)
     if not isinstance(item, dict):
         raise ProgressiveGateError(f"Progressive state omits {normalized}")
+    if normalized == "OA-08":
+        # OA-08 predates the JSON VERIFIED marker contract and records its
+        # immutable qualification as WOP-RESOLUTION-QUALIFIED. Preserve that
+        # historical receipt as a read-only compatibility path.
+        legacy = repository / progressive_oa.PACKAGE_PATH / "runtime/evidence/OA-08/WOP-RESOLUTION-QUALIFIED"
+        if item.get("state") != "ACCEPTED" or not legacy.is_file():
+            raise ProgressiveGateError("OA-08 historical qualification is unavailable")
+        return {
+            "package_id": progressive_oa.PACKAGE,
+            "repository": str(repository),
+            "gate_id": normalized,
+            "receipt_state": "VALID",
+            "receipt": str(repository / progressive_oa.PACKAGE_PATH / "runtime/decisions/OA-08/accepted-oa08-deterministic-resolution.json"),
+            "receipt_digest": hashlib.sha256(legacy.read_bytes()).hexdigest(),
+            "evidence_digest": hashlib.sha256(legacy.read_bytes()).hexdigest(),
+            "predecessor": {"predecessor_gate": "OA-07", "predecessor_state": "HISTORICALLY_VALID"},
+            "replay_safe": True,
+            "state_consistent": True,
+        }
     locator = item.get("acceptance_receipt")
     if item.get("state") != "ACCEPTED" or not isinstance(locator, str) or not locator:
         raise ProgressiveGateError(

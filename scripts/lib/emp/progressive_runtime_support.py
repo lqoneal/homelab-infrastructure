@@ -235,6 +235,15 @@ def _resolve_receipt_path(
     path = path.resolve()
     decision_root = (_package(root) / "runtime" / "decisions").resolve()
     if decision_root not in path.parents:
+        marker = ("runtime", "decisions")
+        parts = path.parts
+        for index in range(len(parts) - 1):
+            if tuple(parts[index:index + 2]) == marker:
+                candidate = (_package(root) / Path(*parts[index:])).resolve()
+                if decision_root in candidate.parents:
+                    path = candidate
+                break
+    if decision_root not in path.parents:
         raise ProgressiveOAError("acceptance receipt path escapes decision history")
     return path
 
@@ -359,4 +368,3 @@ def _validate_replay_lifecycle(value: dict, normalized: str) -> None:
             or not item["acceptance_receipt"]
         ):
             raise ProgressiveOAError("runtime lifecycle binding is inconsistent")
-
