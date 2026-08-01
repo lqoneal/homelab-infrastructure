@@ -38,6 +38,7 @@ class ExecutionInterfaceTests(unittest.TestCase):
                 "operational_owner",
                 "metadata_model",
                 "authority_resolution",
+                "operational_execution_contract",
                 "legacy_mission_projection",
                 "semantic_bindings",
                 "routes",
@@ -56,7 +57,7 @@ class ExecutionInterfaceTests(unittest.TestCase):
     def test_discovery_resolves_exact_controlled_owner_revisions(self):
         owners = self.interface._resolve_owners()
         self.assertEqual(owners["execution_contract"]["document_id"], "SPEC-0005")
-        self.assertEqual(owners["execution_contract"]["revision"], "2.0")
+        self.assertEqual(owners["execution_contract"]["revision"], "2.2")
         self.assertTrue(all(item["path"] for item in owners.values()))
 
     def test_missing_duplicated_and_unavailable_owner_fail_closed(self):
