@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Gate identity: OA-24
-# Capability statement: Zeus dispatches a real operational WOP
+# Capability statement: Resume and Idempotent Continuation
 # Current applicability: discovered at runtime; unavailable future interfaces produce NOT_READY.
 # Required authority: controlled PMCT observation authority; state changes require --authorized-transition.
 # Required commands: zeus invocation probe
 # Required artifacts: run manifest, repository, discovery, assertions, result, report, hashes, COMPLETE.
 # Preconditions: exact repository identity and prior gate PASS where required.
-# Positive path: Through the authoritative CLI, demonstrate zeus dispatches a real operational wop and capture the resulting production-observable state.
+# Positive path: Through the authoritative CLI, prove reconstruction from durable state and continuation from the first incomplete operation.
 # Negative path: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-24 request and verify Zeus rejects it without advancing state.
 # Idempotency: Repeat the OA-24 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
 # Interruption/recovery: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.

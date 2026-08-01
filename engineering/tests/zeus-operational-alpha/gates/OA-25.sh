@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Gate identity: OA-25
-# Capability statement: Qualified agent executes the WOP
+# Capability statement: Controlled State Reconciliation
 # Current applicability: discovered at runtime; unavailable future interfaces produce NOT_READY.
 # Required authority: controlled PMCT observation authority; state changes require --authorized-transition.
 # Required commands: zeus agent status, zeus eens status
 # Required artifacts: run manifest, repository, discovery, assertions, result, report, hashes, COMPLETE.
 # Preconditions: exact repository identity and prior gate PASS where required.
-# Positive path: Through the authoritative CLI, demonstrate qualified agent executes the wop and capture the resulting production-observable state.
+# Positive path: Through the authoritative CLI, prove reconciliation of Zeus, EMP, PMCT, EENS, Project State, Work Registry, EOS, and controlled records.
 # Negative path: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-25 request and verify Zeus rejects it without advancing state.
 # Idempotency: Repeat the OA-25 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
 # Interruption/recovery: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
