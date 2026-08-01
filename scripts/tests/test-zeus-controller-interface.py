@@ -41,7 +41,8 @@ class ZeusControllerInterfaceTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         value = json.loads(result.stdout)
         self.assertEqual(value["mission_id"], "OA-11")
-        self.assertEqual(value["blocking_conditions"], ["CAPABILITY_PREREQUISITE_MISSING"])
+        self.assertEqual(value["blocking_conditions"], [])
+        self.assertEqual(value["missing_capabilities"], [])
 
 
 if __name__ == "__main__":

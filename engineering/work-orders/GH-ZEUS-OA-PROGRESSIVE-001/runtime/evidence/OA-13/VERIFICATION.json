@@ -1,0 +1,28 @@
+{
+  "assertions": {
+    "deterministic_candidate": "PASS",
+    "execution_started": "PASS_FALSE",
+    "idempotent_replay": "PASS",
+    "later_gate_artifacts_absent": true,
+    "negative_fail_closed": {
+      "execution_started": "PASS",
+      "protected_effect_authorized": "PASS"
+    },
+    "protected_effect_authorized": "PASS_FALSE",
+    "qualified_agent_selection": "PASS",
+    "repository_binding": "PASS"
+  },
+  "authoritative_inputs": {
+    "candidate_digest": "c8503d691f3fe1356a012858a8751c193eb97cac1d696f766ce4059e035fda6e",
+    "capability_registry_revision": "1.3",
+    "mission_knowledge_revision": "2.2",
+    "objective": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-13/objective.yaml",
+    "predecessor": "OA-12 ACCEPTED",
+    "selected_execution_agent": "zeus-local-loneal-01"
+  },
+  "canonical_evidence_digest": "0cdffccc81a7ebf4ebe49cbd199ec4ef49ded9fe74ab96e2c923db6fc4569b4e",
+  "gate_id": "OA-13",
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-07-31T23:36:05.355920+00:00"
+}

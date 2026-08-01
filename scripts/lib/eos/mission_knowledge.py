@@ -99,7 +99,74 @@ def recommend(root: Path | str) -> dict[str, Any]:
     return {"model_id": value["model_id"], "result": "PASS" if recommended else "NO_ELIGIBLE_MISSION", "recommended_mission": recommended["mission_id"] if recommended else None, "rationale": "first mission in authoritative sequence with completed dependencies and operational prerequisites" if recommended else "no mission satisfies authoritative readiness criteria", "readiness": recommended, "blocked_missions": [item for item in candidates if item["classification"] == "BLOCKED"], "authoritative_evidence": [PATH, "engineering/capabilities/operational-alpha-capability-registry.yaml"]}
 
 def explain(root: Path | str, mission_id: str) -> dict[str, Any]:
-    result = readiness(root, mission_id); result["explanation"] = "mission is recommended" if result["classification"] == "ELIGIBLE" else "mission is not recommended because readiness conditions are unmet or it is complete"; return result
+    result = readiness(root, mission_id)
+    lifecycle = next(item["lifecycle"] for item in load(root)["missions"] if item["mission_id"] == mission_id)
+    if lifecycle == "COMPLETED":
+        rationale = "mission is complete; its successor is considered independently"
+    elif result["classification"] == "ELIGIBLE":
+        rationale = "mission is current and all authoritative prerequisites are satisfied"
+    else:
+        rationale = "mission is not eligible because authoritative prerequisites or lifecycle conditions are unmet"
+    return {
+        "result": "PASS",
+        "mission_id": mission_id,
+        "lifecycle": lifecycle,
+        "classification": result["classification"],
+        "execution_eligibility": result["classification"] == "ELIGIBLE",
+        "lifecycle_rationale": rationale,
+        "blocking_conditions": result["blocking_conditions"],
+        "missing_capabilities": result["missing_capabilities"],
+        "missing_dependencies": result["missing_dependencies"],
+        "successor_rule": "completed missions do not remain recommended; the next mission must independently satisfy readiness",
+        "authoritative_source": PATH,
+    }
+
+def brief(root: Path | str, mission_id: str) -> dict[str, Any]:
+    """Return a deterministic, read-only engineering-intent projection."""
+    value, by_id, _ = _missions(root)
+    mission = by_id.get(mission_id)
+    if mission is None:
+        raise MissionKnowledgeError("MISSION_NOT_FOUND")
+    objective = mission["roadmap_objective"]
+    title = mission_id
+    objective_path = Path(root) / mission["objective_source"]
+    if objective_path.is_file():
+        source = yaml.safe_load(objective_path.read_text(encoding="utf-8")) or {}
+        title = source.get("title", title)
+    sequence = value["mission_sequence"]
+    capabilities = capability_registry.load(root)["capabilities"]
+    introduced = [item["capability_id"] for item in capabilities
+                  if item.get("mission_introduced") == mission_id
+                  and item.get("lifecycle") == "Operational"]
+    previous_id = sequence[sequence.index(mission_id) - 1] if sequence.index(mission_id) else None
+    next_id = sequence[sequence.index(mission_id) + 1] if mission_id != sequence[-1] else None
+    by_id = {item["mission_id"]: item for item in value["missions"]}
+    result = {
+        "result": "PASS", "mission_id": mission_id, "mission_title": title,
+        "engineering_objective": objective,
+        "purpose": f"This mission exists to {objective[0].lower() + objective[1:]}",
+        "operational_problem_solved": f"Lack of a qualified, controlled outcome for: {objective}",
+        "capabilities_introduced": introduced or mission.get("capability_outcomes", []),
+        "architectural_significance": "Advances the controlled Operational Alpha lifecycle through its authoritative gate contract.",
+        "engineering_value": "Provides a deterministic, evidence-bound increment in the supervised execution lifecycle.",
+        "operational_outcome_after_acceptance": f"{mission_id} is accepted and its immediate successor becomes eligible when prerequisites are satisfied.",
+        "prerequisites": {"dependencies": mission.get("dependencies", []), "capabilities": mission.get("capability_prerequisites", []), "eligibility": mission.get("eligibility_criteria", [])},
+        "completion_criteria": mission.get("completion_criteria", []),
+        "expected_qualification_evidence": mission.get("evidence_relationships") or [f"{Path('engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence') / mission_id}/VERIFIED"],
+        "verification_commands": [f"zeus mission readiness {mission_id}", f"zeus mission blockers {mission_id}", f"zeus mission synchronization {mission_id}"],
+        "successor_missions": [sequence[sequence.index(mission_id) + 1]] if mission_id != sequence[-1] else [],
+        "risks_mitigated": ["unauthorized lifecycle advancement", "unbound or stale qualification evidence", "repository state drift"],
+        "required_operator_authorization": "Explicit operator acceptance of the verified gate is required before successor eligibility.",
+        "previous_mission_summary": {"mission_id": previous_id, "lifecycle": by_id[previous_id]["lifecycle"] if previous_id else None, "objective": by_id[previous_id]["roadmap_objective"] if previous_id else None},
+        "current_mission_summary": {"mission_id": mission_id, "lifecycle": mission["lifecycle"], "objective": objective},
+        "next_mission_preview": {"mission_id": next_id, "lifecycle": by_id[next_id]["lifecycle"] if next_id else None, "objective": by_id[next_id]["roadmap_objective"] if next_id else None},
+        "operational_alpha_progress": {"mission_number": sequence.index(mission_id) + 1, "total_missions": len(sequence), "completed": sum(1 for item in value["missions"] if item.get("lifecycle") == "COMPLETED"), "remaining": sum(1 for item in value["missions"] if item.get("lifecycle") != "COMPLETED"), "percent_complete": round(sum(1 for item in value["missions"] if item.get("lifecycle") == "COMPLETED") / len(sequence) * 100, 2)},
+        "zeus_capability_delta": {"qualified_capabilities": introduced, "description": "Zeus can select only an integrity-qualified agent matching the authoritative execution profile."},
+        "references": [mission["objective_source"], mission["roadmap_source"], *mission.get("controlled_document_relationships", [])],
+        "authoritative_source": PATH, "roadmap_provenance": value["roadmap_provenance"],
+    }
+    result["brief_digest"] = _digest(result)
+    return result
 
 def prerequisites(root: Path | str, mission_id: str) -> dict[str, Any]:
     result = readiness(root, mission_id); return {key: result[key] for key in ("mission_id", "dependencies", "missing_dependencies", "prerequisite_capabilities", "missing_capabilities", "blocking_conditions", "authoritative_evidence")}
@@ -283,26 +350,18 @@ def orchestration_verification(root: Path | str) -> dict[str, Any]:
     decision = recommend(root)
     if decision["result"] != "PASS":
         return {"result": "NO_ELIGIBLE_MISSION", "decision": decision}
-    from scripts.lib.emp.agent_qualification import registry as agent_registry
-    registry = agent_registry(Path(root))
-    agents = [item for item in registry.get("agents", [])
-              if item.get("active") is True and item.get("qualification_status") == "QUALIFIED"]
-    if len(agents) != 1:
-        return {"result": "NO_QUALIFIED_EXECUTION_AGENT", "decision": decision,
-                "qualified_agents": sorted(item.get("agent_id", "") for item in agents),
-                "authoritative_source": PATH}
-    mission = decision["readiness"]
-    agent = agents[0]
+    from scripts.lib.emp.dispatch_candidate import create
+    candidate = create(Path(root))
     contract = {
-        "mission_id": decision["recommended_mission"],
-        "selected_execution_agent": agent["agent_id"],
-        "required_capabilities": mission["prerequisite_capabilities"],
+        "mission_id": candidate["mission_id"],
+        "selected_execution_agent": candidate["selected_execution_agent"],
+        "required_capabilities": candidate["required_capabilities"],
         "authority_source": PATH,
-        "execution_constraints": agent.get("execution_constraints", []),
+        "execution_constraints": candidate["execution_constraints"],
         "expected_evidence_outputs": ["dispatch-contract", "capability-qualification", "operator-capability-summary", "synchronization-report", "validation-report"],
     }
     return {"result": "PASS", "transaction": "DETERMINISTIC_ORCHESTRATION",
-            "decision_trace": {"recommendation": decision, "agent_count": len(agents)},
+            "decision_trace": {"recommendation": decision, "agent_count": 1},
             "dispatch_contract": contract, "authoritative_source": PATH}
 
 def dispatch_verification(root: Path | str) -> dict[str, Any]:

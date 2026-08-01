@@ -1,0 +1,27 @@
+{
+  "authority_source": "engineering/missions/operational-alpha-mission-knowledge.yaml",
+  "candidate_digest": "c8503d691f3fe1356a012858a8751c193eb97cac1d696f766ce4059e035fda6e",
+  "candidate_type": "DISPATCH_CANDIDATE",
+  "execution_constraints": [
+    "controlled-wop-only",
+    "exact-repository-baseline",
+    "no-unreviewed-external-effects"
+  ],
+  "execution_started": false,
+  "expected_evidence_outputs": [
+    "capability-qualification",
+    "dispatch-contract",
+    "operator-capability-summary",
+    "synchronization-report",
+    "validation-report"
+  ],
+  "mission_id": "OA-13",
+  "protected_effect_authorized": false,
+  "repository_head": "7aaf8fa924daf88e91ebbfdf32b1a2372f135e38",
+  "repository_identity": "/data/engineering/repositories/homelab",
+  "required_capabilities": [
+    "ZEUS-OA-CAP-012"
+  ],
+  "schema_version": 1,
+  "selected_execution_agent": "zeus-local-loneal-01"
+}

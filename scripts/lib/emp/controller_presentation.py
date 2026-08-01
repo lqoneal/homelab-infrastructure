@@ -12,6 +12,26 @@ def operator_text(value: Any, title: str | None = None) -> str:
     lines = []
     if title:
         lines.extend([title, "-" * len(title)])
+    if "mission_title" in value:
+        lines.extend([
+            f"Mission title                 : {value['mission_title']}",
+            f"Engineering objective        : {value.get('engineering_objective', '')}",
+            f"Purpose                      : {value.get('purpose', '')}",
+            f"Operational problem solved   : {value.get('operational_problem_solved', '')}",
+            f"Engineering value            : {value.get('engineering_value', '')}",
+            f"Operational outcome          : {value.get('operational_outcome_after_acceptance', '')}",
+            f"Capabilities introduced     : {', '.join(value.get('capabilities_introduced', []))}",
+            f"Operational Alpha progress   : Mission {value.get('operational_alpha_progress', {}).get('mission_number')} of {value.get('operational_alpha_progress', {}).get('total_missions')}",
+            f"Zeus capability delta        : {value.get('zeus_capability_delta', {}).get('description', '')}",
+            f"Prerequisites                : {json.dumps(value.get('prerequisites', {}), sort_keys=True)}",
+            f"Completion criteria          : {', '.join(value.get('completion_criteria', []))}",
+            f"Expected evidence            : {', '.join(value.get('expected_qualification_evidence', []))}",
+            f"Verification commands        : {', '.join(value.get('verification_commands', []))}",
+            f"Risks mitigated              : {', '.join(value.get('risks_mitigated', []))}",
+            f"Required operator authorization: {value.get('required_operator_authorization', '')}",
+            f"Controlled references        : {', '.join(value.get('references', []))}",
+        ])
+        return "\n".join(lines) + "\n"
     for key in ("result", "mission_id", "classification", "lifecycle", "recommended_mission",
                 "roadmap_id", "roadmap_revision", "mission_knowledge_revision", "status"):
         if key in value and not isinstance(value[key], (dict, list)):
