@@ -1,6 +1,6 @@
 # Operation Beta — Engineering Platform Transformation
 
-Status: reconciled planning baseline candidate; publication pending
+Status: published planning baseline; controller-integrated development context
 Operation: `OPERATION-BETA`
 Predecessor: `Operational Alpha`
 Baseline: `OA-v1.0.0` / `OA-OPERATIONAL-MILESTONE-006`

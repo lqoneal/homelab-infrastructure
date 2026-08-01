@@ -34,6 +34,7 @@ from scripts.lib.eos.operational_alpha_status import (  # noqa: E402
 from scripts.lib.eos.mission_assurance import MissionAssurance, MissionAssuranceError  # noqa: E402
 from scripts.lib.eos import capability_registry  # noqa: E402
 from scripts.lib.eos import mission_knowledge  # noqa: E402
+from scripts.lib.eos import operational_beta  # noqa: E402
 from scripts.lib.emp import progressive_oa  # noqa: E402
 from scripts.lib.emp.progressive_gate import ProgressiveGateError, ProgressiveGateService  # noqa: E402
 from scripts.lib.emp.stage1_runtime import Stage1Error, Stage1Runtime  # noqa: E402
@@ -245,7 +246,8 @@ def main(argv=None):
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
     submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository"); submit.add_argument("--baseline"); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append"); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact"); submit.add_argument("--affected-repository", action="append"); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
-    show = sub.add_parser("mission"); show.add_argument("action", choices=("list","show","state","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependency-graph","portfolio","queue","health","roadmap","brief")); show.add_argument("mission_id", nargs="?"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true")
+    show = sub.add_parser("mission"); show.add_argument("action", choices=("list","show","state","status","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependencies","dependency-graph","metrics","portfolio","queue","health","roadmap","brief")); show.add_argument("mission_id", nargs="?"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true")
+    operation = sub.add_parser("operation"); operation.add_argument("action", choices=("show", "status", "roadmap", "metrics", "health", "verify", "next-action")); operation.add_argument("operation_id", nargs="?", default="BETA"); operation.add_argument("--json", action="store_true"); operation.add_argument("--verify", action="store_true")
     assurance = sub.add_parser("assurance"); assurance.add_argument("action", choices=("capabilities",))
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
     accept=sub.add_parser("accept"); accept.add_argument("gate"); accept.add_argument("--reject", action="store_true"); accept.add_argument("--rationale", default=""); accept.add_argument("--at"); accept.add_argument("--yes", action="store_true"); accept.add_argument("--json", action="store_true")
@@ -327,6 +329,37 @@ def main(argv=None):
         if a.command == "assurance":
             emit(MissionAssurance(ROOT).capabilities())
             return 0
+        if a.command == "operation":
+            if a.operation_id.upper() != "BETA":
+                raise operational_beta.OperationalBetaError("UNKNOWN_OPERATION")
+            if a.action in ("show", "status", "health", "verify"):
+                value = operational_beta.operation(ROOT)
+            elif a.action == "roadmap":
+                value = operational_beta.roadmap(ROOT)
+            elif a.action == "metrics":
+                value = operational_beta.metrics(ROOT)
+            else:
+                value = operational_beta.next_action(ROOT)
+            emit_controller(value, json_mode=a.json, verify=a.verify or a.action == "verify", title=f"Operation {a.action}")
+            return 0 if value.get("result") == "PASS" else 77
+        beta_subject = str(getattr(a, "mission_id", "") or "").upper()
+        beta_action = getattr(a, "action", "")
+        beta_mission = beta_subject.startswith(("BETA-", "ZDCL-", "CAGF-", "EPE-"))
+        beta_family = beta_subject in {"ZDCL", "CAGF", "EPE"}
+        beta_candidate = a.command == "mission" and beta_action == "roadmap" and beta_subject not in {"", "OA"}
+        if a.command == "mission" and (beta_mission or beta_family or beta_candidate):
+            if a.action == "roadmap":
+                value = operational_beta.roadmap(ROOT, beta_subject or None)
+            elif a.action in ("list", "portfolio", "queue", "health"):
+                value = operational_beta.operation(ROOT)
+            elif a.action in ("next", "recommend"):
+                value = operational_beta.next_action(ROOT, beta_subject if beta_family else None)
+            elif beta_mission:
+                value = operational_beta.mission_view(ROOT, a.action, beta_subject)
+            else:
+                value = operational_beta.roadmap(ROOT, beta_subject)
+            emit_controller(value, json_mode=a.json, verify=a.verify or a.action == "verify", title=f"Beta mission {a.action}")
+            return 0 if value.get("result") == "PASS" else 77
         if a.command == "mission" and a.action in ("portfolio", "list", "queue", "health", "roadmap"):
             if a.action in ("portfolio", "list"):
                 value = mission_knowledge.portfolio(ROOT) if a.action == "portfolio" else mission_knowledge.list_missions(ROOT)
@@ -886,6 +919,6 @@ def main(argv=None):
                 emit(ConvergenceRuntime(Path(a.repository)).operational_wop(intent=a.intent,flow=flow))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (OrchestrationError, Stage1Error, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, mission_knowledge.MissionKnowledgeError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+    except (OrchestrationError, Stage1Error, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, mission_knowledge.MissionKnowledgeError, operational_beta.OperationalBetaError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr); return 78
 if __name__ == "__main__": raise SystemExit(main())
