@@ -1,0 +1,10 @@
+{
+  "assignment_checksum": "ec57693c49c930f5697944fa7464aaa502dd3192ccc318e812abcd0c5556b9bc",
+  "assignment_id": "EA-c19f7451-ac35-5490-99a1-2c0ad6f02e01",
+  "delivery_artifact": "EA-c19f7451-ac35-5490-99a1-2c0ad6f02e01.json",
+  "event_digest": "cdbaa6aa6e8dbc6f3f7c356ae0972096531e5e8ce534a1313537ef9af5fc8314",
+  "from": "Ready",
+  "human_approval_reference": "APPROVAL-OA15-001",
+  "to": "Dispatched",
+  "wop_id": "WOP-423e4567-e89b-42d3-a456-426614174000"
+}

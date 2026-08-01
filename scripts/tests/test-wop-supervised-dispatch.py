@@ -34,7 +34,7 @@ from scripts.lib.wop.contract import WorkPackage
 
 LIFECYCLE_FIXTURES = ROOT / "engineering" / "lifecycle" / "fixtures"
 DISPATCH_FIXTURES = ROOT / "engineering" / "dispatch" / "fixtures"
-REPOSITORY = str(ROOT)
+REPOSITORY = "/data/engineering/repositories/homelab"
 BASELINE = "553050c7030131a423cc76038a2b5cdd34efd756"
 START = datetime(2026, 7, 25, 1, 0, tzinfo=timezone.utc)
 

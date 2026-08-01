@@ -93,6 +93,36 @@ def _oa01_lifecycle(root: Path) -> dict[str, bool]:
 
 def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
     root = Path(repository_root).resolve()
+    # Active Operational Alpha state is owned by the EMM-bound Mission
+    # Knowledge Model.  The older authority/PMCT resolver remains below for
+    # explicit historical compatibility consumers only.
+    from scripts.lib.eos import mission_knowledge
+    try:
+        projection = mission_knowledge.next_action(root)
+    except mission_knowledge.MissionKnowledgeError:
+        # Fixture and historical callers may intentionally exercise the
+        # pre-MKM resolver.  Active Zeus mission controllers never take this
+        # compatibility branch; they call mission_knowledge directly.
+        projection = None
+    if projection is not None:
+        return {
+        "schema_version": 1,
+        "resolver": projection["resolver"],
+        "mission": "Zeus Operational Alpha",
+        "current_mission": projection["current_mission"],
+        "current_gate": projection["current_mission"],
+        "current_lifecycle": projection["current_lifecycle"],
+        "current_classification": projection["current_classification"],
+        "blocking_conditions": [
+            {"code": item, "detail": item}
+            for item in projection["blocking_conditions"]
+        ],
+        "missing_capabilities": projection["missing_capabilities"],
+        "next_authorized_action": projection["next_authorized_action"],
+        "historical_progressive_runtime": "EXCLUDED_EVIDENCE_ONLY",
+        "result": "READY",
+            "decision_digest": digest(projection),
+        }
     discovered = Path(_git(root, "rev-parse", "--show-toplevel")).resolve()
     head = _git(root, "rev-parse", "HEAD")
     branch = _git(root, "branch", "--show-current")

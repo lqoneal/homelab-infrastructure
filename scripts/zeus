@@ -315,38 +315,12 @@ def main(argv=None):
                 else:
                     print(f"Package: {decision['package_id']}\nActive Gate: {decision['active_gate']}\nNext Action: {decision['next_action']}")
                 return 0
-            current = resolve_operational_alpha_status(ROOT)
-            if current["successor_eligibility"] == "ELIGIBLE":
-                successor_actions = {
-                    "OA-01": ("INITIATE_OA-02", "Initiate OA-02 — Controlled Mission Authority"),
-                    "OA-02": ("INITIATE_OA-03", "Initiate OA-03 — Mission Contract Discovery"),
-                    "OA-03": ("INITIATE_OA-04", "Initiate OA-04 — Project and Operational Context Reconstruction"),
-                    "OA-04": ("INITIATE_OA-05", "Initiate OA-05 — Mission Staging Contract"),
-                    "OA-05": ("INITIATE_OA-06", "Initiate OA-06 — Mission Eligibility Evaluation"),
-                    "OA-06": ("INITIATE_OA-07", "Initiate OA-07 — Mission Selection"),
-                }
-                code, description = successor_actions.get(
-                    current["active_gate"],
-                    ("NO_SUCCESSOR_AUTHORIZED", "No successor mission is authorized by the current lifecycle projection"),
-                )
-                next_action = {"code": code, "description": description}
-            else:
-                next_action = {
-                    "code": "NO_SUCCESSOR_AUTHORIZED",
-                    "description": "No successor mission is authorized by the current lifecycle projection",
-                }
-            decision = {
-                "resolver": current["resolver"],
-                "active_gate": current["active_gate"],
-                "successor_eligibility": current["successor_eligibility"],
-                "next_authorized_action": next_action,
-                "historical_progressive_runtime": current["historical_progressive_runtime"],
-                "result": "READY" if next_action["code"] != "NO_SUCCESSOR_AUTHORIZED" else "NOT_READY",
-            }
+            decision = mission_knowledge.next_action(ROOT)
             if a.json: emit(decision)
             else: print(
-                f"Active Gate: {decision['active_gate']}\n"
-                f"Successor Eligibility: {decision['successor_eligibility']}\n"
+                f"Current Mission: {decision['current_mission']}\n"
+                f"Lifecycle: {decision['current_lifecycle']}\n"
+                f"Classification: {decision['current_classification']}\n"
                 f"Next Action: {decision['next_authorized_action']['description']}\n"
             )
             return 0
@@ -370,6 +344,27 @@ def main(argv=None):
             value = mission_knowledge.brief(ROOT, a.mission_id.upper())
             emit_controller(value, json_mode=a.json, verify=a.verify, title="Mission brief")
             return 0 if value.get("result") == "PASS" else 77
+        if a.command == "mission" and a.action in {
+            "state", "eligibility", "explain", "prerequisites", "next",
+            "snapshot", "synchronization", "show",
+        } and (a.mission_id is None or str(a.mission_id).upper().startswith("OA-")):
+            mission_id = a.mission_id.upper() if a.mission_id else None
+            if a.action in {"state", "show"}:
+                value = mission_knowledge.state(ROOT, mission_id)
+            elif a.action == "eligibility":
+                value = mission_knowledge.readiness(ROOT, mission_id or mission_knowledge.current(ROOT)["mission_id"])
+            elif a.action == "explain":
+                value = mission_knowledge.explain(ROOT, mission_id or mission_knowledge.current(ROOT)["mission_id"])
+            elif a.action == "prerequisites":
+                value = mission_knowledge.prerequisites(ROOT, mission_id or mission_knowledge.current(ROOT)["mission_id"])
+            elif a.action == "next":
+                value = mission_knowledge.next_action(ROOT)
+            elif a.action == "snapshot":
+                value = mission_knowledge.snapshot(ROOT, mission_id)
+            else:
+                value = mission_knowledge.synchronization(ROOT, mission_id or mission_knowledge.current(ROOT)["mission_id"])
+            emit_controller(value, json_mode=a.json, verify=a.verify, title=f"Mission {a.action}")
+            return 0 if value.get("result", "PASS") in ("PASS", "BLOCKED") else 77
         if a.command == "dispatch":
             value = mission_knowledge.dispatch_verification(ROOT)
             emit_controller(value, json_mode=a.json, verify=a.action == "verify", title="Dispatch")
@@ -405,8 +400,9 @@ def main(argv=None):
             emit_controller(value, json_mode=a.json, verify=a.verify, title=f"Mission {a.action}")
             return 0
         if a.command == "explain" and a.subject.upper().startswith("OA-"):
-            emit(progressive_oa.explain(ROOT, a.subject))
-            return 0
+            value = mission_knowledge.explain(ROOT, a.subject.upper())
+            emit_controller(value, json_mode=False, verify=False, title="Mission explain")
+            return 0 if value.get("result") == "PASS" else 77
         if a.command == "authority":
             if a.action in ("resolve", "show", "validate"):
                 if not a.wop or not a.revision or not a.action_name:
@@ -495,7 +491,7 @@ def main(argv=None):
             emit(value)
             return 0
         if a.command == "gate" and a.action in ("show", "objective", "evidence", "receipt"):
-            if a.action == "receipt" and a.gate_id.upper() in {"OA-11", "OA-12", "OA-13", "OA-14"}:
+            if a.action == "receipt" and a.gate_id.upper() in {"OA-11", "OA-12", "OA-13", "OA-14", "OA-15"}:
                 gate_id = a.gate_id.upper()
                 state = progressive_oa.load_state(ROOT)
                 locator = state["gates"][gate_id]["acceptance_receipt"]
@@ -542,7 +538,7 @@ def main(argv=None):
             return 0
         if a.command == "verify":
             if a.gate.upper().startswith("OA-"):
-                if a.gate.upper() in {"OA-11", "OA-12", "OA-13", "OA-14"}:
+                if a.gate.upper() in {"OA-11", "OA-12", "OA-13", "OA-14", "OA-15"}:
                     value = ProgressiveGateService(ROOT).verify(a.gate.upper())
                     emit(value)
                     return 0

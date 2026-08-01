@@ -1,6 +1,6 @@
 schema_version: 1
 registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-revision: 1.4
+revision: 1.5
 classification: Authoritative
 authoritative_owner: Engineering Governance
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -191,3 +191,17 @@ capabilities:
     associated_evidence: [engineering/evidence/2026-07-31-wop-oa-14-execution-001/]
     regression_status: PASS
     capability_history: [OA-14 qualified]
+  - capability_id: ZEUS-OA-CAP-014
+    name: Exactly-once controlled WOP dispatch
+    description: Dispatches an admitted WOP to exactly one selected qualified execution agent through an immutable assignment, explicit approval binding, durable outbox, and replay-safe ledger.
+    lifecycle: Operational
+    mission_introduced: OA-15
+    mission_modified: OA-15
+    verification_commands: [zeus verify OA-15, scripts/tests/test-wop-supervised-dispatch.py, zeus capability verify ZEUS-OA-CAP-014]
+    expected_verification_results: [exactly-once dispatch PASS, deterministic assignment replay PASS, duplicate dispatch rejected PASS, protected execution not started]
+    dependencies: [ZEUS-OA-CAP-013, ZEUS-PRODUCTION-EXECUTION-AGENTS]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-15-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-15 qualified]
