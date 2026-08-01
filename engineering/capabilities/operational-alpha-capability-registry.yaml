@@ -1,6 +1,6 @@
 schema_version: 1
 registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-revision: '1.17'
+revision: '1.18'
 classification: Authoritative
 authoritative_owner: Engineering Governance
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -348,17 +348,17 @@ capabilities:
   - capability_id: ZEUS-OA-CAP-025
     name: Controlled State Reconciliation
     description: Reconciles Zeus, EMP, PMCT, EENS, Project State, Work Registry, EOS, and controlled records.
-    lifecycle: Planned
+    lifecycle: Operational
     mission_introduced: OA-25
     mission_modified: OA-25
     verification_commands: [zeus verify OA-25, zeus capability verify ZEUS-OA-CAP-025]
     expected_verification_results: [all controlled records reconcile PASS, drift detection PASS]
     dependencies: [ZEUS-OA-CAP-024, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
     owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
-    runtime_availability: UNAVAILABLE
-    associated_evidence: []
-    regression_status: NOT_STARTED
-    capability_history: [OA-25 identity reconciled; qualification not performed]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-08-01-wop-oa-25-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-25 identity reconciled; independently qualified]
   - capability_id: ZEUS-OA-CAP-026
     name: Completion Determination
     description: Determines mission implementation completion from evidence, distinct from acceptance.
