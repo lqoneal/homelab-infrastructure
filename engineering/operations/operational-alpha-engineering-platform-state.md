@@ -84,10 +84,14 @@ blockers, prerequisites, brief, explain, and next-action. Context-local reuse
 is adopted as a low-risk correction; persistent caches, stale-data fallbacks,
 and presentation-owned state remain deferred.
 
-## Deferred architecture
+## Post-Operational Alpha evolution
 
 ZDCL, CAGF, EMP, EENS, distributed execution, and engineering automation remain
-deferred architectural initiatives. This standard does not implement them.
+deferred implementation initiatives through OA-30. Their post-OA-30 standards,
+ownership, and sequencing are governed by
+`engineering/docs/architecture/ENGINEERING-PLATFORM-EVOLUTION-PHASE-1.md`.
+That contract becomes active immediately after OA-30 acceptance; it does not
+authorize implementation before then.
 
 ## Mature execution workflow
 

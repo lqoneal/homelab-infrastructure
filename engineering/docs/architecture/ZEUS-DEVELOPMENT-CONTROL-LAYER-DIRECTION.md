@@ -1,6 +1,6 @@
 # Zeus Development Control Layer — Published Engineering Direction
 
-Status: published engineering direction; planned subsystem; implementation deferred
+Status: published engineering direction; planned subsystem; implementation deferred through OA-30
 Authority boundary: subordinate to Engineering Governance, EOS, EMP, and EENS
 
 ## Purpose
@@ -109,6 +109,9 @@ remains available but cannot bypass the ZDCL boundaries defined here.
 
 ## Deferred status
 
-ZDCL is a planned subsystem and architectural direction only. No launcher,
+ZDCL remains a planned subsystem and architectural direction through OA-30.
+After OA-30 acceptance, its first implementation contract is governed by
+`engineering/docs/architecture/ENGINEERING-PLATFORM-EVOLUTION-PHASE-1.md` and
+requires a separately authorized work order. No launcher,
 session controller, workspace manager, approval interceptor, distributed
 agent service, or runtime behavior is implemented by this publication.

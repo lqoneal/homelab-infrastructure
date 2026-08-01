@@ -1,6 +1,6 @@
 # Canonical Authority Generation Framework — Published Engineering Direction
 
-Status: published engineering direction; planned framework; implementation deferred
+Status: published engineering direction; planned framework; implementation deferred through OA-30
 Authority boundary: generated artifacts remain subordinate to their canonical owners
 
 ## Purpose
@@ -81,6 +81,9 @@ Capability Registry.
 
 ## Deferred status
 
-CAGF is a planned engineering direction only. Implementation is explicitly
-deferred; this document establishes ownership, deterministic-generation
-requirements, and the future qualification boundary.
+CAGF remains a planned engineering direction through OA-30. After OA-30
+acceptance, its first implementation contract is governed by
+`engineering/docs/architecture/ENGINEERING-PLATFORM-EVOLUTION-PHASE-1.md` and
+requires a separately authorized work order. Implementation is explicitly
+deferred by this document; ownership, deterministic-generation requirements,
+and the future qualification boundary remain unchanged.
