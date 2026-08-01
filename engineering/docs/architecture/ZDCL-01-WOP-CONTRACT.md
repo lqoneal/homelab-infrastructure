@@ -14,3 +14,9 @@ The canonical schema and execution-interface rules are defined in
 
 The package is submitted through the existing Stage 1 authority. Submission
 stages only; admission and execution remain protected, separate boundaries.
+
+Admission freshness is bound to the submitted mission instance and the
+current Development repository baseline. Re-admission after a baseline change
+must reuse the existing submission, issue a new admission identity, and retain
+the previous admission and cancelled execution as immutable historical
+evidence. A stale admission cannot authorize a new execution.

@@ -521,6 +521,29 @@ class MissionExecutionRuntime:
             raise MissionExecutionError(str(error)) from error
         if admission.get("status") != "DECIDED":
             raise MissionExecutionError("mission admission is not decided")
+        if admission.get("admission_state") in {"STALE", "SUPERSEDED", "CANCELLED", "REJECTED", "CONSUMED", "COMPLETED"}:
+            raise MissionExecutionError(
+                f"mission admission {admission_id} is not executable: "
+                f"state={admission.get('admission_state')}"
+            )
+        admitted_baseline = admission.get("artifacts", {}).get("repository_baseline")
+        current_baseline = self._git("rev-parse", "HEAD")
+        if admitted_baseline != current_baseline:
+            raise MissionExecutionError(
+                "stale admission cannot authorize execution: "
+                f"admission={admission_id} admitted_baseline={admitted_baseline} "
+                f"current_baseline={current_baseline}; create a replacement admission"
+            )
+        request = admission.get("request", {})
+        if request.get("repository_baseline") not in (None, current_baseline):
+            raise MissionExecutionError("admission request baseline binding is stale")
+        if admission.get("request", {}).get("mission_id") == "ZDCL-01" and not request.get("submission_id"):
+            raise MissionExecutionError("admission submission binding is unresolved")
+        if self._cancelled_execution_for_admission(admission_id):
+            raise MissionExecutionError(
+                f"admission {admission_id} is non-executable after incompatible cancellation; "
+                "create a superseding admission"
+            )
         decision = admission.get("artifacts", {}).get("admission_decision", {})
         mode = admission.get("request", {}).get("mode")
         permitted = (
@@ -533,6 +556,22 @@ class MissionExecutionRuntime:
         if not permitted:
             raise MissionExecutionError("mission admission does not qualify for execution")
         return admission
+
+    def _cancelled_execution_for_admission(self, admission_id: str) -> bool:
+        for path in sorted((self.root / ".zeus/runtime/mission-executions").glob("MISSION-EXECUTION-*.json")):
+            try:
+                value = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            if value.get("admission_id") != admission_id or value.get("state") != "Cancelled":
+                continue
+            reason = " ".join(
+                str(item.get("payload", {}).get("reason", ""))
+                for item in value.get("evidence", [])
+                if item.get("event") == "EXECUTION_CANCELLED"
+            )
+            return "baseline" in reason.lower() or "supersed" in reason.lower()
+        return False
 
     def _validate_binding(self, state, admission):
         wop = admission["artifacts"]["wop_result"]["wop"]

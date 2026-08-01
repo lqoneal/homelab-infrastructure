@@ -19,7 +19,15 @@ class WopExecutionInterfaceTests(unittest.TestCase):
     def test_status_resolves_the_single_active_execution(self):
         with tempfile.TemporaryDirectory() as directory:
             store = Path(directory)
-            shutil.copy2(EXECUTION, store / EXECUTION.name)
+            state = json.loads(EXECUTION.read_text(encoding="utf-8"))
+            # The canonical ZDCL-01 record is now intentionally cancelled by
+            # BETA-03E; use an isolated waiting projection to qualify lookup.
+            state["state"] = "Waiting"
+            from scripts.lib.emp.authority_resolution import digest
+            material = dict(state)
+            material.pop("state_digest", None)
+            state["state_digest"] = digest(material)
+            (store / EXECUTION.name).write_text(json.dumps(state), encoding="utf-8")
             env = os.environ.copy()
             env.update({"ZEUS_TESTING": "1", "ZEUS_EXECUTION_STORE": str(store),
                         "ZEUS_OPERATOR_STATE": str(store / "operator-state.json")})
@@ -36,6 +44,7 @@ class WopExecutionInterfaceTests(unittest.TestCase):
             for suffix in ("a", "b"):
                 state = json.loads(EXECUTION.read_text(encoding="utf-8"))
                 state["execution_id"] = f"MISSION-EXECUTION-{suffix}"
+                state["state"] = "Waiting"
                 # The fixture is intentionally used only to test selection; the
                 # state digest is recomputed by the runtime's canonical rules.
                 from scripts.lib.emp.authority_resolution import digest

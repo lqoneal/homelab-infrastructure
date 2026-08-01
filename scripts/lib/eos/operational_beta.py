@@ -56,6 +56,17 @@ def _execution_projection(root: Path, mission_id: str) -> dict[str, Any] | None:
     if len(matches) > 1:
         return {"result": "FAIL", "reason": "MULTIPLE_EXECUTIONS", "execution_ids": [item["execution_id"] for item in matches]}
     value = matches[0]
+    admission_value = None
+    try:
+        admission_path = root / ".zeus/runtime/mission-admissions" / f"{value.get('admission_id')}.json"
+        admission_value = json.loads(admission_path.read_text(encoding="utf-8"))
+    except (OSError, TypeError, json.JSONDecodeError):
+        admission_value = None
+    admitted_baseline = (admission_value or {}).get("artifacts", {}).get("repository_baseline")
+    current_baseline = subprocess.run(
+        ["git", "-C", str(root), "rev-parse", "HEAD"],
+        text=True, capture_output=True, check=False,
+    ).stdout.strip()
     current_validation = None
     if value.get("current_gate") == "VALIDATE_WOP":
         admission_path = root / ".zeus/runtime/mission-admissions" / f"{value.get('admission_id')}.json"
@@ -79,6 +90,11 @@ def _execution_projection(root: Path, mission_id: str) -> dict[str, Any] | None:
         "wait_reason": value.get("wait_reason"),
         "current_validation": current_validation,
         "admission_id": value.get("admission_id"),
+        "submission_id": (admission_value or {}).get("request", {}).get("submission_id"),
+        "admitted_baseline": admitted_baseline,
+        "current_baseline": current_baseline,
+        "freshness": "PASS" if admitted_baseline == current_baseline else "STALE",
+        "supersession": (admission_value or {}).get("supersession") or (admission_value or {}).get("artifacts", {}).get("authority_context", {}).get("admission", {}).get("supersession"),
         "next_authorized_action": f"Resume {mission_id}: zeus execute-mission resume --execution-id {value['execution_id']}"
         if value["state"] in {"Waiting", "Suspended"}
         else None,

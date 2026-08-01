@@ -43,3 +43,19 @@ and checkpoint; it never creates a duplicate.
 Queue, mission, and execution views project the same execution identity,
 current gate, wait category, validation diagnostics, and next corrective
 action. No view becomes an execution authority.
+
+## Admission freshness and supersession
+
+Admission identity includes the resolved submission ID and the current
+repository baseline, in addition to mission, WOP/revision, package digest,
+contract and authority bindings, principal, submitter, mode, and lifecycle
+authorization. The submission ID is resolved before the request digest and
+idempotency identity are calculated.
+
+An admission is reusable only while those bindings remain compatible and its
+admitted baseline equals the current repository `HEAD`. A baseline change
+makes the admission stale for new execution; it does not mutate the old
+record. The replacement admission records the prior admission, any cancelled
+incompatible execution, both baselines, and the supersession reason. Stale,
+superseded, rejected, or incompatible-cancelled admissions fail closed at the
+execution boundary.
