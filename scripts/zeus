@@ -400,6 +400,10 @@ def main(argv=None):
                 return 0 if value.get("result") == "PASS" else 78
             if a.action == "roadmap":
                 value = operational_beta.roadmap(ROOT, beta_subject or None)
+            elif a.action in ("history", "archive"):
+                value = operational_beta.mission_history(ROOT, beta_subject)
+            elif a.action == "health" and beta_mission:
+                value = operational_beta.mission_view(ROOT, a.action, beta_subject)
             elif a.action in ("list", "portfolio", "queue", "health"):
                 value = operational_beta.operation(ROOT)
             elif a.action in ("next", "recommend"):
@@ -413,6 +417,8 @@ def main(argv=None):
         if a.command == "mission" and a.action in ("portfolio", "list", "completed", "history", "archive", "queue", "health", "roadmap"):
             if a.action == "list" and not a.mission_id:
                 value = operational_beta.active_missions(ROOT)
+            elif a.action in ("completed", "history", "archive") and a.mission_id and str(a.mission_id).upper().startswith(("ZDCL-", "CAGF-", "EPE-")):
+                value = operational_beta.mission_history(ROOT, str(a.mission_id).upper())
             elif a.action in ("completed", "history", "archive"):
                 result = mission_knowledge.list_missions(ROOT)
                 result["missions"] = [item for item in result["missions"] if item["lifecycle"] == "COMPLETED"]

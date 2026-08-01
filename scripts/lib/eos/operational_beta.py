@@ -34,8 +34,8 @@ def _digest(value: Any) -> str:
     return hashlib.sha256(repr(value).encode()).hexdigest()
 
 
-def _execution_projection(root: Path, mission_id: str) -> dict[str, Any] | None:
-    """Read the existing execution projection without owning its state."""
+def _execution_records(root: Path, mission_id: str) -> list[dict[str, Any]]:
+    """Read valid execution records without treating history as current state."""
     directory = root / ".zeus/runtime/mission-executions"
     matches = []
     for path in sorted(directory.glob("MISSION-EXECUTION-*.json")):
@@ -51,11 +51,11 @@ def _execution_projection(root: Path, mission_id: str) -> dict[str, Any] | None:
             matches.append(value)
         except (OSError, ValueError, json.JSONDecodeError):
             continue
-    if not matches:
-        return None
-    if len(matches) > 1:
-        return {"result": "FAIL", "reason": "MULTIPLE_EXECUTIONS", "execution_ids": [item["execution_id"] for item in matches]}
-    value = matches[0]
+    return matches
+
+
+def _execution_detail(root: Path, value: dict[str, Any]) -> dict[str, Any]:
+    """Project one execution, including its freshness diagnostics."""
     admission_value = None
     try:
         admission_path = root / ".zeus/runtime/mission-admissions" / f"{value.get('admission_id')}.json"
@@ -95,10 +95,86 @@ def _execution_projection(root: Path, mission_id: str) -> dict[str, Any] | None:
         "current_baseline": current_baseline,
         "freshness": "PASS" if admitted_baseline == current_baseline else "STALE",
         "supersession": (admission_value or {}).get("supersession") or (admission_value or {}).get("artifacts", {}).get("authority_context", {}).get("admission", {}).get("supersession"),
-        "next_authorized_action": f"Resume {mission_id}: zeus execute-mission resume --execution-id {value['execution_id']}"
+        "next_authorized_action": f"Resume {value.get('mission_id')}: zeus execute-mission resume --execution-id {value['execution_id']}"
         if value["state"] in {"Waiting", "Suspended"}
         else None,
         "projection": "existing execution record",
+    }
+
+
+def _admission_records(root: Path, mission_id: str) -> list[dict[str, Any]]:
+    """Read valid admissions for a mission, preserving immutable history."""
+    directory = root / ".zeus/runtime/mission-admissions"
+    records = []
+    for path in sorted(directory.glob("MISSION-ADMISSION-*.json")):
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+            supplied = value.pop("state_digest", None)
+            expected = hashlib.sha256(
+                json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+            ).hexdigest()
+            if supplied != expected:
+                continue
+            binding = value.get("artifacts", {}).get("mission_binding", {})
+            if value.get("request", {}).get("mission_id") != mission_id and binding.get("mission_id") != mission_id:
+                continue
+            value["state_digest"] = supplied
+            records.append(value)
+        except (OSError, ValueError, json.JSONDecodeError):
+            continue
+    return records
+
+
+def _admission_detail(root: Path, value: dict[str, Any]) -> dict[str, Any]:
+    request = value.get("request", {})
+    artifacts = value.get("artifacts", {})
+    binding = artifacts.get("mission_binding", {})
+    authority_admission = artifacts.get("authority_context", {}).get("admission", {})
+    baseline = artifacts.get("repository_baseline") or request.get("repository_baseline")
+    current = subprocess.run(
+        ["git", "-C", str(root), "rev-parse", "HEAD"],
+        text=True, capture_output=True, check=False,
+    ).stdout.strip()
+    state = value.get("admission_state", "ACTIVE")
+    fresh = bool(baseline and baseline == current)
+    executable = state not in {"STALE", "SUPERSEDED", "CANCELLED", "REJECTED", "CONSUMED", "COMPLETED"} and fresh
+    return {
+        "admission_id": value.get("admission_id"),
+        "admission_state": state,
+        "mission_id": request.get("mission_id") or binding.get("mission_id"),
+        "submission_id": request.get("submission_id") or binding.get("submission_id"),
+        "wop_id": binding.get("wop_id") or authority_admission.get("wop_id") or request.get("wop_id"),
+        "repository": binding.get("repository") or authority_admission.get("repository"),
+        "admitted_baseline": baseline,
+        "current_baseline": current,
+        "freshness": "PASS" if fresh else "STALE",
+        "executable": executable,
+        "supersession": value.get("supersession") or artifacts.get("authority_context", {}).get("admission", {}).get("supersession"),
+        "authority": binding.get("authority") or authority_admission.get("authority"),
+        "projection": "existing admission record",
+    }
+
+
+def _mission_projection(root: Path, mission_id: str) -> dict[str, Any]:
+    """Resolve current and historical lifecycle state once for every controller."""
+    admissions = [_admission_detail(root, item) for item in _admission_records(root, mission_id)]
+    executions = [_execution_detail(root, item) for item in _execution_records(root, mission_id)]
+    current_admissions = [item for item in admissions if item["executable"]]
+    current_executions = [item for item in executions if item["state"] in {"Waiting", "Suspended", "Executing", "Running", "Qualifying", "AwaitingAcceptance"}]
+    result = "PASS"
+    integrity = None
+    if len(current_admissions) > 1:
+        result, integrity = "FAIL", {"reason": "MULTIPLE_CURRENT_ADMISSIONS", "admission_ids": [item["admission_id"] for item in current_admissions]}
+    if len(current_executions) > 1:
+        result, integrity = "FAIL", {"reason": "MULTIPLE_CURRENT_EXECUTIONS", "execution_ids": [item["execution_id"] for item in current_executions]}
+    return {
+        "current_admission": current_admissions[0] if len(current_admissions) == 1 else None,
+        "current_execution": current_executions[0] if len(current_executions) == 1 else None,
+        "historical_admissions": [item for item in admissions if item not in current_admissions],
+        "historical_executions": [item for item in executions if item not in current_executions],
+        "integrity": integrity or {"result": "PASS"},
+        "result": result,
+        "projection": "canonical mission projection",
     }
 
 
@@ -254,15 +330,19 @@ def queue(root: Path | str, view: str = "list") -> dict[str, Any]:
         cards = [card for card in cards if card["lifecycle"] == "COMPLETED"]
     elif view not in {"list", "show"}:
         raise OperationalBetaError("BETA_QUEUE_VIEW_INVALID")
-    executions = {
-        item["mission_id"]: _execution_projection(Path(root), item["mission_id"])
-        for item in cards if _execution_projection(Path(root), item["mission_id"])
-    }
+    executions = {}
+    projections = {}
+    for item in cards:
+        projection = _mission_projection(Path(root), item["mission_id"])
+        projections[item["mission_id"]] = projection
+        if projection["current_execution"]:
+            executions[item["mission_id"]] = projection["current_execution"]
     return {
         "result": value["result"], "operation": "BETA", "queue_scope": "OPERATION",
         "execution_environment": "ADMITTED_MISSION_ATTRIBUTE",
         "missions": cards, "metrics": value["metrics"],
         "executions": executions,
+        "projections": projections,
         "selection_interface": "zeus missions select",
         "authoritative_sources": value["authoritative_sources"],
         "integrity": value["integrity"],
@@ -298,14 +378,27 @@ def mission_state(root: Path | str, mission_id: str) -> dict[str, Any]:
     for card in value["missions"]:
         if card["mission_id"] == selected:
             return {"result": value["result"], **card, "operation": "BETA",
-                    "execution": _execution_projection(Path(root), selected),
+                    **_mission_projection(Path(root), selected),
                     "authoritative_sources": value["authoritative_sources"]}
     raise OperationalBetaError("BETA_MISSION_NOT_FOUND")
 
 
+def mission_history(root: Path | str, mission_id: str) -> dict[str, Any]:
+    """Expose lifecycle history explicitly; never fold it into current state."""
+    mission = mission_state(root, mission_id)
+    return {
+        "result": mission["result"], "operation": "BETA", "mission_id": mission["mission_id"],
+        "historical": True,
+        "historical_admissions": mission["historical_admissions"],
+        "historical_executions": mission["historical_executions"],
+        "authoritative_sources": mission["authoritative_sources"],
+        "integrity": mission["integrity"],
+    }
+
+
 def mission_view(root: Path | str, action: str, mission_id: str) -> dict[str, Any]:
     mission = mission_state(root, mission_id)
-    if action in ("state", "status", "show", "verify"):
+    if action in ("state", "status", "show", "verify", "health"):
         return mission
     if action in ("readiness", "eligibility"):
         return {"result": mission["result"], "mission_id": mission["mission_id"],
@@ -333,7 +426,7 @@ def mission_view(root: Path | str, action: str, mission_id: str) -> dict[str, An
                 "production_baseline": "OA-v1.0.0",
                 "development_baseline": "OB-PLAN-v1.0.0",
                 "authority": mission["authoritative_sources"],
-                "execution": mission.get("execution")}
+                **{key: mission.get(key) for key in ("current_admission", "current_execution", "historical_admissions", "historical_executions", "integrity", "projection")}}
     raise OperationalBetaError("BETA_UNSUPPORTED_MISSION_VIEW")
 
 
@@ -343,9 +436,12 @@ def next_action(root: Path | str, subject: str | None = None) -> dict[str, Any]:
     if subject and subject.upper() in value["mission_families"]:
         cards = [card for card in cards if card["family"] == subject.upper()]
     candidate = next((card for card in cards if card["classification"] == "ELIGIBLE"), None)
-    execution = _execution_projection(Path(root), candidate["mission_id"]) if candidate else None
+    projection = _mission_projection(Path(root), candidate["mission_id"]) if candidate else {}
     return {"result": value["result"], "operation": "BETA", "scope": subject.upper() if subject else "BETA",
             "recommended_mission": candidate["mission_id"] if candidate else None,
-            "next_authorized_action": execution["next_authorized_action"] if execution and execution.get("next_authorized_action") else (f"Resolve and execute WOP-{candidate['mission_id']}-FOUNDATION-001" if candidate else "Await authoritative predecessor completion"),
-            "execution": execution,
+            "next_authorized_action": (projection.get("current_execution") or {}).get("next_authorized_action") if projection.get("current_execution") and projection.get("current_execution").get("next_authorized_action") else (f"Resolve and execute WOP-{candidate['mission_id']}-FOUNDATION-001" if candidate else "Await authoritative predecessor completion"),
+            "current_admission": projection.get("current_admission"),
+            "current_execution": projection.get("current_execution"),
+            "historical_admissions": projection.get("historical_admissions", []),
+            "historical_executions": projection.get("historical_executions", []),
             "metrics": value["metrics"], "authoritative_sources": value["authoritative_sources"]}

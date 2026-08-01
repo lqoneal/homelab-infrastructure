@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -32,6 +33,9 @@ AT = datetime(2026, 8, 1, 22, 0, tzinfo=timezone.utc)
 
 
 class AdmissionFreshnessTests(unittest.TestCase):
+    def current_baseline(self):
+        return subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True).strip()
+
     def request(self):
         return {
             "mode": "qualification",
@@ -48,7 +52,7 @@ class AdmissionFreshnessTests(unittest.TestCase):
             state = MissionAdmissionRuntime(ROOT, store).start(self.request(), at=AT)
             self.assertNotEqual(state["admission_id"], OLD_ADMISSION)
             self.assertEqual(state["request"]["submission_id"], SUBMISSION)
-            self.assertEqual(state["request"]["repository_baseline"], "b349b1b77d1008b4fb88b908f2ee8fa6899dfd71")
+            self.assertEqual(state["request"]["repository_baseline"], self.current_baseline())
             binding = state["artifacts"]["authority_context"]["admission"]
             self.assertEqual(binding["submission_id"], SUBMISSION)
             self.assertEqual(binding["repository"]["baseline_commit"], state["request"]["repository_baseline"])
@@ -64,7 +68,7 @@ class AdmissionFreshnessTests(unittest.TestCase):
             self.assertEqual(lineage["prior_admission_id"], OLD_ADMISSION)
             self.assertEqual(lineage["cancelled_execution_id"], OLD_EXECUTION)
             self.assertEqual(lineage["previous_baseline"], "bf47128d100a22cd08be9f112c45b04125b6945b")
-            self.assertEqual(lineage["replacement_baseline"], "b349b1b77d1008b4fb88b908f2ee8fa6899dfd71")
+            self.assertEqual(lineage["replacement_baseline"], self.current_baseline())
             self.assertEqual(json.loads(old_path.read_text())["state_digest"], json.loads((admission_dir / old_path.name).read_text())["state_digest"])
 
     def test_stale_admission_cannot_start_execution(self):
