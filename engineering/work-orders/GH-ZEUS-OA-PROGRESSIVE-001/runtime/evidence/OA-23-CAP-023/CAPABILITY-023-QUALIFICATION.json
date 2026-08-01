@@ -1,0 +1,24 @@
+{
+  "assertions": {
+    "bounded_observation": "PASS",
+    "durable_pause": "PASS",
+    "durable_recovery": "PASS",
+    "explicit_authorization": "PASS",
+    "negative_fail_closed": "PASS",
+    "no_duplicate_effects": "PASS",
+    "no_inferred_completion": "PASS",
+    "replay_idempotency": "FAIL"
+  },
+  "capability_id": "ZEUS-OA-CAP-023",
+  "mission_id": "OA-23",
+  "negative_cases": {
+    "mismatched_mission": "PASS",
+    "stale": "PASS",
+    "unauthorized": "PASS"
+  },
+  "objective": "Prove durable pause behavior without inferred completion or duplicated effects.",
+  "qualification_timestamp": "2026-08-01T11:02:43.249828+00:00",
+  "record_digest": "40e3aee6f58c8201e4dbee8492218e96e7a6b17ff92381a200b55219fc7b68db",
+  "result": "FAIL",
+  "schema_version": 1
+}

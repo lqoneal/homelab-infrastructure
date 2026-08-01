@@ -1,0 +1,41 @@
+{
+  "authoritative_inputs": {
+    "capability_registry_revision": "1.16",
+    "implementation": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-23/implementation.md",
+    "mission_knowledge_revision": "3.6",
+    "objective": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-23/objective.yaml",
+    "outcome": "ZEUS-OA-CAP-023",
+    "predecessor": "OA-22 ACCEPTED",
+    "prerequisite": "ZEUS-OA-CAP-022"
+  },
+  "canonical_evidence_digest": "f8cedd60d96431064e1c39f96f007d885ab9e0a5951ab35c5d83d9b818f5d120",
+  "gate_id": "OA-23",
+  "objective": "Prove durable pause behavior without inferred completion or duplicated effects.",
+  "qualification": {
+    "assertions": {
+      "bounded_observation": "PASS",
+      "durable_pause": "PASS",
+      "durable_recovery": "PASS",
+      "explicit_authorization": "PASS",
+      "negative_fail_closed": "PASS",
+      "no_duplicate_effects": "PASS",
+      "no_inferred_completion": "PASS",
+      "replay_idempotency": "FAIL"
+    },
+    "capability_id": "ZEUS-OA-CAP-023",
+    "mission_id": "OA-23",
+    "negative_cases": {
+      "mismatched_mission": "PASS",
+      "stale": "PASS",
+      "unauthorized": "PASS"
+    },
+    "objective": "Prove durable pause behavior without inferred completion or duplicated effects.",
+    "qualification_timestamp": "2026-08-01T11:02:43.249828+00:00",
+    "record_digest": "40e3aee6f58c8201e4dbee8492218e96e7a6b17ff92381a200b55219fc7b68db",
+    "result": "FAIL",
+    "schema_version": 1
+  },
+  "result": "FAIL",
+  "schema_version": 1,
+  "verification_timestamp": "2026-08-01T11:02:43.250086+00:00"
+}

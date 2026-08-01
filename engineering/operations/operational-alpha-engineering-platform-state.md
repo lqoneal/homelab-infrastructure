@@ -1,6 +1,6 @@
 # Operational Alpha Engineering Platform State Standard
 
-Status: Controlled standard, OA-22 candidate
+Status: Controlled standard, OA-23 execution baseline
 
 The Engineering Platform has one authoritative operational state derived from
 the published canonical baseline and synchronized EOS state. Missions evaluate
@@ -34,6 +34,11 @@ Zeus evaluates platform state and never reacquires a previously published
 capability. CAP-021 authorization remains the explicit boundary for CAP-022:
 CAP-022 may generate a bounded proposal only after a valid CAP-021 receipt, and
 generation never dispatches or executes corrective work.
+
+OA-23 extends this standard with safe interruption: an explicitly authorized
+pause is a durable, bounded observation state. It does not infer completion,
+apply effects, dispatch work, or create duplicate state on identical replay.
+Malformed, stale, mismatched, or unauthorized pause requests fail closed.
 
 ## Deferred architecture
 

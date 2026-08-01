@@ -1,6 +1,6 @@
 schema_version: 1
 registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-revision: '1.15'
+revision: '1.16'
 classification: Authoritative
 authoritative_owner: Engineering Governance
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -320,17 +320,17 @@ capabilities:
   - capability_id: ZEUS-OA-CAP-023
     name: Safe Interruption
     description: Preserves durable pause behavior without inferred completion or duplicated effects.
-    lifecycle: Planned
+    lifecycle: Operational
     mission_introduced: OA-23
     mission_modified: OA-23
     verification_commands: [zeus verify OA-23, zeus capability verify ZEUS-OA-CAP-023]
     expected_verification_results: [durable pause PASS, duplicate-effect rejection PASS, recovery PASS]
     dependencies: [ZEUS-OA-CAP-022, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
     owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
-    runtime_availability: UNAVAILABLE
-    associated_evidence: []
-    regression_status: NOT_STARTED
-    capability_history: [OA-23 identity reconciled; qualification not performed]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-23-CAP-023/]
+    regression_status: PASS
+    capability_history: [OA-23 identity reconciled; independently qualified]
   - capability_id: ZEUS-OA-CAP-024
     name: Resume and Idempotent Continuation
     description: Reconstructs durable state and continues from the first incomplete operation.
