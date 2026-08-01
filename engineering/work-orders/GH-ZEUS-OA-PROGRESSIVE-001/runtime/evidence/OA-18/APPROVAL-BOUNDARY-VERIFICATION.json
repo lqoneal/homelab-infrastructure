@@ -1,0 +1,31 @@
+{
+  "assertions": {
+    "durable_evidence": "PASS",
+    "interruption_recovery": "PASS",
+    "malformed_input_rejection": "PASS",
+    "missing_approval_fail_closed": "PASS",
+    "no_preapproval_effect": "PASS",
+    "protected_action_pause": "PASS",
+    "replay_protection": "PASS",
+    "stale_approval_rejection": "PASS",
+    "unauthorized_approval_rejection": "PASS",
+    "valid_operator_approval_resume": "PASS"
+  },
+  "authoritative_inputs": {
+    "capability_id": "ZEUS-OA-CAP-017",
+    "capability_registry_revision": "1.8",
+    "mission_knowledge_revision": "3.0",
+    "objective": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-18/objective.yaml",
+    "predecessor": "OA-17 ACCEPTED"
+  },
+  "canonical_evidence_digest": "24d80ea8a9ddc06477c51b8e1576cc8c624d9922815fc4c3f058561ce33393f7",
+  "gate_id": "OA-18",
+  "qualification": {
+    "approval_request_id": "OA18-APPROVAL-001",
+    "execution_state": "Running",
+    "session_id": "SESSION-e440dd6f-afce-5821-9aa4-7acb09ba4e12"
+  },
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-08-01T04:54:25.750952+00:00"
+}

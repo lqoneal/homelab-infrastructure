@@ -1,5 +1,5 @@
 {
-  "active_gate": "OA-18",
+  "active_gate": "OA-19",
   "gates": {
     "OA-01": {
       "acceptance_receipt": "/data/engineering/repositories/homelab/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-01/accepted.json",
@@ -70,8 +70,8 @@
       "state": "ACCEPTED"
     },
     "OA-18": {
-      "acceptance_receipt": null,
-      "state": "PENDING"
+      "acceptance_receipt": "/home/loneal/homelab-oa15/engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/decisions/OA-18/accepted-4dcb3ef7556f8d7cf31807aa47b5743682ad93e6979a83b50ba96d2be4712ce2.json",
+      "state": "ACCEPTED"
     },
     "OA-19": {
       "acceptance_receipt": null,

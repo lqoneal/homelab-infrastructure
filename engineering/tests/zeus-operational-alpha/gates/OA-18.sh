@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # Gate identity: OA-18
-# Capability statement: Signed repository-baseline republication
-# Current applicability: discovered at runtime; unavailable future interfaces produce NOT_READY.
-# Required authority: controlled PMCT observation authority; state changes require --authorized-transition.
-# Required commands: zeus authority status
-# Required artifacts: run manifest, repository, discovery, assertions, result, report, hashes, COMPLETE.
+# Capability statement: Approval Enforcement During Execution
+# Current applicability: active OA-18 approval-boundary qualification.
+# Required authority: Mission Knowledge Model, Capability Registry, and EMM bindings.
+# Required commands: zeus verify OA-18, zeus gate receipt OA-18
+# Required artifacts: approval-boundary verification, assertions, evidence digest, VERIFIED.
 # Preconditions: exact repository identity and prior gate PASS where required.
-# Positive path: Through the authoritative CLI, demonstrate signed repository-baseline republication and capture the resulting production-observable state.
+# Positive path: Through the authoritative execution oversight interface, demonstrate that a protected action pauses until valid operator approval and resumes only after approval.
 # Negative path: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-18 request and verify Zeus rejects it without advancing state.
 # Idempotency: Repeat the OA-18 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
 # Interruption/recovery: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
-# Regression scope: OA-01, OA-02, OA-03, OA-04, OA-05, OA-06, OA-07, OA-08, OA-09, OA-10, OA-11, OA-12, OA-13, OA-14, OA-15, OA-16, OA-17
+# Regression scope: OA-01, OA-02, OA-03, OA-04, OA-05, OA-06, OA-07, OA-08, OA-09, OA-10, OA-11, OA-12, OA-13, OA-14, OA-15, OA-16, OA-17, OA-18
 # Evidence requirements: repository identity and exact HEAD; command stdout, stderr, and return code; OA-18 positive and negative assertions; evidence integrity manifest and completion marker
 # PASS: all mandatory observable assertions pass and evidence is complete.
 # FAIL: an available required capability behaves incorrectly or unsafely.
