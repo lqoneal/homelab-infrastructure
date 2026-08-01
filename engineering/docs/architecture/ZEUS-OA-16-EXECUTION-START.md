@@ -15,5 +15,8 @@ re-emit the execution-start notification.
 
 Zeus controllers remain projections. Recommendation data is resolved by the
 Mission Knowledge Model and bound through the Capability Registry, roadmap,
-EMM, and controlled objective documentation. No controller creates authority,
-advances lifecycle, or implements OA-17.
+EMM, and controlled objective documentation. OA-17 adds a distinct durable
+authorization phase after start: only a validated, non-expired, lease-backed
+receipt bound to execution, mission, WOP, repository, authority, and operator
+permits continuation. Invalid, replayed, expired, revoked, or interrupted
+authorization fails closed; controllers remain read-only projections.

@@ -25,7 +25,7 @@ Every gate begins unaccepted. Prior implementation and evidence may support veri
 | OA-14 | Prove explicit authorization, rejection, expiration, and replay-safe dispatch authorization receipts. | OA-15 |
 | OA-15 | Prove Zeus dispatches the admitted WOP to the selected qualified agent exactly once. | OA-16 |
 | OA-16 | Prove durable execution-start state and EENS lifecycle notification. | OA-17 |
-| OA-17 | Prove Zeus observes progress, handoffs, checkpoints, and failures through EENS. | OA-18 |
+| OA-17 | Prove controlled execution authorization follows durable execution start with identity, lease, receipt, replay, timeout, recovery, and fail-closed controls. | OA-18 |
 | OA-18 | Prove protected actions pause for valid operator approval and cannot bypass the approval boundary. | OA-19 |
 | OA-19 | Prove append-only capture of commands, outputs, state, timestamps, identities, checksums, and completion markers. | OA-20 |
 | OA-20 | Prove evidence binding to repository commit, authority, mission, WOP, execution, gate, and agent. | OA-21 |

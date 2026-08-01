@@ -1,0 +1,33 @@
+schema_version: 1
+milestone_id: OA-OPERATIONAL-MILESTONE-004
+revision: 1.0
+status: published_qualified
+classification: Operational Alpha Milestone Baseline
+authoritative_owner: Engineering Governance
+authority: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+immutable: true
+supersedes: OA-OPERATIONAL-MILESTONE-003
+repository:
+  identity: homelab
+  remote: git@github.com:lqoneal/homelab-infrastructure.git
+  branch: main
+  published_commit: c415af51744fc719dfae392a2540469cb783601c
+  captured_at: '2026-08-01'
+source_bindings:
+  mission_knowledge_model: {path: engineering/missions/operational-alpha-mission-knowledge.yaml, revision: 2.9}
+  capability_registry: {path: engineering/capabilities/operational-alpha-capability-registry.yaml, revision: 1.7}
+  emm: {path: engineering/metadata/operational-alpha-emm.yaml, revision: 2.8}
+  roadmap: {id: ZEUS-OA-ROADMAP-002, revision: 1.0}
+  prior_milestone: OA-OPERATIONAL-MILESTONE-003
+mission_state:
+  completed: [OA-01, OA-02, OA-03, OA-04, OA-05, OA-06, OA-07, OA-08, OA-09, OA-10, OA-11, OA-12, OA-13, OA-14, OA-15, OA-16, OA-17]
+  current: OA-18
+  sequence: [OA-01, OA-02, OA-03, OA-04, OA-05, OA-06, OA-07, OA-08, OA-09, OA-10, OA-11, OA-12, OA-13, OA-14, OA-15, OA-16, OA-17, OA-18, OA-19, OA-20, OA-21, OA-22, OA-23, OA-24, OA-25, OA-26, OA-27, OA-28, OA-29, OA-30]
+capabilities:
+  active: [ZEUS-OA-CAP-001, ZEUS-OA-CAP-002, ZEUS-OA-CAP-003, ZEUS-OA-CAP-004, ZEUS-OA-CAP-005, ZEUS-OA-CAP-006, ZEUS-OA-CAP-007, ZEUS-OA-CAP-008, ZEUS-OA-CAP-009, ZEUS-OA-CAP-010, ZEUS-OA-CAP-011, ZEUS-OA-CAP-012, ZEUS-OA-CAP-013, ZEUS-OA-CAP-014, ZEUS-OA-CAP-015, ZEUS-OA-CAP-016]
+evidence:
+  qualification: engineering/evidence/2026-08-01-wop-oa-17-execution-001/QUALIFICATION-REPORT.md
+  reconciliation: engineering/evidence/2026-08-01-wop-oa-17-execution-001/RECONCILIATION-REPORT.md
+  architecture: engineering/evidence/2026-08-01-wop-oa-17-execution-001/ARCHITECTURE-REPORT.md
+  operator: engineering/evidence/2026-08-01-wop-oa-17-execution-001/OPERATOR-REPORT.md
+  completion: engineering/evidence/2026-08-01-wop-oa-17-execution-001/COMPLETION-REPORT.md
