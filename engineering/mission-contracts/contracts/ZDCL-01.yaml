@@ -1,0 +1,59 @@
+schema_version: 1
+document_type: MissionContract
+contract_id: ZDCL-01-MISSION-CONTRACT-001
+mission_id: ZDCL-01
+registry_id: OPERATION-BETA-ZDCL-01
+wop:
+  id: WOP-ZDCL-01-FOUNDATION-001
+  locator: engineering/work-orders/WOP-ZDCL-01-FOUNDATION-001/mission.yaml
+  digest: f4d59b18f3656d5eaaa9854616c3ed5c56ca56efe73560fb2804f600cb602f21
+repository:
+  identity: homelab
+  root: /data/engineering/repositories/homelab
+  branch: main
+  baseline: OB-PLAN-v1.0.0
+scope:
+  objective: Establish the bounded native Zeus development-session foundation for identity, classification, repository/baseline verification, and evidence capture.
+  prohibited:
+    - modify OA-v1.0.0
+    - implement ZDCL-02 or later
+    - implement CAGF or EPE
+    - deploy runtime behavior
+permissions:
+  inspect: true
+  modify: true
+  generate_evidence: true
+  reconcile_metadata: true
+  stage: true
+  commit: true
+  create_branch: true
+  push: true
+  publish: true
+  rollback: true
+  reconcile_state: true
+  close_mission: true
+roles:
+  human_authorizer: Engineering Governance
+  repository_operator: repository-operator
+  orchestration_agent: Zeus
+  execution_agent: Codex
+  implementation_owner: ZDCL
+  document_owner: Engineering Governance
+  review_owner: Engineering Governance
+  qualification_owner: independent-qualification
+  publication_owner: Engineering Governance
+  evidence_reviewer: independent-qualification
+approvals:
+  activation: approved
+  authority_reference: WOP-ZDCL-01-WOP-PACKAGE-AND-SUBMISSION-CORRECTIVE-001
+dirty_tree:
+  policy: CLEAN_REQUIRED
+lifecycle: active
+activation:
+  actor: Engineering Governance
+  record: WOP-ZDCL-01-WOP-PACKAGE-AND-SUBMISSION-CORRECTIVE-001
+interruption:
+  resume_from_checkpoint: true
+  fail_closed_on_digest_mismatch: true
+closeout:
+  requires_completion_receipt: true

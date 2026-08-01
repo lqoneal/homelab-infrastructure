@@ -9,10 +9,12 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
+import sys
+sys.path.insert(0, str(ROOT))
 
 
 class ZeusWopSubmissionTests(unittest.TestCase):
@@ -25,6 +27,7 @@ class ZeusWopSubmissionTests(unittest.TestCase):
                 "ZEUS_TESTING": "1",
                 "ZEUS_OPERATOR_STATE": str(state),
                 "ZEUS_NO_INTRO": "1",
+                "ZEUS_STAGE1_STATE": str(Path(temporary) / "stage1"),
             }
             result = subprocess.run(
                 ["python3", str(ROOT / "scripts/zeus"), *args, "--json"],
@@ -34,11 +37,38 @@ class ZeusWopSubmissionTests(unittest.TestCase):
             return result.returncode, json.loads(result.stdout)
 
     def test_mission_id_fails_closed_without_authoritative_package(self):
-        code, value = self.run_zeus("mission", "submit", "ZDCL-01")
+        from scripts.lib.emp.mission_submission import submit_by_mission
+
+        with patch("scripts.lib.emp.mission_submission._package_candidates", return_value=[]):
+            value = submit_by_mission(ROOT, "ZDCL-01", state_directory=ROOT / ".zeus/runtime/stage1")
+        code = 78
         self.assertEqual(code, 78)
-        self.assertEqual(value["result"], "BLOCKED")
+        self.assertEqual(value["result"], "FAIL")
         self.assertEqual(value["resolution"], "WOP_PACKAGE_UNAVAILABLE")
         self.assertEqual(value["mission_id"], "ZDCL-01")
+        self.assertEqual(value["family"], "ZDCL")
+        self.assertEqual(value["title"], "Native session foundation")
+
+    def test_mission_id_submission_reuses_published_package(self):
+        from scripts.lib.emp.mission_submission import submit_by_mission
+
+        record = {
+            "wop_id": "WOP-ZDCL-01-FOUNDATION-001",
+            "package_digest": "a" * 64,
+            "instance_id": "ZEUS-MISSION-test",
+            "state": "STAGED",
+        }
+        with patch("scripts.lib.emp.mission_submission.Stage1Runtime.submit", return_value=record):
+            value = submit_by_mission(ROOT, "ZDCL-01", state_directory=ROOT / ".zeus/runtime/stage1")
+        code = 0
+        self.assertEqual(code, 0)
+        self.assertEqual(value["result"], "PASS")
+        self.assertEqual(value["resolution"], "AUTHORITATIVE_PACKAGE_REUSED")
+        self.assertEqual(value["mission_id"], "ZDCL-01")
+        self.assertEqual(value["family"], "ZDCL")
+        self.assertEqual(value["wop_id"], "WOP-ZDCL-01-FOUNDATION-001")
+        self.assertTrue(value["package_digest"])
+        self.assertTrue(value["submission_id"])
 
     def test_non_beta_mission_is_not_routed_to_legacy_submission(self):
         code, value = self.run_zeus("mission", "submit", "OA-30")
