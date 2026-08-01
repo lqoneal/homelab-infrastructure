@@ -83,3 +83,13 @@ or replace the canonical owners in the authority model.
 - Conflicting authority, stale digests, missing ownership, or ambiguous scope fail closed and become reconciliation work.
 - Historical Operational Alpha artifacts remain evidence and do not become Beta authority.
 - No mission may advance a later pillar phase without its predecessor's qualified boundary.
+
+### Admission freshness
+
+- Admission identity includes the resolved submission and current Development
+  repository baseline.
+- A baseline change makes an admission stale for execution and requires a
+  replacement admission; the historical admission and execution remain
+  immutable evidence.
+- Replacement admissions must carry explicit supersession lineage and may
+  reuse the existing authoritative submission and published WOP.

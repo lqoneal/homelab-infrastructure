@@ -141,6 +141,8 @@ class MissionAdmissionRuntime:
             "admission_id": admission_id,
             "request": normalized,
             "request_digest": digest(normalized),
+            "admission_state": "ACTIVE",
+            "supersession": self._supersession_lineage(normalized),
             "status": "REQUESTED",
             "current_stage": STAGES[0],
             "completed_stages": [],
@@ -232,6 +234,11 @@ class MissionAdmissionRuntime:
                 {"requested": str(requested), "discovered": discovered},
             )
         state["artifacts"]["repository_baseline"] = baseline
+        state["artifacts"]["freshness"] = {
+            "admitted_baseline": baseline,
+            "current_baseline": baseline,
+            "fresh": True,
+        }
         return {
             "repository": str(self.root),
             "baseline_commit": baseline,
@@ -526,7 +533,7 @@ class MissionAdmissionRuntime:
             "package_path": str(package_root),
             "package_digest": package_digest,
             "immutable_manifest_reference": str(manifest_path.relative_to(self.root)),
-            "repository": {"identity": str(self.root), "development_baseline": contract["repository"]["baseline"], "production_baseline": "OA-v1.0.0"},
+            "repository": {"identity": str(self.root), "development_baseline": contract["repository"]["baseline"], "baseline_commit": state["artifacts"]["repository_baseline"], "production_baseline": "OA-v1.0.0"},
             "submission_id": self._submission_id(mission, request),
             "work_item": {"state": "NOT_DECLARED_BY_MISSION_CONTRACT", "source": str(contract_path.relative_to(self.root))},
             "submitter": submitter,
@@ -539,6 +546,8 @@ class MissionAdmissionRuntime:
             "correlation_id": request["correlation_id"],
             "package_validation": package_evidence,
         }
+        if state.get("supersession"):
+            admission["supersession"] = deepcopy(state["supersession"])
         return {"mission_contract": {"contract_id": contract["contract_id"], "path": str(contract_path.relative_to(self.root)), "digest": digest(contract)},
                 "wop": {"wop_id": metadata["wop_id"], "package_digest": package_digest, "path": str(package_root)},
                 "repository": admission["repository"], "authority": admission["authority"], "admission": admission,
@@ -557,6 +566,47 @@ class MissionAdmissionRuntime:
             raise StageBlocked("SUBMISSION_FAILURE", "mission submission is not active", {
                 "mission_id": mission, "state": record.get("state")})
         return str(record["instance_id"])
+
+    def _supersession_lineage(self, request: Mapping[str, Any]) -> dict[str, Any] | None:
+        """Return lineage for a fresh request without mutating historical records."""
+        current = request.get("repository_baseline")
+        prior: list[dict[str, Any]] = []
+        for path in sorted(self.store.directory.glob("MISSION-ADMISSION-*.json")):
+            try:
+                value = self.store.load(path.stem)
+            except MissionAdmissionError:
+                continue
+            if value.get("request", {}).get("mission_id") != request.get("mission_id"):
+                continue
+            old_request = value.get("request", {})
+            old_baseline = (
+                value.get("artifacts", {}).get("repository_baseline")
+                or old_request.get("repository_baseline")
+            )
+            if old_baseline == current:
+                continue
+            cancelled_execution = None
+            execution_dir = self.root / ".zeus/runtime/mission-executions"
+            for execution_path in sorted(execution_dir.glob("MISSION-EXECUTION-*.json")):
+                try:
+                    execution = json.loads(execution_path.read_text(encoding="utf-8"))
+                except (OSError, json.JSONDecodeError):
+                    continue
+                if execution.get("admission_id") != value.get("admission_id"):
+                    continue
+                if execution.get("state") == "Cancelled":
+                    cancelled_execution = execution.get("execution_id")
+                    break
+            prior.append({
+                "prior_admission_id": value.get("admission_id"),
+                "cancelled_execution_id": cancelled_execution,
+                "supersession_reason": "REPOSITORY_BASELINE_CHANGED",
+                "previous_baseline": old_baseline,
+                "replacement_baseline": current,
+            })
+        if not prior:
+            return None
+        return sorted(prior, key=lambda item: str(item.get("prior_admission_id")))[-1]
 
     def _effective_agent_registry(self):
         from scripts.lib.emp.agent_qualification import runtime_registry_path
@@ -607,8 +657,18 @@ class MissionAdmissionRuntime:
             )
         return result.stdout.strip()
 
-    @staticmethod
-    def _normalize_request(request):
+    def _normalize_request(self, request):
+        mission = request.get("mission_id")
+        repository = str(Path(str(request.get("repository", ""))).resolve()) if request.get("repository") else ""
+        baseline = self._git("rev-parse", "HEAD") if repository == str(self.root) else None
+        submission_id = request.get("submission_id")
+        if not submission_id and mission:
+            try:
+                record = Stage1Runtime(self.root, self.root / ".zeus/runtime/stage1").show(mission)
+                if record.get("state") in {"STAGED", "ADMITTED"}:
+                    submission_id = record.get("instance_id")
+            except Exception:
+                submission_id = None
         value = {
             "mode": request.get("mode"),
             "intent": str(request.get("intent", "")).strip(),
@@ -617,14 +677,13 @@ class MissionAdmissionRuntime:
             "work_item_id": request.get("work_item_id"),
             "principal_id": request.get("principal_id"),
             "submitter_identity": request.get("submitter_identity"),
-            "repository": str(Path(str(request.get("repository", ""))).resolve())
-            if request.get("repository")
-            else "",
+            "repository": repository,
+            "repository_baseline": baseline,
             "implementation_wop_id": request.get("implementation_wop_id"),
             "implementation_wop_revision": str(request.get("implementation_wop_revision", "1")),
             "authority_record_id": request.get("authority_record_id"),
             "correlation_id": request.get("correlation_id", "mission-admission"),
-            "submission_id": request.get("submission_id"),
+            "submission_id": submission_id,
         }
         if value["mode"] not in {"qualification", "operational"}:
             raise MissionAdmissionError("mode must be qualification or operational")

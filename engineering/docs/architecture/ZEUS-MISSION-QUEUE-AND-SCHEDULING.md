@@ -95,6 +95,15 @@ submission -> validation -> staging -> eligibility -> selection
 Where a legacy or historical record does not expose every intermediate event,
 the projection reports the available authoritative state and does not invent
 missing history.
+
+## Admission lineage
+
+Admission freshness is a prerequisite to selection and execution. Queue and
+mission projections expose the submission ID, admission ID, admitted/current
+baselines, freshness result, and supersession lineage when available. A stale
+admission remains visible in history but is never projected as executable; the
+fresh replacement is the active candidate when its authority and readiness
+checks pass.
 ## Execution projection
 
 When an admitted mission has an existing execution record, queue and mission
