@@ -1,0 +1,13 @@
+{
+  "decided_at": "2026-08-01T02:41:59.277029+00:00",
+  "decision": "ACCEPTED",
+  "evidence_digest": "f98b4c874fbae3e1091f0629a0c4c31c88b847f05a08fac99b26204a1a851aa3",
+  "evidence_marker_sha256": "c8af20f5f1cfd83e3d5d4df486bbe607aa5b5b47a362dccfb1dc3ca0b2f44f52",
+  "gate_id": "OA-16",
+  "marker_digest": "9523e08dee62fadc7eb95f8f8e3cd71308dab356fb2185c53b986086eb32769b",
+  "operator": "loneal",
+  "package_id": "GH-ZEUS-OA-PROGRESSIVE-001",
+  "package_manifest_sha256": "5f67123d88919a9ae3b5d6f9ef7972d338612a29d52ded2dbc301e6f09877690",
+  "receipt_digest": "cf67bdf566d9159ba29254c2d1f3142488bdf2be6b732a315fda226e52318c0d",
+  "schema_version": 2
+}

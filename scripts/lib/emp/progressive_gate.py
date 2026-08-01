@@ -56,6 +56,7 @@ _VERIFIERS = {
     "OA-13": "scripts.lib.emp.oa13_gate_verification",
     "OA-14": "scripts.lib.emp.oa14_gate_verification",
     "OA-15": "scripts.lib.emp.oa15_gate_verification",
+    "OA-16": "scripts.lib.emp.oa16_gate_verification",
 }
 
 

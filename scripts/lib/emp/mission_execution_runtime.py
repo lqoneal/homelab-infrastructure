@@ -277,7 +277,21 @@ class MissionExecutionRuntime:
             "updated_at": self._time(at),
         }
         self.store.save(state)
-        self._append_evidence(state, "EXECUTION_CREATED", {"state": "Pending"}, at)
+        self._append_evidence(
+            state,
+            "EXECUTION_CREATED",
+            {
+                "state": "Pending",
+                "execution_id": execution_id,
+                "mission_id": wop["mission_id"],
+                "wop_id": wop["wop_id"],
+                "repository": str(self.root),
+                "operator": admission["request"].get(
+                    "operator_id", admission["request"].get("principal_id", "UNKNOWN")
+                ),
+            },
+            at,
+        )
         self.store.save(state)
         return self.run(execution_id, at=at, max_gates=max_gates)
 

@@ -1,0 +1,87 @@
+{
+  "admission_id": "OA16-ADMISSION-QUALIFICATION-001",
+  "checkpoints": [],
+  "completed_gates": [],
+  "created_at": "2026-07-31T08:16:00Z",
+  "current_gate": "VALIDATE_WOP",
+  "evidence": [
+    {
+      "event": "EXECUTION_CREATED",
+      "evidence_digest": "4005c2905fc2ffa1733dfb6c6a157e576f01f62c64152b9880339edc808dc6ea",
+      "observed_at": "2026-07-31T08:16:00Z",
+      "payload": {
+        "execution_id": "MISSION-EXECUTION-12e9b584-9df0-5ba5-aa88-726852e98d34",
+        "mission_id": "OA-16",
+        "operator": "OA-16-QUALIFICATION-OPERATOR",
+        "repository": "/home/loneal/homelab-oa15",
+        "state": "Pending",
+        "wop_id": "WOP-016e4567-e89b-42d3-a456-426614174016"
+      },
+      "previous_evidence_digest": null,
+      "publication": {
+        "inserted": true,
+        "path": "/tmp/zeus-oa16-dliccdac/executions/published-evidence/MISSION-EXECUTION-12e9b584-9df0-5ba5-aa88-726852e98d34/0001.json"
+      },
+      "sequence": 1
+    },
+    {
+      "event": "EXECUTION_INTERRUPTED",
+      "evidence_digest": "a8faf7a6e5210834a4cb8bd979dcbcfebc6a1caec9ebe46eed1ea325b2955668",
+      "observed_at": "2026-07-31T08:16:00Z",
+      "payload": {
+        "next_gate": "VALIDATE_WOP",
+        "reason": "BOUNDED_RUN"
+      },
+      "previous_evidence_digest": "4005c2905fc2ffa1733dfb6c6a157e576f01f62c64152b9880339edc808dc6ea",
+      "publication": {
+        "inserted": true,
+        "path": "/tmp/zeus-oa16-dliccdac/executions/published-evidence/MISSION-EXECUTION-12e9b584-9df0-5ba5-aa88-726852e98d34/0002.json"
+      },
+      "sequence": 2
+    },
+    {
+      "event": "RECOVERY_ACTION",
+      "evidence_digest": "57b08f6d1d065945c31bd973fee27458945085c53099927d6aa76fac6b067e08",
+      "observed_at": "2026-07-31T08:16:00Z",
+      "payload": {
+        "action": "RESUME",
+        "next_gate": "VALIDATE_WOP"
+      },
+      "previous_evidence_digest": "a8faf7a6e5210834a4cb8bd979dcbcfebc6a1caec9ebe46eed1ea325b2955668",
+      "publication": {
+        "inserted": true,
+        "path": "/tmp/zeus-oa16-dliccdac/executions/published-evidence/MISSION-EXECUTION-12e9b584-9df0-5ba5-aa88-726852e98d34/0003.json"
+      },
+      "sequence": 3
+    },
+    {
+      "event": "EXECUTION_INTERRUPTED",
+      "evidence_digest": "9baf9dc5cf53c3d143dda6fab265a3c7b52c02041ad2d0e7b1f4be5bd96d3a20",
+      "observed_at": "2026-07-31T08:16:00Z",
+      "payload": {
+        "next_gate": "VALIDATE_WOP",
+        "reason": "BOUNDED_RUN"
+      },
+      "previous_evidence_digest": "57b08f6d1d065945c31bd973fee27458945085c53099927d6aa76fac6b067e08",
+      "publication": {
+        "inserted": true,
+        "path": "/tmp/zeus-oa16-dliccdac/executions/published-evidence/MISSION-EXECUTION-12e9b584-9df0-5ba5-aa88-726852e98d34/0004.json"
+      },
+      "sequence": 4
+    }
+  ],
+  "execution_id": "MISSION-EXECUTION-12e9b584-9df0-5ba5-aa88-726852e98d34",
+  "failure": null,
+  "mission_id": "OA-16",
+  "mode": "qualification",
+  "repository": "/home/loneal/homelab-oa15",
+  "repository_baseline": "OA16-QUALIFICATION-BASELINE",
+  "runtime_version": "zeus-mission-execution/1",
+  "schema_version": 1,
+  "state": "Suspended",
+  "state_digest": "ad0e0970cd03d3fd33be5eb12b852031991fb45a1a217aa8159375f3ae810716",
+  "updated_at": "2026-07-31T08:16:00Z",
+  "wait_reason": null,
+  "wop_id": "WOP-016e4567-e89b-42d3-a456-426614174016",
+  "wop_submission_digest": "oa16-authoritative-wop-digest"
+}

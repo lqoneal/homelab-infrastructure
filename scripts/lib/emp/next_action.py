@@ -317,6 +317,18 @@ def human_text(value: Mapping[str, Any]) -> str:
         for item in value["blocking_conditions"]
     ) or "- None"
     work = ", ".join(authority["active_work_authority"]) or "NONE"
+    recommendation = ""
+    if action.get("wop"):
+        recommendation = f"""
+Recommendation:
+{action['description']}
+
+Objective:
+{action.get('objective') or 'Authoritative objective unavailable'}
+
+Expected Outcome:
+{action.get('expected_outcome') or 'No successor outcome is authorized'}
+"""
     return f"""ZEUS MODE: {value['zeus_mode']}
 
 Mission:
@@ -354,6 +366,7 @@ Blocking Conditions:
 
 Next Authorized Action:
 {action['description']}
+{recommendation}
 
 Result:
 {value['result']}

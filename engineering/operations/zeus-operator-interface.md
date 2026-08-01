@@ -249,6 +249,17 @@ persistence succeeds but state persistence is interrupted, a retry may finish
 the transition only when exactly one orphan receipt passes every current
 binding check for the same operator; ambiguity stops fail closed.
 
+## Authoritative operator recommendations
+
+Mission controllers expose one read-only recommendation contract derived from
+the Mission Knowledge Model, Capability Registry, controlled roadmap, EMM, and
+the mission objective document. When the current mission is blocked, the
+human-readable projection names the missing capability, governing WOP,
+objective, and expected successor outcome. It never recommends a non-current
+mission or work absent from those sources. Use `--verify` or `--json` for
+machine-readable recommendation fields; default output contains operator text
+only.
+
 ## Corruption recovery
 
 Read, validation, lock, or write failure stops the invocation with exit 78.
