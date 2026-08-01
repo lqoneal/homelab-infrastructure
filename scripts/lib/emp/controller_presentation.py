@@ -99,6 +99,19 @@ def operator_text(value: Any, title: str | None = None) -> str:
             f"Development baseline          : {value.get('development_baseline', 'OB-PLAN-v1.0.0')}",
             f"Authority                     : {', '.join(value.get('authority', value.get('authoritative_sources', [])))}",
         ])
+        if "submission_id" in value:
+            lines.extend([
+                f"Result                       : {value.get('result')}",
+                f"Submission ID                : {value.get('submission_id')}",
+                f"WOP ID                       : {value.get('wop_id')}",
+                f"Package                      : {value.get('package')}",
+                f"Package digest               : {value.get('package_digest')}",
+                f"Submitter                    : {value.get('submitter')}",
+                f"Priority                     : {value.get('priority')}",
+                f"Queue state                  : {value.get('queue_state')}",
+                f"Admission readiness          : {value.get('admission_readiness')}",
+                f"Next authorized action       : {value.get('next_authorized_action')}",
+            ])
         return "\n".join(lines) + "\n"
     for key in ("result", "mission_id", "classification", "lifecycle", "recommended_mission",
                 "roadmap_id", "roadmap_revision", "mission_knowledge_revision", "status"):
