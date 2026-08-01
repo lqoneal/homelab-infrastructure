@@ -1,6 +1,6 @@
 schema_version: 1
 registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-revision: 1.7
+revision: 1.8
 classification: Authoritative
 authoritative_owner: Engineering Governance
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -233,3 +233,17 @@ capabilities:
     associated_evidence: [engineering/evidence/2026-07-31-wop-oa-17-execution-001/]
     regression_status: PASS
     capability_history: [OA-17 qualified]
+  - capability_id: ZEUS-OA-CAP-017
+    name: Approval Enforcement During Execution
+    description: Pauses protected actions for valid operator approval, rejects missing, stale, ambiguous, unauthorized, and replayed approvals, and fails closed without advancing execution state.
+    lifecycle: Planned
+    mission_introduced: OA-18
+    mission_modified: OA-18
+    verification_commands: [zeus verify OA-18, zeus capability verify ZEUS-OA-CAP-017]
+    expected_verification_results: [protected action pause PASS, invalid approval rejection PASS, replay protection PASS, interruption recovery PASS, fail-closed PASS]
+    dependencies: [ZEUS-OA-CAP-016, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: UNAVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-18-capability-identity-reconciliation-001/]
+    regression_status: NOT_RUN
+    capability_history: [OA-18 identity reconciled; implementation pending]
