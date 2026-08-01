@@ -24,8 +24,6 @@ No ZDCL runtime implementation is included.
 
    `zeus show ZDCL-01`
 
-   `zeus status`
-
 4. Inspect readiness and blockers:
 
    `zeus mission readiness ZDCL-01`
