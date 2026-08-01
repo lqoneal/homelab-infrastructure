@@ -150,6 +150,51 @@ def operation(root: Path | str) -> dict[str, Any]:
             "authoritative_sources": [ROADMAP, CHARTER, AUTHORITY, TRANSITION, DESIGN]}
 
 
+def active_missions(root: Path | str) -> dict[str, Any]:
+    """Return only active Beta work; completed Alpha is not an active view."""
+    value = operation(root)
+    active = [card for card in value["missions"] if card["lifecycle"] != "COMPLETED"]
+    return {
+        "result": value["result"], "operation": "BETA", "status": value["status"],
+        "production_baseline": value["production_baseline"],
+        "development_baseline": value["development_baseline"],
+        "missions": active, "active_mission_count": len(active),
+        "authoritative_sources": value["authoritative_sources"],
+        "integrity": value["integrity"],
+    }
+
+
+def completed_missions(root: Path | str) -> dict[str, Any]:
+    """Return completed Beta records for the historical interface."""
+    value = operation(root)
+    completed = [card for card in value["missions"] if card["lifecycle"] == "COMPLETED"]
+    return {"result": value["result"], "operation": "BETA", "missions": completed,
+            "historical": True, "authoritative_sources": value["authoritative_sources"],
+            "integrity": value["integrity"]}
+
+
+def queue(root: Path | str, view: str = "list") -> dict[str, Any]:
+    """Project the operation-wide Beta queue without environment partitioning."""
+    value = operation(root)
+    cards = value["missions"]
+    if view == "next":
+        cards = [card for card in cards if card["classification"] == "ELIGIBLE"][:1]
+    elif view == "blockers":
+        cards = [card for card in cards if card["classification"] == "BLOCKED"]
+    elif view == "history":
+        cards = [card for card in cards if card["lifecycle"] == "COMPLETED"]
+    elif view not in {"list", "show"}:
+        raise OperationalBetaError("BETA_QUEUE_VIEW_INVALID")
+    return {
+        "result": value["result"], "operation": "BETA", "queue_scope": "OPERATION",
+        "execution_environment": "ADMITTED_MISSION_ATTRIBUTE",
+        "missions": cards, "metrics": value["metrics"],
+        "selection_interface": "zeus missions select",
+        "authoritative_sources": value["authoritative_sources"],
+        "integrity": value["integrity"],
+    }
+
+
 def roadmap(root: Path | str, family: str | None = None) -> dict[str, Any]:
     value = operation(root)
     if family:
@@ -200,10 +245,18 @@ def mission_view(root: Path | str, action: str, mission_id: str) -> dict[str, An
     if action in ("metrics",):
         return metrics(root, mission_id)
     if action in ("brief", "explain"):
-        return {"result": mission["result"], "mission_id": mission["mission_id"],
+        return {"result": mission["result"], "operation": "BETA", "mission_id": mission["mission_id"],
                 "title": mission["title"], "family": mission["family"], "scope": mission["scope"],
                 "lifecycle": mission["lifecycle"], "classification": mission["classification"],
-                "dependencies": mission["dependencies"], "readiness": mission["readiness"],
+                "dependencies": mission["dependencies"], "missing_dependencies": mission["missing_dependencies"],
+                "readiness": mission["readiness"],
+                "selection_rationale": ("first eligible mission in the authoritative Beta sequence"
+                                         if mission["classification"] == "ELIGIBLE"
+                                         else "mission is not selected because authoritative readiness is unmet"),
+                "blocking_conditions": (["DEPENDENCY_UNSATISFIED"]
+                                         if mission["missing_dependencies"] else []),
+                "production_baseline": "OA-v1.0.0",
+                "development_baseline": "OB-PLAN-v1.0.0",
                 "authority": mission["authoritative_sources"]}
     raise OperationalBetaError("BETA_UNSUPPORTED_MISSION_VIEW")
 
