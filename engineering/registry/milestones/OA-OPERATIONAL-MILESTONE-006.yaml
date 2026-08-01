@@ -1,0 +1,46 @@
+schema_version: 1
+milestone_id: OA-OPERATIONAL-MILESTONE-006
+revision: 1.0
+status: published_qualified
+classification: Operational Alpha Frozen Baseline
+authoritative_owner: Engineering Governance
+authority: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+immutable: true
+supersedes: OA-OPERATIONAL-MILESTONE-005
+operation: Operational Alpha
+completion_date: '2026-08-01'
+successor_operation: Operation Beta
+repository:
+  identity: homelab
+  remote: git@github.com:lqoneal/homelab-infrastructure.git
+  branch: main
+  baseline_tag: OA-v1.0.0
+  published_commit: resolved_by_baseline_tag
+  captured_at: '2026-08-01'
+source_bindings:
+  mission_knowledge_model: {path: engineering/missions/operational-alpha-mission-knowledge.yaml, revision: 4.4}
+  capability_registry: {path: engineering/capabilities/operational-alpha-capability-registry.yaml, revision: 1.23}
+  emm: {path: engineering/metadata/operational-alpha-emm.yaml, revision: 4.7}
+  roadmap: {id: ZEUS-OA-ROADMAP-002, revision: 1.0}
+  prior_milestone: OA-OPERATIONAL-MILESTONE-005
+mission_state:
+  completed: [OA-01, OA-02, OA-03, OA-04, OA-05, OA-06, OA-07, OA-08, OA-09, OA-10, OA-11, OA-12, OA-13, OA-14, OA-15, OA-16, OA-17, OA-18, OA-19, OA-20, OA-21, OA-22, OA-23, OA-24, OA-25, OA-26, OA-27, OA-28, OA-29, OA-30]
+  current: null
+  sequence: [OA-01, OA-02, OA-03, OA-04, OA-05, OA-06, OA-07, OA-08, OA-09, OA-10, OA-11, OA-12, OA-13, OA-14, OA-15, OA-16, OA-17, OA-18, OA-19, OA-20, OA-21, OA-22, OA-23, OA-24, OA-25, OA-26, OA-27, OA-28, OA-29, OA-30]
+capabilities:
+  active: [ZEUS-OA-CAP-001, ZEUS-OA-CAP-002, ZEUS-OA-CAP-003, ZEUS-OA-CAP-004, ZEUS-OA-CAP-005, ZEUS-OA-CAP-006, ZEUS-OA-CAP-007, ZEUS-OA-CAP-008, ZEUS-OA-CAP-009, ZEUS-OA-CAP-010, ZEUS-OA-CAP-011, ZEUS-OA-CAP-012, ZEUS-OA-CAP-013, ZEUS-OA-CAP-014, ZEUS-OA-CAP-015, ZEUS-OA-CAP-016, ZEUS-OA-CAP-017, ZEUS-OA-CAP-018, ZEUS-OA-CAP-019, ZEUS-OA-CAP-020, ZEUS-OA-CAP-021, ZEUS-OA-CAP-022, ZEUS-OA-CAP-023, ZEUS-OA-CAP-024, ZEUS-OA-CAP-025, ZEUS-OA-CAP-026, ZEUS-OA-CAP-027, ZEUS-OA-CAP-028, ZEUS-OA-CAP-029, ZEUS-OA-CAP-030]
+validation:
+  eos: PASS
+  registry: PASS
+  platform: PASS
+  mission_knowledge_model: PASS
+  capability_registry: PASS
+  emm: PASS
+  pmct: PASS
+  roadmap: PASS
+  controllers: PASS
+  regressions: PASS
+evidence:
+  completion: engineering/evidence/2026-08-01-wop-oa-milestone-and-baseline-001/OPERATIONAL-ALPHA-COMPLETION-REPORT.md
+  baseline: engineering/evidence/2026-08-01-wop-oa-milestone-and-baseline-001/OPERATIONAL-ALPHA-BASELINE-RECORD.md
+  transition: engineering/evidence/2026-08-01-wop-oa-milestone-and-baseline-001/TRANSITION-REPORT.md
