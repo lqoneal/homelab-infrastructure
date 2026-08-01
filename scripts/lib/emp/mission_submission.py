@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.lib.eos import operational_beta
-from scripts.lib.emp.stage1_runtime import Stage1Runtime
+from scripts.lib.emp.stage1_runtime import Stage1Error, Stage1Runtime
 
 
 PACKAGE_ROOTS = (
@@ -76,6 +76,13 @@ def submit_by_mission(
         "repository": str(repository),
         "development_baseline": "OB-PLAN-v1.0.0",
         "production_baseline": "OA-v1.0.0",
+        "selection_rationale": (
+            "first eligible mission in the authoritative Beta sequence"
+            if card["classification"] == "ELIGIBLE"
+            else "mission is not selected because authoritative readiness is unmet"
+        ),
+        "authority": card.get("authoritative_sources", []),
+        "missing_dependencies": card["missing_dependencies"],
     }
     if card["classification"] != "ELIGIBLE":
         return {**common, "result": "FAIL", "resolution": "MISSION_NOT_ELIGIBLE",
@@ -104,17 +111,43 @@ def submit_by_mission(
             ),
         }
 
-    record = Stage1Runtime(repository, state_directory).submit(candidates[0], at=at)
+    package_path = str(candidates[0])
+    try:
+        record = Stage1Runtime(repository, state_directory).submit(candidates[0], at=at)
+    except Stage1Error as error:
+        evidence = dict(error.evidence)
+        return {**common,
+            "result": "FAIL", "resolution": "PACKAGE_VALIDATION_FAILED",
+            "wop_id": f"WOP-{mission}-FOUNDATION-001", "package": package_path,
+            "package_digest": evidence.get("package_digest"),
+            "submission_id": evidence.get("instance_id") or evidence.get("existing_instance"),
+            "submitter": evidence.get("operator"), "queue_state": "REJECTED",
+            "admission_readiness": "NOT_READY", "blockers": [str(error)],
+            "evidence": evidence,
+            "next_authorized_action": (
+                "Reconcile the reported package, authority, repository, or baseline defect, "
+                "then resubmit the mission."
+            ),
+        }
+    staging = record.get("staging_contract", {})
+    submitter = record.get("operator", "")
+    admission_command = (
+        "zeus admit-mission start --mode qualification "
+        f"--mission {mission} --wop {record['wop_id']} "
+        f"--submitter {submitter} --principal {submitter}"
+    )
     return {**common,
         "result": "PASS",
         "resolution": "AUTHORITATIVE_PACKAGE_REUSED",
         "wop_id": record["wop_id"],
-        "package": str(candidates[0]),
+        "package": package_path,
         "package_digest": record["package_digest"],
         "submission_id": record["instance_id"],
+        "submitter": submitter, "priority": staging.get("priority", 0),
         "queue_state": record["state"],
         "readiness": card["readiness"],
+        "admission_readiness": "READY",
         "blockers": [],
-        "next_authorized_action": "Resolve admission through the existing mission-admission boundary.",
+        "next_authorized_action": admission_command,
         "submission": record,
     }

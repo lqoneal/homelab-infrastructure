@@ -35,10 +35,12 @@ zeus submit <WOP_PACKAGE>
 
 For an available package, the mission-oriented result includes the resolved
 operation, family, title, lifecycle, classification, readiness, authority
-source, WOP ID, package path and digest, submission ID, repository, development
-and production baselines, queue state, and next authorized action. A missing,
+source, selection rationale, WOP ID, package path and digest, submission ID,
+submitter, priority, repository, development and production baselines, queue
+state, admission readiness, blockers, and exact next authorized command. A missing,
 ambiguous, stale, or invalid package returns `FAIL` with a nonzero exit status
-and does not create an active queue entry.
+and does not create an active queue entry; rejected validation attempts remain
+available only in the append-only Stage 1 history.
 
 ## Help and boundaries
 

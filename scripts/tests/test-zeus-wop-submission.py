@@ -69,6 +69,11 @@ class ZeusWopSubmissionTests(unittest.TestCase):
         self.assertEqual(value["wop_id"], "WOP-ZDCL-01-FOUNDATION-001")
         self.assertTrue(value["package_digest"])
         self.assertTrue(value["submission_id"])
+        self.assertEqual(value["selection_rationale"], "first eligible mission in the authoritative Beta sequence")
+        self.assertTrue(value["authority"])
+        self.assertEqual(value["queue_state"], "STAGED")
+        self.assertEqual(value["admission_readiness"], "READY")
+        self.assertIn("zeus admit-mission start", value["next_authorized_action"])
 
     def test_non_beta_mission_is_not_routed_to_legacy_submission(self):
         code, value = self.run_zeus("mission", "submit", "OA-30")

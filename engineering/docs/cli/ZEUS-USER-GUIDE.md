@@ -94,6 +94,12 @@ same records by supported lifecycle state. Its `schema_version` versions the
 summary response. Zero means the live mission store is empty; it is not a
 placeholder. Any corrupt or inconsistent record makes status exit fail closed.
 
+`zeus mission submit MISSION-ID` returns the same authoritative mission
+resolution used by `zeus mission explain`, plus the durable submission ID,
+WOP package path and digest, submitter, priority, queue state, admission
+readiness, blockers, and the exact admission command. Repeating the same
+submission returns that existing record with `idempotent_replay: true`.
+
 Stage 1 publishes immutable, idempotent EENS projections under
 `.zeus/runtime/stage1/eens/`: `mission.submitted`, `mission.validating`,
 `mission.admitted`, `mission.rejected`, and `mission.staged`. Event identity
