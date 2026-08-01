@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # Gate identity: OA-21
-# Capability statement: Operational qualification mission authorization
+# Capability statement: Independent Result Qualification
 # Current applicability: discovered at runtime; unavailable future interfaces produce NOT_READY.
 # Required authority: controlled PMCT observation authority; state changes require --authorized-transition.
-# Required commands: zeus authority work-lifecycle, zeus next-action
+# Required commands: zeus verify OA-21, zeus gate objective OA-21
 # Required artifacts: run manifest, repository, discovery, assertions, result, report, hashes, COMPLETE.
 # Preconditions: exact repository identity and prior gate PASS where required.
-# Positive path: Through the authoritative CLI, demonstrate operational qualification mission authorization and capture the resulting production-observable state.
-# Negative path: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-21 request and verify Zeus rejects it without advancing state.
-# Idempotency: Repeat the OA-21 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-# Interruption/recovery: Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.
+# Positive path: Through the authoritative Zeus interface, demonstrate that an independent qualifier evaluates implementation and evidence; consume ZEUS-OA-CAP-019 and establish ZEUS-OA-CAP-020.
+# Negative path: Present missing, malformed, ambiguous, unauthorized, stale, mismatched, or incomplete implementation or evidence and verify rejection without advancing OA-21 state.
+# Idempotency: Repeat identical qualification observations and requests with the same identity and verify no duplicate transition, receipt, evidence, event, or action.
+# Interruption/recovery: Interrupt before and after each qualification evidence boundary; verify durable incomplete state and recovery at the first incomplete operation without duplicate effects.
 # Regression scope: OA-01, OA-02, OA-03, OA-04, OA-05, OA-06, OA-07, OA-08, OA-09, OA-10, OA-11, OA-12, OA-13, OA-14, OA-15, OA-16, OA-17, OA-18, OA-19, OA-20
 # Evidence requirements: repository identity and exact HEAD; command stdout, stderr, and return code; OA-21 positive and negative assertions; evidence integrity manifest and completion marker
 # PASS: all mandatory observable assertions pass and evidence is complete.

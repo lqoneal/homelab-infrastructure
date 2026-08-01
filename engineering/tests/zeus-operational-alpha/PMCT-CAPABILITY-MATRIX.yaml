@@ -755,18 +755,22 @@ gates:
   state_change: true
 - gate_id: OA-21
   sequence: 21
-  title: Operational qualification mission authorization
+  title: Independent Result Qualification
   required_commands:
-  - zeus authority work-lifecycle
-  - zeus next-action
+  - zeus verify OA-21
+  - zeus gate objective OA-21
   optional_commands:
-  - zeus status
+  - zeus capability verify ZEUS-OA-CAP-019
+  - zeus mission readiness OA-21
   prerequisites:
   - OA-20
-  positive_demonstration: Through the authoritative CLI, demonstrate operational qualification mission authorization and capture the resulting production-observable state.
-  negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-21 request and verify Zeus rejects it without advancing state.
-  idempotency_demonstration: Repeat the OA-21 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
-  interruption_demonstration: 'Authoritative-state observation: verify repeatable discovery without authoritative engineering, repository, or operational decision-state mutation; only documented bounded presentation telemetry is permitted.'
+  capability_prerequisites:
+  - ZEUS-OA-CAP-019
+  capability_outcome: ZEUS-OA-CAP-020
+  positive_demonstration: Through the authoritative Zeus interface, demonstrate that an independent qualifier evaluates implementation and evidence; consume ZEUS-OA-CAP-019 as the prerequisite and establish ZEUS-OA-CAP-020 as the OA-21 outcome.
+  negative_demonstration: Present missing, malformed, ambiguous, unauthorized, stale, mismatched, or incomplete implementation or evidence to the independent qualifier and verify rejection without advancing OA-21 state.
+  idempotency_demonstration: Repeat identical qualification observations and requests with the same identity and verify no duplicate transition, receipt, evidence, event, or action.
+  interruption_demonstration: Interrupt before and after each qualification evidence boundary; verify durable incomplete state and recovery at the first incomplete operation without duplicate effects.
   evidence_requirements:
   - repository identity and exact HEAD
   - command stdout, stderr, and return code

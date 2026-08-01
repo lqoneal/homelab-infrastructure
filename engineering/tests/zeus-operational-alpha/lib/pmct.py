@@ -101,8 +101,9 @@ def validate_matrix(value: Any) -> None:
         "evidence_requirements", "regression_gates", "allowed_results",
         "manual_review_required", "state_change",
     }
+    optional = {"capability_id", "capability_prerequisites", "capability_outcome"}
     for sequence, gate in enumerate(gates, 1):
-        if set(gate) != required or gate["sequence"] != sequence:
+        if not required.issubset(set(gate)) or set(gate) - required - optional or gate["sequence"] != sequence:
             raise PmctError(f"{expected[sequence - 1]} metadata is incomplete")
         if set(gate["allowed_results"]) - CONTROLLED_RESULTS:
             raise PmctError("gate uses uncontrolled result vocabulary")
