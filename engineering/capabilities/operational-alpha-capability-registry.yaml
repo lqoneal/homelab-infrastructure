@@ -1,6 +1,6 @@
 schema_version: 1
 registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-revision: '1.19'
+revision: '1.20'
 classification: Authoritative
 authoritative_owner: Engineering Governance
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -376,17 +376,17 @@ capabilities:
   - capability_id: ZEUS-OA-CAP-027
     name: Operator Acceptance
     description: Binds explicit acceptance or rejection to the exact qualified result and evidence manifest.
-    lifecycle: Planned
+    lifecycle: Operational
     mission_introduced: OA-27
     mission_modified: OA-27
     verification_commands: [zeus verify OA-27, zeus capability verify ZEUS-OA-CAP-027]
     expected_verification_results: [exact-result acceptance binding PASS, rejection binding PASS]
     dependencies: [ZEUS-OA-CAP-026, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
     owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
-    runtime_availability: UNAVAILABLE
-    associated_evidence: []
-    regression_status: NOT_STARTED
-    capability_history: [OA-27 identity reconciled; qualification not performed]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-08-01-wop-oa-27-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-27 identity reconciled; independently qualified; published]
   - capability_id: ZEUS-OA-CAP-028
     name: Mission Closeout
     description: Completes reporting, final reconciliation, execution closure, and removal from active work.
