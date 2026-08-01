@@ -93,8 +93,8 @@ gates:
     status: NOT_READY
     reason: manual capability demonstration not yet executed
   OA-27:
-    status: NOT_READY
-    reason: manual capability demonstration not yet executed
+    status: PASS
+    reason: explicit acceptance bound to exact qualified result and evidence manifest
   OA-28:
     status: NOT_READY
     reason: manual capability demonstration not yet executed

@@ -1,0 +1,95 @@
+{
+  "acceptance_boundary": "explicit operator decision binds the exact qualified result and evidence manifest",
+  "authoritative_inputs": {
+    "capability_registry_revision": "1.19",
+    "implementation": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-27/implementation.md",
+    "mission_knowledge_revision": "4.0",
+    "objective": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-27/objective.yaml",
+    "outcome": "ZEUS-OA-CAP-027",
+    "predecessor": "OA-26 ACCEPTED",
+    "prerequisite": "ZEUS-OA-CAP-026"
+  },
+  "canonical_evidence_digest": "fa7661c1ccd7b30a1eba4bcc5d38a1caaf88349559f8380b710f9ce633e4d58f",
+  "gate_id": "OA-27",
+  "objective": "Prove explicit acceptance or rejection bound to the exact qualified result and evidence manifest.",
+  "qualification": {
+    "assertions": {
+      "authority_binding": "PASS",
+      "eos_sync_validate": "PASS",
+      "explicit_decision": "PASS",
+      "negative_fail_closed": "PASS",
+      "qualified_result_binding": "PASS",
+      "registry_validate": "PASS",
+      "replay_stability": "PASS",
+      "repository_binding": "PASS"
+    },
+    "capability_id": "ZEUS-OA-CAP-027",
+    "capability_name": "Operator Acceptance",
+    "command_results": [
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": [
+          "scripts/engctl",
+          "eos",
+          "sync-validate"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "Repository\u2013EOS synchronization validation passed.\n"
+      },
+      {
+        "command": [
+          "scripts/engctl",
+          "registry",
+          "validate"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS: registry schema and YAML serialization (85 objects)\nPASS: registry identifiers, hierarchy, ordering, states, deferrals, and dependencies\nPASS: registry authority boundary\n"
+      }
+    ],
+    "mission_id": "OA-27",
+    "negative_cases": {
+      "invalid_decision": "PASS",
+      "mismatched_gate": "PASS",
+      "missing_evidence": "PASS",
+      "non_pass_result": "PASS"
+    },
+    "objective": "Prove explicit acceptance or rejection bound to the exact qualified result and evidence manifest.",
+    "positive_binding": {
+      "acceptance_is_explicit": true,
+      "binding": {
+        "agent_identity": "oa27-independent-qualifier",
+        "authority_source": "MKM/PMCT/OA-27-GATE",
+        "baseline_commit": "a59877c02cc790a3f0f44e2a170d81d0aab61497",
+        "decided_at": "2026-08-01T00:00:00Z",
+        "decision": "ACCEPT",
+        "evidence_manifest_digest": "7f7c0a1cd6f522987d83db91d2c49fde7671be2af5b82935293c3b10bb9bb153",
+        "execution_identity": "OA27-EXECUTION-001",
+        "gate_id": "OA-27",
+        "mission_id": "OA-27",
+        "operator": "qualification-fixture",
+        "qualified_result": "PASS",
+        "repository_identity": "/data/engineering/repositories/homelab"
+      },
+      "binding_digest": "6e366170f2b884f4cd2aab05493c35a2c404886e6a18fed525e6c3efe115da7f",
+      "decision_status": "ACCEPTED"
+    },
+    "qualification_digest": "57641d4c4ed02340bca2b607eb742527a6f88c5cd4713829c0bc17f1bb6ddd3e",
+    "qualification_timestamp": "2026-08-01T17:33:25.734144+00:00",
+    "result": "PASS",
+    "schema_version": 1
+  },
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-08-01T17:33:25.734765+00:00"
+}
