@@ -8,7 +8,10 @@
       "items": {
         "additionalProperties": false,
         "properties": {
-          "allowed_results": {"items": {"enum": ["PASS", "FAIL", "BLOCKED", "NOT_READY"]}, "type": "array"},
+        "allowed_results": {"items": {"enum": ["PASS", "FAIL", "BLOCKED", "NOT_READY"]}, "type": "array"},
+          "capability_id": {"pattern": "^ZEUS-OA-CAP-[0-9]{3}$", "type": "string"},
+          "capability_outcome": {"pattern": "^ZEUS-OA-CAP-[0-9]{3}$", "type": "string"},
+          "capability_prerequisites": {"items": {"pattern": "^ZEUS-OA-CAP-[0-9]{3}$"}, "type": "array"},
           "evidence_requirements": {"items": {"type": "string"}, "minItems": 1, "type": "array"},
           "gate_id": {"pattern": "^OA-[0-9]{2}$", "type": "string"},
           "idempotency_demonstration": {"minLength": 1, "type": "string"},
