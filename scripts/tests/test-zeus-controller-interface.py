@@ -78,8 +78,8 @@ class ZeusControllerInterfaceTests(unittest.TestCase):
         result = self.run_zeus("next-action", "--json")
         self.assertEqual(result.returncode, 0)
         value = json.loads(result.stdout)
-        self.assertEqual(value["current_mission"], "OA-21")
-        self.assertEqual(value["next_authorized_action"]["wop"], "WOP-OA-21-EXECUTION-001")
+        self.assertEqual(value["current_mission"], "OA-22")
+        self.assertEqual(value["next_authorized_action"]["wop"], "WOP-OA-22-EXECUTION-001")
 
 
 if __name__ == "__main__":

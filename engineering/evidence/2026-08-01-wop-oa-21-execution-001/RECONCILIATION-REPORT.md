@@ -1,12 +1,11 @@
 # OA-21 Reconciliation Report
 
-PMCT and the OA-21 gate projection now agree with the published authority:
+OA-21 reconciles the Mission Knowledge Model, Capability Registry, EMM-bound
+capability source, PMCT, gate specification, and controller projections.
+`ZEUS-OA-CAP-020` is introduced as Operational only by the qualified verifier;
+the lifecycle remains awaiting operator acceptance until the canonical receipt
+is created.
 
-- Objective: Independent Result Qualification
-- Predecessor: OA-20
-- Prerequisite capability: `ZEUS-OA-CAP-019`
-- Outcome capability: `ZEUS-OA-CAP-020`
-
-No implementation, runtime, capability registration, qualification, operator
-acceptance, lifecycle advancement, or OA-22 change was made.
+No OA-22 implementation, runtime, authority, execution, or evidence artifact is
+created by this work.
 

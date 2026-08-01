@@ -1,6 +1,6 @@
 schema_version: 1
 model_id: OPERATIONAL-ALPHA-MISSION-KNOWLEDGE
-revision: 3.5
+revision: 3.6
 classification: Authoritative
 authoritative_owner: Engineering Governance
 purpose: Canonical EMM-bound mission knowledge for Operational Alpha lifecycle reasoning.
@@ -335,7 +335,7 @@ missions:
     controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
     runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
   - mission_id: OA-21
-    lifecycle: CURRENT
+    lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-21/objective.yaml
     roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
@@ -351,7 +351,7 @@ missions:
     controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
     runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
   - mission_id: OA-22
-    lifecycle: STAGED
+    lifecycle: CURRENT
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-22/objective.yaml
     roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
