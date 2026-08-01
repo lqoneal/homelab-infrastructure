@@ -1,0 +1,13 @@
+schema_version: 1
+mission_id: ZDCL-01
+wop_id: WOP-ZDCL-01-FOUNDATION-001
+gates:
+  - gate_id: ZDCL-01-AUTHORITY
+    objective: Resolve and bind the authorized ZDCL-01 mission and package.
+    required_evidence: [mission-authority, package-integrity, dependency-check]
+  - gate_id: ZDCL-01-BASELINE
+    objective: Verify repository identity and isolated development baseline.
+    required_evidence: [repository-identity, baseline-identity, production-isolation]
+  - gate_id: ZDCL-01-SESSION
+    objective: Establish bounded session identity, classification, evidence, and recovery.
+    required_evidence: [session-identity, classification, interruption-recovery, closeout]

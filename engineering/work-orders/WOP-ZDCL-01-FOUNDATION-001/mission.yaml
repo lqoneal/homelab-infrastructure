@@ -1,0 +1,26 @@
+schema_version: 1
+document_type: EngineeringWorkOrder
+mission_id: ZDCL-01
+wop_id: WOP-ZDCL-01-FOUNDATION-001
+phase_id: ZDCL-FOUNDATION
+revision: 1
+status: Active
+title: Native session foundation
+objective: Establish the bounded native Zeus development-session foundation for identity, classification, repository and baseline verification, and evidence capture.
+scope:
+  - resolve and bind an authorized development engineering session
+  - classify the session and record its effect profile
+  - verify canonical repository identity and qualified development baseline
+  - capture immutable session evidence and closeout state
+  - preserve production and development isolation
+  - do not implement downstream ZDCL increments
+dependencies: [BETA-00]
+priority: 0
+candidate_state: CANDIDATE
+required_execution_files:
+  - bootstrap.md
+  - roadmap.md
+  - mission.yaml
+  - gates.yaml
+  - manifests/immutable-manifest.yaml
+  - SHA256SUMS

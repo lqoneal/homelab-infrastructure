@@ -63,40 +63,41 @@ def submit_by_mission(
     repository = Path(root).resolve()
     mission = mission_id.upper()
     card = operational_beta.mission_state(repository, mission)
+    common = {
+        "mission_id": mission,
+        "operation": "BETA",
+        "family": card["family"],
+        "title": card["title"],
+        "lifecycle": card["lifecycle"],
+        "classification": card["classification"],
+        "readiness": card["readiness"],
+        "dependencies": card["dependencies"],
+        "authority_source": "engineering/docs/architecture/OPERATION-BETA-ROADMAP.md",
+        "repository": str(repository),
+        "development_baseline": "OB-PLAN-v1.0.0",
+        "production_baseline": "OA-v1.0.0",
+    }
     if card["classification"] != "ELIGIBLE":
-        return {
-            "result": "BLOCKED",
-            "resolution": "MISSION_NOT_ELIGIBLE",
-            "mission_id": mission,
-            "operation": "BETA",
-            "readiness": card["readiness"],
-            "blockers": card["missing_dependencies"],
-            "next_authorized_action": "Resolve the authoritative mission blockers.",
-        }
+        return {**common, "result": "FAIL", "resolution": "MISSION_NOT_ELIGIBLE",
+                "blockers": card["missing_dependencies"],
+                "next_authorized_action": "Resolve the authoritative mission blockers."}
 
     candidates = [Path(package).resolve()] if package else _package_candidates(repository, mission)
     if len(candidates) > 1:
-        return {
-            "result": "BLOCKED",
-            "resolution": "AMBIGUOUS_WOP_PACKAGE",
-            "mission_id": mission,
-            "operation": "BETA",
+        return {**common,
+            "result": "FAIL", "resolution": "AMBIGUOUS_WOP_PACKAGE",
             "packages": [str(path) for path in candidates],
             "next_authorized_action": "Retain exactly one authoritative qualified WOP package.",
         }
     if not candidates:
-        return {
-            "result": "BLOCKED",
-            "resolution": "WOP_PACKAGE_UNAVAILABLE",
-            "mission_id": mission,
-            "operation": "BETA",
+        return {**common,
+            "result": "FAIL", "resolution": "WOP_PACKAGE_UNAVAILABLE",
             "wop_id": f"WOP-{mission}-FOUNDATION-001",
             "package_candidates": [
                 str(repository / relative / name)
                 for relative in PACKAGE_ROOTS
                 for name in (f"WOP-{mission}-FOUNDATION-001", mission)
             ],
-            "authority_source": "engineering/docs/architecture/OPERATION-BETA-ROADMAP.md",
             "next_authorized_action": (
                 "Publish and qualify the approved ZDCL WOP contract/package, "
                 "then rerun this command."
@@ -104,13 +105,12 @@ def submit_by_mission(
         }
 
     record = Stage1Runtime(repository, state_directory).submit(candidates[0], at=at)
-    return {
+    return {**common,
         "result": "PASS",
         "resolution": "AUTHORITATIVE_PACKAGE_REUSED",
-        "mission_id": mission,
-        "operation": "BETA",
         "wop_id": record["wop_id"],
         "package": str(candidates[0]),
+        "package_digest": record["package_digest"],
         "submission_id": record["instance_id"],
         "queue_state": record["state"],
         "readiness": card["readiness"],

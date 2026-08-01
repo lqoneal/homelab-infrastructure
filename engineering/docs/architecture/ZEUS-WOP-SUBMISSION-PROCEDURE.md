@@ -33,6 +33,13 @@ zeus submit <WOP_PACKAGE>
 `zeus mission queue` is read-only. `zeus admit-mission` and
 `zeus execute-mission` are separate protected boundaries.
 
+For an available package, the mission-oriented result includes the resolved
+operation, family, title, lifecycle, classification, readiness, authority
+source, WOP ID, package path and digest, submission ID, repository, development
+and production baselines, queue state, and next authorized action. A missing,
+ambiguous, stale, or invalid package returns `FAIL` with a nonzero exit status
+and does not create an active queue entry.
+
 ## Help and boundaries
 
 Use `zeus mission submit --help`, `zeus submit --help`,

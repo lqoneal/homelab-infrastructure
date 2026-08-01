@@ -1,0 +1,27 @@
+schema_version: 1
+manifest_id: ZDCL-01-FOUNDATION-MANIFEST-001
+mission_id: ZDCL-01
+wop_id: WOP-ZDCL-01-FOUNDATION-001
+authority_source: engineering/docs/architecture/OPERATION-BETA-ROADMAP.md
+authority_documents:
+  - engineering/docs/operations/OPERATION-BETA-CHARTER.md
+  - engineering/docs/architecture/OPERATION-BETA-ROADMAP.md
+  - engineering/docs/architecture/ENGINEERING-PLATFORM-DESIGN-PRINCIPLES.md
+repository:
+  identity: homelab
+  root: /data/engineering/repositories/homelab
+  branch: main
+  development_baseline: OB-PLAN-v1.0.0
+production_baseline: OA-v1.0.0
+prerequisites: [BETA-00]
+authorized_effects:
+  - inspect and verify development engineering state
+  - create bounded session identity and evidence
+  - reconcile in-scope controlled metadata and evidence
+prohibited_effects:
+  - modify OA-v1.0.0
+  - deploy runtime behavior
+  - implement ZDCL-02 or later
+  - implement CAGF or EPE
+  - bypass admission or approval boundaries
+  - fabricate authority or evidence
