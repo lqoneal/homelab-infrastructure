@@ -1,6 +1,9 @@
 # Zeus Controller Presentation Standard
 
-Status: Beta-02 reconciled controller baseline
+Status: Beta-03G governed controller baseline
+
+Normative invariants: `ENGINEERING-PLATFORM-INVARIANTS.md` and
+`ZEUS-CONTROLLER-GOVERNANCE.md`
 
 Human-readable and machine-readable controller output are two renderings of
 one resolved authoritative object. Formatting must not perform a second state
