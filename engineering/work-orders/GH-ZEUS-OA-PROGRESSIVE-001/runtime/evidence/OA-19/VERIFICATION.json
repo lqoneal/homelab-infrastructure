@@ -1,0 +1,125 @@
+{
+  "assertions": {
+    "append_only_capture": "PASS",
+    "checksum_capture": "PASS",
+    "command_output_state_capture": "PASS",
+    "completion_marker_capture": "PASS",
+    "conflicting_replay_rejection": "PASS",
+    "duplicate_replay_protection": "PASS",
+    "malformed_input_fail_closed": "PASS",
+    "restart_recovery": "PASS",
+    "timestamp_identity_capture": "PASS"
+  },
+  "authoritative_inputs": {
+    "baseline": "d08edaec17dbbefd68f2f0d2dbf4f606a61ac4a4",
+    "capability_id": "ZEUS-OA-CAP-018",
+    "capability_registry_revision": "1.10",
+    "mission_knowledge_revision": "3.2",
+    "objective": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-19/objective.yaml",
+    "predecessor": "OA-18 ACCEPTED"
+  },
+  "canonical_evidence_digest": "eaf2f5e71b71864644437d8823caefb18290c4a11a4b2bee28f336a47fd9163f",
+  "evidence_records": [
+    {
+      "event_id": "aff35f27-39fe-5b63-b341-6b2d54f6a616",
+      "event_type": "zeus.evidence.capture",
+      "idempotency_key": "OA-19:WOP-OA-19-EXECUTION-001:OA19-EVIDENCE-0001",
+      "occurred_at": "2026-08-01T06:19:01+00:00",
+      "payload": {
+        "agent_identity": "oa19-qualification-agent",
+        "baseline_commit": "d08edaec17dbbefd68f2f0d2dbf4f606a61ac4a4",
+        "checksum": "df3c786773ea6302566f643f67c2d73e1a9288b972eb8c0f13fc730aa73da350",
+        "command": "zeus verify OA-19",
+        "completion_marker": "OA19-EVIDENCE-INCOMPLETE",
+        "mission_id": "OA-19",
+        "record_id": "OA19-EVIDENCE-0001",
+        "repository_identity": "/data/engineering/repositories/homelab",
+        "state": "STARTED",
+        "stderr": "",
+        "stdout": "OA-19 STARTED",
+        "timestamp": "2026-08-01T06:19:01+00:00",
+        "wop_id": "WOP-OA-19-EXECUTION-001"
+      },
+      "schema_version": "1.0",
+      "source": "zeus.oa19",
+      "subject": "OA-19"
+    },
+    {
+      "event_id": "2f5f5399-3246-5787-91f6-2c34f83bb69f",
+      "event_type": "zeus.evidence.capture",
+      "idempotency_key": "OA-19:WOP-OA-19-EXECUTION-001:OA19-EVIDENCE-0002",
+      "occurred_at": "2026-08-01T06:19:02+00:00",
+      "payload": {
+        "agent_identity": "oa19-qualification-agent",
+        "baseline_commit": "d08edaec17dbbefd68f2f0d2dbf4f606a61ac4a4",
+        "checksum": "75a5d1f12c8410911e20517e42ebb4bdfa1225cd9ce7d0bd8c947f8f6408fe48",
+        "command": "zeus verify OA-19",
+        "completion_marker": "OA19-EVIDENCE-INCOMPLETE",
+        "mission_id": "OA-19",
+        "record_id": "OA19-EVIDENCE-0002",
+        "repository_identity": "/data/engineering/repositories/homelab",
+        "state": "CAPTURED",
+        "stderr": "",
+        "stdout": "OA-19 CAPTURED",
+        "timestamp": "2026-08-01T06:19:02+00:00",
+        "wop_id": "WOP-OA-19-EXECUTION-001"
+      },
+      "schema_version": "1.0",
+      "source": "zeus.oa19",
+      "subject": "OA-19"
+    },
+    {
+      "event_id": "a6edd358-57ef-5628-b5e3-d36d903dcc02",
+      "event_type": "zeus.evidence.capture",
+      "idempotency_key": "OA-19:WOP-OA-19-EXECUTION-001:OA19-EVIDENCE-0003",
+      "occurred_at": "2026-08-01T06:19:03+00:00",
+      "payload": {
+        "agent_identity": "oa19-qualification-agent",
+        "baseline_commit": "d08edaec17dbbefd68f2f0d2dbf4f606a61ac4a4",
+        "checksum": "ebc7ebe9d9e05a5e8cced1a0b9bcd05296f3a2e20032fad857509d6579112fee",
+        "command": "zeus verify OA-19",
+        "completion_marker": "OA19-EVIDENCE-COMPLETE",
+        "mission_id": "OA-19",
+        "record_id": "OA19-EVIDENCE-0003",
+        "repository_identity": "/data/engineering/repositories/homelab",
+        "state": "COMPLETED",
+        "stderr": "",
+        "stdout": "OA-19 COMPLETED",
+        "timestamp": "2026-08-01T06:19:03+00:00",
+        "wop_id": "WOP-OA-19-EXECUTION-001"
+      },
+      "schema_version": "1.0",
+      "source": "zeus.oa19",
+      "subject": "OA-19"
+    }
+  ],
+  "gate_id": "OA-19",
+  "objective": "Prove append-only capture of commands, outputs, state, timestamps, identities, checksums, and completion markers.",
+  "qualification": {
+    "assertions": {
+      "append_only_capture": "PASS",
+      "checksum_capture": "PASS",
+      "command_output_state_capture": "PASS",
+      "completion_marker_capture": "PASS",
+      "conflicting_replay_rejection": "PASS",
+      "duplicate_replay_protection": "PASS",
+      "malformed_input_fail_closed": "PASS",
+      "restart_recovery": "PASS",
+      "timestamp_identity_capture": "PASS"
+    },
+    "conflicting_replay_rejected": true,
+    "database_journal_mode": "wal",
+    "duplicate_inserted": false,
+    "malformed_input_rejected": true,
+    "record_count": 3,
+    "restart_recovery": true,
+    "sequence": [
+      1,
+      2,
+      3
+    ]
+  },
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-08-01T06:29:16.819785+00:00"
+}
