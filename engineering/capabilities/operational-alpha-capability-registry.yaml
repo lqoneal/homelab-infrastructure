@@ -1,6 +1,6 @@
 schema_version: 1
 registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-revision: '1.13'
+revision: '1.14'
 classification: Authoritative
 authoritative_owner: Engineering Governance
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -275,3 +275,17 @@ capabilities:
     associated_evidence: [engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-20/]
     regression_status: PASS
     capability_history: [OA-20 authority reconciled; evidence integrity and provenance qualified]
+  - capability_id: ZEUS-OA-CAP-020
+    name: Independent Result Qualification
+    description: Provides a deterministic qualifier independent of the execution agent that evaluates implementation and evidence, rejects invalid or stale results, and preserves fail-closed lifecycle behavior.
+    lifecycle: Operational
+    mission_introduced: OA-21
+    mission_modified: OA-21
+    verification_commands: [zeus verify OA-21, zeus capability verify ZEUS-OA-CAP-020]
+    expected_verification_results: [independent qualifier PASS, negative and fail-closed checks PASS, replay and recovery PASS, cumulative regression PASS]
+    dependencies: [ZEUS-OA-CAP-019, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/runtime/evidence/OA-21/]
+    regression_status: PASS
+    capability_history: [OA-21 independently qualified]

@@ -1,0 +1,135 @@
+{
+  "authoritative_inputs": {
+    "baseline": "9962c68e156a4188359a6ead3400edbd6a468693",
+    "capability_id": "ZEUS-OA-CAP-020",
+    "capability_registry_revision": "1.14",
+    "implementation": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-21/implementation.md",
+    "mission_knowledge_revision": "3.5",
+    "objective": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-21/objective.yaml",
+    "predecessor": "OA-20 ACCEPTED"
+  },
+  "canonical_evidence_digest": "f1d2b4553d5f171af1af068063c6b1237c9145a14af49a89ec5a43daf2a0456d",
+  "gate_id": "OA-21",
+  "objective": "Prove a qualifier independent of the execution agent evaluates implementation and evidence.",
+  "qualification": {
+    "assertions": {
+      "independent_qualifier": "PASS",
+      "interruption_recovery": "PASS",
+      "negative_fail_closed": "PASS",
+      "no_protected_side_effect": "PASS",
+      "positive_evaluation": "PASS",
+      "replay_protection": "PASS"
+    },
+    "completion_verification": {
+      "artifacts": [],
+      "disposition": "EXECUTED",
+      "gate_idempotency_key": "OA-21-INDEPENDENT-QUALIFICATION-001",
+      "handler_id": "zeus.qualification.reference",
+      "handler_trace": [
+        {
+          "result": {
+            "condition": "VERIFIED",
+            "gate_id": "VERIFY_COMPLETION",
+            "repository": "/data/engineering/repositories/homelab",
+            "side_effects_observed": false,
+            "wop_submission_digest": "b033320a6cf3b014c707cb209b8ed0005aa684f5347b44ae7cdaa14cd9928612"
+          },
+          "step": "VERIFY_CURRENT"
+        },
+        {
+          "result": {
+            "disposition": "REQUIRED",
+            "required": true
+          },
+          "step": "DETERMINE_REQUIRED"
+        },
+        {
+          "result": {
+            "artifacts": [],
+            "gate_idempotency_key": "OA-21-INDEPENDENT-QUALIFICATION-001",
+            "result": "QUALIFICATION_VERIFIED",
+            "side_effects_performed": false,
+            "status": "COMPLETED"
+          },
+          "step": "EXECUTE_REQUIRED"
+        },
+        {
+          "result": {
+            "result_digest": "ae8ea5bdb581eda5a0803905e256400d6d8a7d88f813d138c5e352341fe53060",
+            "side_effects_performed": false,
+            "verification": "PASS"
+          },
+          "step": "VERIFY_RESULT"
+        }
+      ],
+      "handler_version": "1.0.0",
+      "result": "QUALIFICATION_VERIFIED",
+      "side_effects_performed": false,
+      "status": "COMPLETED",
+      "verification_first": true
+    },
+    "execution_agent": "oa21-execution-agent",
+    "interruption_recovery": "PASS",
+    "negative_cases": {
+      "incomplete_evidence": "rejected",
+      "malformed_evidence": "rejected",
+      "mismatched_agent": "rejected",
+      "missing_evidence": "rejected",
+      "stale_binding": "rejected"
+    },
+    "positive_result": {
+      "artifacts": [],
+      "disposition": "EXECUTED",
+      "gate_idempotency_key": "OA-21-INDEPENDENT-QUALIFICATION-001",
+      "handler_id": "zeus.qualification.reference",
+      "handler_trace": [
+        {
+          "result": {
+            "condition": "VERIFIED",
+            "gate_id": "EXECUTE_WORK",
+            "repository": "/data/engineering/repositories/homelab",
+            "side_effects_observed": false,
+            "wop_submission_digest": "b033320a6cf3b014c707cb209b8ed0005aa684f5347b44ae7cdaa14cd9928612"
+          },
+          "step": "VERIFY_CURRENT"
+        },
+        {
+          "result": {
+            "disposition": "REQUIRED",
+            "required": true
+          },
+          "step": "DETERMINE_REQUIRED"
+        },
+        {
+          "result": {
+            "artifacts": [],
+            "gate_idempotency_key": "OA-21-INDEPENDENT-QUALIFICATION-001",
+            "result": "QUALIFIED_SIMULATION",
+            "side_effects_performed": false,
+            "status": "COMPLETED"
+          },
+          "step": "EXECUTE_REQUIRED"
+        },
+        {
+          "result": {
+            "result_digest": "ce7aacdcec984e84619bc15abedc8c927e3839d8a72dbe18226c9f766716f82c",
+            "side_effects_performed": false,
+            "verification": "PASS"
+          },
+          "step": "VERIFY_RESULT"
+        }
+      ],
+      "handler_version": "1.0.0",
+      "result": "QUALIFIED_SIMULATION",
+      "side_effects_performed": false,
+      "status": "COMPLETED",
+      "verification_first": true
+    },
+    "qualifier": "oa21-independent-qualifier",
+    "replay_stable": true,
+    "side_effects": "NONE"
+  },
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-08-01T09:14:27.900426+00:00"
+}
