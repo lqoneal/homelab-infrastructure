@@ -170,6 +170,38 @@ class MissionAdmissionRuntimeTests(unittest.TestCase):
         with self.assertRaisesRegex(MissionAdmissionError, "digest"):
             self.store.load(good["admission_id"])
 
+    def test_published_zdcl_binding_has_no_placeholders_and_reuses_submission(self):
+        state = self.runtime.start(
+            {
+                "mode": "qualification",
+                "mission_id": "ZDCL-01",
+                "repository": str(ROOT),
+                "submitter_identity": "loneal",
+                "principal_id": "loneal",
+                "submission_id": "ZEUS-MISSION-06a7fcf8-a8b3-54bd-8469-0f05f9d41e57",
+            },
+            at=AT,
+        )
+        self.assertEqual(state["status"], "DECIDED")
+        binding = state["artifacts"]["authority_context"]["admission"]
+        self.assertEqual(binding["wop_id"], "WOP-ZDCL-01-FOUNDATION-001")
+        self.assertEqual(
+            binding["submission_id"],
+            "ZEUS-MISSION-06a7fcf8-a8b3-54bd-8469-0f05f9d41e57",
+        )
+        self.assertEqual(binding["qualification_mode"], "qualification")
+        self.assertFalse(binding["dispatch_permission"])
+        self.assertNotIn("PLACEHOLDER-", json.dumps(binding, sort_keys=True))
+        self.assertNotIn(None, binding.values())
+
+    def test_unknown_published_mission_fails_closed(self):
+        state = self.runtime.start(
+            {"mode": "qualification", "mission_id": "BETA-UNKNOWN", "repository": str(ROOT)},
+            at=AT,
+        )
+        self.assertEqual(state["status"], "BLOCKED")
+        self.assertEqual(state["failure"]["category"], "AUTHORITY_FAILURE")
+
     def test_zeus_cli_runs_and_resumes_qualification_pipeline(self):
         store = self.directory / "cli-admissions"
         state = self.directory / "orchestration.json"

@@ -63,19 +63,40 @@ Resolution Runtime.
 
 ## Qualification workflow
 
-Qualification uses the same seven-stage coordinator and WOP interface. At the
-authority stage it creates an explicitly non-operational placeholder context
-inside the runtime. The WOP remains `review_required`, is never automatically
-submitted, and ends with `QUALIFICATION_ONLY`, not operational admission.
+Qualification uses the same seven-stage coordinator and the same canonical
+mission-contract/WOP resolver as operational admission. For a published
+mission such as `ZDCL-01`, the resolver binds the Mission Contract, published
+WOP package, immutable manifest, package digest, repository/development
+baseline, authority, approval reference, and existing submission record.
+Qualification changes only the execution boundary: it ends with
+`QUALIFICATION_ONLY` and `dispatch_permitted: false`. It never creates a
+replacement WOP and never emits placeholder authority, approval, or manifest
+values.
+
+The historical synthetic qualification fixture remains available only for
+legacy `ZEUS-*` test missions. Unknown published missions fail closed when no
+Mission Contract or WOP package can be resolved.
 
 ```text
 scripts/zeus admit-mission start \
   --mode qualification \
-  --intent "Qualification intent" \
-  --mission ZEUS-QUALIFICATION \
-  --phase MISSION-ADMISSION \
-  --repository /data/engineering/repositories/homelab
+  --mission ZDCL-01 \
+  --wop WOP-ZDCL-01-FOUNDATION-001 \
+  --submitter loneal \
+  --principal loneal \
+  --submission-id ZEUS-MISSION-06a7fcf8-a8b3-54bd-8469-0f05f9d41e57
 ```
+
+## Canonical admission binding
+
+The admission artifact records the resolved operation, mission family, title,
+purpose, expected outcome, scope, exclusions, dependencies, WOP revision,
+package path and digest, immutable-manifest reference, repository and
+baselines, submission, work-item declaration, submitter, principal, authority,
+approval, lifecycle authorization, mode, dispatch permission, and next action.
+The WOP package is validated in place and its published identity is preserved.
+Missing contract, package, digest, authority, approval, or baseline binding
+fails closed with the exact field-level diagnostic.
 
 ## Operational workflow
 
@@ -90,6 +111,11 @@ scripts/zeus admit-mission start \
   --work-item EMP-WORK-ID \
   --principal loneal \
   --repository /data/engineering/repositories/homelab
+
+For a published mission, qualification and operational admission consume the
+same canonical binding. Mode changes only approval/dispatch eligibility; they
+do not change mission identity, WOP identity, scope, authority, repository, or
+baseline.
 ```
 
 For a manually submitted Governance WOP, failed repository identity,

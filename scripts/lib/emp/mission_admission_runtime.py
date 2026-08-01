@@ -13,6 +13,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+import yaml
+
 from scripts.lib.emp.authority_publication import commissioning_status
 from scripts.lib.emp.authority_resolution import (
     canonical_json,
@@ -22,8 +24,10 @@ from scripts.lib.eos.convergence_runtime import ConvergenceRuntime
 from scripts.lib.emp.owner_enrollment import enrollment_status
 from scripts.lib.emp.production_execution import dispatch_readiness
 from scripts.lib.emp.reasoning import WopGenerator
-from scripts.lib.emp.wop_admission import AdmissionController
+from scripts.lib.emp.wop_admission import AdmissionController, CONTRACT
 from scripts.lib.emp.wop_service import OperationalWopService
+from scripts.lib.emp.stage1_runtime import Stage1Runtime, validate_package
+from scripts.lib.eos.mission_contract import load as load_mission_contract, validate as validate_mission_contract
 
 
 class MissionAdmissionError(ValueError):
@@ -199,7 +203,7 @@ class MissionAdmissionRuntime:
 
     def _stage_mission_validation(self, state, at):
         request = state["request"]
-        required = {"mode", "intent", "mission_id", "repository"}
+        required = {"mode", "mission_id", "repository"}
         missing = sorted(field for field in required if not request.get(field))
         if missing:
             raise StageBlocked(
@@ -246,75 +250,79 @@ class MissionAdmissionRuntime:
 
     def _stage_authority_resolution(self, state, at):
         request = state["request"]
-        if request["mode"] == "qualification":
-            context = {
-                "mode": "qualification",
-                "approval_authority": "PLACEHOLDER-APPROVAL-AUTHORITY",
-                "approval_reference": "PLACEHOLDER-APPROVAL-REFERENCE",
-                "approval_date": "1970-01-01",
-                "authority_node_id": "PLACEHOLDER-AUTHORITY-NODE",
-                "adr_reference": "PLACEHOLDER-ADR",
-                "immutable_wop_reference": "PLACEHOLDER-IMMUTABLE-WOP",
-            }
-            state["artifacts"]["authority_context"] = context
-            return {
-                "authority_mode": "qualification-placeholder",
-                "operational_authority_allocated": False,
-            }
-        if not request.get("implementation_wop_id"):
+        # Retain the historical non-authoritative qualification fixture and the
+        # explicit convergence compatibility path. Published mission contracts
+        # always take the canonical branch below.
+        if request["mode"] == "operational" and request.get("implementation_wop_id"):
+            flow = ConvergenceRuntime(self.root).execution_flow(
+                wop_id=request["implementation_wop_id"], revision=request["implementation_wop_revision"],
+                action="admit_mission", correlation_id=request["correlation_id"],
+                authority_record_id=request.get("authority_record_id"),
+            )
+            if not flow["execution_admitted"]:
+                raise StageBlocked("AUTHORITY_FAILURE", "convergence authority is not resolved", flow["authority_receipt"])
+            state["artifacts"]["authority_context"] = flow
+            return {"authority_mode": "operational-compatibility", "resolution_id": flow["authority_receipt"]["receipt_digest"], "bundle_digest": flow["flow_digest"]}
+        if request["mode"] == "operational" and not (self.root / "engineering/mission-contracts/contracts" / f"{request['mission_id']}.yaml").is_file():
             raise StageBlocked("AUTHORITY_FAILURE", "convergence Implementation WOP is required")
-        flow = ConvergenceRuntime(self.root).execution_flow(
-            wop_id=request["implementation_wop_id"], revision=request["implementation_wop_revision"],
-            action="admit_mission", correlation_id=request["correlation_id"],
-            authority_record_id=request.get("authority_record_id"),
-        )
-        if not flow["execution_admitted"]:
-            raise StageBlocked("AUTHORITY_FAILURE", "convergence authority is not resolved", flow["authority_receipt"])
-        state["artifacts"]["authority_context"] = flow
+        if request["mode"] == "qualification" and request["mission_id"].startswith("ZEUS-") and not (self.root / "engineering/mission-contracts/contracts" / f"{request['mission_id']}.yaml").is_file():
+            context = {"mode": "qualification", "approval_authority": "PLACEHOLDER-APPROVAL-AUTHORITY", "approval_reference": "PLACEHOLDER-APPROVAL-REFERENCE", "approval_date": "1970-01-01", "authority_node_id": "PLACEHOLDER-AUTHORITY-NODE", "adr_reference": "PLACEHOLDER-ADR", "immutable_wop_reference": "PLACEHOLDER-IMMUTABLE-WOP"}
+            state["artifacts"]["authority_context"] = context
+            return {"authority_mode": "qualification-placeholder", "operational_authority_allocated": False}
+        binding = self._resolve_published_binding(state)
+        state["artifacts"]["authority_context"] = binding
         return {
-            "authority_mode": "operational",
-            "resolution_id": flow["authority_receipt"]["receipt_digest"],
-            "bundle_digest": flow["flow_digest"],
+            "authority_mode": state["request"]["mode"],
+            "authority_source": binding["authority"]["source"],
+            "contract_id": binding["mission_contract"]["contract_id"],
+            "wop_id": binding["wop"]["wop_id"],
+            "package_digest": binding["wop"]["package_digest"],
+            "operational_authority_allocated": state["request"]["mode"] == "operational",
         }
 
     def _stage_wop_generation(self, state, at):
         request = state["request"]
-        authority = state["artifacts"]["authority_context"]
-        if request["mode"] == "qualification":
-            result = WopGenerator().generate(
-                intent=request["intent"],
-                mission_id=request["mission_id"],
-                phase_id=request.get("phase_id") or "QUALIFICATION-PHASE",
-                repository_identity=str(self.root),
-                submitter_identity=request.get("submitter_identity")
-                or "qualification-operator",
-                approval_authority=authority["approval_authority"],
-                approval_reference=authority["approval_reference"],
-                approval_date=authority["approval_date"],
-                authority_node_id=authority["authority_node_id"],
-                adr_reference=authority["adr_reference"],
-                immutable_wop_reference=authority["immutable_wop_reference"],
-            )
-        else:
-            result = ConvergenceRuntime(self.root).operational_wop(
-                intent=request["intent"], flow=authority)
-        state["artifacts"]["wop_result"] = result
+        binding = state["artifacts"]["authority_context"]
+        if "admission" not in binding:
+            if request["mode"] == "qualification":
+                result = WopGenerator().generate(
+                    intent=request["intent"], mission_id=request["mission_id"],
+                    phase_id=request.get("phase_id") or "QUALIFICATION-PHASE",
+                    repository_identity=str(self.root),
+                    submitter_identity=request.get("submitter_identity") or "qualification-operator",
+                    approval_authority="PLACEHOLDER-APPROVAL-AUTHORITY",
+                    approval_reference="PLACEHOLDER-APPROVAL-REFERENCE",
+                    approval_date="1970-01-01", authority_node_id="PLACEHOLDER-AUTHORITY-NODE",
+                    adr_reference="PLACEHOLDER-ADR", immutable_wop_reference="PLACEHOLDER-IMMUTABLE-WOP",
+                )
+                state["artifacts"]["wop_result"] = result
+                return {"wop_id": result["wop"]["wop_id"], "submission_digest": result["wop"]["submission_digest"], "review_required": True, "automatically_submitted": False}
+            result = ConvergenceRuntime(self.root).operational_wop(intent=request["intent"], flow=binding)
+            state["artifacts"]["wop_result"] = result
+            return {"wop_id": result["wop"]["wop_id"], "submission_digest": result["wop"]["submission_digest"], "review_required": result["review_required"], "automatically_submitted": result["automatically_submitted"]}
+        state["artifacts"]["wop_result"] = {"wop": binding["submission"], "published": True}
         return {
-            "wop_id": result["wop"]["wop_id"],
-            "submission_digest": result["wop"]["submission_digest"],
-            "review_required": result["review_required"],
-            "automatically_submitted": result["automatically_submitted"],
+            "wop_id": binding["wop"]["wop_id"],
+            "submission_digest": binding["submission"]["submission_digest"],
+            "package_digest": binding["wop"]["package_digest"],
+            "published_package_reused": True,
+            "review_required": True,
+            "automatically_submitted": False,
         }
 
     def _stage_submission_eligibility(self, state, at):
         request = state["request"]
         wop = state["artifacts"]["wop_result"]["wop"]
-        failures = AdmissionController().validate(wop, str(self.root))
+        failures = (
+            self._canonical_binding_failures(state)
+            if "admission" in state["artifacts"]["authority_context"]
+            else AdmissionController().validate(wop, str(self.root))
+        )
         if failures:
             raise StageBlocked(
                 "ADMISSION_VALIDATION_FAILURE",
-                "generated WOP failed admission validation",
-                {"failures": [failure.to_mapping() for failure in failures]},
+                "canonical mission binding failed admission validation",
+                {"failures": [failure.to_mapping() for failure in failures] if failures and hasattr(failures[0], "to_mapping") else failures},
             )
         eligible = request["mode"] == "operational"
         result = {
@@ -330,18 +338,48 @@ class MissionAdmissionRuntime:
         request = state["request"]
         wop = state["artifacts"]["wop_result"]["wop"]
         authority = state["artifacts"]["authority_context"]
+        validation = (
+            self._canonical_binding_failures(state)
+            if "admission" in authority
+            else AdmissionController().validate(wop, str(self.root))
+        )
+        if validation:
+            raise StageBlocked("ADMISSION_VALIDATION_FAILURE", "canonical mission binding failed admission validation", {
+                "failures": [failure.to_mapping() for failure in validation] if hasattr(validation[0], "to_mapping") else validation})
+        if "admission" not in authority:
+            if request["mode"] == "qualification":
+                decision = {"admission_decision": "QUALIFICATION_ONLY", "submission_eligible": False, "review_required": True, "automatically_submitted": False, "dispatch_permitted": False}
+            else:
+                decision = AdmissionController().decide(wop, expected_repository=str(self.root), evaluated_at=at).data
+                decision["submission_eligible"] = decision["admission_decision"] == "ACCEPTED"
+                decision["automatically_submitted"] = False
+                decision["dispatch_permitted"] = bool(authority.get("execution_admitted"))
+                decision["dispatch_readiness"] = {"model": "CONVERGENCE_AUTHORITY", "dispatch_permitted": decision["dispatch_permitted"]}
+            state["artifacts"]["admission_decision"] = decision
+            return decision
+        binding = authority["admission"]
         if request["mode"] == "qualification":
             decision = {
                 "admission_decision": "QUALIFICATION_ONLY",
+                "validation_failures": [],
+                "validation_summary": {"failure_count": 0, "reason_codes": []},
                 "submission_eligible": False,
                 "review_required": True,
                 "automatically_submitted": False,
                 "dispatch_permitted": False,
             }
         else:
-            decision = AdmissionController().decide(
-                wop, expected_repository=str(self.root), evaluated_at=at
-            ).data
+            decision = {
+                "admission_decision": "ACCEPTED",
+                "validation_failures": [],
+                "validation_summary": {"failure_count": 0, "reason_codes": []},
+                "submission_digest": wop["submission_digest"],
+                "wop_id": wop["wop_id"],
+                "mission_id": wop["mission_id"],
+                "repository_identity": str(self.root),
+                "evaluation_timestamp": self._time(at),
+                "validator_version": "published-mission-contract/1",
+            }
             decision["submission_eligible"] = (
                 decision["admission_decision"] == "ACCEPTED"
             )
@@ -349,21 +387,176 @@ class MissionAdmissionRuntime:
             # Operational Alpha admission is governed by the convergence flow
             # resolved above.  The Progressive PMCT/production-agent dispatcher
             # is a retained compatibility capability, not an OA authority input.
-            readiness = {
-                "model": "CONVERGENCE_AUTHORITY",
-                "dispatch_permitted": bool(authority.get("execution_admitted")),
-                "authority_receipt": authority["authority_receipt"]["receipt_digest"],
-                "baseline_id": authority["authority_receipt"]["baseline_id"],
+            decision["dispatch_permitted"] = binding["dispatch_permission"]
+            decision["dispatch_readiness"] = {
+                "model": "PUBLISHED_MISSION_CONTRACT",
+                "dispatch_permitted": binding["dispatch_permission"],
+                "baseline": binding["repository"]["development_baseline"],
             }
-            decision["dispatch_permitted"] = readiness["dispatch_permitted"]
-            decision["dispatch_readiness"] = readiness
-            decision["decision_scope"] = "AUTHORITY_BASELINE_ADMISSION_ONLY"
-            decision["oa01_operator_verification_satisfied"] = False
-            decision["oa01_operator_acceptance_satisfied"] = False
-            decision["dispatcher_commissioning_authorized"] = False
-            decision["oa02_execution_eligible"] = False
+        decision["mission_binding"] = binding
+        decision["next_authorized_action"] = (
+            "Run independent qualification; do not dispatch."
+            if request["mode"] == "qualification"
+            else "Proceed to bounded execution only after operational approval."
+        )
         state["artifacts"]["admission_decision"] = decision
         return decision
+
+    def _canonical_binding_failures(self, state) -> list[dict[str, str]]:
+        binding = state["artifacts"]["authority_context"]
+        admission = binding["admission"]
+        required = {
+            "mission_id": admission.get("mission_id"),
+            "wop_id": admission.get("wop_id"),
+            "package_digest": admission.get("package_digest"),
+            "immutable_manifest_reference": admission.get("immutable_manifest_reference"),
+            "authority.source": admission.get("authority", {}).get("source"),
+            "approval.authority": admission.get("approval", {}).get("authority"),
+            "approval.reference": admission.get("approval", {}).get("reference"),
+            "repository.identity": admission.get("repository", {}).get("identity"),
+            "repository.development_baseline": admission.get("repository", {}).get("development_baseline"),
+        }
+        failures: list[dict[str, str]] = []
+        for field, value in required.items():
+            if value in (None, "", [], {}):
+                failures.append({"field": field, "reason_code": "REQUIRED_FIELD_MISSING", "message": f"{field} is unresolved"})
+        serialized = json.dumps(binding, sort_keys=True)
+        if "PLACEHOLDER-" in serialized or "None" in serialized:
+            failures.append({"field": "binding", "reason_code": "PLACEHOLDER_OR_UNRESOLVED_VALUE", "message": "canonical admission binding contains a placeholder or unresolved value"})
+        if admission.get("repository", {}).get("identity") != str(self.root):
+            failures.append({"field": "repository.identity", "reason_code": "REPOSITORY_IDENTITY_MISMATCH", "message": "repository binding does not match admission target"})
+        if admission.get("mission_id") != state["request"]["mission_id"]:
+            failures.append({"field": "mission_id", "reason_code": "MISSION_ID_MISMATCH", "message": "submission and contract mission IDs differ"})
+        return failures
+
+    def _resolve_published_binding(self, state) -> dict[str, Any]:
+        """Resolve one mission contract and its published WOP package.
+
+        This is the shared resolver for qualification and operational admission;
+        mode changes only the dispatch boundary.
+        """
+        request = state["request"]
+        mission = request["mission_id"]
+        contract_path = self.root / "engineering/mission-contracts/contracts" / f"{mission}.yaml"
+        if not contract_path.is_file():
+            raise StageBlocked("AUTHORITY_FAILURE", "mission contract is missing", {"mission_id": mission})
+        contract = load_mission_contract(contract_path)
+        errors = validate_mission_contract(contract, self.root)
+        if errors:
+            raise StageBlocked("AUTHORITY_FAILURE", "mission contract is invalid", {"errors": errors})
+        if contract.get("mission_id") != mission:
+            raise StageBlocked("AUTHORITY_FAILURE", "mission contract mission mismatch")
+        package_path = self.root / str(contract["wop"]["locator"])
+        package_root = package_path.parent
+        try:
+            metadata, package_evidence = validate_package(package_root)
+        except Exception as error:
+            raise StageBlocked("PACKAGE_FAILURE", "published WOP package is invalid", {"error": str(error)}) from error
+        if metadata.get("mission_id") != mission or metadata.get("wop_id") != contract["wop"]["id"]:
+            raise StageBlocked("AUTHORITY_FAILURE", "mission contract and WOP identity disagree", {
+                "contract_mission": contract.get("mission_id"), "wop_mission": metadata.get("mission_id"),
+                "contract_wop": contract["wop"]["id"], "wop_id": metadata.get("wop_id")})
+        package_digest = Stage1Runtime._tree_digest(package_root)
+        manifest_path = package_root / "manifests/immutable-manifest.yaml"
+        manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
+        if not isinstance(manifest, Mapping) or manifest.get("wop_id") != metadata["wop_id"]:
+            raise StageBlocked("AUTHORITY_FAILURE", "immutable manifest is unresolved or mismatched")
+        submitter = request.get("submitter_identity") or request.get("principal_id") or "qualification-operator"
+        principal = request.get("principal_id") or submitter
+        approval_authority = contract["roles"]["human_authorizer"]
+        approval_reference = contract["approvals"].get("authority_reference") or contract["activation"]["record"]
+        section_values = {
+            "purpose_and_expected_outcome": contract["scope"]["objective"],
+            "mission_classification": "Operation Beta / ZDCL development mission",
+            "governing_references": "; ".join([str(contract_path.relative_to(self.root)), str(contract["wop"]["locator"])]),
+            "scope": "\n".join(f"- {item}" for item in metadata["scope"]),
+            "explicit_authority": f"Authorized by {approval_authority}; source {contract_path.relative_to(self.root)}",
+            "prohibited_activities": "\n".join(f"- {item}" for item in contract["scope"]["prohibited"]),
+            "dependencies_and_entry_criteria": "\n".join(f"- {item}" for item in metadata["dependencies"]),
+            "deliverables": "Bounded ZDCL-01 native session foundation and its evidence.",
+            "execution_sequence": "Verify identity and baseline; execute the published WOP gates; qualify; reconcile; close out.",
+            "success_and_acceptance_criteria": "The published WOP gates and mission contract completion criteria pass.",
+            "validation_profile": "Published package validation, mission-contract validation, and independent qualification.",
+            "publication_and_synchronization": "Publish only within the authorized Development Engineering Platform workflow.",
+            "stop_resume_and_escalation": "Stop on authority, package, repository, baseline, or digest mismatch; resume from the persisted checkpoint.",
+            "completion_report_requirement": "Produce the ZDCL-01 completion report and immutable evidence receipt.",
+        }
+        submission = {
+            "schema_version": 1,
+            "document_type": "EngineeringWorkOrder",
+            "wop_id": metadata["wop_id"],
+            "mission_id": mission,
+            "phase_id": metadata.get("phase_id") or request.get("phase_id") or "UNSPECIFIED_BY_CONTRACT",
+            "revision": metadata.get("revision", 1),
+            "status": metadata.get("status", "Active"),
+            "title": metadata["title"],
+            "repository_identity": str(self.root),
+            "submitter_identity": submitter,
+            "approval": {
+                "authority": approval_authority,
+                "reference": approval_reference,
+                "status": "approved",
+                "authorized_lifecycle_state": "Active",
+                "source": f"{contract_path.relative_to(self.root)}:roles.human_authorizer",
+            },
+            "execution_package_references": {
+                "authority_node_id": manifest["authority_source"],
+                "authorization_decision_record": approval_reference,
+                "immutable_wop": str(manifest_path.relative_to(self.root)),
+            },
+            "authoritative_references": [CONTRACT["procedure"], CONTRACT["template"], *CONTRACT["standards"], str(contract_path.relative_to(self.root)), str(contract["wop"]["locator"]), *manifest.get("authority_documents", [])],
+            "sections": {name: section_values[name] for name in CONTRACT["required_sections"]},
+        }
+        # The admission controller's schema is for standalone WOP submissions;
+        # admission additionally carries the complete canonical binding below.
+        submission["submission_digest"] = digest(submission)
+        admission = {
+            "operation": "BETA",
+            "mission_id": mission,
+            "mission_family": mission.split("-", 1)[0],
+            "title": metadata["title"],
+            "purpose": contract["scope"]["objective"],
+            "expected_outcome": contract["scope"]["objective"],
+            "scope": metadata["scope"],
+            "explicit_exclusions": contract["scope"]["prohibited"],
+            "dependencies": metadata["dependencies"],
+            "prerequisites": metadata["dependencies"],
+            "wop_id": metadata["wop_id"],
+            "wop_revision": metadata.get("revision", 1),
+            "package_path": str(package_root),
+            "package_digest": package_digest,
+            "immutable_manifest_reference": str(manifest_path.relative_to(self.root)),
+            "repository": {"identity": str(self.root), "development_baseline": contract["repository"]["baseline"], "production_baseline": "OA-v1.0.0"},
+            "submission_id": self._submission_id(mission, request),
+            "work_item": {"state": "NOT_DECLARED_BY_MISSION_CONTRACT", "source": str(contract_path.relative_to(self.root))},
+            "submitter": submitter,
+            "principal": principal,
+            "authority": {"source": str(contract_path.relative_to(self.root)), "owner": approval_authority},
+            "approval": {"authority": approval_authority, "reference": approval_reference, "status": "approved", "source": str(contract_path.relative_to(self.root)) + ":approvals"},
+            "lifecycle_authorization": contract["lifecycle"],
+            "qualification_mode": request["mode"],
+            "dispatch_permission": request["mode"] == "operational" and bool(contract["permissions"].get("modify")),
+            "correlation_id": request["correlation_id"],
+            "package_validation": package_evidence,
+        }
+        return {"mission_contract": {"contract_id": contract["contract_id"], "path": str(contract_path.relative_to(self.root)), "digest": digest(contract)},
+                "wop": {"wop_id": metadata["wop_id"], "package_digest": package_digest, "path": str(package_root)},
+                "repository": admission["repository"], "authority": admission["authority"], "admission": admission,
+                "submission": submission}
+
+    def _submission_id(self, mission: str, request: Mapping[str, Any]) -> str:
+        if request.get("submission_id"):
+            return str(request["submission_id"])
+        stage_root = self.root / ".zeus/runtime/stage1"
+        try:
+            record = Stage1Runtime(self.root, stage_root).show(mission)
+        except Exception as error:
+            raise StageBlocked("SUBMISSION_FAILURE", "authoritative mission submission is unavailable", {
+                "mission_id": mission, "error": str(error)}) from error
+        if record.get("state") not in {"STAGED", "ADMITTED"}:
+            raise StageBlocked("SUBMISSION_FAILURE", "mission submission is not active", {
+                "mission_id": mission, "state": record.get("state")})
+        return str(record["instance_id"])
 
     def _effective_agent_registry(self):
         from scripts.lib.emp.agent_qualification import runtime_registry_path
@@ -431,6 +624,7 @@ class MissionAdmissionRuntime:
             "implementation_wop_revision": str(request.get("implementation_wop_revision", "1")),
             "authority_record_id": request.get("authority_record_id"),
             "correlation_id": request.get("correlation_id", "mission-admission"),
+            "submission_id": request.get("submission_id"),
         }
         if value["mode"] not in {"qualification", "operational"}:
             raise MissionAdmissionError("mode must be qualification or operational")

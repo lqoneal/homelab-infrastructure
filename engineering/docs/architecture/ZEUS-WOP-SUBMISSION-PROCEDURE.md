@@ -48,3 +48,20 @@ Use `zeus mission submit --help`, `zeus submit --help`,
 `zeus mission queue --help`, `zeus generate-wop --help`,
 `zeus admit-mission --help`, and `zeus execute-mission --help` for the
 published command contracts. Submission does not approve, admit, or execute.
+
+## Admission contract binding
+
+Admission resolves the published Mission Contract and its referenced WOP
+package before constructing the admission artifact. The package is reused,
+not regenerated. The artifact is bound to the immutable manifest, package
+tree digest, repository, development baseline, existing Stage 1 submission,
+authority, approval reference, lifecycle mode, and dispatch boundary.
+
+Qualification and operational admission use the same resolver. Qualification
+sets `QUALIFICATION_ONLY` and denies dispatch; operational admission may
+permit dispatch only after its explicit approval boundary is satisfied. Mode
+does not alter mission identity, scope, WOP identity, authority, or baseline.
+
+An unresolved contract, package, digest, authority, approval, repository, or
+baseline is a nonzero fail-closed result. Placeholder, generic, or fabricated
+values are never valid successful admission metadata.

@@ -12,6 +12,23 @@ def operator_text(value: Any, title: str | None = None) -> str:
     lines = []
     if title:
         lines.extend([title, "-" * len(title)])
+    admission = value.get("artifacts", {}).get("admission_decision") if isinstance(value.get("artifacts"), dict) else None
+    if isinstance(admission, dict) and "mission_binding" in admission:
+        binding = admission["mission_binding"]
+        lines.extend([
+            f"Result                       : {value.get('status')}",
+            f"Admission ID                : {value.get('admission_id')}",
+            f"Decision                    : {admission.get('admission_decision')}",
+            f"Mission                     : {binding.get('mission_id')}",
+            f"WOP                         : {binding.get('wop_id')}",
+            f"Authority                   : {binding.get('authority', {}).get('owner')} ({binding.get('authority', {}).get('source')})",
+            f"Approval                    : {binding.get('approval', {}).get('authority')} / {binding.get('approval', {}).get('reference')}",
+            f"Submission                  : {binding.get('submission_id')}",
+            f"Dispatch permission         : {binding.get('dispatch_permission')}",
+            f"Blockers                    : {json.dumps(admission.get('validation_failures', []), sort_keys=True) if admission.get('validation_failures') else 'none'}",
+            f"Next action                 : {admission.get('next_authorized_action')}",
+        ])
+        return "\n".join(lines) + "\n"
     if title == "Capability list":
         capabilities = value.get("capabilities", [])
         if value.get("registry_id") and not capabilities:
