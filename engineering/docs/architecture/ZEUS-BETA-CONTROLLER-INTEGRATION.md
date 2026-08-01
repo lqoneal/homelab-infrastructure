@@ -53,6 +53,12 @@ Alpha inspection commands remain available through their existing
 Mission Knowledge Model projections. Beta output never substitutes for Alpha
 production state, and Alpha history is not treated as Beta authority.
 
+Mission queue inspection remains on the existing EMP/Zeus orchestration and
+Mission Knowledge Model path. It is a read-only projection and does not create
+a parallel queue, scheduler, admission store, or lifecycle authority. See
+`ZEUS-MISSION-QUEUE-AND-SCHEDULING.md` for the ownership and fail-closed
+contract.
+
 ## Metrics
 
 Operation and mission metrics are derived from the roadmap cards and current

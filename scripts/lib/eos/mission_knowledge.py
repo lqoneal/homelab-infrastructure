@@ -441,14 +441,59 @@ def roadmap_verification(root: Path | str) -> dict[str, Any]:
             "drift_owner": "EMM",
             "qualification_owner": "PROC-0006"}
 
-def queue(root: Path | str) -> dict[str, Any]:
+def queue(root: Path | str, view: str | None = None) -> dict[str, Any]:
+    """Project mission requests and lifecycle state from the MKM.
+
+    This is deliberately a projection, not a second queue store.  Submission
+    remains the existing ``zeus submit``/EMP orchestration operation; this
+    surface makes its authoritative mission state inspectable without adding
+    another scheduler or admission authority.
+    """
     result = portfolio(root)
-    eligible = [item for item in result["missions"] if item["classification"] == "ELIGIBLE"]
-    eligible.sort(key=lambda item: (item["mission_id"]))
-    return {"result": "PASS" if eligible else "NO_ELIGIBLE_MISSION",
-            "queue": [item["mission_id"] for item in eligible],
-            "selection_rule": "controlled mission sequence, then mission identifier",
-            "authoritative_source": PATH}
+    missions = sorted(result["missions"], key=lambda item: item["mission_id"])
+    eligible = [item for item in missions if item["classification"] == "ELIGIBLE"]
+    blocked = [item for item in missions if item["classification"] in {"BLOCKED", "INELIGIBLE"}]
+    staged = [item for item in missions if item["classification"] in {"NOT_READY", "DEFERRED"}]
+    active = [item for item in missions if item["lifecycle"] == "CURRENT"]
+    completed = [item for item in missions if item["lifecycle"] == "COMPLETED"]
+    selection = [item["mission_id"] for item in eligible]
+    views = {
+        None: missions,
+        "list": missions,
+        "show": missions,
+        "next": selection[:1],
+        "blockers": blocked,
+        "history": completed,
+    }
+    if view not in views:
+        raise MissionKnowledgeError("MISSION_QUEUE_VIEW_INVALID")
+    selected = views[view]
+    if view == "show" and isinstance(view, str):
+        # ``show`` is filtered by the caller-provided mission identifier in
+        # the CLI; the generic projection remains deterministic when used by
+        # library consumers.
+        selected = missions
+    counts = {
+        "submitted": len(missions),
+        "staged": len(staged),
+        "eligible": len(eligible),
+        "blocked": len(blocked),
+        "active": len(active),
+        "completed": len(completed),
+    }
+    return {
+        "result": "PASS" if eligible else "NO_ELIGIBLE_MISSION",
+        "queue": [item["mission_id"] for item in selected],
+        "entries": selected,
+        "metrics": counts,
+        "metrics_scope": "MKM mission inventory; EMP submission metrics remain owned by the orchestration store",
+        "next_mission": selection[0] if selection else None,
+        "selection_rule": "readiness projection uses authoritative mission sequence; EMP policy selection remains zeus missions select",
+        "submission_interface": "zeus submit <WOP_PACKAGE> (EMP orchestration store)",
+        "selection_interface": "zeus missions select (EMP policy and priority)",
+        "admission_interface": "zeus admit-mission start (fail-closed admission runtime)",
+        "authoritative_source": PATH,
+    }
 
 def health(root: Path | str) -> dict[str, Any]:
     result = portfolio(root)

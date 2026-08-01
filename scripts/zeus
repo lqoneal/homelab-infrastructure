@@ -366,7 +366,16 @@ def main(argv=None):
             elif a.action == "roadmap":
                 value = mission_knowledge.roadmap_verification(ROOT) if a.verify else mission_knowledge.roadmap(ROOT)
             elif a.action == "queue":
-                value = mission_knowledge.queue(ROOT)
+                queue_view = (a.mission_id or "list").upper()
+                if queue_view in {"LIST", "NEXT", "BLOCKERS", "HISTORY"}:
+                    value = mission_knowledge.queue(ROOT, queue_view.lower())
+                elif queue_view == "SHOW":
+                    value = mission_knowledge.queue(ROOT, "show")
+                else:
+                    value = mission_knowledge.queue(ROOT, "show")
+                    value["queue"] = [item for item in value["queue"] if item == queue_view]
+                    value["entries"] = [item for item in value["entries"] if item["mission_id"] == queue_view]
+                    value["result"] = "PASS" if value["entries"] else "MISSION_NOT_FOUND"
             else:
                 value = mission_knowledge.health(ROOT)
             emit_controller(value, json_mode=a.json, verify=a.verify, title=f"Mission {a.action}")
