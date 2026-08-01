@@ -1,16 +1,13 @@
 # OA-19 Objective Resolution Report
 
-## Objective: RESOLVED
+## Result: PASS
 
-The following controlled sources agree on the OA-19 objective:
+Authoritative objective:
 
-`Prove append-only capture of commands, outputs, state, timestamps, identities, checksums, and completion markers.`
+> Prove append-only capture of commands, outputs, state, timestamps,
+> identities, checksums, and completion markers.
 
-The objective is bounded to evidence capture, append-only behavior, fail-closed
-negative paths, replay/idempotency, interruption/recovery, cumulative
-regression, reconciliation, and operator acceptance before OA-20 eligibility.
-
-Resolution cannot advance to implementation because capability identity and
-responsibility are inconsistent across controlled sources. This report does
-not infer an identifier.
-
+The roadmap, OA-19 objective, implementation guide, verification guide, gate
+specification, Mission Knowledge Model, Capability Registry, EMM, PMCT, and
+controller projections agree. The dependency model is prerequisite CAP-017 and
+outcome CAP-018; no self-dependency remains.

@@ -26,12 +26,11 @@ class MissionRoadmapTests(unittest.TestCase):
 
     def test_current_mission_and_blocker_are_model_derived(self):
         current = mission_knowledge.current(ROOT)
-        self.assertEqual(current["mission_id"], "OA-19")
+        self.assertEqual(current["mission_id"], "OA-20")
         self.assertEqual(current["lifecycle"], "CURRENT")
-        readiness = mission_knowledge.readiness(ROOT, "OA-19")
-        self.assertEqual(readiness["classification"], "ELIGIBLE")
-        self.assertEqual(readiness["missing_capabilities"], [])
-        self.assertEqual(readiness["missing_outcome_capabilities"], ["ZEUS-OA-CAP-018"])
+        readiness = mission_knowledge.readiness(ROOT, "OA-20")
+        self.assertEqual(readiness["classification"], "BLOCKED")
+        self.assertEqual(readiness["missing_capabilities"], ["ZEUS-OA-CAP-019"])
         self.assertEqual(readiness["missing_dependencies"], [])
 
     def test_all_missions_have_consistent_model_projection(self):
@@ -43,8 +42,8 @@ class MissionRoadmapTests(unittest.TestCase):
 
     def test_next_action_is_current_wop_projection(self):
         value = mission_knowledge.next_action(ROOT)
-        self.assertEqual(value["current_mission"], "OA-19")
-        self.assertEqual(value["next_authorized_action"]["wop"], "WOP-OA-19-EXECUTION-001")
+        self.assertEqual(value["current_mission"], "OA-20")
+        self.assertEqual(value["next_authorized_action"]["wop"], "WOP-OA-20-EXECUTION-001")
 
 
 if __name__ == "__main__":
