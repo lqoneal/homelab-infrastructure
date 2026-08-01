@@ -74,6 +74,22 @@ class AdmissionTests(unittest.TestCase):
         self.assertEqual(first.data["admission_decision"], "ACCEPTED")
         self.assertEqual(first.data["validation_summary"]["failure_count"], 0)
 
+    def test_published_semantic_wop_without_approval_date_is_accepted(self):
+        value = self.valid_submission()
+        value["wop_id"] = "WOP-ZDCL-01-FOUNDATION-001"
+        value["approval"].pop("date")
+        value["submission_digest"] = submission_digest(value)
+        result = self.decide(value).data
+        self.assertEqual(result["admission_decision"], "ACCEPTED")
+        self.assertEqual(result["validation_failures"], [])
+
+    def test_malformed_supplied_approval_date_still_fails_closed(self):
+        value = self.valid_submission()
+        value["approval"]["date"] = "not-an-iso-date"
+        value["submission_digest"] = submission_digest(value)
+        result = self.decide(value).data
+        self.assertIn("INVALID_APPROVAL_DATE", result["validation_summary"]["reason_codes"])
+
     def test_incomplete_submission_reports_every_failure(self):
         value = self.valid_submission()
         del value["approval"]

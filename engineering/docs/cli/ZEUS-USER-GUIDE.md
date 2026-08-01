@@ -79,6 +79,21 @@ remains `ADMITTED`.
 A Governance-admitted submission is projected through `VALIDATING`, `ADMITTED`,
 and `STAGED`. These runtime labels do not authorize an execution agent to
 admit, revoke, or activate a mission.
+
+## Execution status and recovery
+
+For one active execution, the execution identifier is resolved automatically:
+
+```text
+zeus execute-mission status
+zeus execute-mission resume
+zeus execute-mission suspend --reason OPERATOR
+zeus execute-mission cancel --reason OPERATOR
+```
+
+Use `--execution-id MISSION-EXECUTION-...` when more than one execution is
+active. Zeus fails closed and lists the valid IDs rather than guessing. Resume
+continues the existing checkpoint and never creates a duplicate execution.
 Submitting identical mission and package content again returns the existing
 instance with `idempotent_replay: true`; it never creates a second active
 mission. State is stored under `.zeus/runtime/stage1/missions/` with an

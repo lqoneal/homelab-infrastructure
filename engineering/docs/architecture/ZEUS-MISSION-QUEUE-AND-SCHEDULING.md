@@ -95,3 +95,11 @@ submission -> validation -> staging -> eligibility -> selection
 Where a legacy or historical record does not expose every intermediate event,
 the projection reports the available authoritative state and does not invent
 missing history.
+## Execution projection
+
+When an admitted mission has an existing execution record, queue and mission
+controllers project its execution ID, state, gate, wait category, diagnostics,
+and resume action. These are read-only projections of the execution record;
+the queue does not own execution state. A single active execution is resolved
+automatically by the execution CLI, while ambiguous active executions fail
+closed and require an explicit ID.

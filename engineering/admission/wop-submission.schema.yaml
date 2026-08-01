@@ -20,7 +20,7 @@ required:
 properties:
   schema_version: {const: 1}
   document_type: {const: EngineeringWorkOrder}
-  wop_id: {type: string, pattern: '^WOP-[0-9a-f-]{36}$'}
+  wop_id: {type: string, pattern: '^WOP-(?:[A-Z0-9]+(?:-[A-Z0-9.]+)+|[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$'}
   mission_id: {type: string}
   phase_id: {type: string}
   revision: {type: integer, minimum: 1}

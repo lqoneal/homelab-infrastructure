@@ -57,6 +57,26 @@ from scripts.lib.emp.controller_presentation import emit as emit_controller  # n
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
 
+def resolve_execution_id(store, requested=None):
+    """Resolve one active execution without creating execution authority."""
+    if requested:
+        return requested
+    active = []
+    for path in sorted(store.directory.glob("MISSION-EXECUTION-*.json")):
+        state = store.load(path.stem)
+        if state.get("state") not in {"Completed", "Failed", "Cancelled"}:
+            active.append(state["execution_id"])
+    if len(active) == 1:
+        return active[0]
+    if not active:
+        raise MissionExecutionError(
+            "no active execution exists; provide --execution-id after starting an admitted mission"
+        )
+    raise MissionExecutionError(
+        "multiple active executions exist; provide --execution-id from: "
+        + ", ".join(active)
+    )
+
 def authority_status(mission_status):
     decision = resolve_next_action(ROOT)
     pointer = json.loads(
@@ -898,19 +918,19 @@ def main(argv=None):
                 if not a.admission_id: raise MissionExecutionError("--admission-id is required")
                 result=execution_runtime.start(a.admission_id,at=now(a.at),max_gates=a.max_gates)
             elif a.action=="status":
-                if not a.execution_id: raise MissionExecutionError("--execution-id is required")
-                result=execution_store.load(a.execution_id)
+                execution_id = resolve_execution_id(execution_store, a.execution_id)
+                result=execution_store.load(execution_id)
             elif a.action=="resume":
-                if not a.execution_id: raise MissionExecutionError("--execution-id is required")
-                result=execution_runtime.resume(a.execution_id,at=now(a.at),max_gates=a.max_gates)
+                execution_id = resolve_execution_id(execution_store, a.execution_id)
+                result=execution_runtime.resume(execution_id,at=now(a.at),max_gates=a.max_gates)
             elif a.action=="suspend":
-                if not a.execution_id: raise MissionExecutionError("--execution-id is required")
-                result=execution_runtime.suspend(a.execution_id,at=now(a.at),reason=a.reason)
+                execution_id = resolve_execution_id(execution_store, a.execution_id)
+                result=execution_runtime.suspend(execution_id,at=now(a.at),reason=a.reason)
             else:
-                if not a.execution_id: raise MissionExecutionError("--execution-id is required")
-                result=execution_runtime.cancel(a.execution_id,at=now(a.at),reason=a.reason)
+                execution_id = resolve_execution_id(execution_store, a.execution_id)
+                result=execution_runtime.cancel(execution_id,at=now(a.at),reason=a.reason)
             emit(result)
-            if result["state"] in ("Waiting","Failed"): return 78
+            if a.action != "status" and result["state"] in ("Waiting","Failed"): return 78
         elif a.command=="dispatcher":
             baseline=subprocess.run(["git","-C",str(ROOT),"rev-parse","HEAD"],
                 capture_output=True,text=True,check=True).stdout.strip()
