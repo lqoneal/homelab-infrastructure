@@ -339,7 +339,7 @@ entities:
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/missions/operational-alpha-mission-knowledge.yaml
-    source_digest: f8768e73e917ef6fea69859afbbefcfb9234520fcfd0981a59979211700a84f0
+    source_digest: 8371f650ae41c154a433cfad051710f6d0b09b46ee8e48b9a3fd9f7f496167fb
   - entity_type: MissionRoadmap
     entity_id: ZEUS-OA-ROADMAP-002
     revision: 1.0
