@@ -1,6 +1,6 @@
 schema_version: 1
 emm_id: OPERATIONAL-ALPHA-EMM
-version: 2.7
+version: 2.9
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
 infrastructure_baseline_id: OA-INFRA-BASELINE-001
 authoritative_owner: Homelab Infrastructure
@@ -16,11 +16,11 @@ milestone_catalog:
   authoritative_owner: Engineering Governance
   supersession_rule: Append-only immutable milestone records; later qualified records supersede without overwriting history.
   current_milestone:
-    milestone_id: OA-OPERATIONAL-MILESTONE-003
+    milestone_id: OA-OPERATIONAL-MILESTONE-004
     revision: 1.0
-    source: engineering/registry/milestones/OA-OPERATIONAL-MILESTONE-003.yaml
-    published_commit: a6e00709bbffdc727f60928b6bcc11542cad0098
-    mission_boundary: OA-01 through OA-16 complete; OA-17 current
+    source: engineering/registry/milestones/OA-OPERATIONAL-MILESTONE-004.yaml
+    published_commit: c415af51744fc719dfae392a2540469cb783601c
+    mission_boundary: OA-01 through OA-17 complete; OA-18 current
 entities:
   - entity_type: ArchitectureBaseline
     entity_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -291,11 +291,11 @@ entities:
     source_digest: 6f820bff4320cbb08200ad917b6eddba680a00d6e8aed8d384972a71ec0d9936
   - entity_type: CapabilityRegistry
     entity_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-    revision: 1.6
+    revision: 1.7
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/capabilities/operational-alpha-capability-registry.yaml
-    source_digest: 9eaec7544eb5039a32b0a464afab708ec9dc06c0e1771d63a364e6ab0a7866f9
+    source_digest: 5b2e3bec9d2a1934e0784b4af8b47df76819758e3912057e585f5bb0129290aa
   - entity_type: ImplementationWOP
     entity_id: WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f
     revision: 1
@@ -335,18 +335,18 @@ entities:
     source_digest: 9444ce37a7a23f1195707158653b27a779556c159b50aed2f373cbdd01afedaf
   - entity_type: MissionKnowledgeModel
     entity_id: OPERATIONAL-ALPHA-MISSION-KNOWLEDGE
-    revision: 2.8
+    revision: 2.9
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/missions/operational-alpha-mission-knowledge.yaml
-    source_digest: 5e63d2d18c22da092ab355e37f6fb39902cec98a26363ffd92b50b749514a0d3
+    source_digest: c491e00ba5d820c1877cf0eed4c21f6618097c4a74aac0a2cee240a3dac0907b
   - entity_type: MissionRoadmap
     entity_id: ZEUS-OA-ROADMAP-002
     revision: 1.0
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
-    source_digest: a4acba177c48ddba07f7280c37ff326a16c6768201d655a14056616f0aa0a00a
+    source_digest: 24c22b75ac8bc96e70131d7377ab38da41fbad797fa76d10078b9d7e923eb384
   - entity_type: ImplementationWOP
     entity_id: WOP-9ed7762f-c143-5a58-9a21-63fae5a06c05
     revision: 1

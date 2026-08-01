@@ -491,7 +491,7 @@ def main(argv=None):
             emit(value)
             return 0
         if a.command == "gate" and a.action in ("show", "objective", "evidence", "receipt"):
-            if a.action == "receipt" and a.gate_id.upper() in {"OA-11", "OA-12", "OA-13", "OA-14", "OA-15", "OA-16"}:
+            if a.action == "receipt" and a.gate_id.upper() in {"OA-11", "OA-12", "OA-13", "OA-14", "OA-15", "OA-16", "OA-17"}:
                 gate_id = a.gate_id.upper()
                 state = progressive_oa.load_state(ROOT)
                 locator = state["gates"][gate_id]["acceptance_receipt"]
@@ -538,7 +538,7 @@ def main(argv=None):
             return 0
         if a.command == "verify":
             if a.gate.upper().startswith("OA-"):
-                if a.gate.upper() in {"OA-11", "OA-12", "OA-13", "OA-14", "OA-15", "OA-16"}:
+                if a.gate.upper() in {"OA-11", "OA-12", "OA-13", "OA-14", "OA-15", "OA-16", "OA-17"}:
                     value = ProgressiveGateService(ROOT).verify(a.gate.upper())
                     emit(value)
                     return 0

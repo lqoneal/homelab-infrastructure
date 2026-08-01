@@ -1,6 +1,7 @@
 gate_id: OA-17
-title: Gate and Handoff Progress Monitoring
-mission_objective: Prove Zeus observes progress, handoffs, checkpoints, and failures
-  through EENS.
+title: Controlled Execution Authorization
+mission_objective: Prove controlled execution authorization immediately following durable
+  execution start, including identity, authority lease, receipt, replay protection,
+  timeout handling, recovery, and fail-closed behavior.
 operational_alpha_trace: ZEUS-OA-GATE-SPEC-002
 status: UNSTARTED

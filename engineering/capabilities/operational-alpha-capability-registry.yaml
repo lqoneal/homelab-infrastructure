@@ -1,6 +1,6 @@
 schema_version: 1
 registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-revision: 1.6
+revision: 1.7
 classification: Authoritative
 authoritative_owner: Engineering Governance
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -219,3 +219,17 @@ capabilities:
     associated_evidence: [engineering/evidence/2026-07-31-wop-oa-16-execution-001/]
     regression_status: PASS
     capability_history: [OA-16 qualified]
+  - capability_id: ZEUS-OA-CAP-016
+    name: Controlled execution authorization
+    description: Authorizes execution only after durable start through identity-bound requests, authority lease validation, durable receipts, replay protection, timeout and revocation handling, and fail-closed recovery.
+    lifecycle: Operational
+    mission_introduced: OA-17
+    mission_modified: OA-17
+    verification_commands: [zeus verify OA-17, scripts/tests/test-zeus-oa17-authorization.py, zeus capability verify ZEUS-OA-CAP-016]
+    expected_verification_results: [authorization state lifecycle PASS, lease and receipt binding PASS, replay and timeout rejection PASS, interrupted recovery PASS, fail-closed PASS]
+    dependencies: [ZEUS-OA-CAP-015, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-17-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-17 qualified]

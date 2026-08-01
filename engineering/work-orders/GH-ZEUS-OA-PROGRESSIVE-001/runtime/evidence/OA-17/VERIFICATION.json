@@ -1,0 +1,33 @@
+{
+  "assertions": {
+    "authority_lease_verification": "PASS",
+    "authorization_identity": "PASS",
+    "authorized": "PASS",
+    "denied": "PASS",
+    "expired": "PASS",
+    "fail_closed": "PASS",
+    "interrupted_authorization_recovery": "PASS",
+    "pending_authorization": "PASS",
+    "receipt_binding": "PASS",
+    "replay_protection": "PASS",
+    "revoked": "PASS",
+    "timeout_handling": "PASS"
+  },
+  "authoritative_inputs": {
+    "capability_registry_revision": "1.7",
+    "mission_knowledge_revision": "2.9",
+    "objective": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-17/objective.yaml",
+    "predecessor": "OA-16 ACCEPTED"
+  },
+  "canonical_evidence_digest": "6f7b70919cf3ba11afbb3ae479e470abfd8a92e87d02539575c3c8a5ebb1e471",
+  "gate_id": "OA-17",
+  "qualification": {
+    "authorization_state": "REVOKED",
+    "execution_id": "MISSION-EXECUTION-OA17-QUALIFICATION-001",
+    "receipt_digest": "acddb753b8195260d09f2926dbbf24737b04c7a38aa43958870dcc4c7ae61be4",
+    "request_digest": "9da5c04446a125b84b1c1b1d1267a4706a337411cf68934514d7a7e227785957"
+  },
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-08-01T03:11:34.557013+00:00"
+}

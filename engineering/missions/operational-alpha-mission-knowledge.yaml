@@ -1,6 +1,6 @@
 schema_version: 1
 model_id: OPERATIONAL-ALPHA-MISSION-KNOWLEDGE
-revision: 2.8
+revision: 2.9
 classification: Authoritative
 authoritative_owner: Engineering Governance
 purpose: Canonical EMM-bound mission knowledge for Operational Alpha lifecycle reasoning.
@@ -9,7 +9,7 @@ roadmap_provenance:
   controlled_id: ZEUS-OA-ROADMAP-002
   revision: 1.0
   digest_algorithm: SHA-256
-  digest: a4acba177c48ddba07f7280c37ff326a16c6768201d655a14056616f0aa0a00a
+  digest: 24c22b75ac8bc96e70131d7377ab38da41fbad797fa76d10078b9d7e923eb384
   source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
   derivation_chain: [ARCH-0001, ADR-0001, SPEC-0002, ZEUS-OA-ROADMAP-002, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, zeus mission roadmap]
   derivation_rule: Every mission objective and sequence position is copied from the controlled roadmap; lifecycle, dependencies, and projections are model-owned derived state.
@@ -271,23 +271,23 @@ missions:
     controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
     runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
   - mission_id: OA-17
-    lifecycle: CURRENT
+    lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-17/objective.yaml
     roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
     roadmap_entry: OA-17
-    roadmap_objective: Prove Zeus observes progress, handoffs, checkpoints, and failures through EENS.
+    roadmap_objective: Prove controlled execution authorization follows durable execution start with identity, lease, receipt, replay, timeout, recovery, and fail-closed controls.
     capability_prerequisites: [ZEUS-OA-CAP-016]
     capability_outcomes: [ZEUS-OA-CAP-017]
     dependencies: [OA-16]
     eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
     blocking_conditions: []
     completion_criteria: [gate_objective_qualified]
-    evidence_relationships: []
+    evidence_relationships: [engineering/evidence/2026-07-31-wop-oa-17-execution-001/]
     controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
     runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
   - mission_id: OA-18
-    lifecycle: STAGED
+    lifecycle: CURRENT
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-18/objective.yaml
     roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md

@@ -1,0 +1,14 @@
+{
+  "authority": "Mission Knowledge Model + EMM + Capability Registry",
+  "authorization_type": "ZEUS_EXECUTION_AUTHORIZATION_REQUEST",
+  "execution_id": "MISSION-EXECUTION-OA17-QUALIFICATION-001",
+  "expires_at": "2026-07-31T09:27:00Z",
+  "mission_id": "OA-17",
+  "operator": "OA-17-QUALIFICATION-OPERATOR",
+  "repository": "/home/loneal/homelab-oa15",
+  "request_digest": "9da5c04446a125b84b1c1b1d1267a4706a337411cf68934514d7a7e227785957",
+  "requested_at": "2026-08-01T03:11:34.555642Z",
+  "schema_version": 1,
+  "state": "PENDING",
+  "wop_id": "WOP-OA-17-EXECUTION-001"
+}
