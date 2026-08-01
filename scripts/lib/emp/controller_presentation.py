@@ -48,6 +48,7 @@ def operator_text(value: Any, title: str | None = None) -> str:
             f"Engineering value            : {value.get('engineering_value', '')}",
             f"Operational outcome          : {value.get('operational_outcome_after_acceptance', '')}",
             f"Capabilities introduced     : {', '.join(value.get('capabilities_introduced', []))}",
+            f"Outcome capabilities        : {', '.join(value.get('outcome_capabilities', []))}",
             f"Operational Alpha progress   : Mission {value.get('operational_alpha_progress', {}).get('mission_number')} of {value.get('operational_alpha_progress', {}).get('total_missions')}",
             f"Zeus capability delta        : {value.get('zeus_capability_delta', {}).get('description', '')}",
             f"Prerequisites                : {json.dumps(value.get('prerequisites', {}), sort_keys=True)}",
@@ -72,6 +73,9 @@ def operator_text(value: Any, title: str | None = None) -> str:
     if "missing_capabilities" in value:
         missing = value["missing_capabilities"]
         lines.append(f"{'Missing capabilities':28}: {', '.join(missing) if missing else 'none'}")
+    if "missing_outcome_capabilities" in value:
+        missing_outcomes = value["missing_outcome_capabilities"]
+        lines.append(f"{'Missing outcome capabilities':28}: {', '.join(missing_outcomes) if missing_outcomes else 'none'}")
     missions = value.get("missions")
     if isinstance(missions, list):
         lines.extend(["", "Mission roadmap", "---------------"])
