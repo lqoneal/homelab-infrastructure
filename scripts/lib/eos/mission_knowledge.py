@@ -124,7 +124,14 @@ def recommend(root: Path | str) -> dict[str, Any]:
     objective = mission["roadmap_objective"]
     successor = value["mission_sequence"][value["mission_sequence"].index(current_id) + 1] if current_id != value["mission_sequence"][-1] else None
     recommendation = None
-    if current_readiness["classification"] == "BLOCKED" or current_readiness["missing_outcome_capabilities"]:
+    if (
+        current_readiness["classification"] == "BLOCKED"
+        or current_readiness["missing_outcome_capabilities"]
+        or (
+            mission.get("lifecycle") == "CURRENT"
+            and not current_readiness["missing_outcome_capabilities"]
+        )
+    ):
         missing = sorted(set(current_readiness["missing_capabilities"]) | set(current_readiness["missing_outcome_capabilities"]))
         recommendation = {
             "action": f"Execute WOP-{current_id}-EXECUTION-001",
@@ -245,9 +252,10 @@ def brief(root: Path | str, mission_id: str) -> dict[str, Any]:
         title = source.get("title", title)
     sequence = value["mission_sequence"]
     capabilities = capability_registry.load(root)["capabilities"]
-    introduced = [item["capability_id"] for item in capabilities
-                  if item.get("mission_introduced") == mission_id
-                  and item.get("lifecycle") == "Operational"]
+    # Mission outcome authority is the controlled mission model.  Registry
+    # lifecycle state alone must not turn an operational prerequisite into the
+    # capability introduced by the current mission.
+    introduced = list(mission.get("capability_outcomes", []))
     previous_id = sequence[sequence.index(mission_id) - 1] if sequence.index(mission_id) else None
     next_id = sequence[sequence.index(mission_id) + 1] if mission_id != sequence[-1] else None
     by_id = {item["mission_id"]: item for item in value["missions"]}
@@ -257,7 +265,8 @@ def brief(root: Path | str, mission_id: str) -> dict[str, Any]:
         "engineering_objective": objective,
         "purpose": f"This mission exists to {objective[0].lower() + objective[1:]}",
         "operational_problem_solved": f"Lack of a qualified, controlled outcome for: {objective}",
-        "capabilities_introduced": introduced or mission.get("capability_outcomes", []),
+        "capabilities_introduced": introduced,
+        "outcome_capabilities": list(mission.get("capability_outcomes", [])),
         "architectural_significance": "Advances the controlled Operational Alpha lifecycle through its authoritative gate contract.",
         "engineering_value": "Provides a deterministic, evidence-bound increment in the supervised execution lifecycle.",
         "operational_outcome_after_acceptance": f"{mission_id} is accepted and its immediate successor becomes eligible when prerequisites are satisfied.",

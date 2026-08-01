@@ -1,0 +1,72 @@
+{
+  "authoritative_inputs": {
+    "baseline": "f3e77fa62c00aace83959e2f813200ffcb79f215",
+    "capability_registry_revision": "1.15",
+    "mission_knowledge_revision": "3.6",
+    "objective": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-22/objective.yaml",
+    "outcome_not_implemented": "ZEUS-OA-CAP-022"
+  },
+  "canonical_evidence_digest": "b265df627b94f10d994f2bb59c9a3ae423114a3731b5a7884a301ca053283243",
+  "capability_id": "ZEUS-OA-CAP-021",
+  "gate_id": "OA-22",
+  "qualification": {
+    "assertions": {
+      "authorization_boundary": "PASS",
+      "bounded_scope": "PASS",
+      "denied_fail_closed": "PASS",
+      "expiry_fail_closed": "PASS",
+      "explicit_operator_authorization": "PASS",
+      "interruption_recovery": "PASS",
+      "malformed_fail_closed": "PASS",
+      "no_corrective_work_generated": "PASS",
+      "replay_protection": "PASS",
+      "tamper_fail_closed": "PASS"
+    },
+    "receipt": {
+      "authority": "OA-22/CAP-021",
+      "authority_lease": "OA22-CAP021-LEASE-0001",
+      "authorization_id": "OA22-CAP021-AUTH-QUALIFICATION-0001",
+      "authorization_type": "ZEUS_CORRECTIVE_WORK_AUTHORIZATION_RECEIPT",
+      "baseline": "f3e77fa62c00aace83959e2f813200ffcb79f215",
+      "corrective_work_generated": false,
+      "decided_at": "2026-08-01T12:00:01Z",
+      "decision": "AUTHORIZED",
+      "expires_at": "2026-08-01T12:10:00Z",
+      "mission_id": "OA-22",
+      "operator": "OA22-QUALIFICATION-OPERATOR",
+      "protected_effect_authorized": true,
+      "receipt_digest": "ef5f44e133489b1382816d79479b041c53cf710db87669f25de5922a35d14a18",
+      "repository": "/data/engineering/repositories/homelab",
+      "request_digest": "34ab96ea6bd0b104e2541cc65bab562bc40babd96cd6ea50e029960f06d465ae",
+      "schema_version": 1,
+      "scope": [
+        "record-corrective-proposal:OA22-001"
+      ],
+      "state": "AUTHORIZED",
+      "wop_id": "WOP-OA-22-EXECUTION-001"
+    },
+    "request": {
+      "authority": "OA-22/CAP-021",
+      "authorization_id": "OA22-CAP021-AUTH-QUALIFICATION-0001",
+      "authorization_type": "ZEUS_CORRECTIVE_WORK_AUTHORIZATION_REQUEST",
+      "baseline": "f3e77fa62c00aace83959e2f813200ffcb79f215",
+      "corrective_work_generated": false,
+      "expires_at": "2026-08-01T12:10:00Z",
+      "mission_id": "OA-22",
+      "operator": "OA22-QUALIFICATION-OPERATOR",
+      "protected_effect_authorized": false,
+      "repository": "/data/engineering/repositories/homelab",
+      "request_digest": "34ab96ea6bd0b104e2541cc65bab562bc40babd96cd6ea50e029960f06d465ae",
+      "requested_at": "2026-08-01T12:00:00Z",
+      "schema_version": 1,
+      "scope": [
+        "record-corrective-proposal:OA22-001"
+      ],
+      "state": "PENDING",
+      "wop_id": "WOP-OA-22-EXECUTION-001"
+    }
+  },
+  "qualification_timestamp": "2026-08-01T10:14:34.278155+00:00",
+  "result": "PASS",
+  "schema_version": 1
+}

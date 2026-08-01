@@ -1,0 +1,18 @@
+{
+  "assertions": {
+    "authorization_binding": "PASS",
+    "bounded_generation": "PASS",
+    "durable_recovery": "PASS",
+    "fail_closed_denied_or_invalid": "PASS",
+    "no_dispatch_or_execution": "PASS",
+    "replay_idempotency": "FAIL"
+  },
+  "capability_id": "ZEUS-OA-CAP-022",
+  "mission_id": "OA-22",
+  "objective": "Prove fail-closed handling and bounded generation of separately authorized corrective work.",
+  "proposal_digest": "891dbf85c30886a6e4abb93b1769c21f2bf4dba5e49cd849103b13e574cab589",
+  "qualification_timestamp": "2026-08-01T12:02:00Z",
+  "record_digest": "023ae6cd1793e3ffdf4d6c9e62f745ea1d24ed7141273f179273bc815c38630c",
+  "result": "FAIL",
+  "schema_version": 1
+}

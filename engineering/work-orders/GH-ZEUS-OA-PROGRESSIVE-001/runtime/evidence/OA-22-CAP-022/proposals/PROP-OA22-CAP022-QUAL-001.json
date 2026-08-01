@@ -1,0 +1,30 @@
+{
+  "affected_records": [
+    "runtime/evidence/OA-22"
+  ],
+  "authority": "OA-22/CAP-021",
+  "authorization_id": "AUTH-CAP021-CAP022-QUAL-001",
+  "authorization_receipt_digest": "9edaaad5d5762ad6cda044f9bdbcf66c9e4038f9bc891f8e91f0dd7d99568f5b",
+  "baseline": "f3e77fa62c00aace83959e2f813200ffcb79f215",
+  "bounded_objective": "capture bounded corrective work for the verified failure",
+  "corrective_work_generated": true,
+  "created_at": "2026-08-01T12:01:00Z",
+  "dispatched": false,
+  "executed": false,
+  "mission_id": "OA-22",
+  "prohibited_effects": [
+    "dispatch",
+    "execution",
+    "acceptance_inference",
+    "later_gate_execution"
+  ],
+  "proposal_digest": "891dbf85c30886a6e4abb93b1769c21f2bf4dba5e49cd849103b13e574cab589",
+  "proposal_id": "PROP-OA22-CAP022-QUAL-001",
+  "proposal_type": "ZEUS_CORRECTIVE_WORK_PROPOSAL",
+  "record_digest": "023ae6cd1793e3ffdf4d6c9e62f745ea1d24ed7141273f179273bc815c38630c",
+  "repository": "/data/engineering/repositories/homelab",
+  "schema_version": 1,
+  "state": "PROPOSED",
+  "trigger": "verified_failure",
+  "wop_id": "WOP-OA-22-COMPLETE-EXECUTION-AND-PUBLICATION-001"
+}
