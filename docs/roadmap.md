@@ -4,7 +4,19 @@ Status: Active
 
 ---
 
-## Current Mission — Zeus Operational Alpha
+## Published Transition — Operation Beta
+
+Operational Alpha is complete and frozen at `OA-v1.0.0` under `OA-OPERATIONAL-MILESTONE-006`. The active post-Alpha planning authority is Operation Beta, beginning with `BETA-00` Engineering Platform Assessment.
+
+The Beta charter, authority model, and mission roadmap are:
+
+- `engineering/docs/operations/OPERATION-BETA-CHARTER.md`
+- `engineering/docs/architecture/OPERATION-BETA-AUTHORITY-MODEL.md`
+- `engineering/docs/architecture/OPERATION-BETA-ROADMAP.md`
+
+The remaining content in this document is historical or subsystem-specific roadmap material. It does not supersede the frozen Alpha milestone or the published Beta authority chain.
+
+## Historical Mission — Zeus Operational Alpha
 
 Zeus Operational Alpha is the current authoritative Homelab engineering
 mission under PHASE-0001 and PROJ-0001.

@@ -1,6 +1,6 @@
 # Operational Alpha → Operation Beta Transition
 
-Status: authorized transition after Operational Alpha completion
+Status: reconciled transition baseline candidate; publication pending
 
 Operational Alpha is complete at milestone `OA-OPERATIONAL-MILESTONE-006`.
 The frozen baseline is the canonical `main` commit identified by tag
@@ -8,11 +8,22 @@ The frozen baseline is the canonical `main` commit identified by tag
 
 ## Initial Operation Beta sequence
 
-1. Engineering Platform Evolution Assessment
-2. Zeus Development Control Layer (ZDCL)
-3. Canonical Authority Generation Framework (CAGF)
-4. Engineering Platform Evolution implementation
+The sequence is governed by the published BETA-00 assessment and roadmap.
 
-The sequence is a roadmap authorization and does not grant implementation
+1. `BETA-00` Engineering Platform Assessment
+2. `ZDCL-01` foundation
+3. `CAGF-01` canonical generation foundation
+4. `EPE-01` executable mission-contract foundation
+
+The authoritative vision, pillar definitions, ownership model, and sequencing are in:
+
+- `engineering/docs/operations/OPERATION-BETA-CHARTER.md`
+- `engineering/docs/architecture/OPERATION-BETA-AUTHORITY-MODEL.md`
+- `engineering/docs/architecture/OPERATION-BETA-ROADMAP.md`
+
+The sequence is a planning recommendation and does not grant implementation
 authority for any individual future work order. Each Operation Beta mission
-requires its own published objective, authority, and qualification boundary.
+requires its own published objective, authority, qualification boundary,
+promotion decision, and completion receipt. Beta remains isolated from the
+immutable Alpha tag until the explicit publication and EOS synchronization
+boundary is complete.
