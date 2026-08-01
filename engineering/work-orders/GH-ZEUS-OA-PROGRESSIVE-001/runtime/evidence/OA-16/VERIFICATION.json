@@ -1,0 +1,31 @@
+{
+  "assertions": {
+    "durable_execution_start": "PASS",
+    "eens_identity_bindings": "PASS",
+    "exactly_once_start_notification": "PASS",
+    "execution_identity_binding": "PASS",
+    "fail_closed_state_integrity": "PASS",
+    "later_gate_implementation": "ABSENT",
+    "replay_protection": "PASS",
+    "restart_recovery": "PASS"
+  },
+  "authoritative_inputs": {
+    "capability_registry_revision": "1.5",
+    "mission_knowledge_revision": "2.6",
+    "objective": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-16/objective.yaml",
+    "predecessor": "OA-15 ACCEPTED"
+  },
+  "canonical_evidence_digest": "f98b4c874fbae3e1091f0629a0c4c31c88b847f05a08fac99b26204a1a851aa3",
+  "gate_id": "OA-16",
+  "qualification": {
+    "eens_event_count": 4,
+    "execution_id": "MISSION-EXECUTION-12e9b584-9df0-5ba5-aa88-726852e98d34",
+    "journal_mode": "wal",
+    "recovery_state": "Suspended",
+    "replay_start_state": "Suspended",
+    "start_notification_count": 1
+  },
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-08-01T02:39:59.552249+00:00"
+}

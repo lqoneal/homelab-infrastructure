@@ -20,7 +20,7 @@ def load(root: Path | str) -> dict[str, Any]:
     return value
 def _digest(root): return hashlib.sha256((Path(root)/PATH).read_bytes()).hexdigest()
 def list_capabilities(root):
-    value=load(root); return {"registry_id":value["registry_id"],"revision":str(value["revision"]),"digest":_digest(root),"capabilities":[{key:item[key] for key in ("capability_id","name","lifecycle","runtime_availability","regression_status")} for item in value["capabilities"]]}
+    value=load(root); return {"registry_id":value["registry_id"],"revision":str(value["revision"]),"digest":_digest(root),"capabilities":[{key:item[key] for key in ("capability_id","name","lifecycle","runtime_availability","regression_status","mission_introduced")} for item in value["capabilities"]]}
 def show(root, capability_id):
     value=load(root); matches=[item for item in value["capabilities"] if item.get("capability_id")==capability_id]
     if len(matches)!=1: raise CapabilityRegistryError("capability not found")

@@ -115,8 +115,37 @@ def readiness(root: Path | str, mission_id: str) -> dict[str, Any]:
     result["readiness_digest"] = _digest(result); return result
 
 def recommend(root: Path | str) -> dict[str, Any]:
-    value, _, _ = _missions(root); candidates = [readiness(root, item) for item in value["mission_sequence"]]; eligible = [item for item in candidates if item["classification"] == "ELIGIBLE"]; recommended = eligible[0] if eligible else None
-    return {"model_id": value["model_id"], "result": "PASS" if recommended else "NO_ELIGIBLE_MISSION", "recommended_mission": recommended["mission_id"] if recommended else None, "rationale": "first mission in authoritative sequence with completed dependencies and operational prerequisites" if recommended else "no mission satisfies authoritative readiness criteria", "readiness": recommended, "blocked_missions": [item for item in candidates if item["classification"] == "BLOCKED"], "authoritative_evidence": [PATH, "engineering/capabilities/operational-alpha-capability-registry.yaml"]}
+    value, by_id, _ = _missions(root)
+    candidates = [readiness(root, item) for item in value["mission_sequence"]]
+    current_id = current(root)["mission_id"]
+    current_readiness = next(item for item in candidates if item["mission_id"] == current_id)
+    mission = by_id[current_id]
+    objective = mission["roadmap_objective"]
+    successor = value["mission_sequence"][value["mission_sequence"].index(current_id) + 1] if current_id != value["mission_sequence"][-1] else None
+    recommendation = None
+    if current_readiness["classification"] == "BLOCKED":
+        missing = list(current_readiness["missing_capabilities"])
+        recommendation = {
+            "action": f"Execute WOP-{current_id}-EXECUTION-001",
+            "wop": f"WOP-{current_id}-EXECUTION-001",
+            "objective": objective,
+            "missing_capabilities": missing,
+            "authority": [PATH, "engineering/capabilities/operational-alpha-capability-registry.yaml", mission["objective_source"], ROADMAP_PATH],
+            "expected_outcome": f"{current_id} COMPLETED; {successor} CURRENT" if successor else f"{current_id} COMPLETED",
+            "successor_mission": successor,
+        }
+    eligible = [item for item in candidates if item["classification"] == "ELIGIBLE"]
+    recommended = eligible[0] if eligible else None
+    return {
+        "model_id": value["model_id"],
+        "result": "PASS" if recommendation or recommended else "NO_ELIGIBLE_MISSION",
+        "recommended_mission": current_id if recommendation else (recommended["mission_id"] if recommended else None),
+        "rationale": "current mission is blocked; execute its authoritative WOP" if recommendation else ("first mission in authoritative sequence with completed dependencies and operational prerequisites" if recommended else "no mission satisfies authoritative readiness criteria"),
+        "readiness": current_readiness if recommendation else recommended,
+        "recommendation": recommendation,
+        "blocked_missions": [item for item in candidates if item["classification"] == "BLOCKED"],
+        "authoritative_evidence": [PATH, "engineering/capabilities/operational-alpha-capability-registry.yaml", ROADMAP_PATH],
+    }
 
 
 def state(root: Path | str, mission_id: str | None = None) -> dict[str, Any]:
@@ -147,6 +176,7 @@ def next_action(root: Path | str) -> dict[str, Any]:
     readiness_result = readiness(root, selected["mission_id"])
     wop = f"WOP-{selected['mission_id']}-EXECUTION-001"
     blocked = readiness_result["classification"] == "BLOCKED"
+    recommendation = recommend(root).get("recommendation")
     return {
         "result": "PASS", "resolver": "operational-alpha-mission-knowledge/1",
         "current_mission": selected["mission_id"],
@@ -155,9 +185,13 @@ def next_action(root: Path | str) -> dict[str, Any]:
         "blocking_conditions": readiness_result["blocking_conditions"],
         "missing_capabilities": readiness_result["missing_capabilities"],
         "next_authorized_action": {
-            "code": "EXECUTE_WOP" if blocked and selected["mission_id"] == "OA-15" else "WAIT_FOR_CAPABILITY",
-            "wop": wop if blocked and selected["mission_id"] == "OA-15" else None,
-            "description": f"Execute {wop}" if blocked and selected["mission_id"] == "OA-15" else "Await the next qualified capability",
+            "code": "EXECUTE_WOP" if recommendation else "WAIT_FOR_CAPABILITY",
+            "wop": recommendation["wop"] if recommendation else None,
+            "description": recommendation["action"] if recommendation else "Await the next qualified capability",
+            "objective": recommendation["objective"] if recommendation else None,
+            "expected_outcome": recommendation["expected_outcome"] if recommendation else None,
+            "missing_capabilities": recommendation["missing_capabilities"] if recommendation else [],
+            "authority": recommendation["authority"] if recommendation else [PATH],
             "requires_separate_transition_authority": True,
         },
         "authoritative_source": PATH,
@@ -180,6 +214,7 @@ def explain(root: Path | str, mission_id: str) -> dict[str, Any]:
         rationale = "mission is current and all authoritative prerequisites are satisfied"
     else:
         rationale = "mission is not eligible because authoritative prerequisites or lifecycle conditions are unmet"
+    recommendation = recommend(root).get("recommendation") if mission_id == current(root)["mission_id"] else None
     return {
         "result": "PASS",
         "mission_id": mission_id,
@@ -191,6 +226,7 @@ def explain(root: Path | str, mission_id: str) -> dict[str, Any]:
         "missing_capabilities": result["missing_capabilities"],
         "missing_dependencies": result["missing_dependencies"],
         "successor_rule": "completed missions do not remain recommended; the next mission must independently satisfy readiness",
+        "recommendation": recommendation,
         "authoritative_source": PATH,
     }
 
@@ -214,6 +250,7 @@ def brief(root: Path | str, mission_id: str) -> dict[str, Any]:
     previous_id = sequence[sequence.index(mission_id) - 1] if sequence.index(mission_id) else None
     next_id = sequence[sequence.index(mission_id) + 1] if mission_id != sequence[-1] else None
     by_id = {item["mission_id"]: item for item in value["missions"]}
+    recommendation = recommend(root).get("recommendation") if mission_id == current(root)["mission_id"] else None
     result = {
         "result": "PASS", "mission_id": mission_id, "mission_title": title,
         "engineering_objective": objective,
@@ -230,6 +267,7 @@ def brief(root: Path | str, mission_id: str) -> dict[str, Any]:
         "successor_missions": [sequence[sequence.index(mission_id) + 1]] if mission_id != sequence[-1] else [],
         "risks_mitigated": ["unauthorized lifecycle advancement", "unbound or stale qualification evidence", "repository state drift"],
         "required_operator_authorization": "Explicit operator acceptance of the verified gate is required before successor eligibility.",
+        "recommendation": recommendation,
         "previous_mission_summary": {"mission_id": previous_id, "lifecycle": by_id[previous_id]["lifecycle"] if previous_id else None, "objective": by_id[previous_id]["roadmap_objective"] if previous_id else None},
         "current_mission_summary": {"mission_id": mission_id, "lifecycle": mission["lifecycle"], "objective": objective},
         "next_mission_preview": {"mission_id": next_id, "lifecycle": by_id[next_id]["lifecycle"] if next_id else None, "objective": by_id[next_id]["roadmap_objective"] if next_id else None},
@@ -242,7 +280,10 @@ def brief(root: Path | str, mission_id: str) -> dict[str, Any]:
     return result
 
 def prerequisites(root: Path | str, mission_id: str) -> dict[str, Any]:
-    result = readiness(root, mission_id); return {key: result[key] for key in ("mission_id", "lifecycle", "current_mission", "dependencies", "missing_dependencies", "prerequisite_capabilities", "missing_capabilities", "blocking_conditions", "authoritative_evidence")}
+    result = readiness(root, mission_id)
+    value = {key: result[key] for key in ("mission_id", "lifecycle", "current_mission", "dependencies", "missing_dependencies", "prerequisite_capabilities", "missing_capabilities", "blocking_conditions", "authoritative_evidence")}
+    value["recommendation"] = recommend(root).get("recommendation") if mission_id == current(root)["mission_id"] else None
+    return value
 
 def blockers(root: Path | str, mission_id: str) -> dict[str, Any]:
     """Resolve blockers for the requested mission, never an implicit OA-01."""
@@ -254,6 +295,7 @@ def blockers(root: Path | str, mission_id: str) -> dict[str, Any]:
         "blocking_conditions": result["blocking_conditions"],
         "missing_capabilities": result["missing_capabilities"],
         "missing_dependencies": result["missing_dependencies"],
+        "recommendation": recommend(root).get("recommendation") if mission_id == current(root)["mission_id"] else None,
         "result": "PASS" if not result["blocking_conditions"] else "BLOCKED",
         "authoritative_evidence": result["authoritative_evidence"],
     }
@@ -423,7 +465,7 @@ def orchestration_verification(root: Path | str) -> dict[str, Any]:
     projection and never creates authority, WOP, dispatch, or mission state.
     """
     decision = recommend(root)
-    if decision["result"] != "PASS":
+    if decision["result"] != "PASS" or decision.get("readiness", {}).get("classification") != "ELIGIBLE":
         return {"result": "NO_ELIGIBLE_MISSION", "decision": decision}
     from scripts.lib.emp.dispatch_candidate import create
     candidate = create(Path(root))

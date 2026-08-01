@@ -1,0 +1,28 @@
+{
+  "event_id": "7ba2282e-6dbf-421d-851c-4bb590d2be61",
+  "event_type": "zeus.execution.execution_created",
+  "idempotency_key": "MISSION-EXECUTION-12e9b584-9df0-5ba5-aa88-726852e98d34:4005c2905fc2ffa1733dfb6c6a157e576f01f62c64152b9880339edc808dc6ea",
+  "occurred_at": "2026-07-31T08:16:00Z",
+  "payload": {
+    "event": "EXECUTION_CREATED",
+    "evidence_digest": "4005c2905fc2ffa1733dfb6c6a157e576f01f62c64152b9880339edc808dc6ea",
+    "observed_at": "2026-07-31T08:16:00Z",
+    "payload": {
+      "execution_id": "MISSION-EXECUTION-12e9b584-9df0-5ba5-aa88-726852e98d34",
+      "mission_id": "OA-16",
+      "operator": "OA-16-QUALIFICATION-OPERATOR",
+      "repository": "/home/loneal/homelab-oa15",
+      "state": "Pending",
+      "wop_id": "WOP-016e4567-e89b-42d3-a456-426614174016"
+    },
+    "previous_evidence_digest": null,
+    "publication": {
+      "inserted": true,
+      "path": "/tmp/zeus-oa16-dliccdac/executions/published-evidence/MISSION-EXECUTION-12e9b584-9df0-5ba5-aa88-726852e98d34/0001.json"
+    },
+    "sequence": 1
+  },
+  "schema_version": "1.0",
+  "source": "zeus-mission-execution-runtime",
+  "subject": "MISSION-EXECUTION-12e9b584-9df0-5ba5-aa88-726852e98d34"
+}

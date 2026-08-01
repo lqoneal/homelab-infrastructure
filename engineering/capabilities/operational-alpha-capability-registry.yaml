@@ -1,6 +1,6 @@
 schema_version: 1
 registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-revision: 1.5
+revision: 1.6
 classification: Authoritative
 authoritative_owner: Engineering Governance
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -205,3 +205,17 @@ capabilities:
     associated_evidence: [engineering/evidence/2026-07-31-wop-oa-15-execution-001/]
     regression_status: PASS
     capability_history: [OA-15 qualified]
+  - capability_id: ZEUS-OA-CAP-015
+    name: Durable execution start and EENS lifecycle notification
+    description: Persists execution-start state before continuation, binds execution identity to mission, WOP, repository, and operator, rejects duplicate starts, and emits one durable replay-safe EENS lifecycle notification with restart recovery evidence.
+    lifecycle: Operational
+    mission_introduced: OA-16
+    mission_modified: OA-16
+    verification_commands: [zeus verify OA-16, scripts/tests/test-zeus-oa16-execution-start.py, zeus capability verify ZEUS-OA-CAP-015]
+    expected_verification_results: [durable start PASS, restart recovery PASS, duplicate start rejected PASS, exactly-once EENS notification PASS, identity bindings PASS]
+    dependencies: [ZEUS-OA-CAP-014, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-16-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-16 qualified]

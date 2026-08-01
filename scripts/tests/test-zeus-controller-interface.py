@@ -31,6 +31,20 @@ class ZeusControllerInterfaceTests(unittest.TestCase):
         self.assertIn("Mission readiness", result.stdout)
         self.assertNotEqual(result.stdout[:1], "{")
 
+    def test_capability_list_renders_every_structured_row_and_summary(self):
+        structured = self.run_zeus("capability", "list", "--json")
+        rendered = self.run_zeus("capability", "list")
+        self.assertEqual(structured.returncode, 0)
+        self.assertEqual(rendered.returncode, 0)
+        value = json.loads(structured.stdout)
+        rows = value["capabilities"]
+        self.assertGreater(len(rows), 0)
+        self.assertIn(f"Registered capabilities : {len(rows)}", rendered.stdout)
+        self.assertIn("Mission", rendered.stdout)
+        for item in rows:
+            self.assertIn(item["capability_id"], rendered.stdout)
+            self.assertIn(item["mission_introduced"], rendered.stdout)
+
     def test_verify_is_deterministic_json(self):
         result = self.run_zeus("mission", "readiness", "OA-11", "--verify")
         self.assertEqual(result.returncode, 0)
@@ -64,8 +78,8 @@ class ZeusControllerInterfaceTests(unittest.TestCase):
         result = self.run_zeus("next-action", "--json")
         self.assertEqual(result.returncode, 0)
         value = json.loads(result.stdout)
-        self.assertEqual(value["current_mission"], "OA-16")
-        self.assertIsNone(value["next_authorized_action"]["wop"])
+        self.assertEqual(value["current_mission"], "OA-17")
+        self.assertEqual(value["next_authorized_action"]["wop"], "WOP-OA-17-EXECUTION-001")
 
 
 if __name__ == "__main__":

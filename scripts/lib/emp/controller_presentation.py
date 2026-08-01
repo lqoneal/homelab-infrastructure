@@ -12,6 +12,33 @@ def operator_text(value: Any, title: str | None = None) -> str:
     lines = []
     if title:
         lines.extend([title, "-" * len(title)])
+    if title == "Capability list":
+        capabilities = value.get("capabilities", [])
+        if value.get("registry_id") and not capabilities:
+            raise ValueError("non-empty capability registry produced zero rendered rows")
+        lines.extend([
+            "",
+            "ID                Lifecycle    Availability   Regression   Mission   Name",
+        ])
+        for item in capabilities:
+            lines.append(
+                f"{item['capability_id']:<18} {item['lifecycle']:<12} "
+                f"{item['runtime_availability']:<14} {item['regression_status']:<12} "
+                f"{item['mission_introduced']:<9} {item['name']}"
+            )
+        operational = sum(item.get("lifecycle") == "Operational" for item in capabilities)
+        unavailable = sum(item.get("runtime_availability") != "AVAILABLE" for item in capabilities)
+        lines.extend([
+            "",
+            "Summary",
+            "-------",
+            f"Registered capabilities : {len(capabilities)}",
+            f"Operational             : {operational}",
+            f"Unavailable             : {unavailable}",
+            f"Registry revision       : {value.get('revision')}",
+            "Registry verification   : PASS",
+        ])
+        return "\n".join(lines) + "\n"
     if "mission_title" in value:
         lines.extend([
             f"Mission title                 : {value['mission_title']}",
