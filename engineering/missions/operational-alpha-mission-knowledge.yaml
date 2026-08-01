@@ -309,7 +309,7 @@ missions:
     roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
     roadmap_entry: OA-19
     roadmap_objective: Prove append-only capture of commands, outputs, state, timestamps, identities, checksums, and completion markers.
-    capability_prerequisites: [ZEUS-OA-CAP-018]
+    capability_prerequisites: [ZEUS-OA-CAP-017]
     capability_outcomes: [ZEUS-OA-CAP-018]
     dependencies: [OA-18]
     eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]

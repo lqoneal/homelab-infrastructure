@@ -111,11 +111,12 @@ def readiness(root: Path | str, mission_id: str) -> dict[str, Any]:
     if missing_dependencies: blockers.append("DEPENDENCY_UNSATISFIED")
     if missing_capabilities: blockers.append("CAPABILITY_PREREQUISITE_MISSING")
     classification = "ELIGIBLE" if not blockers and mission["lifecycle"] == "CURRENT" else ("COMPLETED" if mission["lifecycle"] == "COMPLETED" else "BLOCKED")
-    result = {"model_id": value["model_id"], "revision": str(value["revision"]), "mission_id": mission_id, "lifecycle": mission["lifecycle"], "current_mission": current(root)["mission_id"], "classification": classification, "objective_source": mission["objective_source"], "prerequisite_capabilities": mission["capability_prerequisites"], "missing_capabilities": missing_capabilities, "dependencies": mission["dependencies"], "missing_dependencies": missing_dependencies, "blocking_conditions": sorted(blockers), "completion_criteria": mission["completion_criteria"], "authoritative_evidence": [PATH, "engineering/capabilities/operational-alpha-capability-registry.yaml", mission["objective_source"]]}
+    missing_outcomes = sorted(set(mission.get("capability_outcomes", [])) - capabilities)
+    result = {"model_id": value["model_id"], "revision": str(value["revision"]), "mission_id": mission_id, "lifecycle": mission["lifecycle"], "current_mission": current(root)["mission_id"], "classification": classification, "objective_source": mission["objective_source"], "prerequisite_capabilities": mission["capability_prerequisites"], "missing_capabilities": missing_capabilities, "outcome_capabilities": list(mission.get("capability_outcomes", [])), "missing_outcome_capabilities": missing_outcomes, "dependencies": mission["dependencies"], "missing_dependencies": missing_dependencies, "blocking_conditions": sorted(blockers), "completion_criteria": mission["completion_criteria"], "authoritative_evidence": [PATH, "engineering/capabilities/operational-alpha-capability-registry.yaml", mission["objective_source"]]}
     result["readiness_digest"] = _digest(result); return result
 
 def recommend(root: Path | str) -> dict[str, Any]:
-    value, by_id, _ = _missions(root)
+    value, by_id, capabilities = _missions(root)
     candidates = [readiness(root, item) for item in value["mission_sequence"]]
     current_id = current(root)["mission_id"]
     current_readiness = next(item for item in candidates if item["mission_id"] == current_id)
@@ -123,8 +124,8 @@ def recommend(root: Path | str) -> dict[str, Any]:
     objective = mission["roadmap_objective"]
     successor = value["mission_sequence"][value["mission_sequence"].index(current_id) + 1] if current_id != value["mission_sequence"][-1] else None
     recommendation = None
-    if current_readiness["classification"] == "BLOCKED":
-        missing = list(current_readiness["missing_capabilities"])
+    if current_readiness["classification"] == "BLOCKED" or current_readiness["missing_outcome_capabilities"]:
+        missing = sorted(set(current_readiness["missing_capabilities"]) | set(current_readiness["missing_outcome_capabilities"]))
         recommendation = {
             "action": f"Execute WOP-{current_id}-EXECUTION-001",
             "wop": f"WOP-{current_id}-EXECUTION-001",
@@ -140,7 +141,7 @@ def recommend(root: Path | str) -> dict[str, Any]:
         "model_id": value["model_id"],
         "result": "PASS" if recommendation or recommended else "NO_ELIGIBLE_MISSION",
         "recommended_mission": current_id if recommendation else (recommended["mission_id"] if recommended else None),
-        "rationale": "current mission is blocked; execute its authoritative WOP" if recommendation else ("first mission in authoritative sequence with completed dependencies and operational prerequisites" if recommended else "no mission satisfies authoritative readiness criteria"),
+        "rationale": ("current mission is blocked; execute its authoritative WOP" if current_readiness["classification"] == "BLOCKED" else "current mission outcome is not yet operational; execute its authoritative WOP") if recommendation else ("first mission in authoritative sequence with completed dependencies and operational prerequisites" if recommended else "no mission satisfies authoritative readiness criteria"),
         "readiness": current_readiness if recommendation else recommended,
         "recommendation": recommendation,
         "blocked_missions": [item for item in candidates if item["classification"] == "BLOCKED"],

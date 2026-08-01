@@ -29,8 +29,9 @@ class MissionRoadmapTests(unittest.TestCase):
         self.assertEqual(current["mission_id"], "OA-19")
         self.assertEqual(current["lifecycle"], "CURRENT")
         readiness = mission_knowledge.readiness(ROOT, "OA-19")
-        self.assertEqual(readiness["classification"], "BLOCKED")
-        self.assertEqual(readiness["missing_capabilities"], ["ZEUS-OA-CAP-018"])
+        self.assertEqual(readiness["classification"], "ELIGIBLE")
+        self.assertEqual(readiness["missing_capabilities"], [])
+        self.assertEqual(readiness["missing_outcome_capabilities"], ["ZEUS-OA-CAP-018"])
         self.assertEqual(readiness["missing_dependencies"], [])
 
     def test_all_missions_have_consistent_model_projection(self):
