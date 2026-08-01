@@ -1,6 +1,10 @@
 # Operation Beta — Authority and Projection Model
 
-Status: reconciled planning baseline candidate; publication pending
+Status: reconciled planning baseline; Beta-03G invariant governance candidate
+
+Controller governance is normative in `ENGINEERING-PLATFORM-INVARIANTS.md` and
+`ZEUS-CONTROLLER-GOVERNANCE.md`. These documents constrain projections and
+ownership without creating a second authority.
 
 Operation Beta preserves the Operational Alpha source ownership model. Beta adds generators and execution services as consumers or projections; it does not create a second mission, capability, lifecycle, or governance authority.
 
