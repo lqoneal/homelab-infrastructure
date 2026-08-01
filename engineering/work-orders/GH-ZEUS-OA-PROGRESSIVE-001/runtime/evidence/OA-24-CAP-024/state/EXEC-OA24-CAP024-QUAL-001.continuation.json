@@ -1,0 +1,15 @@
+{
+  "baseline": "077c9de4db7a76da01b6a4864848aa9bc63e7579",
+  "continuation_status": "READY",
+  "duplicate_effects": false,
+  "effects_applied": false,
+  "execution_id": "EXEC-OA24-CAP024-QUAL-001",
+  "first_incomplete_operation": "OP-002",
+  "first_incomplete_sequence": 2,
+  "mission_id": "OA-24",
+  "record_digest": "0980374eb42be3a8ea366adf41df37170956087b831473c971f65af10bbe5a9a",
+  "record_type": "ZEUS_IDEMPOTENT_CONTINUATION",
+  "resumed_at": "2026-08-01T15:01:00Z",
+  "schema_version": 1,
+  "state_reconstructed": true
+}

@@ -82,15 +82,37 @@ def _missions(root: Path | str):
     capabilities = {item["capability_id"] for item in capability_registry.load(root)["capabilities"] if item.get("lifecycle") == "Operational"}
     return value, by_id, capabilities
 
-
-def current(root: Path | str) -> dict[str, Any]:
-    """Return the single CURRENT mission from the authoritative model."""
-    value, by_id, _ = _missions(root)
+def _current_from_context(value: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> str:
     current_ids = [mission_id for mission_id in value["mission_sequence"]
                    if by_id[mission_id].get("lifecycle") == "CURRENT"]
     if len(current_ids) != 1:
         raise MissionKnowledgeError("MISSION_CURRENT_CARDINALITY_INVALID")
-    mission_id = current_ids[0]
+    return current_ids[0]
+
+def _readiness_from_context(value: dict[str, Any], by_id: dict[str, dict[str, Any]],
+                            capabilities: set[str], mission_id: str) -> dict[str, Any]:
+    mission = by_id.get(mission_id)
+    if mission is None:
+        raise MissionKnowledgeError("MISSION_NOT_FOUND")
+    completed = {key for key, item in by_id.items() if item.get("lifecycle") == "COMPLETED"}
+    missing_dependencies = sorted(set(mission["dependencies"]) - completed)
+    missing_capabilities = sorted(set(mission["capability_prerequisites"]) - capabilities)
+    blockers = list(mission.get("blocking_conditions", []))
+    if missing_dependencies:
+        blockers.append("DEPENDENCY_UNSATISFIED")
+    if missing_capabilities:
+        blockers.append("CAPABILITY_PREREQUISITE_MISSING")
+    classification = "ELIGIBLE" if not blockers and mission["lifecycle"] == "CURRENT" else ("COMPLETED" if mission["lifecycle"] == "COMPLETED" else "BLOCKED")
+    missing_outcomes = sorted(set(mission.get("capability_outcomes", [])) - capabilities)
+    result = {"model_id": value["model_id"], "revision": str(value["revision"]), "mission_id": mission_id, "lifecycle": mission["lifecycle"], "current_mission": _current_from_context(value, by_id), "classification": classification, "objective_source": mission["objective_source"], "prerequisite_capabilities": mission["capability_prerequisites"], "missing_capabilities": missing_capabilities, "outcome_capabilities": list(mission.get("capability_outcomes", [])), "missing_outcome_capabilities": missing_outcomes, "dependencies": mission["dependencies"], "missing_dependencies": missing_dependencies, "blocking_conditions": sorted(blockers), "completion_criteria": mission["completion_criteria"], "authoritative_evidence": [PATH, "engineering/capabilities/operational-alpha-capability-registry.yaml", mission["objective_source"]]}
+    result["readiness_digest"] = _digest(result)
+    return result
+
+
+def current(root: Path | str) -> dict[str, Any]:
+    """Return the single CURRENT mission from the authoritative model."""
+    value, by_id, _ = _missions(root)
+    mission_id = _current_from_context(value, by_id)
     mission = by_id[mission_id]
     return {
         "mission_id": mission_id,
@@ -103,22 +125,16 @@ def current(root: Path | str) -> dict[str, Any]:
     }
 
 def readiness(root: Path | str, mission_id: str) -> dict[str, Any]:
-    value, by_id, capabilities = _missions(root); mission = by_id.get(mission_id)
-    if mission is None: raise MissionKnowledgeError("MISSION_NOT_FOUND")
-    completed = {key for key, item in by_id.items() if item.get("lifecycle") == "COMPLETED"}
-    missing_dependencies = sorted(set(mission["dependencies"]) - completed); missing_capabilities = sorted(set(mission["capability_prerequisites"]) - capabilities)
-    blockers = list(mission.get("blocking_conditions", []))
-    if missing_dependencies: blockers.append("DEPENDENCY_UNSATISFIED")
-    if missing_capabilities: blockers.append("CAPABILITY_PREREQUISITE_MISSING")
-    classification = "ELIGIBLE" if not blockers and mission["lifecycle"] == "CURRENT" else ("COMPLETED" if mission["lifecycle"] == "COMPLETED" else "BLOCKED")
-    missing_outcomes = sorted(set(mission.get("capability_outcomes", [])) - capabilities)
-    result = {"model_id": value["model_id"], "revision": str(value["revision"]), "mission_id": mission_id, "lifecycle": mission["lifecycle"], "current_mission": current(root)["mission_id"], "classification": classification, "objective_source": mission["objective_source"], "prerequisite_capabilities": mission["capability_prerequisites"], "missing_capabilities": missing_capabilities, "outcome_capabilities": list(mission.get("capability_outcomes", [])), "missing_outcome_capabilities": missing_outcomes, "dependencies": mission["dependencies"], "missing_dependencies": missing_dependencies, "blocking_conditions": sorted(blockers), "completion_criteria": mission["completion_criteria"], "authoritative_evidence": [PATH, "engineering/capabilities/operational-alpha-capability-registry.yaml", mission["objective_source"]]}
-    result["readiness_digest"] = _digest(result); return result
+    return _readiness_from_context(*_missions(root), mission_id)
 
 def recommend(root: Path | str) -> dict[str, Any]:
     value, by_id, capabilities = _missions(root)
-    candidates = [readiness(root, item) for item in value["mission_sequence"]]
-    current_id = current(root)["mission_id"]
+    return _recommend_from_context(value, by_id, capabilities)
+
+def _recommend_from_context(value: dict[str, Any], by_id: dict[str, dict[str, Any]],
+                            capabilities: set[str], current_id: str | None = None) -> dict[str, Any]:
+    candidates = [_readiness_from_context(value, by_id, capabilities, item) for item in value["mission_sequence"]]
+    current_id = current_id or _current_from_context(value, by_id)
     current_readiness = next(item for item in candidates if item["mission_id"] == current_id)
     mission = by_id[current_id]
     objective = mission["roadmap_objective"]
@@ -180,15 +196,15 @@ def state(root: Path | str, mission_id: str | None = None) -> dict[str, Any]:
 
 def next_action(root: Path | str) -> dict[str, Any]:
     """Project the next controlled WOP action from the current mission only."""
-    selected = current(root)
-    readiness_result = readiness(root, selected["mission_id"])
-    wop = f"WOP-{selected['mission_id']}-EXECUTION-001"
-    blocked = readiness_result["classification"] == "BLOCKED"
-    recommendation = recommend(root).get("recommendation")
+    value, by_id, capabilities = _missions(root)
+    current_id = _current_from_context(value, by_id)
+    selected_mission = by_id[current_id]
+    readiness_result = _readiness_from_context(value, by_id, capabilities, current_id)
+    recommendation = _recommend_from_context(value, by_id, capabilities, current_id).get("recommendation")
     return {
         "result": "PASS", "resolver": "operational-alpha-mission-knowledge/1",
-        "current_mission": selected["mission_id"],
-        "current_lifecycle": selected["lifecycle"],
+        "current_mission": current_id,
+        "current_lifecycle": selected_mission["lifecycle"],
         "current_classification": readiness_result["classification"],
         "blocking_conditions": readiness_result["blocking_conditions"],
         "missing_capabilities": readiness_result["missing_capabilities"],
