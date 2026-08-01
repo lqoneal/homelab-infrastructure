@@ -1405,6 +1405,7 @@ gates:
 - gate_id: OA-19
   sequence: 19
   title: Evidence Capture
+  capability_id: ZEUS-OA-CAP-018
   mission_objective: Prove append-only capture of commands, outputs, state, timestamps, identities, checksums, and
     completion markers.
   capability_being_established: Evidence Capture

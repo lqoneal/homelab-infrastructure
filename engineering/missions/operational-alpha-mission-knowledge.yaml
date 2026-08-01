@@ -1,6 +1,6 @@
 schema_version: 1
 model_id: OPERATIONAL-ALPHA-MISSION-KNOWLEDGE
-revision: 3.1
+revision: 3.2
 classification: Authoritative
 authoritative_owner: Engineering Governance
 purpose: Canonical EMM-bound mission knowledge for Operational Alpha lifecycle reasoning.
@@ -310,7 +310,7 @@ missions:
     roadmap_entry: OA-19
     roadmap_objective: Prove append-only capture of commands, outputs, state, timestamps, identities, checksums, and completion markers.
     capability_prerequisites: [ZEUS-OA-CAP-018]
-    capability_outcomes: [ZEUS-OA-CAP-019]
+    capability_outcomes: [ZEUS-OA-CAP-018]
     dependencies: [OA-18]
     eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
     blocking_conditions: []

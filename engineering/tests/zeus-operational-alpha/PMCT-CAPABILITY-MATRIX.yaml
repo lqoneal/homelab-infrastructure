@@ -660,15 +660,16 @@ gates:
   state_change: true
 - gate_id: OA-19
   sequence: 19
-  title: Dispatcher commissioning
+  title: Evidence Capture
+  capability_id: ZEUS-OA-CAP-018
   required_commands:
-  - zeus dispatcher activation
-  - zeus dispatcher probe
+  - zeus verify OA-19
+  - zeus capability verify ZEUS-OA-CAP-018
   optional_commands:
   - zeus status
   prerequisites:
   - OA-18
-  positive_demonstration: Through the authoritative CLI, demonstrate dispatcher commissioning and capture the resulting production-observable state.
+  positive_demonstration: Through the authoritative CLI, demonstrate append-only capture of commands, outputs, state, timestamps, identities, checksums, and completion markers.
   negative_demonstration: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-19 request and verify Zeus rejects it without advancing state.
   idempotency_demonstration: Repeat the OA-19 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
   interruption_demonstration: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
