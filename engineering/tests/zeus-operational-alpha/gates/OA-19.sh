@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # Gate identity: OA-19
-# Capability statement: Dispatcher commissioning
+# Capability identity: ZEUS-OA-CAP-018
+# Capability statement: Evidence Capture
 # Current applicability: discovered at runtime; unavailable future interfaces produce NOT_READY.
 # Required authority: controlled PMCT observation authority; state changes require --authorized-transition.
-# Required commands: zeus dispatcher activation, zeus dispatcher probe
+# Required commands: zeus verify OA-19, zeus capability verify ZEUS-OA-CAP-018
 # Required artifacts: run manifest, repository, discovery, assertions, result, report, hashes, COMPLETE.
 # Preconditions: exact repository identity and prior gate PASS where required.
-# Positive path: Through the authoritative CLI, demonstrate dispatcher commissioning and capture the resulting production-observable state.
+# Positive path: Through the authoritative CLI, demonstrate append-only capture of commands, outputs, state, timestamps, identities, checksums, and completion markers.
 # Negative path: Present a malformed, unauthorized, stale, mismatched, or incomplete OA-19 request and verify Zeus rejects it without advancing state.
 # Idempotency: Repeat the OA-19 observation or authorized request with the same identity and verify no duplicate state, event, evidence, or action.
 # Interruption/recovery: With explicit transition authority and a controlled object, interrupt after preflight and verify checkpointed resume without duplicate effects.
