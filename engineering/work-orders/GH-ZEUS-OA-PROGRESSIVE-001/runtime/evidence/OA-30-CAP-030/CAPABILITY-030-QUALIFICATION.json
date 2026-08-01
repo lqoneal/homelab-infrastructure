@@ -1,0 +1,133 @@
+{
+  "assertions": {
+    "candidate_baseline": "PASS",
+    "cumulative_predecessors": "PASS",
+    "declaration_preparation": "PASS",
+    "eos_sync_validate": "PASS",
+    "interruption_recovery": "PASS",
+    "negative_fail_closed": "PASS",
+    "registry_validate": "PASS",
+    "replay_stability": "PASS"
+  },
+  "candidate_calculation": {
+    "calculation_digest": "28743a2870cb1923a2260c581030e363b7db4a15c4e1f550f5e4da9729823dc7",
+    "candidate_baseline_status": "PASS",
+    "cumulative_status": "PASS",
+    "declaration_boundary": "SEPARATELY_AUTHORIZED_OA_DECLARATION",
+    "declaration_preparation_status": "READY_PENDING_SEPARATE_AUTHORITY",
+    "evidence_manifest_digest": "32a2d60d3f3c4d8ed2f4f94b749375c08c2208a873abc95b0521867cb772a60f",
+    "predecessor_gates": [
+      "OA-01",
+      "OA-02",
+      "OA-03",
+      "OA-04",
+      "OA-05",
+      "OA-06",
+      "OA-07",
+      "OA-08",
+      "OA-09",
+      "OA-10",
+      "OA-11",
+      "OA-12",
+      "OA-13",
+      "OA-14",
+      "OA-15",
+      "OA-16",
+      "OA-17",
+      "OA-18",
+      "OA-19",
+      "OA-20",
+      "OA-21",
+      "OA-22",
+      "OA-23",
+      "OA-24",
+      "OA-25",
+      "OA-26",
+      "OA-27",
+      "OA-28",
+      "OA-29"
+    ]
+  },
+  "capability_id": "ZEUS-OA-CAP-030",
+  "capability_name": "Operational Alpha Qualification and Declaration Preparation",
+  "command_results": [
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "command": [
+        "scripts/engctl",
+        "eos",
+        "sync-validate"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "Repository\u2013EOS synchronization validation passed.\n"
+    },
+    {
+      "command": [
+        "scripts/engctl",
+        "registry",
+        "validate"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS: registry schema and YAML serialization (85 objects)\nPASS: registry identifiers, hierarchy, ordering, states, deferrals, and dependencies\nPASS: registry authority boundary\n"
+    }
+  ],
+  "interruption_recovery": {
+    "checkpoint": "OA-30-PREFLIGHT-COMPLETE",
+    "duplicate_effects": false,
+    "resume_from": "OA-30-CUMULATIVE-QUALIFICATION"
+  },
+  "mission_id": "OA-30",
+  "negative_cases": {
+    "mismatched_gate": "PASS",
+    "missing_baseline": "PASS",
+    "missing_predecessor": "PASS",
+    "wrong_declaration_boundary": "PASS"
+  },
+  "objective": "Prove OA-01 through OA-29 remain valid, produce a candidate baseline, and prepare separately authorized declaration and freeze.",
+  "predecessor_receipts": {
+    "OA-01": "PASS",
+    "OA-02": "PASS",
+    "OA-03": "PASS",
+    "OA-04": "PASS",
+    "OA-05": "PASS",
+    "OA-06": "PASS",
+    "OA-07": "PASS",
+    "OA-08": "PASS",
+    "OA-09": "PASS",
+    "OA-10": "PASS",
+    "OA-11": "PASS",
+    "OA-12": "PASS",
+    "OA-13": "PASS",
+    "OA-14": "PASS",
+    "OA-15": "PASS",
+    "OA-16": "PASS",
+    "OA-17": "PASS",
+    "OA-18": "PASS",
+    "OA-19": "PASS",
+    "OA-20": "PASS",
+    "OA-21": "PASS",
+    "OA-22": "PASS",
+    "OA-23": "PASS",
+    "OA-24": "PASS",
+    "OA-25": "PASS",
+    "OA-26": "PASS",
+    "OA-27": "PASS",
+    "OA-28": "PASS",
+    "OA-29": "PASS"
+  },
+  "qualification_digest": "a33b2ff13afaec51b276617d2be14d823a4f4db25251d2e20df40537dfd2d9b3",
+  "qualification_timestamp": "2026-08-01T18:33:46.600623+00:00",
+  "result": "PASS",
+  "schema_version": 1
+}

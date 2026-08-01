@@ -85,6 +85,13 @@ def _missions(root: Path | str):
 def _current_from_context(value: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> str:
     current_ids = [mission_id for mission_id in value["mission_sequence"]
                    if by_id[mission_id].get("lifecycle") == "CURRENT"]
+    if not current_ids:
+        terminal_id = value["mission_sequence"][-1]
+        if (
+            by_id[terminal_id].get("lifecycle") == "COMPLETED"
+            and all(by_id[item].get("lifecycle") == "COMPLETED" for item in value["mission_sequence"])
+        ):
+            return terminal_id
     if len(current_ids) != 1:
         raise MissionKnowledgeError("MISSION_CURRENT_CARDINALITY_INVALID")
     return current_ids[0]

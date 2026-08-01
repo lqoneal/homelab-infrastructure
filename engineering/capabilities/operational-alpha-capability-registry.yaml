@@ -1,6 +1,6 @@
 schema_version: 1
 registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-revision: '1.22'
+revision: '1.23'
 classification: Authoritative
 authoritative_owner: Engineering Governance
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -418,14 +418,14 @@ capabilities:
   - capability_id: ZEUS-OA-CAP-030
     name: Operational Alpha Qualification and Declaration Preparation
     description: Proves OA-01 through OA-29 remain valid and prepares a candidate baseline for separately authorized declaration and freeze.
-    lifecycle: Planned
+    lifecycle: Operational
     mission_introduced: OA-30
     mission_modified: OA-30
     verification_commands: [zeus verify OA-30, zeus capability verify ZEUS-OA-CAP-030]
     expected_verification_results: [cumulative qualification PASS, candidate baseline PASS, declaration preparation PASS]
     dependencies: [ZEUS-OA-CAP-029, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE, OPERATIONAL-ALPHA-EMM]
     owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
-    runtime_availability: UNAVAILABLE
-    associated_evidence: []
-    regression_status: NOT_STARTED
-    capability_history: [OA-30 identity reconciled; qualification not performed]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-08-01-wop-oa-30-engineering-platform-evolution-bootstrap-001/]
+    regression_status: PASS
+    capability_history: [OA-30 identity reconciled; independently qualified; final Operational Alpha baseline candidate]

@@ -27,7 +27,7 @@ class MissionRoadmapTests(unittest.TestCase):
     def test_current_mission_and_blocker_are_model_derived(self):
         current = mission_knowledge.current(ROOT)
         self.assertEqual(current["mission_id"], "OA-30")
-        self.assertEqual(current["lifecycle"], "CURRENT")
+        self.assertEqual(current["lifecycle"], "COMPLETED")
         readiness = mission_knowledge.readiness(ROOT, "OA-24")
         self.assertEqual(readiness["classification"], "COMPLETED")
         self.assertEqual(readiness["missing_capabilities"], [])
@@ -43,7 +43,7 @@ class MissionRoadmapTests(unittest.TestCase):
     def test_next_action_is_current_wop_projection(self):
         value = mission_knowledge.next_action(ROOT)
         self.assertEqual(value["current_mission"], "OA-30")
-        self.assertEqual(value["next_authorized_action"]["wop"], "WOP-OA-30-EXECUTION-001")
+        self.assertIsNone(value["next_authorized_action"]["wop"])
 
 
 if __name__ == "__main__":

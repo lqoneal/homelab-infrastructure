@@ -538,7 +538,7 @@ def main(argv=None):
             return 0
         if a.command == "verify":
             if a.gate.upper().startswith("OA-"):
-                if (not a.wop and a.gate.upper() in {"OA-11", "OA-12", "OA-13", "OA-14", "OA-15", "OA-16", "OA-17", "OA-18", "OA-19", "OA-20", "OA-21", "OA-22", "OA-23", "OA-24", "OA-25", "OA-26", "OA-27", "OA-28", "OA-29"}):
+                if (not a.wop and a.gate.upper() in {"OA-11", "OA-12", "OA-13", "OA-14", "OA-15", "OA-16", "OA-17", "OA-18", "OA-19", "OA-20", "OA-21", "OA-22", "OA-23", "OA-24", "OA-25", "OA-26", "OA-27", "OA-28", "OA-29", "OA-30"}):
                     value = ProgressiveGateService(ROOT).verify(a.gate.upper())
                     emit(value)
                     return 0

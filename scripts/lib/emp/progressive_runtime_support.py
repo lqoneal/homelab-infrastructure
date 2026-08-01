@@ -367,8 +367,12 @@ def _validate_replay_lifecycle(value: dict, normalized: str) -> None:
         raise ProgressiveOAError("runtime lifecycle binding is inconsistent")
     active = value.get("active_gate")
     if active is None:
-        if number != 30 or value.get("status") != "DECLARATION_PREPARATION_COMPLETE":
+        if value.get("status") != "DECLARATION_PREPARATION_COMPLETE":
             raise ProgressiveOAError("runtime lifecycle binding is inconsistent")
+        for successor in range(number + 1, 31):
+            item = value["gates"].get(f"OA-{successor:02d}", {})
+            if item.get("state") != "ACCEPTED":
+                raise ProgressiveOAError("terminal runtime lifecycle is incomplete")
         return
     try:
         active_number = int(active[-2:])
