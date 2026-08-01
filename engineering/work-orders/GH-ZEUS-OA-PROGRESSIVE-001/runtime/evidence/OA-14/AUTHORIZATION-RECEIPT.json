@@ -1,0 +1,11 @@
+{
+  "authorization_type": "HUMAN_DISPATCH_AUTHORIZATION_RECEIPT",
+  "execution_started": false,
+  "expires_at": "2026-08-01T01:14:54.388968+00:00",
+  "mission_id": "OA-14",
+  "operator": "loneal",
+  "protected_effect_authorized": true,
+  "receipt_digest": "9cb8af4e8bbdbfb169f58975b4eada89196cf53a7c0b5465022667540f312b9b",
+  "request_digest": "ee16fc812fba395dba279c9d370ea7154d42674ae0df88c1d595356b2815d6e6",
+  "schema_version": 1
+}

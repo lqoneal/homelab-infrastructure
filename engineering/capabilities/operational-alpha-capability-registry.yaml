@@ -1,6 +1,6 @@
 schema_version: 1
 registry_id: OPERATIONAL-ALPHA-CAPABILITY-REGISTRY
-revision: 1.0
+revision: 1.4
 classification: Authoritative
 authoritative_owner: Engineering Governance
 baseline_id: OA-IMPLEMENTATION-BASELINE-1.0
@@ -135,3 +135,59 @@ capabilities:
     associated_evidence: [engineering/evidence/2026-07-31-wop-oa-10-execution-001/]
     regression_status: PASS
     capability_history: [OA-10 qualified]
+  - capability_id: ZEUS-OA-CAP-010
+    name: Integrity-bound execution-agent qualification and registration
+    description: Qualifies and registers execution agents against repository identity, published baseline, capability profile, authority publication, and integrity state without modifying repository contents.
+    lifecycle: Operational
+    mission_introduced: OA-11
+    mission_modified: OA-11
+    verification_commands: [zeus agent qualify --json, zeus agent registry --json, zeus capability verify ZEUS-OA-CAP-010]
+    expected_verification_results: [qualification binding PASS, repository-preserving registration PASS, qualified agent registry PASS]
+    dependencies: [ZEUS-OA-CAP-009, ZEUS-PRODUCTION-EXECUTION-AGENTS]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-11-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-11 qualified]
+  - capability_id: ZEUS-OA-CAP-011
+    name: Integrity-bound execution-agent selection
+    description: Selects exactly one active agent whose repository identity, mission class, tools, and execution profile match the authoritative request, failing closed for ambiguity or mismatch.
+    lifecycle: Operational
+    mission_introduced: OA-12
+    mission_modified: OA-12
+    verification_commands: [zeus agent select --json, zeus capability verify ZEUS-OA-CAP-011]
+    expected_verification_results: [qualified agent selection PASS, mismatched selection FAIL_CLOSED, deterministic replay PASS]
+    dependencies: [ZEUS-OA-CAP-010, ZEUS-PRODUCTION-EXECUTION-AGENTS]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-12-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-12 qualified]
+  - capability_id: ZEUS-OA-CAP-012
+    name: Deterministic dispatch-candidate preparation
+    description: Creates an immutable, replay-stable dispatch candidate from the authoritative eligible mission, qualified agent, repository baseline, and execution profile without starting execution or authorizing protected effects.
+    lifecycle: Operational
+    mission_introduced: OA-13
+    mission_modified: OA-13
+    verification_commands: [zeus mission synchronization OA-13, zeus capability verify ZEUS-OA-CAP-012]
+    expected_verification_results: [dispatch candidate PASS, negative fail-closed PASS, deterministic replay PASS, execution not started PASS]
+    dependencies: [ZEUS-OA-CAP-011, OPERATIONAL-ALPHA-MISSION-KNOWLEDGE]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-13-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-13 qualified]
+  - capability_id: ZEUS-OA-CAP-013
+    name: Human dispatch authorization
+    description: Produces explicit, operator-bound, expiry-bound, replay-safe dispatch authorization and rejection receipts without starting execution or creating protected external effects.
+    lifecycle: Operational
+    mission_introduced: OA-14
+    mission_modified: OA-14
+    verification_commands: [zeus verify OA-14, zeus capability verify ZEUS-OA-CAP-013]
+    expected_verification_results: [explicit authorization PASS, rejection PASS, expiration fail-closed PASS, replay-safe receipt PASS]
+    dependencies: [ZEUS-OA-CAP-012, ZEUS-PRODUCTION-EXECUTION-AGENTS]
+    owning_controlled_documentation: [ZEUS-OA-GATE-SPEC-002, PROC-0001@2.9]
+    runtime_availability: AVAILABLE
+    associated_evidence: [engineering/evidence/2026-07-31-wop-oa-14-execution-001/]
+    regression_status: PASS
+    capability_history: [OA-14 qualified]

@@ -81,6 +81,7 @@ def _binding(repository: Path) -> dict[str, Any]:
     )
     try:
         recommendation = mission_knowledge.recommend(repository)
+        model = mission_knowledge.load(repository)
         capabilities = capability_registry.load(repository)
     except Exception as error:
         raise AgentQualificationError(
@@ -93,9 +94,12 @@ def _binding(repository: Path) -> dict[str, Any]:
         "authority_publication": pointer["transaction_id"],
         "mission_knowledge": {
             "model_id": recommendation["model_id"],
-            "revision": recommendation["readiness"]["revision"],
+            "revision": str(model["revision"]),
             "recommended_mission": recommendation["recommended_mission"],
-            "readiness_digest": recommendation["readiness"]["readiness_digest"],
+            "readiness_digest": (
+                recommendation["readiness"]["readiness_digest"]
+                if recommendation.get("readiness") else None
+            ),
         },
         "capability_registry": {
             "registry_id": capabilities["registry_id"],
@@ -135,11 +139,15 @@ def qualification_inputs(repository: Path) -> dict[str, Any]:
             root / "engineering/eens/production-eens-policy.yaml"
         ).is_file(),
         # Qualification remains valid across the published Operational Alpha
-        # sequence.  Binding it to OA-07 made a previously qualified agent
-        # disappear as soon as the authoritative mission advanced.
+        # sequence.  Binding it to a recommended mission creates a circular
+        # prerequisite for the capability that makes OA-11 eligible: CAP-010
+        # must qualify while OA-11 is still blocked and therefore no mission
+        # is recommended.  Bind to the authoritative model revision and
+        # sequence instead; readiness remains fail-closed in the Mission
+        # Knowledge Model.
         "lifecycle_compatibility": bool(
-            binding["mission_knowledge"].get("recommended_mission")
-            and binding["mission_knowledge"]["recommended_mission"].startswith("OA-")
+            binding["mission_knowledge"].get("model_id")
+            and binding["mission_knowledge"].get("revision")
         ),
     }
     return {
@@ -237,6 +245,56 @@ def registry(repository: Path) -> dict[str, Any]:
         "binding": binding,
     }
     return {**unsigned, "registry_digest": digest(unsigned)}
+
+
+def select(
+    repository: Path,
+    *,
+    mission_class: str,
+    required_tools: Iterable[str],
+    execution_profile: Iterable[str],
+    agent_id: str | None = None,
+) -> dict[str, Any]:
+    """Select exactly one current agent matching the controlled execution profile.
+
+    Selection is a read-only projection of the integrity-bound registry.  It
+    fails closed for missing, stale, ambiguous, or mismatched candidates.
+    """
+    root = repository.resolve()
+    tools = sorted(set(required_tools))
+    profile = sorted(set(execution_profile))
+    view = registry(root)
+    candidates = []
+    for agent in view["agents"]:
+        if not agent.get("active") or agent.get("qualification_status") != "QUALIFIED":
+            continue
+        if agent_id and agent.get("agent_id") != agent_id:
+            continue
+        if root.as_posix() not in [str(item) for item in agent.get("repository_access_scope", [])]:
+            continue
+        if mission_class not in agent.get("supported_mission_classes", []):
+            continue
+        if not set(tools) <= set(agent.get("supported_tools", [])):
+            continue
+        if not set(profile) <= set(agent.get("execution_constraints", [])):
+            continue
+        candidates.append(agent)
+    if len(candidates) != 1:
+        raise AgentQualificationError(
+            "agent selection failed closed: expected exactly one qualified matching agent"
+        )
+    selected = candidates[0]
+    unsigned = {
+        "schema_version": 1,
+        "repository_identity": str(root),
+        "mission_class": mission_class,
+        "required_tools": tools,
+        "execution_profile": profile,
+        "selected_agent": selected["agent_id"],
+        "qualified_agents": sorted(item["agent_id"] for item in candidates),
+        "registry_digest": view["registry_digest"],
+    }
+    return {**unsigned, "selection_digest": digest(unsigned)}
 
 
 def qualify(

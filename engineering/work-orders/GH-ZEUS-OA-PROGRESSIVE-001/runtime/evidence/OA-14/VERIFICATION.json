@@ -1,0 +1,28 @@
+{
+  "assertions": {
+    "execution_started": "PASS_FALSE",
+    "expiration_rejected": "PASS",
+    "explicit_authorization": "PASS",
+    "explicit_rejection": "PASS",
+    "later_gate_artifacts_absent": true,
+    "negative_fail_closed": {
+      "expired_receipt": "PASS",
+      "malformed_request": "PASS",
+      "replayed_receipt": "PASS"
+    },
+    "replay_safe": "PASS"
+  },
+  "authoritative_inputs": {
+    "capability_registry_revision": "1.4",
+    "mission_knowledge_revision": "2.4",
+    "objective": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-14/objective.yaml",
+    "predecessor": "OA-13 ACCEPTED",
+    "receipt_digest": "9cb8af4e8bbdbfb169f58975b4eada89196cf53a7c0b5465022667540f312b9b",
+    "request_digest": "ee16fc812fba395dba279c9d370ea7154d42674ae0df88c1d595356b2815d6e6"
+  },
+  "canonical_evidence_digest": "c5bb60f48136a5f1be97f24158bd46eea5ab1349d219fdfb2882d3e29f4e23dc",
+  "gate_id": "OA-14",
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-08-01T00:14:54.389403+00:00"
+}

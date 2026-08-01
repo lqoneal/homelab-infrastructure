@@ -24,7 +24,7 @@ from scripts.lib.emp.next_action import NextActionError, human_text as next_acti
 from scripts.lib.emp.gate_approval import GateApprovalError, GateApprovalService, approve_command, verify_command  # noqa: E402
 from scripts.lib.emp.gate_decision import decide as decide_gate, review as review_gate  # noqa: E402
 from scripts.lib.emp.oa02_lifecycle import resolve as resolve_oa02, verify as verify_oa02  # noqa: E402
-from scripts.lib.emp.agent_qualification import AgentQualificationError, qualify as qualify_agent, registry as agent_registry, revoke as revoke_agent, runtime_registry_path  # noqa: E402
+from scripts.lib.emp.agent_qualification import AgentQualificationError, qualify as qualify_agent, registry as agent_registry, revoke as revoke_agent, runtime_registry_path, select as select_agent  # noqa: E402
 from scripts.lib.emp.gate_carry_forward import GateCarryForwardError, create_record as carry_gate  # noqa: E402
 from scripts.lib.eos.execution_interface import ExecutionInterface, ExecutionInterfaceError  # noqa: E402
 from scripts.lib.eos.convergence_runtime import ConvergenceRuntime  # noqa: E402
@@ -245,7 +245,7 @@ def main(argv=None):
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
     submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository"); submit.add_argument("--baseline"); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append"); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact"); submit.add_argument("--affected-repository", action="append"); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
-    show = sub.add_parser("mission"); show.add_argument("action", choices=("list","show","state","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependency-graph","portfolio","queue","health","roadmap")); show.add_argument("mission_id", nargs="?"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true")
+    show = sub.add_parser("mission"); show.add_argument("action", choices=("list","show","state","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependency-graph","portfolio","queue","health","roadmap","brief")); show.add_argument("mission_id", nargs="?"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true")
     assurance = sub.add_parser("assurance"); assurance.add_argument("action", choices=("capabilities",))
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
     accept=sub.add_parser("accept"); accept.add_argument("gate"); accept.add_argument("--reject", action="store_true"); accept.add_argument("--rationale", default=""); accept.add_argument("--at"); accept.add_argument("--yes", action="store_true"); accept.add_argument("--json", action="store_true")
@@ -270,7 +270,7 @@ def main(argv=None):
     dispatcher=sub.add_parser("dispatcher"); dispatcher.add_argument("action", choices=("status","agents","assignment","execution","eens","evidence","reconciliation")); dispatcher.add_argument("--identifier")
     dispatch=sub.add_parser("dispatch"); dispatch.add_argument("action", choices=("status", "verify")); dispatch.add_argument("--json", action="store_true")
     orchestrate=sub.add_parser("orchestrate"); orchestrate.add_argument("action", choices=("status", "verify")); orchestrate.add_argument("--json", action="store_true")
-    agent=sub.add_parser("agent"); agent.add_argument("action", choices=("list","registry","status","qualify","revoke")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--json", action="store_true")
+    agent=sub.add_parser("agent"); agent.add_argument("action", choices=("list","registry","status","qualify","revoke","select")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--mission-class", default="engineering"); agent.add_argument("--tool", action="append", default=["zeus-cli", "bounded-artifact-handler"]); agent.add_argument("--profile", action="append", default=["controlled-wop-only", "exact-repository-baseline", "no-unreviewed-external-effects"]); agent.add_argument("--json", action="store_true")
     gate=sub.add_parser("gate"); gate.add_argument("action", choices=("show", "objective", "evidence", "receipt", "carry-forward", "validate-carry-forward")); gate.add_argument("gate_id")
     next_action=sub.add_parser("next-action"); next_action.add_argument("--json", action="store_true")
     a=p.parse_args(arguments)
@@ -364,6 +364,12 @@ def main(argv=None):
                 value = mission_knowledge.health(ROOT)
             emit_controller(value, json_mode=a.json, verify=a.verify, title=f"Mission {a.action}")
             return 0 if value.get("result", "PASS") in ("PASS", "NO_ELIGIBLE_MISSION") else 77
+        if a.command == "mission" and a.action == "brief":
+            if not a.mission_id:
+                raise OrchestrationError("mission identifier is required")
+            value = mission_knowledge.brief(ROOT, a.mission_id.upper())
+            emit_controller(value, json_mode=a.json, verify=a.verify, title="Mission brief")
+            return 0 if value.get("result") == "PASS" else 77
         if a.command == "dispatch":
             value = mission_knowledge.dispatch_verification(ROOT)
             emit_controller(value, json_mode=a.json, verify=a.action == "verify", title="Dispatch")
@@ -476,11 +482,29 @@ def main(argv=None):
                     "idempotent_replay": replay,
                     "registry": agent_registry(ROOT),
                 }
+            elif a.action == "select":
+                value = select_agent(
+                    ROOT,
+                    mission_class=a.mission_class,
+                    required_tools=a.tool,
+                    execution_profile=a.profile,
+                    agent_id=a.agent_id,
+                )
             else:
                 value = agent_registry(ROOT)
             emit(value)
             return 0
         if a.command == "gate" and a.action in ("show", "objective", "evidence", "receipt"):
+            if a.action == "receipt" and a.gate_id.upper() in {"OA-11", "OA-12", "OA-13", "OA-14"}:
+                gate_id = a.gate_id.upper()
+                state = progressive_oa.load_state(ROOT)
+                locator = state["gates"][gate_id]["acceptance_receipt"]
+                receipt_path = progressive_oa._resolve_receipt_path(ROOT, locator, gate_id)
+                marker_path, marker = progressive_oa._marker_binding(ROOT, gate_id)
+                receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+                progressive_oa._validate_receipt_bindings(ROOT, gate_id, receipt_path, receipt, marker_path, marker)
+                emit({"package_id": progressive_oa.PACKAGE, "repository": str(ROOT), "gate_id": gate_id, "receipt_state": "VALID", "receipt": str(receipt_path), "receipt_digest": receipt["receipt_digest"], "evidence_digest": marker["evidence_digest"], "replay_safe": True, "state_consistent": True})
+                return 0
             functions = {
                 "show": progressive_oa.show,
                 "objective": progressive_oa.objective,
@@ -518,6 +542,10 @@ def main(argv=None):
             return 0
         if a.command == "verify":
             if a.gate.upper().startswith("OA-"):
+                if a.gate.upper() in {"OA-11", "OA-12", "OA-13", "OA-14"}:
+                    value = ProgressiveGateService(ROOT).verify(a.gate.upper())
+                    emit(value)
+                    return 0
                 if not a.wop:
                     raise OrchestrationError("Operational Alpha verification requires --wop convergence binding")
                 flow = ConvergenceRuntime(ROOT).execution_flow(
@@ -528,7 +556,6 @@ def main(argv=None):
                          "authority_receipt": flow["authority_receipt"],
                          "execution_admitted": flow["execution_admitted"]}
                 if flow["execution_admitted"] and a.gate.upper() in {"OA-06", "OA-07", "OA-09", "OA-10"}:
-                    from scripts.lib.emp.progressive_gate import ProgressiveGateService
                     value["progressive_verification"] = ProgressiveGateService(ROOT).verify(
                         a.gate.upper()
                     )
@@ -581,7 +608,6 @@ def main(argv=None):
             emit({"decision": record, "idempotent_replay": replay})
             return 0
         if a.command == "approve" and a.approval_id.upper().startswith("OA-"):
-            from scripts.lib.emp.progressive_gate import ProgressiveGateService
             progressive_state = progressive_oa.load_state(ROOT)
             progressive_gate = progressive_state.get("gates", {}).get(
                 a.approval_id.upper(), {}

@@ -1,0 +1,26 @@
+{
+  "assertions": {
+    "capability_registry": "PASS",
+    "emm_binding": "PASS",
+    "idempotent_replay": "PASS",
+    "integrity_bound_qualification": "PASS",
+    "later_gate_artifacts_absent": "PASS",
+    "negative_fail_closed": "PASS",
+    "repository_preserving_registration": "PASS"
+  },
+  "authoritative_inputs": {
+    "capability_registry_revision": "1.1",
+    "mission_knowledge_revision": "2.0",
+    "predecessor": "OA-10 ACCEPTED",
+    "qualification_digest": "0774287fb6fa84ecbcc5586966368327d392e281f345d915edb668277a8bf6cb",
+    "qualification_report": "engineering/evidence/2026-07-31-wop-oa-11-execution-001/CAPABILITY-QUALIFICATION.md",
+    "qualification_report_sha256": "4b2f1fafd86d0bad6fbc7bf86e544ebb3c78e33b04cd55f3b08dc55b7af5e4c2",
+    "qualified_agent": "zeus-local-loneal-01",
+    "repository_head": "7aaf8fa924daf88e91ebbfdf32b1a2372f135e38"
+  },
+  "canonical_evidence_digest": "f6e1038a57f40d1aa72e49c86604c23276aba6e223c0c5b88ecf41882dbc0504",
+  "gate_id": "OA-11",
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-07-31T22:19:59.151761+00:00"
+}
