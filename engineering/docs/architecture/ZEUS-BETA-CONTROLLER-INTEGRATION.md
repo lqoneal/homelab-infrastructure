@@ -37,6 +37,10 @@ zeus operation health BETA
 zeus operation verify BETA
 zeus operation next-action BETA
 
+zeus mission list
+zeus mission completed
+zeus mission history
+zeus mission archive
 zeus mission roadmap ZDCL
 zeus mission roadmap CAGF
 zeus mission roadmap EPE
@@ -52,6 +56,10 @@ zeus mission verify <MISSION_ID>
 Alpha inspection commands remain available through their existing
 Mission Knowledge Model projections. Beta output never substitutes for Alpha
 production state, and Alpha history is not treated as Beta authority.
+
+The default mission list is the active Beta development view. Completed Alpha
+missions are historical projections and are exposed only by the completed,
+history, or archive views.
 
 Mission queue inspection remains on the existing EMP/Zeus orchestration and
 Mission Knowledge Model path. It is a read-only projection and does not create

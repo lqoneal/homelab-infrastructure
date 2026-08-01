@@ -246,7 +246,7 @@ def main(argv=None):
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
     submit = sub.add_parser("submit"); submit.add_argument("wop_package"); submit.add_argument("--repository"); submit.add_argument("--baseline"); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append"); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact"); submit.add_argument("--affected-repository", action="append"); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
-    show = sub.add_parser("mission"); show.add_argument("action", choices=("list","show","state","status","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependencies","dependency-graph","metrics","portfolio","queue","health","roadmap","brief")); show.add_argument("mission_id", nargs="?"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true")
+    show = sub.add_parser("mission"); show.add_argument("action", choices=("list","completed","history","archive","show","state","status","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependencies","dependency-graph","metrics","portfolio","queue","health","roadmap","brief")); show.add_argument("mission_id", nargs="?"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true")
     operation = sub.add_parser("operation"); operation.add_argument("action", choices=("show", "status", "roadmap", "metrics", "health", "verify", "next-action")); operation.add_argument("operation_id", nargs="?", default="BETA"); operation.add_argument("--json", action="store_true"); operation.add_argument("--verify", action="store_true")
     assurance = sub.add_parser("assurance"); assurance.add_argument("action", choices=("capabilities",))
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
@@ -311,6 +311,17 @@ def main(argv=None):
                 print(ORIENTATION)
             return 0
         if a.command == "next-action":
+            beta = operational_beta.next_action(ROOT)
+            if beta.get("result") == "PASS":
+                if a.json:
+                    emit(beta)
+                else:
+                    print(
+                        f"Operation: {beta['operation']}\n"
+                        f"Recommended Mission: {beta['recommended_mission']}\n"
+                        f"Next Action: {beta['next_authorized_action']}\n"
+                    )
+                return 0
             if progressive_enabled:
                 decision = progressive_oa.next_action(ROOT)
                 if a.json: emit(decision)
@@ -346,7 +357,7 @@ def main(argv=None):
         beta_action = getattr(a, "action", "")
         beta_mission = beta_subject.startswith(("BETA-", "ZDCL-", "CAGF-", "EPE-"))
         beta_family = beta_subject in {"ZDCL", "CAGF", "EPE"}
-        beta_candidate = a.command == "mission" and beta_action == "roadmap" and beta_subject not in {"", "OA"}
+        beta_candidate = a.command == "mission" and beta_action == "roadmap" and beta_subject != "OA"
         if a.command == "mission" and (beta_mission or beta_family or beta_candidate):
             if a.action == "roadmap":
                 value = operational_beta.roadmap(ROOT, beta_subject or None)
@@ -360,22 +371,28 @@ def main(argv=None):
                 value = operational_beta.roadmap(ROOT, beta_subject)
             emit_controller(value, json_mode=a.json, verify=a.verify or a.action == "verify", title=f"Beta mission {a.action}")
             return 0 if value.get("result") == "PASS" else 77
-        if a.command == "mission" and a.action in ("portfolio", "list", "queue", "health", "roadmap"):
-            if a.action in ("portfolio", "list"):
+        if a.command == "mission" and a.action in ("portfolio", "list", "completed", "history", "archive", "queue", "health", "roadmap"):
+            if a.action == "list" and not a.mission_id:
+                value = operational_beta.active_missions(ROOT)
+            elif a.action in ("completed", "history", "archive"):
+                result = mission_knowledge.list_missions(ROOT)
+                result["missions"] = [item for item in result["missions"] if item["lifecycle"] == "COMPLETED"]
+                result["historical"] = True
+                value = result
+            elif a.action in ("portfolio", "list"):
                 value = mission_knowledge.portfolio(ROOT) if a.action == "portfolio" else mission_knowledge.list_missions(ROOT)
             elif a.action == "roadmap":
                 value = mission_knowledge.roadmap_verification(ROOT) if a.verify else mission_knowledge.roadmap(ROOT)
             elif a.action == "queue":
                 queue_view = (a.mission_id or "list").upper()
                 if queue_view in {"LIST", "NEXT", "BLOCKERS", "HISTORY"}:
-                    value = mission_knowledge.queue(ROOT, queue_view.lower())
+                    value = operational_beta.queue(ROOT, queue_view.lower())
                 elif queue_view == "SHOW":
-                    value = mission_knowledge.queue(ROOT, "show")
+                    value = operational_beta.queue(ROOT, "show")
                 else:
-                    value = mission_knowledge.queue(ROOT, "show")
-                    value["queue"] = [item for item in value["queue"] if item == queue_view]
-                    value["entries"] = [item for item in value["entries"] if item["mission_id"] == queue_view]
-                    value["result"] = "PASS" if value["entries"] else "MISSION_NOT_FOUND"
+                    value = operational_beta.queue(ROOT, "show")
+                    value["missions"] = [item for item in value["missions"] if item["mission_id"] == queue_view]
+                    value["result"] = "PASS" if value["missions"] else "MISSION_NOT_FOUND"
             else:
                 value = mission_knowledge.health(ROOT)
             emit_controller(value, json_mode=a.json, verify=a.verify, title=f"Mission {a.action}")

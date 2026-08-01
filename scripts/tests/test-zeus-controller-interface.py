@@ -78,8 +78,8 @@ class ZeusControllerInterfaceTests(unittest.TestCase):
         result = self.run_zeus("next-action", "--json")
         self.assertEqual(result.returncode, 0)
         value = json.loads(result.stdout)
-        self.assertEqual(value["current_mission"], "OA-30")
-        self.assertIsNone(value["next_authorized_action"]["wop"])
+        self.assertEqual(value["operation"], "BETA")
+        self.assertEqual(value["recommended_mission"], "ZDCL-01")
 
     def test_oa22_brief_separates_prerequisite_from_outcome(self):
         result = self.run_zeus("mission", "brief", "OA-22", "--verify")

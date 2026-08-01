@@ -60,6 +60,46 @@ def operator_text(value: Any, title: str | None = None) -> str:
             f"Controlled references        : {', '.join(value.get('references', []))}",
         ])
         return "\n".join(lines) + "\n"
+    if value.get("operation") == "BETA" and isinstance(value.get("missions"), list):
+        lines.extend([
+            f"Operation                    : {value.get('operation')}",
+            f"Status                       : {value.get('status', 'ACTIVE_DEVELOPMENT')}",
+            f"Production baseline           : {value.get('production_baseline', 'OA-v1.0.0')}",
+            f"Development baseline          : {value.get('development_baseline', 'OB-PLAN-v1.0.0')}",
+            f"Integrity                     : {value.get('integrity', {}).get('result', value.get('result', 'UNKNOWN'))}",
+        ])
+        if "queue_scope" in value:
+            lines.append(f"Queue scope                   : {value['queue_scope']}")
+            lines.append(f"Execution environment        : {value.get('execution_environment', 'ADMITTED_MISSION_ATTRIBUTE')}")
+        if "active_mission_count" in value:
+            lines.append(f"Active mission count          : {value['active_mission_count']}")
+        lines.extend(["", "Missions", "--------"])
+        for item in value["missions"]:
+            lines.append(
+                f"{item.get('mission_id', '?'):10} {item.get('family', '?'):5} "
+                f"{item.get('lifecycle', '?'):10} {item.get('classification', '?'):10} "
+                f"deps={','.join(item.get('dependencies', [])) or 'none'}"
+            )
+        if "metrics" in value:
+            lines.extend(["", "Metrics", "-------", json.dumps(value["metrics"], sort_keys=True)])
+        return "\n".join(lines) + "\n"
+    if value.get("operation") == "BETA" and "mission_id" in value:
+        lines.extend([
+            f"Operation                    : BETA",
+            f"Mission                      : {value.get('mission_id')}",
+            f"Family                       : {value.get('family')}",
+            f"Title                        : {value.get('title')}",
+            f"Lifecycle                    : {value.get('lifecycle')}",
+            f"Classification               : {value.get('classification')}",
+            f"Readiness                    : {value.get('readiness')}",
+            f"Dependencies                 : {', '.join(value.get('dependencies', [])) or 'none'}",
+            f"Missing dependencies         : {', '.join(value.get('missing_dependencies', [])) or 'none'}",
+            f"Selection rationale           : {value.get('selection_rationale', '')}",
+            f"Production baseline           : {value.get('production_baseline', 'OA-v1.0.0')}",
+            f"Development baseline          : {value.get('development_baseline', 'OB-PLAN-v1.0.0')}",
+            f"Authority                     : {', '.join(value.get('authority', value.get('authoritative_sources', [])))}",
+        ])
+        return "\n".join(lines) + "\n"
     for key in ("result", "mission_id", "classification", "lifecycle", "recommended_mission",
                 "roadmap_id", "roadmap_revision", "mission_knowledge_revision", "status"):
         if key in value and not isinstance(value[key], (dict, list)):

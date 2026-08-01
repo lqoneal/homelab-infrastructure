@@ -58,6 +58,11 @@ zeus mission queue blockers
 zeus mission queue history
 ```
 
+When Beta is the active Development operation, these queue views resolve the
+Beta operation-wide projection. Execution environment is an admitted mission
+attribute and never a queue partition. Completed Alpha work is available from
+the dedicated `zeus mission completed`, `history`, and `archive` views.
+
 The projection reports submitted, staged, eligible, blocked, active, and
 completed entries plus derived counts. It derives from the Mission Knowledge
 Model and existing orchestration/lifecycle services. It never writes queue
