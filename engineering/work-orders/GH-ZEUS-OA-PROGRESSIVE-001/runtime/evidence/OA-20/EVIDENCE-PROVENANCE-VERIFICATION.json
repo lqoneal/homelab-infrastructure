@@ -1,0 +1,48 @@
+{
+  "assertions": {
+    "agent_binding": "PASS",
+    "authority_binding": "PASS",
+    "checksum_integrity": "PASS",
+    "execution_gate_binding": "PASS",
+    "mismatch_fail_closed": "PASS",
+    "missing_binding_fail_closed": "PASS",
+    "mission_wop_binding": "PASS",
+    "replay_idempotency": "PASS",
+    "repository_commit_binding": "PASS",
+    "restart_recovery": "PASS",
+    "tamper_fail_closed": "PASS"
+  },
+  "authoritative_inputs": {
+    "baseline": "7bc52fc7eab77a9f637264adae621adf3ba6c774",
+    "capability_id": "ZEUS-OA-CAP-019",
+    "capability_registry_revision": "1.12",
+    "mission_knowledge_revision": "3.4",
+    "objective": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-20/objective.yaml",
+    "predecessor": "OA-19 ACCEPTED"
+  },
+  "bound_manifest": {
+    "binding_digest": "070a2608005c302e3dcbc298ecd3c95eb60420c62fe0a8febd6475a7c04d5f44",
+    "bindings": {
+      "agent_identity": "oa20-qualification-agent",
+      "authority_identity": "MANUAL_GOVERNANCE_WOP:WOP-OA-20-WORKTREE-RECONCILIATION-AND-EXECUTION-001",
+      "execution_id": "OA20-EXECUTION-001",
+      "gate_id": "OA-20",
+      "mission_id": "OA-20",
+      "repository_commit": "7bc52fc7eab77a9f637264adae621adf3ba6c774",
+      "repository_identity": "/data/engineering/repositories/homelab",
+      "wop_id": "WOP-OA-20-EXECUTION-001"
+    },
+    "evidence_checksum": "be1f5c1a4b4fa57c30e03001c79d5b5895704145833b82baaf70ba13692e33c5",
+    "schema_version": 1,
+    "timestamp": "2026-08-01T12:00:00+00:00"
+  },
+  "canonical_evidence_digest": "a9f39778cbd54427889e08cda74ed9261359d368b73b33809ab5124b93e91b16",
+  "gate_id": "OA-20",
+  "objective": "Prove evidence binding to repository commit, authority, mission, WOP, execution, gate, and agent.",
+  "qualification": {
+    "database_journal_mode": "wal"
+  },
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-08-01T07:18:48.287697+00:00"
+}
