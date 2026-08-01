@@ -1,0 +1,68 @@
+{
+  "assertions": {
+    "acceptance_bound": "PASS",
+    "bounded_lifecycle": "PASS",
+    "eos_sync_validate": "PASS",
+    "negative_fail_closed": "PASS",
+    "registry_validate": "PASS",
+    "replay_stability": "PASS"
+  },
+  "capability_id": "ZEUS-OA-CAP-029",
+  "capability_name": "End-to-End Representative Mission",
+  "command_results": [
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "command": [
+        "scripts/engctl",
+        "eos",
+        "sync-validate"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "Repository\u2013EOS synchronization validation passed.\n"
+    },
+    {
+      "command": [
+        "scripts/engctl",
+        "registry",
+        "validate"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS: registry schema and YAML serialization (85 objects)\nPASS: registry identifiers, hierarchy, ordering, states, deferrals, and dependencies\nPASS: registry authority boundary\n"
+    }
+  ],
+  "lifecycle_calculation": {
+    "acceptance_status": "ACCEPTED",
+    "evidence_manifest_digest": "e726d123ff5a3ed093ad89ab15d5a94863e15baeda7f177b8576260d0725eb04",
+    "lifecycle_digest": "560c7e48506827e94dde0018a77024505827c392d0544e3c2d629ce84b62b100",
+    "lifecycle_status": "CLOSED",
+    "steps": [
+      "STAGED",
+      "QUALIFIED",
+      "RECONCILED",
+      "ACCEPTED",
+      "CLOSED"
+    ]
+  },
+  "mission_id": "OA-29",
+  "negative_cases": {
+    "mismatched_gate": "PASS",
+    "missing_binding": "PASS",
+    "wrong_order": "PASS"
+  },
+  "objective": "Prove the complete lifecycle using a bounded representative mission from staging through accepted closeout.",
+  "qualification_digest": "5f5d757befc60a3360bd88b9aeceb727f20b298353372d2b5dff6e9f81e158d1",
+  "qualification_timestamp": "2026-08-01T18:07:06.104555+00:00",
+  "result": "PASS",
+  "schema_version": 1
+}

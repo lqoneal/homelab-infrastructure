@@ -1,0 +1,80 @@
+{
+  "acceptance_boundary": "operator acceptance remains distinct from evidence-calculated completion",
+  "authoritative_inputs": {
+    "capability_registry_revision": "1.20",
+    "implementation": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-28/implementation.md",
+    "mission_knowledge_revision": "4.1",
+    "objective": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-28/objective.yaml",
+    "outcome": "ZEUS-OA-CAP-028",
+    "predecessor": "OA-27 ACCEPTED",
+    "prerequisite": "ZEUS-OA-CAP-027"
+  },
+  "canonical_evidence_digest": "8d58968048a34fd522d1627fd1b5b14e9becbd0783cf90e5d2e3f2466a9234c0",
+  "gate_id": "OA-28",
+  "objective": "Prove completion reporting, final reconciliation, execution closure, and removal from active work.",
+  "qualification": {
+    "assertions": {
+      "acceptance_separation": "PASS",
+      "eos_sync_validate": "PASS",
+      "negative_fail_closed": "PASS",
+      "positive_closeout": "PASS",
+      "registry_validate": "PASS",
+      "replay_stability": "PASS"
+    },
+    "capability_id": "ZEUS-OA-CAP-028",
+    "capability_name": "Mission Closeout",
+    "command_results": [
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      {
+        "command": [
+          "scripts/engctl",
+          "eos",
+          "sync-validate"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "Repository\u2013EOS synchronization validation passed.\n"
+      },
+      {
+        "command": [
+          "scripts/engctl",
+          "registry",
+          "validate"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "PASS: registry schema and YAML serialization (85 objects)\nPASS: registry identifiers, hierarchy, ordering, states, deferrals, and dependencies\nPASS: registry authority boundary\n"
+      }
+    ],
+    "completion_calculation": {
+      "acceptance_status": "PENDING",
+      "calculation_digest": "271eeb3be7178b1ec58bb1fa7c6e03e042d0700ac80addc6f090e09ae7cb1d32",
+      "completion_is_distinct_from_acceptance": true,
+      "completion_status": "COMPLETE",
+      "evidence_manifest_digest": "02bebb864a6767dc5782125849a0c1c040f4073ee822dce84d3c5f3e332ff646"
+    },
+    "mission_id": "OA-28",
+    "negative_cases": {
+      "failed_closure": "PASS",
+      "mismatched_gate": "PASS",
+      "missing_authority": "PASS"
+    },
+    "objective": "Prove completion reporting, final reconciliation, execution closure, and removal from active work.",
+    "qualification_digest": "7de17c1ef473ac8fb3240f74ff73ed446aacf5ac8737138def1fbf4624daadf3",
+    "qualification_timestamp": "2026-08-01T18:02:21.709655+00:00",
+    "result": "PASS",
+    "schema_version": 1
+  },
+  "result": "PASS",
+  "schema_version": 1,
+  "verification_timestamp": "2026-08-01T18:02:21.710274+00:00"
+}

@@ -1,6 +1,6 @@
 schema_version: 1
 model_id: OPERATIONAL-ALPHA-MISSION-KNOWLEDGE
-revision: 4.1
+revision: 4.3
 classification: Authoritative
 authoritative_owner: Engineering Governance
 purpose: Canonical EMM-bound mission knowledge for Operational Alpha lifecycle reasoning.
@@ -447,7 +447,7 @@ missions:
     controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
     runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
   - mission_id: OA-28
-    lifecycle: CURRENT
+    lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-28/objective.yaml
     roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
@@ -459,11 +459,11 @@ missions:
     eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
     blocking_conditions: []
     completion_criteria: [gate_objective_qualified]
-    evidence_relationships: []
+    evidence_relationships: [engineering/evidence/2026-08-01-wop-oa-28-oa-29-capability-pair-001/]
     controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
     runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
   - mission_id: OA-29
-    lifecycle: STAGED
+    lifecycle: COMPLETED
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-29/objective.yaml
     roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
@@ -475,11 +475,11 @@ missions:
     eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
     blocking_conditions: []
     completion_criteria: [gate_objective_qualified]
-    evidence_relationships: []
+    evidence_relationships: [engineering/evidence/2026-08-01-wop-oa-28-oa-29-capability-pair-001/]
     controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
     runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
   - mission_id: OA-30
-    lifecycle: STAGED
+    lifecycle: CURRENT
     authority: MANUAL_GOVERNANCE_WOP
     objective_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/gates/OA-30/objective.yaml
     roadmap_source: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md
@@ -491,7 +491,7 @@ missions:
     eligibility_criteria: [predecessor_completed, convergence_authority, repository_and_eos_synchronized, capability_prerequisites_operational]
     blocking_conditions: []
     completion_criteria: [gate_objective_qualified]
-    evidence_relationships: []
+    evidence_relationships: [engineering/evidence/2026-08-01-wop-oa-28-oa-29-capability-pair-001/]
     controlled_document_relationships: [PROC-0001@2.7, SPEC-0014@1.6, ZEUS-OA-GATE-SPEC-002]
     runtime_state_relationships: [MissionKnowledgeModel, CapabilityRegistry]
 generation:
