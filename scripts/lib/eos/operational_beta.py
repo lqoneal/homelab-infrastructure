@@ -183,7 +183,8 @@ def _mission_projection(root: Path, mission_id: str) -> dict[str, Any]:
     """Resolve current and historical lifecycle state once for every controller."""
     admissions = [_admission_detail(root, item) for item in _admission_records(root, mission_id)]
     executions = [_execution_detail(root, item) for item in _execution_records(root, mission_id)]
-    current_admissions = [item for item in admissions if item["executable"]]
+    completed_admissions = {item.get("admission_id") for item in executions if item.get("state") == "Completed"}
+    current_admissions = [item for item in admissions if item["executable"] and item.get("admission_id") not in completed_admissions]
     current_executions = [item for item in executions if item["state"] in {"Pending", "Authorized", "Preparing", "Executing", "Waiting", "Suspended", "Resuming", "Verifying", "Running", "Qualifying", "AwaitingAcceptance"}]
     result = "PASS"
     integrity = None
@@ -486,11 +487,15 @@ def next_action(root: Path | str, subject: str | None = None) -> dict[str, Any]:
         cards = [card for card in cards if card["family"] == subject.upper()]
     candidate = next((card for card in cards if card["classification"] == "ELIGIBLE"), None)
     projection = _mission_projection(Path(root), candidate["mission_id"]) if candidate else {}
+    completed_operational = next((item for item in reversed(projection.get("historical_executions", [])) if item.get("state") == "Completed" and (item.get("current_session") or {}).get("lifecycle_state") == "COMPLETED"), None)
+    resolved_next = ((projection.get("current_execution") or {}).get("next_authorized_action")
+                     or ("Qualify, accept, synchronize, and close ZDCL-01 through the normal lifecycle process." if completed_operational
+                         else (f"Resolve and execute WOP-{candidate['mission_id']}-FOUNDATION-001" if candidate else "Await authoritative predecessor completion")))
     return {"result": value["result"], "operation": "BETA", "scope": subject.upper() if subject else "BETA",
             "current_platform_mission": value["current_platform_mission"],
             "current_executable_mission": value["current_executable_mission"],
             "recommended_mission": candidate["mission_id"] if candidate else None,
-            "next_authorized_action": (projection.get("current_execution") or {}).get("next_authorized_action") if projection.get("current_execution") and projection.get("current_execution").get("next_authorized_action") else (f"Resolve and execute WOP-{candidate['mission_id']}-FOUNDATION-001" if candidate else "Await authoritative predecessor completion"),
+            "next_authorized_action": resolved_next,
             "current_admission": projection.get("current_admission"),
             "current_execution": projection.get("current_execution"),
             "historical_admissions": projection.get("historical_admissions", []),

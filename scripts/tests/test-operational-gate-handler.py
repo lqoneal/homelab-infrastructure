@@ -36,6 +36,7 @@ from scripts.lib.emp.operational_gate_handler import (  # noqa: E402
     OperationalContextError,
     OperationalExecutionContextService,
 )
+from scripts.lib.emp.zdcl01_handler import ZDCL01OperationalHandler  # noqa: E402
 
 
 class OperationalGateHandlerTests(unittest.TestCase):
@@ -93,6 +94,7 @@ class OperationalGateHandlerTests(unittest.TestCase):
         self.registry = HandlerRegistry()
         self.handler = OperationalArtifactGateHandler()
         self.registry.register(self.handler)
+        self.registry.register(ZDCL01OperationalHandler())
         self.registry.discover(ROOT / "engineering/handlers/operational")
         self.framework = GateHandlerFramework(self.registry)
 
