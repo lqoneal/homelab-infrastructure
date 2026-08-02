@@ -878,7 +878,7 @@ def main(argv=None):
             response=ConversationEngine().respond(a.request,repository=a.repository,package=package,rejection=a.rejection,status=o.status())
             ContextManager(a.context).record(a.request,response); emit(response)
         elif a.command=="admit-mission":
-            admission_directory=ROOT/".zeus/runtime/mission-admissions"
+            admission_directory=runtime_path(ROOT,"mission-admissions")
             if os.environ.get("ZEUS_TESTING")=="1" and os.environ.get("ZEUS_ADMISSION_STORE"):
                 admission_directory=Path(os.environ["ZEUS_ADMISSION_STORE"])
             admission_store=AdmissionStateStore(admission_directory)
