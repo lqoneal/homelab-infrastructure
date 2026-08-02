@@ -95,6 +95,15 @@ def _execution_detail(root: Path, value: dict[str, Any]) -> dict[str, Any]:
             }
         except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
             current_validation = {"result": "FAIL", "failures": [{"message": str(error)}]}
+    session = None
+    if value.get("session_id"):
+        try:
+            from scripts.lib.emp.native_session import NativeSessionStore
+            native = NativeSessionStore(runtime_path(root, "native-sessions")).load(value["session_id"])
+            session = {key: native.get(key) for key in ("session_id", "lifecycle_state", "execution_id", "current_gate", "authorized_effect_profile", "blockers", "next_authorized_action", "created_at", "updated_at", "suspended_at", "resumed_at", "closed_at")}
+            session["progress"] = {"completed_checkpoints": len(native.get("checkpoints", [])), "required_gates": 4}
+        except (OSError, ValueError):
+            session = {"session_id": value["session_id"], "lifecycle_state": "INVALID", "blockers": ["SESSION_STATE_INVALID"]}
     return {
         "execution_id": value["execution_id"],
         "state": value["state"],
@@ -107,6 +116,7 @@ def _execution_detail(root: Path, value: dict[str, Any]) -> dict[str, Any]:
         "admitted_baseline": admitted_baseline,
         "current_baseline": current_baseline,
         "freshness": "PASS" if admitted_baseline == current_baseline else "STALE",
+        "current_session": session,
         "supersession": (admission_value or {}).get("supersession") or (admission_value or {}).get("artifacts", {}).get("authority_context", {}).get("admission", {}).get("supersession"),
         "next_authorized_action": f"Resume {value.get('mission_id')}: zeus execute-mission resume --execution-id {value['execution_id']}"
         if value["state"] in {"Waiting", "Suspended"}
@@ -150,7 +160,8 @@ def _admission_detail(root: Path, value: dict[str, Any]) -> dict[str, Any]:
     ).stdout.strip()
     state = value.get("admission_state", "ACTIVE")
     fresh = bool(baseline and baseline == current)
-    executable = state not in {"STALE", "SUPERSEDED", "CANCELLED", "REJECTED", "CONSUMED", "COMPLETED"} and fresh
+    operational = request.get("mode") == "operational" and artifacts.get("admission_decision", {}).get("admission_decision") == "ACCEPTED"
+    executable = state not in {"STALE", "SUPERSEDED", "CANCELLED", "REJECTED", "CONSUMED", "COMPLETED"} and fresh and operational
     return {
         "admission_id": value.get("admission_id"),
         "admission_state": state,
@@ -173,7 +184,7 @@ def _mission_projection(root: Path, mission_id: str) -> dict[str, Any]:
     admissions = [_admission_detail(root, item) for item in _admission_records(root, mission_id)]
     executions = [_execution_detail(root, item) for item in _execution_records(root, mission_id)]
     current_admissions = [item for item in admissions if item["executable"]]
-    current_executions = [item for item in executions if item["state"] in {"Waiting", "Suspended", "Executing", "Running", "Qualifying", "AwaitingAcceptance"}]
+    current_executions = [item for item in executions if item["state"] in {"Pending", "Authorized", "Preparing", "Executing", "Waiting", "Suspended", "Resuming", "Verifying", "Running", "Qualifying", "AwaitingAcceptance"}]
     result = "PASS"
     integrity = None
     if len(current_admissions) > 1:

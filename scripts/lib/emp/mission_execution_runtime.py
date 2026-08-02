@@ -27,6 +27,7 @@ from scripts.lib.emp.mission_admission_runtime import (
 )
 from scripts.lib.emp.wop_admission import AdmissionController, submission_digest
 from scripts.lib.emp.runtime_paths import runtime_path
+from scripts.lib.emp.native_session import NativeSessionStore, NativeSessionError
 
 
 class MissionExecutionError(ValueError):
@@ -217,6 +218,7 @@ class MissionExecutionRuntime:
         event_sink=None,
         operational_dispatch_enabled: bool = False,
         operational_context_provider=None,
+        session_store: NativeSessionStore | None = None,
     ):
         self.root = Path(repository_root).resolve()
         self.store = store
@@ -240,6 +242,7 @@ class MissionExecutionRuntime:
         self.event_sink = event_sink
         self.operational_dispatch_enabled = operational_dispatch_enabled
         self.operational_context_provider = operational_context_provider
+        self.session_store = session_store or NativeSessionStore(store.directory.parent / "native-sessions")
 
     def start(
         self,
@@ -294,6 +297,21 @@ class MissionExecutionRuntime:
             at,
         )
         self.store.save(state)
+        if state["mode"] == "operational" and state["mission_id"] == "ZDCL-01":
+            request = admission["request"]
+            binding = admission["artifacts"]["authority_context"]["admission"]
+            session = self.session_store.create({
+                "operation": "BETA", "mission_id": state["mission_id"], "wop_id": state["wop_id"],
+                "wop_revision": binding["wop_revision"], "submission_id": request["submission_id"],
+                "admission_id": admission_id, "execution_id": execution_id,
+                "repository_identity": str(self.root), "admitted_baseline": state["repository_baseline"],
+                "principal": request["principal_id"], "submitter": request["submitter_identity"],
+                "execution_agent": "Codex", "session_classification": "DEVELOPMENT_IMPLEMENTATION",
+                "authorized_effect_profile": "ZDCL-01-NATIVE-SESSION-FOUNDATION",
+                "authority_references": {"mission_contract": binding["authority"]["source"], "wop": state["wop_id"], "admission": admission_id, "execution": execution_id},
+            }, at=at)
+            state["session_id"] = session["session_id"]
+            self.store.save(state)
         return self.run(execution_id, at=at, max_gates=max_gates)
 
     def run(
@@ -331,6 +349,7 @@ class MissionExecutionRuntime:
                 self.store.save(state)
                 return self.store.load(execution_id)
             gate = next(item for item in GATES if item["gate_id"] == state["current_gate"])
+            self._session_gate_start(state, gate["gate_id"], at)
             state["state"] = gate["state"]
             self._append_evidence(
                 state, "GATE_STARTED", {"gate_id": gate["gate_id"]}, at
@@ -374,6 +393,8 @@ class MissionExecutionRuntime:
             checkpoint["checkpoint_digest"] = digest(checkpoint)
             state["completed_gates"].append(gate["gate_id"])
             state["checkpoints"].append(checkpoint)
+            if state.get("session_id"):
+                self.session_store.checkpoint(state["session_id"], checkpoint, at=at)
             self._append_evidence(
                 state,
                 "GATE_COMPLETED",
@@ -386,6 +407,11 @@ class MissionExecutionRuntime:
             self.store.save(state)
             executed += 1
         state["state"] = "Completed"
+        if state.get("session_id"):
+            session = self.session_store.load(state["session_id"])
+            if session["lifecycle_state"] in {"ACTIVE", "RESUMED"}:
+                self.session_store.transition(state["session_id"], "VERIFYING", at=at, event="SESSION_VERIFICATION_STARTED", current_gate="VERIFY_COMPLETION", next_action="Verify operational execution and evidence chain.")
+            self.session_store.transition(state["session_id"], "COMPLETED", at=at, event="SESSION_COMPLETED", current_gate=None, next_action="Proceed through qualification, acceptance, synchronization, and lifecycle closeout.")
         self._append_evidence(
             state,
             "EXECUTION_COMPLETED",
@@ -406,6 +432,8 @@ class MissionExecutionRuntime:
         if state["state"] not in {"Suspended", "Waiting"}:
             raise MissionExecutionError("only suspended or waiting execution may resume")
         state["state"] = "Resuming"
+        if state.get("session_id"):
+            self.session_store.transition(state["session_id"], "RESUMED", at=at, event="SESSION_RESUMED", current_gate=state["current_gate"], next_action=f"Resume execution at {state['current_gate']}.")
         state["wait_reason"] = None
         state["updated_at"] = self._time(at)
         self.store.save(state)
@@ -416,6 +444,8 @@ class MissionExecutionRuntime:
         if state["state"] in TERMINAL_STATES:
             raise MissionExecutionError("terminal execution cannot be suspended")
         state["state"] = "Suspended"
+        if state.get("session_id"):
+            self.session_store.transition(state["session_id"], "SUSPENDED", at=at, event="SESSION_SUSPENDED", payload={"reason": reason or "OPERATOR"}, current_gate=state["current_gate"], next_action=f"Resume session {state['session_id']}.")
         self._append_evidence(
             state, "EXECUTION_SUSPENDED", {"reason": reason or "OPERATOR"}, at
         )
@@ -432,6 +462,8 @@ class MissionExecutionRuntime:
         self._append_evidence(
             state, "EXECUTION_CANCELLED", {"reason": reason or "OPERATOR"}, at
         )
+        if state.get("session_id"):
+            self.session_store.transition(state["session_id"], "CANCELLED", at=at, event="SESSION_CANCELLED", payload={"reason": reason or "OPERATOR"}, current_gate=None, next_action="Create a fresh admission before any further work.")
         state["updated_at"] = self._time(at)
         self.store.save(state)
         return self.store.load(execution_id)
@@ -475,13 +507,11 @@ class MissionExecutionRuntime:
         operational_context = None
         if state["mode"] == "operational":
             if self.operational_context_provider is None:
-                raise ExecutionBlocked(
-                    "OPERATIONAL_CONTEXT_UNAVAILABLE",
-                    "no operational execution context provider is configured",
-                )
-            operational_context = self.operational_context_provider(
-                deepcopy(state), deepcopy(wop)
-            )
+                if state["mission_id"] != "ZDCL-01":
+                    raise ExecutionBlocked("OPERATIONAL_CONTEXT_UNAVAILABLE", "no operational execution context provider is configured")
+                operational_context = {"profile": "ZDCL-01", "session_id": state.get("session_id"), "effect_profile": "ZDCL-01-NATIVE-SESSION-FOUNDATION", "dry_run": False}
+            else:
+                operational_context = self.operational_context_provider(deepcopy(state), deepcopy(wop))
         try:
             return framework.execute(
                 mode=state["mode"],
@@ -583,6 +613,17 @@ class MissionExecutionRuntime:
             raise MissionExecutionError("execution and admission WOP binding mismatch")
         if Path(state["repository"]).resolve() != self.root:
             raise MissionExecutionError("execution repository identity mismatch")
+
+    def _session_gate_start(self, state, gate_id, at):
+        if not state.get("session_id"):
+            return
+        session = self.session_store.load(state["session_id"])
+        target = None
+        if gate_id == "VALIDATE_WOP" and session["lifecycle_state"] == "CREATED": target = "VERIFIED"
+        elif gate_id == "PREPARE_EXECUTION" and session["lifecycle_state"] == "VERIFIED": target = "ACTIVE"
+        elif session["lifecycle_state"] == "RESUMED": target = "ACTIVE"
+        if target:
+            self.session_store.transition(state["session_id"], target, at=at, event=f"SESSION_{target}", current_gate=gate_id, next_action=f"Execute gate {gate_id}.")
 
     def _append_evidence(self, state, event, payload, at):
         previous = (

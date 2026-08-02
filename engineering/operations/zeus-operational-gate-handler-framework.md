@@ -84,15 +84,15 @@ reports `side_effects_performed: false`.
 
 Its manifest is `engineering/handlers/qualification-handler.yaml`.
 
-## Operational extension lifecycle
+## ZDCL-01 operational handler
 
-A future additional operational handler requires separate implementation
-scope, controlled implementation registration, an exact compatible manifest,
-deterministic idempotency and external checkpoint storage, timeout/cancellation
-and compensation qualification, authentic commissioning, and an explicitly
-enabled execution boundary unavailable from the current CLI.
-
-Registration or discovery alone never enables dispatch.
+`zeus.operational.zdcl01-native-session` version `0.1.0` is registered beside,
+and does not replace, the qualification handler. It negotiates only when the
+execution context declares the ZDCL-01 native-session profile. Its effect
+profile permits native-session and mission-execution runtime state plus
+append-only session evidence; repository, general filesystem, network, and
+Production effects are empty. Dry-run reports required effects without
+performing them. Registration or discovery alone never enables dispatch.
 
 ## Diagnostics and evidence
 
@@ -103,5 +103,5 @@ completion remain in the Mission Execution evidence chain and EENS projection.
 
 ## Controlled-document disposition
 
-This guide documents a qualified extension framework. It does not authorize a
-production handler, activation, dispatch, or execution.
+This guide documents the qualified extension framework and bounded Development
+handler. It does not authorize Production dispatch or unrelated execution.

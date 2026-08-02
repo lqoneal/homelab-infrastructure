@@ -29,6 +29,10 @@ Canonical source: controlled documentation and declared authority owners
 | Zeus runtime root selection | Runtime State | Operator configuration | Zeus runtime | Operational | Runtime | No; source |
 | EOS workspace selection | Runtime State | Operator configuration | EOS runtime | Operational | Runtime | No; source |
 | Mission terminology projection | Projection | Canonical mission resolver | Zeus | Derived | Generated/read-only | Yes |
+| Native Zeus session | Runtime State | Mission contract + admission + execution | Zeus runtime | Operational | Runtime | No; derived authority binding |
+| Native session evidence | Historical Evidence | Native session event publisher | Zeus runtime | Immutable | Append-only runtime | No; evidence |
+| Handler manifest inventory | Canonical | `engineering/handlers` | Engineering Governance | Controlled | Manual publication | Candidate input |
+| Handler effect profile | Normative | Handler manifest and implementation | Engineering Governance | Controlled | Manual publication | No; enforcement contract |
 
 ## Audit rules
 

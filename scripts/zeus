@@ -54,6 +54,7 @@ from scripts.lib.emp.oa05_gate_verification import OA05GateVerificationError  # 
 from scripts.lib.emp.mission_eligibility import MissionEligibilityError, evaluate_file as evaluate_eligibility  # noqa: E402
 from scripts.lib.emp.controller_presentation import emit as emit_controller  # noqa: E402
 from scripts.lib.emp.runtime_paths import runtime_path
+from scripts.lib.emp.native_session import NativeSessionStore, NativeSessionError
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -309,7 +310,7 @@ def main(argv=None):
     converse=sub.add_parser("converse"); converse.add_argument("request"); converse.add_argument("--context", type=Path, required=True); converse.add_argument("--repository"); converse.add_argument("--package"); converse.add_argument("--rejection")
     generate=sub.add_parser("generate-wop", help="Generate a WOP only when the selected authority permits generation."); generate.add_argument("intent"); generate.add_argument("--mode", choices=("qualification","operational"), default="qualification"); generate.add_argument("--mission", required=True); generate.add_argument("--phase"); generate.add_argument("--repository", required=True); generate.add_argument("--submitter"); generate.add_argument("--approval-authority"); generate.add_argument("--approval-reference"); generate.add_argument("--approval-date"); generate.add_argument("--authority-node"); generate.add_argument("--adr"); generate.add_argument("--immutable-wop"); generate.add_argument("--work-item"); generate.add_argument("--principal"); generate.add_argument("--at"); generate.add_argument("--authority-record"); generate.add_argument("--revision", default="1"); generate.add_argument("--correlation-id", default="zeus-wop-generation")
     admit_mission=sub.add_parser("admit-mission", help="Admit a staged mission through the protected admission boundary."); admit_mission.add_argument("action", choices=("start","resume","status")); admit_mission.add_argument("--admission-id"); admit_mission.add_argument("--mode", choices=("qualification","operational")); admit_mission.add_argument("--intent"); admit_mission.add_argument("--mission"); admit_mission.add_argument("--phase"); admit_mission.add_argument("--work-item"); admit_mission.add_argument("--principal"); admit_mission.add_argument("--submitter"); admit_mission.add_argument("--submission-id"); admit_mission.add_argument("--repository", default=str(ROOT)); admit_mission.add_argument("--at"); admit_mission.add_argument("--max-stages", type=int); admit_mission.add_argument("--wop"); admit_mission.add_argument("--revision", default="1"); admit_mission.add_argument("--authority-record"); admit_mission.add_argument("--correlation-id", default="zeus-mission-admission"); admit_mission.add_argument("--human", action="store_true", help="render the resolved admission as operator-readable text"); admit_mission.add_argument("--json", action="store_true", help="render the resolved admission as JSON")
-    execute_mission=sub.add_parser("execute-mission", help="Start or resume execution only after admission succeeds."); execute_mission.add_argument("action", choices=("start","resume","status","suspend","cancel")); execute_mission.add_argument("--admission-id"); execute_mission.add_argument("--execution-id"); execute_mission.add_argument("--reason", default="OPERATOR"); execute_mission.add_argument("--at"); execute_mission.add_argument("--max-gates", type=int); execute_mission.add_argument("--wop"); execute_mission.add_argument("--revision", default="1"); execute_mission.add_argument("--authority-record"); execute_mission.add_argument("--correlation-id", default="zeus-mission-execution")
+    execute_mission=sub.add_parser("execute-mission", help="Start or resume execution only after admission succeeds."); execute_mission.add_argument("action", choices=("start","resume","status","suspend","cancel","session","evidence","handlers")); execute_mission.add_argument("--admission-id"); execute_mission.add_argument("--execution-id"); execute_mission.add_argument("--reason", default="OPERATOR"); execute_mission.add_argument("--at"); execute_mission.add_argument("--max-gates", type=int); execute_mission.add_argument("--wop"); execute_mission.add_argument("--revision", default="1"); execute_mission.add_argument("--authority-record"); execute_mission.add_argument("--correlation-id", default="zeus-mission-execution")
     dispatcher=sub.add_parser("dispatcher"); dispatcher.add_argument("action", choices=("status","agents","assignment","execution","eens","evidence","reconciliation")); dispatcher.add_argument("--identifier")
     dispatch=sub.add_parser("dispatch"); dispatch.add_argument("action", choices=("status", "verify")); dispatch.add_argument("--json", action="store_true")
     orchestrate=sub.add_parser("orchestrate"); orchestrate.add_argument("action", choices=("status", "verify")); orchestrate.add_argument("--json", action="store_true")
@@ -913,15 +914,29 @@ def main(argv=None):
                             "convergence authority is not resolved: "
                             + ", ".join(convergence_flow["authority_receipt"]["reasons"])
                         )
-            admission_directory=ROOT/".zeus/runtime/mission-admissions"
-            execution_directory=ROOT/".zeus/runtime/mission-executions"
+            admission_directory=runtime_path(ROOT,"mission-admissions")
+            execution_directory=runtime_path(ROOT,"mission-executions")
             if os.environ.get("ZEUS_TESTING")=="1":
                 if os.environ.get("ZEUS_ADMISSION_STORE"): admission_directory=Path(os.environ["ZEUS_ADMISSION_STORE"])
                 if os.environ.get("ZEUS_EXECUTION_STORE"): execution_directory=Path(os.environ["ZEUS_EXECUTION_STORE"])
             execution_store=ExecutionStateStore(execution_directory)
+            admission_store=AdmissionStateStore(admission_directory)
+            if a.action == "handlers":
+                emit({"handlers": operational_framework(ROOT).registry.inventory()}); return 0
+            if a.action in {"session", "evidence"}:
+                execution_id = resolve_execution_id(execution_store, a.execution_id)
+                execution = execution_store.load(execution_id)
+                if not execution.get("session_id"): raise MissionExecutionError("execution has no native session")
+                session = NativeSessionStore(runtime_path(ROOT,"native-sessions")).load(execution["session_id"])
+                emit(session if a.action == "session" else {"session_id": session["session_id"], "evidence": session["evidence"], "evidence_references": session["evidence_references"]}); return 0
             baseline=subprocess.run(["git","-C",str(ROOT),"rev-parse","HEAD"],
                 capture_output=True,text=True,check=True).stdout.strip()
+            selected_admission = admission_store.load(a.admission_id) if a.action == "start" and a.admission_id else None
+            selected_execution = execution_store.load(resolve_execution_id(execution_store, a.execution_id)) if a.action == "resume" else None
+            zdcl_operational = bool((selected_admission and selected_admission["request"].get("mode") == "operational" and selected_admission["request"].get("mission_id") == "ZDCL-01") or (selected_execution and selected_execution.get("mode") == "operational" and selected_execution.get("mission_id") == "ZDCL-01"))
             dispatch_state=(
+                {"model": "PUBLISHED_MISSION_CONTRACT", "dispatch_permitted": True}
+                if zdcl_operational else
                 {"model": "CONVERGENCE_AUTHORITY", "dispatch_permitted": True,
                  "authority_receipt": convergence_flow["authority_receipt"]["receipt_digest"]}
                 if convergence_flow else
@@ -939,8 +954,8 @@ def main(argv=None):
                  {"model": "READ_ONLY_STATUS", "dispatch_permitted": False})
             )
             execution_runtime=MissionExecutionRuntime(ROOT,execution_store,
-                AdmissionStateStore(admission_directory),
-                handler_framework=operational_framework(ROOT) if convergence_flow else None,
+                admission_store,
+                handler_framework=operational_framework(ROOT) if (convergence_flow or zdcl_operational) else None,
                 operational_dispatch_enabled=dispatch_state["dispatch_permitted"],
                 operational_context_provider=(
                     (lambda state, wop: ConvergenceRuntime(ROOT).operational_execution_context(

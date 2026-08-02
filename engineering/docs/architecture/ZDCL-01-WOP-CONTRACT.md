@@ -20,3 +20,18 @@ current Development repository baseline. Re-admission after a baseline change
 must reuse the existing submission, issue a new admission identity, and retain
 the previous admission and cancelled execution as immutable historical
 evidence. A stale admission cannot authorize a new execution.
+
+## Native session contract
+
+An operational ZDCL-01 execution resolves exactly one deterministic
+`ZEUS-SESSION-*` identity. The session binds operation, mission, WOP revision,
+submission, admission, execution, repository, admitted/current baseline,
+principal, submitter, execution agent, classification, effect profile, gates,
+checkpoints, blockers, evidence references, next action, and lifecycle
+timestamps. Authority derives from the published mission contract and its
+admission/execution records; the session never grants independent authority.
+
+The lifecycle is `CREATED -> VERIFIED -> ACTIVE -> SUSPENDED -> RESUMED ->
+VERIFYING -> COMPLETED`, with fail-closed `BLOCKED`, `CANCELLED`, `SUPERSEDED`,
+and `FAILED` outcomes. Current projections are digest sealed; published session
+events are append-only and create-only. Terminal sessions are historical.

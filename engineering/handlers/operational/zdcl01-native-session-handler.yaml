@@ -1,0 +1,7 @@
+handler_id: zeus.operational.zdcl01-native-session
+version: 0.1.0
+api_version: zeus-gate-handler/1
+modes: [operational]
+gates: [EXECUTE_WORK, VERIFY_COMPLETION]
+capabilities: [authority-binding, cancellation, deterministic, dry-run, effect-profile, idempotent, native-session, restartable, structured-evidence, verification-first]
+mutating: true

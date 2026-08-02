@@ -319,7 +319,9 @@ class GateHandlerFramework:
         self.isolated = isolated
 
     def execute(self, *, mode, gate_id, context):
-        handler = self.registry.negotiate(mode=mode, gates=[gate_id])
+        operational = context.get("operational_context") or {}
+        required = {"native-session"} if operational.get("profile") == "ZDCL-01" else set()
+        handler = self.registry.negotiate(mode=mode, gates=[gate_id], required_capabilities=required)
         if not self.isolated:
             output = queue.Queue(maxsize=1)
             _execute_worker(handler, gate_id, deepcopy(dict(context)), output)
@@ -366,8 +368,10 @@ def qualification_framework(repository_root: Path | str):
 def operational_framework(repository_root: Path | str):
     """Resolve the published operational artifact handler without legacy dispatch."""
     from scripts.lib.emp.operational_gate_handler import OperationalArtifactGateHandler
+    from scripts.lib.emp.zdcl01_handler import ZDCL01OperationalHandler
 
     registry = HandlerRegistry()
     registry.register(OperationalArtifactGateHandler())
+    registry.register(ZDCL01OperationalHandler())
     registry.discover(Path(repository_root) / "engineering/handlers/operational")
     return GateHandlerFramework(registry)
