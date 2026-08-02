@@ -288,7 +288,7 @@ def main(argv=None):
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
     submit = sub.add_parser("submit", help="Submit an existing qualified WOP package through Stage 1."); submit.add_argument("wop_package", help="authoritative WOP directory or .tar.gz/.tgz package"); submit.add_argument("--repository"); submit.add_argument("--baseline"); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append"); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact"); submit.add_argument("--affected-repository", action="append"); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
-    show = sub.add_parser("mission", help="Resolve, inspect, and submit authoritative missions."); show.add_argument("action", choices=("list","completed","history","archive","submit","show","state","status","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependencies","dependency-graph","metrics","portfolio","queue","health","roadmap","brief")); show.add_argument("mission_id", nargs="?", help="canonical mission ID, for example ZDCL-01"); show.add_argument("--package", type=Path, help="optional explicit authoritative WOP package"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true")
+    show = sub.add_parser("mission", help="Resolve, inspect, and submit authoritative missions."); show.add_argument("action", choices=("list","completed","history","archive","submit","show","state","status","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","acceptance-summary","accept","close","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependencies","dependency-graph","metrics","portfolio","queue","health","roadmap","brief")); show.add_argument("mission_id", nargs="?", help="canonical mission ID, for example ZDCL-01"); show.add_argument("--package", type=Path, help="optional explicit authoritative WOP package"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true"); show.add_argument("--yes", action="store_true"); show.add_argument("--rationale", default="")
     operation = sub.add_parser("operation"); operation.add_argument("action", choices=("show", "status", "roadmap", "metrics", "health", "verify", "next-action")); operation.add_argument("operation_id", nargs="?", default="BETA"); operation.add_argument("--json", action="store_true"); operation.add_argument("--verify", action="store_true")
     assurance = sub.add_parser("assurance"); assurance.add_argument("action", choices=("capabilities",))
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
@@ -411,6 +411,35 @@ def main(argv=None):
             })
             return 78
         if a.command == "mission" and (beta_mission or beta_family or beta_candidate):
+            if beta_subject == "ZDCL-01" and a.action in ("qualify", "acceptance-summary", "accept", "close"):
+                from scripts.lib.emp import beta_closeout
+                if a.action == "qualify":
+                    value = beta_closeout.qualify(ROOT)
+                elif a.action == "acceptance-summary":
+                    value = beta_closeout.acceptance_summary(ROOT)
+                elif a.action == "accept":
+                    if not a.yes:
+                        raise beta_closeout.BetaCloseoutError("explicit operator confirmation requires --yes")
+                    value = beta_closeout.accept(
+                        ROOT, operator=os.environ.get("ZEUS_OPERATOR") or os.environ.get("USER") or "",
+                        rationale=a.rationale or "Independent qualification passed; accept bounded ZDCL-01 implementation.",
+                        at=now(None),
+                    )
+                else:
+                    value = beta_closeout.load(ROOT)
+                    if not value or value.get("acceptance", {}).get("status") != "ACCEPTED":
+                        raise beta_closeout.BetaCloseoutError("mission closeout requires explicit acceptance")
+                if a.action == "acceptance-summary" and not a.json:
+                    print(
+                        f"Mission: {value['mission']}\nImplementation baseline: {value['implementation_baseline']}\n"
+                        f"Operational admission: {value['operational_admission']}\nExecution: {value['execution']}\n"
+                        f"Native session: {value['native_session']}\nHandler: {value['handler']}\n"
+                        f"Qualification: {value['qualification_result']}\nResidual risks: {'; '.join(value['residual_risks'])}\n"
+                        f"Recommended disposition: {value['recommended_disposition']}"
+                    )
+                else:
+                    emit_controller(value, json_mode=a.json, verify=a.verify, title=f"ZDCL-01 {a.action}")
+                return 0
             if a.action == "submit":
                 stage1_directory = Path(
                     os.environ.get("ZEUS_STAGE1_STATE", runtime_path(ROOT, "stage1"))

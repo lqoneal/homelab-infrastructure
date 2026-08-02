@@ -37,3 +37,13 @@ Canonical source: controlled documentation and declared authority owners
 ## Audit rules
 
 Every significant artifact shall declare classification, owner, authoritative source, lifecycle, maintenance method, and dependencies. A proposed generated artifact shall also declare stable inputs, digest rules, generator ownership, validation, and stale-source behavior. CAGF shall generate projections only; canonical and historical records remain controlled sources.
+# ZDCL-01 closeout knowledge
+
+The ZDCL-01 closeout established the reference separation between operational
+execution completion, independently recomputed qualification, explicit operator
+acceptance, and mission lifecycle completion. Future handlers must declare an
+effect profile, evidence contract, idempotency model, and recovery behavior.
+Future closeouts must prove active/history projection separation. The bounded
+ZDCL-01 handler is qualified; the no-side-effect qualification reference handler
+is retained. Human-first raw-output suppression and publication-controller
+automation remain deferred platform work.

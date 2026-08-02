@@ -48,7 +48,7 @@ approvals:
   authority_reference: WOP-ZDCL-01-WOP-PACKAGE-AND-SUBMISSION-CORRECTIVE-001
 dirty_tree:
   policy: CLEAN_REQUIRED
-lifecycle: active
+lifecycle: completed
 activation:
   actor: Engineering Governance
   record: WOP-ZDCL-01-WOP-PACKAGE-AND-SUBMISSION-CORRECTIVE-001
@@ -57,3 +57,4 @@ interruption:
   fail_closed_on_digest_mismatch: true
 closeout:
   requires_completion_receipt: true
+  completion_receipt: engineering/mission-completions/ZDCL-01.yaml

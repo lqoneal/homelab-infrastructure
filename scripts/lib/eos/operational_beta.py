@@ -245,6 +245,16 @@ def _mission_cards(root: Path) -> list[dict[str, Any]]:
         "EPE-01": ("EPE", "Executable mission-contract foundation", ["CAGF-01"], "PLANNED", "BLOCKED", rows[5]),
     }
     for mission_id, (family, title, dependencies, lifecycle, classification, row) in definitions.items():
+        if mission_id == "ZDCL-01":
+            try:
+                from scripts.lib.emp.beta_closeout import load as load_closeout
+                closed = load_closeout(root)
+            except (OSError, ValueError):
+                closed = None
+            if closed and closed.get("lifecycle") == "COMPLETED" and closed.get("acceptance", {}).get("status") == "ACCEPTED":
+                lifecycle, classification = "COMPLETED", "COMPLETED"
+        if mission_id == "CAGF-01" and any(card["mission_id"] == "ZDCL-01" and card["lifecycle"] == "COMPLETED" for card in cards):
+            lifecycle, classification = "RECOMMENDED", "ELIGIBLE"
         cards.append({"mission_id": mission_id, "family": family, "title": title,
                       "scope": row["scope"], "dependencies": dependencies,
                       "lifecycle": lifecycle, "classification": classification,
@@ -300,7 +310,7 @@ def _metrics(cards: list[dict[str, Any]]) -> dict[str, Any]:
             "documentation_progress": {"completed": completed, "total": total, "percent": round(completed * 100 / total, 2)},
             "publication_progress": {"completed": completed, "total": total, "percent": round(completed * 100 / total, 2)},
             "validation_progress": {"completed": completed, "total": total, "percent": round(completed * 100 / total, 2)},
-            "promotion_readiness": "READY_FOR_ZDCL-01" if count(lambda card: card["classification"] == "ELIGIBLE") else "BLOCKED",
+            "promotion_readiness": ("READY_FOR_" + next((card["mission_id"] for card in cards if card["classification"] == "ELIGIBLE"), "NONE")) if count(lambda card: card["classification"] == "ELIGIBLE") else "BLOCKED",
             "critical_path": ["BETA-00", "ZDCL-01", "CAGF-01", "EPE-01"],
             "dependency_health": "PASS", "authority_health": "PASS",
             "controller_health": "PASS", "roadmap_health": "PASS",
@@ -490,7 +500,7 @@ def next_action(root: Path | str, subject: str | None = None) -> dict[str, Any]:
     completed_operational = next((item for item in reversed(projection.get("historical_executions", [])) if item.get("state") == "Completed" and (item.get("current_session") or {}).get("lifecycle_state") == "COMPLETED"), None)
     resolved_next = ((projection.get("current_execution") or {}).get("next_authorized_action")
                      or ("Qualify, accept, synchronize, and close ZDCL-01 through the normal lifecycle process." if completed_operational
-                         else (f"Resolve and execute WOP-{candidate['mission_id']}-FOUNDATION-001" if candidate else "Await authoritative predecessor completion")))
+                         else (f"Publish a separately authorized WOP for {candidate['mission_id']}, then submit and admit it through Zeus." if candidate else "Await authoritative predecessor completion")))
     return {"result": value["result"], "operation": "BETA", "scope": subject.upper() if subject else "BETA",
             "current_platform_mission": value["current_platform_mission"],
             "current_executable_mission": value["current_executable_mission"],

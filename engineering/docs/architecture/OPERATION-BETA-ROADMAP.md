@@ -13,8 +13,11 @@ The published current mission is `BETA-04`, recorded by
 platform-readiness and controller-reconciliation mission and does not authorize
 capability implementation.
 
-`ZDCL-01` is the recommended successor, not a second current mission. It
-becomes the Current Executable Mission only after a fresh governed admission.
+`ZDCL-01` completed independent qualification and explicit operator acceptance;
+its sealed completion record is `engineering/mission-completions/ZDCL-01.yaml`.
+It remains discoverable through completed and history views. `CAGF-01` is the
+next eligible roadmap mission, but requires its own separately published and
+authorized WOP before submission or admission.
 
 | Order | Mission | Scope | Depends on | Exit boundary |
 | ---: | --- | --- | --- | --- |

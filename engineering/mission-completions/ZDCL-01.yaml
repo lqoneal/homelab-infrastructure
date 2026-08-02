@@ -1,0 +1,36 @@
+schema_version: 1
+record_type: BetaMissionCompletion
+mission_id: ZDCL-01
+implementation: COMPLETE
+qualification:
+  result: PASS
+  digest: b4118ba5a2f93a1dca04f0ec1eca5b2574ea2b87d9c369e344f86200a80a8482
+acceptance:
+  status: ACCEPTED
+  operator: loneal
+  rationale: Independent qualification passed; accept the bounded native-session foundation
+    for operational availability.
+  recorded_at: '2026-08-02T03:39:01.901835Z'
+lifecycle: COMPLETED
+capability:
+  id: ZDCL-01-NATIVE-SESSION
+  status: OPERATIONAL
+  availability: AVAILABLE
+  qualification: PASS
+bindings:
+  implementation_baseline: 3ffd533bf45f876614cdb0ce49df380bc21d4de0
+  admission_id: MISSION-ADMISSION-0a7c96eb-1483-5e03-a594-0896aac589cd
+  execution_id: MISSION-EXECUTION-e638cdc2-1e7b-5833-a03f-8ab224301fe1
+  session_id: ZEUS-SESSION-f4aadd8a-77b9-53b3-958d-15a32a7d9b04
+  handler_id: zeus.operational.zdcl01-native-session
+  handler_version: 0.1.0
+authority:
+  mission_contract: engineering/mission-contracts/contracts/ZDCL-01.yaml
+  derived_from_session: false
+recommendations:
+  handler: QUALIFIED_FOR_BOUNDED_EFFECT_PROFILE
+  qualification_handler: PRESERVED
+  deferred_platform_work:
+  - human-first raw-output suppression
+  - publication controller
+record_digest: 8ec9f730e374df1ab61a5812f0cdca455575036a2276cfa921d8dfdd7c830783

@@ -29,9 +29,9 @@ def command(*args: str) -> tuple[dict, str]:
 
 def main() -> None:
     active, active_text = command("mission", "list")
-    assert {item["mission_id"] for item in active["missions"]} == {"ZDCL-01", "CAGF-01", "EPE-01"}
+    assert {item["mission_id"] for item in active["missions"]} == {"CAGF-01", "EPE-01"}
     assert "OA-30" not in active_text
-    assert "ZDCL-01" in active_text
+    assert not any(line.startswith("ZDCL-01") for line in active_text.splitlines())
 
     explain, explain_text = command("mission", "explain", "ZDCL-01")
     for field in ("operation", "readiness", "selection_rationale", "production_baseline", "development_baseline"):
@@ -47,6 +47,10 @@ def main() -> None:
     history, _ = command("mission", "history")
     assert history["historical"] is True
     assert len(history["missions"]) == 30
+
+    zdcl_history, _ = command("mission", "history", "ZDCL-01")
+    assert zdcl_history["historical"] is True
+    assert zdcl_history["historical_executions"]
 
     print("Beta controller presentation tests: PASS")
 

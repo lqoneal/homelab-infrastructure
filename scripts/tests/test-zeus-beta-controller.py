@@ -38,14 +38,15 @@ class BetaControllerTests(unittest.TestCase):
             self.assertEqual(json.loads(roadmap.stdout)["roadmap_family"], family)
             self.assertEqual(json.loads(state.stdout)["family"], family)
 
-    def test_beta_next_action_selects_zdcl_foundation(self):
+    def test_beta_next_action_advances_after_zdcl_closeout(self):
         result = self.run_zeus("operation", "next-action", "BETA", "--json")
         self.assertEqual(result.returncode, 0, result.stderr)
         value = json.loads(result.stdout)
         self.assertEqual(value["current_platform_mission"]["mission_id"], "BETA-04")
         self.assertIsNone(value["current_executable_mission"])
-        self.assertEqual(value["recommended_mission"], "ZDCL-01")
-        self.assertIn("ZDCL-01", value["next_authorized_action"])
+        self.assertEqual(value["recommended_mission"], "CAGF-01")
+        self.assertIn("CAGF-01", value["next_authorized_action"])
+        self.assertIn("separately authorized WOP", value["next_authorized_action"])
 
     def test_human_and_json_share_mission_terms(self):
         structured = self.run_zeus("next-action", "--json")
