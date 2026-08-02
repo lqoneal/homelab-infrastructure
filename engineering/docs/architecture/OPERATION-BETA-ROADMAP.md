@@ -13,6 +13,9 @@ The published current mission is `BETA-04`, recorded by
 platform-readiness and controller-reconciliation mission and does not authorize
 capability implementation.
 
+`ZDCL-01` is the recommended successor, not a second current mission. It
+becomes the Current Executable Mission only after a fresh governed admission.
+
 | Order | Mission | Scope | Depends on | Exit boundary |
 | ---: | --- | --- | --- | --- |
 | 0 | `BETA-00` | Engineering Platform assessment, reconciliation, backlog, and sequencing | OA frozen baseline | Assessment and roadmap qualified |

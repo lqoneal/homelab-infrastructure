@@ -27,6 +27,8 @@ Canonical source: controlled documentation and declared authority owners
 | Operation Beta roadmap | Planning | Operation Beta authority | EMP/Governance | Controlled | Manual | Candidate input |
 | BETA-04 activation record | Normative / Canonical | Published authority chain | Engineering Governance | Active | Manual publication | No; source |
 | Zeus runtime root selection | Runtime State | Operator configuration | Zeus runtime | Operational | Runtime | No; source |
+| EOS workspace selection | Runtime State | Operator configuration | EOS runtime | Operational | Runtime | No; source |
+| Mission terminology projection | Projection | Canonical mission resolver | Zeus | Derived | Generated/read-only | Yes |
 
 ## Audit rules
 

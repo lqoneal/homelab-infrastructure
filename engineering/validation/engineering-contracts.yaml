@@ -29,7 +29,7 @@ contracts:
       known_command_names: [zeus]
     expectations:
       command_names: [zeus]
-      options: [--help, --state, -h]
+      options: [--help, --state, --verbose, -h]
       file_locations: [scripts/zeus]
   - contract_id: CONTRACT-EMP-ORCHESTRATION
     category: Workflow
@@ -67,11 +67,11 @@ contracts:
       file_locations: [scripts/lib/emp/evidence_qualification.py]
   - contract_id: CONTRACT-ROADMAP-PROCESSING
     category: Workflow
-    source: {document_id: GH-ZEUS-OA-PROGRESSIVE-001-ROADMAP, locator: engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md}
-    discovery: {mechanism: api_signature, locator: scripts/lib/emp/progressive_oa.py, symbol: gates}
+    source: {document_id: OPERATION-BETA-ROADMAP, locator: engineering/docs/architecture/OPERATION-BETA-ROADMAP.md}
+    discovery: {mechanism: api_signature, locator: scripts/lib/eos/operational_beta.py, symbol: roadmap}
     expectations:
-      arguments: [root]
-      file_locations: [scripts/lib/emp/progressive_oa.py]
+      arguments: [root, family]
+      file_locations: [scripts/lib/eos/operational_beta.py]
   - contract_id: CONTRACT-SYNCHRONIZATION-SERVICE
     category: API
     source: {document_id: SPEC-0001, locator: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md}

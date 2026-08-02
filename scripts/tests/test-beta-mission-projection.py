@@ -11,7 +11,9 @@ from scripts.lib.eos import operational_beta  # noqa: E402
 
 def main() -> None:
     projection = operational_beta.mission_view(ROOT, "explain", "ZDCL-01")
-    assert projection["current_admission"]["admission_id"].startswith("MISSION-ADMISSION-")
+    assert projection["current_admission"] is None
+    assert projection["current_executable_mission"] is None
+    assert projection["current_platform_mission"]["mission_id"] == "BETA-04"
     assert projection["current_execution"] is None
     historical_states = {item["state"] for item in projection["historical_executions"]}
     assert "Cancelled" in historical_states

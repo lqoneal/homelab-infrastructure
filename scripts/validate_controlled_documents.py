@@ -197,7 +197,10 @@ def semantic_profile_for(path: Path, metadata: dict[str, Any] | None = None) -> 
     if isinstance(declared, str):
         return declared
     name = path.name.lower()
-    relative = str(path.relative_to(ROOT)).lower()
+    try:
+        relative = str(path.relative_to(ROOT)).lower()
+    except ValueError:
+        relative = str(path).lower()
     if name == "roadmap.md" or "implementation-roadmap" in name:
         return "Roadmap"
     if name == "gate-specification.yaml":
@@ -351,7 +354,11 @@ def semantic_validate_path(
     path: Path,
     catalog: dict[str, Any],
 ) -> dict[str, Any]:
-    result: dict[str, Any] = {"path": str(path.relative_to(ROOT)), "criteria": []}
+    try:
+        display_path = path.relative_to(ROOT)
+    except ValueError:
+        display_path = path
+    result: dict[str, Any] = {"path": str(display_path), "criteria": []}
     if not path.is_file():
         validation.check(False, f"semantic target exists: {path}")
         result["profile"] = None

@@ -42,6 +42,7 @@ class OperationalAlphaStatusTests(unittest.TestCase):
             "engineering/work-orders/OA-05-EXECUTION-001/immutable-wop.yaml",
             "engineering/work-orders/OA-06-EXECUTION-001/immutable-wop.yaml",
             "engineering/work-orders/OA-07-EXECUTION-001/immutable-wop.yaml",
+            "engineering/work-orders/OA-08-EXECUTION-001/immutable-wop.yaml",
             "engineering/missions/operational-alpha-mission-knowledge.yaml",
             "engineering/metadata/operational-alpha-emm.yaml",
             "engineering/lifecycle-transitions/implementation-wop-lifecycle-transition.spec.yaml",
@@ -50,21 +51,25 @@ class OperationalAlphaStatusTests(unittest.TestCase):
             "engineering/lifecycle-transitions/records/OA-05-READY-TO-ACTIVE.yaml",
             "engineering/lifecycle-transitions/records/OA-06-READY-TO-ACTIVE.yaml",
             "engineering/lifecycle-transitions/records/OA-07-READY-TO-ACTIVE.yaml",
+            "engineering/lifecycle-transitions/records/OA-08-READY-TO-ACTIVE.yaml",
             "engineering/authority-records/AR-OA-03-001.yaml",
             "engineering/authority-records/AR-OA-04-001.yaml",
             "engineering/authority-records/AR-OA-05-001.yaml",
             "engineering/authority-records/AR-OA-06-001.yaml",
             "engineering/authority-records/AR-OA-07-001.yaml",
+            "engineering/authority-records/AR-OA-08-001.yaml",
             "engineering/execution/plans/WOP-bfdce94b-ef22-4d1e-bfda-633252794d5a.yaml",
             "engineering/execution/plans/WOP-48f1d7d1-4995-5f3e-9b5e-fb2f69595111.yaml",
             "engineering/execution/plans/WOP-0ec591ec-7c16-5bf7-8ed8-002ec9c4547f.yaml",
             "engineering/execution/plans/WOP-9ed7762f-c143-5a58-9a21-63fae5a06c05.yaml",
             "engineering/execution/plans/WOP-72d7c7f0-4632-5721-8fbf-65dbf89c7b1a.yaml",
+            "engineering/execution/plans/WOP-oa08-deterministic-resolution-001.yaml",
             "engineering/activation-records/ACT-OA-03-001.yaml",
             "engineering/activation-records/ACT-OA-04-001.yaml",
             "engineering/activation-records/ACT-OA-05-001.yaml",
             "engineering/activation-records/ACT-OA-06-001.yaml",
             "engineering/activation-records/ACT-OA-07-001.yaml",
+            "engineering/activation-records/ACT-OA-08-001.yaml",
             "engineering/authority-records/AR-OA-01-001.yaml",
             "engineering/authority-records/AR-OA-02-001.yaml",
             "engineering/execution/plans/WOP-OA-01-IMPLEMENTATION-001.yaml",
@@ -79,7 +84,7 @@ class OperationalAlphaStatusTests(unittest.TestCase):
         root = self.fixture()
         value = resolve(root)
         self.assertEqual("RESOLVED", value["outcome"])
-        self.assertEqual("OA-07", value["active_gate"])
+        self.assertEqual("OA-08", value["active_gate"])
         self.assertEqual("ACTIVE", value["status"])
         self.assertEqual("COMPLETED", value["execution_state"])
         self.assertEqual("ELIGIBLE", value["authority_record_creation_eligibility"])
@@ -106,7 +111,7 @@ class OperationalAlphaStatusTests(unittest.TestCase):
         )
         self.assertEqual(0, result.returncode, result.stderr)
         value = json.loads(result.stdout)
-        self.assertEqual("OA-07", value["active_gate"])
+        self.assertEqual("OA-08", value["active_gate"])
         self.assertEqual("ACTIVE", value["status"])
         self.assertEqual("EXCLUDED_EVIDENCE_ONLY", value["historical_progressive_runtime"])
 
@@ -119,8 +124,8 @@ class OperationalAlphaStatusTests(unittest.TestCase):
         self.assertEqual(0, result.returncode, result.stderr)
         value = json.loads(result.stdout)
         self.assertEqual("CONVERGENCE_AUTHORITY", value["model"])
-        self.assertTrue(value["dispatch_permitted"])
-        self.assertEqual([], value["blocking_reasons"])
+        self.assertFalse(value["dispatch_permitted"])
+        self.assertEqual(["CONVERGENCE_PREREQUISITES_INCOMPLETE"], value["blocking_reasons"])
 
 
 if __name__ == "__main__":

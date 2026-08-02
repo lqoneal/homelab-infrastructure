@@ -80,7 +80,7 @@ class SemanticValidationTests(unittest.TestCase):
         )
 
     def test_profile_resolution_and_fail_closed_missing_content(self) -> None:
-        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
+        with tempfile.TemporaryDirectory(dir="/home/loneal") as directory:
             path = Path(directory) / "ROADMAP.md"
             path.write_text("# Roadmap\n\nObjective only.\n", encoding="utf-8")
             validation = validator.Validation()

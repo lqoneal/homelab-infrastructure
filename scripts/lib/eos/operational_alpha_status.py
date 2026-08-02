@@ -84,7 +84,13 @@ def _artifact_state(root: Path, entity_type: str, wop_id: str) -> str:
         source = item.get("source")
         if not isinstance(source, str):
             continue
-        value = _wop(root / source)
+        try:
+            value = _wop(root / source)
+        except OperationalAlphaStatusError:
+            # A fixture or partial repository may omit unrelated historical or
+            # successor artifacts. Only a source bound to the current WOP is
+            # relevant to this projection.
+            continue
         binding = value.get("implementation_wop")
         if isinstance(binding, Mapping) and binding.get("wop_id") == wop_id:
             matches.append(item)

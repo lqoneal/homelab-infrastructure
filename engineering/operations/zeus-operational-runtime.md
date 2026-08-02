@@ -24,8 +24,10 @@ closeout services. Schema version 1 is owned by
 `scripts/lib/emp/orchestration.py`.
 
 The repository mount may be read-only. `ZEUS_RUNTIME_ROOT` explicitly selects
-the mutable operator-owned runtime root; unset preserves the repository-local
-default for writable installations. There is no implicit fallback. Read-only
+the mutable operator-owned runtime root. The canonical platform deployment is
+`/home/loneal/.local/state/zeus/homelab`; operators shall export that value in
+the service or login environment. Unset preserves the repository-local default
+for writable installations only. There is no implicit fallback. Read-only
 controller commands never create or lock runtime files. `submit`, `admit`,
 `execute`, `publish`, and `synchronize` are the only runtime mutation classes
 and fail closed when the selected root is unavailable or read-only. Published
@@ -60,8 +62,8 @@ contains the qualified Mission O baseline
 2. validates any existing state instead of replacing it;
 3. performs an atomic write and deterministic reload;
 4. restricts the runtime directory and files to the operator;
-5. records machine-readable evidence at
-   `.zeus/evidence/bootstrap-evidence.json`; and
+5. records machine-readable evidence below the selected runtime root at
+   `evidence/bootstrap-evidence.json`; and
 6. reports `operational_readiness: READY`.
 
 Repeated bootstrap is safe. It validates and rewrites the same logical state

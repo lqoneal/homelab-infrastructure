@@ -7,6 +7,10 @@ The current published mission is `BETA-04`. Its activation record is
 mission projection is `engineering/missions/operation-beta-current.yaml`.
 This record does not grant capability implementation authority.
 
+`BETA-04` is the Current Platform Mission. `ZDCL-01` is the Recommended
+Mission. Current Executable Mission remains `NONE` until a fresh governed
+admission exists; recommendation never substitutes for admission authority.
+
 Controller governance is normative in `ENGINEERING-PLATFORM-INVARIANTS.md` and
 `ZEUS-CONTROLLER-GOVERNANCE.md`. These documents constrain projections and
 ownership without creating a second authority.

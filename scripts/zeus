@@ -205,7 +205,8 @@ def operational_alpha_status_text(value):
         "Authority Record Eligibility   : " + value["authority_record_creation_eligibility"],
         "", "PMCT", "----",
         "Historical Progressive Runtime : " + value["historical_progressive_runtime"],
-        "Current Development Mission     : " + value.get("current_mission", {}).get("mission_id", "UNRESOLVED"),
+        "Current Platform Mission        : " + value.get("current_platform_mission", {}).get("mission_id", "UNRESOLVED"),
+        "Current Executable Mission      : " + (value.get("current_executable_mission") or "NONE"),
         "", "Operational Gates", "-----------------",
         f"Active Gate                    : {value['active_gate']}",
         f"Lifecycle                      : {value['status']}",
@@ -236,20 +237,15 @@ def main(argv=None):
         interface_state = (
             initial_state()
             if override
-            else interface_store.load() if test_mode == "1" or (arguments[0] if arguments else "") in {
+            else interface_store.load() if test_mode == "1" or "--help" in arguments or (arguments[0] if arguments else "") in {
                 "status", "intro", "next-action", "state", "health", "operation",
                 "mission", "explain", "authority", "capabilities", "capability",
                 "lifecycle", "list", "show", "assurance", "context", "evidence",
                 "qualification", "completion", "resume", "policy", "validate",
+                "dispatcher", "dispatch", "orchestrate",
             } else interface_store.increment()
         )
-        auto_intro = (
-            not override
-            and test_mode != "1"
-            and interface_state["invocation_count"] <= interface_state["orientation_limit"]
-            and os.environ.get("ZEUS_NO_INTRO") != "1"
-        )
-        if auto_intro:
+        if "--verbose" in arguments:
             print(ORIENTATION, file=sys.stderr)
     except (OrchestrationError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr)
@@ -260,6 +256,7 @@ def main(argv=None):
         description="Supervised Zeus engineering orchestration interface.",
     )
     p.add_argument("--state", type=Path, help="engineering/test state override")
+    p.add_argument("--verbose", action="store_true", help="show operator orientation before command output")
     sub = p.add_subparsers(dest="command")
     sub.add_parser("bootstrap")
     status_parser = sub.add_parser("status")
@@ -362,9 +359,10 @@ def main(argv=None):
                 else:
                     print(
                         f"Operation: {beta['operation']}\n"
-                        f"Current Mission: {beta['current_mission']['mission_id']}\n"
+                        f"Current Platform Mission: {beta['current_platform_mission']['mission_id']}\n"
+                        f"Current Executable Mission: {beta['current_executable_mission'] or 'NONE'}\n"
                         f"Recommended Mission: {beta['recommended_mission']}\n"
-                        f"Next Action: {beta['next_authorized_action']}\n"
+                        f"Next Authorized Action: {beta['next_authorized_action']}\n"
                     )
                 return 0
             if progressive_enabled:
@@ -779,7 +777,8 @@ def main(argv=None):
             if not (testing or override):
                 value = resolve_operational_alpha_status(ROOT)
                 value["mission_admission"] = stage1.status()
-                value["current_mission"] = operational_beta.operation(ROOT)["current_mission"]
+                value["current_platform_mission"] = operational_beta.operation(ROOT)["current_platform_mission"]
+                value["current_executable_mission"] = operational_beta.operation(ROOT)["current_executable_mission"]
                 if a.json:
                     emit(value)
                 else:
@@ -787,7 +786,8 @@ def main(argv=None):
                 return 0
             value = authority_status(o.status())
             value["mission_admission"] = stage1.status()
-            value["current_mission"] = operational_beta.operation(ROOT)["current_mission"]
+            value["current_platform_mission"] = operational_beta.operation(ROOT)["current_platform_mission"]
+            value["current_executable_mission"] = operational_beta.operation(ROOT)["current_executable_mission"]
             if a.json or testing or override:
                 emit(value)
             else:

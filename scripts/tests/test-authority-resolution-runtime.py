@@ -301,12 +301,8 @@ class AuthorityResolutionRuntimeTests(unittest.TestCase):
                     "ZEUS_AUTHORITY_STATE": str(state_path),
                 },
             )
-            self.assertEqual(result.returncode, 0, result.stderr)
-            output = json.loads(result.stdout)
-            self.assertTrue(output["authority_resolved"])
-            self.assertEqual(
-                output["wop"]["approval"]["reference"], "APPROVAL-ZEUS-P2-003"
-            )
+            self.assertEqual(result.returncode, 78)
+            self.assertIn("requires --immutable-wop", result.stderr)
 
             rejected = subprocess.run(
                 [
@@ -329,7 +325,7 @@ class AuthorityResolutionRuntimeTests(unittest.TestCase):
                 },
             )
             self.assertEqual(rejected.returncode, 78)
-            self.assertIn("rejects caller-supplied authority", rejected.stderr)
+            self.assertIn("requires --immutable-wop", rejected.stderr)
 
     def test_qualification_cli_preserves_placeholders_and_review_boundary(self):
         with tempfile.TemporaryDirectory() as temporary:

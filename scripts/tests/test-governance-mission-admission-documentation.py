@@ -63,7 +63,10 @@ class GovernanceMissionLifecycleDocumentationTests(unittest.TestCase):
     def test_admission_is_governance_intent_only(self) -> None:
         for name in ("charter", "policy", "procedure", "control"):
             text = normalized(self.documents[name])
-            self.assertIn("sole Mission Admission Authority", text)
+            if name == "control":
+                self.assertIn("admission and activation are SPEC-0014 lifecycle operations", text)
+            else:
+                self.assertIn("sole Mission Admission Authority", text)
             self.assertIn("Engineering Governance", text)
         charter = normalized(self.documents["charter"])
         self.assertIn("records Governance intent", charter)
@@ -81,7 +84,10 @@ class GovernanceMissionLifecycleDocumentationTests(unittest.TestCase):
     def test_activation_is_a_separate_governance_decision(self) -> None:
         for name in ("charter", "policy", "procedure", "control"):
             text = normalized(self.documents[name])
-            self.assertIn("Mission Activation Authority", text)
+            if name == "control":
+                self.assertIn("Mission Activation SHALL be an attributable Engineering Governance decision", text)
+            else:
+                self.assertIn("Mission Activation Authority", text)
             self.assertIn("execution qualification", text)
         self.assertIn(
             "does not guarantee successful execution",

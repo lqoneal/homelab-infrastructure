@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -70,19 +71,32 @@ def active_users(root: Path) -> list[dict[str, Any]]:
 
 
 def repository_consumers(repository: Path, external: Path) -> list[dict[str, Any]]:
-    result = subprocess.run(
-        [
-            "rg", "-n", "-F", str(external), "scripts", "engineering",
-            "--glob", "!engineering/evidence/**",
-            "--glob", "!engineering/planning/**",
-            "--glob",
-            "!engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/**",
-        ],
-        cwd=repository,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
+    if shutil.which("rg"):
+        result = subprocess.run(
+            [
+                "rg", "-n", "-F", str(external), "scripts", "engineering",
+                "--glob", "!engineering/evidence/**",
+                "--glob", "!engineering/planning/**",
+                "--glob",
+                "!engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/**",
+            ],
+            cwd=repository,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    else:
+        result = subprocess.run(
+            [
+                "grep", "-RInF", str(external), "scripts", "engineering",
+                "--exclude-dir=evidence", "--exclude-dir=planning",
+                "--exclude-dir=ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001",
+            ],
+            cwd=repository,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
     records = []
     for line in result.stdout.splitlines():
         path, number, text = line.split(":", 2)
@@ -203,4 +217,3 @@ def inventory(external: Path, canonical: Path, repository: Path) -> dict[str, An
         json.dumps(result, sort_keys=True, separators=(",", ":")).encode()
     ).hexdigest()
     return result
-

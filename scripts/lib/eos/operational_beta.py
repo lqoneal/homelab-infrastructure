@@ -228,7 +228,7 @@ def _mission_cards(root: Path) -> list[dict[str, Any]]:
         "classification": "COMPLETED", "capabilities": [], "source_order": 0,
     }]
     definitions = {
-        "ZDCL-01": ("ZDCL", "Native session foundation", ["BETA-00"], "CURRENT", "ELIGIBLE", rows[1]),
+        "ZDCL-01": ("ZDCL", "Native session foundation", ["BETA-00"], "RECOMMENDED", "ELIGIBLE", rows[1]),
         "CAGF-01": ("CAGF", "Canonical generation foundation", ["ZDCL-01"], "PLANNED", "BLOCKED", rows[3]),
         "EPE-01": ("EPE", "Executable mission-contract foundation", ["CAGF-01"], "PLANNED", "BLOCKED", rows[5]),
     }
@@ -266,9 +266,9 @@ def _cards_with_dependencies(root: Path) -> list[dict[str, Any]]:
     by_id = {card["mission_id"]: card for card in cards}
     for card in cards:
         card["missing_dependencies"] = [dep for dep in card["dependencies"] if by_id[dep]["lifecycle"] != "COMPLETED"]
-        if card["lifecycle"] == "CURRENT" and card["missing_dependencies"]:
+        if card["lifecycle"] == "RECOMMENDED" and card["missing_dependencies"]:
             card["classification"] = "BLOCKED"
-        card["readiness"] = "ELIGIBLE" if card["lifecycle"] == "CURRENT" and not card["missing_dependencies"] else card["classification"]
+        card["readiness"] = "ELIGIBLE" if card["lifecycle"] == "RECOMMENDED" and not card["missing_dependencies"] else card["classification"]
     return cards
 
 
@@ -277,7 +277,8 @@ def _metrics(cards: list[dict[str, Any]]) -> dict[str, Any]:
     total = len(cards)
     completed = count(lambda card: card["lifecycle"] == "COMPLETED")
     return {"total_missions": total, "completed": completed,
-            "current": count(lambda card: card["lifecycle"] == "CURRENT"),
+            "current_executable": 0,
+            "recommended": count(lambda card: card["lifecycle"] == "RECOMMENDED"),
             "eligible": count(lambda card: card["classification"] == "ELIGIBLE"),
             "blocked": count(lambda card: card["classification"] == "BLOCKED"),
             "planned": count(lambda card: card["lifecycle"] == "PLANNED"),
@@ -302,10 +303,13 @@ def operation(root: Path | str) -> dict[str, Any]:
     cards = _cards_with_dependencies(root)
     metrics = _metrics(cards)
     result = "PASS" if integrity["result"] == "PASS" else "FAIL"
+    executable = next((card["mission_id"] for card in cards
+                       if _mission_projection(root, card["mission_id"])["current_admission"]), None)
     return {"result": result, "operation_id": "OPERATION-BETA", "operation": "BETA",
             "status": "ACTIVE_DEVELOPMENT", "production_baseline": "OA-v1.0.0",
             "development_baseline": "OB-PLAN-v1.0.0", "mission_families": ["ZDCL", "CAGF", "EPE"],
-            "current_mission": current,
+            "current_platform_mission": current,
+            "current_executable_mission": executable,
             "missions": cards, "metrics": metrics, "integrity": integrity,
             "authoritative_sources": [ROADMAP, CHARTER, AUTHORITY, TRANSITION, DESIGN]}
 
@@ -318,7 +322,8 @@ def active_missions(root: Path | str) -> dict[str, Any]:
         "result": value["result"], "operation": "BETA", "status": value["status"],
         "production_baseline": value["production_baseline"],
         "development_baseline": value["development_baseline"],
-        "current_mission": value["current_mission"],
+        "current_platform_mission": value["current_platform_mission"],
+        "current_executable_mission": value["current_executable_mission"],
         "missions": active, "active_mission_count": len(active),
         "authoritative_sources": value["authoritative_sources"],
         "integrity": value["integrity"],
@@ -356,7 +361,8 @@ def queue(root: Path | str, view: str = "list") -> dict[str, Any]:
     return {
         "result": value["result"], "operation": "BETA", "queue_scope": "OPERATION",
         "execution_environment": "ADMITTED_MISSION_ATTRIBUTE",
-        "current_mission": value["current_mission"],
+        "current_platform_mission": value["current_platform_mission"],
+        "current_executable_mission": value["current_executable_mission"],
         "missions": cards, "metrics": value["metrics"],
         "executions": executions,
         "projections": projections,
@@ -392,13 +398,13 @@ def metrics(root: Path | str, subject: str | None = None) -> dict[str, Any]:
 def mission_state(root: Path | str, mission_id: str) -> dict[str, Any]:
     value = operation(root)
     selected = mission_id.upper()
-    if selected == value["current_mission"]["mission_id"]:
-        current = value["current_mission"]
+    if selected == value["current_platform_mission"]["mission_id"]:
+        current = value["current_platform_mission"]
         return {
             "result": value["result"], "operation": "BETA", "mission_id": selected,
             "family": "BETA", "title": current["title"], "scope": "; ".join(current["scope"]),
             "dependencies": [current["previous_mission"]], "missing_dependencies": [],
-            "lifecycle": "CURRENT", "classification": "ELIGIBLE", "readiness": "ELIGIBLE",
+            "lifecycle": "CURRENT_PLATFORM", "classification": "ACTIVE", "readiness": "ACTIVE",
             "current_admission": None, "current_execution": None,
             "historical_admissions": [], "historical_executions": [],
             "integrity": {"result": "PASS"}, "projection": "published current mission",
@@ -455,7 +461,8 @@ def mission_view(root: Path | str, action: str, mission_id: str) -> dict[str, An
                                          if mission["missing_dependencies"] else []),
                 "production_baseline": "OA-v1.0.0",
                 "development_baseline": "OB-PLAN-v1.0.0",
-                "current_mission": current,
+                "current_platform_mission": current,
+                "current_executable_mission": operation(root)["current_executable_mission"],
                 "authority": mission["authoritative_sources"],
                 **{key: mission.get(key) for key in ("current_admission", "current_execution", "historical_admissions", "historical_executions", "integrity", "projection")}}
     raise OperationalBetaError("BETA_UNSUPPORTED_MISSION_VIEW")
@@ -469,7 +476,8 @@ def next_action(root: Path | str, subject: str | None = None) -> dict[str, Any]:
     candidate = next((card for card in cards if card["classification"] == "ELIGIBLE"), None)
     projection = _mission_projection(Path(root), candidate["mission_id"]) if candidate else {}
     return {"result": value["result"], "operation": "BETA", "scope": subject.upper() if subject else "BETA",
-            "current_mission": value["current_mission"],
+            "current_platform_mission": value["current_platform_mission"],
+            "current_executable_mission": value["current_executable_mission"],
             "recommended_mission": candidate["mission_id"] if candidate else None,
             "next_authorized_action": (projection.get("current_execution") or {}).get("next_authorized_action") if projection.get("current_execution") and projection.get("current_execution").get("next_authorized_action") else (f"Resolve and execute WOP-{candidate['mission_id']}-FOUNDATION-001" if candidate else "Await authoritative predecessor completion"),
             "current_admission": projection.get("current_admission"),

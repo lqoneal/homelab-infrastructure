@@ -141,19 +141,21 @@ class CliTests(unittest.TestCase):
         ):
             self.assertIn(section, result.stdout)
 
-    def test_automatic_orientation_boundaries_and_stderr_separation(self):
+    def test_orientation_is_explicit_and_stderr_separated(self):
         with tempfile.TemporaryDirectory() as temporary:
             state = Path(temporary) / "state.json"
             first = run_zeus(state, "status")
-            self.assertIn("supervised engineering orchestration", first.stderr)
+            self.assertEqual(first.stderr, "")
             json.loads(first.stdout)
             value = initial_state()
             value["invocation_count"] = 99
             state.write_text(json.dumps(value))
             hundred = run_zeus(state)
-            self.assertIn("supervised engineering orchestration", hundred.stderr)
+            self.assertEqual(hundred.stderr, "")
             hundred_one = run_zeus(state)
             self.assertNotIn("supervised engineering orchestration", hundred_one.stderr)
+            verbose = run_zeus(state, "--verbose", "status")
+            self.assertIn("supervised engineering orchestration", verbose.stderr)
 
     def test_help_and_parse_failures_count_but_state_override_does_not(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -161,7 +163,7 @@ class CliTests(unittest.TestCase):
             self.assertEqual(run_zeus(state, "--help").returncode, 0)
             invalid = run_zeus(state, "not-a-command")
             self.assertEqual(invalid.returncode, 2)
-            self.assertEqual(OperatorInterfaceStore(ROOT, state).load()["invocation_count"], 2)
+            self.assertEqual(OperatorInterfaceStore(ROOT, state).load()["invocation_count"], 1)
             override = run_zeus(
                 state,
                 "--state",
@@ -170,7 +172,7 @@ class CliTests(unittest.TestCase):
             )
             self.assertEqual(override.returncode, 0, override.stderr)
             self.assertEqual(
-                OperatorInterfaceStore(ROOT, state).load()["invocation_count"], 2
+                OperatorInterfaceStore(ROOT, state).load()["invocation_count"], 1
             )
 
     def test_status_stdout_is_json_and_intro_review_survives_limit(self):

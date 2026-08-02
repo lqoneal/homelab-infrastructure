@@ -15,6 +15,13 @@ state. A repository working-tree change, commit, or push does not implicitly
 invoke synchronization. Synchronization is a separate, explicitly authorized
 operation and always flows from repository sources to EOS.
 
+The canonical mutable EOS workspace for this read-only repository deployment
+is `/home/loneal/.local/state/zeus/eos-workspace`, selected explicitly with
+`EOS_WORKSPACE`. Its `repositories/homelab` entry resolves to the immutable
+repository checkout; only derived EOS state, caches, checkpoints, and atomic
+pointers persist in the writable workspace. `/data/engineering/eos` is a
+legacy read-only projection and is not a synchronization target on this host.
+
 ## Projection semantics
 
 - **Working-tree projection:** the EOS bytes that would be rendered from the

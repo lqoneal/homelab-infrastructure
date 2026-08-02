@@ -20,7 +20,24 @@ context.
 Operation Beta is the active Development context. `OA-v1.0.0` remains the
 Production baseline and historical Alpha context. The queue is operation-wide;
 execution environment is bound only during admitted mission execution.
-The published current mission is `BETA-04`.
+Normal output contains actionable state only. Operator orientation and command
+guidance are available through `zeus intro`, `zeus --help`, and
+`zeus --verbose COMMAND`; controllers never repeat the introductory banner by
+default, including in JSON mode.
+
+Controllers use four non-interchangeable terms:
+
+- **Current Platform Mission**: the published platform-readiness mission,
+  currently `BETA-04`.
+- **Current Executable Mission**: the one mission with a fresh executable
+  admission, or `NONE`.
+- **Recommended Mission**: the eligible successor selected from roadmap
+  authority, currently `ZDCL-01`.
+- **Next Authorized Action**: the exact permitted transition; a recommendation
+  is not execution authority.
+
+No object may be labeled as two different current missions. Human and JSON
+forms expose these distinctions from the same resolved object.
 
 ## Explain and queue contracts
 

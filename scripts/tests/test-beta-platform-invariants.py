@@ -20,16 +20,17 @@ def fail(message: str) -> None:
 
 def main() -> None:
     projection = operational_beta.mission_view(ROOT, "explain", "ZDCL-01")
-    if projection.get("current_admission") is None:
-        fail("current admission is not projected")
+    if projection.get("current_admission") is not None:
+        fail("stale admission leaked into current executable projection")
+    if projection.get("current_executable_mission") is not None:
+        fail("mission without a fresh admission is projected as executable")
+    if projection.get("current_platform_mission", {}).get("mission_id") != "BETA-04":
+        fail("published platform mission is not projected")
     if projection.get("current_execution") is not None:
         fail("historical execution leaked into current projection")
     historical = projection.get("historical_executions", [])
     if not any(item.get("state") == "Cancelled" for item in historical):
         fail("cancelled execution is not retained in history")
-    current_ids = {projection["current_admission"].get("admission_id")}
-    if len(current_ids) != 1:
-        fail("current admission cardinality is not deterministic")
 
     rendered = controller_presentation.operator_text(projection)
     if "Execution state              : NONE" not in rendered:
@@ -62,7 +63,7 @@ def main() -> None:
     planning = subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "OB-PLAN-v1.0.0"], text=True).strip()
     if not production or not planning:
         fail("production or planning baseline is unresolved")
-    print(json.dumps({"result": "PASS", "audit": "BETA-03G platform invariants", "mission": "ZDCL-01", "current_admission": next(iter(current_ids)), "current_execution": None, "historical_cancelled_execution": True, "production_baseline": production, "planning_baseline": planning, "runtime_changes": False}, sort_keys=True))
+    print(json.dumps({"result": "PASS", "audit": "BETA-05 platform invariants", "current_platform_mission": "BETA-04", "recommended_mission": "ZDCL-01", "current_executable_mission": None, "current_admission": None, "current_execution": None, "historical_cancelled_execution": True, "production_baseline": production, "planning_baseline": planning, "runtime_changes": False}, sort_keys=True))
 
 
 if __name__ == "__main__":

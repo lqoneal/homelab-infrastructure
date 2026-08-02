@@ -11,6 +11,11 @@ Zeus controllers shall consume one canonical resolved projection. They shall not
 - Human-readable and JSON forms shall be rendered from the same projection object and shall be semantically equivalent.
 - Multiple current records, stale baselines, conflicting authority, and unknown lineage shall fail closed.
 - Queue, roadmap, readiness, blockers, explain, status, health, metrics, and next-action views shall share the canonical mission projection boundary.
+- Current Platform Mission, Current Executable Mission, Recommended Mission,
+  and Next Authorized Action are distinct projection fields. Only a fresh
+  admitted mission may populate Current Executable Mission.
+- Normal controller output shall omit orientation and general help. Those are
+  explicit `intro`, `--help`, or `--verbose` views.
 
 ## Runtime boundaries
 

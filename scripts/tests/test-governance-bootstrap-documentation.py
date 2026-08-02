@@ -79,7 +79,7 @@ class GovernanceBootstrapDocumentationTests(unittest.TestCase):
         execution = normalized(self.documents["execution"])
         self.assertIn("re-run normal authority resolution", bootstrap)
         self.assertIn(
-            "normal Mission Contract resolution independently succeeds",
+            "SPEC-0014 resolution independently succeeds",
             execution,
         )
         self.assertIn("If authority resolves, continue normal execution.", bootstrap)
