@@ -44,6 +44,12 @@ records:
     owner: engctl runtime
     eos_projection: eos/runtime/repositories.tsv
     synchronization: regenerate
+  - record: operation_beta_current_mission
+    repository_source: engineering/missions/operation-beta-current.yaml
+    classification: Authoritative
+    owner: Engineering Governance
+    eos_projection: eos/runtime/operational-state.json
+    synchronization: repository_to_eos
   - record: checkpoint_metadata
     repository_source: repository commit and project identity at capture time
     classification: Runtime

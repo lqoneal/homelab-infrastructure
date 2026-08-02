@@ -83,6 +83,7 @@ def operator_text(value: Any, title: str | None = None) -> str:
             f"Status                       : {value.get('status', 'ACTIVE_DEVELOPMENT')}",
             f"Production baseline           : {value.get('production_baseline', 'OA-v1.0.0')}",
             f"Development baseline          : {value.get('development_baseline', 'OB-PLAN-v1.0.0')}",
+            f"Current mission               : {value.get('current_mission', {}).get('mission_id', 'UNRESOLVED')}",
             f"Integrity                     : {value.get('integrity', {}).get('result', value.get('result', 'UNKNOWN'))}",
         ])
         if "queue_scope" in value:

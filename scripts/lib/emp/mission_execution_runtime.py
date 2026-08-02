@@ -26,6 +26,7 @@ from scripts.lib.emp.mission_admission_runtime import (
     MissionAdmissionError,
 )
 from scripts.lib.emp.wop_admission import AdmissionController, submission_digest
+from scripts.lib.emp.runtime_paths import runtime_path
 
 
 class MissionExecutionError(ValueError):
@@ -558,7 +559,7 @@ class MissionExecutionRuntime:
         return admission
 
     def _cancelled_execution_for_admission(self, admission_id: str) -> bool:
-        for path in sorted((self.root / ".zeus/runtime/mission-executions").glob("MISSION-EXECUTION-*.json")):
+        for path in sorted(runtime_path(self.root, "mission-executions").glob("MISSION-EXECUTION-*.json")):
             try:
                 value = json.loads(path.read_text(encoding="utf-8"))
             except (OSError, json.JSONDecodeError):

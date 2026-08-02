@@ -10,6 +10,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from scripts.lib.emp.runtime_paths import runtime_path
+
 
 PROTECTED_PATHS = {
     "scripts/lib/emp/gate_approval.py": "OA01_OPERATOR_EVIDENCE",
@@ -51,7 +53,7 @@ def _git(root: Path, *args: str) -> str:
 
 
 def record_path(root: Path, gate: str = "OA-01") -> Path:
-    return root / ".zeus/runtime/gate-carry-forward" / f"{gate}.json"
+    return runtime_path(root, "gate-carry-forward") / f"{gate}.json"
 
 
 def assess_changes(root: Path, predecessor: str, successor: str) -> dict[str, Any]:
@@ -95,7 +97,7 @@ def create_record(root: Path, service: Any, binding: Any) -> tuple[dict[str, Any
     prior_path, prior = ancestors[-1]
     assessment = assess_changes(root, prior["approved_head"], binding.qualified_head)
     pointer = json.loads(
-        (root / ".zeus/runtime/authority/active-publication.json").read_text()
+        runtime_path(root, "authority", "active-publication.json").read_text()
     )
     material = {
         "schema_version": 1,
@@ -186,7 +188,7 @@ def resolve_record(root: Path, binding: Any) -> dict[str, Any] | None:
         return None
     try:
         pointer = json.loads(
-            (root / ".zeus/runtime/authority/active-publication.json").read_text()
+            runtime_path(root, "authority", "active-publication.json").read_text()
         )
         if pointer.get("transaction_id") != value.get("successor_publication"):
             return None

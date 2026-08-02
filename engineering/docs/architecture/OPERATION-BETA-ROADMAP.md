@@ -1,11 +1,17 @@
 # Operation Beta — Mission Roadmap
 
-Status: published planning roadmap; controller-integrated baseline
+Status: published planning roadmap; BETA-04 active mission baseline
 Authority: `engineering/docs/operations/OPERATION-BETA-CHARTER.md`
 Baseline input: Operational Alpha frozen baseline `OA-v1.0.0`
 Design constitution: `engineering/docs/architecture/ENGINEERING-PLATFORM-DESIGN-PRINCIPLES.md`
 
 ## Sequence
+
+The published current mission is `BETA-04`, recorded by
+`engineering/missions/operation-beta-current.yaml` and
+`engineering/authority/operation-beta-beta04-activation.yaml`. It is a bounded
+platform-readiness and controller-reconciliation mission and does not authorize
+capability implementation.
 
 | Order | Mission | Scope | Depends on | Exit boundary |
 | ---: | --- | --- | --- | --- |

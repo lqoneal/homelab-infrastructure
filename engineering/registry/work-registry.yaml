@@ -1,8 +1,8 @@
 schema_version: 1
 registry_id: EMP-WORK-REGISTRY-0001
 title: Engineering Portfolio Work Registry
-revision: 85
-updated_at: '2026-07-29T18:20:00+00:00'
+revision: 86
+updated_at: '2026-08-01T00:00:00+00:00'
 serialization: yaml
 mutation_history:
 - revision: 2
@@ -604,6 +604,12 @@ mutation_history:
   reason: Confirm live zero counts derive from an empty persisted mission
     store and require integrity-valid records to have supported lifecycle
     states and consistent instance, mission, WOP, and path identities.
+- revision: 86
+  previous_revision: 85
+  at: '2026-08-01T00:00:00+00:00'
+  actor: WOP-BETA-03J runtime readiness agent
+  action: activate EMP-MISSION-OPERATION-BETA-BETA-04
+  reason: Publish the BETA-04 runtime-boundary and controller-convergence mission while preserving OA and OB baselines.
 authority_boundary:
   governance: external-controlled-records
   controlled_documents: external-authoritative-records
@@ -742,6 +748,33 @@ entities:
       path: null
       presence: planned
   missions:
+  - registry_id: EMP-MISSION-OPERATION-BETA-BETA-04
+    object_type: Mission
+    title: Operation Beta BETA-04 Runtime Readiness and Activation
+    management_state: active
+    owner: Engineering Governance
+    scope: EMP-PROJECT-HOMELAB
+    authority_reference: OPERATION-BETA-BETA04-ACTIVATION
+    source_records:
+    - PROJ-0001
+    relationships:
+    - type: represented_by
+      target: PHASE-0001
+    created_at: '2026-08-01T00:00:00+00:00'
+    updated_at: '2026-08-01T00:00:00+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-08-01T00:00:00+00:00'
+      actor: WOP-BETA-03J runtime readiness agent
+      reason: Published BETA-04 activation record.
+      authority_reference: OPERATION-BETA-BETA04-ACTIVATION
+    project_id: EMP-PROJECT-HOMELAB
+    order: 6
+    objective: Reconcile the mutable runtime boundary, controller write policy, and published Beta projections without implementing capabilities.
+    entry_criteria: BETA-03G platform invariants and controller governance are published.
+    completion_criteria: Runtime qualification, controller convergence, EOS and Registry synchronization, and clean published closeout.
   - registry_id: EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
     object_type: Mission
     title: Zeus Operational Alpha
@@ -1258,6 +1291,37 @@ entities:
     capacity_assumption: One bounded implementation mission; no scheduling or capacity
       automation.
   work_items:
+  - registry_id: EMP-WORK-OPERATION-BETA-BETA-04-RUNTIME-READINESS
+    object_type: WorkItem
+    title: WOP-BETA-03J Runtime Readiness and BETA-04 Activation
+    management_state: active
+    owner: Engineering Governance
+    scope: EMP-MISSION-OPERATION-BETA-BETA-04
+    authority_reference: OPERATION-BETA-BETA04-ACTIVATION
+    source_records:
+    - PROJ-0001
+    relationships:
+    - type: related_to
+      target: EMP-MISSION-OPERATION-BETA-BETA-04
+    created_at: '2026-08-01T00:00:00+00:00'
+    updated_at: '2026-08-01T00:00:00+00:00'
+    revision: 1
+    transition_history:
+    - from: null
+      to: active
+      at: '2026-08-01T00:00:00+00:00'
+      actor: WOP-BETA-03J runtime readiness agent
+      reason: Begin the published BETA-04 readiness and activation boundary.
+      authority_reference: OPERATION-BETA-BETA04-ACTIVATION
+    project_id: EMP-PROJECT-HOMELAB
+    order: 60
+    mission_id: EMP-MISSION-OPERATION-BETA-BETA-04
+    phase_id: null
+    sprint_id: null
+    work_type: runtime-readiness-and-controller-reconciliation
+    priority: 0
+    completion_criteria: Runtime boundary is qualified, read-only controllers function without writes, mutation paths fail closed, and BETA-04 projections converge.
+    queue_ids: []
   - registry_id: EMP-WORK-ZEUS-P2-010-OPERATIONAL-GATE-HANDLER
     object_type: WorkItem
     title: ZEUS-P2-010 Operational Gate Handler Qualification

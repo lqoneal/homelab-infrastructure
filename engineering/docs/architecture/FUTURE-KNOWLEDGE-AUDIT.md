@@ -1,6 +1,6 @@
 # Future Knowledge Audit Framework
 
-Status: Beta-03G normative planning specification
+Status: BETA-04 normative planning specification
 Owner: Engineering Governance
 Canonical source: controlled documentation and declared authority owners
 
@@ -25,6 +25,8 @@ Canonical source: controlled documentation and declared authority owners
 | Qualification report | Historical Evidence | Qualification authority | Engineering Governance | Immutable | Manual | No; evidence |
 | Recommendation register | Planning | Engineering Governance | Engineering Governance | Controlled | Manual | Candidate input |
 | Operation Beta roadmap | Planning | Operation Beta authority | EMP/Governance | Controlled | Manual | Candidate input |
+| BETA-04 activation record | Normative / Canonical | Published authority chain | Engineering Governance | Active | Manual publication | No; source |
+| Zeus runtime root selection | Runtime State | Operator configuration | Zeus runtime | Operational | Runtime | No; source |
 
 ## Audit rules
 

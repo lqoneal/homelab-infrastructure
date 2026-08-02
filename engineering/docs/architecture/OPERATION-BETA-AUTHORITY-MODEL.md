@@ -1,6 +1,11 @@
 # Operation Beta — Authority and Projection Model
 
-Status: reconciled planning baseline; Beta-03G invariant governance candidate
+Status: reconciled authority baseline; BETA-04 published active mission
+
+The current published mission is `BETA-04`. Its activation record is
+`engineering/authority/operation-beta-beta04-activation.yaml`; the current
+mission projection is `engineering/missions/operation-beta-current.yaml`.
+This record does not grant capability implementation authority.
 
 Controller governance is normative in `ENGINEERING-PLATFORM-INVARIANTS.md` and
 `ZEUS-CONTROLLER-GOVERNANCE.md`. These documents constrain projections and

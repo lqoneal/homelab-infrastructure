@@ -165,7 +165,7 @@ grep -Fq "Persistent MMC Storage I/O Investigation" <<<"$sprinter_resume"
 
 homelab_resume="$("$REPOSITORY_ROOT/scripts/engctl" resume homelab)"
 grep -Eq "ENGINEERING WORK INITIATION — (ACTION REQUIRED|READY)" <<<"$homelab_resume"
-grep -Fq "Mission:                  Zeus Operational Alpha" <<<"$homelab_resume"
+grep -Fq "Mission:                  Operation Beta BETA-04 Runtime Readiness and Activation" <<<"$homelab_resume"
 grep -Fq "Phase:                    Zeus Operational Alpha" <<<"$homelab_resume"
 ! grep -Fq "Issue the bounded, read-only HNS Phase 1" <<<"$homelab_resume"
 grep -Fq "EXECUTIVE SUMMARY" <<<"$homelab_resume"

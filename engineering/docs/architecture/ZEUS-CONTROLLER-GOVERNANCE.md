@@ -1,6 +1,6 @@
 # Zeus Controller Governance
 
-Status: Beta-03G normative specification
+Status: BETA-04 normative specification
 
 Zeus controllers shall consume one canonical resolved projection. They shall not search runtime records independently, infer lifecycle, or maintain a controller-owned queue, admission, execution, or mission state.
 
@@ -15,6 +15,11 @@ Zeus controllers shall consume one canonical resolved projection. They shall not
 ## Runtime boundaries
 
 Submission owns submission. Admission owns admission. Execution owns execution. Evidence owns history. EOS owns synchronized platform state. The controller owns presentation only.
+
+Read-only commands (`mission explain`, `status`, `queue`, `roadmap`, and
+`next-action`) may not create, lock, initialize, or update runtime state.
+Mutation commands are the only runtime writers: submit, admit, execute,
+publish, and synchronize. A failed mutation write is a fail-closed result.
 
 ## Validation
 

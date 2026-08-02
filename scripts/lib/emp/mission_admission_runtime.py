@@ -28,6 +28,7 @@ from scripts.lib.emp.wop_admission import AdmissionController, CONTRACT
 from scripts.lib.emp.wop_service import OperationalWopService
 from scripts.lib.emp.stage1_runtime import Stage1Runtime, validate_package
 from scripts.lib.eos.mission_contract import load as load_mission_contract, validate as validate_mission_contract
+from scripts.lib.emp.runtime_paths import runtime_path
 
 
 class MissionAdmissionError(ValueError):
@@ -556,7 +557,7 @@ class MissionAdmissionRuntime:
     def _submission_id(self, mission: str, request: Mapping[str, Any]) -> str:
         if request.get("submission_id"):
             return str(request["submission_id"])
-        stage_root = self.root / ".zeus/runtime/stage1"
+        stage_root = runtime_path(self.root, "stage1")
         try:
             record = Stage1Runtime(self.root, stage_root).show(mission)
         except Exception as error:
@@ -586,7 +587,7 @@ class MissionAdmissionRuntime:
             if old_baseline == current:
                 continue
             cancelled_execution = None
-            execution_dir = self.root / ".zeus/runtime/mission-executions"
+            execution_dir = runtime_path(self.root, "mission-executions")
             for execution_path in sorted(execution_dir.glob("MISSION-EXECUTION-*.json")):
                 try:
                     execution = json.loads(execution_path.read_text(encoding="utf-8"))
@@ -613,7 +614,7 @@ class MissionAdmissionRuntime:
         return runtime_registry_path(self.root)
 
     def _production_dispatch_readiness(self, *, repository, baseline, mission_class):
-        runtime = self.root / ".zeus/runtime"
+        runtime = runtime_path(self.root)
         return dispatch_readiness(
             repository=repository,
             baseline=baseline,
@@ -664,7 +665,7 @@ class MissionAdmissionRuntime:
         submission_id = request.get("submission_id")
         if not submission_id and mission:
             try:
-                record = Stage1Runtime(self.root, self.root / ".zeus/runtime/stage1").show(mission)
+                record = Stage1Runtime(self.root, runtime_path(self.root, "stage1")).show(mission)
                 if record.get("state") in {"STAGED", "ADMITTED"}:
                     submission_id = record.get("instance_id")
             except Exception:

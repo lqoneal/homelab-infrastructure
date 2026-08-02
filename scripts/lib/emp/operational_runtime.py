@@ -18,14 +18,15 @@ from scripts.lib.emp.orchestration import (
     canonical_json,
     empty_orchestration_state,
 )
+from scripts.lib.emp.runtime_paths import runtime_path
 
 QUALIFIED_BASELINE = "a755aeb353639550eb2ffd197e30fc03bccac90b"
-RUNTIME_RELATIVE_PATH = Path(".zeus/runtime/orchestration-state.json")
-EVIDENCE_RELATIVE_PATH = Path(".zeus/evidence/bootstrap-evidence.json")
+RUNTIME_RELATIVE_PATH = Path("orchestration-state.json")
+EVIDENCE_RELATIVE_PATH = Path("evidence/bootstrap-evidence.json")
 
 
 def authoritative_state_path(repository_root: Path) -> Path:
-    return repository_root.resolve() / RUNTIME_RELATIVE_PATH
+    return runtime_path(repository_root, RUNTIME_RELATIVE_PATH.name)
 
 
 def verify_authoritative_path(repository_root: Path) -> Path:
@@ -93,7 +94,7 @@ def bootstrap(repository_root: Path, requested_state: Path | None = None) -> dic
     if canonical_json(second.data) != first_serialized:
         raise OrchestrationError("orchestration state deterministic reload failed")
 
-    evidence_path = root / EVIDENCE_RELATIVE_PATH
+    evidence_path = runtime_path(root, *EVIDENCE_RELATIVE_PATH.parts)
     evidence = {
         "evidence_type": "zeus-operational-bootstrap",
         "schema_version": 1,
@@ -116,7 +117,7 @@ def bootstrap(repository_root: Path, requested_state: Path | None = None) -> dic
     }
     evidence_path.parent.mkdir(parents=True, exist_ok=True)
     OrchestrationStore(evidence_path).save(evidence)
-    os.chmod(root / ".zeus", 0o700)
+    os.chmod(runtime_path(root), 0o700)
     os.chmod(evidence_path.parent, 0o700)
     os.chmod(evidence_path, 0o600)
     return evidence

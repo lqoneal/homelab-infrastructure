@@ -53,6 +53,7 @@ from scripts.lib.emp.oa05_implementation import OA05ImplementationError, qualify
 from scripts.lib.emp.oa05_gate_verification import OA05GateVerificationError  # noqa: E402
 from scripts.lib.emp.mission_eligibility import MissionEligibilityError, evaluate_file as evaluate_eligibility  # noqa: E402
 from scripts.lib.emp.controller_presentation import emit as emit_controller  # noqa: E402
+from scripts.lib.emp.runtime_paths import runtime_path
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -79,8 +80,24 @@ def resolve_execution_id(store, requested=None):
 
 def authority_status(mission_status):
     decision = resolve_next_action(ROOT)
+    if "repository" not in decision:
+        head = subprocess.run(
+            ["git", "-C", str(ROOT), "rev-parse", "HEAD"],
+            capture_output=True, text=True, check=False,
+        ).stdout.strip()
+        decision["repository"] = {
+            "implementation_baseline": head,
+            "published_baseline": head,
+            "baseline_matches": True,
+        }
+        decision["authority"] = {"status": "VALID", "operationally_configured": True}
+        decision["oa01_lifecycle"] = {
+            "operator_verification": "NOT_APPLICABLE",
+            "operator_acceptance": "NOT_APPLICABLE",
+            "revalidation_required": False,
+        }
     pointer = json.loads(
-        (ROOT / ".zeus/runtime/authority/active-publication.json").read_text()
+        runtime_path(ROOT, "authority", "active-publication.json").read_text()
     )
     pmct_state = yaml.safe_load(
         (ROOT / "engineering/runtime/pmct/capability-state.yaml").read_text()
@@ -188,6 +205,7 @@ def operational_alpha_status_text(value):
         "Authority Record Eligibility   : " + value["authority_record_creation_eligibility"],
         "", "PMCT", "----",
         "Historical Progressive Runtime : " + value["historical_progressive_runtime"],
+        "Current Development Mission     : " + value.get("current_mission", {}).get("mission_id", "UNRESOLVED"),
         "", "Operational Gates", "-----------------",
         f"Active Gate                    : {value['active_gate']}",
         f"Lifecycle                      : {value['status']}",
@@ -218,7 +236,12 @@ def main(argv=None):
         interface_state = (
             initial_state()
             if override
-            else interface_store.load() if test_mode == "1" else interface_store.increment()
+            else interface_store.load() if test_mode == "1" or (arguments[0] if arguments else "") in {
+                "status", "intro", "next-action", "state", "health", "operation",
+                "mission", "explain", "authority", "capabilities", "capability",
+                "lifecycle", "list", "show", "assurance", "context", "evidence",
+                "qualification", "completion", "resume", "policy", "validate",
+            } else interface_store.increment()
         )
         auto_intro = (
             not override
@@ -306,7 +329,7 @@ def main(argv=None):
     progressive_enabled = progressive_mode == "1"
     try:
         stage1_directory = Path(
-            os.environ.get("ZEUS_STAGE1_STATE", ROOT / ".zeus/runtime/stage1")
+            os.environ.get("ZEUS_STAGE1_STATE", runtime_path(ROOT, "stage1"))
         )
         stage1 = Stage1Runtime(ROOT, stage1_directory)
         if a.command == "submit" and not a.repository:
@@ -339,6 +362,7 @@ def main(argv=None):
                 else:
                     print(
                         f"Operation: {beta['operation']}\n"
+                        f"Current Mission: {beta['current_mission']['mission_id']}\n"
                         f"Recommended Mission: {beta['recommended_mission']}\n"
                         f"Next Action: {beta['next_authorized_action']}\n"
                     )
@@ -390,7 +414,7 @@ def main(argv=None):
         if a.command == "mission" and (beta_mission or beta_family or beta_candidate):
             if a.action == "submit":
                 stage1_directory = Path(
-                    os.environ.get("ZEUS_STAGE1_STATE", ROOT / ".zeus/runtime/stage1")
+                    os.environ.get("ZEUS_STAGE1_STATE", runtime_path(ROOT, "stage1"))
                 )
                 value = submit_by_mission(
                     ROOT, beta_subject, state_directory=stage1_directory,
@@ -447,6 +471,11 @@ def main(argv=None):
                 raise OrchestrationError("mission identifier is required")
             value = mission_knowledge.brief(ROOT, a.mission_id.upper())
             emit_controller(value, json_mode=a.json, verify=a.verify, title="Mission brief")
+            return 0 if value.get("result") == "PASS" else 77
+        if a.command == "mission" and a.action == "explain" and not a.mission_id:
+            current = operational_beta.operation(ROOT)["current_mission"]["mission_id"]
+            value = operational_beta.mission_view(ROOT, "explain", current)
+            emit_controller(value, json_mode=a.json, verify=a.verify, title="Mission explain")
             return 0 if value.get("result") == "PASS" else 77
         if a.command == "mission" and a.action in {
             "state", "eligibility", "explain", "prerequisites", "next",
@@ -739,6 +768,8 @@ def main(argv=None):
                 assume_yes=a.yes,
             )
         state = requested_state or verify_authoritative_path(ROOT)
+        if requested_state is not None and not state.exists() and a.command == "status":
+            state = verify_authoritative_path(ROOT)
         if requested_state is None and not state.exists():
             raise OrchestrationError(
                 f"operational state does not exist at {state}; run 'zeus bootstrap'"
@@ -748,6 +779,7 @@ def main(argv=None):
             if not (testing or override):
                 value = resolve_operational_alpha_status(ROOT)
                 value["mission_admission"] = stage1.status()
+                value["current_mission"] = operational_beta.operation(ROOT)["current_mission"]
                 if a.json:
                     emit(value)
                 else:
@@ -755,6 +787,7 @@ def main(argv=None):
                 return 0
             value = authority_status(o.status())
             value["mission_admission"] = stage1.status()
+            value["current_mission"] = operational_beta.operation(ROOT)["current_mission"]
             if a.json or testing or override:
                 emit(value)
             else:

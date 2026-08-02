@@ -27,7 +27,7 @@ def fresh_registry():
 
 registry = fresh_registry()
 assert registry.validate() == []
-assert len(registry.objects) == 85
+assert len(registry.objects) == 87
 assert {
     "EMP-WORK-ZEUS-P2-025-PUBLICATION-RECEIPT-LIFECYCLE",
     "EMP-WORK-ZEUS-P2-023-OPERATOR-APPROVAL-UX",
@@ -70,7 +70,7 @@ assert {
 assert registry.data["serialization"] == "yaml"
 assert registry.data["authority_boundary"]["registry"] == "operational-management-state-only"
 assert "management_project_id=EMP-PROJECT-HOMELAB" in registry.context("homelab")
-assert "management_current_mission_titles=Zeus Operational Alpha" in registry.context("homelab")
+assert any("Operation Beta BETA-04 Runtime Readiness and Activation" in line for line in registry.context("homelab"))
 assert "management_current_phase_titles=Zeus Operational Alpha" in registry.context("homelab")
 assert "management_project_state=active" in registry.context("sprinteros")
 assert "management_planned_work=EMP-WORK-SPRINTEROS-PRODUCT" in registry.context("sprinteros")

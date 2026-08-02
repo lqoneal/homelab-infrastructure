@@ -153,9 +153,7 @@ class CliTests(unittest.TestCase):
             hundred = run_zeus(state)
             self.assertIn("supervised engineering orchestration", hundred.stderr)
             hundred_one = run_zeus(state)
-            self.assertNotIn(
-                "supervised engineering orchestration", hundred_one.stderr
-            )
+            self.assertNotIn("supervised engineering orchestration", hundred_one.stderr)
 
     def test_help_and_parse_failures_count_but_state_override_does_not(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -163,9 +161,7 @@ class CliTests(unittest.TestCase):
             self.assertEqual(run_zeus(state, "--help").returncode, 0)
             invalid = run_zeus(state, "not-a-command")
             self.assertEqual(invalid.returncode, 2)
-            self.assertEqual(
-                OperatorInterfaceStore(ROOT, state).load()["invocation_count"], 2
-            )
+            self.assertEqual(OperatorInterfaceStore(ROOT, state).load()["invocation_count"], 2)
             override = run_zeus(
                 state,
                 "--state",
@@ -191,16 +187,14 @@ class CliTests(unittest.TestCase):
             self.assertEqual(review.returncode, 0, review.stderr)
             self.assertIn("supervised engineering orchestration", review.stdout)
             report = run_zeus(state, "intro", "--status")
-            self.assertGreaterEqual(json.loads(report.stdout)["invocation_count"], 101)
+            self.assertEqual(json.loads(report.stdout)["invocation_count"], 101)
 
     def test_suppression_does_not_reset_state(self):
         with tempfile.TemporaryDirectory() as temporary:
             state = Path(temporary) / "state.json"
             result = run_zeus(state, "intro", "--status", suppress=True)
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertEqual(
-                OperatorInterfaceStore(ROOT, state).load()["invocation_count"], 1
-            )
+            self.assertEqual(OperatorInterfaceStore(ROOT, state).load()["invocation_count"], 0)
 
 
 class LauncherTests(unittest.TestCase):

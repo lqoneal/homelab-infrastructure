@@ -23,6 +23,14 @@ admission, selection, approval, dispatch, qualification, reconciliation, and
 closeout services. Schema version 1 is owned by
 `scripts/lib/emp/orchestration.py`.
 
+The repository mount may be read-only. `ZEUS_RUNTIME_ROOT` explicitly selects
+the mutable operator-owned runtime root; unset preserves the repository-local
+default for writable installations. There is no implicit fallback. Read-only
+controller commands never create or lock runtime files. `submit`, `admit`,
+`execute`, `publish`, and `synchronize` are the only runtime mutation classes
+and fail closed when the selected root is unavailable or read-only. Published
+evidence remains append-only and is never repaired in place.
+
 `--state` and `ZEUS_STATE` are retained only as explicit engineering and test
 overrides. Bootstrap refuses to initialize either override unless it resolves
 to the authoritative location.

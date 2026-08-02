@@ -2,6 +2,16 @@
 
 ## Purpose and boundary
 
+### Runtime storage boundary
+
+Repository content, published WOPs, and evidence are immutable inputs. Mutable
+Zeus runtime state is selected by `ZEUS_RUNTIME_ROOT`; when unset it retains
+the historical `<repository>/.zeus/runtime` location. Operators on a
+read-only repository mount must configure an operator-owned writable root.
+Zeus never silently falls back. Read-only controllers do not create locks or
+state files; submit, admit, execute, publish, and synchronize fail closed when
+the selected runtime root cannot be written.
+
 Stage 1 is the package-intake and execution-qualification boundary for
 Governance-admitted engineering WOP packages:
 

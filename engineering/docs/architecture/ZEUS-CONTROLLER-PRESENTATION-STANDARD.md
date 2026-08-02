@@ -1,6 +1,6 @@
 # Zeus Controller Presentation Standard
 
-Status: Beta-03G governed controller baseline
+Status: BETA-04 governed controller baseline
 
 Normative invariants: `ENGINEERING-PLATFORM-INVARIANTS.md` and
 `ZEUS-CONTROLLER-GOVERNANCE.md`
@@ -20,6 +20,7 @@ context.
 Operation Beta is the active Development context. `OA-v1.0.0` remains the
 Production baseline and historical Alpha context. The queue is operation-wide;
 execution environment is bound only during admitted mission execution.
+The published current mission is `BETA-04`.
 
 ## Explain and queue contracts
 

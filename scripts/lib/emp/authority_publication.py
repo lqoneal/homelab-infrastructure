@@ -27,6 +27,7 @@ from scripts.lib.emp.authority_resolution import (
     digest,
     utc_text,
 )
+from scripts.lib.emp.runtime_paths import runtime_path
 
 
 class AuthorityPublicationError(ValueError):
@@ -648,7 +649,7 @@ class AuthorityPublicationFramework:
         revoked.pop("source_digest", None)
         revoked["source_digest"] = digest(revoked)
         previous_digest = hashlib_sha256(target_path.read_bytes())
-        runtime = (self.root / AUTHORITY_RUNTIME_RELATIVE_PATH).resolve()
+        runtime = runtime_path(self.root, "authority").resolve()
         if runtime in target_path.parents and os.environ.get("ZEUS_TESTING") != "1":
             publication = (
                 runtime / "publications" / f"REVOCATION-{envelope['envelope_id']}"
@@ -728,7 +729,7 @@ class AuthorityPublicationFramework:
             raise AuthorityPublicationError("candidate changed after readiness validation")
         target_path = Path(target).resolve()
         expected = (
-            self.root / AUTHORITY_RUNTIME_RELATIVE_PATH / ACTIVE_PUBLICATION_POINTER
+            runtime_path(self.root, "authority", ACTIVE_PUBLICATION_POINTER)
         ).resolve()
         if target_path != expected and os.environ.get("ZEUS_TESTING") != "1":
             raise AuthorityPublicationError(
@@ -904,7 +905,7 @@ class AuthorityPublicationFramework:
         ):
             return False
         pointer_path = (
-            self.root / AUTHORITY_RUNTIME_RELATIVE_PATH / ACTIVE_PUBLICATION_POINTER
+            runtime_path(self.root, "authority", ACTIVE_PUBLICATION_POINTER)
         )
         if pointer_path.is_file():
             try:
@@ -1123,7 +1124,7 @@ class AuthorityPublicationFramework:
         if str(target_path) != receipt.get("target"):
             raise AuthorityPublicationError("rollback target mismatch")
         expected_pointer = (
-            self.root / AUTHORITY_RUNTIME_RELATIVE_PATH / ACTIVE_PUBLICATION_POINTER
+            runtime_path(self.root, "authority", ACTIVE_PUBLICATION_POINTER)
         ).resolve()
         if target_path == expected_pointer:
             active = authoritative_source_path(self.root)

@@ -1,6 +1,6 @@
 # Engineering Platform Invariant Specification
 
-Status: Beta-03G normative governance baseline
+Status: BETA-04 normative governance baseline
 Authority: Engineering Platform Governance Framework
 Production baseline: `OA-v1.0.0`
 Development baseline: Operation Beta
@@ -26,6 +26,7 @@ capability or lifecycle change.
 10. **Fail closed.** Missing authority, ambiguous ownership, multiple active records, unknown lineage, invalid synchronization, or conflicting state shall stop the affected action.
 11. **Recommendation capture.** Every architectural recommendation shall have an explicit disposition: mandatory invariant, roadmap enhancement, implementation optimization, deferred recommendation, or rejected.
 12. **Future knowledge audit.** Every significant architectural change shall update the Future Knowledge Audit with ownership, classification, source, lifecycle, and generation suitability.
+13. **Runtime boundary separation.** Repository evidence may be mounted read-only; read-only projections shall remain functional without runtime writes, while mutation paths shall use only the explicitly configured writable runtime root and fail closed when unavailable.
 
 ## Runtime ownership
 

@@ -1,0 +1,14 @@
+schema_version: 1
+mission_id: BETA-04
+operation: OPERATION-BETA
+title: Runtime readiness and controller activation
+status: PUBLISHED_ACTIVE
+authority_record: engineering/authority/operation-beta-beta04-activation.yaml
+previous_mission: BETA-03G
+production_baseline: OA-v1.0.0
+development_baseline: OB-PLAN-v1.0.0
+scope:
+  - runtime boundary reconciliation
+  - read-only and mutation controller separation
+  - published controller convergence
+capability_implementation: PROHIBITED

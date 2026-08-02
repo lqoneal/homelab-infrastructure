@@ -1,0 +1,22 @@
+schema_version: 1
+authority_id: OPERATION-BETA-BETA04-ACTIVATION
+operation: OPERATION-BETA
+mission_id: BETA-04
+mission_title: Runtime readiness and controller activation
+lifecycle_state: ACTIVE
+publication_state: PUBLISHED_ACTIVE
+published_at: 2026-08-01T00:00:00Z
+previous_mission: BETA-03G
+authority_chain:
+  source: engineering/docs/architecture/OPERATION-BETA-AUTHORITY-MODEL.md
+  roadmap: engineering/docs/architecture/OPERATION-BETA-ROADMAP.md
+  platform_invariants: engineering/docs/architecture/ENGINEERING-PLATFORM-INVARIANTS.md
+baselines:
+  production: OA-v1.0.0
+  development: OB-PLAN-v1.0.0
+scope:
+  - runtime boundary reconciliation
+  - read-only controller operation without runtime writes
+  - mutation fail-closed behavior when runtime writes are unavailable
+  - EOS, Registry, roadmap, and controller synchronization
+capability_implementation: PROHIBITED

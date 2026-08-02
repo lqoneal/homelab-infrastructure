@@ -13,10 +13,12 @@ from pathlib import Path
 from typing import Any, Iterator
 
 from scripts.lib.emp.orchestration import OrchestrationError
+from scripts.lib.emp.runtime_paths import runtime_path
+from scripts.lib.emp.runtime_paths import runtime_root
 
 SCHEMA_VERSION = 1
 ORIENTATION_LIMIT = 100
-STATE_RELATIVE_PATH = Path(".zeus/runtime/operator-interface-state.json")
+STATE_RELATIVE_PATH = Path("operator-interface-state.json")
 STATE_KEYS = {"schema_version", "invocation_count", "orientation_limit"}
 
 ORIENTATION = """\
@@ -42,7 +44,7 @@ def initial_state() -> dict[str, int]:
 
 
 def authoritative_state_path(repository_root: Path) -> Path:
-    return repository_root.resolve() / STATE_RELATIVE_PATH
+    return runtime_path(repository_root, STATE_RELATIVE_PATH.name)
 
 
 def _reject_symlinks(root: Path, path: Path) -> None:
@@ -92,9 +94,7 @@ class OperatorInterfaceStore:
     def __init__(self, repository_root: Path, path: Path | None = None):
         # Test overrides are explicitly isolated and checked from their parent's
         # parent so a symlinked containing directory remains observable.
-        self.root = (
-            path.parent.parent.resolve() if path is not None else repository_root.resolve()
-        )
+        self.root = path.parent.parent.resolve() if path is not None else runtime_root(repository_root)
         self.path = path or authoritative_state_path(self.root)
         self.lock_path = self.path.with_suffix(self.path.suffix + ".lock")
 
@@ -159,11 +159,9 @@ class OperatorInterfaceStore:
             return dict(value)
 
     def load(self) -> dict[str, int]:
-        with self._locked():
-            value = self._load_locked()
-            if not self.path.exists():
-                self._save_locked(value)
-            return dict(value)
+        # Presentation state is optional.  Read-only controllers must not
+        # acquire a lock, create a lock file, or initialize state.
+        return dict(self._load_locked())
 
 
 def status(value: dict[str, int]) -> dict[str, Any]:

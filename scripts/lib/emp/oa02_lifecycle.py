@@ -19,6 +19,7 @@ import yaml
 
 from scripts.lib.emp.authority_resolution import authoritative_source_path
 from scripts.lib.emp.progressive_lifecycle import ProgressiveLifecycleProjector
+from scripts.lib.emp.runtime_paths import runtime_path
 
 
 def _digest(value: dict[str, Any]) -> str:
@@ -49,7 +50,7 @@ def resolve(repository: Path) -> dict[str, Any]:
         ["git", "-C", str(root), "rev-parse", "HEAD"], text=True
     ).strip()
     pointer = json.loads(
-        (root / ".zeus/runtime/authority/active-publication.json").read_text()
+        runtime_path(root, "authority", "active-publication.json").read_text()
     )
     authority = yaml.safe_load(authoritative_source_path(root).read_text())
     published = _published_baseline(authority, root)
