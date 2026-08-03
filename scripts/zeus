@@ -485,7 +485,9 @@ def main(argv=None):
     evidence=sub.add_parser("evidence"); evidence.add_argument("action", choices=("show",)); evidence.add_argument("identifier")
     qualification=sub.add_parser("qualification"); qualification.add_argument("action", choices=("show",)); qualification.add_argument("identifier")
     completion=sub.add_parser("completion"); completion.add_argument("action", choices=("show",)); completion.add_argument("identifier")
-    sub.add_parser("resume")
+    resume_parser = sub.add_parser("resume", help="Resume an existing Development transaction by identity.")
+    resume_parser.add_argument("identifier", nargs="?", help="WOP, mission, registration, package, or transaction identity")
+    resume_parser.add_argument("--json", action="store_true")
     policy=sub.add_parser("policy"); policy.add_argument("action", choices=("configure",)); policy.add_argument("policy_id")
     show_wop=sub.add_parser("show"); show_wop.add_argument("subject")
     sub.add_parser("list")
@@ -736,6 +738,13 @@ def main(argv=None):
             else:
                 print(ORIENTATION)
             return 0
+        if a.command == "resume":
+            value = stage1.resume_transaction(getattr(a, "identifier", None), at=now(None))
+            if a.json:
+                emit(value)
+            else:
+                print(f"Transaction : {value['instance_id']}\nState       : {value['state']}\nNext action : {value.get('next_action') or 'None'}")
+            return 0
         if a.command == "next-action":
             beta = operational_beta.next_action(ROOT)
             if beta.get("result") == "PASS":
@@ -787,6 +796,22 @@ def main(argv=None):
         beta_family = beta_subject in {"ZDCL", "CAGF", "EPE"}
         beta_candidate = a.command == "mission" and beta_action == "roadmap" and beta_subject != "OA"
         beta_selection = a.command == "mission" and beta_action in {"list", "queue", "next", "recommend", "health"} and not beta_subject
+        # Development transactions are not Beta mission contracts.  Resolve them
+        # through the canonical Stage 1 store so mission views cannot hide an
+        # admitted transaction behind BETA_MISSION_NOT_FOUND.
+        if a.command == "mission" and beta_subject == "ZDCL-02" and beta_action in {"status", "show", "authority", "contract", "snapshot", "explain"}:
+            value = stage1.transaction_view("ZDCL-02")
+            if a.json:
+                emit(value)
+            else:
+                print(f"Mission          : {value['mission_id']}\n"
+                      f"WOP              : {value['wop_id']}\n"
+                      f"Transaction      : {value['transaction_id']}\n"
+                      f"Registration     : {value['registration_id']}\n"
+                      f"State            : {value['state']}\n"
+                      f"Dispatch receipt : {'PASS' if value['dispatch_receipt_valid'] else 'FAIL'}\n"
+                      f"Next action      : {value.get('next_action') or 'None'}")
+            return 0 if value.get("result") == "PASS" else 78
         if a.command == "mission" and a.action == "submit" and not beta_mission:
             emit({
                 "result": "BLOCKED",
