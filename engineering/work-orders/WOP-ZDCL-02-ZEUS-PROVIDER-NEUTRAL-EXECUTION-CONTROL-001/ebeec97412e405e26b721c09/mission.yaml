@@ -1,0 +1,89 @@
+schema_version: 1
+document_type: EngineeringWorkOrder
+mission_id: ZDCL-02
+wop_id: WOP-ZDCL-02-ZEUS-PROVIDER-NEUTRAL-EXECUTION-CONTROL-001
+phase_id: ZDCL-02-DEVELOPMENT
+revision: 1
+status: Active
+title: ZDCL-02 Zeus Provider-Neutral Execution Control
+objective: Establish a bounded, provider-neutral Zeus control contract for discovery,
+  qualification, deterministic selection, non-live planning, identity, receipt inspection,
+  and replay/forgery safeguards.
+scope:
+- provider-neutral provider and agent capability abstractions
+- descriptive provider-resource registration using an existing authoritative
+- registry or bounded qualification record
+- capability qualification and deterministic
+- read-only selection
+- non-live dispatch-plan construction and inspection
+- canonical execution/provider/agent/session/mission/WOP/handoff identities
+- provider-neutral receipt validation
+- replay rejection
+- and forged-state
+- rejection
+- '`engctl codex` as the first replaceable managed compatibility adapter'
+- directly affected tests
+- documentation
+- and evidence.
+- Live provider launch
+- live mission dispatch
+- autonomous selection or execution
+- Codex-only architecture
+- authority or registry creation
+- CAGF implementation
+- Operational Alpha redesign
+- publication
+- EOS synchronization
+- commit
+- push
+- merge
+- tag
+- closeout
+- and completed-history modification.
+dependencies:
+- ZDCL-01 completed
+- published Beta controller convergence
+- current controlled WOP
+- execution
+- handoff
+- validation
+- evidence
+- persistence
+- and publication documents
+- existing engctl codex launcher.
+priority: 0
+candidate_state: CANDIDATE
+qualification_requirements:
+- controlled-document and Registry validation pass
+- exact WOP and metadata ownership mapping pass
+- provider-neutral selection and non-live plan evidence pass
+- missing-capability
+- ambiguity
+- replay
+- forged-receipt
+- and parity fixtures pass
+- no runtime
+- lifecycle
+- publication
+- or protected-baseline mutation.
+completion_requirements:
+- all required evidence and Completion Report produced
+- controlled documentation reconciled
+- candidate remains uncommitted and unpublished
+- Governance Conformance Review complete
+- no unresolved authority
+- metadata
+- provider-neutrality
+- or scope finding.
+execution_mode: DEVELOPMENT
+governance_authority: Engineering Governance
+repository_identity: homelab
+effect_profile: DEVELOPMENT-INFRASTRUCTURE-NONPRODUCTION
+required_execution_files:
+- bootstrap.md
+- roadmap.md
+- mission.yaml
+- gates.yaml
+- manifests/immutable-manifest.yaml
+- source-wop.md
+source_document_digest: 6567d9eaac47bea91b0346731cc3bac91566ccfa52cb4e2e6d86f3da61ef5334

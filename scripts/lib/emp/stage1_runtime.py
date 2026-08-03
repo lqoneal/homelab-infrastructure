@@ -455,10 +455,15 @@ class Stage1Runtime:
             if metadata.get("development_operator") not in {None, self.operator_resolver(), "loneal"}:
                 raise Stage1Error("development operator is not authorized",
                                   evidence={"reason_code": "UNAUTHORIZED_OPERATOR"})
-            expected = str(self.repository)
-            if metadata.get("repository_identity") not in {None, expected}:
-                raise Stage1Error("development WOP repository identity mismatch",
-                                  evidence={"reason_code": "REPOSITORY_IDENTITY_MISMATCH"})
+            try:
+                from scripts.lib.emp.repository_identity import resolve_declared
+                resolved_identity = resolve_declared(metadata.get("repository_identity"), self.repository)
+            except (ValueError, OSError) as error:
+                raise Stage1Error(
+                    f"development WOP repository identity mismatch: {error}",
+                    evidence={"reason_code": "REPOSITORY_IDENTITY_MISMATCH"},
+                ) from error
+            expected = resolved_identity["canonical_repository_identity"]
             baseline = subprocess.run(["git", "-C", str(self.repository), "rev-parse", "HEAD"],
                                       text=True, capture_output=True, check=False).stdout.strip()
             if not baseline:

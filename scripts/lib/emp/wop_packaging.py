@@ -181,9 +181,9 @@ def extract(source: Path, *, validate: bool = True) -> tuple[dict[str, Any], str
     return metadata, text
 
 
-def package(source: Path, destination_root: Path) -> tuple[Path, dict[str, Any]]:
+def package(source: Path, destination_root: Path, repository_root: Path | str | None = None) -> tuple[Path, dict[str, Any]]:
     from scripts.lib.emp.wop_validation import require_valid_source
-    validation = require_valid_source(source)
+    validation = require_valid_source(source, repository_root=repository_root)
     metadata = dict(validation.metadata)
     digest = source_digest(source)
     package_id = hashlib.sha256((str(metadata["wop_id"]) + ":" + digest).encode()).hexdigest()[:24]

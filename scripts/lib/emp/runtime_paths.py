@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 import os
-import hashlib
 import json
-import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -19,18 +17,13 @@ class RuntimeDiscoveryError(RuntimeError):
 
 
 def _identity(repository: Path) -> dict[str, str]:
-    canonical = str(repository.resolve())
-    remote = subprocess.run(
-        ["git", "-C", canonical, "config", "--get", "remote.origin.url"],
-        capture_output=True, text=True, check=False,
-    ).stdout.strip()
-    repository_identity = remote or canonical
-    fingerprint = hashlib.sha256(f"{canonical}\n{repository_identity}".encode()).hexdigest()
+    from scripts.lib.emp.repository_identity import resolve
+    value = resolve(repository)
     return {
-        "repository": canonical,
-        "repository_identity": repository_identity,
-        "repository_fingerprint": fingerprint,
-        "repository_id": f"{Path(canonical).name}-{fingerprint[:16]}",
+        "repository": value["repository_path"],
+        "repository_identity": value["repository_identity"],
+        "repository_fingerprint": value["repository_fingerprint"],
+        "repository_id": value["repository_id"],
         "runtime_schema": "zeus-runtime/2",
     }
 
