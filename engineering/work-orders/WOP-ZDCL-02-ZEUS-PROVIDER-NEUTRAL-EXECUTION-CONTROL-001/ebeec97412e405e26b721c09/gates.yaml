@@ -1,0 +1,17 @@
+schema_version: 1
+gates:
+- repository and protected-baseline verification
+- metadata
+- authority
+- ETP
+- and admission dry-run verification
+- non-live provider qualification and deterministic selection
+- dispatch-plan
+- identity
+- receipt
+- replay
+- and forged-state verification
+- controlled-document
+- Registry
+- platform
+- and regression validation.

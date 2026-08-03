@@ -46,7 +46,7 @@ def validate_metadata(metadata: Mapping[str, Any], *, source: Path | str = "<sou
     return ValidationResult(str(source), metadata, missing=missing, errors=tuple(errors))
 
 
-def validate_source(source: Path) -> ValidationResult:
+def validate_source(source: Path, repository_root: Path | str | None = None) -> ValidationResult:
     """Parse and validate a source without creating package or runtime state."""
     from scripts.lib.emp.wop_packaging import PackagingError, extract
 
@@ -54,11 +54,17 @@ def validate_source(source: Path) -> ValidationResult:
         metadata, _ = extract(source, validate=False)
     except PackagingError as error:
         return ValidationResult(str(source), {}, missing=tuple(error.missing), conflicts=tuple(error.conflicts), errors=(str(error),))
+    if repository_root is not None and metadata.get("repository_identity") not in (None, ""):
+        try:
+            from scripts.lib.emp.repository_identity import canonicalize_metadata
+            metadata, _ = canonicalize_metadata(metadata, repository_root)
+        except ValueError as error:
+            return ValidationResult(str(source), metadata, errors=(str(error),))
     return validate_metadata(metadata, source=source)
 
 
-def require_valid_source(source: Path) -> ValidationResult:
-    result = validate_source(source)
+def require_valid_source(source: Path, repository_root: Path | str | None = None) -> ValidationResult:
+    result = validate_source(source, repository_root=repository_root)
     if not result.valid:
         from scripts.lib.emp.wop_packaging import PackagingError
 
