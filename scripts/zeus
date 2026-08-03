@@ -119,6 +119,27 @@ def platform_verify(parser) -> dict:
             "read_only": True, "next_action": "Review and publish the candidate, then synchronize EOS" if not defects else "Resolve the reported defect"}
 
 
+def protected_baseline_summary(value) -> str:
+    """Reduce the canonical protected-baseline collection for human output.
+
+    The JSON result remains the authoritative per-baseline record.  Human
+    output uses this reducer so nested entries cannot be mistaken for a
+    top-level result field.
+    """
+    if not isinstance(value, dict) or not value:
+        return "UNKNOWN"
+    results = []
+    for entry in value.values():
+        if not isinstance(entry, dict) or entry.get("result") not in {"PASS", "FAIL", "BLOCKED"}:
+            return "UNKNOWN"
+        results.append(entry["result"])
+    if "FAIL" in results:
+        return "FAIL"
+    if "BLOCKED" in results:
+        return "BLOCKED"
+    return "PASS"
+
+
 def doctor_report() -> dict:
     """Read-only platform readiness projection for operators.
 
@@ -584,14 +605,20 @@ def main(argv=None):
             return 0 if value["result"] in {"READY", "READY_FOR_REVIEW", "READY_FOR_PUBLICATION"} else 1
         if a.command == "platform":
             value = platform_verify(sub)
-            if a.json or a.verbose:
+            if a.json:
                 emit(value)
             else:
                 print("Zeus Platform Verification")
                 print("---------------------------")
                 print(f"Result      : {value['result']}")
                 for name, check in value["checks"].items():
-                    print(f"{name.replace('_', ' ').title():<16}: {check.get('result', 'UNKNOWN')}")
+                    result = protected_baseline_summary(check) if name == "protected_baselines" else check.get("result", "UNKNOWN")
+                    print(f"{name.replace('_', ' ').title():<16}: {result}")
+                    if name == "protected_baselines" and a.verbose:
+                        for baseline, entry in check.items():
+                            if isinstance(entry, dict):
+                                commit = entry.get("commit", "")
+                                print(f"  {baseline:<14}: {entry.get('result', 'UNKNOWN')} {commit}".rstrip())
                 print(f"Read-only   : YES")
                 print(f"Next action : {value['next_action']}")
             return 0 if value["result"] == "PASS" else 1

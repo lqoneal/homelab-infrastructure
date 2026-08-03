@@ -6,6 +6,9 @@ Verified:
 
 * `zeus verify <GATE>` and `zeus mission verify <MISSION_ID>` remain available.
 * `zeus platform verify --json` is parser-unique, read-only, and returns PASS.
+* Human `zeus platform verify` reduces the canonical protected-baseline
+  collection to `Protected Baselines: PASS`; `--verbose` lists each baseline
+  and commit, while JSON retains the individual entries unchanged.
 * `zeus doctor --json` returns `READY_FOR_REVIEW`; repository, runtime,
   Registry, authority, controllers, and WOP contract pass while EOS and
   synchronization are deferred until publication.
@@ -26,6 +29,8 @@ Exact checks:
 cd /data/engineering/repositories/homelab
 unset ZEUS_RUNTIME_ROOT
 zeus doctor --json
+zeus platform verify
+zeus platform verify --verbose
 zeus platform verify --json
 zeus verify GATE-1 --help
 zeus mission verify CAGF-01 --json
@@ -41,5 +46,10 @@ scripts/engctl registry validate
 git diff --check
 git rev-parse HEAD origin/main
 ```
+
+Protected-baseline parity cases (all PASS, FAIL, BLOCKED, absent, empty, and
+malformed collections) are covered by
+`test-zeus-cli-command-consistency.py`; the human and JSON projections are
+derived from the same canonical result object.
 
 The candidate remains uncommitted, unpublished, and unsynchronized to EOS.
