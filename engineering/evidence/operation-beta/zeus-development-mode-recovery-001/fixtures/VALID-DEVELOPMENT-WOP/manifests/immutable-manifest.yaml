@@ -1,0 +1,9 @@
+schema_version: 1
+manifest_id: ZEUS-DEVELOPMENT-MODE-RECOVERY-001-MANIFEST
+mission_id: ZEUS-DEVELOPMENT-MODE-RECOVERY-001
+wop_id: WOP-ZEUS-DEVELOPMENT-MODE-RECOVERY-001
+execution_mode: DEVELOPMENT
+governance_authority: Engineering Governance
+protected_baselines:
+  - OA-v1.0.0
+  - OB-PLAN-v1.0.0

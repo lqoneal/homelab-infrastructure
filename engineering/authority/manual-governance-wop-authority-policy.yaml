@@ -8,6 +8,17 @@ mode: MANUAL_GOVERNANCE
 purpose: >-
   Define the temporary admission model for WOPs explicitly submitted by
   Engineering Governance before autonomous WOP generation is declared capable.
+development_mode:
+  status: ACTIVE
+  submission_command: "zeus submit <WOP_ID_OR_PACKAGE>"
+  authority: Engineering Governance
+  registration_and_provenance: generated_on_accepted_submission
+  mission_activation_prerequisite: false
+  mission_contract_prerequisite: false
+  emm_registration_prerequisite: false
+  publication_prerequisite: false
+  protected_baselines: [OA-v1.0.0, OB-PLAN-v1.0.0]
+  scope: development-only
 activation_condition: >-
   Engineering Governance declares Zeus capable of autonomous WOP generation
   and replaces or supersedes this policy through a controlled directive.
@@ -25,6 +36,8 @@ runtime_rules:
   - All subordinate artifacts must retain the exact WOP identity, revision, policy id, and submission id.
   - Autonomous WOPs and manual WOPs without every required submission field require the normal Authority Record contract.
   - The runtime never infers a manual-governance submission from a WOP title, submitter string, or command invocation.
+  - A Development WOP is authoritative only when it explicitly declares execution_mode DEVELOPMENT, binds the canonical repository, and names Engineering Governance; acceptance generates registration and provenance in the existing Stage 1 record.
+  - Development Mode never grants production authority, modifies protected baselines, or implements a capability outside the submitted WOP scope.
 traceability:
   directive: Controlled Change Directive — Manual Governance WOP Authority Policy
   convergence_authority: SPEC-0014@1.2

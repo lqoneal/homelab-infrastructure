@@ -1,0 +1,12 @@
+schema_version: 1
+manifest_id: WOP-AUTHORING-001-MANIFEST
+mission_id: AUTHORING-01
+wop_id: WOP-AUTHORING-001
+execution_mode: DEVELOPMENT
+governance_authority: Engineering Governance
+repository_identity: /data/engineering/repositories/homelab
+effect_profile: DEVELOPMENT-AUTHORING-NONPRODUCTION
+protected_baselines:
+- OA-v1.0.0
+- OB-PLAN-v1.0.0
+source_document_digest: 402e86f6ba24eed15036505d1fb8fe87d7949c697e2b4c92e3afe2213da224c1

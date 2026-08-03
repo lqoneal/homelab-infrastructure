@@ -31,8 +31,8 @@ class Stage1Error(ValueError):
         super().__init__(message)
 
 
-ACTIVE_STATES = {"VALIDATING", "ADMITTED", "STAGED"}
-MISSION_STATES = ("VALIDATING", "REJECTED", "ADMITTED", "STAGED")
+ACTIVE_STATES = {"VALIDATING", "ADMITTED", "STAGED", "VALIDATED", "AUTHORIZED", "EXECUTING", "QUALIFIED", "PUBLICATION_PREPARED", "SYNCHRONIZED", "INTERRUPTED", "BLOCKED"}
+MISSION_STATES = ("VALIDATING", "REJECTED", "ADMITTED", "STAGED", "VALIDATED", "AUTHORIZED", "EXECUTING", "QUALIFIED", "PUBLICATION_PREPARED", "SYNCHRONIZED", "INTERRUPTED", "BLOCKED", "CLOSED")
 MISSION_CONTRACT_FIELDS = (
     "mission_id",
     "wop_id",
@@ -387,6 +387,156 @@ class Stage1Runtime:
                 record = self.store.save(provisional)
                 self.events.publish("mission.rejected", record, timestamp)
                 raise Stage1Error(str(error), evidence=record) from error
+
+    def submit_development(self, source: Path | str, *, at: datetime | None = None,
+                           interrupt_after: str | None = None,
+                           packaging: Mapping[str, Any] | None = None) -> dict[str, Any]:
+        """Submit a bounded Development Mode WOP.
+
+        Development submissions are the manual-governance recovery path.  The
+        package itself must explicitly opt in; validation is completed before
+        the first state write, and the resulting lifecycle is persisted in the
+        existing Stage 1 store so replay/resume remains idempotent.
+        """
+        timestamp = _utc(at)
+        source_path = Path(source).resolve()
+        with _package_root(source_path) as root:
+            metadata, package_evidence = validate_package(root)
+            if metadata.get("execution_mode") != "DEVELOPMENT":
+                raise Stage1Error("development submission requires execution_mode=DEVELOPMENT",
+                                  evidence={"reason_code": "DEVELOPMENT_MODE_REQUIRED"})
+            if metadata.get("governance_authority") != "Engineering Governance":
+                raise Stage1Error("development submission requires Engineering Governance authority",
+                                  evidence={"reason_code": "GOVERNANCE_AUTHORITY_REQUIRED"})
+            effect_profile = str(metadata.get("effect_profile") or "").upper()
+            if not effect_profile or effect_profile == "PRODUCTION" or effect_profile.startswith("PRODUCTION-"):
+                raise Stage1Error("development WOP requires a non-production effect profile",
+                                  evidence={"reason_code": "EFFECT_PROFILE_INVALID"})
+            if metadata.get("development_operator") not in {None, self.operator_resolver(), "loneal"}:
+                raise Stage1Error("development operator is not authorized",
+                                  evidence={"reason_code": "UNAUTHORIZED_OPERATOR"})
+            expected = str(self.repository)
+            if metadata.get("repository_identity") not in {None, expected}:
+                raise Stage1Error("development WOP repository identity mismatch",
+                                  evidence={"reason_code": "REPOSITORY_IDENTITY_MISMATCH"})
+            baseline = subprocess.run(["git", "-C", str(self.repository), "rev-parse", "HEAD"],
+                                      text=True, capture_output=True, check=False).stdout.strip()
+            if not baseline:
+                raise Stage1Error("unable to resolve repository baseline",
+                                  evidence={"reason_code": "BASELINE_UNRESOLVED"})
+            protected = {}
+            for tag in ("OA-v1.0.0", "OB-PLAN-v1.0.0"):
+                result = subprocess.run(["git", "-C", str(self.repository), "rev-parse", tag],
+                                        text=True, capture_output=True, check=False)
+                if result.returncode:
+                    raise Stage1Error(f"protected baseline is unavailable: {tag}",
+                                      evidence={"reason_code": "PROTECTED_BASELINE_UNAVAILABLE", "tag": tag})
+                protected[tag] = result.stdout.strip()
+            package_digest = self._tree_digest(root)
+            manifest_path = root / "manifests/immutable-manifest.yaml"
+            try:
+                manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
+            except (OSError, yaml.YAMLError) as error:
+                raise Stage1Error(f"immutable manifest is invalid: {error}",
+                                  evidence={"reason_code": "IMMUTABLE_MANIFEST_INVALID"}) from error
+            if not isinstance(manifest, Mapping) or manifest.get("wop_id") != metadata["wop_id"]:
+                raise Stage1Error("immutable manifest and WOP identity mismatch",
+                                  evidence={"reason_code": "IMMUTABLE_MANIFEST_MISMATCH"})
+            instance_id = "ZEUS-DEVELOPMENT-" + str(uuid.uuid5(
+                uuid.NAMESPACE_URL, f"{metadata['mission_id']}:{metadata['wop_id']}:{package_digest}"))
+            existing = next((item for item in self.store.all()
+                             if item.get("instance_id") == instance_id), None)
+            prior = [item for item in self.store.all()
+                     if item.get("wop_id") == str(metadata["wop_id"])
+                     and item.get("package_digest") != package_digest
+                     and item.get("state") in {"CLOSED", "PUBLICATION_PREPARED", "SYNCHRONIZED"}]
+            if prior:
+                raise Stage1Error(
+                    "source changed after an accepted package; explicit supersession is required",
+                    evidence={"reason_code": "SOURCE_CHANGED_REQUIRES_SUPERSESSION",
+                              "prior_instances": [item["instance_id"] for item in prior]})
+            if existing:
+                if existing.get("package_digest") != package_digest:
+                    raise Stage1Error("development submission identity collision")
+                if existing.get("state") != "CLOSED":
+                    existing = self._resume_development(existing, baseline, protected, timestamp,
+                                                        interrupt_after=interrupt_after)
+                existing["idempotent_replay"] = True
+                return existing
+            operator = self.operator_resolver()
+            record = {
+                "schema_version": 1, "instance_id": instance_id,
+                "mission_id": str(metadata["mission_id"]), "wop_id": str(metadata["wop_id"]),
+                "submitted_at": timestamp, "updated_at": timestamp, "operator": operator,
+                "repository": expected, "source": str(source_path), "state": "VALIDATED",
+                "package": str(source_path), "packaging": dict(packaging or {"packaged": False}),
+                "execution_mode": "DEVELOPMENT", "package_digest": package_digest,
+                "effect_profile": metadata["effect_profile"],
+                "repository_baseline": baseline, "protected_baselines": protected,
+                "validation_evidence": package_evidence,
+                "registration": {"registration_id": "EMM-DEV-" + package_digest[:24],
+                                  "owner": "Engineering Governance", "status": "GENERATED"},
+                "provenance": {"repository": expected, "baseline": baseline,
+                               "package_digest": package_digest, "generated_at": timestamp,
+                               "operator": operator},
+                "authorization": {"mode": "MANUAL_GOVERNANCE_DEVELOPMENT",
+                                   "authority": "Engineering Governance",
+                                   "decision": "SUBMISSION_CONSTITUTES_EXECUTION_AUTHORITY"},
+                "failure_injection": {
+                    "publication": bool(metadata.get("simulate_publication_failure")),
+                    "synchronization": bool(metadata.get("simulate_synchronization_failure")),
+                },
+                "phases": [], "evidence": [], "failure": None,
+            }
+            record = self._resume_development(record, baseline, protected, timestamp,
+                                              interrupt_after=interrupt_after)
+            record["idempotent_replay"] = False
+            return record
+
+    def _resume_development(self, record: dict[str, Any], baseline: str,
+                            protected: Mapping[str, str], timestamp: str,
+                            *, interrupt_after: str | None = None) -> dict[str, Any]:
+        phases = ("VALIDATED", "AUTHORIZED", "ADMITTED", "EXECUTING", "QUALIFIED",
+                  "PUBLICATION_PREPARED", "SYNCHRONIZED", "CLOSED")
+        completed = list(record.get("phases", []))
+        for phase in phases:
+            if phase in completed:
+                continue
+            injected = record.get("failure_injection", {})
+            if phase == "PUBLICATION_PREPARED" and injected.get("publication"):
+                record["state"] = "BLOCKED"
+                record["failure"] = {"reason_code": "PUBLICATION_FAILURE", "phase": phase}
+                record["updated_at"] = timestamp
+                self.store.save(record)
+                return self.store.load_path(self.store._path(record["instance_id"]))
+            if phase == "SYNCHRONIZED" and injected.get("synchronization"):
+                record["state"] = "BLOCKED"
+                record["failure"] = {"reason_code": "SYNCHRONIZATION_FAILURE", "phase": phase}
+                record["updated_at"] = timestamp
+                self.store.save(record)
+                return self.store.load_path(self.store._path(record["instance_id"]))
+            current = subprocess.run(["git", "-C", str(self.repository), "rev-parse", "HEAD"],
+                                     text=True, capture_output=True, check=False).stdout.strip()
+            if current != baseline:
+                raise Stage1Error("repository drift detected during development submission",
+                                  evidence={"reason_code": "REPOSITORY_DRIFT", "expected": baseline, "observed": current})
+            for tag, value in protected.items():
+                observed = subprocess.run(["git", "-C", str(self.repository), "rev-parse", tag],
+                                          text=True, capture_output=True, check=False).stdout.strip()
+                if observed != value:
+                    raise Stage1Error("protected baseline changed during development submission",
+                                      evidence={"reason_code": "PROTECTED_BASELINE_MUTATION", "tag": tag})
+            completed.append(phase)
+            record["phases"] = completed
+            record["state"] = phase
+            record["updated_at"] = timestamp
+            self.store.save(record)
+            if interrupt_after == phase:
+                record["state"] = "INTERRUPTED"
+                record["interrupted_at"] = timestamp
+                self.store.save(record)
+                return self.store.load_path(self.store._path(record["instance_id"]))
+        return self.store.load_path(self.store._path(record["instance_id"]))
 
     def status(self) -> dict[str, Any]:
         missions = self.store.all()

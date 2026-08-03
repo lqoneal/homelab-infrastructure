@@ -95,7 +95,9 @@ class OperatorInterfaceStore:
         # Test overrides are explicitly isolated and checked from their parent's
         # parent so a symlinked containing directory remains observable.
         self.root = path.parent.parent.resolve() if path is not None else runtime_root(repository_root)
-        self.path = path or authoritative_state_path(self.root)
+        # `self.root` is already the selected runtime root; resolving it as a
+        # repository again would change its identity under automatic discovery.
+        self.path = path or (self.root / STATE_RELATIVE_PATH.name)
         self.lock_path = self.path.with_suffix(self.path.suffix + ".lock")
 
     def _verify_paths(self) -> None:

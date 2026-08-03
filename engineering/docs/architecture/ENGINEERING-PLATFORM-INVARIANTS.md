@@ -27,8 +27,11 @@ capability or lifecycle change.
 11. **Recommendation capture.** Every architectural recommendation shall have an explicit disposition: mandatory invariant, roadmap enhancement, implementation optimization, deferred recommendation, or rejected.
 12. **Future knowledge audit.** Every significant architectural change shall update the Future Knowledge Audit with ownership, classification, source, lifecycle, and generation suitability.
 13. **Runtime boundary separation.** Repository evidence may be mounted read-only; read-only projections shall remain functional without runtime writes, while mutation paths shall use only the explicitly configured writable runtime root and fail closed when unavailable.
-14. **Mission terminology.** Current Platform Mission, Current Executable Mission, Recommended Mission, and Next Authorized Action are distinct facts. A mission without a fresh executable admission shall not be projected as current executable work.
-15. **Presentation restraint.** Normal controller output shall contain actionable state only. Orientation and general guidance require an explicit help, intro, or verbose request.
+14. **Automatic runtime discovery.** Zeus resolves one repository-bound runtime deterministically; normal Development Mode operation shall not require an exported `ZEUS_RUNTIME_ROOT`, and no unsafe fallback or cross-repository runtime merge is permitted.
+15. **Unambiguous command ownership.** Every Zeus command shall have one namespace, purpose, authority boundary, mutation classification, and canonical owner. New commands require parser, semantic, authority, state-mutation, output, documentation, and compatibility review.
+16. **Integrated verification is read-only.** `zeus platform verify` and `zeus doctor` shall not initialize runtime, package sources, authorize work, mutate mission state, or synchronize EOS.
+17. **Mission terminology.** Current Platform Mission, Current Executable Mission, Recommended Mission, and Next Authorized Action are distinct facts. A mission without a fresh executable admission shall not be projected as current executable work.
+18. **Presentation restraint.** Normal controller output shall contain actionable state only. Orientation and general guidance require an explicit help, intro, or verbose request.
 
 ## Runtime ownership
 
@@ -49,3 +52,7 @@ capability or lifecycle change.
 ## Self-audit contract
 
 The platform self-audit shall verify the invariants without mutating canonical state. A failed invariant shall identify the authoritative owner, conflicting projection, and required reconciliation boundary.
+An existing valid Zeus runtime shall be adopted or migrated through a native
+transactional Zeus operation. Operators shall never manually edit runtime
+identity records or maintain multiple writable canonical runtimes for one
+repository.

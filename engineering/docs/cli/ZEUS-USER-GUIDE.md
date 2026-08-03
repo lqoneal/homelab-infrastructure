@@ -1,5 +1,22 @@
 # Zeus User Guide
 
+## Runtime discovery
+
+Normal commands require no runtime export. Zeus selects a repository-bound
+user-state runtime automatically. Use `zeus --runtime-root /path submit <WOP>`
+or `ZEUS_RUNTIME_ROOT=/path zeus ...` only for explicit isolation, testing, or
+recovery. A rejected or foreign-bound path fails closed; read-only commands do
+not initialize runtime state.
+
+## CLI consistency and readiness
+
+Use `zeus doctor` for component diagnosis and readiness classification. Use
+`zeus platform verify` for the integrated read-only consistency check. The
+governed `zeus verify <GATE>` and mission-scoped `zeus mission verify
+<MISSION_ID>` commands retain their existing meanings. `zeus synchronize`
+reports readiness only; EOS mutation remains under the established `engctl`
+synchronization authority.
+
 ## Controlled Mission Authority
 
 `zeus authority show`, `zeus authority resolve`, and `zeus authority validate`
@@ -274,3 +291,13 @@ governed-state error. Run `scripts/install-engineering-cli verify` when command
 discovery fails. Runtime evidence is beneath `.zeus/runtime/`; PMCT evidence is
 beneath `engineering/runtime/pmct/runs/`. See the PMCT User Guide and
 Engineering CLI Standard in this directory.
+Runtime recovery uses the transactional operator command:
+
+```text
+zeus runtime adopt --dry-run
+zeus runtime adopt
+zeus runtime adopt
+```
+
+The second invocation is idempotent. Do not edit runtime JSON or copy runtime
+directories manually.

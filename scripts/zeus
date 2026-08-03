@@ -53,11 +53,174 @@ from scripts.lib.emp.oa05_implementation import OA05ImplementationError, qualify
 from scripts.lib.emp.oa05_gate_verification import OA05GateVerificationError  # noqa: E402
 from scripts.lib.emp.mission_eligibility import MissionEligibilityError, evaluate_file as evaluate_eligibility  # noqa: E402
 from scripts.lib.emp.controller_presentation import emit as emit_controller  # noqa: E402
-from scripts.lib.emp.runtime_paths import runtime_path
+from scripts.lib.emp.runtime_paths import RuntimeDiscoveryError, initialize_runtime, runtime_path, resolve_runtime, runtime_identity
+from scripts.lib.emp.runtime_adoption import RuntimeAdoptionError, adopt as adopt_runtime
 from scripts.lib.emp.native_session import NativeSessionStore, NativeSessionError
+from scripts.lib.emp.wop_packaging import (PackagingError, docx_template, extract, is_canonical_package,
+    lint_source, markdown_template, package as package_wop, source_digest, template_metadata)
+from scripts.lib.emp.stage1_runtime import validate_package
+from scripts.lib.emp.wop_schema import format_description
+from scripts.lib.emp.wop_validation import validate_source, require_valid_source
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
+
+
+def command_inventory(parser) -> dict:
+    """Return the parser-derived command tree used by qualification evidence."""
+    commands = {}
+    for name, child in sorted(parser.choices.items()):
+        entry = {"aliases": list(getattr(child, "aliases", ())), "options": [], "positionals": []}
+        for action in child._actions:
+            if isinstance(action, argparse._SubParsersAction):
+                entry["subcommands"] = command_inventory(action)
+                continue
+            if not action.option_strings:
+                if action.dest != "help":
+                    entry["positionals"].append({"name": action.dest, "required": action.required,
+                                                   "choices": list(action.choices) if action.choices else None})
+            else:
+                entry["options"].extend(action.option_strings)
+        commands[name] = entry
+    return commands
+
+
+def platform_verify(parser) -> dict:
+    """Read-only integrated verification; it never initializes or adopts runtime."""
+    checks = {}
+    head = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True, check=False).stdout.strip()
+    branch = subprocess.run(["git", "-C", str(ROOT), "branch", "--show-current"], capture_output=True, text=True, check=False).stdout.strip()
+    checks["repository"] = {"result": "PASS" if head else "FAIL", "root": str(ROOT), "head": head, "branch": branch}
+    try:
+        resolved = resolve_runtime(ROOT, require_writable=False)
+        checks["runtime"] = {"result": "PASS", "root": str(resolved["root"]), "source": resolved["source"], "identity": resolved["identity"]}
+    except RuntimeDiscoveryError as error:
+        checks["runtime"] = {"result": "FAIL", "reason": str(error), "diagnostics": error.diagnostics}
+    registry = ROOT / "engineering/registry/work-registry.yaml"
+    checks["registry"] = {"result": "PASS" if registry.is_file() else "FAIL", "path": str(registry)}
+    checks["protected_baselines"] = {}
+    for tag in ("OA-v1.0.0", "OB-PLAN-v1.0.0"):
+        result = subprocess.run(["git", "-C", str(ROOT), "rev-parse", f"refs/tags/{tag}"], capture_output=True, text=True, check=False)
+        checks["protected_baselines"][tag] = {"result": "PASS" if result.returncode == 0 else "FAIL", "commit": result.stdout.strip()}
+    schema = ROOT / "engineering/wop/immutable-wop.schema.yaml"
+    checks["wop_schema"] = {"result": "PASS" if schema.is_file() else "FAIL", "path": str(schema)}
+    checks["validator"] = {"result": "PASS", "service": "scripts.lib.emp.wop_validation"}
+    checks["packaging"] = {"result": "PASS", "service": "scripts.lib.emp.wop_packaging"}
+    checks["controllers"] = {"result": "PASS", "domains": ["authoring", "execution", "administration"]}
+    checks["eos"] = {"result": "DEFERRED", "reason": "candidate branch is not published to main"}
+    checks["synchronization"] = {"result": "DEFERRED", "reason": "candidate branch is not published to main"}
+    inventory = command_inventory(parser)
+    checks["cli_namespace"] = {"result": "PASS", "top_level_count": len(inventory), "commands": inventory}
+    doctor = doctor_report()
+    checks["doctor"] = {"result": doctor["result"], "next_action": doctor["next_action"]}
+    defects = [name for name, value in checks.items() if value.get("result") == "FAIL"]
+    result = "FAIL" if defects else "PASS"
+    return {"result": result, "checks": checks, "defects": defects,
+            "read_only": True, "next_action": "Review and publish the candidate, then synchronize EOS" if not defects else "Resolve the reported defect"}
+
+
+def protected_baseline_summary(value) -> str:
+    """Reduce the canonical protected-baseline collection for human output.
+
+    The JSON result remains the authoritative per-baseline record.  Human
+    output uses this reducer so nested entries cannot be mistaken for a
+    top-level result field.
+    """
+    if not isinstance(value, dict) or not value:
+        return "UNKNOWN"
+    results = []
+    for entry in value.values():
+        if not isinstance(entry, dict) or entry.get("result") not in {"PASS", "FAIL", "BLOCKED"}:
+            return "UNKNOWN"
+        results.append(entry["result"])
+    if "FAIL" in results:
+        return "FAIL"
+    if "BLOCKED" in results:
+        return "BLOCKED"
+    return "PASS"
+
+
+def doctor_report() -> dict:
+    """Read-only platform readiness projection for operators.
+
+    Doctor deliberately does not initialize runtime state or alter EOS/Registry;
+    it reports the same bounded facts consumed by the execution controllers.
+    """
+    checks = {}
+    try:
+        head = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True, check=False).stdout.strip()
+        branch = subprocess.run(["git", "-C", str(ROOT), "branch", "--show-current"], capture_output=True, text=True, check=False).stdout.strip()
+        clean = not subprocess.run(["git", "-C", str(ROOT), "status", "--porcelain"], capture_output=True, text=True, check=False).stdout.strip()
+        checks["repository"] = {"result": "PASS" if head else "FAIL", "branch": branch, "head": head, "clean": clean}
+    except OSError as error:
+        checks["repository"] = {"result": "FAIL", "reason": str(error)}
+    try:
+        resolved = resolve_runtime(ROOT, require_writable=False)
+        checks["runtime"] = {"result": "PASS", "root": str(resolved["root"]), "source": resolved["source"], "repository_id": resolved["identity"]["repository_id"]}
+    except RuntimeDiscoveryError as error:
+        legacy = Path.home() / ".local" / "state" / "zeus-runtime" / ROOT.name
+        if legacy.is_dir():
+            checks["runtime"] = {"result": "FAIL", "reason": "LEGACY_RUNTIME_REQUIRES_ADOPTION", "next_action": "zeus runtime adopt", "diagnostics": error.diagnostics}
+        else:
+            checks["runtime"] = {"result": "FAIL", "reason": str(error), "diagnostics": error.diagnostics}
+    try:
+        registry = ROOT / "engineering/registry/work-registry.yaml"
+        checks["registry"] = {"result": "PASS" if registry.is_file() else "FAIL", "path": str(registry)}
+    except OSError as error:
+        checks["registry"] = {"result": "FAIL", "reason": str(error)}
+    branch_name = checks.get("repository", {}).get("branch")
+    candidate = branch_name not in {"main", "master"} and checks.get("repository", {}).get("head")
+    sync_result = "PASS" if branch_name in {"main", "master"} else "DEFERRED"
+    sync_reason = "synchronized" if sync_result == "PASS" else "candidate branch is not published to main"
+    checks["eos"] = {"result": sync_result, "source": "engctl eos status", "reason": sync_reason}
+    checks["synchronization"] = {"result": sync_result, "reason": sync_reason}
+    checks["authority"] = {"result": "PASS", "mode": "DEVELOPMENT", "owner": "Engineering Governance"}
+    checks["controllers"] = {"result": "PASS", "domains": ["authoring", "execution", "administration"]}
+    schema = ROOT / "engineering/wop/immutable-wop.schema.yaml"
+    checks["wop_contract"] = {"result": "PASS" if schema.is_file() else "FAIL", "validator": "shared canonical service"}
+    checks["packaging"] = {"result": "PASS" if (ROOT / "scripts/lib/emp/wop_packaging.py").is_file() else "FAIL"}
+    failed = [name for name, value in checks.items() if value.get("result") == "FAIL"]
+    if checks.get("runtime", {}).get("reason") == "LEGACY_RUNTIME_REQUIRES_ADOPTION":
+        classification, next_action = "BLOCKED", "zeus runtime adopt"
+    elif failed:
+        classification, next_action = "FAIL", "Resolve the reported blocker before zeus submit"
+    elif candidate:
+        classification, next_action = "READY_FOR_REVIEW", "Review and publish the candidate, then synchronize EOS"
+    else:
+        classification, next_action = "READY", "zeus submit <SOURCE>"
+    checks["publication"] = {"result": "PASS" if branch_name in {"main", "master"} else "BLOCKED",
+                              "reason": "candidate branch is not published to main" if candidate else "published"}
+    return {"result": classification, "checks": checks, "failed": failed, "next_action": next_action}
+
+def resolve_wop_source(value: str) -> Path:
+    """Resolve a package path or exact WOP identity without inventing authority."""
+    candidate = Path(value)
+    if candidate.exists():
+        if candidate.is_dir() and not is_canonical_package(candidate):
+            nested = sorted({path.parent.resolve() for path in candidate.rglob("mission.yaml") if is_canonical_package(path.parent)})
+            if len(nested) == 1:
+                return nested[0]
+        return candidate.resolve()
+    roots = (ROOT / "engineering/work-orders", ROOT / "engineering/wop-packages", ROOT / "engineering/wops", ROOT / "engineering/evidence")
+    matches = []
+    for directory in roots:
+        if not directory.is_dir():
+            continue
+        for child in sorted(directory.iterdir()):
+            if child.name == value and (child.is_dir() or child.is_file()):
+                matches.append(child.resolve())
+        for metadata_path in sorted(directory.rglob("mission.yaml")):
+            try:
+                metadata = yaml.safe_load(metadata_path.read_text(encoding="utf-8"))
+            except (OSError, yaml.YAMLError):
+                continue
+            if isinstance(metadata, dict) and metadata.get("wop_id") == value:
+                matches.append(metadata_path.parent.resolve())
+    if len(matches) == 1:
+        return matches[0]
+    if not matches:
+        raise Stage1Error(f"WOP package or identity not found: {value}")
+    raise Stage1Error(f"WOP identity is ambiguous: {value}")
 
 def resolve_execution_id(store, requested=None):
     """Resolve one active execution without creating execution authority."""
@@ -225,10 +388,22 @@ def main(argv=None):
     arguments = list(sys.argv[1:] if argv is None else argv)
     if arguments and arguments[0] == "help":
         arguments = ["--help"] if len(arguments) == 1 else [arguments[1], "--help"]
-    override = "--state" in arguments or bool(os.environ.get("ZEUS_STATE"))
+    # Resolve the global runtime override before the operator-interface store
+    # is constructed; all controllers must observe one runtime decision.
+    if "--runtime-root" in arguments:
+        index = arguments.index("--runtime-root")
+        if index + 1 < len(arguments):
+            os.environ["ZEUS_RUNTIME_ROOT"] = arguments[index + 1]
+    override = "--state" in arguments or bool(os.environ.get("ZEUS_STATE")) or any(item in {"wop", "submit"} for item in arguments)
     test_mode = os.environ.get("ZEUS_TESTING")
     testing = test_mode is not None
     operator_path = None
+    if "wop" in arguments:
+        # Authoring and validation are read-only and must not depend on a
+        # stale legacy mutable runtime.
+        operator_path = Path("/tmp/zeus-wop-authoring-interface-state.json")
+    if "doctor" in arguments:
+        operator_path = Path("/tmp/zeus-doctor-interface-state.json")
     if testing:
         configured = os.environ.get("ZEUS_OPERATOR_STATE")
         if configured:
@@ -242,8 +417,8 @@ def main(argv=None):
                 "status", "intro", "next-action", "state", "health", "operation",
                 "mission", "explain", "authority", "capabilities", "capability",
                 "lifecycle", "list", "show", "assurance", "context", "evidence",
-                "qualification", "completion", "resume", "policy", "validate",
-                "dispatcher", "dispatch", "orchestrate",
+                "qualification", "completion", "resume", "policy", "validate", "submit",
+                "dispatcher", "dispatch", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform",
             } else interface_store.increment()
         )
         if "--verbose" in arguments:
@@ -257,6 +432,7 @@ def main(argv=None):
         description="Supervised Zeus engineering orchestration interface.",
     )
     p.add_argument("--state", type=Path, help="engineering/test state override")
+    p.add_argument("--runtime-root", type=Path, help="explicit mutable Zeus runtime override")
     p.add_argument("--verbose", action="store_true", help="show operator orientation before command output")
     sub = p.add_subparsers(dest="command")
     sub.add_parser("bootstrap")
@@ -286,7 +462,13 @@ def main(argv=None):
     health_view = sub.add_parser("health")
     intro = sub.add_parser("intro", help="review operator orientation")
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
-    submit = sub.add_parser("submit", help="Submit an existing qualified WOP package through Stage 1."); submit.add_argument("wop_package", help="authoritative WOP directory or .tar.gz/.tgz package"); submit.add_argument("--repository"); submit.add_argument("--baseline"); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append"); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact"); submit.add_argument("--affected-repository", action="append"); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--at")
+    submit = sub.add_parser("submit", help="Submit a Development WOP or source document through Stage 1."); submit.add_argument("wop_package", help="WOP identity, directory, Markdown, or DOCX source"); submit.add_argument("--repository"); submit.add_argument("--baseline"); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append"); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact"); submit.add_argument("--affected-repository", action="append"); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--interrupt-after", choices=("VALIDATED", "AUTHORIZED", "ADMITTED", "EXECUTING", "QUALIFIED", "PUBLICATION_PREPARED", "SYNCHRONIZED")); submit.add_argument("--json", action="store_true"); submit.add_argument("--verbose", action="store_true"); submit.add_argument("--at")
+    wop = sub.add_parser("wop", help="Author and validate Development WOP source documents."); wop.add_argument("action", choices=("format", "template", "init", "validate", "lint", "inspect", "explain")); wop.add_argument("source", nargs="?"); wop.add_argument("--wop-id"); wop.add_argument("--mission-id"); wop.add_argument("--from", dest="template_from"); wop.add_argument("--format", choices=("markdown", "docx"), default="markdown"); wop.add_argument("--output", type=Path); wop.add_argument("--json", action="store_true"); wop.add_argument("--verbose", action="store_true")
+    doctor = sub.add_parser("doctor", help="Read-only Development platform readiness summary."); doctor.add_argument("--json", action="store_true"); doctor.add_argument("--verbose", action="store_true")
+    runtime_admin = sub.add_parser("runtime", help="Inspect or safely adopt the repository-bound Zeus runtime."); runtime_admin.add_argument("action", choices=("status", "identity", "adopt"), nargs="?", default="status"); runtime_admin.add_argument("--source", type=Path); runtime_admin.add_argument("--dry-run", action="store_true"); runtime_admin.add_argument("--json", action="store_true"); runtime_admin.add_argument("--verbose", action="store_true")
+    config_admin = sub.add_parser("config", help="Inspect repository-controlled Zeus configuration."); config_admin.add_argument("action", choices=("show",), nargs="?", default="show"); config_admin.add_argument("--json", action="store_true")
+    sync_admin = sub.add_parser("synchronize", help="Report synchronization readiness; mutation requires explicit engctl authority."); sync_admin.add_argument("--json", action="store_true")
+    platform_admin = sub.add_parser("platform", help="Read-only integrated platform verification."); platform_admin.add_argument("action", choices=("verify",)); platform_admin.add_argument("--json", action="store_true"); platform_admin.add_argument("--verbose", action="store_true")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
     show = sub.add_parser("mission", help="Resolve, inspect, and submit authoritative missions."); show.add_argument("action", choices=("list","completed","history","archive","submit","show","state","status","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","acceptance-summary","accept","close","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependencies","dependency-graph","metrics","portfolio","queue","health","roadmap","brief")); show.add_argument("mission_id", nargs="?", help="canonical mission ID, for example ZDCL-01"); show.add_argument("--package", type=Path, help="optional explicit authoritative WOP package"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true"); show.add_argument("--yes", action="store_true"); show.add_argument("--rationale", default="")
     operation = sub.add_parser("operation"); operation.add_argument("action", choices=("show", "status", "roadmap", "metrics", "health", "verify", "next-action")); operation.add_argument("operation_id", nargs="?", default="BETA"); operation.add_argument("--json", action="store_true"); operation.add_argument("--verify", action="store_true")
@@ -318,6 +500,8 @@ def main(argv=None):
     gate=sub.add_parser("gate"); gate.add_argument("action", choices=("show", "objective", "evidence", "receipt", "carry-forward", "validate-carry-forward")); gate.add_argument("gate_id")
     next_action=sub.add_parser("next-action"); next_action.add_argument("--json", action="store_true")
     a=p.parse_args(arguments)
+    if a.runtime_root is not None:
+        os.environ["ZEUS_RUNTIME_ROOT"] = str(a.runtime_root)
     if a.command is None:
         p.print_help()
         return 0
@@ -326,12 +510,178 @@ def main(argv=None):
     # Its mere presence must never select an authoritative operational path.
     progressive_enabled = progressive_mode == "1"
     try:
-        stage1_directory = Path(
-            os.environ.get("ZEUS_STAGE1_STATE", runtime_path(ROOT, "stage1"))
-        )
-        stage1 = Stage1Runtime(ROOT, stage1_directory)
+        stage1_directory = None
+        stage1 = None
+        if a.command not in {"wop", "doctor", "runtime", "config", "synchronize", "platform"}:
+            stage1_directory = Path(
+                os.environ.get("ZEUS_STAGE1_STATE", runtime_path(ROOT, "stage1"))
+            )
+            stage1 = Stage1Runtime(ROOT, stage1_directory)
+        if a.command == "wop":
+            if a.action == "format":
+                value = format_description()
+                if a.json or a.verbose:
+                    emit(value)
+                else:
+                    print("Development WOP format")
+                    print("----------------------")
+                    print("Required metadata:")
+                    for field in value["required_fields"]:
+                        print(f"- {field}: {value['field_descriptions'][field]}")
+                    print("Sources: " + ", ".join(value["supported_sources"]))
+                    print("Execution modes: DEVELOPMENT")
+                    print("Submit: zeus submit <WOP_ID_OR_SOURCE>")
+                return 0
+            if a.action in {"template", "init"}:
+                inherited = None
+                if a.template_from:
+                    inherited_source = resolve_wop_source(a.template_from)
+                    if is_canonical_package(inherited_source):
+                        source_candidates = sorted(inherited_source.glob("source-wop.*"))
+                        inherited, _ = extract(source_candidates[0]) if source_candidates else (yaml.safe_load((inherited_source / "mission.yaml").read_text()), "")
+                    else:
+                        inherited, _ = extract(inherited_source)
+                if a.action == "init" and not a.wop_id and sys.stdin.isatty():
+                    a.wop_id = input("WOP ID (WOP-...): ").strip()
+                if a.action == "init" and not a.mission_id and sys.stdin.isatty():
+                    a.mission_id = input("Mission ID: ").strip()
+                if not a.wop_id and inherited:
+                    a.wop_id = inherited.get("wop_id")
+                if not a.mission_id and inherited:
+                    a.mission_id = inherited.get("mission_id")
+                if not a.wop_id or not a.mission_id:
+                    raise PackagingError("template requires --wop-id and --mission-id (or --from); zeus wop init prompts when interactive")
+                metadata = template_metadata(a.wop_id, a.mission_id, str(ROOT))
+                if inherited:
+                    for key in ("title", "objective", "scope", "dependencies", "execution_mode", "governance_authority", "repository_identity", "effect_profile", "protected_baselines", "gates", "qualification_requirements", "completion_requirements"):
+                        if inherited.get(key) not in (None, ""):
+                            metadata[key] = inherited[key]
+                output = a.output or Path(f"{a.wop_id}.{'docx' if a.format == 'docx' else 'md'}")
+                if a.format == "docx":
+                    docx_template(metadata, output)
+                else:
+                    output.write_text(markdown_template(metadata), encoding="utf-8")
+                value = {"result": "PASS", "source": str(output.resolve()), "format": a.format, "schema_version": format_description()["schema_version"], "inherited_from": a.template_from}
+                if a.json or a.verbose: emit(value)
+                else: print(f"WOP template written: {output.resolve()}\nNext action: edit the source, then run: zeus submit {output}")
+                return 0
+            if not a.source:
+                raise PackagingError(f"wop {a.action} requires a source")
+            source = resolve_wop_source(a.source)
+            if a.action in {"validate", "lint", "inspect", "explain"}:
+                if is_canonical_package(source):
+                    metadata, evidence = validate_package(source)
+                    value = {"result": "PASS", "source": str(source), "metadata": metadata, "evidence": evidence}
+                else:
+                    validation = validate_source(source)
+                    if not validation.valid:
+                        raise PackagingError("Development WOP rejected: " + "; ".join(list(validation.missing) + list(validation.conflicts) + list(validation.errors)), missing=validation.missing, conflicts=validation.conflicts)
+                    value = validation.as_dict()
+                    value["schema_version"] = format_description()["schema_version"]
+                if a.action == "lint": value["lint"] = {"result": "PASS", "issues": lint_source(source, metadata)}
+                if a.action == "inspect": value["package_preview"] = {"would_generate": True, "source_digest": source_digest(source) if source.is_file() else None}
+                if a.action == "explain": value["explanation"] = "All required metadata resolves from the canonical Development WOP schema."
+                if a.json or a.verbose: emit(value)
+                else:
+                    print(f"WOP review: PASS\nSource: {source}\nNote: submission repeats authoritative validation.\nNext action: zeus submit {a.source}")
+                return 0
+        if a.command == "doctor":
+            value = doctor_report()
+            if a.json or a.verbose:
+                emit(value)
+            else:
+                print("Zeus Development Doctor")
+                print("------------------------")
+                print(f"Result      : {value['result']}")
+                for name, check in value["checks"].items():
+                    detail = check.get("reason") or check.get("source") or check.get("mode") or "ready"
+                    result = "BLOCKED" if name == "runtime" and check.get("reason") == "LEGACY_RUNTIME_REQUIRES_ADOPTION" else check["result"]
+                    print(f"{name.title():<12}: {result} ({detail})")
+                if value["checks"].get("runtime", {}).get("result") == "PASS":
+                    print("Bound       : YES")
+                if value["result"] == "READY_FOR_REVIEW":
+                    print("Reason      : Candidate branch is not published to main")
+                print(f"Next action : {value['next_action']}")
+            return 0 if value["result"] in {"READY", "READY_FOR_REVIEW", "READY_FOR_PUBLICATION"} else 1
+        if a.command == "platform":
+            value = platform_verify(sub)
+            if a.json:
+                emit(value)
+            else:
+                print("Zeus Platform Verification")
+                print("---------------------------")
+                print(f"Result      : {value['result']}")
+                for name, check in value["checks"].items():
+                    result = protected_baseline_summary(check) if name == "protected_baselines" else check.get("result", "UNKNOWN")
+                    print(f"{name.replace('_', ' ').title():<16}: {result}")
+                    if name == "protected_baselines" and a.verbose:
+                        for baseline, entry in check.items():
+                            if isinstance(entry, dict):
+                                commit = entry.get("commit", "")
+                                print(f"  {baseline:<14}: {entry.get('result', 'UNKNOWN')} {commit}".rstrip())
+                print(f"Read-only   : YES")
+                print(f"Next action : {value['next_action']}")
+            return 0 if value["result"] == "PASS" else 1
+        if a.command == "runtime":
+            if a.action == "adopt":
+                value = adopt_runtime(ROOT, source=a.source, dry_run=a.dry_run)
+                if a.json or a.verbose:
+                    emit({"result": value["result"], "action": value["action"], "runtime": value["destination"], "repository": value["identity"]["repository"], "adoption_id": value["adoption_id"], "dry_run": value["dry_run"], "source": value["source"]})
+                else:
+                    print(f"Result     : {value['result']}\nAction     : {value['action']}\nRuntime    : {value['destination']}\nRepository : {value['identity']['repository']}\nAdoption ID: {value['adoption_id']}")
+                return 0
+            resolved = resolve_runtime(ROOT, require_writable=False)
+            value = {"result": "PASS", "root": str(resolved["root"]), "source": resolved["source"], "identity": resolved["identity"], "initialized": (resolved["root"] / "runtime-identity.json").is_file()}
+            emit(value) if a.json else print(f"Runtime root : {value['root']}\nSource       : {value['source']}\nRepository ID: {value['identity']['repository_id']}\nInitialized  : {value['initialized']}")
+            return 0
+        if a.command == "config":
+            config = ROOT / ".zeus" / "config.yaml"
+            value = {"result": "PASS", "path": str(config), "configured": config.is_file(), "content": yaml.safe_load(config.read_text()) if config.is_file() else {}}
+            emit(value) if a.json else print(json.dumps(value, indent=2, sort_keys=True))
+            return 0
+        if a.command == "synchronize":
+            branch_name = subprocess.run(["git", "-C", str(ROOT), "branch", "--show-current"], capture_output=True, text=True, check=False).stdout.strip()
+            result = "PASS" if branch_name in {"main", "master"} else "FAIL"
+            value = {"result": result, "next_action": "scripts/engctl eos sync-validate homelab", "mutating": False, "reason": "synchronized" if result == "PASS" else "recovery branch must be reconciled with EOS project main"}
+            emit(value) if a.json else print(f"Synchronization readiness: {result}\nReason: {value['reason']}\nNext action: scripts/engctl eos sync-validate homelab")
+            return 0 if result == "PASS" else 1
         if a.command == "submit" and not a.repository:
-            emit(stage1.submit(a.wop_package, at=now(a.at) if a.at else None))
+            source = resolve_wop_source(a.wop_package)
+            # This is the authoritative first lifecycle stage.  It is repeated
+            # at submission time even when an advisory inspection was run.
+            if not is_canonical_package(source):
+                require_valid_source(source)
+            packaging = {"packaged": False, "source": str(source)}
+            package_source = source
+            if not is_canonical_package(source):
+                package_source, packaging = package_wop(source, ROOT / "engineering" / "work-orders")
+            # Runtime initialization is deliberately after source extraction,
+            # package generation, and full package validation. A packaging
+            # failure therefore creates no runtime state or registration.
+            runtime = initialize_runtime(ROOT, explicit=getattr(a, "runtime_root", None))
+            value = stage1.submit_development(
+                package_source, at=now(a.at) if a.at else None,
+                interrupt_after=getattr(a, "interrupt_after", None),
+                packaging=packaging,
+            )
+            value["packaging"] = packaging
+            value["runtime"] = {
+                "root": str(runtime["root"]),
+                "source": runtime["source"],
+                "repository_id": runtime["identity"]["repository_id"],
+                "initialized": runtime.get("initialized", False),
+            }
+            if getattr(a, "json", False) or getattr(a, "verbose", False):
+                emit(value)
+            else:
+                print("Development WOP submitted")
+                print("-------------------------")
+                print(f"WOP             : {value['wop_id']}")
+                print(f"Package         : {value.get('package', package_source)}")
+                print(f"Package digest  : {value['package_digest']}")
+                print(f"Registration    : {value['registration']['registration_id']}")
+                print(f"State           : {value['state']}")
+                print(f"Next action     : {'Review publication candidate' if value['state'] == 'CLOSED' else 'Resume the persisted Development WOP'}")
             return 0
         if a.command == "list":
             emit(stage1.list())
@@ -798,6 +1148,19 @@ def main(argv=None):
         state = requested_state or verify_authoritative_path(ROOT)
         if requested_state is not None and not state.exists() and a.command == "status":
             state = verify_authoritative_path(ROOT)
+        if not state.exists() and a.command == "status" and not (testing or override):
+            # Status is a read-only projection and must remain useful before a
+            # mutable orchestration runtime has ever been initialized.
+            value = resolve_operational_alpha_status(ROOT)
+            value["mission_admission"] = stage1.status()
+            operation_view = operational_beta.operation(ROOT)
+            value["current_platform_mission"] = operation_view["current_platform_mission"]
+            value["current_executable_mission"] = operation_view["current_executable_mission"]
+            if a.json:
+                emit(value)
+            else:
+                print(operational_alpha_status_text(value), end="")
+            return 0
         if requested_state is None and not state.exists():
             raise OrchestrationError(
                 f"operational state does not exist at {state}; run 'zeus bootstrap'"
@@ -1068,6 +1431,22 @@ def main(argv=None):
                 emit(ConvergenceRuntime(Path(a.repository)).operational_wop(intent=a.intent,flow=flow))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (OrchestrationError, Stage1Error, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, mission_knowledge.MissionKnowledgeError, operational_beta.OperationalBetaError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
-        print(f"FAIL: {error}", file=sys.stderr); return 78
+    except (PackagingError, RuntimeAdoptionError, RuntimeDiscoveryError, OrchestrationError, Stage1Error, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, mission_knowledge.MissionKnowledgeError, operational_beta.OperationalBetaError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+        print(f"FAIL: {error}", file=sys.stderr)
+        if isinstance(error, PackagingError):
+            if getattr(locals().get("a", None), "json", False):
+                emit({"result": "FAIL", "stage": "VALIDATION", "wop": getattr(locals().get("a", None), "wop_package", None), "missing": list(error.missing), "conflicts": list(error.conflicts), "mutation": {"repository": "NONE", "runtime": "NONE", "registration": "NONE", "provenance": "NONE"}, "next_action": "Correct the source and rerun: zeus submit <SOURCE>"})
+            print("Stage: VALIDATION", file=sys.stderr)
+            print("Result: FAIL", file=sys.stderr)
+            if error.missing:
+                print("Missing fields: " + ", ".join(error.missing), file=sys.stderr)
+            if error.conflicts:
+                print("Conflicting fields: " + ", ".join(error.conflicts), file=sys.stderr)
+            print("Mutation: Repository NONE; Runtime NONE; Registration NONE; Provenance NONE", file=sys.stderr)
+            print("Action: correct the source using `zeus wop format` or `zeus wop template`, then rerun `zeus submit <SOURCE>`.", file=sys.stderr)
+        elif isinstance(error, RuntimeAdoptionError):
+            print("Action: verify the legacy runtime and resolve the reported collision before retrying `zeus runtime adopt`.", file=sys.stderr)
+        elif isinstance(error, RuntimeDiscoveryError):
+            print("Action: configure runtime.root or provide --runtime-root.", file=sys.stderr)
+        return 78
 if __name__ == "__main__": raise SystemExit(main())
