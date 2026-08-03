@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "fixture_id": "OA-05-CAPABILITY-REGISTRY-QUALIFICATION-2026-07-31",
+  "active_gate": "OA-06",
+  "capability_count": 5,
+  "capability_ids": [
+    "ZEUS-OA-CAP-001",
+    "ZEUS-OA-CAP-002",
+    "ZEUS-OA-CAP-003",
+    "ZEUS-OA-CAP-004",
+    "ZEUS-OA-CAP-005"
+  ],
+  "source": "Frozen OA-05 qualification state; never read from live registry"
+}
