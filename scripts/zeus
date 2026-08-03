@@ -681,7 +681,10 @@ def main(argv=None):
                 print(f"Package digest  : {value['package_digest']}")
                 print(f"Registration    : {value['registration']['registration_id']}")
                 print(f"State           : {value['state']}")
-                print(f"Next action     : {'Review publication candidate' if value['state'] == 'CLOSED' else 'Resume the persisted Development WOP'}")
+                next_action = value.get("next_action")
+                if not next_action:
+                    next_action = "Review publication candidate" if value["state"] == "CLOSED" else "Resume the persisted Development WOP"
+                print(f"Next action     : {next_action}")
             return 0
         if a.command == "list":
             emit(stage1.list())

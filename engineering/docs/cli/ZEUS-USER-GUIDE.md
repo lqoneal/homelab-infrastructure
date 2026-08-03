@@ -97,6 +97,14 @@ A Governance-admitted submission is projected through `VALIDATING`, `ADMITTED`,
 and `STAGED`. These runtime labels do not authorize an execution agent to
 admit, revoke, or activate a mission.
 
+For Development submissions, lifecycle phases are derived from immutable
+receipts rather than projected milestones. If no qualified executor is
+available, `zeus submit` stops at `AWAITING_EXECUTION_DISPATCH` and reports
+`Dispatch to a qualified Development execution agent`. It does not report
+execution, qualification, publication, synchronization, or closeout without
+the corresponding receipts. This Development boundary does not require a
+Mission Contract.
+
 ## Execution status and recovery
 
 For one active execution, the execution identifier is resolved automatically:

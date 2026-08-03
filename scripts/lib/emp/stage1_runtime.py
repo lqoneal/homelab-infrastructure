@@ -31,8 +31,8 @@ class Stage1Error(ValueError):
         super().__init__(message)
 
 
-ACTIVE_STATES = {"VALIDATING", "ADMITTED", "STAGED", "VALIDATED", "AUTHORIZED", "EXECUTING", "QUALIFIED", "PUBLICATION_PREPARED", "SYNCHRONIZED", "INTERRUPTED", "BLOCKED"}
-MISSION_STATES = ("VALIDATING", "REJECTED", "ADMITTED", "STAGED", "VALIDATED", "AUTHORIZED", "EXECUTING", "QUALIFIED", "PUBLICATION_PREPARED", "SYNCHRONIZED", "INTERRUPTED", "BLOCKED", "CLOSED")
+ACTIVE_STATES = {"VALIDATING", "ADMITTED", "STAGED", "VALIDATED", "PACKAGED", "REGISTERED", "AUTHORIZED", "AWAITING_EXECUTION_DISPATCH", "DISPATCHED", "EXECUTING", "QUALIFYING", "QUALIFIED", "PUBLICATION_READY", "PUBLISHED", "SYNCHRONIZING", "SYNCHRONIZED", "CLOSING", "INTERRUPTED", "BLOCKED"}
+MISSION_STATES = ("VALIDATING", "REJECTED", "ADMITTED", "STAGED", "VALIDATED", "PACKAGED", "REGISTERED", "AUTHORIZED", "AWAITING_EXECUTION_DISPATCH", "DISPATCHED", "EXECUTING", "QUALIFYING", "QUALIFIED", "PUBLICATION_READY", "PUBLISHED", "SYNCHRONIZING", "SYNCHRONIZED", "CLOSING", "INTERRUPTED", "BLOCKED", "CLOSED")
 MISSION_CONTRACT_FIELDS = (
     "mission_id",
     "wop_id",
@@ -117,6 +117,44 @@ class Stage1Store:
             raise Stage1Error(
                 f"runtime state lifecycle value invalid: {path.name}"
             )
+        if value.get("lifecycle_integrity") == "RECEIPT_BACKED_V1":
+            receipts = value.get("receipts")
+            if not isinstance(receipts, Mapping):
+                raise Stage1Error(f"receipt-backed runtime state has no receipt map: {path.name}")
+            receipt_phases = {
+                "validation": "VALIDATED", "packaging": "PACKAGED",
+                "registration": "REGISTERED", "authorization": "AUTHORIZED",
+                "admission": "ADMITTED", "dispatch": "DISPATCHED",
+                "execution": "EXECUTING", "independent_verification": "QUALIFIED",
+                "publication": "PUBLISHED", "synchronization": "SYNCHRONIZED",
+                "closeout": "CLOSED",
+            }
+            expected = [phase for key, phase in receipt_phases.items() if key in receipts]
+            if value.get("phases") != expected:
+                raise Stage1Error(f"receipt-backed lifecycle phases do not match receipts: {path.name}")
+            if value.get("state") in {"EXECUTING", "QUALIFIED", "PUBLICATION_READY", "PUBLISHED", "SYNCHRONIZED", "CLOSED"}:
+                required = {
+                    "EXECUTING": ("dispatch", "execution"),
+                    "QUALIFIED": ("dispatch", "execution", "independent_verification"),
+                    "PUBLICATION_READY": ("dispatch", "execution", "independent_verification", "publication"),
+                    "PUBLISHED": ("dispatch", "execution", "independent_verification", "publication"),
+                    "SYNCHRONIZED": ("dispatch", "execution", "independent_verification", "publication", "synchronization"),
+                    "CLOSED": ("dispatch", "execution", "independent_verification", "publication", "synchronization", "closeout"),
+                }[value["state"]]
+                missing = [key for key in required if key not in receipts]
+                if missing:
+                    raise Stage1Error(f"receipt-backed lifecycle state lacks receipts: {path.name}: {','.join(missing)}")
+                required_fields = {
+                    "dispatch": ("agent_id",),
+                    "execution": ("execution_id",),
+                    "independent_verification": ("result",),
+                    "publication": ("publication_id",),
+                    "synchronization": ("eos_checkpoint",),
+                    "closeout": ("closeout_report_digest",),
+                }
+                for key, fields in required_fields.items():
+                    if key in receipts and any(not receipts[key].get(field) for field in fields):
+                        raise Stage1Error(f"receipt-backed {key} receipt is incomplete: {path.name}")
         value["state_digest"] = supplied
         return value
 
@@ -309,12 +347,14 @@ class Stage1Runtime:
         *,
         resolver_factory: Callable[[Path], Any] = Resolver,
         operator_resolver: Callable[[], str] = getpass.getuser,
+        execution_executor: Callable[[Mapping[str, Any]], Mapping[str, Any]] | None = None,
     ):
         self.repository = Path(repository).resolve()
         self.store = Stage1Store(state_directory)
         self.events = EensPublisher(Path(state_directory) / "eens")
         self.resolver_factory = resolver_factory
         self.operator_resolver = operator_resolver
+        self.execution_executor = execution_executor
 
     def submit(self, source: Path | str, *, at: datetime | None = None) -> dict[str, Any]:
         timestamp = _utc(at)
@@ -449,7 +489,7 @@ class Stage1Runtime:
             prior = [item for item in self.store.all()
                      if item.get("wop_id") == str(metadata["wop_id"])
                      and item.get("package_digest") != package_digest
-                     and item.get("state") in {"CLOSED", "PUBLICATION_PREPARED", "SYNCHRONIZED"}]
+                     and item.get("state") not in {"REJECTED", "BLOCKED"}]
             if prior:
                 raise Stage1Error(
                     "source changed after an accepted package; explicit supersession is required",
@@ -465,7 +505,7 @@ class Stage1Runtime:
                 return existing
             operator = self.operator_resolver()
             record = {
-                "schema_version": 1, "instance_id": instance_id,
+                "schema_version": 2, "lifecycle_integrity": "RECEIPT_BACKED_V1", "instance_id": instance_id,
                 "mission_id": str(metadata["mission_id"]), "wop_id": str(metadata["wop_id"]),
                 "submitted_at": timestamp, "updated_at": timestamp, "operator": operator,
                 "repository": expected, "source": str(source_path), "state": "VALIDATED",
@@ -486,8 +526,13 @@ class Stage1Runtime:
                     "publication": bool(metadata.get("simulate_publication_failure")),
                     "synchronization": bool(metadata.get("simulate_synchronization_failure")),
                 },
-                "phases": [], "evidence": [], "failure": None,
+                "phases": [], "receipts": {}, "evidence": [], "failure": None,
             }
+            record["receipts"] = self._development_receipts(
+                record, metadata, package_digest, package_source=source_path,
+                package_evidence=package_evidence, packaging=packaging,
+                timestamp=timestamp,
+            )
             record = self._resume_development(record, baseline, protected, timestamp,
                                               interrupt_after=interrupt_after)
             record["idempotent_replay"] = False
@@ -496,47 +541,82 @@ class Stage1Runtime:
     def _resume_development(self, record: dict[str, Any], baseline: str,
                             protected: Mapping[str, str], timestamp: str,
                             *, interrupt_after: str | None = None) -> dict[str, Any]:
-        phases = ("VALIDATED", "AUTHORIZED", "ADMITTED", "EXECUTING", "QUALIFIED",
-                  "PUBLICATION_PREPARED", "SYNCHRONIZED", "CLOSED")
-        completed = list(record.get("phases", []))
-        for phase in phases:
-            if phase in completed:
-                continue
-            injected = record.get("failure_injection", {})
-            if phase == "PUBLICATION_PREPARED" and injected.get("publication"):
-                record["state"] = "BLOCKED"
-                record["failure"] = {"reason_code": "PUBLICATION_FAILURE", "phase": phase}
-                record["updated_at"] = timestamp
-                self.store.save(record)
-                return self.store.load_path(self.store._path(record["instance_id"]))
-            if phase == "SYNCHRONIZED" and injected.get("synchronization"):
-                record["state"] = "BLOCKED"
-                record["failure"] = {"reason_code": "SYNCHRONIZATION_FAILURE", "phase": phase}
-                record["updated_at"] = timestamp
-                self.store.save(record)
-                return self.store.load_path(self.store._path(record["instance_id"]))
-            current = subprocess.run(["git", "-C", str(self.repository), "rev-parse", "HEAD"],
-                                     text=True, capture_output=True, check=False).stdout.strip()
-            if current != baseline:
-                raise Stage1Error("repository drift detected during development submission",
-                                  evidence={"reason_code": "REPOSITORY_DRIFT", "expected": baseline, "observed": current})
-            for tag, value in protected.items():
-                observed = subprocess.run(["git", "-C", str(self.repository), "rev-parse", tag],
-                                          text=True, capture_output=True, check=False).stdout.strip()
-                if observed != value:
-                    raise Stage1Error("protected baseline changed during development submission",
-                                      evidence={"reason_code": "PROTECTED_BASELINE_MUTATION", "tag": tag})
-            completed.append(phase)
-            record["phases"] = completed
-            record["state"] = phase
+        current = subprocess.run(["git", "-C", str(self.repository), "rev-parse", "HEAD"],
+                                 text=True, capture_output=True, check=False).stdout.strip()
+        if current != baseline:
+            raise Stage1Error("repository drift detected during development submission",
+                              evidence={"reason_code": "REPOSITORY_DRIFT", "expected": baseline, "observed": current})
+        for tag, value in protected.items():
+            observed = subprocess.run(["git", "-C", str(self.repository), "rev-parse", tag],
+                                      text=True, capture_output=True, check=False).stdout.strip()
+            if observed != value:
+                raise Stage1Error("protected baseline changed during development submission",
+                                  evidence={"reason_code": "PROTECTED_BASELINE_MUTATION", "tag": tag})
+        receipts = record.setdefault("receipts", {})
+        phase_receipts = (
+            ("VALIDATED", "validation"), ("PACKAGED", "packaging"),
+            ("REGISTERED", "registration"), ("AUTHORIZED", "authorization"),
+            ("ADMITTED", "admission"), ("DISPATCHED", "dispatch"),
+            ("EXECUTING", "execution"), ("QUALIFIED", "independent_verification"),
+            ("PUBLICATION_READY", "publication"), ("PUBLISHED", "publication"),
+            ("SYNCHRONIZED", "synchronization"), ("CLOSED", "closeout"),
+        )
+        completed = [phase for phase, receipt_key in phase_receipts if receipt_key in receipts]
+        record["phases"] = completed
+        if self.execution_executor is None and "dispatch" not in receipts:
+            record["state"] = "AWAITING_EXECUTION_DISPATCH"
+            record["next_action"] = "Dispatch to a qualified Development execution agent"
+            record["pending_phase"] = "DISPATCHED"
             record["updated_at"] = timestamp
             self.store.save(record)
-            if interrupt_after == phase:
-                record["state"] = "INTERRUPTED"
-                record["interrupted_at"] = timestamp
+            return self.store.load_path(self.store._path(record["instance_id"]))
+        # The execution boundary is deliberately explicit. A caller must
+        # provide a qualified executor that returns receipt-bound results;
+        # package creation never implies dispatch or execution.
+        if "dispatch" not in receipts:
+            result = self.execution_executor(record)
+            if not isinstance(result, Mapping) or not result.get("dispatch_receipt"):
+                record["state"] = "AWAITING_EXECUTION_DISPATCH"
+                record["next_action"] = "Dispatch to a qualified Development execution agent"
+                record["pending_phase"] = "DISPATCHED"
+                record["updated_at"] = timestamp
                 self.store.save(record)
                 return self.store.load_path(self.store._path(record["instance_id"]))
+            dispatch = dict(result["dispatch_receipt"])
+            if not dispatch.get("agent_id"):
+                record["state"] = "AWAITING_EXECUTION_DISPATCH"
+                record["next_action"] = "Dispatch to a qualified Development execution agent"
+                record["pending_phase"] = "DISPATCHED"
+                record["updated_at"] = timestamp
+                self.store.save(record)
+                return self.store.load_path(self.store._path(record["instance_id"]))
+            receipts["dispatch"] = dispatch
+            receipts.update({key: dict(value) for key, value in result.get("receipts", {}).items()})
+        record["phases"] = [phase for phase, receipt_key in phase_receipts if receipt_key in receipts]
+        record["state"] = record["phases"][-1] if record["phases"] else "VALIDATED"
+        record["next_action"] = "Continue from the first lifecycle phase without a receipt"
+        record["updated_at"] = timestamp
+        self.store.save(record)
         return self.store.load_path(self.store._path(record["instance_id"]))
+
+    def _development_receipts(self, record: Mapping[str, Any], metadata: Mapping[str, Any],
+                              package_digest: str, *, package_source: Path,
+                              package_evidence: Mapping[str, Any],
+                              packaging: Mapping[str, Any] | None, timestamp: str) -> dict[str, Any]:
+        """Create only receipts proven by source/package acceptance."""
+        def receipt(kind: str, payload: Mapping[str, Any]) -> dict[str, Any]:
+            value = {"schema_version": 1, "receipt_type": kind, **dict(payload), "timestamp": timestamp}
+            value["receipt_id"] = f"ZEUS-RECEIPT-{kind.upper()}-{_digest(value)[:24]}"
+            value["receipt_digest"] = _digest(value)
+            return value
+        source_digest = hashlib.sha256(package_source.read_bytes()).hexdigest() if package_source.is_file() else self._tree_digest(package_source)
+        return {
+            "validation": receipt("validation", {"source": str(package_source), "source_digest": source_digest, "validator": "stage1.validate_package", "result": package_evidence.get("result", "PASS"), "failures": package_evidence.get("failures", [])}),
+            "packaging": receipt("packaging", {"package": record.get("package"), "package_digest": package_digest, "source_digest": source_digest, "transactional_promotion": bool((packaging or {}).get("packaged", False))}),
+            "registration": receipt("registration", {"registration_id": record["registration"]["registration_id"], "wop_id": record["wop_id"], "package_digest": package_digest, "repository_baseline": record["repository_baseline"]}),
+            "authorization": receipt("authorization", {"authority": "Engineering Governance", "decision": record["authorization"]["decision"], "effect_profile": record["effect_profile"], "repository": record["repository"], "protected_baselines": record["protected_baselines"]}),
+            "admission": receipt("admission", {"admission_id": f"EMM-DEV-ADMISSION-{package_digest[:24]}", "wop_id": record["wop_id"], "execution_mode": "DEVELOPMENT", "executor_requirements": ["qualified Development execution agent"], "effect_profile": record["effect_profile"]}),
+        }
 
     def status(self) -> dict[str, Any]:
         missions = self.store.all()

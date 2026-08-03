@@ -22,10 +22,13 @@ class DevelopmentModeRecoveryTests(unittest.TestCase):
     def runtime(self, directory):
         return Stage1Runtime(ROOT, directory, operator_resolver=lambda: "loneal")
 
-    def test_valid_submission_generates_authority_and_closes(self):
+    def test_valid_submission_stops_before_unsubstantiated_execution(self):
         with tempfile.TemporaryDirectory() as temporary:
             result = self.runtime(Path(temporary) / "stage1").submit_development(FIXTURE)
-            self.assertEqual(result["state"], "CLOSED")
+            self.assertEqual(result["state"], "AWAITING_EXECUTION_DISPATCH")
+            self.assertEqual(result["phases"], ["VALIDATED", "PACKAGED", "REGISTERED", "AUTHORIZED", "ADMITTED"])
+            self.assertEqual(result["next_action"], "Dispatch to a qualified Development execution agent")
+            self.assertNotIn("execution", result["receipts"])
             self.assertEqual(result["execution_mode"], "DEVELOPMENT")
             self.assertEqual(result["authorization"]["authority"], "Engineering Governance")
             self.assertTrue(result["registration"]["registration_id"].startswith("EMM-DEV-"))
@@ -44,10 +47,41 @@ class DevelopmentModeRecoveryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             runtime = self.runtime(Path(temporary) / "stage1")
             interrupted = runtime.submit_development(FIXTURE, interrupt_after="QUALIFIED")
-            self.assertEqual(interrupted["state"], "INTERRUPTED")
+            self.assertEqual(interrupted["state"], "AWAITING_EXECUTION_DISPATCH")
             resumed = runtime.submit_development(FIXTURE)
-            self.assertEqual(resumed["state"], "CLOSED")
-            self.assertEqual(resumed["phases"][-1], "CLOSED")
+            self.assertEqual(resumed["state"], "AWAITING_EXECUTION_DISPATCH")
+            self.assertEqual(resumed["phases"][-1], "ADMITTED")
+
+    def test_receipts_are_required_for_downstream_phases(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            result = self.runtime(Path(temporary) / "stage1").submit_development(FIXTURE)
+            self.assertEqual(set(result["receipts"]), {"validation", "packaging", "registration", "authorization", "admission"})
+            self.assertNotIn("dispatch", result["receipts"])
+            self.assertNotIn("qualification", result["receipts"])
+            self.assertNotIn("publication", result["receipts"])
+            self.assertNotIn("synchronization", result["receipts"])
+            self.assertNotIn("closeout", result["receipts"])
+
+    def test_receipt_backed_store_rejects_false_terminal_state(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime = self.runtime(Path(temporary) / "stage1")
+            result = runtime.submit_development(FIXTURE)
+            forged = copy.deepcopy(result)
+            forged["state"] = "CLOSED"
+            forged["phases"] = forged["phases"] + ["CLOSED"]
+            runtime.store.save(forged)
+            with self.assertRaises(Stage1Error):
+                runtime.store.find(result["instance_id"])
+
+    def test_unqualified_dispatch_result_stays_pending(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            runtime = Stage1Runtime(
+                ROOT, Path(temporary) / "stage1", operator_resolver=lambda: "loneal",
+                execution_executor=lambda _record: {"dispatch_receipt": {"receipt_id": "missing-agent"}},
+            )
+            result = runtime.submit_development(FIXTURE)
+            self.assertEqual(result["state"], "AWAITING_EXECUTION_DISPATCH")
+            self.assertNotIn("dispatch", result["receipts"])
 
     def test_invalid_submission_has_no_state_mutation(self):
         with tempfile.TemporaryDirectory() as temporary:
