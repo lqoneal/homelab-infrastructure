@@ -126,3 +126,19 @@ execution publication.
 
 Execution remains deferred until a separately implemented Stage 2 dispatcher
 consumes staged records.
+
+## Development lifecycle integrity
+
+Development submission records use receipt-backed lifecycle projection. Source
+validation, transactional packaging, registration, authorization, and
+admission each require a corresponding receipt. Downstream phases are never
+simulated by submission: `EXECUTING` requires dispatch and execution
+identities, `QUALIFIED` requires independent-verification evidence, publication
+and synchronization require their respective records, and `CLOSED` requires a
+completion receipt referencing its predecessors.
+
+When no qualified Development executor is available, the truthful terminal
+projection is `AWAITING_EXECUTION_DISPATCH` with next action `Dispatch to a
+qualified Development execution agent`. Development does not acquire a
+Mission Contract prerequisite through this boundary. Historical false-closure
+records remain immutable defect evidence.
