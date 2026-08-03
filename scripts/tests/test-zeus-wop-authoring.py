@@ -3,6 +3,7 @@ import sys
 import tempfile
 import unittest
 import os
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -13,6 +14,67 @@ from scripts.lib.emp.wop_schema import REQUIRED_FIELDS, format_description
 
 
 class WopAuthoringTests(unittest.TestCase):
+    def test_lint_uses_canonical_metadata_and_is_deterministic(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            metadata = template_metadata("WOP-LINT-001", "LINT-01", str(ROOT))
+            source = root / "valid.md"
+            source.write_text(markdown_template(metadata), encoding="utf-8")
+            command = [sys.executable, str(ROOT / "scripts" / "zeus"), "wop", "lint", str(source), "--json"]
+            first = subprocess.run(command, capture_output=True, text=True, check=False)
+            second = subprocess.run(command, capture_output=True, text=True, check=False)
+            self.assertEqual(first.returncode, 0, first.stderr)
+            self.assertEqual(second.returncode, 0, second.stderr)
+            self.assertEqual(json.loads(first.stdout), json.loads(second.stdout))
+            self.assertEqual(json.loads(first.stdout)["lint"]["result"], "PASS")
+
+    def test_lint_invalid_metadata_is_controlled_and_non_mutating(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "incomplete.md"
+            source.write_text("WOP ID: WOP-LINT-BAD-001\nMission ID: LINT-BAD-01\n", encoding="utf-8")
+            before = source.read_bytes()
+            result = subprocess.run(
+                [sys.executable, str(ROOT / "scripts" / "zeus"), "wop", "lint", str(source), "--json"],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 78)
+            self.assertNotIn("Traceback", result.stderr)
+            value = json.loads(result.stdout)
+            self.assertEqual(value["result"], "FAIL")
+            self.assertIn("title", value["lint"]["issues"])
+            self.assertEqual(source.read_bytes(), before)
+
+    def test_lint_malformed_input_fails_cleanly(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary) / "malformed.md"
+            source.write_bytes(b"\xff\xfe\x00")
+            result = subprocess.run(
+                [sys.executable, str(ROOT / "scripts" / "zeus"), "wop", "lint", str(source)],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 78)
+            self.assertNotIn("Traceback", result.stderr)
+            self.assertIn("Issue:", result.stdout)
+
+    def test_lint_human_and_json_share_result(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            metadata = template_metadata("WOP-LINT-PARITY-001", "LINT-PARITY-01", str(ROOT))
+            source = Path(temporary) / "parity.md"
+            source.write_text(markdown_template(metadata), encoding="utf-8")
+            human = subprocess.run(
+                [sys.executable, str(ROOT / "scripts" / "zeus"), "wop", "lint", str(source)],
+                capture_output=True, text=True, check=False,
+            )
+            machine = subprocess.run(
+                [sys.executable, str(ROOT / "scripts" / "zeus"), "wop", "lint", str(source), "--json"],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(human.returncode, 0, human.stderr)
+            self.assertEqual(machine.returncode, 0, machine.stderr)
+            self.assertIn("WOP review: PASS", human.stdout)
+            self.assertEqual(json.loads(machine.stdout)["lint"]["result"], "PASS")
+
     def test_format_is_schema_driven(self):
         value = format_description()
         self.assertEqual(value["required_fields"], list(REQUIRED_FIELDS))
