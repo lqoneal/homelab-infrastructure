@@ -51,6 +51,12 @@ zeus mission prerequisites <MISSION_ID>
 zeus mission dependencies <MISSION_ID>
 zeus mission metrics <MISSION_ID>
 zeus mission verify <MISSION_ID>
+zeus mission next
+zeus mission recommend
+zeus mission health
+zeus mission authority <MISSION_ID>
+zeus mission contract <MISSION_ID>
+zeus mission snapshot <MISSION_ID>
 ```
 
 Alpha inspection commands remain available through their existing
@@ -62,7 +68,9 @@ missions are historical projections and are exposed only by the completed,
 history, or archive views.
 
 Mission queue inspection remains on the existing EMP/Zeus orchestration and
-Mission Knowledge Model path. It is a read-only projection and does not create
+Beta selection path. `list`, `queue`, `next`, `recommend`, and `health` share
+one canonical Beta selector; on the current roadmap they identify `CAGF-01` as
+the recommended eligible mission. They are read-only projections and do not create
 a parallel queue, scheduler, admission store, or lifecycle authority. See
 `ZEUS-MISSION-QUEUE-AND-SCHEDULING.md` for the ownership and fail-closed
 contract.
@@ -77,9 +85,14 @@ metrics are not stored as authority and cannot repair a source conflict.
 
 ## Next action
 
-The published BETA-00 assessment and roadmap identify `ZDCL-01` as the first
-implementation candidate. The controller reports that recommendation as a
-projection only; a separately authorized and resolved WOP remains required.
+The completed ZDCL-01 predecessor makes `CAGF-01` the current Beta
+recommendation. The controller reports that recommendation as a projection
+only; a separately authorized and resolved WOP remains required.
+
+The Beta authority, contract, and snapshot views for a mission are read-only
+inspection projections. They expose roadmap scope, dependencies, authority,
+readiness, and the canonical next action without creating a Mission Contract,
+admission, execution, or lifecycle transition.
 
 ## Mission-oriented WOP submission
 
