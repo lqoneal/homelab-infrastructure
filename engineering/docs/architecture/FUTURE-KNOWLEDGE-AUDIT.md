@@ -27,6 +27,8 @@ Canonical source: controlled documentation and declared authority owners
 | Operation Beta roadmap | Planning | Operation Beta authority | EMP/Governance | Controlled | Manual | Candidate input |
 | BETA-04 activation record | Normative / Canonical | Published authority chain | Engineering Governance | Active | Manual publication | No; source |
 | Zeus runtime root selection | Runtime State | Operator configuration | Zeus runtime | Operational | Runtime | No; source |
+| Zeus automatic runtime discovery | Runtime State | Canonical resolver plus repository identity marker | Zeus runtime | Operational | Runtime | No; source |
+| Development WOP authoring contract | Controlled Interface | Schema-driven format, template, and validation commands | Zeus | Operational | Source WOP | No; source |
 | EOS workspace selection | Runtime State | Operator configuration | EOS runtime | Operational | Runtime | No; source |
 | Mission terminology projection | Projection | Canonical mission resolver | Zeus | Derived | Generated/read-only | Yes |
 | Native Zeus session | Runtime State | Mission contract + admission + execution | Zeus runtime | Operational | Runtime | No; derived authority binding |
@@ -47,3 +49,4 @@ Future closeouts must prove active/history projection separation. The bounded
 ZDCL-01 handler is qualified; the no-side-effect qualification reference handler
 is retained. Human-first raw-output suppression and publication-controller
 automation remain deferred platform work.
+| Zeus runtime adoption | Native transactional adoption is required for legacy state; no manual runtime identity edits. |

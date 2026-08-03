@@ -4,6 +4,10 @@ Status: BETA-04 normative specification
 
 Zeus controllers shall consume one canonical resolved projection. They shall not search runtime records independently, infer lifecycle, or maintain a controller-owned queue, admission, execution, or mission state.
 
+Runtime discovery is also canonical: controllers consume the root selected by
+`runtime_paths.py`; they do not infer repository-local paths or require an
+exported `ZEUS_RUNTIME_ROOT` during normal Development Mode.
+
 ## Controller rules
 
 - Active controllers shall expose current admission and zero or one current execution only.

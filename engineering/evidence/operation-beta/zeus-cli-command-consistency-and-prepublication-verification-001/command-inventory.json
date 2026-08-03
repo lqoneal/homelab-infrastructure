@@ -1,0 +1,912 @@
+{
+  "accept": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--reject",
+      "--rationale",
+      "--at",
+      "--yes",
+      "--json"
+    ],
+    "positionals": [
+      {
+        "choices": null,
+        "name": "gate",
+        "required": true
+      }
+    ]
+  },
+  "admit-mission": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--admission-id",
+      "--mode",
+      "--intent",
+      "--mission",
+      "--phase",
+      "--work-item",
+      "--principal",
+      "--submitter",
+      "--submission-id",
+      "--repository",
+      "--at",
+      "--max-stages",
+      "--wop",
+      "--revision",
+      "--authority-record",
+      "--correlation-id",
+      "--human",
+      "--json"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "start",
+          "resume",
+          "status"
+        ],
+        "name": "action",
+        "required": true
+      }
+    ]
+  },
+  "agent": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--mission-class",
+      "--tool",
+      "--profile",
+      "--json"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "list",
+          "registry",
+          "status",
+          "qualify",
+          "revoke",
+          "select"
+        ],
+        "name": "action",
+        "required": true
+      },
+      {
+        "choices": null,
+        "name": "agent_id",
+        "required": false
+      }
+    ]
+  },
+  "approve": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--operator",
+      "--at",
+      "--yes"
+    ],
+    "positionals": [
+      {
+        "choices": null,
+        "name": "approval_id",
+        "required": true
+      }
+    ]
+  },
+  "assurance": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "capabilities"
+        ],
+        "name": "action",
+        "required": true
+      }
+    ]
+  },
+  "authority": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--wop",
+      "--revision",
+      "--action-name",
+      "--authority-record",
+      "--correlation-id"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "status",
+          "work-lifecycle",
+          "show",
+          "resolve",
+          "validate"
+        ],
+        "name": "action",
+        "required": true
+      }
+    ]
+  },
+  "bootstrap": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": []
+  },
+  "capabilities": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": []
+  },
+  "capability": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--json",
+      "--verify"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "list",
+          "show",
+          "verify",
+          "history",
+          "diff"
+        ],
+        "name": "action",
+        "required": true
+      },
+      {
+        "choices": null,
+        "name": "identifier",
+        "required": false
+      },
+      {
+        "choices": null,
+        "name": "other",
+        "required": false
+      }
+    ]
+  },
+  "completion": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "show"
+        ],
+        "name": "action",
+        "required": true
+      },
+      {
+        "choices": null,
+        "name": "identifier",
+        "required": true
+      }
+    ]
+  },
+  "config": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--json"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "show"
+        ],
+        "name": "action",
+        "required": false
+      }
+    ]
+  },
+  "context": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "reconstruct"
+        ],
+        "name": "action",
+        "required": true
+      }
+    ]
+  },
+  "converse": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--context",
+      "--repository",
+      "--package",
+      "--rejection"
+    ],
+    "positionals": [
+      {
+        "choices": null,
+        "name": "request",
+        "required": true
+      }
+    ]
+  },
+  "decline": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--operator",
+      "--at"
+    ],
+    "positionals": [
+      {
+        "choices": null,
+        "name": "approval_id",
+        "required": true
+      }
+    ]
+  },
+  "dispatch": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--json"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "status",
+          "verify"
+        ],
+        "name": "action",
+        "required": true
+      }
+    ]
+  },
+  "dispatcher": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--identifier"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "status",
+          "agents",
+          "assignment",
+          "execution",
+          "eens",
+          "evidence",
+          "reconciliation"
+        ],
+        "name": "action",
+        "required": true
+      }
+    ]
+  },
+  "doctor": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--json",
+      "--verbose"
+    ],
+    "positionals": []
+  },
+  "eligibility": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "evaluate",
+          "show"
+        ],
+        "name": "action",
+        "required": true
+      },
+      {
+        "choices": null,
+        "name": "request",
+        "required": true
+      }
+    ]
+  },
+  "evidence": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "show"
+        ],
+        "name": "action",
+        "required": true
+      },
+      {
+        "choices": null,
+        "name": "identifier",
+        "required": true
+      }
+    ]
+  },
+  "execute-mission": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--admission-id",
+      "--execution-id",
+      "--reason",
+      "--at",
+      "--max-gates",
+      "--wop",
+      "--revision",
+      "--authority-record",
+      "--correlation-id"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "start",
+          "resume",
+          "status",
+          "suspend",
+          "cancel",
+          "session",
+          "evidence",
+          "handlers"
+        ],
+        "name": "action",
+        "required": true
+      }
+    ]
+  },
+  "execution": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--revision",
+      "--requested-action",
+      "--authority-record",
+      "--correlation-id"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "status",
+          "resolve",
+          "bootstrap-actions"
+        ],
+        "name": "action",
+        "required": true
+      },
+      {
+        "choices": null,
+        "name": "identifier",
+        "required": true
+      }
+    ]
+  },
+  "explain": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": [
+      {
+        "choices": null,
+        "name": "subject",
+        "required": true
+      },
+      {
+        "choices": null,
+        "name": "record",
+        "required": false
+      }
+    ]
+  },
+  "gate": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "show",
+          "objective",
+          "evidence",
+          "receipt",
+          "carry-forward",
+          "validate-carry-forward"
+        ],
+        "name": "action",
+        "required": true
+      },
+      {
+        "choices": null,
+        "name": "gate_id",
+        "required": true
+      }
+    ]
+  },
+  "generate-wop": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--mode",
+      "--mission",
+      "--phase",
+      "--repository",
+      "--submitter",
+      "--approval-authority",
+      "--approval-reference",
+      "--approval-date",
+      "--authority-node",
+      "--adr",
+      "--immutable-wop",
+      "--work-item",
+      "--principal",
+      "--at",
+      "--authority-record",
+      "--revision",
+      "--correlation-id"
+    ],
+    "positionals": [
+      {
+        "choices": null,
+        "name": "intent",
+        "required": true
+      }
+    ]
+  },
+  "health": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": []
+  },
+  "intro": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--status"
+    ],
+    "positionals": []
+  },
+  "lifecycle": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--revision"
+    ],
+    "positionals": [
+      {
+        "choices": null,
+        "name": "wop_id",
+        "required": true
+      }
+    ]
+  },
+  "list": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": []
+  },
+  "mission": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--package",
+      "--verify",
+      "--json",
+      "--yes",
+      "--rationale"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "list",
+          "completed",
+          "history",
+          "archive",
+          "submit",
+          "show",
+          "state",
+          "status",
+          "readiness",
+          "eligibility",
+          "blockers",
+          "contract",
+          "authority",
+          "next",
+          "snapshot",
+          "qualify",
+          "acceptance-summary",
+          "accept",
+          "close",
+          "requirements",
+          "preflight",
+          "verify",
+          "synchronization",
+          "recommend",
+          "explain",
+          "prerequisites",
+          "dependencies",
+          "dependency-graph",
+          "metrics",
+          "portfolio",
+          "queue",
+          "health",
+          "roadmap",
+          "brief"
+        ],
+        "name": "action",
+        "required": true
+      },
+      {
+        "choices": null,
+        "name": "mission_id",
+        "required": false
+      }
+    ]
+  },
+  "missions": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--repository",
+      "--baseline",
+      "--completed",
+      "--policy",
+      "--at"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "list",
+          "select"
+        ],
+        "name": "action",
+        "required": true
+      }
+    ]
+  },
+  "next-action": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--json"
+    ],
+    "positionals": []
+  },
+  "operation": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--json",
+      "--verify"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "show",
+          "status",
+          "roadmap",
+          "metrics",
+          "health",
+          "verify",
+          "next-action"
+        ],
+        "name": "action",
+        "required": true
+      },
+      {
+        "choices": null,
+        "name": "operation_id",
+        "required": false
+      }
+    ]
+  },
+  "orchestrate": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--json"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "status",
+          "verify"
+        ],
+        "name": "action",
+        "required": true
+      }
+    ]
+  },
+  "platform": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--json",
+      "--verbose"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "verify"
+        ],
+        "name": "action",
+        "required": true
+      }
+    ]
+  },
+  "policy": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "configure"
+        ],
+        "name": "action",
+        "required": true
+      },
+      {
+        "choices": null,
+        "name": "policy_id",
+        "required": true
+      }
+    ]
+  },
+  "qualification": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "show"
+        ],
+        "name": "action",
+        "required": true
+      },
+      {
+        "choices": null,
+        "name": "identifier",
+        "required": true
+      }
+    ]
+  },
+  "resume": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": []
+  },
+  "runtime": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--source",
+      "--dry-run",
+      "--json",
+      "--verbose"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "status",
+          "identity",
+          "adopt"
+        ],
+        "name": "action",
+        "required": false
+      }
+    ]
+  },
+  "show": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": [
+      {
+        "choices": null,
+        "name": "subject",
+        "required": true
+      }
+    ]
+  },
+  "state": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help"
+    ],
+    "positionals": []
+  },
+  "status": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--json"
+    ],
+    "positionals": []
+  },
+  "submit": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--repository",
+      "--baseline",
+      "--priority",
+      "--order",
+      "--approval",
+      "--dependency",
+      "--impact",
+      "--affected-repository",
+      "--resources-available",
+      "--blocking-condition",
+      "--interrupt-after",
+      "--json",
+      "--verbose",
+      "--at"
+    ],
+    "positionals": [
+      {
+        "choices": null,
+        "name": "wop_package",
+        "required": true
+      }
+    ]
+  },
+  "synchronize": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--json"
+    ],
+    "positionals": []
+  },
+  "validate": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--repository"
+    ],
+    "positionals": [
+      {
+        "choices": null,
+        "name": "wop_package",
+        "required": true
+      }
+    ]
+  },
+  "verify": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--wop",
+      "--revision",
+      "--authority-record",
+      "--correlation-id"
+    ],
+    "positionals": [
+      {
+        "choices": null,
+        "name": "gate",
+        "required": true
+      }
+    ]
+  },
+  "wop": {
+    "aliases": [],
+    "options": [
+      "-h",
+      "--help",
+      "--wop-id",
+      "--mission-id",
+      "--from",
+      "--format",
+      "--output",
+      "--json",
+      "--verbose"
+    ],
+    "positionals": [
+      {
+        "choices": [
+          "format",
+          "template",
+          "init",
+          "validate",
+          "lint",
+          "inspect",
+          "explain"
+        ],
+        "name": "action",
+        "required": true
+      },
+      {
+        "choices": null,
+        "name": "source",
+        "required": false
+      }
+    ]
+  }
+}

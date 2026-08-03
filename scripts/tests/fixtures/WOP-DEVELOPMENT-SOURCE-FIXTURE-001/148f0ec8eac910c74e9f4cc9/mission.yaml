@@ -1,0 +1,33 @@
+schema_version: 1
+document_type: EngineeringWorkOrder
+mission_id: DEVELOPMENT-SOURCE-FIXTURE
+wop_id: WOP-DEVELOPMENT-SOURCE-FIXTURE-001
+phase_id: DEVELOPMENT-SOURCE-FIXTURE-DEVELOPMENT
+revision: 1
+status: Active
+title: Development Source Fixture
+objective: Exercise native Markdown WOP packaging.
+scope:
+- validate source
+- preserve source
+- prepare bounded evidence
+dependencies:
+- none
+priority: 0
+candidate_state: CANDIDATE
+qualification_requirements:
+- package validation
+completion_requirements:
+- prepare publication candidate
+execution_mode: DEVELOPMENT
+governance_authority: Engineering Governance
+repository_identity: /data/engineering/repositories/homelab
+effect_profile: DEVELOPMENT-PACKAGING-NONPRODUCTION
+required_execution_files:
+- bootstrap.md
+- roadmap.md
+- mission.yaml
+- gates.yaml
+- manifests/immutable-manifest.yaml
+- source-wop.md
+source_document_digest: 55b27e7cb5091d358f923e02df77723d6651749a63084eafb2edf80293c1d592

@@ -1,0 +1,12 @@
+schema_version: 1
+manifest_id: WOP-DEVELOPMENT-SOURCE-FIXTURE-001-MANIFEST
+mission_id: DEVELOPMENT-SOURCE-FIXTURE
+wop_id: WOP-DEVELOPMENT-SOURCE-FIXTURE-001
+execution_mode: DEVELOPMENT
+governance_authority: Engineering Governance
+repository_identity: /data/engineering/repositories/homelab
+effect_profile: DEVELOPMENT-PACKAGING-NONPRODUCTION
+protected_baselines:
+- OA-v1.0.0
+- OB-PLAN-v1.0.0
+source_document_digest: 55b27e7cb5091d358f923e02df77723d6651749a63084eafb2edf80293c1d592

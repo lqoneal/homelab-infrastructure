@@ -1,0 +1,8 @@
+schema_version: 1
+gates:
+  - id: VALIDATE
+    effect: read-only
+  - id: EXECUTE
+    effect: development-only
+  - id: QUALIFY
+    effect: read-only

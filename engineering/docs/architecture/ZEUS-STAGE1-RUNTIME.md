@@ -4,13 +4,20 @@
 
 ### Runtime storage boundary
 
-Repository content, published WOPs, and evidence are immutable inputs. Mutable
-Zeus runtime state is selected by `ZEUS_RUNTIME_ROOT`; when unset it retains
-the historical `<repository>/.zeus/runtime` location. Operators on a
-read-only repository mount must configure an operator-owned writable root.
-Zeus never silently falls back. Read-only controllers do not create locks or
-state files; submit, admit, execute, publish, and synchronize fail closed when
-the selected runtime root cannot be written.
+Repository content, published WOPs, and evidence are immutable inputs. Zeus
+runtime discovery is automatic and shared by every runtime consumer. It
+resolves command-line `--runtime-root`, `ZEUS_RUNTIME_ROOT`, repository
+`.zeus/config.yaml` (`runtime.root`), the repository-bound user-state default
+`~/.local/state/zeus-runtime/<repository-id>`, and an explicitly configured
+system root in that order. Repository-local, protected, read-only, and
+foreign-bound candidates are rejected; explicit overrides fail closed.
+
+The repository ID binds canonical path and origin identity, not just the
+directory basename. Mutating commands initialize the selected root
+idempotently and write `runtime-identity.json`; read-only controllers resolve
+without creating state. Existing runtime state is not moved or merged
+automatically. `ZEUS_RUNTIME_ROOT` remains an explicit testing, recovery, and
+isolated-execution override.
 
 Stage 1 is the package-intake and execution-qualification boundary for
 Governance-admitted engineering WOP packages:

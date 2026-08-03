@@ -1,0 +1,27 @@
+schema_version: 1
+document_type: EngineeringWorkOrder
+mission_id: ZEUS-DEVELOPMENT-MODE-RECOVERY-001
+wop_id: WOP-ZEUS-DEVELOPMENT-MODE-RECOVERY-001
+phase_id: DEVELOPMENT-RECOVERY
+revision: 1
+status: Active
+title: Restore Zeus Development Mode
+objective: Restore the bounded Development Mode submission lifecycle.
+scope:
+  - validate and register a bounded development WOP
+  - exercise existing admission, execution, qualification, and synchronization components
+  - prepare a reviewable publication candidate
+dependencies: []
+priority: 0
+candidate_state: CANDIDATE
+execution_mode: DEVELOPMENT
+governance_authority: Engineering Governance
+development_operator: loneal
+effect_profile: DEVELOPMENT-RECOVERY-NONPRODUCTION
+repository_identity: /data/engineering/repositories/homelab
+required_execution_files:
+  - bootstrap.md
+  - roadmap.md
+  - mission.yaml
+  - gates.yaml
+  - manifests/immutable-manifest.yaml
