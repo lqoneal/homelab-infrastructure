@@ -574,17 +574,41 @@ def main(argv=None):
                     value = {"result": "PASS", "source": str(source), "metadata": metadata, "evidence": evidence}
                 else:
                     validation = validate_source(source)
-                    if not validation.valid:
+                    # All source-oriented review commands consume the one
+                    # canonical validation result.  In particular, lint must
+                    # receive the parsed metadata even when the source is
+                    # incomplete; previously it reached lint_source with an
+                    # unbound local and leaked a Python traceback.
+                    metadata = dict(validation.metadata)
+                    if a.action == "lint":
+                        value = validation.as_dict()
+                    elif not validation.valid:
                         raise PackagingError("Development WOP rejected: " + "; ".join(list(validation.missing) + list(validation.conflicts) + list(validation.errors)), missing=validation.missing, conflicts=validation.conflicts)
-                    value = validation.as_dict()
+                    else:
+                        value = validation.as_dict()
                     value["schema_version"] = format_description()["schema_version"]
-                if a.action == "lint": value["lint"] = {"result": "PASS", "issues": lint_source(source, metadata)}
+                if a.action == "lint":
+                    issues = []
+                    if value.get("result") == "PASS":
+                        try:
+                            issues = lint_source(source, metadata)
+                        except (OSError, UnicodeError, ValueError) as error:
+                            issues = [f"unable to lint source: {error}"]
+                    else:
+                        issues = list(value.get("missing", [])) + list(value.get("conflicts", [])) + list(value.get("errors", []))
+                    value["lint"] = {"result": "PASS" if not issues else "FAIL", "issues": issues}
                 if a.action == "inspect": value["package_preview"] = {"would_generate": True, "source_digest": source_digest(source) if source.is_file() else None}
                 if a.action == "explain": value["explanation"] = "All required metadata resolves from the canonical Development WOP schema."
                 if a.json or a.verbose: emit(value)
                 else:
-                    print(f"WOP review: PASS\nSource: {source}\nNote: submission repeats authoritative validation.\nNext action: zeus submit {a.source}")
-                return 0
+                    if value.get("result") == "PASS":
+                        print(f"WOP review: PASS\nSource: {source}\nNote: submission repeats authoritative validation.\nNext action: zeus submit {a.source}")
+                    else:
+                        print(f"WOP lint: FAIL\nSource: {source}")
+                        for issue in value.get("lint", {}).get("issues", []):
+                            print(f"Issue: {issue}")
+                        print(f"Next action: correct the source, then rerun: zeus wop lint {a.source}")
+                return 0 if value.get("result") == "PASS" else 78
         if a.command == "doctor":
             value = doctor_report()
             if a.json or a.verbose:

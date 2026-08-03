@@ -10,7 +10,7 @@ import sys
 sys.path.insert(0, str(ROOT))
 
 from scripts.lib.emp.stage1_runtime import Stage1Runtime, Stage1Error, validate_package
-from scripts.lib.emp.wop_packaging import PackagingError, extract, package
+from scripts.lib.emp.wop_packaging import PackagingError, extract, package, _parse
 
 
 MARKDOWN = """WOP ID: WOP-PACKAGING-FIXTURE-001
@@ -31,6 +31,64 @@ Completion Requirements: prepare publication candidate
 
 
 class WopPackagingTests(unittest.TestCase):
+    def test_peer_headings_terminate_sections_but_nested_headings_do_not(self):
+        metadata = _parse("""WOP ID: WOP-BOUNDARY-FIXTURE-001
+Mission ID: BOUNDARY-FIXTURE
+Title: Boundary Fixture
+Objective: Verify section boundaries.
+## Scope
+### In scope
+- preserve nested scope content
+## Explicit authority
+- no authority expansion
+Execution Mode: DEVELOPMENT
+Governance Authority: Engineering Governance
+Repository Identity: /data/engineering/repositories/homelab
+Effect Profile: DEVELOPMENT-BOUNDARY-NONPRODUCTION
+Protected Baselines: OA-v1.0.0, OB-PLAN-v1.0.0
+Gates: VALIDATE
+Qualification Requirements: boundary evidence
+## Completion Requirements
+- completion evidence only
+## Transaction Identification
+This must not be completion metadata.
+""")
+        self.assertIn("preserve nested scope content", metadata["scope"])
+        self.assertNotIn("## Explicit authority", metadata["scope"])
+        self.assertEqual(metadata["completion_requirements"], ["completion evidence only"])
+        self.assertNotIn("## Transaction Identification", metadata["completion_requirements"])
+
+    def test_canonical_package_preserves_field_boundaries(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); source = root / "boundary.md"
+            source.write_text("""WOP ID: WOP-BOUNDARY-PACKAGE-001
+Mission ID: BOUNDARY-PACKAGE
+Title: Boundary Package
+Objective: Verify canonical boundary serialization.
+Dependencies: none
+## Scope
+### In scope
+- bounded packaging
+## Explicit authority
+- no external effects
+Execution Mode: DEVELOPMENT
+Governance Authority: Engineering Governance
+Repository Identity: /data/engineering/repositories/homelab
+Effect Profile: DEVELOPMENT-BOUNDARY-NONPRODUCTION
+Protected Baselines: OA-v1.0.0, OB-PLAN-v1.0.0
+Gates: VALIDATE
+Qualification Requirements: package evidence
+## Completion Requirements
+- completion evidence
+## Transaction Identification
+This section is not a completion requirement.
+""")
+            package_root, result = package(source, root / "work-orders")
+            metadata, _ = validate_package(package_root)
+            self.assertEqual(metadata["scope"], ["bounded packaging"])
+            self.assertEqual(metadata["completion_requirements"], ["completion evidence"])
+            self.assertNotIn("Transaction Identification", " ".join(metadata["completion_requirements"]))
+            self.assertTrue(result["promoted"])
     def test_markdown_normalization_and_validation(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); source = root / "source.md"; source.write_text(MARKDOWN)

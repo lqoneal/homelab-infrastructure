@@ -92,6 +92,7 @@ def _scalar(value: str) -> Any:
 def _parse(text: str) -> dict[str, Any]:
     found: dict[str, list[Any]] = {}
     current: str | None = None
+    current_heading_level: int | None = None
     section_lines: list[str] = []
 
     def flush():
@@ -107,16 +108,31 @@ def _parse(text: str) -> dict[str, Any]:
         if not found.get("wop_id") and re.fullmatch(r"WOP-[A-Z0-9-]+", line):
             found.setdefault("wop_id", []).append(line)
             current = None
+            current_heading_level = None
             continue
-        heading = re.sub(r"^#+\s*", "", line).strip().lower()
-        if heading in KEYS:
-            flush(); current = KEYS[heading]; continue
+        heading_match = re.match(r"^(#+)\s*(.*)$", line)
+        if heading_match:
+            heading_level = len(heading_match.group(1))
+            heading = heading_match.group(2).strip().lower()
+            # A metadata section owns nested headings, but ends at the next
+            # peer or higher-level heading. Previously only recognized
+            # metadata headings flushed the section, so Scope and Completion
+            # Requirements absorbed every later section in a canonical WOP.
+            if current and current_heading_level is not None and heading_level <= current_heading_level:
+                flush()
+                current = None
+                current_heading_level = None
+            if heading in KEYS:
+                current = KEYS[heading]
+                current_heading_level = heading_level
+            continue
         match = re.match(r"^(?:[-*]\s*)?([^:]+):\s*(.*)$", line)
         if match and match.group(1).strip().lower() in KEYS:
             flush()
             key = KEYS[match.group(1).strip().lower()]
             found.setdefault(key, []).append(_scalar(match.group(2)))
             current = None
+            current_heading_level = None
             continue
         if current and line:
             section_lines.append(re.sub(r"^[-*]\s*", "", line))
