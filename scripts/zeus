@@ -62,6 +62,7 @@ from scripts.lib.emp.stage1_runtime import validate_package
 from scripts.lib.emp.wop_schema import format_description
 from scripts.lib.emp.wop_validation import validate_source, require_valid_source
 from scripts.lib.emp.repository_identity import RepositoryIdentityError, resolve as resolve_repository_identity
+from scripts.lib.emp.development_dispatch import automatic_executor
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -517,7 +518,7 @@ def main(argv=None):
             stage1_directory = Path(
                 os.environ.get("ZEUS_STAGE1_STATE", runtime_path(ROOT, "stage1"))
             )
-            stage1 = Stage1Runtime(ROOT, stage1_directory)
+            stage1 = Stage1Runtime(ROOT, stage1_directory, execution_executor=automatic_executor(ROOT))
         if a.command == "wop":
             if a.action == "format":
                 value = format_description()

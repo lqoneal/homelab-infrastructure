@@ -124,8 +124,13 @@ execution publication.
 4. Use `zeus list` to see the staged queue.
 5. Use `zeus status` to see aggregate admission state.
 
-Execution remains deferred until a separately implemented Stage 2 dispatcher
-consumes staged records.
+After admission, Zeus resolves the controlled execution-agent registry and
+dispatches automatically when an active, qualified, repository-compatible
+Development agent is published. An empty, stale, revoked, or incompatible
+registry remains fail-closed at `AWAITING_EXECUTION_DISPATCH`; it never
+fabricates dispatch or execution evidence. Agent qualification records are
+produced by the existing qualification subsystem and the effective registry is
+published only after its integrity and repository binding validate.
 
 ## Development lifecycle integrity
 

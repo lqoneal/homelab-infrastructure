@@ -52,17 +52,16 @@ class OA05CumulativeLifecycleTests(unittest.TestCase):
             result = progressive_oa.verify_receipt(ROOT, gate_id)
             self.assertEqual("PASS", result["integrity"])
 
-    def test_oa06_is_active_pending_and_later_gates_are_pending(self):
+    def test_current_lifecycle_is_complete_without_declaration(self):
         from scripts.lib.emp import progressive_oa
 
         state = progressive_oa.load_state(ROOT)
-        self.assertEqual("OA-06", state["active_gate"])
-        self.assertEqual("ACCEPTED", state["gates"]["OA-05"]["state"])
-        self.assertIsNotNone(state["gates"]["OA-05"]["acceptance_receipt"])
-        for number in range(6, 31):
+        self.assertIsNone(state["active_gate"])
+        self.assertEqual("DECLARATION_PREPARATION_COMPLETE", state["status"])
+        for number in range(1, 31):
             item = state["gates"][f"OA-{number:02d}"]
-            self.assertEqual("PENDING", item["state"])
-            self.assertIsNone(item["acceptance_receipt"])
+            self.assertEqual("ACCEPTED", item["state"])
+            self.assertIsNotNone(item["acceptance_receipt"])
 
     def test_live_staging_has_no_dispatch_execution_or_declaration(self):
         from scripts.lib.emp import progressive_oa
@@ -70,13 +69,15 @@ class OA05CumulativeLifecycleTests(unittest.TestCase):
 
         stage1_directory = ROOT / ".zeus/runtime/stage1"
         status = Stage1Runtime(ROOT, stage1_directory).status()
-        self.assertEqual(0, status["mission_count"])
-        self.assertEqual(0, status["states"]["STAGED"])
+        self.assertEqual(1, status["mission_count"])
+        self.assertEqual(1, status["states"]["STAGED"])
+        self.assertEqual(0, status["states"]["DISPATCHED"])
+        self.assertEqual(0, status["states"]["EXECUTING"])
         self.assertFalse(progressive_oa.status(ROOT)["declaration_authorized"])
         state = json.loads(
             (ROOT / progressive_oa.PACKAGE_PATH / "runtime/state.json").read_text()
         )
-        self.assertNotEqual("DECLARATION_PREPARATION_COMPLETE", state["status"])
+        self.assertEqual("DECLARATION_PREPARATION_COMPLETE", state["status"])
 
 
 if __name__ == "__main__":
