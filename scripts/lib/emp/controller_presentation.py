@@ -85,6 +85,8 @@ def operator_text(value: Any, title: str | None = None) -> str:
             f"Development baseline          : {value.get('development_baseline', 'OB-PLAN-v1.0.0')}",
             f"Current platform mission      : {value.get('current_platform_mission', {}).get('mission_id', 'UNRESOLVED')}",
             f"Current executable mission    : {value.get('current_executable_mission') or 'NONE'}",
+            f"Recommended mission           : {value.get('recommended_mission') or 'NONE'}",
+            f"Next authorized action        : {value.get('next_authorized_action') or 'NONE'}",
             f"Integrity                     : {value.get('integrity', {}).get('result', value.get('result', 'UNKNOWN'))}",
         ])
         if "queue_scope" in value:
@@ -155,7 +157,7 @@ def operator_text(value: Any, title: str | None = None) -> str:
             lines.append(f"Historical executions        : {len(value['historical_executions'])} (use history)")
         return "\n".join(lines) + "\n"
     for key in ("result", "mission_id", "classification", "lifecycle", "current_executable_mission", "recommended_mission",
-                "roadmap_id", "roadmap_revision", "mission_knowledge_revision", "status"):
+                "next_authorized_action", "roadmap_id", "roadmap_revision", "mission_knowledge_revision", "status"):
         if key in value and not isinstance(value[key], (dict, list)):
             lines.append(f"{key.replace('_', ' ').title():28}: {value[key]}")
     if "provenance_verification" in value:

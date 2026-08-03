@@ -318,12 +318,18 @@ def _metrics(cards: list[dict[str, Any]]) -> dict[str, Any]:
             "production_development_divergence": "DEVELOPMENT_AHEAD_OF_PRODUCTION"}
 
 
+def _selected_card(cards: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Canonical Beta selection used by every list, queue, and inspection view."""
+    return next((card for card in cards if card["classification"] == "ELIGIBLE"), None)
+
+
 def operation(root: Path | str) -> dict[str, Any]:
     root = Path(root)
     current = _current_mission(root)
     integrity = _integrity(root)
     cards = _cards_with_dependencies(root)
     metrics = _metrics(cards)
+    selected = _selected_card(cards)
     result = "PASS" if integrity["result"] == "PASS" else "FAIL"
     executable = next((card["mission_id"] for card in cards
                        if _mission_projection(root, card["mission_id"])["current_admission"]), None)
@@ -332,6 +338,8 @@ def operation(root: Path | str) -> dict[str, Any]:
             "development_baseline": "OB-PLAN-v1.0.0", "mission_families": ["ZDCL", "CAGF", "EPE"],
             "current_platform_mission": current,
             "current_executable_mission": executable,
+            "recommended_mission": selected["mission_id"] if selected else None,
+            "selection_source": "operational_beta._selected_card",
             "missions": cards, "metrics": metrics, "integrity": integrity,
             "authoritative_sources": [ROADMAP, CHARTER, AUTHORITY, TRANSITION, DESIGN]}
 
@@ -346,6 +354,8 @@ def active_missions(root: Path | str) -> dict[str, Any]:
         "development_baseline": value["development_baseline"],
         "current_platform_mission": value["current_platform_mission"],
         "current_executable_mission": value["current_executable_mission"],
+        "recommended_mission": value["recommended_mission"],
+        "selection_source": value["selection_source"],
         "missions": active, "active_mission_count": len(active),
         "authoritative_sources": value["authoritative_sources"],
         "integrity": value["integrity"],
@@ -385,6 +395,8 @@ def queue(root: Path | str, view: str = "list") -> dict[str, Any]:
         "execution_environment": "ADMITTED_MISSION_ATTRIBUTE",
         "current_platform_mission": value["current_platform_mission"],
         "current_executable_mission": value["current_executable_mission"],
+        "recommended_mission": value["recommended_mission"],
+        "selection_source": value["selection_source"],
         "missions": cards, "metrics": value["metrics"],
         "executions": executions,
         "projections": projections,
@@ -468,6 +480,30 @@ def mission_view(root: Path | str, action: str, mission_id: str) -> dict[str, An
                 "dependencies": mission["dependencies"], "missing_dependencies": mission["missing_dependencies"],
                 "blocking_conditions": ["DEPENDENCY_UNSATISFIED"] if mission["missing_dependencies"] else [],
                 "authoritative_sources": mission["authoritative_sources"]}
+    if action == "authority":
+        return {"result": mission["result"], "operation": "BETA", "mission_id": mission["mission_id"],
+                "governance_authority": "Engineering Governance",
+                "authority": mission["authoritative_sources"],
+                "current_platform_mission": current,
+                "development_baseline": "OB-PLAN-v1.0.0",
+                "production_baseline": "OA-v1.0.0",
+                "authority_boundary": "planning and selection only; no admission or execution",
+                "authoritative_sources": mission["authoritative_sources"]}
+    if action == "contract":
+        return {"result": mission["result"], "operation": "BETA", "mission_id": mission["mission_id"],
+                "contract": {"mission_id": mission["mission_id"], "family": mission["family"],
+                             "title": mission["title"], "scope": mission["scope"],
+                             "dependencies": mission["dependencies"], "lifecycle": mission["lifecycle"],
+                             "classification": mission["classification"], "readiness": mission["readiness"]},
+                "contract_type": "BETA_ROADMAP_SELECTION_CONTRACT",
+                "mission_contract_prerequisite": False,
+                "authoritative_sources": mission["authoritative_sources"]}
+    if action == "snapshot":
+        return {"result": mission["result"], "operation": "BETA", "mission_id": mission["mission_id"],
+                "state": mission, "next": next_action(root, mission["family"]),
+                "selection": {"recommended_mission": mission["mission_id"] if mission["classification"] == "ELIGIBLE" else None,
+                              "source": "operational_beta.next_action"},
+                "authoritative_sources": mission["authoritative_sources"]}
     if action in ("metrics",):
         return metrics(root, mission_id)
     if action in ("brief", "explain"):
@@ -495,7 +531,7 @@ def next_action(root: Path | str, subject: str | None = None) -> dict[str, Any]:
     cards = value["missions"]
     if subject and subject.upper() in value["mission_families"]:
         cards = [card for card in cards if card["family"] == subject.upper()]
-    candidate = next((card for card in cards if card["classification"] == "ELIGIBLE"), None)
+    candidate = _selected_card(cards)
     projection = _mission_projection(Path(root), candidate["mission_id"]) if candidate else {}
     completed_operational = next((item for item in reversed(projection.get("historical_executions", [])) if item.get("state") == "Completed" and (item.get("current_session") or {}).get("lifecycle_state") == "COMPLETED"), None)
     resolved_next = ((projection.get("current_execution") or {}).get("next_authorized_action")
@@ -505,6 +541,7 @@ def next_action(root: Path | str, subject: str | None = None) -> dict[str, Any]:
             "current_platform_mission": value["current_platform_mission"],
             "current_executable_mission": value["current_executable_mission"],
             "recommended_mission": candidate["mission_id"] if candidate else None,
+            "selection_source": "operational_beta._selected_card",
             "next_authorized_action": resolved_next,
             "current_admission": projection.get("current_admission"),
             "current_execution": projection.get("current_execution"),

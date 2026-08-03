@@ -755,6 +755,7 @@ def main(argv=None):
         beta_mission = beta_subject.startswith(("BETA-", "ZDCL-", "CAGF-", "EPE-"))
         beta_family = beta_subject in {"ZDCL", "CAGF", "EPE"}
         beta_candidate = a.command == "mission" and beta_action == "roadmap" and beta_subject != "OA"
+        beta_selection = a.command == "mission" and beta_action in {"list", "queue", "next", "recommend", "health"} and not beta_subject
         if a.command == "mission" and a.action == "submit" and not beta_mission:
             emit({
                 "result": "BLOCKED",
@@ -763,7 +764,7 @@ def main(argv=None):
                 "next_authorized_action": "Submit through the authoritative mission workflow for the applicable operation.",
             })
             return 78
-        if a.command == "mission" and (beta_mission or beta_family or beta_candidate):
+        if a.command == "mission" and (beta_mission or beta_family or beta_candidate or beta_selection):
             if beta_subject == "ZDCL-01" and a.action in ("qualify", "acceptance-summary", "accept", "close"):
                 from scripts.lib.emp import beta_closeout
                 if a.action == "qualify":
@@ -809,8 +810,12 @@ def main(argv=None):
                 value = operational_beta.mission_history(ROOT, beta_subject)
             elif a.action == "health" and beta_mission:
                 value = operational_beta.mission_view(ROOT, a.action, beta_subject)
-            elif a.action in ("list", "portfolio", "queue", "health"):
+            elif a.action == "health" and beta_selection:
                 value = operational_beta.operation(ROOT)
+            elif a.action == "list":
+                value = operational_beta.active_missions(ROOT)
+            elif a.action == "queue":
+                value = operational_beta.queue(ROOT, "list")
             elif a.action in ("next", "recommend"):
                 value = operational_beta.next_action(ROOT, beta_subject if beta_family else None)
             elif beta_mission:

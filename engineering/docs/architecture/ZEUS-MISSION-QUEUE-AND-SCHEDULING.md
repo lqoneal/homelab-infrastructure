@@ -12,7 +12,7 @@ order.
 | --- | --- | --- |
 | staging and portfolio policy | EMP | `zeus submit`, `zeus missions list` |
 | eligibility and dependency evaluation | Zeus | `zeus mission readiness`, `zeus mission blockers` |
-| deterministic selection | Zeus | `zeus missions select`, `zeus mission queue next` |
+| deterministic selection | Zeus | `zeus mission next`, `zeus mission recommend` |
 | admission enforcement | Zeus / ZDCL boundary | `zeus admit-mission start` |
 | synchronized platform state | EOS | EOS synchronization and validation |
 | derived projections | CAGF-compatible projection layer | `zeus mission queue`, controllers |
@@ -58,8 +58,10 @@ zeus mission queue blockers
 zeus mission queue history
 ```
 
-When Beta is the active Development operation, these queue views resolve the
-Beta operation-wide projection. Execution environment is an admitted mission
+When Beta is the active Development operation, these queue views and
+`zeus mission list|next|recommend|health` resolve the same Beta operation-wide
+projection and canonical eligible selector. On the current roadmap that
+selector identifies `CAGF-01`. Execution environment is an admitted mission
 attribute and never a queue partition. Completed Alpha work is available from
 the dedicated `zeus mission completed`, `history`, and `archive` views.
 
