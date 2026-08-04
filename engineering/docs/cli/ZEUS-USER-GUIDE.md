@@ -68,18 +68,21 @@ separate contracts.
 
 ## Stage 1 mission submission
 
-For normal Beta operation, submit by the canonical mission ID:
+For normal Beta operation, submit the Governance-authorized WOP through the
+canonical operator interface:
 
 ```text
-zeus mission submit ZDCL-01
+scripts/zeus submit <wop>
 ```
 
-Zeus resolves the Beta mission and reuses its authoritative qualified WOP
-package when one is published. If the package or its authority is missing,
-the command fails closed and states the exact required action. It does not
-invent a package, approve work, admit execution, or bypass the queue.
+Zeus resolves the mission and authoritative package from the submitted WOP.
+If the package or its authority is missing, the command fails closed and
+states the exact required action. It does not invent a package, approve work,
+admit execution, or bypass the queue. `zeus mission submit <MISSION_ID>` is a
+historical mission-oriented compatibility path, not an additional mandatory
+operator lifecycle step.
 
-Operators submit a WOP package through `zeus submit PATH`. `PATH` may be a
+Operators submit a WOP package through `scripts/zeus submit PATH`. `PATH` may be a
 directory or a `.tar.gz`/`.tgz` archive. Zeus safely opens the package, verifies
 its bootstrap, roadmap, mission metadata, gates, manifests, declared execution
 files, and optional `SHA256SUMS`, then resolves the package mission through the
@@ -99,7 +102,7 @@ admit, revoke, or activate a mission.
 
 For Development submissions, lifecycle phases are derived from immutable
 receipts rather than projected milestones. If no qualified executor is
-available, `zeus submit` stops at `AWAITING_EXECUTION_DISPATCH` and reports
+available, `scripts/zeus submit` stops at `AWAITING_EXECUTION_DISPATCH` and reports
 `Dispatch to a qualified Development execution agent`. It does not report
 execution, qualification, publication, synchronization, or closeout without
 the corresponding receipts. This Development boundary does not require a
@@ -107,18 +110,18 @@ Mission Contract.
 
 ## Execution status and recovery
 
-For one active execution, the execution identifier is resolved automatically:
+For one active execution, the execution identifier is resolved automatically
+by the canonical recovery command:
 
 ```text
-zeus execute-mission status
-zeus execute-mission resume
-zeus execute-mission suspend --reason OPERATOR
-zeus execute-mission cancel --reason OPERATOR
+scripts/zeus resume <mission>
 ```
 
-Use `--execution-id MISSION-EXECUTION-...` when more than one execution is
-active. Zeus fails closed and lists the valid IDs rather than guessing. Resume
-continues the existing checkpoint and never creates a duplicate execution.
+Resume continues the existing checkpoint and never creates a duplicate
+execution. Execution status and administrative controls are internal or
+read-only compatibility interfaces; operators do not use them as mandatory
+reconciliation steps. Ambiguous or unsafe state fails closed with the exact
+diagnostic and next authorized action.
 Submitting identical mission and package content again returns the existing
 instance with `idempotent_replay: true`; it never creates a second active
 mission. State is stored under `.zeus/runtime/stage1/missions/` with an

@@ -3,8 +3,8 @@
 The public command hierarchy follows operator intent:
 
 * Authoring: `zeus wop format|template|init|validate|lint|inspect|explain`
-* Execution: `zeus submit`, `zeus status`, `zeus resume`, `zeus next-action`,
-  and `zeus mission ...`
+* Execution: `scripts/zeus submit <wop>` and `scripts/zeus resume <mission>`;
+  status, next-action, and `zeus mission ...` are read-only projections.
 * Diagnosis and verification: `zeus doctor` and `zeus platform verify`
 * Administration: `zeus runtime`, `zeus config`, and `zeus synchronize`
 

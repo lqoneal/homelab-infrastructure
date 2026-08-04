@@ -5,7 +5,7 @@ Status: recovery publication candidate; bounded to `ZEUS-DEVELOPMENT-MODE-RECOVE
 Development Mode is the supported operator path for bounded development work:
 
 ```text
-zeus submit <WOP_ID_OR_PACKAGE>
+scripts/zeus submit <wop>
 ```
 
 Source authoring is discoverable through `zeus wop format`,
@@ -56,7 +56,15 @@ Invalid packages fail before runtime state is written. Repository drift,
 protected-baseline drift, publication failure, and synchronization failure are
 recorded as blocked states. Repeated submission resolves the deterministic
 instance identity and resumes or returns the existing result.
-The canonical readiness and authoring entry points are:
+The canonical operator execution entry points are:
+
+```text
+scripts/zeus submit <wop>
+scripts/zeus resume <mission>
+```
+
+The following are authoring, diagnosis, or read-only inspection interfaces;
+they are not additional mandatory lifecycle steps:
 
 ```text
 zeus doctor
@@ -64,7 +72,7 @@ zeus platform verify
 zeus wop format
 zeus wop template | zeus wop init
 zeus wop lint <SOURCE>
-zeus submit <SOURCE>
+scripts/zeus submit <wop>
 ```
 
 `zeus doctor` diagnoses components and reports `READY_FOR_REVIEW` for a
@@ -78,3 +86,8 @@ publication, and synchronization records are Zeus-owned outputs.
 
 Legacy runtime state is reconciled only with `zeus runtime adopt`; read-only
 status, identity, and doctor commands never adopt implicitly.
+
+Transactions, admissions, publication receipts, receipt reconciliation,
+repository lineage, baseline transitions, runtime migration, provider
+selection, and execution recovery remain internal Zeus mechanisms. Publication
+receipts are immutable engineering evidence, not execution authority.

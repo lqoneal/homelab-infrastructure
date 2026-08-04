@@ -33,12 +33,12 @@ Generated and presentation projections do not own WOP identity or policy.
 
 ## Execution interface
 
-`zeus execute-mission status`, `resume`, `suspend`, and `cancel` accept an
-explicit `--execution-id`. If omitted, Zeus resolves exactly one non-terminal
-execution. With none it fails closed and gives the start/ID requirement; with
-more than one it fails closed and lists the IDs to choose from. `start` always
-returns the deterministic execution ID. Resume reuses the existing execution
-and checkpoint; it never creates a duplicate.
+The internal execution service accepts status, resume, suspend, and cancel
+operations with an explicit execution identity. These are implementation or
+read-only compatibility interfaces, not mandatory operator lifecycle steps.
+The public recovery operation is `scripts/zeus resume <mission>`, which
+resolves exactly one safe non-terminal execution, fails closed on ambiguity,
+and reuses the existing checkpoint without creating a duplicate.
 
 Queue, mission, and execution views project the same execution identity,
 current gate, wait category, validation diagnostics, and next corrective
@@ -59,3 +59,17 @@ record. The replacement admission records the prior admission, any cancelled
 incompatible execution, both baselines, and the supersession reason. Stale,
 superseded, rejected, or incompatible-cancelled admissions fail closed at the
 execution boundary.
+
+## Stable operator contract
+
+The internal admission and execution mechanisms do not change the operator
+workflow. After Engineering Governance has authorized the WOP, the operator
+submits it with `scripts/zeus submit <wop>`. Zeus consumes and enforces the
+resolved authority. If execution is interrupted, the operator invokes only
+`scripts/zeus resume <mission>`.
+
+Zeus performs publication reconciliation, admission supersession, receipt
+binding, baseline migration, runtime hydration, and recovery internally. These
+operations are not additional operator-visible lifecycle steps. Publication
+receipts remain immutable evidence of publication state and are never treated
+as execution authority.

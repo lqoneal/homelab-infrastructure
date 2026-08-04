@@ -726,7 +726,8 @@ When resuming this project:
 - Capability: WOP submission, validation, admission, and staging
 - Runtime states: `VALIDATING`, `REJECTED`, `ADMITTED`, `STAGED`
 - Persistence: `.zeus/runtime/stage1/`
-- Operator entry point: `zeus submit <path-to-wop>`
+- Operator entry point: `scripts/zeus submit <wop>`; interrupted work resumes
+  with `scripts/zeus resume <mission>`
 - Execution-agent dispatch: deferred to Stage 2
 - Completion evidence:
   `engineering/evidence/2026-07-28-zeus-operational-alpha-stage1-completion-report.md`

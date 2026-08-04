@@ -6,8 +6,8 @@ The canonical authoring workflow uses source documents only:
 zeus wop format
 zeus wop template --wop-id WOP-EXAMPLE-001 --mission-id EXAMPLE-01 --output WOP-EXAMPLE-001.md
 # edit WOP-EXAMPLE-001.md
-zeus submit WOP-EXAMPLE-001.md
-zeus submit WOP-EXAMPLE-001.md
+scripts/zeus submit WOP-EXAMPLE-001.md
+# if interrupted: scripts/zeus resume EXAMPLE-01
 ```
 
 `zeus wop format` is generated from the canonical schema and lists all required
@@ -28,8 +28,8 @@ zeus wop format
 zeus wop template --wop-id WOP-EXAMPLE-001 --mission-id EXAMPLE-01
 zeus wop init --wop-id WOP-EXAMPLE-001 --mission-id EXAMPLE-01
 zeus wop lint WOP-EXAMPLE-001.md
-zeus submit WOP-EXAMPLE-001.md
-zeus submit WOP-EXAMPLE-001.md
+scripts/zeus submit WOP-EXAMPLE-001.md
+# if interrupted: scripts/zeus resume EXAMPLE-01
 ```
 
 `zeus wop init` is an interactive equivalent when IDs are omitted. Use

@@ -26,10 +26,11 @@ authority.
 
 ### Controller presentation ownership
 
-The existing Zeus operator-interface contract is extended as the single
-controller presentation owner. Zeus controllers resolve one authoritative
-state and expose it as an operator summary by default, a deterministic
-qualification view with `--verify`, or structured output only with `--json`.
+The canonical operator-interface contract is owned by
+`ZEUS-WOP-SUBMISSION-PROCEDURE`; controller presentation remains a separate
+read-only concern. Zeus controllers resolve one authoritative state and
+expose it as an operator summary by default, a deterministic qualification
+view with `--verify`, or structured output only with `--json`.
 The shared presentation layer owns formatting only; it does not duplicate
 mission, capability, authority, dispatch, orchestration, EMM, EOS, or Registry
 state. Qualification and governance remain owned by the applicable controlled
@@ -449,3 +450,16 @@ The architecture is internally valid when:
 - migration has no phase that requires an unpublished candidate to govern
   production behavior;
 - evidence and generated reference cannot override normative sources.
+
+## 18. Operational Beta operator contract
+
+The controlled-document architecture preserves a stable execution interface:
+Engineering Governance authorizes the WOP, the operator submits it with
+`scripts/zeus submit <wop>`, and Zeus executes. An interrupted execution is
+resumed with `scripts/zeus resume <mission>`.
+
+This interface does not expose Zeus transaction, admission, publication,
+receipt, repository-lineage, migration, or recovery mechanisms. Those are
+internal implementation responsibilities. Publication receipts are typed,
+immutable evidence records and shall not be modeled as Governance authority,
+Mission Contract authority, or a second execution grant.

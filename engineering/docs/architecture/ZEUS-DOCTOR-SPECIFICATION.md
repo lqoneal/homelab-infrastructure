@@ -5,7 +5,7 @@ identity and cleanliness, deterministic runtime selection, Registry presence,
 Development authority, controller domains, and the next authorized action.
 It never initializes a runtime or synchronizes external state. A rejected
 runtime includes the candidate and corrective action; a passing report points
-to `zeus submit <SOURCE>`.
+to `scripts/zeus submit <wop>`.
 
 Doctor classifications are `READY`, `READY_FOR_REVIEW`,
 `READY_FOR_PUBLICATION`, `BLOCKED`, and `FAIL`. On an unpublished recovery

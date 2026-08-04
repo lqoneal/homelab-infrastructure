@@ -10,10 +10,10 @@ order.
 
 | Function | Owner | Existing interface |
 | --- | --- | --- |
-| staging and portfolio policy | EMP | `zeus submit`, `zeus missions list` |
+| staging and portfolio policy | EMP | `scripts/zeus submit`, read-only mission views |
 | eligibility and dependency evaluation | Zeus | `zeus mission readiness`, `zeus mission blockers` |
 | deterministic selection | Zeus | `zeus mission next`, `zeus mission recommend` |
-| admission enforcement | Zeus / ZDCL boundary | `zeus admit-mission start` |
+| admission enforcement | Zeus / ZDCL boundary | internal Stage 1 admission service |
 | synchronized platform state | EOS | EOS synchronization and validation |
 | derived projections | CAGF-compatible projection layer | `zeus mission queue`, controllers |
 | lifecycle events and notifications | EENS | event integration remains the event-system contract |
@@ -28,7 +28,7 @@ is introduced by this specification.
 The authoritative submission path is:
 
 ```text
-zeus submit <WOP_PACKAGE> [submission and policy options]
+scripts/zeus submit <wop>
 ```
 
 It records the authorized request in the existing EMP orchestration state,
@@ -36,15 +36,18 @@ including repository/baseline binding, priority, dependencies, approvals,
 resources, and blocking conditions. Submission does not promise execution
 order.
 
-The admission path is separate and fail-closed:
+Admission is a separate internal, fail-closed boundary:
 
 ```text
-zeus admit-mission start ...
-zeus execute-mission start --admission-id <ADMISSION_ID>
+internal admission resolution
+internal execution continuation
 ```
 
 Admission verifies mission, authority, repository, baseline, agent, and
-execution context before the execution boundary can be crossed.
+execution context before the execution boundary can be crossed. Operators do
+not invoke this boundary: the public execution contract remains
+`scripts/zeus submit <wop>` and, after interruption,
+`scripts/zeus resume <mission>`.
 
 ## Queue projection
 

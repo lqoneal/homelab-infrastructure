@@ -94,12 +94,12 @@ inspection projections. They expose roadmap scope, dependencies, authority,
 readiness, and the canonical next action without creating a Mission Contract,
 admission, execution, or lifecycle transition.
 
-## Mission-oriented WOP submission
+## Mission-oriented WOP projection and compatibility
 
-`zeus mission submit <MISSION_ID>` is the single high-level submission
-workflow. It resolves a Beta mission, searches deterministic canonical WOP
-locations, and delegates an existing qualified package to the Stage 1 runtime.
-It never fabricates a package or approval. When the roadmap's approved WOP
-contract is not published, it returns `WOP_PACKAGE_UNAVAILABLE` and the exact
-required action. `zeus submit <WOP_PACKAGE>` remains the lower-level
-compatibility path; admission and execution remain separate protected steps.
+The canonical submission workflow is `scripts/zeus submit <wop>` after
+Engineering Governance authorization. `zeus mission submit <MISSION_ID>` is a
+historical mission-oriented compatibility/projection path, not an additional
+mandatory lifecycle command. Both paths resolve the same authoritative WOP
+and never fabricate a package or approval. Interrupted work is resumed only
+through `scripts/zeus resume <mission>`; admission, receipt, publication, and
+recovery reconciliation remain internal Zeus mechanisms.
