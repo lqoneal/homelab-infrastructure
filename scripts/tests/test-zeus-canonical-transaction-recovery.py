@@ -3,6 +3,7 @@
 import copy
 import json
 import shutil
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -16,21 +17,37 @@ FIXTURE = ROOT / "engineering/evidence/operation-beta/zeus-development-mode-reco
 
 
 class CanonicalRecoveryTests(unittest.TestCase):
-    def registry(self, directory: Path) -> Path:
+    def fixture(self, directory: Path) -> tuple[Path, Path, Path]:
+        repository = directory / "repository"
+        subprocess.run(["git", "clone", "--no-local", str(ROOT), str(repository)],
+                       check=True, capture_output=True, text=True)
+        package = directory / "package"
+        shutil.copytree(FIXTURE, package)
+        mission = package / "mission.yaml"
+        content = mission.read_text(encoding="utf-8")
+        mission.write_text(content.replace(f"repository_identity: {ROOT}",
+                                           f"repository_identity: {repository}"), encoding="utf-8")
+        publication = ROOT / "engineering/evidence/operation-beta/wop-zdcl-02-publication-aware-baseline-transition-and-canonical-resume-001/PUBLICATION-RECEIPT.json"
+        publication_copy = directory / "PUBLICATION-RECEIPT.json"
+        shutil.copy2(publication, publication_copy)
+        return repository, package, publication_copy
+
+    def registry(self, directory: Path, repository: Path) -> Path:
         path = directory / "agents.json"
         path.write_text(json.dumps({"agents": [{
             "agent_id": "recovery-agent", "provider_id": "recovery-provider",
             "active": True, "qualification_status": "QUALIFIED",
             "qualification_evidence": ["QUAL-recovery-agent"],
-            "repository_access_scope": [str(ROOT)]
+            "repository_access_scope": [str(repository)]
         }], "registry_digest": "recovery-registry-v1"}), encoding="utf-8")
         return path
 
     def test_resume_migrates_and_replays_without_new_receipts(self):
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)
-            runtime = Stage1Runtime(ROOT, directory / "runtime", operator_resolver=lambda: "test")
-            first = runtime.submit_development(FIXTURE)
+            repository, package, _ = self.fixture(directory)
+            runtime = Stage1Runtime(repository, directory / "runtime", operator_resolver=lambda: "test")
+            first = runtime.submit_development(package)
             resumed = runtime.resume_transaction(first["instance_id"])
             again = runtime.resume_transaction(first["instance_id"])
             self.assertEqual(resumed["instance_id"], first["instance_id"])
@@ -41,8 +58,10 @@ class CanonicalRecoveryTests(unittest.TestCase):
 
     def test_authority_and_repository_failures_are_deterministic(self):
         with tempfile.TemporaryDirectory() as temporary:
-            runtime = Stage1Runtime(ROOT, Path(temporary) / "runtime", operator_resolver=lambda: "test")
-            first = runtime.submit_development(FIXTURE)
+            directory = Path(temporary)
+            repository, package, _ = self.fixture(directory)
+            runtime = Stage1Runtime(repository, directory / "runtime", operator_resolver=lambda: "test")
+            first = runtime.submit_development(package)
             forged = copy.deepcopy(first)
             forged["authority_snapshot"]["package_digest"] = "forged"
             runtime.store.save(forged)
@@ -53,17 +72,18 @@ class CanonicalRecoveryTests(unittest.TestCase):
     def test_duplicate_dispatch_is_not_reissued(self):
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)
-            registry = self.registry(directory)
+            repository, package, _ = self.fixture(directory)
+            registry = self.registry(directory, repository)
             calls = []
-            executor = automatic_executor(ROOT, registry_path=registry)
+            executor = automatic_executor(repository, registry_path=registry)
 
             def counted(record):
                 calls.append(record["instance_id"])
                 return executor(record)
 
-            runtime = Stage1Runtime(ROOT, directory / "runtime", operator_resolver=lambda: "test",
+            runtime = Stage1Runtime(repository, directory / "runtime", operator_resolver=lambda: "test",
                                     execution_executor=counted)
-            first = runtime.submit_development(FIXTURE)
+            first = runtime.submit_development(package)
             self.assertEqual(first["state"], "DISPATCHED")
             calls.clear()
             second = runtime.resume_transaction(first["instance_id"])
@@ -74,9 +94,8 @@ class CanonicalRecoveryTests(unittest.TestCase):
     def test_source_package_tamper_is_rejected(self):
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)
-            package = directory / "package"
-            shutil.copytree(FIXTURE, package)
-            runtime = Stage1Runtime(ROOT, directory / "runtime", operator_resolver=lambda: "test")
+            repository, package, _ = self.fixture(directory)
+            runtime = Stage1Runtime(repository, directory / "runtime", operator_resolver=lambda: "test")
             first = runtime.submit_development(package)
             mission = package / "mission.yaml"
             mission.write_text(mission.read_text(encoding="utf-8") + "\n# tampered\n", encoding="utf-8")
@@ -84,11 +103,57 @@ class CanonicalRecoveryTests(unittest.TestCase):
                 runtime.resume_transaction(first["instance_id"])
             self.assertEqual(raised.exception.evidence["reason_code"], "PACKAGE_DIGEST_MISMATCH")
 
+    def test_authorized_publication_successor_binds_recovery_baseline(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            repository, package, publication = self.fixture(directory)
+            runtime = Stage1Runtime(repository, directory / "runtime", operator_resolver=lambda: "test")
+            first = runtime.submit_development(package)
+            first["repository_baseline"] = "81c82a59e633fbf7dfbc0831c9ffd4298cd64201"
+            first.pop("submission_baseline", None)
+            first["publication_receipt_path"] = str(publication)
+            runtime.store.save(first)
+            recovered = runtime.resume_transaction(first["instance_id"])
+            transition = recovered["recovery"]["repository_transition"]
+            self.assertIn(transition["classification"], {"AUTHORIZED_PUBLICATION_SUCCESSOR", "AUTHORIZED_RECOVERY_BASELINE"})
+            self.assertEqual(recovered["submission_baseline"], "81c82a59e633fbf7dfbc0831c9ffd4298cd64201")
+            self.assertEqual(recovered["recovery_baseline"], "f95b69121348ecb87fcffbd9e70be11b9190f6f5")
+            self.assertEqual(recovered["recovery_baseline_binding"]["transition_digest"], transition["transition_digest"])
+
+    def test_dirty_working_tree_is_fail_closed(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            repository, package, _ = self.fixture(directory)
+            runtime = Stage1Runtime(repository, directory / "runtime", operator_resolver=lambda: "test")
+            first = runtime.submit_development(package)
+            target = repository / "README.md"
+            target.write_text(target.read_text(encoding="utf-8") + "\n# drift\n", encoding="utf-8")
+            with self.assertRaises(Stage1Error) as raised:
+                runtime.resume_transaction(first["instance_id"])
+            self.assertEqual(raised.exception.evidence["reason_code"], "UNCOMMITTED_WORKING_TREE_DRIFT")
+
+    def test_publication_receipt_digest_failure_is_ambiguous(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            repository, package, publication = self.fixture(directory)
+            value = json.loads(publication.read_text(encoding="utf-8"))
+            value["receipt_digest"] = "forged"
+            publication.write_text(json.dumps(value), encoding="utf-8")
+            runtime = Stage1Runtime(repository, directory / "runtime", operator_resolver=lambda: "test")
+            first = runtime.submit_development(package)
+            first["repository_baseline"] = "81c82a59e633fbf7dfbc0831c9ffd4298cd64201"
+            first["publication_receipt_path"] = str(publication)
+            runtime.store.save(first)
+            with self.assertRaises(Stage1Error) as raised:
+                runtime.resume_transaction(first["instance_id"])
+            self.assertEqual(raised.exception.evidence["reason_code"], "AMBIGUOUS_PUBLICATION_TRANSITION")
+
     def test_legacy_projection_hydrates_from_receipts_before_recovery(self):
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)
-            runtime = Stage1Runtime(ROOT, directory / "runtime", operator_resolver=lambda: "test")
-            first = runtime.submit_development(FIXTURE)
+            repository, package, _ = self.fixture(directory)
+            runtime = Stage1Runtime(repository, directory / "runtime", operator_resolver=lambda: "test")
+            first = runtime.submit_development(package)
             legacy = copy.deepcopy(first)
             for field in ("source", "source_digest", "package", "package_digest", "registration",
                           "phases", "lifecycle_integrity", "pending_phase", "next_action"):
@@ -107,12 +172,13 @@ class CanonicalRecoveryTests(unittest.TestCase):
     def test_legacy_invalid_dispatch_without_snapshot_reconciles(self):
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)
-            registry = self.registry(directory)
+            repository, package, _ = self.fixture(directory)
+            registry = self.registry(directory, repository)
             runtime = Stage1Runtime(
-                ROOT, directory / "runtime", operator_resolver=lambda: "test",
-                execution_executor=automatic_executor(ROOT, registry_path=registry),
+                repository, directory / "runtime", operator_resolver=lambda: "test",
+                execution_executor=automatic_executor(repository, registry_path=registry),
             )
-            first = runtime.submit_development(FIXTURE)
+            first = runtime.submit_development(package)
             legacy = copy.deepcopy(first)
             legacy.pop("authority_snapshot", None)
             legacy["receipts"]["dispatch"] = {

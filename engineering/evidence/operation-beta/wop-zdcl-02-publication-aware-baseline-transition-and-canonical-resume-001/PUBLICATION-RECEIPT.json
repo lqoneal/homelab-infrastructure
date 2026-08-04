@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "publication_receipt_id": "ZEUS-PUBLICATION-RECEIPT-ZDCL02-HYDRATION-001",
+  "repository_identity": "git@github.com:lqoneal/homelab-infrastructure",
+  "source_branch": "recovery/zdcl02-canonical-transaction-hydration",
+  "source_commit": "1d14d59baef2be5dcecce0f550a997b474491402",
+  "target_branch": "main",
+  "previous_main": "4c72effc0fdad77693ec2bde603bb2c4076952c0",
+  "merge_commit": "f95b69121348ecb87fcffbd9e70be11b9190f6f5",
+  "resulting_main": "f95b69121348ecb87fcffbd9e70be11b9190f6f5",
+  "pr_number": 52,
+  "merge_disposition": "MERGED",
+  "qualification_evidence_digest": "published-hydration-evidence",
+  "eos_synchronization_digest": "published-eos-state",
+  "platform_validation_result": "PASS",
+  "ancestry_verified": true,
+  "eos_synchronized": true,
+  "platform_validated": true,
+  "protected_baselines_verified": true,
+  "receipt_digest": "92a2ac51d05ebed505499935abccc4637ad9523628c7a80f1f6cf330554c157e"
+}

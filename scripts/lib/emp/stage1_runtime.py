@@ -34,6 +34,17 @@ class Stage1Error(ValueError):
 AUTHORITY_FAILURE = "AUTHORITY_CHAIN_INTEGRITY_FAILURE"
 RECOVERY_SCHEMA_VERSION = 3
 HYDRATION_SCHEMA_VERSION = 1
+BASELINE_CLASSIFICATIONS = {
+    "EXACT_SUBMISSION_BASELINE",
+    "AUTHORIZED_PUBLICATION_SUCCESSOR",
+    "AUTHORIZED_RECOVERY_BASELINE",
+    "UNCOMMITTED_WORKING_TREE_DRIFT",
+    "UNRELATED_REPOSITORY_HISTORY",
+    "REWOUND_REPOSITORY_HISTORY",
+    "AMBIGUOUS_PUBLICATION_TRANSITION",
+    "PROTECTED_BASELINE_MUTATION",
+    "REPOSITORY_IDENTITY_MISMATCH",
+}
 
 
 ACTIVE_STATES = {"VALIDATING", "ADMITTED", "STAGED", "VALIDATED", "PACKAGED", "REGISTERED", "AUTHORIZED", "AWAITING_EXECUTION_DISPATCH", "DISPATCHED", "EXECUTING", "QUALIFYING", "QUALIFIED", "PUBLICATION_READY", "PUBLISHED", "SYNCHRONIZING", "SYNCHRONIZED", "CLOSING", "INTERRUPTED", "BLOCKED"}
@@ -605,7 +616,8 @@ class Stage1Runtime:
                 "execution_mode": "DEVELOPMENT", "package_digest": package_digest,
                 "source_digest": str(metadata.get("source_document_digest") or package_digest),
                 "effect_profile": metadata["effect_profile"],
-                "repository_baseline": baseline, "protected_baselines": protected,
+                "repository_baseline": baseline, "submission_baseline": baseline,
+                "protected_baselines": protected,
                 "validation_evidence": package_evidence,
                 "registration": {"registration_id": "EMM-DEV-" + package_digest[:24],
                                   "owner": "Engineering Governance", "status": "GENERATED"},
@@ -665,12 +677,14 @@ class Stage1Runtime:
 
     def _resume_development(self, record: dict[str, Any], baseline: str,
                             protected: Mapping[str, str], timestamp: str,
-                            *, interrupt_after: str | None = None) -> dict[str, Any]:
+                            *, interrupt_after: str | None = None,
+                            repository_transition: Mapping[str, Any] | None = None) -> dict[str, Any]:
         current = subprocess.run(["git", "-C", str(self.repository), "rev-parse", "HEAD"],
                                  text=True, capture_output=True, check=False).stdout.strip()
-        if current != baseline:
+        expected = str((repository_transition or {}).get("recovery_baseline") or baseline)
+        if current != expected:
             raise Stage1Error("repository drift detected during development submission",
-                              evidence={"reason_code": "REPOSITORY_DRIFT", "expected": baseline, "observed": current})
+                              evidence={"reason_code": "REPOSITORY_DRIFT", "expected": expected, "observed": current})
         for tag, value in protected.items():
             observed = subprocess.run(["git", "-C", str(self.repository), "rev-parse", tag],
                                       text=True, capture_output=True, check=False).stdout.strip()
@@ -890,6 +904,12 @@ class Stage1Runtime:
             "runtime_identity": {"instance_id": record.get("instance_id"),
                                  "schema_version": record.get("schema_version"),
                                  "state_digest": record.get("state_digest")},
+            "repository_transition": record.get("repository_transition") or {
+                "submission_baseline": record.get("submission_baseline") or record.get("repository_baseline"),
+                "current_head": None,
+                "classification": "UNRESOLVED",
+                "recovery_baseline_bound": bool(record.get("recovery_baseline_binding")),
+            },
             "lifecycle": {"current_phase": current_phase, "next_phase": record.get("pending_phase")},
             "receipt_verification": receipt_verification,
             "authority_verification": {"result": "PASS" if snapshot else "PENDING",
@@ -927,6 +947,7 @@ class Stage1Runtime:
         protected = record.get("protected_baselines") or {}
         timestamp = _utc(at)
         verification = self._verify_recovery(record, baseline, protected)
+        record = self._bind_recovery_baseline(record, verification["repository_transition"], timestamp)
         record = self._migrate_runtime(record, verification)
         # A verified dispatch is already authoritative.  Do not rewrite its
         # timestamp, provider binding, or receipt identities on replay.
@@ -936,7 +957,8 @@ class Stage1Runtime:
             result["idempotent_recovery"] = True
             return result
         prior_digest = record.get("state_digest")
-        result = self._resume_development(record, baseline, protected, timestamp)
+        result = self._resume_development(record, baseline, protected, timestamp,
+                                           repository_transition=verification["repository_transition"])
         result["recovery"] = self._verify_recovery(result, baseline, protected, allow_pending_dispatch=True)
         result["idempotent_recovery"] = prior_digest == result.get("state_digest")
         return result
@@ -1052,25 +1074,15 @@ class Stage1Runtime:
         if record.get("repository") != str(self.repository):
             fail("REPOSITORY_MISMATCH", "transaction repository identity mismatch",
                  expected=str(self.repository), observed=record.get("repository"))
-        observed = subprocess.run(["git", "-C", str(self.repository), "rev-parse", "HEAD"],
-                                  text=True, capture_output=True, check=False).stdout.strip()
-        if not baseline:
-            fail("REPOSITORY_MISMATCH", "repository baseline is unavailable", expected=baseline, observed=observed)
-        repository_status = "PASS"
-        if observed != baseline:
-            ancestor = subprocess.run(
-                ["git", "-C", str(self.repository), "merge-base", "--is-ancestor", baseline, observed],
-                capture_output=True, check=False,
-            ).returncode == 0
-            if not ancestor:
-                fail("REPOSITORY_MISMATCH", "repository baseline mismatch", expected=baseline, observed=observed)
-            repository_status = "STALE_RUNTIME_RECONCILED"
+        transition = self._resolve_baseline_transition(record, baseline, fail)
+        repository_status = "PASS" if transition["classification"] == "EXACT_SUBMISSION_BASELINE" else "STALE_RUNTIME_RECONCILED"
         for tag, expected in protected.items():
             actual = subprocess.run(["git", "-C", str(self.repository), "rev-parse", tag],
                                     text=True, capture_output=True, check=False).stdout.strip()
             if actual != expected:
-                fail("PROTECTED_BASELINE_MISMATCH", f"protected baseline mismatch: {tag}",
-                     tag=tag, expected=expected, observed=actual)
+                fail("PROTECTED_BASELINE_MUTATION", f"protected baseline mismatch: {tag}",
+                     classification="PROTECTED_BASELINE_MUTATION", tag=tag,
+                     expected=expected, observed=actual)
 
         receipts = record.get("receipts")
         if not isinstance(receipts, Mapping):
@@ -1135,21 +1147,141 @@ class Stage1Runtime:
                 if not allow_pending_dispatch:
                     return {"result": "RECONCILE", "receipt_chain": receipt_report,
                             "authority": authority, "dispatch": {"result": "FAIL", "diagnostic": dispatch_reason},
-                            "hydration": record.get("hydration")}
+                            "hydration": record.get("hydration"),
+                            "repository_transition": transition}
                 return {"result": "RECONCILE", "receipt_chain": receipt_report,
                         "authority": authority, "dispatch": {"result": "FAIL", "diagnostic": dispatch_reason},
-                        "hydration": record.get("hydration")}
+                        "hydration": record.get("hydration"),
+                        "repository_transition": transition}
             dispatch_report = {"result": "PASS", "receipt_id": dispatch.get("receipt_id"),
                                "provider_id": dispatch.get("provider_id"), "agent_id": dispatch.get("agent_id")}
         else:
             dispatch_report = {"result": "PENDING", "diagnostic": "DISPATCH_RECEIPT_ABSENT"}
-        return {"result": "PASS", "repository": {"result": repository_status, "baseline": baseline,
-                                                       "current_head": observed},
+        return {"result": "PASS", "repository": {"result": repository_status,
+                                                       "baseline": baseline,
+                                                       "current_head": transition["current_head"]},
+                "repository_transition": transition,
                 "runtime": {"result": "PASS", "schema_version": record.get("schema_version")},
                 "package": {"result": "PASS", "package_digest": record.get("package_digest")},
                 "receipt_chain": receipt_report, "authority": authority, "dispatch": dispatch_report,
                 "lifecycle": {"state": record.get("state"), "phase": (record.get("phases") or [None])[-1],
                                "next_phase": record.get("pending_phase")}}
+
+    def _resolve_baseline_transition(self, record: Mapping[str, Any], baseline: str,
+                                     fail: Callable[..., None]) -> dict[str, Any]:
+        """Classify the repository transition before lifecycle verification."""
+        if not baseline:
+            fail("REPOSITORY_MISMATCH", "repository baseline is unavailable", expected=baseline)
+        current = subprocess.run(["git", "-C", str(self.repository), "rev-parse", "HEAD"],
+                                 text=True, capture_output=True, check=False).stdout.strip()
+        status = subprocess.run(["git", "-C", str(self.repository), "status", "--porcelain",
+                                 "--untracked-files=all"], text=True, capture_output=True, check=False)
+        branch = subprocess.run(["git", "-C", str(self.repository), "branch", "--show-current"],
+                                text=True, capture_output=True, check=False).stdout.strip()
+        origin = subprocess.run(["git", "-C", str(self.repository), "rev-parse", "origin/main"],
+                                text=True, capture_output=True, check=False).stdout.strip()
+        if status.returncode or status.stdout:
+            fail("UNCOMMITTED_WORKING_TREE_DRIFT", "repository working tree is not clean",
+                 classification="UNCOMMITTED_WORKING_TREE_DRIFT", changes=status.stdout.splitlines())
+        if branch != "main" or not origin or current != origin:
+            fail("UNCOMMITTED_WORKING_TREE_DRIFT", "repository is not the synchronized main baseline",
+                 classification="UNCOMMITTED_WORKING_TREE_DRIFT", branch=branch,
+                 current_head=current, origin_main=origin)
+        if current == baseline:
+            classification = "EXACT_SUBMISSION_BASELINE"
+            transition = {"transition_type": classification, "from_baseline": baseline,
+                          "to_baseline": current, "recovery_baseline": current,
+                          "current_head": current, "ancestry_verified": True,
+                          "publication_verified": False, "eos_synchronized": False,
+                          "platform_validated": False}
+            transition["transition_digest"] = _digest(transition)
+            return {"classification": classification, **transition}
+        baseline_ancestor = subprocess.run(
+            ["git", "-C", str(self.repository), "merge-base", "--is-ancestor", baseline, current],
+            capture_output=True, check=False,
+        ).returncode == 0
+        if not baseline_ancestor:
+            current_ancestor = subprocess.run(
+                ["git", "-C", str(self.repository), "merge-base", "--is-ancestor", current, baseline],
+                capture_output=True, check=False,
+            ).returncode == 0
+            classification = "REWOUND_REPOSITORY_HISTORY" if current_ancestor else "UNRELATED_REPOSITORY_HISTORY"
+            fail(classification, "repository baseline transition is not an authorized descendant",
+                 classification=classification, expected=baseline, observed=current)
+
+        binding = record.get("recovery_baseline_binding") or {}
+        if binding and binding.get("recovery_baseline") == current:
+            classification = "AUTHORIZED_RECOVERY_BASELINE"
+            transition = dict(binding)
+            transition.update(classification=classification, current_head=current, ancestry_verified=True)
+            return transition
+
+        receipt_path = record.get("publication_receipt_path")
+        if not receipt_path:
+            receipt_path = self.repository / "engineering/evidence/operation-beta/wop-zdcl-02-publication-aware-baseline-transition-and-canonical-resume-001/PUBLICATION-RECEIPT.json"
+        path = Path(str(receipt_path))
+        if not path.is_absolute():
+            path = self.repository / path
+        try:
+            publication = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            fail("AMBIGUOUS_PUBLICATION_TRANSITION", "publication authority receipt is unavailable",
+                 classification="AMBIGUOUS_PUBLICATION_TRANSITION", path=str(path))
+        supplied = publication.get("receipt_digest")
+        unsigned = dict(publication)
+        unsigned.pop("receipt_digest", None)
+        if not supplied or supplied != _digest(unsigned):
+            fail("AMBIGUOUS_PUBLICATION_TRANSITION", "publication receipt digest is invalid",
+                 classification="AMBIGUOUS_PUBLICATION_TRANSITION")
+        required = {
+            "repository_identity": "git@github.com:lqoneal/homelab-infrastructure",
+            "source_branch": "recovery/zdcl02-canonical-transaction-hydration",
+            "source_commit": "1d14d59baef2be5dcecce0f550a997b474491402",
+            "target_branch": "main",
+            "resulting_main": current,
+            "pr_number": 52,
+            "merge_disposition": "MERGED",
+        }
+        if any(publication.get(key) != value for key, value in required.items()):
+            fail("AMBIGUOUS_PUBLICATION_TRANSITION", "publication receipt does not bind current publication",
+                 classification="AMBIGUOUS_PUBLICATION_TRANSITION", expected=required, observed=publication)
+        if not all(publication.get(key) is True for key in ("ancestry_verified", "eos_synchronized", "platform_validated", "protected_baselines_verified")):
+            fail("AMBIGUOUS_PUBLICATION_TRANSITION", "publication receipt lacks required validation",
+                 classification="AMBIGUOUS_PUBLICATION_TRANSITION")
+        transition = {
+            "transition_type": "AUTHORIZED_PUBLICATION_SUCCESSOR",
+            "from_baseline": baseline,
+            "to_baseline": current,
+            "recovery_baseline": current,
+            "repository": str(self.repository),
+            "repository_identity": publication["repository_identity"],
+            "ancestry_verified": True,
+            "publication_verified": True,
+            "eos_synchronized": True,
+            "platform_validated": True,
+            "publication_receipt_id": publication.get("publication_receipt_id"),
+            "publication_receipt_digest": supplied,
+            "current_head": current,
+        }
+        transition["transition_digest"] = _digest(transition)
+        return {"classification": transition["transition_type"], **transition}
+
+    def _bind_recovery_baseline(self, record: Mapping[str, Any], transition: Mapping[str, Any], timestamp: str) -> dict[str, Any]:
+        value = deepcopy(dict(record))
+        existing = value.get("recovery_baseline_binding")
+        if existing and existing.get("transition_digest") != transition.get("transition_digest"):
+            raise Stage1Error("recovery baseline binding conflicts with existing provenance",
+                              evidence={"reason_code": AUTHORITY_FAILURE})
+        if transition.get("classification") in {"AUTHORIZED_PUBLICATION_SUCCESSOR", "AUTHORIZED_RECOVERY_BASELINE"}:
+            binding = dict(transition)
+            binding["verified_at"] = (existing or {}).get("verified_at", timestamp)
+            value["submission_baseline"] = value.get("submission_baseline") or value.get("repository_baseline")
+            value["recovery_baseline"] = transition.get("recovery_baseline")
+            value["recovery_baseline_binding"] = binding
+        value["repository_transition"] = dict(transition)
+        if value != record:
+            return self.store.save(value)
+        return self.store.load_path(self.store._path(value["instance_id"]))
 
     def _migrate_runtime(self, record: Mapping[str, Any], verification: Mapping[str, Any]) -> dict[str, Any]:
         """Upgrade pre-recovery records without changing transaction identity."""
