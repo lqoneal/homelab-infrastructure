@@ -1,0 +1,151 @@
+{
+  "authorization": {
+    "authority": "Engineering Governance",
+    "decision": "SUBMISSION_CONSTITUTES_EXECUTION_AUTHORITY",
+    "mode": "MANUAL_GOVERNANCE_DEVELOPMENT"
+  },
+  "effect_profile": "DEVELOPMENT-INFRASTRUCTURE-NONPRODUCTION",
+  "evidence": [],
+  "execution_mode": "DEVELOPMENT",
+  "failure": null,
+  "failure_injection": {
+    "publication": false,
+    "synchronization": false
+  },
+  "instance_id": "ZEUS-DEVELOPMENT-efa464ff-3125-5587-9639-9b546b988ad2",
+  "lifecycle_integrity": "RECEIPT_BACKED_V1",
+  "mission_id": "ZDCL-02",
+  "next_action": "Continue from the first lifecycle phase without a receipt",
+  "operator": "loneal",
+  "package": "/data/engineering/repositories/homelab/engineering/work-orders/WOP-ZDCL-02-ZEUS-PROVIDER-NEUTRAL-EXECUTION-CONTROL-001/ebeec97412e405e26b721c09",
+  "package_digest": "b85794ff4cf7d508a9f36a0a4aa017e293d48acffcb26401acbd44a0833c51d6",
+  "packaging": {
+    "package_id": "ebeec97412e405e26b721c09",
+    "packaged": true,
+    "replayed": true,
+    "source_digest": "6567d9eaac47bea91b0346731cc3bac91566ccfa52cb4e2e6d86f3da61ef5334"
+  },
+  "pending_phase": "DISPATCHED",
+  "phases": [
+    "VALIDATED",
+    "PACKAGED",
+    "REGISTERED",
+    "AUTHORIZED",
+    "ADMITTED",
+    "DISPATCHED"
+  ],
+  "protected_baselines": {
+    "OA-v1.0.0": "73b22f44dd8ee4d70f0c943ed19e1569022f856a",
+    "OB-PLAN-v1.0.0": "b928c1541aa7ba42132f288927924818632f7cd2"
+  },
+  "provenance": {
+    "baseline": "81c82a59e633fbf7dfbc0831c9ffd4298cd64201",
+    "generated_at": "2026-08-03T21:47:20.274038Z",
+    "operator": "loneal",
+    "package_digest": "b85794ff4cf7d508a9f36a0a4aa017e293d48acffcb26401acbd44a0833c51d6",
+    "repository": "/data/engineering/repositories/homelab"
+  },
+  "receipts": {
+    "admission": {
+      "admission_id": "EMM-DEV-ADMISSION-b85794ff4cf7d508a9f36a0a",
+      "effect_profile": "DEVELOPMENT-INFRASTRUCTURE-NONPRODUCTION",
+      "execution_mode": "DEVELOPMENT",
+      "executor_requirements": [
+        "qualified Development execution agent"
+      ],
+      "receipt_digest": "a62dc894e6dfaad7fd51a7cd116db1846686dbda629ad854a4642b48f2509737",
+      "receipt_id": "ZEUS-RECEIPT-ADMISSION-1245f76d63680271c8a08cf9",
+      "receipt_type": "admission",
+      "schema_version": 1,
+      "timestamp": "2026-08-03T21:47:20.274038Z",
+      "wop_id": "WOP-ZDCL-02-ZEUS-PROVIDER-NEUTRAL-EXECUTION-CONTROL-001"
+    },
+    "authorization": {
+      "authority": "Engineering Governance",
+      "decision": "SUBMISSION_CONSTITUTES_EXECUTION_AUTHORITY",
+      "effect_profile": "DEVELOPMENT-INFRASTRUCTURE-NONPRODUCTION",
+      "protected_baselines": {
+        "OA-v1.0.0": "73b22f44dd8ee4d70f0c943ed19e1569022f856a",
+        "OB-PLAN-v1.0.0": "b928c1541aa7ba42132f288927924818632f7cd2"
+      },
+      "receipt_digest": "fd5c3e80ae6dcad0e7b616b10cc77f928a5452a031ebe9e2499772c08f98bc57",
+      "receipt_id": "ZEUS-RECEIPT-AUTHORIZATION-f2f08ded954a9ed5637f2ff7",
+      "receipt_type": "authorization",
+      "repository": "/data/engineering/repositories/homelab",
+      "schema_version": 1,
+      "timestamp": "2026-08-03T21:47:20.274038Z"
+    },
+    "dispatch": {
+      "agent_id": "zeus-local-loneal-01",
+      "assignment_digest": "f7f2461b8b5134f1575884011e857b42faf442f20f8c1b4b885b2e4ec3497824",
+      "assignment_id": "ZEUS-DISPATCH-f7f2461b8b5134f157588401",
+      "receipt_digest": "52502eecb767145b78e135d57c807855c1d152738e410b49d5645e679ef5a722",
+      "receipt_id": "ZEUS-RECEIPT-DISPATCH-3de6b42ef7e1879e2208caf2",
+      "receipt_type": "dispatch",
+      "repository": "/data/engineering/repositories/homelab",
+      "schema_version": 1,
+      "selection": "qualified-agent-id-ascending",
+      "wop_id": "WOP-ZDCL-02-ZEUS-PROVIDER-NEUTRAL-EXECUTION-CONTROL-001"
+    },
+    "packaging": {
+      "package": "/data/engineering/repositories/homelab/engineering/work-orders/WOP-ZDCL-02-ZEUS-PROVIDER-NEUTRAL-EXECUTION-CONTROL-001/ebeec97412e405e26b721c09",
+      "package_digest": "b85794ff4cf7d508a9f36a0a4aa017e293d48acffcb26401acbd44a0833c51d6",
+      "receipt_digest": "db9d890ca6f97b8d79a77e3700b77e66530f412acd308e330c64f313d9b19ff7",
+      "receipt_id": "ZEUS-RECEIPT-PACKAGING-8d3933b96ccdd475d995ebb9",
+      "receipt_type": "packaging",
+      "schema_version": 1,
+      "source_digest": "b85794ff4cf7d508a9f36a0a4aa017e293d48acffcb26401acbd44a0833c51d6",
+      "timestamp": "2026-08-03T21:47:20.274038Z",
+      "transactional_promotion": true
+    },
+    "registration": {
+      "package_digest": "b85794ff4cf7d508a9f36a0a4aa017e293d48acffcb26401acbd44a0833c51d6",
+      "receipt_digest": "96eb19d2941e3d8ad153840b0f9a01450f1b1f41b476aaf81121ba160a944409",
+      "receipt_id": "ZEUS-RECEIPT-REGISTRATION-d29cbdf20f64617e1ff812f7",
+      "receipt_type": "registration",
+      "registration_id": "EMM-DEV-b85794ff4cf7d508a9f36a0a",
+      "repository_baseline": "81c82a59e633fbf7dfbc0831c9ffd4298cd64201",
+      "schema_version": 1,
+      "timestamp": "2026-08-03T21:47:20.274038Z",
+      "wop_id": "WOP-ZDCL-02-ZEUS-PROVIDER-NEUTRAL-EXECUTION-CONTROL-001"
+    },
+    "validation": {
+      "failures": [],
+      "receipt_digest": "61167e9c2628b839e21fc43663f72a6069d3d78a0eaea50c0a855e9480eb0f6f",
+      "receipt_id": "ZEUS-RECEIPT-VALIDATION-696f35af3e0b986cbbd4d366",
+      "receipt_type": "validation",
+      "result": "PASS",
+      "schema_version": 1,
+      "source": "/data/engineering/repositories/homelab/engineering/work-orders/WOP-ZDCL-02-ZEUS-PROVIDER-NEUTRAL-EXECUTION-CONTROL-001/ebeec97412e405e26b721c09",
+      "source_digest": "b85794ff4cf7d508a9f36a0a4aa017e293d48acffcb26401acbd44a0833c51d6",
+      "timestamp": "2026-08-03T21:47:20.274038Z",
+      "validator": "stage1.validate_package"
+    }
+  },
+  "registration": {
+    "owner": "Engineering Governance",
+    "registration_id": "EMM-DEV-b85794ff4cf7d508a9f36a0a",
+    "status": "GENERATED"
+  },
+  "repository": "/data/engineering/repositories/homelab",
+  "repository_baseline": "81c82a59e633fbf7dfbc0831c9ffd4298cd64201",
+  "schema_version": 2,
+  "source": "/data/engineering/repositories/homelab/engineering/work-orders/WOP-ZDCL-02-ZEUS-PROVIDER-NEUTRAL-EXECUTION-CONTROL-001/ebeec97412e405e26b721c09",
+  "state": "DISPATCHED",
+  "state_digest": "5bd552bb71c0d7493bf87b057c9297ba3292b0c191347fff831c1f9f1d3c644a",
+  "submitted_at": "2026-08-03T21:47:20.274038Z",
+  "updated_at": "2026-08-03T22:39:58.285156Z",
+  "validation_evidence": {
+    "components": {
+      "bootstrap": "bootstrap.md",
+      "gate_definitions": "gates.yaml",
+      "manifests": "manifests/immutable-manifest.yaml",
+      "mission_metadata": "mission.yaml",
+      "roadmap": "roadmap.md"
+    },
+    "failures": [],
+    "integrity": "NOT_PRESENT",
+    "result": "PASS"
+  },
+  "wop_id": "WOP-ZDCL-02-ZEUS-PROVIDER-NEUTRAL-EXECUTION-CONTROL-001"
+}

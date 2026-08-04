@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 import sys
 sys.path.insert(0, str(ROOT))
 from scripts.lib.emp.stage1_runtime import Stage1Error, Stage1Runtime
+from scripts.lib.emp.development_dispatch import automatic_executor
 
 
 FIXTURE = ROOT / "engineering/evidence/operation-beta/zeus-development-mode-recovery-001/fixtures/VALID-DEVELOPMENT-WOP"
@@ -99,6 +100,59 @@ class DevelopmentModeRecoveryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             result = self.runtime(Path(temporary) / "stage1").submit_development(FIXTURE)
             self.assertEqual(set(result["protected_baselines"]), {"OA-v1.0.0", "OB-PLAN-v1.0.0"})
+
+    def test_conflicting_authority_source_blocks_before_state_mutation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            bad = Path(temporary) / "bad"
+            shutil.copytree(FIXTURE, bad)
+            mission = bad / "mission.yaml"
+            mission.write_text(mission.read_text() + "authority: Other Authority\n", encoding="utf-8")
+            state = Path(temporary) / "stage1"
+            with self.assertRaises(Stage1Error) as raised:
+                self.runtime(state).submit_development(bad)
+            self.assertEqual(raised.exception.evidence.get("reason_code"), "AUTHORITY_CHAIN_INTEGRITY_FAILURE")
+            self.assertFalse(state.exists())
+
+    def test_dispatch_is_bound_to_one_authority_snapshot(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            registry = Path(temporary) / "agents.json"
+            registry.write_text(json.dumps({"agents": [{
+                "agent_id": "provider-a", "active": True,
+                "qualification_status": "QUALIFIED",
+                "qualification_evidence": ["QUAL-provider-a"],
+                "repository_access_scope": [str(ROOT)]
+            }], "registry_digest": "registry-digest"}), encoding="utf-8")
+            runtime = Stage1Runtime(
+                ROOT, Path(temporary) / "stage1", operator_resolver=lambda: "loneal",
+                execution_executor=automatic_executor(ROOT, registry_path=registry),
+            )
+            result = runtime.submit_development(FIXTURE)
+            self.assertEqual(result["state"], "DISPATCHED")
+            self.assertTrue(result["authority_snapshot"]["authority_snapshot_digest"])
+            self.assertEqual(result["receipts"]["dispatch"]["authority_snapshot_digest"], result["authority_snapshot"]["authority_snapshot_digest"])
+            self.assertIn("provider_selection", result["receipts"])
+
+    def test_receiptless_dispatched_state_rolls_back_on_resume(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            registry = Path(temporary) / "agents.json"
+            registry.write_text(json.dumps({"agents": [{
+                "agent_id": "provider-a", "active": True,
+                "qualification_status": "QUALIFIED",
+                "qualification_evidence": ["QUAL-provider-a"],
+                "repository_access_scope": [str(ROOT)]
+            }], "registry_digest": "registry-digest"}), encoding="utf-8")
+            runtime = Stage1Runtime(
+                ROOT, Path(temporary) / "stage1", operator_resolver=lambda: "loneal",
+                execution_executor=automatic_executor(ROOT, registry_path=registry),
+            )
+            result = runtime.submit_development(FIXTURE)
+            forged = copy.deepcopy(result)
+            forged["receipts"]["dispatch"].pop("authority_snapshot_digest")
+            runtime.store.save(forged)
+            resumed = runtime.resume_transaction(result["instance_id"])
+            self.assertEqual(resumed["state"], "AWAITING_EXECUTION_DISPATCH")
+            self.assertEqual(resumed["pending_phase"], "DISPATCHED")
+            self.assertIn("receiptless-dispatch-recovery", [item["type"] for item in resumed["evidence"]])
 
 
 if __name__ == "__main__":

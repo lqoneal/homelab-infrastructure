@@ -50,7 +50,7 @@ class SynchronizationTests(unittest.TestCase):
         )
 
     def test_directory_hash_includes_names_kinds_and_bytes(self) -> None:
-        with tempfile.TemporaryDirectory(dir="/home/loneal") as directory:
+        with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "nested").mkdir()
             (root / "nested/item").write_text("value", encoding="utf-8")
@@ -61,7 +61,7 @@ class SynchronizationTests(unittest.TestCase):
             self.assertNotEqual(first, synchronization.sha256_path(root))
 
     def test_repository_inventory_hash_excludes_ignored_generated_files(self) -> None:
-        with tempfile.TemporaryDirectory(dir="/home/loneal") as directory:
+        with tempfile.TemporaryDirectory() as directory:
             checkout = Path(directory) / "checkout"
             subprocess.run(
                 ["git", "clone", "--shared", "--quiet", str(ROOT), str(checkout)],

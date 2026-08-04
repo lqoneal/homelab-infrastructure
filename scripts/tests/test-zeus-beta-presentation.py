@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def command(*args: str) -> tuple[dict, str]:
-    with tempfile.TemporaryDirectory(dir="/home/loneal") as directory:
+    with tempfile.TemporaryDirectory() as directory:
         operator = Path(directory) / "operator.json"
         operator.write_text('{"invocation_count": 0, "orientation_limit": 100, "schema_version": 1}\n')
         env = os.environ.copy()
