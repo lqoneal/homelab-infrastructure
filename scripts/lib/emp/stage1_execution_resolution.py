@@ -214,7 +214,8 @@ def _atomic_write_projections(admission_path: Path, admission: Mapping[str, Any]
 def resolve(root: Path | str, stage1_directory: Path | str, admission_store: Path | str,
             execution_store: Path | str, identifier: str | None = None,
             execution_id: str | None = None, admission_id: str | None = None,
-            hydrate: bool = False) -> dict[str, Any]:
+            hydrate: bool = False, require_lineage_environment: bool = False,
+            resolve_admission_lineage: bool = True) -> dict[str, Any]:
     runtime = Stage1Runtime(root, stage1_directory)
     try:
         records = runtime.store.all()
@@ -232,13 +233,37 @@ def resolve(root: Path | str, stage1_directory: Path | str, admission_store: Pat
     if record.get("lifecycle_integrity") != "RECEIPT_BACKED_V1" or not isinstance(receipts, Mapping):
         raise Stage1ExecutionResolutionError("Stage 1 record is not receipt-backed")
     requested_admission_id = admission_id
-    resolved_admission_id = (receipts.get("admission") or {}).get("admission_id")
-    if not resolved_admission_id:
+    receipt_admission_id = (receipts.get("admission") or {}).get("admission_id")
+    if not receipt_admission_id:
         raise Stage1ExecutionResolutionError("Stage 1 admission identity is missing")
-    if requested_admission_id and requested_admission_id != resolved_admission_id:
-        raise Stage1ExecutionResolutionError("requested admission conflicts with Stage 1 receipt")
+    resolved_admission_id = receipt_admission_id
+    admission_lineage = None
+    admission_path = Path(admission_store) / f"{receipt_admission_id}.json"
+    lineage_projection = None
+    if admission_path.exists() and not requested_admission_id:
+        try:
+            lineage_projection = json.loads(admission_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as error:
+            raise Stage1ExecutionResolutionError(f"invalid admission projection: {error}") from error
+    has_lineage = isinstance(lineage_projection, Mapping) and (
+        lineage_projection.get("superseded_by") or lineage_projection.get("supersedes")
+    )
+    if requested_admission_id or (resolve_admission_lineage and has_lineage):
+        try:
+            from scripts.lib.emp.admission_supersession import (
+                AdmissionSupersessionError, resolve_for_resume,
+            )
+            admission_lineage = resolve_for_resume(
+                root, admission_store, requested_admission_id or receipt_admission_id,
+                stage1_transaction=record,
+                enforce_environment=require_lineage_environment,
+            )
+        except (AdmissionSupersessionError, OSError) as error:
+            raise Stage1ExecutionResolutionError(str(error)) from error
+        resolved_admission_id = admission_lineage["admission_id"]
     execution = _find_execution(Path(execution_store), resolved_admission_id, execution_id)
-    admission = _derived_admission(record, resolved_admission_id)
+    admission = (deepcopy(admission_lineage["admission"])
+                 if admission_lineage else _derived_admission(record, resolved_admission_id))
     resolved_execution_id = execution.get("execution_id") if execution else (receipts.get("execution") or {}).get("execution_id") or record["instance_id"]
     if execution_id and execution_id != resolved_execution_id:
         raise Stage1ExecutionResolutionError("requested execution conflicts with Stage 1 receipt")
@@ -254,6 +279,14 @@ def resolve(root: Path | str, stage1_directory: Path | str, admission_store: Pat
                             "authority_snapshot_digest": (record.get("authority_snapshot") or {}).get("authority_snapshot_digest"),
                             "dispatch_receipt_id": (receipts.get("dispatch") or {}).get("receipt_id"),
                             "execution_id": resolved_execution_id}}
+    if admission_lineage:
+        result["admission_lineage"] = {
+            "requested_admission_id": requested_admission_id or receipt_admission_id,
+            "receipt_admission_id": receipt_admission_id,
+            "resolved_admission_id": resolved_admission_id,
+            "lineage": [item["admission_id"] for item in admission_lineage["lineage"]],
+            "replayed": admission_lineage["replayed"],
+        }
     if hydrate:
         admission_path = Path(admission_store) / f"{resolved_admission_id}.json"
         execution_path = Path(execution_store) / f"{resolved_execution_id}.json"
