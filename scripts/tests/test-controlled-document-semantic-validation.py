@@ -4,9 +4,12 @@
 from __future__ import annotations
 
 import importlib.util
+import io
 import json
+import subprocess
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 
 
@@ -84,14 +87,56 @@ class SemanticValidationTests(unittest.TestCase):
             path = Path(directory) / "ROADMAP.md"
             path.write_text("# Roadmap\n\nObjective only.\n", encoding="utf-8")
             validation = validator.Validation()
-            result = validator.semantic_validate_path(
-                validation,
-                path,
-                validator.load_semantic_catalog(),
-            )
+            output = io.StringIO()
+            with redirect_stdout(output):
+                result = validator.semantic_validate_path(
+                    validation,
+                    path,
+                    validator.load_semantic_catalog(),
+                )
             self.assertEqual("Roadmap", result["profile"])
             self.assertEqual("FAIL", result["status"])
             self.assertTrue(validation.errors)
+            expected = [
+                error for error in validation.errors
+                if "required semantic concept" in error
+            ]
+            self.assertEqual(
+                {
+                    "sequencing", "dependencies", "completion", "traceability"
+                },
+                {error.rsplit(" ", 1)[-1] for error in expected},
+            )
+            # The negative fixture is intentionally invalid. Keep the
+            # validator fail-closed, but classify its captured diagnostics so
+            # they cannot be mistaken for repository-level failures.
+            self.assertIn("FAIL:", output.getvalue())
+            for error in expected:
+                print(f"EXPECTED_NEGATIVE_FIXTURE_FINDING: {error}")
+            self.assertEqual(4, len(expected))
+
+    def test_valid_roadmap_fixture_passes(self) -> None:
+        validation = validator.Validation()
+        result = validator.semantic_validate_path(
+            validation,
+            ROOT / "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md",
+            validator.load_semantic_catalog(),
+        )
+        self.assertEqual("Roadmap", result["profile"])
+        self.assertIn(result["status"], {"PASS", "PASS_WITH_MANUAL_CRITERIA"})
+        self.assertEqual([], validation.errors)
+
+    def test_cli_propagates_real_semantic_failure_exit_code(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
+            path = Path(directory) / "ROADMAP.md"
+            path.write_text("# Roadmap\n\nObjective only.\n", encoding="utf-8")
+            result = subprocess.run(
+                ["python3", "scripts/validate_controlled_documents.py",
+                 "--semantic-path", str(path.relative_to(ROOT))],
+                cwd=ROOT, text=True, capture_output=True, check=False,
+            )
+            self.assertNotEqual(0, result.returncode)
+            self.assertIn("Controlled-document checks failed:", result.stdout)
 
     def test_gate_commands_are_inspected_without_execution(self) -> None:
         self.assertTrue(validator.command_exists("python3 --help"))
