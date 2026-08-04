@@ -4,7 +4,15 @@ The public command hierarchy follows operator intent:
 
 * Authoring: `zeus wop format|template|init|validate|lint|inspect|explain`
 * Execution: `scripts/zeus submit <wop>` and `scripts/zeus resume <mission>`;
+* Exceptional execution control: `scripts/zeus stop <mission>`;
   status, next-action, and `zeus mission ...` are read-only projections.
+
+`stop` is an exceptional, fail-closed control for an active or plausibly hung
+execution. Zeus verifies the recorded process identity and process group,
+requests graceful termination, escalates after a bounded timeout when needed,
+preserves evidence, and leaves the mission `INTERRUPTED` with
+`scripts/zeus resume <mission>` as the next action. It does not cancel the
+mission, change authority, or create a replacement transaction.
 * Diagnosis and verification: `zeus doctor` and `zeus platform verify`
 * Administration: `zeus runtime`, `zeus config`, and `zeus synchronize`
 

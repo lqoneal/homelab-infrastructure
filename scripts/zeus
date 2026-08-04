@@ -419,7 +419,7 @@ def main(argv=None):
                 "status", "intro", "next-action", "state", "health", "operation",
                 "mission", "explain", "authority", "capabilities", "capability",
                 "lifecycle", "list", "show", "assurance", "context", "evidence",
-                "qualification", "completion", "resume", "policy", "validate", "submit",
+                "qualification", "completion", "resume", "stop", "policy", "validate", "submit",
                 "dispatcher", "dispatch", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform",
             } else interface_store.increment()
         )
@@ -488,6 +488,10 @@ def main(argv=None):
     resume_parser = sub.add_parser("resume", help="Resume an existing Development transaction by identity.")
     resume_parser.add_argument("identifier", nargs="?", help="WOP, mission, registration, package, or transaction identity")
     resume_parser.add_argument("--json", action="store_true")
+    stop_parser = sub.add_parser("stop", help="Safely interrupt one active execution session by mission identity.")
+    stop_parser.add_argument("mission", help="canonical mission identity")
+    stop_parser.add_argument("--timeout", type=float, default=2.0, help="bounded graceful termination timeout in seconds")
+    stop_parser.add_argument("--json", action="store_true")
     policy=sub.add_parser("policy"); policy.add_argument("action", choices=("configure",)); policy.add_argument("policy_id")
     show_wop=sub.add_parser("show"); show_wop.add_argument("subject")
     sub.add_parser("list")
@@ -744,6 +748,25 @@ def main(argv=None):
                 emit(value)
             else:
                 print(f"Transaction : {value['instance_id']}\nState       : {value['state']}\nNext action : {value.get('next_action') or 'None'}")
+            return 0
+        if a.command == "stop":
+            execution_directory = runtime_path(ROOT, "mission-executions")
+            admission_directory = runtime_path(ROOT, "mission-admissions")
+            if os.environ.get("ZEUS_TESTING") == "1":
+                if os.environ.get("ZEUS_EXECUTION_STORE"):
+                    execution_directory = Path(os.environ["ZEUS_EXECUTION_STORE"])
+                if os.environ.get("ZEUS_ADMISSION_STORE"):
+                    admission_directory = Path(os.environ["ZEUS_ADMISSION_STORE"])
+            execution_runtime = MissionExecutionRuntime(
+                ROOT, ExecutionStateStore(execution_directory), AdmissionStateStore(admission_directory),
+                session_store=NativeSessionStore(runtime_path(ROOT, "native-sessions")),
+            )
+            execution_id = execution_runtime.execution_for_mission(a.mission)
+            value = execution_runtime.stop(execution_id, at=now(None), graceful_timeout=a.timeout)
+            if a.json:
+                emit(value)
+            else:
+                print(f"Mission      : {value['mission_id']}\nExecution    : {value['execution_id']}\nState        : {value['state']}\nStop result  : {value.get('stop_result', 'STOPPED')}\nNext action  : scripts/zeus resume {value['mission_id']}")
             return 0
         if a.command == "next-action":
             beta = operational_beta.next_action(ROOT)
