@@ -230,6 +230,30 @@ class CanonicalRecoveryTests(unittest.TestCase):
             historical = recovered["evidence"][-1]["historical_dispatch"]
             self.assertEqual(historical["receipt_id"], first["receipts"]["dispatch"]["receipt_id"])
 
+    def test_legacy_pending_dispatch_restores_lifecycle_automatically(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            repository, package, _ = self.fixture(directory)
+            registry = self.registry(directory, repository)
+            runtime = Stage1Runtime(
+                repository, directory / "runtime", operator_resolver=lambda: "test",
+                execution_executor=automatic_executor(repository, registry_path=registry),
+            )
+            first = runtime.submit_development(package)
+            legacy = copy.deepcopy(first)
+            legacy.pop("authority_snapshot", None)
+            legacy["receipts"].pop("dispatch", None)
+            legacy["receipts"].pop("provider_selection", None)
+            legacy["state"] = "AWAITING_EXECUTION_DISPATCH"
+            legacy["pending_phase"] = "DISPATCHED"
+            runtime.store.save(legacy)
+            recovered = runtime.resume_transaction(first["instance_id"])
+            self.assertEqual(recovered["state"], "DISPATCHED")
+            self.assertIsNotNone(recovered.get("authority_snapshot"))
+            self.assertIn("dispatch", recovered["receipts"])
+            self.assertIn("provider_selection", recovered["receipts"])
+            self.assertEqual(recovered["instance_id"], first["instance_id"])
+
 
 if __name__ == "__main__":
     unittest.main()
