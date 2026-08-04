@@ -1,5 +1,8 @@
 # Platform Validation Report
 
-Engineering Platform validation is required after EOS synchronization. The
-publication candidate passed controlled-document and Registry validation
-before merge; final platform result is recorded after post-merge EOS sync.
+Full Engineering Platform validation passed all four stages after EOS
+synchronization: repository, synchronization, EOS runtime, and integrated
+platform validation.
+
+Controlled-document validation passed 2,863 checks with 0 failures. Registry
+validation passed for 87 objects.

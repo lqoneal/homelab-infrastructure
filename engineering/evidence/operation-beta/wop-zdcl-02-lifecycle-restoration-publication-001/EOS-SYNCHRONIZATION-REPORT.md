@@ -1,4 +1,8 @@
 # EOS Synchronization Report
 
-EOS synchronization is required after this complete publication evidence is
-committed. Final result is recorded after the synchronization command.
+`scripts/engctl eos synchronize homelab` passed after publication. EOS state
+and manifest were updated and the subsequent platform validation confirmed
+repository--EOS synchronization.
+
+The final evidence update is followed by one final synchronization before
+handoff.
