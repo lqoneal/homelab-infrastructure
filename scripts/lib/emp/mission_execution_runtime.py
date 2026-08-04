@@ -222,6 +222,7 @@ class MissionExecutionRuntime:
         operational_dispatch_enabled: bool = False,
         operational_context_provider=None,
         session_store: NativeSessionStore | None = None,
+        stage1_admission_resolver=None,
     ):
         self.root = Path(repository_root).resolve()
         self.store = store
@@ -246,6 +247,7 @@ class MissionExecutionRuntime:
         self.operational_dispatch_enabled = operational_dispatch_enabled
         self.operational_context_provider = operational_context_provider
         self.session_store = session_store or NativeSessionStore(store.directory.parent / "native-sessions")
+        self.stage1_admission_resolver = stage1_admission_resolver
 
     def start(
         self,
@@ -259,7 +261,7 @@ class MissionExecutionRuntime:
         if not isinstance(wop_result, dict) or not isinstance(wop_result.get("wop"), dict):
             raise MissionExecutionError("admission has no qualified WOP")
         wop = wop_result["wop"]
-        execution_id = execution_identifier(admission_id, wop["submission_digest"])
+        execution_id = admission.get("stage1_execution_id") or execution_identifier(admission_id, wop["submission_digest"])
         if self.store.path(execution_id).exists():
             return self.run(execution_id, at=at, max_gates=max_gates)
         state = {
@@ -616,7 +618,12 @@ class MissionExecutionRuntime:
         try:
             admission = self.admission_store.load(admission_id)
         except MissionAdmissionError as error:
-            raise MissionExecutionError(str(error)) from error
+            if self.stage1_admission_resolver is None:
+                raise MissionExecutionError(str(error)) from error
+            try:
+                admission = self.stage1_admission_resolver(admission_id)
+            except Exception as resolver_error:
+                raise MissionExecutionError(str(resolver_error)) from resolver_error
         if admission.get("status") != "DECIDED":
             raise MissionExecutionError("mission admission is not decided")
         if admission.get("admission_state") in {"STALE", "SUPERSEDED", "CANCELLED", "REJECTED", "CONSUMED", "COMPLETED"}:
