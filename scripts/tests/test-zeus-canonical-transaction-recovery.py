@@ -21,6 +21,8 @@ class CanonicalRecoveryTests(unittest.TestCase):
         repository = directory / "repository"
         subprocess.run(["git", "clone", "--no-local", str(ROOT), str(repository)],
                        check=True, capture_output=True, text=True)
+        subprocess.run(["git", "-C", str(repository), "switch", "main"],
+                       check=True, capture_output=True, text=True)
         package = directory / "package"
         shutil.copytree(FIXTURE, package)
         mission = package / "mission.yaml"

@@ -617,6 +617,8 @@ class Stage1Runtime:
                 "source_digest": str(metadata.get("source_document_digest") or package_digest),
                 "effect_profile": metadata["effect_profile"],
                 "repository_baseline": baseline, "submission_baseline": baseline,
+                "submission_branch": subprocess.run(["git", "-C", str(self.repository), "branch", "--show-current"],
+                                                     text=True, capture_output=True, check=False).stdout.strip(),
                 "protected_baselines": protected,
                 "validation_evidence": package_evidence,
                 "registration": {"registration_id": "EMM-DEV-" + package_digest[:24],
@@ -1183,19 +1185,24 @@ class Stage1Runtime:
         if status.returncode or status.stdout:
             fail("UNCOMMITTED_WORKING_TREE_DRIFT", "repository working tree is not clean",
                  classification="UNCOMMITTED_WORKING_TREE_DRIFT", changes=status.stdout.splitlines())
-        if branch != "main" or not origin or current != origin:
-            fail("UNCOMMITTED_WORKING_TREE_DRIFT", "repository is not the synchronized main baseline",
-                 classification="UNCOMMITTED_WORKING_TREE_DRIFT", branch=branch,
-                 current_head=current, origin_main=origin)
         if current == baseline:
+            submission_branch = record.get("submission_branch")
+            if submission_branch and branch != submission_branch:
+                fail("UNCOMMITTED_WORKING_TREE_DRIFT", "repository branch differs from submission branch",
+                     classification="UNCOMMITTED_WORKING_TREE_DRIFT", expected_branch=submission_branch,
+                     observed_branch=branch)
             classification = "EXACT_SUBMISSION_BASELINE"
             transition = {"transition_type": classification, "from_baseline": baseline,
                           "to_baseline": current, "recovery_baseline": current,
-                          "current_head": current, "ancestry_verified": True,
+                          "current_head": current, "branch": branch, "ancestry_verified": True,
                           "publication_verified": False, "eos_synchronized": False,
                           "platform_validated": False}
             transition["transition_digest"] = _digest(transition)
             return {"classification": classification, **transition}
+        if branch != "main" or not origin or current != origin:
+            fail("UNCOMMITTED_WORKING_TREE_DRIFT", "repository is not the synchronized main baseline",
+                 classification="UNCOMMITTED_WORKING_TREE_DRIFT", branch=branch,
+                 current_head=current, origin_main=origin)
         baseline_ancestor = subprocess.run(
             ["git", "-C", str(self.repository), "merge-base", "--is-ancestor", baseline, current],
             capture_output=True, check=False,
