@@ -147,3 +147,14 @@ projection is `AWAITING_EXECUTION_DISPATCH` with next action `Dispatch to a
 qualified Development execution agent`. Development does not acquire a
 Mission Contract prerequisite through this boundary. Historical false-closure
 records remain immutable defect evidence.
+
+Before provider selection, Zeus freezes one authority snapshot containing the
+WOP/package identity, repository and protected baselines, Development effect
+profile, governance resolution, and provider-qualification requirement. The
+snapshot digest is bound into provider-selection and dispatch receipts;
+providers cannot re-resolve mutable authority or advance lifecycle state.
+`zeus mission status|authority|contract|snapshot ZDCL-02` projects the same
+Stage 1 transaction identity and receipt-integrity result without mutating the
+runtime. An incomplete dispatch receipt is recovered to
+`AWAITING_EXECUTION_DISPATCH` rather than presented as authoritative
+`DISPATCHED`.

@@ -13,7 +13,7 @@ ZEUS = ROOT / "scripts" / "zeus"
 
 class BetaControllerTests(unittest.TestCase):
     def run_zeus(self, *args):
-        with tempfile.TemporaryDirectory(dir="/home/loneal") as directory:
+        with tempfile.TemporaryDirectory() as directory:
             env = os.environ.copy()
             env.update({"ZEUS_NO_INTRO": "1", "ZEUS_TESTING": "1",
                         "ZEUS_OPERATOR_STATE": str(Path(directory) / "operator-state.json")})

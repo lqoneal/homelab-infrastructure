@@ -17,9 +17,14 @@ SPEC.loader.exec_module(ZEUS_MODULE)
 
 class ZeusCliConsistencyTests(unittest.TestCase):
     def run_zeus(self, *args, cwd=None):
-        return subprocess.run([sys.executable, str(ZEUS), *args], cwd=cwd or ROOT,
-                              env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"},
-                              capture_output=True, text=True, check=False)
+        with tempfile.TemporaryDirectory() as directory:
+            env = {
+                **os.environ,
+                "PYTHONDONTWRITEBYTECODE": "1",
+                "ZEUS_RUNTIME_ROOT": directory,
+            }
+            return subprocess.run([sys.executable, str(ZEUS), *args], cwd=cwd or ROOT,
+                                  env=env, capture_output=True, text=True, check=False)
 
     def test_platform_verify_is_distinct_and_read_only(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -67,9 +72,10 @@ class ZeusCliConsistencyTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 2)
 
     def test_location_independent_platform_command(self):
-        for location in ("/data", "/home/loneal", "/tmp"):
-            result = self.run_zeus("platform", "verify", "--json", cwd=Path(location))
-            self.assertEqual(result.returncode, 0, (location, result.stderr))
+        with tempfile.TemporaryDirectory() as directory:
+            for location in (ROOT, Path(directory)):
+                result = self.run_zeus("platform", "verify", "--json", cwd=location)
+                self.assertEqual(result.returncode, 0, (location, result.stderr))
 
 
 if __name__ == "__main__":
