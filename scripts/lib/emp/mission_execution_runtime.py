@@ -28,6 +28,7 @@ from scripts.lib.emp.mission_admission_runtime import (
 from scripts.lib.emp.wop_admission import AdmissionController, submission_digest
 from scripts.lib.emp.runtime_paths import runtime_path
 from scripts.lib.emp.native_session import NativeSessionStore, NativeSessionError
+from scripts.lib.emp.execution_termination import ExecutionTerminator, TerminationError, process_diagnostics, termination_receipt
 
 
 class MissionExecutionError(ValueError):
@@ -48,6 +49,8 @@ EXECUTION_STATES = (
     "Executing",
     "Waiting",
     "Suspended",
+    "Interrupted",
+    "TerminationFailed",
     "Resuming",
     "Verifying",
     "Completed",
@@ -322,6 +325,8 @@ class MissionExecutionRuntime:
         max_gates: int | None = None,
     ) -> dict[str, Any]:
         state = self.store.load(execution_id)
+        if state["state"] == "Interrupted":
+            return state
         if state["state"] in TERMINAL_STATES:
             return state
         if state["state"] in {"Suspended", "Waiting"}:
@@ -429,7 +434,7 @@ class MissionExecutionRuntime:
         state = self.store.load(execution_id)
         if state["state"] in TERMINAL_STATES:
             return state
-        if state["state"] not in {"Suspended", "Waiting"}:
+        if state["state"] not in {"Suspended", "Waiting", "Interrupted"}:
             raise MissionExecutionError("only suspended or waiting execution may resume")
         state["state"] = "Resuming"
         if state.get("session_id"):
@@ -452,6 +457,68 @@ class MissionExecutionRuntime:
         state["updated_at"] = self._time(at)
         self.store.save(state)
         return self.store.load(execution_id)
+
+    def execution_for_mission(self, mission_id: str) -> str:
+        matches = []
+        for path in sorted(self.store.directory.glob("MISSION-EXECUTION-*.json")):
+            try:
+                state = self.store.load(path.stem)
+            except MissionExecutionError:
+                continue
+            if state.get("mission_id") == mission_id:
+                matches.append(state["execution_id"])
+        if not matches:
+            raise MissionExecutionError("no execution belongs to mission " + mission_id)
+        if len(matches) != 1:
+            raise MissionExecutionError("mission identity is ambiguous: " + mission_id)
+        return matches[0]
+
+    def execution_diagnostics(self, execution_id: str) -> dict[str, Any]:
+        state = self.store.load(execution_id)
+        if not state.get("session_id"):
+            raise MissionExecutionError("execution has no active native session")
+        session = self.session_store.load(state["session_id"])
+        return {
+            "execution_id": execution_id, "mission_id": state["mission_id"],
+            "execution_state": state["state"], "session_id": session["session_id"],
+            "session_state": session["lifecycle_state"], **process_diagnostics(session),
+        }
+
+    def stop(self, execution_id: str, *, at: datetime, graceful_timeout: float = 2.0) -> dict[str, Any]:
+        state = self.store.load(execution_id)
+        if state["state"] in TERMINAL_STATES:
+            raise MissionExecutionError("terminal execution cannot be stopped")
+        if not state.get("session_id"):
+            raise MissionExecutionError("execution has no active native session")
+        session = self.session_store.load(state["session_id"])
+        if session.get("execution_id") != execution_id or session.get("mission_id") != state.get("mission_id"):
+            raise MissionExecutionError("execution session identity mismatch")
+        if session["lifecycle_state"] == "INTERRUPTED" or state["state"] == "Interrupted":
+            return {**state, "stop_result": "ALREADY_STOPPED", "termination_diagnostic": process_diagnostics(session)}
+        if session["lifecycle_state"] not in {"ACTIVE", "RESUMED", "STOP_REQUESTED", "TERMINATING"}:
+            raise MissionExecutionError("no active execution session exists")
+        if session["lifecycle_state"] in {"ACTIVE", "RESUMED"}:
+            self.session_store.transition(state["session_id"], "STOP_REQUESTED", at=at, event="SESSION_STOP_REQUESTED", current_gate=state.get("current_gate"), next_action="Terminate the exact recorded execution process.")
+        self.session_store.transition(state["session_id"], "TERMINATING", at=at, event="SESSION_TERMINATING", current_gate=state.get("current_gate"), next_action="Complete bounded process termination.")
+        session = self.session_store.load(state["session_id"])
+        try:
+            result = ExecutionTerminator().stop(session, graceful_timeout=graceful_timeout)
+        except TerminationError as error:
+            state["state"] = "TerminationFailed"
+            state["termination_failure"] = {"category": error.category, "message": str(error), "diagnostics": error.diagnostics}
+            self._append_evidence(state, "EXECUTION_TERMINATION_FAILED", state["termination_failure"], at)
+            state["updated_at"] = self._time(at)
+            self.store.save(state)
+            self.session_store.transition(state["session_id"], "FAILED", at=at, event="SESSION_TERMINATION_FAILED", payload={"category": error.category, "message": str(error), "diagnostics": error.diagnostics}, next_action="Preserve termination diagnostics and investigate the exact execution identity.")
+            raise MissionExecutionError(f"{error.category}: {error}") from error
+        receipt = termination_receipt(session, result=result, at=at)
+        state["state"] = "Interrupted"
+        state["termination_receipt"] = receipt
+        self._append_evidence(state, "EXECUTION_TERMINATED", {"termination_receipt": receipt, "diagnostics": result["diagnostics"]}, at)
+        state["updated_at"] = self._time(at)
+        self.store.save(state)
+        self.session_store.transition(state["session_id"], "INTERRUPTED", at=at, event="SESSION_INTERRUPTED", payload={"termination_receipt_id": receipt["receipt_id"], "forced": result.get("forced", False)}, current_gate=state.get("current_gate"), next_action=f"scripts/zeus resume {state['mission_id']}")
+        return {**self.store.load(execution_id), "stop_result": result["result"], "termination_receipt": receipt, "termination_diagnostic": result["diagnostics"]}
 
     def cancel(self, execution_id: str, *, at: datetime, reason: str):
         state = self.store.load(execution_id)

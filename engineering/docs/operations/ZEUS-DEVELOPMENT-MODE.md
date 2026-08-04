@@ -61,7 +61,15 @@ The canonical operator execution entry points are:
 ```text
 scripts/zeus submit <wop>
 scripts/zeus resume <mission>
+scripts/zeus stop <mission>
 ```
+
+`stop` is exceptional execution control for an active or plausibly hung WOP,
+not a routine lifecycle step. Zeus targets only the exact recorded execution
+process group, requests graceful termination before bounded escalation, writes
+an immutable termination receipt, and preserves the mission as `INTERRUPTED`
+for the existing `scripts/zeus resume <mission>` path. It does not revoke
+authority, cancel the mission, or create a replacement transaction.
 
 The following are authoring, diagnosis, or read-only inspection interfaces;
 they are not additional mandatory lifecycle steps:

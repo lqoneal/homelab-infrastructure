@@ -40,6 +40,13 @@ The public recovery operation is `scripts/zeus resume <mission>`, which
 resolves exactly one safe non-terminal execution, fails closed on ambiguity,
 and reuses the existing checkpoint without creating a duplicate.
 
+The exceptional execution-control operation is `scripts/zeus stop <mission>`.
+It resolves the exact active session, proves process ownership, requests
+graceful termination, escalates after a bounded timeout, preserves completed
+evidence and receipts, and records an `INTERRUPTED` resumable state. It never
+revokes authority, cancels a mission, or creates a replacement transaction.
+Ownership or runtime-integrity failures remain fail-closed.
+
 Queue, mission, and execution views project the same execution identity,
 current gate, wait category, validation diagnostics, and next corrective
 action. No view becomes an execution authority.
