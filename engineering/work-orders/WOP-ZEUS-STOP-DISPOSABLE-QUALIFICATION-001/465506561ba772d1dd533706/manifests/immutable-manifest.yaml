@@ -1,0 +1,14 @@
+schema_version: 1
+manifest_id: WOP-ZEUS-STOP-DISPOSABLE-QUALIFICATION-001-MANIFEST
+mission_id: MISSION-ZEUS-STOP-DISPOSABLE-QUALIFICATION-001
+wop_id: WOP-ZEUS-STOP-DISPOSABLE-QUALIFICATION-001
+execution_mode: DEVELOPMENT
+governance_authority: Engineering Governance
+repository_identity: /data/engineering/repositories/homelab
+effect_profile: DEVELOPMENT-EXECUTION-CONTROL-DISPOSABLE-NONPRODUCTION
+protected_baselines:
+- OA-v1.0.0
+- OB-PLAN-v1.0.0
+- published main a638ea7
+- all live mission runtime records
+source_document_digest: 0b41100481802772007dfd28f41fee9a7c195d81f2e9c30f42799218c3a3da8f

@@ -1,0 +1,15 @@
+schema_version: 1
+gates:
+- VALIDATE source and protected baselines
+- CREATE disposable hung execution fixtures
+- QUALIFY graceful termination
+- QUALIFY forced termination
+- QUALIFY child-process cleanup and unrelated-process protection
+- QUALIFY termination receipt and idempotency
+- QUALIFY disposable resume
+- VALIDATE controlled documents
+- Registry
+- EOS
+- platform
+- and repository cleanliness
+- CLOSE with final disposition
