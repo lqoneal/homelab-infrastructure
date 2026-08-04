@@ -6,6 +6,10 @@ Corrected fields: `approval.authorized_lifecycle_state`; all seven authoritative
 
 Preserved transaction `ZEUS-DEVELOPMENT-530cda01-7883-57cb-a67e-c8dc4bc010dc`, successor admission `EMM-DEV-ADMISSION-120e6eb0b34c6cadf46fd857d5e43bc4`, package digest `814361acbc225619ade3614a5c8027a06bb5c0ca1ed3fbd0b49e93ce86c3f94f`, source digest `0b41100481802772007df28f41fee9a7c195d81f2e9c30f42799218c3a3da8f`, and authority snapshot digest `bd269d39d0ceddcab1d08b74a6d2d5ec0c28a20b0f82bc3444dc22c6e27d5b3d` remain unchanged. Live runtime was not modified. No resubmission, replacement transaction, new admission, EOS synchronization, or stop qualification was performed.
 
-The candidate is not ready for publication until the pre-existing packaging fixture suite is migrated to the canonical contract and the full related regression gate is rerun. Post-publication EOS synchronization, read-only status/session verification, and continuation from `VALIDATE_WOP` remain authorized follow-up actions only after publication.
+The companion fixture-migration corrective migrated the pre-existing packaging
+fixtures to the canonical contract and the full related regression gate passed.
+Post-publication EOS synchronization, read-only status/session verification,
+and continuation from `VALIDATE_WOP` remain authorized follow-up actions only
+after publication.
 
-NOT_READY_FOR_PUBLICATION
+READY_FOR_PUBLICATION
