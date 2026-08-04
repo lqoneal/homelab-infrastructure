@@ -67,8 +67,34 @@ class Stage1ExecutionResolutionTests(unittest.TestCase):
         self.assertEqual("STAGE1", result["source"])
         self.assertEqual("ZEUS-DEVELOPMENT-INSTANCE-001", result["identities"]["transaction_id"])
         self.assertEqual("EMM-DEV-ADMISSION-001", result["admission_id"])
-        self.assertIsNone(result["execution"])
+        self.assertEqual("ZEUS-DEVELOPMENT-INSTANCE-001", result["execution_id"])
         self.assertEqual("STAGE1_RECEIPT_BACKED", result["admission"]["runtime_source"])
+
+    def test_hydration_is_atomic_and_idempotent(self):
+        first = resolve(ROOT, self.state, self.admissions, self.executions, hydrate=True)
+        self.assertTrue(first["hydrated"])
+        admission_path = self.admissions / "EMM-DEV-ADMISSION-001.json"
+        execution_path = self.executions / "ZEUS-DEVELOPMENT-INSTANCE-001.json"
+        admission_before = admission_path.read_text()
+        execution_before = execution_path.read_text()
+        second = resolve(ROOT, self.state, self.admissions, self.executions, hydrate=True)
+        self.assertFalse(second["hydrated"])
+        self.assertEqual(admission_before, admission_path.read_text())
+        self.assertEqual(execution_before, execution_path.read_text())
+
+    def test_partial_hydration_fails_closed(self):
+        self.admissions.mkdir()
+        (self.admissions / "EMM-DEV-ADMISSION-001.json").write_text("{}")
+        with self.assertRaises(Stage1ExecutionResolutionError):
+            resolve(ROOT, self.state, self.admissions, self.executions, hydrate=True)
+
+    def test_requested_identity_conflict_fails_closed(self):
+        with self.assertRaises(Stage1ExecutionResolutionError):
+            resolve(ROOT, self.state, self.admissions, self.executions,
+                    admission_id="EMM-DEV-ADMISSION-CONFLICT")
+        with self.assertRaises(Stage1ExecutionResolutionError):
+            resolve(ROOT, self.state, self.admissions, self.executions,
+                    execution_id="ZEUS-DEVELOPMENT-OTHER")
 
     def test_conflicting_execution_projections_fail_closed(self):
         self.executions.mkdir()

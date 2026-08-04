@@ -1410,6 +1410,7 @@ def main(argv=None):
                 stage1_resolution = resolve_stage1_execution(
                     ROOT, stage1_directory, admission_directory,
                     execution_directory, execution_id=a.execution_id,
+                    admission_id=a.admission_id, hydrate=True,
                 )
             except Stage1ExecutionResolutionError as error:
                 # Existing runtime projections remain the compatibility path;
@@ -1420,12 +1421,13 @@ def main(argv=None):
             if a.action == "handlers":
                 emit({"handlers": operational_framework(ROOT).registry.inventory()}); return 0
             if a.action in {"session", "evidence"}:
-                if stage1_resolution and not stage1_resolution.get("execution"):
+                if stage1_resolution and not stage1_resolution["execution"].get("session_id"):
                     emit({"runtime_resolution": "STAGE1_RESOLVED",
                           "transaction_id": stage1_resolution["identities"]["transaction_id"],
                           "admission_id": stage1_resolution["admission_id"],
                           "execution_id": stage1_resolution.get("execution_id"),
-                          "session_id": None, "session": "NOT_MATERIALIZED",
+                          "session_id": None, "session": "NOT_REQUIRED_FOR_STAGE1_RESOLUTION",
+                          "hydrated": stage1_resolution.get("hydrated", False),
                           "source": "stage1"})
                     return 0
                 execution_id = resolve_execution_id(execution_store, a.execution_id)
