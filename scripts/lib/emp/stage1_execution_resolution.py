@@ -30,7 +30,7 @@ def _digest(value: Any) -> str:
 
 def _find_execution(execution_store: Path, admission_id: str, execution_id: str | None):
     matches = []
-    for path in sorted(execution_store.glob("MISSION-EXECUTION-*.json")):
+    for path in sorted(execution_store.glob("*.json")):
         try:
             value = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as error:

@@ -223,6 +223,7 @@ class MissionExecutionRuntime:
         operational_context_provider=None,
         session_store: NativeSessionStore | None = None,
         stage1_admission_resolver=None,
+        admission_supersession_resolver=None,
     ):
         self.root = Path(repository_root).resolve()
         self.store = store
@@ -248,6 +249,7 @@ class MissionExecutionRuntime:
         self.operational_context_provider = operational_context_provider
         self.session_store = session_store or NativeSessionStore(store.directory.parent / "native-sessions")
         self.stage1_admission_resolver = stage1_admission_resolver
+        self.admission_supersession_resolver = admission_supersession_resolver
 
     def start(
         self,
@@ -256,6 +258,11 @@ class MissionExecutionRuntime:
         at: datetime,
         max_gates: int | None = None,
     ) -> dict[str, Any]:
+        if self.admission_supersession_resolver is not None:
+            try:
+                admission_id = self.admission_supersession_resolver(admission_id)
+            except Exception as error:
+                raise MissionExecutionError(str(error)) from error
         admission = self._load_admission(admission_id)
         wop_result = admission.get("artifacts", {}).get("wop_result")
         if not isinstance(wop_result, dict) or not isinstance(wop_result.get("wop"), dict):
