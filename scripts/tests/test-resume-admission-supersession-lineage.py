@@ -122,6 +122,23 @@ class ResumeAdmissionLineageTests(unittest.TestCase):
             resolve_for_resume(self.repo, self.admissions, self.successor_id,
                                stage1_transaction=self.record)
 
+    def test_projection_package_operand_mismatch_fails_closed(self):
+        store = AdmissionStateStore(self.admissions)
+        successor = store.load(self.successor_id)
+        successor["stage1_package_digest"] = "package"
+        successor["package_digest"] = "projection-digest"
+        store.save(successor)
+        with self.assertRaises(AdmissionSupersessionError):
+            resolve_for_resume(self.repo, self.admissions, self.successor_id,
+                               stage1_transaction=self.record)
+
+    def test_stage1_package_operand_mismatch_fails_closed(self):
+        record = deepcopy(self.record)
+        record["package_digest"] = "modified-stage1-package"
+        with self.assertRaises(AdmissionSupersessionError):
+            resolve_for_resume(self.repo, self.admissions, self.successor_id,
+                               stage1_transaction=record)
+
     def test_ambiguous_and_circular_lineage_fail_closed(self):
         store = AdmissionStateStore(self.admissions)
         duplicate = store.load(self.successor_id)

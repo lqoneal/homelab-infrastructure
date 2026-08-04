@@ -20,6 +20,49 @@ class AdmissionSupersessionError(ValueError):
     """A stale admission cannot be safely superseded."""
 
 
+def _authoritative_stage1_package_digest(record: Mapping[str, Any]) -> str:
+    """Return the immutable package digest, checking its receipt lineage."""
+    receipts = record.get("receipts") or {}
+    candidates = [("transaction.package_digest", record.get("package_digest"))]
+    for name in ("packaging", "registration", "dispatch"):
+        receipt = receipts.get(name) or {}
+        if receipt.get("package_digest") is not None:
+            candidates.append((f"receipts.{name}.package_digest", receipt["package_digest"]))
+    present = [(name, value) for name, value in candidates if value is not None]
+    if not present:
+        raise AdmissionSupersessionError("Stage 1 package digest is absent")
+    expected = present[0][1]
+    for name, value in present[1:]:
+        if value != expected:
+            raise AdmissionSupersessionError(
+                f"package digest differs within Stage 1: expected={expected} observed={value} source={name}"
+            )
+    return expected
+
+
+def _validate_lineage_package_digest(admission: Mapping[str, Any], expected: str) -> None:
+    """Validate only fields that claim to bind the immutable package."""
+    artifacts = admission.get("artifacts") or {}
+    wop_result = artifacts.get("wop_result") or {}
+    wop = wop_result.get("wop") or {}
+    authority_context = artifacts.get("authority_context") or {}
+    bindings = (
+        ("admission.stage1_package_digest", admission.get("stage1_package_digest")),
+        ("admission.package_digest", admission.get("package_digest")),
+        ("admission.artifacts.wop_result.wop.package_digest", wop.get("package_digest")),
+        ("admission.artifacts.authority_context.wop.package_digest", (authority_context.get("wop") or {}).get("package_digest")),
+        ("admission.artifacts.authority_context.package_digest", authority_context.get("package_digest")),
+    )
+    present = [(name, value) for name, value in bindings if value is not None]
+    if not present:
+        raise AdmissionSupersessionError("admission package binding is absent")
+    for name, value in present:
+        if value != expected:
+            raise AdmissionSupersessionError(
+                f"package digest differs from Stage 1: expected={expected} observed={value} source={name}"
+            )
+
+
 ALLOWED_TRANSITION_PATHS = (
     "scripts/zeus",
     "scripts/lib/emp/mission_execution_runtime.py",
@@ -138,7 +181,8 @@ def resolve_for_start(root: Path | str, admission_store: Path | str, execution_s
         raise AdmissionSupersessionError("authoritative Stage 1 transaction is unavailable")
     if stage1_transaction.get("instance_id") != predecessor.get("stage1_identity") and stage1_transaction.get("instance_id") != predecessor.get("request", {}).get("submission_id"):
         raise AdmissionSupersessionError("Stage 1 transaction identity does not bind predecessor admission")
-    package_digest = predecessor.get("package_digest") or stage1_transaction.get("package_digest")
+    package_digest = _authoritative_stage1_package_digest(stage1_transaction)
+    _validate_lineage_package_digest(predecessor, package_digest)
     authority_digest = predecessor.get("authority_snapshot_digest") or (stage1_transaction.get("authority_snapshot") or {}).get("authority_snapshot_digest")
     if stage1_transaction.get("package_digest") and package_digest != stage1_transaction.get("package_digest"):
         raise AdmissionSupersessionError("package digest differs from Stage 1")
@@ -161,6 +205,7 @@ def resolve_for_start(root: Path | str, admission_store: Path | str, execution_s
     successor["artifacts"]["repository_baseline"] = current
     successor["artifacts"].setdefault("repository", {})["baseline_commit"] = current
     successor["package_digest"] = package_digest
+    successor["stage1_package_digest"] = package_digest
     successor["source_digest"] = predecessor.get("source_digest") or stage1_transaction.get("source_digest")
     successor["authority_snapshot_digest"] = authority_digest
     successor["artifacts"]["freshness"] = {"admitted_baseline": admitted, "current_baseline": current, "fresh": True}
@@ -223,7 +268,7 @@ def resolve_for_resume(root: Path | str, admission_store: Path | str,
         if _git(root, "status", "--porcelain"):
             raise AdmissionSupersessionError("working tree is dirty")
 
-    package_digest = stage1_transaction.get("package_digest")
+    package_digest = _authoritative_stage1_package_digest(stage1_transaction)
     source_digest = stage1_transaction.get("source_digest")
     authority_digest = (stage1_transaction.get("authority_snapshot") or {}).get("authority_snapshot_digest")
     chain: list[dict[str, Any]] = []
@@ -238,13 +283,15 @@ def resolve_for_resume(root: Path | str, admission_store: Path | str,
             raise AdmissionSupersessionError("admission lineage transaction binding differs from Stage 1")
         if value.get("transaction_id") not in (None, transaction_id) and value.get("request", {}).get("submission_id") != transaction_id:
             raise AdmissionSupersessionError("admission lineage transaction binding differs from Stage 1")
+        _validate_lineage_package_digest(value, package_digest)
         for label, expected, actual in (
-            ("package", package_digest, value.get("package_digest")),
             ("source", source_digest, value.get("source_digest")),
             ("authority snapshot", authority_digest, value.get("authority_snapshot_digest")),
         ):
             if expected is not None and actual != expected:
-                raise AdmissionSupersessionError(f"{label} digest differs from Stage 1")
+                raise AdmissionSupersessionError(
+                    f"{label} digest differs from Stage 1: expected={expected} observed={actual}"
+                )
         chain.append(value)
         successor_id = value.get("superseded_by")
         if not successor_id:
