@@ -9,7 +9,7 @@ import unittest
 from pathlib import Path
 
 from scripts.lib.emp.development_dispatch import automatic_executor
-from scripts.lib.emp.stage1_runtime import Stage1Error, Stage1Runtime
+from scripts.lib.emp.stage1_runtime import Stage1Error, Stage1Runtime, _digest
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -32,6 +32,18 @@ class CanonicalRecoveryTests(unittest.TestCase):
         publication = ROOT / "engineering/evidence/operation-beta/wop-zdcl-02-publication-aware-baseline-transition-and-canonical-resume-001/PUBLICATION-RECEIPT.json"
         publication_copy = directory / "PUBLICATION-RECEIPT.json"
         shutil.copy2(publication, publication_copy)
+        # The fixture is its own published repository. Bind the copied
+        # publication evidence to that immutable fixture HEAD so qualification
+        # does not depend on a historical production receipt's later baseline.
+        publication_value = json.loads(publication_copy.read_text(encoding="utf-8"))
+        fixture_head = subprocess.run(["git", "-C", str(repository), "rev-parse", "HEAD"],
+                                      check=True, capture_output=True, text=True).stdout.strip()
+        publication_value["merge_commit"] = fixture_head
+        publication_value["resulting_main"] = fixture_head
+        unsigned = dict(publication_value)
+        unsigned.pop("receipt_digest", None)
+        publication_value["receipt_digest"] = _digest(unsigned)
+        publication_copy.write_text(json.dumps(publication_value, indent=2) + "\n", encoding="utf-8")
         return repository, package, publication_copy
 
     def registry(self, directory: Path, repository: Path) -> Path:
@@ -119,8 +131,30 @@ class CanonicalRecoveryTests(unittest.TestCase):
             transition = recovered["recovery"]["repository_transition"]
             self.assertIn(transition["classification"], {"AUTHORIZED_PUBLICATION_SUCCESSOR", "AUTHORIZED_RECOVERY_BASELINE"})
             self.assertEqual(recovered["submission_baseline"], "81c82a59e633fbf7dfbc0831c9ffd4298cd64201")
-            self.assertEqual(recovered["recovery_baseline"], "f95b69121348ecb87fcffbd9e70be11b9190f6f5")
+            fixture_head = subprocess.run(["git", "-C", str(repository), "rev-parse", "HEAD"],
+                                          check=True, capture_output=True, text=True).stdout.strip()
+            self.assertEqual(recovered["recovery_baseline"], fixture_head)
             self.assertEqual(recovered["recovery_baseline_binding"]["transition_digest"], transition["transition_digest"])
+
+    def test_implementation_descendant_after_publication_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            repository, package, publication = self.fixture(directory)
+            runtime = Stage1Runtime(repository, directory / "runtime", operator_resolver=lambda: "test")
+            first = runtime.submit_development(package)
+            first["repository_baseline"] = "81c82a59e633fbf7dfbc0831c9ffd4298cd64201"
+            first.pop("submission_baseline", None)
+            first["publication_receipt_path"] = str(publication)
+            runtime.store.save(first)
+            target = repository / "scripts/zeus"
+            target.write_text(target.read_text(encoding="utf-8") + "\n# unauthorized fixture drift\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(repository), "add", "scripts/zeus"], check=True)
+            subprocess.run(["git", "-C", str(repository), "commit", "-m", "fixture implementation drift"],
+                           check=True, capture_output=True, text=True)
+            with self.assertRaises(Stage1Error) as raised:
+                runtime.resume_transaction(first["instance_id"])
+            self.assertIn(raised.exception.evidence["reason_code"],
+                          {"UNCOMMITTED_WORKING_TREE_DRIFT", "AMBIGUOUS_PUBLICATION_TRANSITION"})
 
     def test_dirty_working_tree_is_fail_closed(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -195,6 +229,30 @@ class CanonicalRecoveryTests(unittest.TestCase):
                                 for item in recovered.get("evidence", [])))
             historical = recovered["evidence"][-1]["historical_dispatch"]
             self.assertEqual(historical["receipt_id"], first["receipts"]["dispatch"]["receipt_id"])
+
+    def test_legacy_pending_dispatch_restores_lifecycle_automatically(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            repository, package, _ = self.fixture(directory)
+            registry = self.registry(directory, repository)
+            runtime = Stage1Runtime(
+                repository, directory / "runtime", operator_resolver=lambda: "test",
+                execution_executor=automatic_executor(repository, registry_path=registry),
+            )
+            first = runtime.submit_development(package)
+            legacy = copy.deepcopy(first)
+            legacy.pop("authority_snapshot", None)
+            legacy["receipts"].pop("dispatch", None)
+            legacy["receipts"].pop("provider_selection", None)
+            legacy["state"] = "AWAITING_EXECUTION_DISPATCH"
+            legacy["pending_phase"] = "DISPATCHED"
+            runtime.store.save(legacy)
+            recovered = runtime.resume_transaction(first["instance_id"])
+            self.assertEqual(recovered["state"], "DISPATCHED")
+            self.assertIsNotNone(recovered.get("authority_snapshot"))
+            self.assertIn("dispatch", recovered["receipts"])
+            self.assertIn("provider_selection", recovered["receipts"])
+            self.assertEqual(recovered["instance_id"], first["instance_id"])
 
 
 if __name__ == "__main__":
