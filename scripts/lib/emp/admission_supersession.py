@@ -188,3 +188,87 @@ def resolve_for_start(root: Path | str, admission_store: Path | str, execution_s
     _atomic_json_updates(updates)
     return {"admission_id": successor_id, "predecessor": predecessor_updated, "successor": successor,
             "execution_rebound": bool(matching), "replayed": False, "transition": transition}
+
+
+def resolve_for_resume(root: Path | str, admission_store: Path | str,
+                       requested_admission_id: str, *,
+                       stage1_transaction: Mapping[str, Any],
+                       enforce_environment: bool = True) -> dict[str, Any]:
+    """Resolve a Stage 1 admission through immutable supersession lineage.
+
+    Resume is deliberately read-only: unlike ``resolve_for_start`` it never
+    creates or rewrites an admission or execution projection.  The original
+    receipt admission and every successor must bind the same transaction and
+    immutable evidence before the terminal current admission is returned.
+    """
+    root = Path(root).resolve()
+    admissions = AdmissionStateStore(admission_store)
+    transaction_id = stage1_transaction.get("instance_id")
+    if not transaction_id:
+        raise AdmissionSupersessionError("Stage 1 transaction identity is missing")
+    receipt_admission_id = (stage1_transaction.get("receipts") or {}).get("admission", {}).get("admission_id")
+    if not receipt_admission_id:
+        raise AdmissionSupersessionError("Stage 1 admission receipt is missing")
+
+    try:
+        predecessor = admissions.load(receipt_admission_id)
+    except MissionAdmissionError as error:
+        raise AdmissionSupersessionError(str(error)) from error
+
+    current_baseline = _git(root, "rev-parse", "HEAD")
+    if enforce_environment:
+        published_baseline = _git(root, "rev-parse", "origin/main")
+        if current_baseline != published_baseline:
+            raise AdmissionSupersessionError("local and published repository states differ")
+        if _git(root, "status", "--porcelain"):
+            raise AdmissionSupersessionError("working tree is dirty")
+
+    package_digest = stage1_transaction.get("package_digest")
+    source_digest = stage1_transaction.get("source_digest")
+    authority_digest = (stage1_transaction.get("authority_snapshot") or {}).get("authority_snapshot_digest")
+    chain: list[dict[str, Any]] = []
+    visited: set[str] = set()
+    value = predecessor
+    while True:
+        admission_id = value.get("admission_id")
+        if not admission_id or admission_id in visited:
+            raise AdmissionSupersessionError("admission supersession lineage is circular")
+        visited.add(admission_id)
+        if value.get("stage1_identity") not in (None, transaction_id) and value.get("transaction_id") != transaction_id:
+            raise AdmissionSupersessionError("admission lineage transaction binding differs from Stage 1")
+        if value.get("transaction_id") not in (None, transaction_id) and value.get("request", {}).get("submission_id") != transaction_id:
+            raise AdmissionSupersessionError("admission lineage transaction binding differs from Stage 1")
+        for label, expected, actual in (
+            ("package", package_digest, value.get("package_digest")),
+            ("source", source_digest, value.get("source_digest")),
+            ("authority snapshot", authority_digest, value.get("authority_snapshot_digest")),
+        ):
+            if expected is not None and actual != expected:
+                raise AdmissionSupersessionError(f"{label} digest differs from Stage 1")
+        chain.append(value)
+        successor_id = value.get("superseded_by")
+        if not successor_id:
+            break
+        matches: list[dict[str, Any]] = []
+        for path in sorted(admissions.directory.glob("*.json")):
+            try:
+                candidate = admissions.load(path.stem)
+            except MissionAdmissionError as error:
+                raise AdmissionSupersessionError(str(error)) from error
+            if candidate.get("supersedes") == admission_id:
+                matches.append(candidate)
+        if len(matches) != 1 or matches[0].get("admission_id") != successor_id:
+            raise AdmissionSupersessionError("admission supersession lineage is missing or ambiguous")
+        value = matches[0]
+
+    if requested_admission_id not in visited:
+        raise AdmissionSupersessionError("requested admission is unrelated to Stage 1 lineage")
+    terminal = chain[-1]
+    if terminal.get("admission_state") in {"SUPERSEDED", "STALE", "CANCELLED", "REJECTED"}:
+        raise AdmissionSupersessionError("admission lineage has no executable terminal successor")
+    if terminal.get("request", {}).get("repository_baseline") != current_baseline:
+        raise AdmissionSupersessionError("successor admission baseline is stale")
+    if terminal.get("artifacts", {}).get("repository_baseline") != current_baseline:
+        raise AdmissionSupersessionError("successor admission artifact baseline is stale")
+    return {"admission_id": terminal["admission_id"], "admission": terminal,
+            "predecessor": predecessor, "lineage": chain, "replayed": len(chain) > 1}
