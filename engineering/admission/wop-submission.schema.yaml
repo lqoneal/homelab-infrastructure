@@ -28,10 +28,38 @@ properties:
   title: {type: string}
   repository_identity: {type: string}
   submitter_identity: {type: string}
-  approval: {type: object}
-  execution_package_references: {type: object}
-  authoritative_references: {type: array}
-  sections: {type: object}
+  approval:
+    type: object
+    required: [authority, reference, authorized_lifecycle_state]
+    properties:
+      authority: {type: string, minLength: 1}
+      reference: {type: string, minLength: 1}
+      authorized_lifecycle_state: {const: Active}
+  execution_package_references:
+    type: object
+    required: [authority_node_id, authorization_decision_record, immutable_wop]
+    properties:
+      authority_node_id: {type: string, minLength: 1}
+      authorization_decision_record: {type: string, minLength: 1}
+      immutable_wop: {type: string, minLength: 1}
+  authoritative_references: {type: array, minItems: 7}
+  sections:
+    type: object
+    required:
+      - purpose_and_expected_outcome
+      - mission_classification
+      - governing_references
+      - scope
+      - explicit_authority
+      - prohibited_activities
+      - dependencies_and_entry_criteria
+      - deliverables
+      - execution_sequence
+      - success_and_acceptance_criteria
+      - validation_profile
+      - publication_and_synchronization
+      - stop_resume_and_escalation
+      - completion_report_requirement
   authority_lineage: {type: object}
   convergence_flow_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
   submission_digest: {type: string, pattern: '^[0-9a-f]{64}$'}

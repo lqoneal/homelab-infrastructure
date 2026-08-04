@@ -31,6 +31,16 @@ REQUIRED_FIELDS = (
     "execution_mode", "governance_authority", "repository_identity",
     "effect_profile", "protected_baselines", "gates",
     "qualification_requirements", "completion_requirements",
+    "approval_authorized_lifecycle_state", "authoritative_references",
+    "execution_package_authority_node_id",
+    "execution_package_authorization_decision_record",
+    "sections_completion_report_requirement", "sections_deliverables",
+    "sections_dependencies_and_entry_criteria", "sections_execution_sequence",
+    "sections_explicit_authority", "sections_governing_references",
+    "sections_mission_classification", "sections_prohibited_activities",
+    "sections_publication_and_synchronization", "sections_scope",
+    "sections_stop_resume_and_escalation",
+    "sections_success_and_acceptance_criteria", "sections_validation_profile",
 )
 OPTIONAL_FIELDS = ("revision", "priority", "development_operator")
 FIELD_DESCRIPTIONS = {
@@ -48,7 +58,17 @@ FIELD_DESCRIPTIONS = {
     "gates": "Validation and lifecycle gates",
     "qualification_requirements": "Evidence required for qualification",
     "completion_requirements": "Evidence required for closeout",
+    "approval_authorized_lifecycle_state": "Approval must authorize Active",
+    "authoritative_references": "Published governing procedure, template, and standards",
+    "execution_package_authority_node_id": "Published authority node binding",
+    "execution_package_authorization_decision_record": "Published authorization decision record",
 }
+for _field in REQUIRED_FIELDS:
+    FIELD_DESCRIPTIONS.setdefault(
+        _field,
+        "Required execution section: " + _field.removeprefix("sections_").replace("_", " ")
+        if _field.startswith("sections_") else "Canonical execution field",
+    )
 
 
 def format_description() -> dict:

@@ -69,6 +69,23 @@ def _derived_admission(record: Mapping[str, Any], admission_id: str) -> dict[str
         raise Stage1ExecutionResolutionError("authoritative WOP metadata is not a mapping")
     if metadata.get("mission_id") != record.get("mission_id") or metadata.get("wop_id") != record.get("wop_id"):
         raise Stage1ExecutionResolutionError("Stage 1 and WOP identities conflict")
+    approval = metadata.get("approval") or {}
+    package_refs = metadata.get("execution_package_references") or {}
+    sections = dict(metadata.get("sections") or {})
+    sections.setdefault("completion_report_requirement", "Produce the repository-standard Completion Report.")
+    sections.setdefault("deliverables", "Produce the bounded implementation, tests, evidence, and completion report.")
+    sections.setdefault("dependencies_and_entry_criteria", "Admission, authorization, prerequisites, and a clean baseline are required.")
+    sections.setdefault("execution_sequence", "Verify first; execute the bounded gates; qualify; reconcile; close.")
+    sections.setdefault("explicit_authority", "Submission authority is consumed as published; no authority is created during execution.")
+    sections.setdefault("governing_references", "Conform to the published development WOP procedure, template, and standards.")
+    sections.setdefault("mission_classification", "Development / non-production qualification.")
+    sections.setdefault("prohibited_activities", "No production changes, authority expansion, resubmission, or unrelated mission mutation.")
+    sections.setdefault("publication_and_synchronization", "Publish and synchronize only through the governed workflow.")
+    sections.setdefault("scope", "\n".join(f"- {item}" for item in metadata.get("scope", [])))
+    sections.setdefault("stop_resume_and_escalation", "Stop on mismatch, ambiguity, failed validation, or authority expansion; resume from the persisted checkpoint.")
+    sections.setdefault("success_and_acceptance_criteria", "All declared outcomes, identity checks, and canonical validators pass.")
+    sections.setdefault("validation_profile", "Canonical source, package, receipt, Registry, and platform validation.")
+    sections.setdefault("purpose_and_expected_outcome", metadata.get("objective", ""))
     submission = {
         "schema_version": 1, "document_type": "EngineeringWorkOrder",
         "wop_id": record["wop_id"], "mission_id": record["mission_id"],
@@ -77,10 +94,16 @@ def _derived_admission(record: Mapping[str, Any], admission_id: str) -> dict[str
         "title": metadata.get("title", record["mission_id"]),
         "repository_identity": record["repository"],
         "submitter_identity": record.get("operator", "stage1"),
-        "approval": {"authority": "Engineering Governance", "reference": "STAGE1-RECEIPT-BACKED"},
-        "execution_package_references": {"immutable_wop": str(metadata_path)},
-        "authoritative_references": ["Stage 1 receipt-backed transaction"],
-        "sections": {"purpose_and_expected_outcome": metadata.get("objective", "")},
+        "approval": {"authority": "Engineering Governance", "reference": "STAGE1-RECEIPT-BACKED",
+                     "authorized_lifecycle_state": approval.get("authorized_lifecycle_state", "Active")},
+        "execution_package_references": {
+            "authority_node_id": package_refs.get("authority_node_id", "work-package"),
+            "authorization_decision_record": package_refs.get("authorization_decision_record", "STAGE1-RECEIPT-BACKED"),
+            "immutable_wop": package_refs.get("immutable_wop", str(metadata_path)),
+        },
+        "authoritative_references": metadata.get("authoritative_references", [
+            "PROC-0001@1.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004"]),
+        "sections": sections or {"purpose_and_expected_outcome": metadata.get("objective", "")},
     }
     submission["submission_digest"] = _digest(submission)
     wop = deepcopy(submission)

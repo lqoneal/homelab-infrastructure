@@ -40,7 +40,25 @@ KEYS = {
     "gates": "gates", "qualification requirements": "qualification_requirements",
     "qualification": "qualification_requirements", "completion requirements": "completion_requirements",
     "completion": "completion_requirements",
+    "approval authorized lifecycle state": "approval_authorized_lifecycle_state",
+    "approval_authorized_lifecycle_state": "approval_authorized_lifecycle_state",
+    "authoritative references": "authoritative_references",
+    "authoritative_references": "authoritative_references",
+    "execution package authority node id": "execution_package_authority_node_id",
+    "execution_package_authority_node_id": "execution_package_authority_node_id",
+    "execution package authorization decision record": "execution_package_authorization_decision_record",
+    "execution_package_authorization_decision_record": "execution_package_authorization_decision_record",
 }
+
+for _section in (
+    "completion_report_requirement", "deliverables", "dependencies_and_entry_criteria",
+    "execution_sequence", "explicit_authority", "governing_references",
+    "mission_classification", "prohibited_activities", "publication_and_synchronization",
+    "scope", "stop_resume_and_escalation", "success_and_acceptance_criteria",
+    "validation_profile",
+):
+    KEYS[f"sections {_section.replace('_', ' ')}"] = f"sections_{_section}"
+    KEYS[f"sections.{_section}"] = f"sections_{_section}"
 
 
 def source_digest(path: Path) -> str:
@@ -151,7 +169,7 @@ def _parse(text: str) -> dict[str, Any]:
     if conflicts:
         raise PackagingError("conflicting source metadata: " + ", ".join(sorted(conflicts)), conflicts=conflicts)
 
-    list_fields = {"scope", "dependencies", "protected_baselines", "gates", "qualification_requirements", "completion_requirements"}
+    list_fields = {"scope", "dependencies", "protected_baselines", "gates", "qualification_requirements", "completion_requirements", "authoritative_references"}
     for key in list_fields:
         if key not in result:
             continue
@@ -220,6 +238,10 @@ def package(source: Path, destination_root: Path, repository_root: Path | str | 
         source_copy = temporary / ("source-wop" + source.suffix.lower())
         shutil.copy2(source, source_copy)
         execution_mode = str(metadata["execution_mode"]).upper()
+        sections = {
+            key.removeprefix("sections_"): metadata[key]
+            for key in metadata if key.startswith("sections_")
+        }
         mission = {
         "schema_version": 1, "document_type": "EngineeringWorkOrder",
         "mission_id": metadata["mission_id"], "wop_id": metadata["wop_id"],
@@ -230,6 +252,14 @@ def package(source: Path, destination_root: Path, repository_root: Path | str | 
         "priority": int(metadata.get("priority", 0)), "candidate_state": "CANDIDATE",
         "qualification_requirements": metadata["qualification_requirements"],
         "completion_requirements": metadata["completion_requirements"],
+        "approval": {"authorized_lifecycle_state": metadata["approval_authorized_lifecycle_state"]},
+        "authoritative_references": metadata["authoritative_references"],
+        "execution_package_references": {
+            "authority_node_id": metadata["execution_package_authority_node_id"],
+            "authorization_decision_record": metadata["execution_package_authorization_decision_record"],
+            "immutable_wop": metadata["wop_id"],
+        },
+        "sections": sections,
         "execution_mode": execution_mode, "governance_authority": metadata["governance_authority"],
         "repository_identity": metadata["repository_identity"],
         "effect_profile": metadata["effect_profile"],
@@ -280,7 +310,7 @@ def is_canonical_package(source: Path) -> bool:
 
 
 def template_metadata(wop_id: str, mission_id: str, repository_identity: str) -> dict[str, Any]:
-    return {
+    metadata = {
         "wop_id": wop_id, "mission_id": mission_id, "title": "Development WOP",
         "objective": "Perform a bounded non-production engineering qualification.",
         "scope": ["validate the bounded workflow", "preserve protected baselines"],
@@ -292,7 +322,22 @@ def template_metadata(wop_id: str, mission_id: str, repository_identity: str) ->
         "gates": ["VALIDATE", "QUALIFY", "CLOSE"],
         "qualification_requirements": ["package validation evidence"],
         "completion_requirements": ["reviewable completion report"],
+        "approval_authorized_lifecycle_state": "Active",
+        "authoritative_references": ["PROC-0001@1.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004"],
+        "execution_package_authority_node_id": "work-package",
+        "execution_package_authorization_decision_record": "ADR-REVIEW-REQUIRED",
     }
+    metadata.update({
+        f"sections_{name}": f"Complete the {name.replace('_', ' ')} section for this bounded development WOP."
+        for name in (
+            "completion_report_requirement", "deliverables", "dependencies_and_entry_criteria",
+            "execution_sequence", "explicit_authority", "governing_references",
+            "mission_classification", "prohibited_activities", "publication_and_synchronization",
+            "scope", "stop_resume_and_escalation", "success_and_acceptance_criteria",
+            "validation_profile",
+        )
+    })
+    return metadata
 
 
 def markdown_template(metadata: Mapping[str, Any]) -> str:
@@ -302,6 +347,8 @@ def markdown_template(metadata: Mapping[str, Any]) -> str:
         value = metadata[key]
         if isinstance(value, list):
             value = ", ".join(str(item) for item in value)
+        if key.startswith("sections_"):
+            label = "Sections " + key.removeprefix("sections_").replace("_", " ").title()
         lines.append(f"{label}: {value}")
     return "\n".join(lines) + "\n"
 
@@ -310,6 +357,8 @@ def docx_template(metadata: Mapping[str, Any], destination: Path) -> Path:
     rows = []
     for key in ESSENTIAL:
         label = key.replace("_", " ").title()
+        if key.startswith("sections_"):
+            label = "Sections " + key.removeprefix("sections_").replace("_", " ").title()
         value = metadata[key]
         if isinstance(value, list):
             value = ", ".join(str(item) for item in value)
