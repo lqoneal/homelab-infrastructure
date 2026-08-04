@@ -40,6 +40,15 @@ state. The canonical contract is emitted by `zeus wop format` from
 `scripts/lib/emp/wop_schema.py`; validators and templates consume that same
 contract.
 
+The generated source includes the execution-bound fields that are checked at
+`VALIDATE_WOP`: approval authorization for `Active`, the seven published
+procedure/template/standard references, authority-node and authorization-
+decision references, and all thirteen required execution sections. Markdown and
+DOCX are presentation-equivalent; `--output` selects the exact destination.
+`lint` and `validate` report these fields before submission. The package keeps
+the same values in `mission.yaml`, so execution does not reconstruct a second
+schema.
+
 Packaging is transactional: source parsing and full package validation occur in
 a temporary workspace, then the validated candidate is atomically promoted.
 Any failure removes the temporary workspace and leaves no package, registration,

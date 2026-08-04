@@ -10,23 +10,34 @@ import sys
 sys.path.insert(0, str(ROOT))
 
 from scripts.lib.emp.stage1_runtime import Stage1Runtime, Stage1Error, validate_package
-from scripts.lib.emp.wop_packaging import PackagingError, extract, package, _parse
+from scripts.lib.emp.wop_packaging import (
+    PackagingError, extract, package, _parse, template_metadata, markdown_template,
+    docx_template,
+)
 
 
-MARKDOWN = """WOP ID: WOP-PACKAGING-FIXTURE-001
-Mission ID: PACKAGING-FIXTURE
-Title: Packaging Fixture
-Objective: Exercise native WOP packaging.
-Scope: validate source; preserve source; prepare bounded evidence
-Dependencies: none
-Execution Mode: DEVELOPMENT
-Governance Authority: Engineering Governance
-Repository Identity: /data/engineering/repositories/homelab
-Effect Profile: DEVELOPMENT-PACKAGING-NONPRODUCTION
-Protected Baselines: OA-v1.0.0, OB-PLAN-v1.0.0
-Gates: VALIDATE, QUALIFY, CLOSE
-Qualification Requirements: package validation
-Completion Requirements: prepare publication candidate
+MARKDOWN = markdown_template(template_metadata(
+    "WOP-PACKAGING-FIXTURE-001", "PACKAGING-FIXTURE", str(ROOT)
+))
+
+CANONICAL_BOUNDARY_SUFFIX = """
+Approval Authorized Lifecycle State: Active
+Authoritative References: PROC-0001@1.11, TPL-0001@1.7, STD-0000, STD-0001, STD-0002, STD-0003, STD-0004
+Execution Package Authority Node Id: work-package
+Execution Package Authorization Decision Record: ADR-BOUNDARY-FIXTURE
+Sections Completion Report Requirement: completion evidence
+Sections Deliverables: bounded package
+Sections Dependencies And Entry Criteria: clean baseline
+Sections Execution Sequence: validate then package
+Sections Explicit Authority: no external effects
+Sections Governing References: published contract
+Sections Mission Classification: development qualification
+Sections Prohibited Activities: production changes
+Sections Publication And Synchronization: governed publication only
+Sections Scope: bounded packaging
+Sections Stop Resume And Escalation: stop on mismatch
+Sections Success And Acceptance Criteria: package validates
+Sections Validation Profile: canonical validators
 """
 
 
@@ -52,7 +63,7 @@ Qualification Requirements: boundary evidence
 - completion evidence only
 ## Transaction Identification
 This must not be completion metadata.
-""")
+""" + CANONICAL_BOUNDARY_SUFFIX)
         self.assertIn("preserve nested scope content", metadata["scope"])
         self.assertNotIn("## Explicit authority", metadata["scope"])
         self.assertEqual(metadata["completion_requirements"], ["completion evidence only"])
@@ -82,7 +93,7 @@ Qualification Requirements: package evidence
 - completion evidence
 ## Transaction Identification
 This section is not a completion requirement.
-""")
+""" + CANONICAL_BOUNDARY_SUFFIX)
             package_root, result = package(source, root / "work-orders")
             metadata, _ = validate_package(package_root)
             self.assertEqual(metadata["scope"], ["bounded packaging"])
@@ -99,11 +110,15 @@ This section is not a completion requirement.
             self.assertEqual(evidence["result"], "PASS")
             self.assertTrue((package_root / "source-wop.md").is_file())
 
-    def test_docx_input_is_parsed_and_missing_metadata_is_reported(self):
-        source = ROOT / "WOP-BETA-07-STRENGTHEN-DEVELOPMENT-MODE-CANONICAL-SPECIFICATION-001.docx"
-        package_root, result = package(source, Path(tempfile.mkdtemp()) / "runtime")
-        self.assertEqual(result["package_id"], package_root.name)
-        self.assertEqual(result["replayed"], False)
+    def test_docx_input_is_parsed_and_canonical_metadata_is_reported(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            source = docx_template(
+                template_metadata("WOP-DOCX-CANONICAL-001", "DOCX-CANONICAL", str(ROOT)),
+                Path(temporary) / "source.docx",
+            )
+            package_root, result = package(source, Path(temporary) / "runtime")
+            self.assertEqual(result["package_id"], package_root.name)
+            self.assertEqual(result["replayed"], False)
 
     def test_docx_table_metadata_is_normalized(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -112,13 +127,10 @@ This section is not a completion requirement.
                 f"<w:tr><w:tc><w:p><w:r><w:t>{key}</w:t></w:r></w:p></w:tc>"
                 f"<w:tc><w:p><w:r><w:t>{value}</w:t></w:r></w:p></w:tc></w:tr>"
                 for key, value in [
-                    ("WOP ID", "WOP-TABLE-FIXTURE-001"), ("Mission ID", "TABLE-FIXTURE"),
-                    ("Title", "Table Fixture"), ("Objective", "Validate table metadata"),
-                    ("Scope", "bounded fixture"), ("Dependencies", "none"),
-                    ("Execution Mode", "DEVELOPMENT"), ("Governance Authority", "Engineering Governance"),
-                    ("Repository Identity", str(ROOT)), ("Effect Profile", "DEVELOPMENT-NONPRODUCTION"),
-                    ("Protected Baselines", "OA-v1.0.0, OB-PLAN-v1.0.0"), ("Gates", "VALIDATE"),
-                    ("Qualification Requirements", "package validation"), ("Completion Requirements", "close"),
+                    (key.replace("_", " ").title(), value)
+                    for key, value in template_metadata(
+                        "WOP-TABLE-FIXTURE-001", "TABLE-FIXTURE", str(ROOT)
+                    ).items()
                 ]
             )
             xml = f'''<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:tbl>{rows}</w:tbl></w:body></w:document>'''
@@ -171,7 +183,7 @@ This section is not a completion requirement.
             runtime_root = root / "runtime"; package_root, _ = package(source, runtime_root)
             runtime = Stage1Runtime(ROOT, root / "stage1", operator_resolver=lambda: "loneal")
             runtime.submit_development(package_root)
-            source.write_text(MARKDOWN.replace("prepare bounded evidence", "changed bounded evidence"))
+            source.write_text(MARKDOWN.replace("preserve protected baselines", "changed protected baselines"))
             changed, _ = package(source, runtime_root)
             with self.assertRaises(Stage1Error) as raised:
                 runtime.submit_development(changed)

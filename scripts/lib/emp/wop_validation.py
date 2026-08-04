@@ -43,6 +43,12 @@ def validate_metadata(metadata: Mapping[str, Any], *, source: Path | str = "<sou
         errors.append("wop_id must match the canonical WOP identity format")
     if metadata.get("execution_mode") and str(metadata["execution_mode"]).upper() != "DEVELOPMENT":
         errors.append("execution_mode must be DEVELOPMENT")
+    if metadata.get("approval_authorized_lifecycle_state") not in (None, "Active"):
+        errors.append("approval_authorized_lifecycle_state must be Active")
+    references = metadata.get("authoritative_references")
+    required_references = ("PROC-0001@1.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004")
+    if references is not None and any(item not in references for item in required_references):
+        errors.append("authoritative_references must contain the published procedure, template, and standards")
     return ValidationResult(str(source), metadata, missing=missing, errors=tuple(errors))
 
 
@@ -84,6 +90,15 @@ def validate_generated_package(package: Path) -> dict[str, Any]:
     combined = dict(metadata)
     combined.update({key: manifest.get(key) for key in ("protected_baselines", "effect_profile", "governance_authority", "repository_identity") if manifest.get(key) is not None})
     combined["gates"] = gates.get("gates")
+    approval = combined.get("approval") or {}
+    package_refs = combined.get("execution_package_references") or {}
+    combined["approval_authorized_lifecycle_state"] = approval.get("authorized_lifecycle_state")
+    combined["authoritative_references"] = combined.get("authoritative_references")
+    combined["execution_package_authority_node_id"] = package_refs.get("authority_node_id")
+    combined["execution_package_authorization_decision_record"] = package_refs.get("authorization_decision_record")
+    for name in REQUIRED_FIELDS:
+        if name.startswith("sections_"):
+            combined[name] = (combined.get("sections") or {}).get(name.removeprefix("sections_"))
     result = validate_metadata(combined, source=package)
     if not result.valid:
         from scripts.lib.emp.wop_packaging import PackagingError

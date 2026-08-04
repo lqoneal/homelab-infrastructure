@@ -22,6 +22,14 @@ approval freshness, but does not introduce additional required fields. A WOP
 that passed qualification, submission, and admission remains execution-valid
 unless its package or authoritative state changed after admission.
 
+For Development WOPs the shared contract also requires
+`approval.authorized_lifecycle_state: Active`, the published procedure,
+template, and standards `PROC-0001@1.11`, `TPL-0001@1.7`, `STD-0000` through
+`STD-0004`, `execution_package_references.authority_node_id`,
+`execution_package_references.authorization_decision_record`, and every
+execution section declared by `TPL-0001`. Authoring, source validation,
+submission, package projection, and `VALIDATE_WOP` consume these same fields.
+
 The canonical sources are:
 
 1. the mission contract;
