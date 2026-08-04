@@ -884,6 +884,7 @@ class Stage1Runtime:
         if dispatch:
             dispatch_valid, dispatch_reason = _dispatch_receipt_valid(dispatch, record)
         blocked = bool(dispatch and not dispatch_valid)
+        readiness = self._canonical_resume_readiness(record, dispatch_valid=dispatch_valid)
         snapshot = record.get("authority_snapshot") or {}
         current_phase = (record.get("phases") or [None])[-1]
         receipt_verification = {
@@ -924,9 +925,42 @@ class Stage1Runtime:
             "dispatch_receipt_valid": dispatch_valid,
             "dispatch_receipt_diagnostic": dispatch_reason,
             "blocker": None if not blocked else "RECEIPT_INTEGRITY_FAILURE",
-            "next_action": ("Recover receipt-backed dispatch through the canonical Zeus transaction resume"
-                            if blocked else record.get("next_action")),
+            "readiness": readiness["readiness"],
+            "readiness_diagnostic": readiness.get("diagnostic"),
+            "next_action": readiness["next_action"],
         }
+
+    def _canonical_resume_readiness(self, record: Mapping[str, Any], *,
+                                    dispatch_valid: bool) -> dict[str, Any]:
+        """Project whether canonical resume may perform internal recovery work.
+
+        This is strictly read-only.  The authority and repository checks are
+        shared with recovery, while authority snapshots, provider selection,
+        and dispatch receipts remain resume-owned lifecycle outputs.  Their
+        absence is therefore not a prerequisite failure for an admitted,
+        recoverable transaction.
+        """
+        next_action = "scripts/zeus resume " + str(record.get("mission_id") or record.get("instance_id"))
+        if record.get("state") != "AWAITING_EXECUTION_DISPATCH":
+            return {"readiness": "NO_GO", "next_action": record.get("next_action") or next_action,
+                    "diagnostic": "MISSION_NOT_AWAITING_EXECUTION_DISPATCH"}
+        if (record.get("receipts") or {}).get("dispatch") is not None and not dispatch_valid:
+            return {"readiness": "NO_GO", "next_action": next_action,
+                    "diagnostic": "RECEIPT_CORRUPTION"}
+        baseline = str(record.get("repository_baseline") or "")
+        try:
+            verification = self._verify_recovery(
+                record, baseline, record.get("protected_baselines") or {},
+                allow_pending_dispatch=True,
+            )
+        except Stage1Error as error:
+            return {"readiness": "NO_GO", "next_action": record.get("next_action") or next_action,
+                    "diagnostic": error.evidence.get("reason_code") or str(error)}
+        if verification.get("receipt_chain", {}).get("result") == "FAIL":
+            return {"readiness": "NO_GO", "next_action": next_action,
+                    "diagnostic": "RECEIPT_CHAIN_INTEGRITY_FAILURE"}
+        return {"readiness": "GO_FOR_CANONICAL_RESUME", "next_action": next_action,
+                "diagnostic": "INTERNAL_RESUME_ARTIFACTS_DEFERRED_TO_CANONICAL_RESUME"}
 
     def resume_transaction(self, identifier: str | None = None, *, at: datetime | None = None) -> dict[str, Any]:
         """Canonical recovery entry point for one existing transaction.
