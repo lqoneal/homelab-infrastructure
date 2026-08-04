@@ -78,8 +78,9 @@ class ResumeAdmissionLineageTests(unittest.TestCase):
             "state": "ADMITTED", "repository": str(self.repo), "execution_mode": "DEVELOPMENT",
             "package": str(base / "package"), "package_digest": "package", "source_digest": "source",
             "repository_baseline": self.old, "authority_snapshot": {"authority_snapshot_digest": "authority"},
-            "phases": ["ADMITTED", "EXECUTING"],
-            "receipts": {"admission": {"admission_id": self.predecessor_id},
+            "phases": ["VALIDATED", "ADMITTED", "EXECUTING"],
+            "receipts": {"validation": {"source_digest": "source"},
+                         "admission": {"admission_id": self.predecessor_id},
                          "execution": {"execution_id": self.transaction_id}},
         }
         package = base / "package"
@@ -121,6 +122,30 @@ class ResumeAdmissionLineageTests(unittest.TestCase):
         with self.assertRaises(AdmissionSupersessionError):
             resolve_for_resume(self.repo, self.admissions, self.successor_id,
                                stage1_transaction=self.record)
+
+    def test_missing_generic_source_digest_uses_stage1_binding(self):
+        store = AdmissionStateStore(self.admissions)
+        successor = store.load(self.successor_id)
+        successor.pop("source_digest")
+        store.save(successor)
+        result = resolve_for_resume(self.repo, self.admissions, self.successor_id,
+                                    stage1_transaction=self.record)
+        self.assertEqual(self.successor_id, result["admission_id"])
+
+    def test_missing_canonical_source_digest_fails_closed(self):
+        record = deepcopy(self.record)
+        record.pop("source_digest")
+        record["receipts"].pop("validation")
+        with self.assertRaises(AdmissionSupersessionError):
+            resolve_for_resume(self.repo, self.admissions, self.successor_id,
+                               stage1_transaction=record)
+
+    def test_stage1_receipt_and_transaction_source_conflict_fails_closed(self):
+        record = deepcopy(self.record)
+        record["source_digest"] = "different-source"
+        with self.assertRaises(AdmissionSupersessionError):
+            resolve_for_resume(self.repo, self.admissions, self.successor_id,
+                               stage1_transaction=record)
 
     def test_projection_package_operand_mismatch_fails_closed(self):
         store = AdmissionStateStore(self.admissions)

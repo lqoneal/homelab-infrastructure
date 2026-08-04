@@ -28,7 +28,8 @@ def _digest(value: Any) -> str:
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
-def _find_execution(execution_store: Path, admission_id: str, execution_id: str | None):
+def _find_execution(execution_store: Path, admission_id: str, execution_id: str | None,
+                    source_digest: str | None = None):
     matches = []
     for path in sorted(execution_store.glob("*.json")):
         try:
@@ -44,6 +45,14 @@ def _find_execution(execution_store: Path, admission_id: str, execution_id: str 
         if execution_id and value.get("execution_id") != execution_id:
             continue
         if value.get("admission_id") == admission_id:
+            if source_digest is not None:
+                from scripts.lib.emp.admission_supersession import (
+                    AdmissionSupersessionError, _validate_execution_source_digest,
+                )
+                try:
+                    _validate_execution_source_digest(value, source_digest)
+                except AdmissionSupersessionError as error:
+                    raise Stage1ExecutionResolutionError(str(error)) from error
             matches.append(value)
     if len(matches) > 1:
         raise Stage1ExecutionResolutionError("conflicting execution projections for Stage 1 admission")
@@ -132,6 +141,9 @@ def _derived_admission(record: Mapping[str, Any], admission_id: str) -> dict[str
 def _derived_execution(admission: Mapping[str, Any], record: Mapping[str, Any], execution_id: str) -> dict[str, Any]:
     """Build the legacy execution projection from the canonical Stage 1 binding."""
     wop = admission["artifacts"]["wop_result"]["wop"]
+    source_digest = record.get("source_digest")
+    if source_digest is None:
+        source_digest = ((record.get("receipts") or {}).get("validation") or {}).get("source_digest")
     state = {
         "schema_version": 1,
         "runtime_version": "zeus-mission-execution/1",
@@ -149,7 +161,7 @@ def _derived_execution(admission: Mapping[str, Any], record: Mapping[str, Any], 
         "failure": None, "wait_reason": None,
         "stage1_transaction_id": record["instance_id"],
         "stage1_package_digest": record.get("package_digest"),
-        "stage1_source_digest": record.get("source_digest"),
+        "stage1_source_digest": source_digest,
         "stage1_authority_snapshot_digest": (record.get("authority_snapshot") or {}).get("authority_snapshot_digest"),
         "stage1_dispatch_receipt_id": (record.get("receipts") or {}).get("dispatch", {}).get("receipt_id"),
         "stage1_provider_selection": (record.get("receipts") or {}).get("provider_selection"),
@@ -236,6 +248,11 @@ def resolve(root: Path | str, stage1_directory: Path | str, admission_store: Pat
     receipt_admission_id = (receipts.get("admission") or {}).get("admission_id")
     if not receipt_admission_id:
         raise Stage1ExecutionResolutionError("Stage 1 admission identity is missing")
+    try:
+        from scripts.lib.emp.admission_supersession import _authoritative_stage1_source_digest
+        source_digest = _authoritative_stage1_source_digest(record)
+    except Exception as error:
+        raise Stage1ExecutionResolutionError(str(error)) from error
     resolved_admission_id = receipt_admission_id
     admission_lineage = None
     admission_path = Path(admission_store) / f"{receipt_admission_id}.json"
@@ -261,7 +278,7 @@ def resolve(root: Path | str, stage1_directory: Path | str, admission_store: Pat
         except (AdmissionSupersessionError, OSError) as error:
             raise Stage1ExecutionResolutionError(str(error)) from error
         resolved_admission_id = admission_lineage["admission_id"]
-    execution = _find_execution(Path(execution_store), resolved_admission_id, execution_id)
+    execution = _find_execution(Path(execution_store), resolved_admission_id, execution_id, source_digest)
     admission = (deepcopy(admission_lineage["admission"])
                  if admission_lineage else _derived_admission(record, resolved_admission_id))
     resolved_execution_id = execution.get("execution_id") if execution else (receipts.get("execution") or {}).get("execution_id") or record["instance_id"]
