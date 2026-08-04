@@ -254,6 +254,44 @@ class CanonicalRecoveryTests(unittest.TestCase):
             self.assertIn("provider_selection", recovered["receipts"])
             self.assertEqual(recovered["instance_id"], first["instance_id"])
 
+    def test_readiness_defers_internal_dispatch_artifacts_to_resume(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            repository, package, _ = self.fixture(directory)
+            runtime = Stage1Runtime(
+                repository, directory / "runtime", operator_resolver=lambda: "test",
+                execution_executor=automatic_executor(repository, registry_path=self.registry(directory, repository)),
+            )
+            first = runtime.submit_development(package)
+            legacy = copy.deepcopy(first)
+            legacy.pop("authority_snapshot", None)
+            legacy["receipts"].pop("dispatch", None)
+            legacy["receipts"].pop("provider_selection", None)
+            legacy["state"] = "AWAITING_EXECUTION_DISPATCH"
+            legacy["pending_phase"] = "DISPATCHED"
+            runtime.store.save(legacy)
+            projection = runtime.transaction_view(first["mission_id"])
+            self.assertEqual(projection["readiness"], "GO_FOR_CANONICAL_RESUME")
+            self.assertEqual(projection["next_action"], "scripts/zeus resume " + first["mission_id"])
+            self.assertIsNone(legacy.get("authority_snapshot"))
+
+    def test_readiness_preserves_fail_closed_receipt_corruption(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            repository, package, _ = self.fixture(directory)
+            runtime = Stage1Runtime(
+                repository, directory / "runtime", operator_resolver=lambda: "test",
+                execution_executor=automatic_executor(repository, registry_path=self.registry(directory, repository)),
+            )
+            first = runtime.submit_development(package)
+            forged = copy.deepcopy(first)
+            forged["state"] = "AWAITING_EXECUTION_DISPATCH"
+            forged["receipts"]["dispatch"]["receipt_digest"] = "forged"
+            runtime.store.save(forged)
+            projection = runtime.transaction_view(first["mission_id"])
+            self.assertEqual(projection["readiness"], "NO_GO")
+            self.assertEqual(projection["readiness_diagnostic"], "RECEIPT_CORRUPTION")
+
 
 if __name__ == "__main__":
     unittest.main()

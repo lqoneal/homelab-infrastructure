@@ -809,6 +809,7 @@ def main(argv=None):
                       f"Transaction      : {value['transaction_id']}\n"
                       f"Registration     : {value['registration_id']}\n"
                       f"State            : {value['state']}\n"
+                      f"Readiness        : {value.get('readiness') or 'UNKNOWN'}\n"
                       f"Dispatch receipt : {'PASS' if value['dispatch_receipt_valid'] else 'FAIL'}\n"
                       f"Next action      : {value.get('next_action') or 'None'}")
             return 0 if value.get("result") == "PASS" else 78
