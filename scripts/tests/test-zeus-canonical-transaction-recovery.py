@@ -84,6 +84,50 @@ class CanonicalRecoveryTests(unittest.TestCase):
                 runtime.resume_transaction(first["instance_id"])
             self.assertEqual(raised.exception.evidence["reason_code"], "PACKAGE_DIGEST_MISMATCH")
 
+    def test_legacy_projection_hydrates_from_receipts_before_recovery(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            runtime = Stage1Runtime(ROOT, directory / "runtime", operator_resolver=lambda: "test")
+            first = runtime.submit_development(FIXTURE)
+            legacy = copy.deepcopy(first)
+            for field in ("source", "source_digest", "package", "package_digest", "registration",
+                          "phases", "lifecycle_integrity", "pending_phase", "next_action"):
+                legacy.pop(field, None)
+            legacy["schema_version"] = 2
+            runtime.store.save(legacy)
+            recovered = runtime.resume_transaction(first["instance_id"])
+            self.assertEqual(recovered["instance_id"], first["instance_id"])
+            self.assertEqual(recovered["package_digest"], first["package_digest"])
+            self.assertEqual(recovered["source_digest"], first["source_digest"])
+            self.assertEqual(recovered["registration"]["registration_id"], first["registration"]["registration_id"])
+            self.assertEqual(recovered["hydration"]["schema_version"], 1)
+            self.assertTrue(recovered["hydration"]["unresolved"])
+            self.assertEqual(recovered["schema_version"], 3)
+
+    def test_legacy_invalid_dispatch_without_snapshot_reconciles(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            registry = self.registry(directory)
+            runtime = Stage1Runtime(
+                ROOT, directory / "runtime", operator_resolver=lambda: "test",
+                execution_executor=automatic_executor(ROOT, registry_path=registry),
+            )
+            first = runtime.submit_development(FIXTURE)
+            legacy = copy.deepcopy(first)
+            legacy.pop("authority_snapshot", None)
+            legacy["receipts"]["dispatch"] = {
+                "receipt_id": first["receipts"]["dispatch"]["receipt_id"],
+                "receipt_type": "dispatch",
+                "agent_id": "historical-agent",
+            }
+            runtime.store.save(legacy)
+            recovered = runtime.resume_transaction(first["instance_id"])
+            self.assertEqual(recovered["state"], "AWAITING_EXECUTION_DISPATCH")
+            self.assertTrue(any(item.get("type") == "receiptless-dispatch-recovery"
+                                for item in recovered.get("evidence", [])))
+            historical = recovered["evidence"][-1]["historical_dispatch"]
+            self.assertEqual(historical["receipt_id"], first["receipts"]["dispatch"]["receipt_id"])
+
 
 if __name__ == "__main__":
     unittest.main()

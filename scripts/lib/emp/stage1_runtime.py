@@ -33,6 +33,7 @@ class Stage1Error(ValueError):
 
 AUTHORITY_FAILURE = "AUTHORITY_CHAIN_INTEGRITY_FAILURE"
 RECOVERY_SCHEMA_VERSION = 3
+HYDRATION_SCHEMA_VERSION = 1
 
 
 ACTIVE_STATES = {"VALIDATING", "ADMITTED", "STAGED", "VALIDATED", "PACKAGED", "REGISTERED", "AUTHORIZED", "AWAITING_EXECUTION_DISPATCH", "DISPATCHED", "EXECUTING", "QUALIFYING", "QUALIFIED", "PUBLICATION_READY", "PUBLISHED", "SYNCHRONIZING", "SYNCHRONIZED", "CLOSING", "INTERRUPTED", "BLOCKED"}
@@ -203,7 +204,8 @@ class Stage1Store:
                 "closeout": "CLOSED",
             }
             expected = [phase for key, phase in receipt_phases.items() if key in receipts]
-            if value.get("phases") != expected:
+            legacy_projection = int(value.get("schema_version", 1)) < RECOVERY_SCHEMA_VERSION
+            if value.get("phases") != expected and not legacy_projection:
                 raise Stage1Error(f"receipt-backed lifecycle phases do not match receipts: {path.name}")
             if value.get("state") in {"EXECUTING", "QUALIFIED", "PUBLICATION_READY", "PUBLISHED", "SYNCHRONIZED", "CLOSED"}:
                 required = {
@@ -920,6 +922,7 @@ class Stage1Runtime:
             raise Stage1Error("no resumable Development transaction exists")
         else:
             raise Stage1Error("multiple resumable Development transactions exist; provide an identifier")
+        record = self._hydrate_transaction(record)
         baseline = str(record.get("repository_baseline") or "")
         protected = record.get("protected_baselines") or {}
         timestamp = _utc(at)
@@ -938,6 +941,108 @@ class Stage1Runtime:
         result["idempotent_recovery"] = prior_digest == result.get("state_digest")
         return result
 
+    def _hydrate_transaction(self, record: Mapping[str, Any]) -> dict[str, Any]:
+        """Rebuild only derived projection fields from authoritative evidence.
+
+        Hydration never creates a receipt, authority snapshot, provider binding,
+        execution identity, or lifecycle phase. Missing values remain explicitly
+        unresolved and are handled by the normal fail-closed recovery checks.
+        """
+        value = deepcopy(dict(record))
+        receipts = value.get("receipts")
+        if not isinstance(receipts, Mapping):
+            raise Stage1Error("runtime hydration requires an authoritative receipt map",
+                              evidence={"reason_code": "MISSING_RECEIPT"})
+        changed: list[str] = []
+        unresolved: list[dict[str, str]] = []
+
+        def derive(field: str, candidate: Any, source: str) -> None:
+            if candidate in (None, "", {}):
+                unresolved.append({"field": field, "classification": "HISTORICAL_EVIDENCE_UNAVAILABLE",
+                                   "source": source})
+                return
+            current = value.get(field)
+            if current not in (None, "", {}):
+                if current != candidate:
+                    raise Stage1Error(f"hydration found conflicting {field}", evidence={
+                        "reason_code": AUTHORITY_FAILURE,
+                        "classification": "CONFLICTING_AUTHORITATIVE_VALUES",
+                        "field": field, "stored": current, "derived": candidate,
+                    })
+                return
+            value[field] = candidate
+            changed.append(field)
+
+        validation = receipts.get("validation") if isinstance(receipts.get("validation"), Mapping) else {}
+        packaging = receipts.get("packaging") if isinstance(receipts.get("packaging"), Mapping) else {}
+        registration = receipts.get("registration") if isinstance(receipts.get("registration"), Mapping) else {}
+        dispatch = receipts.get("dispatch") if isinstance(receipts.get("dispatch"), Mapping) else {}
+        derive("source", validation.get("source"), "receipts.validation.source")
+        derive("source_digest", validation.get("source_digest"), "receipts.validation.source_digest")
+        derive("package", packaging.get("package"), "receipts.packaging.package")
+        derive("package_digest", packaging.get("package_digest") or registration.get("package_digest"),
+               "receipts.packaging.package_digest")
+        registration_id = registration.get("registration_id")
+        if registration_id:
+            current_registration = value.get("registration")
+            if not isinstance(current_registration, Mapping):
+                value["registration"] = {"registration_id": registration_id}
+                changed.append("registration")
+            elif current_registration.get("registration_id") not in (None, registration_id):
+                raise Stage1Error("hydration found conflicting registration identity", evidence={
+                    "reason_code": AUTHORITY_FAILURE,
+                    "classification": "CONFLICTING_AUTHORITATIVE_VALUES",
+                    "field": "registration.registration_id",
+                })
+        dispatch_fields = ("provider_id", "agent_id", "qualification_id", "registry_digest")
+        for field in dispatch_fields:
+            if not dispatch.get(field):
+                unresolved.append({"field": field, "classification": "HISTORICAL_EVIDENCE_UNAVAILABLE",
+                                   "source": f"receipts.dispatch.{field}"})
+        if not value.get("authority_snapshot"):
+            unresolved.append({"field": "authority_snapshot", "classification": "HISTORICAL_EVIDENCE_UNAVAILABLE",
+                               "source": "runtime.authority_snapshot"})
+
+        phase_receipts = (
+            ("VALIDATED", "validation"), ("PACKAGED", "packaging"),
+            ("REGISTERED", "registration"), ("AUTHORIZED", "authorization"),
+            ("ADMITTED", "admission"), ("DISPATCHED", "dispatch"),
+            ("EXECUTING", "execution"), ("QUALIFIED", "independent_verification"),
+            ("PUBLISHED", "publication"), ("SYNCHRONIZED", "synchronization"),
+            ("CLOSED", "closeout"),
+        )
+        projected_phases = [phase for phase, key in phase_receipts if key in receipts]
+        if value.get("phases") != projected_phases:
+            value["phases"] = projected_phases
+            changed.append("phases")
+        if value.get("lifecycle_integrity") != "RECEIPT_BACKED_V1":
+            value["lifecycle_integrity"] = "RECEIPT_BACKED_V1"
+            changed.append("lifecycle_integrity")
+        if not value.get("pending_phase") and projected_phases:
+            value["pending_phase"] = "DISPATCHED" if "DISPATCHED" not in projected_phases else "EXECUTING"
+            changed.append("pending_phase")
+        if not value.get("next_action"):
+            value["next_action"] = (
+                "Recover receipt-backed dispatch through the canonical Zeus transaction resume"
+                if "dispatch" in receipts else
+                "Dispatch to a qualified Development execution agent"
+            )
+            changed.append("next_action")
+
+        value["hydration"] = {
+            "schema_version": HYDRATION_SCHEMA_VERSION,
+            "result": "PASS" if not unresolved else "PASS_WITH_UNRESOLVED_HISTORICAL_FIELDS",
+            "derived_fields": sorted(set(changed)),
+            "unresolved": unresolved,
+            "receipt_ids": sorted(
+                receipt.get("receipt_id") for receipt in receipts.values()
+                if isinstance(receipt, Mapping) and receipt.get("receipt_id")
+            ),
+        }
+        if changed or record.get("hydration") != value["hydration"]:
+            value = self.store.save(value)
+        return value
+
     def _verify_recovery(self, record: Mapping[str, Any], baseline: str,
                          protected: Mapping[str, str], *, allow_pending_dispatch: bool = False) -> dict[str, Any]:
         """Verify the authoritative inputs consumed by canonical recovery."""
@@ -949,8 +1054,17 @@ class Stage1Runtime:
                  expected=str(self.repository), observed=record.get("repository"))
         observed = subprocess.run(["git", "-C", str(self.repository), "rev-parse", "HEAD"],
                                   text=True, capture_output=True, check=False).stdout.strip()
-        if not baseline or observed != baseline:
-            fail("REPOSITORY_MISMATCH", "repository baseline mismatch", expected=baseline, observed=observed)
+        if not baseline:
+            fail("REPOSITORY_MISMATCH", "repository baseline is unavailable", expected=baseline, observed=observed)
+        repository_status = "PASS"
+        if observed != baseline:
+            ancestor = subprocess.run(
+                ["git", "-C", str(self.repository), "merge-base", "--is-ancestor", baseline, observed],
+                capture_output=True, check=False,
+            ).returncode == 0
+            if not ancestor:
+                fail("REPOSITORY_MISMATCH", "repository baseline mismatch", expected=baseline, observed=observed)
+            repository_status = "STALE_RUNTIME_RECONCILED"
         for tag, expected in protected.items():
             actual = subprocess.run(["git", "-C", str(self.repository), "rev-parse", tag],
                                     text=True, capture_output=True, check=False).stdout.strip()
@@ -993,6 +1107,12 @@ class Stage1Runtime:
                 fail("PACKAGE_DIGEST_MISMATCH", "source package digest mismatch",
                      expected=record.get("package_digest"), observed=actual_package_digest)
 
+        dispatch = receipts.get("dispatch")
+        dispatch_valid = False
+        dispatch_reason = "DISPATCH_RECEIPT_ABSENT"
+        if isinstance(dispatch, Mapping):
+            dispatch_valid, dispatch_reason = _dispatch_receipt_valid(dispatch, record)
+
         snapshot = record.get("authority_snapshot")
         if snapshot:
             unsigned = dict(snapshot)
@@ -1004,25 +1124,27 @@ class Stage1Runtime:
             if any(snapshot.get(key) != value for key, value in bindings.items()):
                 fail(AUTHORITY_FAILURE, "authority snapshot binding mismatch")
             authority = {"result": "PASS", "authority_snapshot_digest": supplied}
-        elif "dispatch" in receipts:
+        elif dispatch is not None and dispatch_valid:
             fail(AUTHORITY_FAILURE, "dispatched transaction has no authority snapshot")
         else:
-            authority = {"result": "PENDING", "authority_snapshot_digest": None}
+            authority = {"result": "PENDING", "authority_snapshot_digest": None,
+                         "diagnostic": "HISTORICAL_EVIDENCE_UNAVAILABLE" if dispatch is not None else None}
 
-        dispatch = receipts.get("dispatch")
         if dispatch is not None:
-            valid, reason = _dispatch_receipt_valid(dispatch, record)
-            if not valid:
+            if not dispatch_valid:
                 if not allow_pending_dispatch:
                     return {"result": "RECONCILE", "receipt_chain": receipt_report,
-                            "authority": authority, "dispatch": {"result": "FAIL", "diagnostic": reason}}
+                            "authority": authority, "dispatch": {"result": "FAIL", "diagnostic": dispatch_reason},
+                            "hydration": record.get("hydration")}
                 return {"result": "RECONCILE", "receipt_chain": receipt_report,
-                        "authority": authority, "dispatch": {"result": "FAIL", "diagnostic": reason}}
+                        "authority": authority, "dispatch": {"result": "FAIL", "diagnostic": dispatch_reason},
+                        "hydration": record.get("hydration")}
             dispatch_report = {"result": "PASS", "receipt_id": dispatch.get("receipt_id"),
                                "provider_id": dispatch.get("provider_id"), "agent_id": dispatch.get("agent_id")}
         else:
             dispatch_report = {"result": "PENDING", "diagnostic": "DISPATCH_RECEIPT_ABSENT"}
-        return {"result": "PASS", "repository": {"result": "PASS", "baseline": observed},
+        return {"result": "PASS", "repository": {"result": repository_status, "baseline": baseline,
+                                                       "current_head": observed},
                 "runtime": {"result": "PASS", "schema_version": record.get("schema_version")},
                 "package": {"result": "PASS", "package_digest": record.get("package_digest")},
                 "receipt_chain": receipt_report, "authority": authority, "dispatch": dispatch_report,
