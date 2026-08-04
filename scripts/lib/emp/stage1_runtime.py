@@ -1240,12 +1240,40 @@ class Stage1Runtime:
         if not supplied or supplied != _digest(unsigned):
             fail("AMBIGUOUS_PUBLICATION_TRANSITION", "publication receipt digest is invalid",
                  classification="AMBIGUOUS_PUBLICATION_TRANSITION")
+        publication_baseline = str(publication.get("resulting_main") or "")
+        if not publication_baseline:
+            fail("AMBIGUOUS_PUBLICATION_TRANSITION", "publication receipt has no resulting publication baseline",
+                 classification="AMBIGUOUS_PUBLICATION_TRANSITION")
+        published_ancestor = subprocess.run(
+            ["git", "-C", str(self.repository), "merge-base", "--is-ancestor", publication_baseline, current],
+            capture_output=True, check=False,
+        ).returncode == 0
+        if not published_ancestor:
+            fail("AMBIGUOUS_PUBLICATION_TRANSITION", "current main is not a descendant of the published baseline",
+                 classification="AMBIGUOUS_PUBLICATION_TRANSITION", expected=publication_baseline,
+                 observed=current)
+        continuation_paths = []
+        if publication_baseline != current:
+            diff = subprocess.run(
+                ["git", "-C", str(self.repository), "diff", "--name-only", publication_baseline, current],
+                text=True, capture_output=True, check=False,
+            )
+            continuation_paths = [line for line in diff.stdout.splitlines() if line]
+            allowed_prefixes = ("docs/", "engineering/docs/", "engineering/evidence/")
+            unauthorized = [path for path in continuation_paths
+                            if not path.startswith(allowed_prefixes)]
+            if diff.returncode or unauthorized:
+                fail("AMBIGUOUS_PUBLICATION_TRANSITION",
+                     "publication receipt does not authorize intervening repository changes",
+                     classification="AMBIGUOUS_PUBLICATION_TRANSITION",
+                     publication_baseline=publication_baseline, current_head=current,
+                     unauthorized_paths=unauthorized)
         required = {
             "repository_identity": "git@github.com:lqoneal/homelab-infrastructure",
             "source_branch": "recovery/zdcl02-canonical-transaction-hydration",
             "source_commit": "1d14d59baef2be5dcecce0f550a997b474491402",
             "target_branch": "main",
-            "resulting_main": current,
+            "resulting_main": publication_baseline,
             "pr_number": 52,
             "merge_disposition": "MERGED",
         }
@@ -1268,6 +1296,9 @@ class Stage1Runtime:
             "platform_validated": True,
             "publication_receipt_id": publication.get("publication_receipt_id"),
             "publication_receipt_digest": supplied,
+            "publication_baseline": publication_baseline,
+            "post_publication_descendant_verified": publication_baseline != current,
+            "post_publication_paths": continuation_paths,
             "current_head": current,
         }
         transition["transition_digest"] = _digest(transition)
