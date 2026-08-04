@@ -2,7 +2,7 @@
 
 ## Publication commit
 
-Pending bounded publication commit.
+`e8b955cff6598747c9ece6701b1675f8231f5605`
 
 ## Repository identity
 
@@ -10,18 +10,17 @@ Pending bounded publication commit.
 
 ## Published baseline identifier
 
-Pending publication.
+`e8b955cff6598747c9ece6701b1675f8231f5605`
 
 ## EOS synchronization status
 
-Pending publication; no EOS mutation has occurred in the candidate phase.
+`PASS` — EOS projects `main` at `e8b955cff6598747c9ece6701b1675f8231f5605`.
 
 ## Validation summary
 
-The reconciled candidate previously passed controlled-document validation
-(2,863 passed, 0 failed), focused semantic validation (6/6), focused
-synchronization validation (7/7), Registry validation (87 objects), and
-`git diff --check`. Post-publication validation remains required.
+Controlled-document validation: 2,863 passed, 0 failed. Semantic validation:
+6/6. Synchronization validation: 7/7. Registry: 87 objects. Engineering
+Platform: all four stages passed. `git diff --check`: passed.
 
 ## Scope confirmation
 
@@ -30,4 +29,4 @@ execution behavior is included in this publication scope.
 
 ## Disposition
 
-`PUBLICATION_PENDING`
+`PUBLISHED_OPERATIONAL_BETA_DOCUMENTATION_BASELINE`

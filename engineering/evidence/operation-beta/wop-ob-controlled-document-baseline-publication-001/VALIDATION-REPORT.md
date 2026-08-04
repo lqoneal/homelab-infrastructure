@@ -2,8 +2,9 @@
 
 | Validation | Result |
 |---|---|
-| Controlled-document validation | pending publication run |
-| Semantic validation | focused baseline passed; repository-wide legacy findings retained |
-| Synchronization validation | focused baseline passed; publication result pending |
-| Registry validation | pending publication run |
-| `git diff --check` | candidate check passed before publication |
+| Controlled-document validation | PASS — 2,863 passed, 0 failed |
+| Semantic validation | PASS — 6/6; expected negative findings classified |
+| Synchronization validation | PASS — 7/7 |
+| Registry validation | PASS — 87 objects |
+| Engineering Platform validation | PASS — all four stages |
+| `git diff --check` | PASS |
