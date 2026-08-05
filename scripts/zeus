@@ -69,6 +69,7 @@ from scripts.lib.emp.wop_schema import format_description
 from scripts.lib.emp.wop_validation import validate_source, require_valid_source
 from scripts.lib.emp.repository_identity import RepositoryIdentityError, resolve as resolve_repository_identity
 from scripts.lib.emp.development_dispatch import automatic_executor
+from scripts.lib.emp.codex_wrapper import CodexWrapper, CodexWrapperError
 from scripts.lib.emp.canonical_mission_lifecycle import (
     CanonicalMissionLifecycleError,
     mission_list as canonical_mission_list,
@@ -442,7 +443,7 @@ def main(argv=None):
 
     p = argparse.ArgumentParser(
         prog="zeus",
-        description="Supervised Zeus engineering orchestration interface.",
+        description="Zeus-controlled engineering execution interface.",
     )
     p.add_argument("--state", type=Path, help="engineering/test state override")
     p.add_argument("--runtime-root", type=Path, help="explicit mutable Zeus runtime override")
@@ -490,7 +491,8 @@ def main(argv=None):
     accept=sub.add_parser("accept"); accept.add_argument("gate"); accept.add_argument("--reject", action="store_true"); accept.add_argument("--rationale", default=""); accept.add_argument("--at"); accept.add_argument("--yes", action="store_true"); accept.add_argument("--json", action="store_true")
     decline=sub.add_parser("decline"); decline.add_argument("approval_id"); decline.add_argument("--operator", required=True); decline.add_argument("--at")
     verify=sub.add_parser("verify"); verify.add_argument("gate"); verify.add_argument("--wop"); verify.add_argument("--revision", default="1"); verify.add_argument("--authority-record"); verify.add_argument("--correlation-id", default="zeus-gate-verification")
-    execution=sub.add_parser("execution"); execution.add_argument("action", choices=("status","resolve","bootstrap-actions")); execution.add_argument("identifier"); execution.add_argument("--revision", default="1"); execution.add_argument("--requested-action", default="execute"); execution.add_argument("--authority-record"); execution.add_argument("--correlation-id", default="zeus-execution")
+    provider=sub.add_parser("provider", help="Inspect the Zeus-controlled provider boundary."); provider.add_argument("action", choices=("list", "capabilities", "status")); provider.add_argument("identifier", nargs="?"); provider.add_argument("--json", action="store_true")
+    execution=sub.add_parser("execution", help="Inspect or control a Zeus-owned provider execution."); execution.add_argument("action", choices=("status","resolve","bootstrap-actions","show","session","stop","resume","start")); execution.add_argument("identifier", nargs="?"); execution.add_argument("--revision", default="1"); execution.add_argument("--requested-action", default="execute"); execution.add_argument("--authority-record"); execution.add_argument("--correlation-id", default="zeus-execution"); execution.add_argument("--wop"); execution.add_argument("--mission-contract"); execution.add_argument("--branch"); execution.add_argument("--timeout", type=int, default=0); execution.add_argument("--json", action="store_true")
     context=sub.add_parser("context"); context.add_argument("action", choices=("reconstruct",))
     eligibility=sub.add_parser("eligibility"); eligibility.add_argument("action", choices=("evaluate", "show")); eligibility.add_argument("request", type=Path)
     evidence=sub.add_parser("evidence"); evidence.add_argument("action", choices=("show",)); evidence.add_argument("identifier")
@@ -1034,6 +1036,20 @@ def main(argv=None):
             emit({"baseline": ConvergenceRuntime(ROOT).emm()["baseline_id"],
                   "capabilities": ConvergenceRuntime(ROOT).capabilities()})
             return 0
+        if a.command == "provider":
+            wrapper = CodexWrapper(ROOT, runtime_path(ROOT, "codex-provider"))
+            if a.action == "list":
+                value = {"result": "PASS", "provider": "zeus-codex", "agents": wrapper.providers(),
+                         "operator_entrypoint": "zeus submit <authorized-wop>",
+                         "direct_engctl_codex": "LOW_LEVEL_ONLY"}
+            elif a.action == "capabilities":
+                value = {"result": "PASS", **wrapper.capabilities()}
+            else:
+                if not a.identifier:
+                    raise CodexWrapperError("provider status requires an execution identity")
+                value = wrapper.status(a.identifier)
+            emit(value)
+            return 0
         if a.command == "capabilities":
             emit(ConvergenceRuntime(ROOT).capabilities())
             return 0
@@ -1340,6 +1356,38 @@ def main(argv=None):
                 emit(interface.qualify(a.mission_id))
             else:
                 emit(interface.snapshot(a.mission_id))
+        elif a.command=="execution" and a.action in {"show", "session", "stop", "resume", "start"}:
+            wrapper = CodexWrapper(ROOT, runtime_path(ROOT, "codex-provider"))
+            if not a.identifier:
+                raise CodexWrapperError("execution identity is required")
+            if a.action == "show":
+                value = wrapper.status(a.identifier)
+            elif a.action == "session":
+                value = wrapper.status(a.identifier)
+                value = {"execution_id": a.identifier, "session_id": value.get("session_id"),
+                         "provider_id": value.get("provider_id"), "state": value.get("state"),
+                         "context_digest": value.get("context_digest")}
+            elif a.action == "stop":
+                value = wrapper.stop(a.identifier, timeout=max(0.0, float(a.timeout or 2)))
+            else:
+                if a.action == "start":
+                    if not a.wop:
+                        raise CodexWrapperError("execution start requires --wop; normal operators submit through Zeus")
+                    source = resolve_wop_source(a.wop)
+                    if is_canonical_package(source):
+                        metadata_path = source / "mission.yaml"
+                        authoritative = yaml.safe_load(metadata_path.read_text(encoding="utf-8")) or {}
+                    else:
+                        authoritative, _ = extract(source)
+                    if a.identifier and (authoritative.get("instance_id") or authoritative.get("execution_id")) not in {None, a.identifier}:
+                        raise CodexWrapperError("CODEX_EXECUTION_IDENTITY_CONFLICT")
+                    branch = a.branch or subprocess.run(["git", "-C", str(ROOT), "branch", "--show-current"], capture_output=True, text=True, check=True).stdout.strip()
+                    value = wrapper.launch(authoritative, branch=branch, timeout=a.timeout)
+                else:
+                    current = wrapper.status(a.identifier)
+                    value = wrapper.resume(a.identifier, authoritative=current.get("context"), timeout=a.timeout)
+            emit(value)
+            return 0 if value.get("state") not in {"LAUNCH_FAILED", "BLOCKED"} else 78
         elif a.command=="execution":
             if a.action == "status":
                 emit({"execution_id": a.identifier, "status": "USE_EXECUTE_MISSION_STATUS"})

@@ -40,12 +40,13 @@ Work Order: $work_order"
 
 eos_codex_usage() {
     cat <<'EOF'
-Usage: engctl codex [--wop WOP-ID] [--timeout SECONDS] [--] [codex arguments ...]
+Usage: engctl codex [--wop WOP-ID] [--context-file JSON] [--timeout SECONDS] [--] [codex arguments ...]
 
 Environment:
   CODEX_WOP       Optional controlled WOP provenance when --wop is omitted.
   CODEX_BIN       Underlying Codex executable; intended for controlled tests.
   CODEX_TIMEOUT   Optional positive mission timeout in seconds; zero disables.
+  ZEUS_CODEX_CONTEXT_FILE  Zeus-owned machine-readable context envelope.
   NTFY_CONFIG_FILE  Explicit local notification configuration.
 EOF
 }
@@ -79,6 +80,7 @@ eos_codex_report_qualification_summary() {
 
 eos_codex_run() {
     local work_order="${CODEX_WOP:-Not specified}"
+    local context_file="${ZEUS_CODEX_CONTEXT_FILE:-}"
     local codex_bin="${CODEX_BIN:-codex}"
     local mission_timeout="${CODEX_TIMEOUT:-0}"
     local repository host start_epoch end_epoch elapsed duration governance
@@ -102,6 +104,14 @@ eos_codex_run() {
                     return 64
                 fi
                 mission_timeout="$2"
+                shift 2
+                ;;
+            --context-file)
+                if (($# < 2)) || [[ -z "$2" ]] || [[ ! -f "$2" ]]; then
+                    printf 'ERROR: --context-file requires a readable JSON file.\n' >&2
+                    return 64
+                fi
+                context_file="$2"
                 shift 2
                 ;;
             --help|-h)
@@ -143,7 +153,24 @@ eos_codex_run() {
     else
         governance="governed"
     fi
-    contract="$(eos_codex_completion_contract "$work_order")"
+    if [[ -n "$context_file" ]]; then
+        if ! jq -e 'type == "object" and .schema_version == 1 and .context_digest' "$context_file" >/dev/null 2>&1; then
+            printf 'ERROR: Zeus Codex context envelope is invalid.\n' >&2
+            return 65
+        fi
+        local context_digest expected_context_digest
+        context_digest="$(jq -r '.context_digest' "$context_file")"
+        expected_context_digest="$(jq -c 'del(.context_digest)' "$context_file" | sha256sum | awk '{print $1}')"
+        if [[ "$context_digest" != "$expected_context_digest" ]]; then
+            printf 'ERROR: Zeus Codex context digest mismatch.\n' >&2
+            return 65
+        fi
+        export ZEUS_CODEX_CONTEXT_FILE="$context_file"
+        export ZEUS_CODEX_CONTEXT_JSON="$(jq -c . "$context_file")"
+        contract="$ZEUS_CODEX_CONTEXT_JSON"
+    else
+        contract="$(eos_codex_completion_contract "$work_order")"
+    fi
     contract_config="developer_instructions=$(jq -Rn --arg value "$contract" '$value')"
     notify_config="notify=$(jq -cn \
         --arg qualifier "$qualifier" \
