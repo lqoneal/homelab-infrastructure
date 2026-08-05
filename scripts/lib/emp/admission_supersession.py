@@ -218,9 +218,12 @@ def classify_transition(root: Path | str, admitted_baseline: str, *, published_b
             "commits": commits, "paths": names, "classification": "GOVERNED_BASELINE_RECONCILIATION"}
 
 
-def _successor_id(transaction_id: str, current: str, package_digest: str | None, authority_digest: str | None) -> str:
+def _successor_id(transaction_id: str, current: str, package_digest: str | None,
+                  authority_digest: str | None, predecessor_id: str | None = None) -> str:
     material = {"transaction_id": transaction_id, "current_baseline": current,
                 "package_digest": package_digest, "authority_snapshot_digest": authority_digest}
+    if predecessor_id is not None:
+        material["predecessor_admission_id"] = predecessor_id
     return "EMM-DEV-ADMISSION-" + hashlib.sha256(json.dumps(material, sort_keys=True, separators=(",", ":")).encode()).hexdigest()[:32]
 
 
@@ -268,22 +271,24 @@ def resolve_for_start(root: Path | str, admission_store: Path | str, execution_s
         predecessor = admissions.load(admission_id)
     except MissionAdmissionError as error:
         raise AdmissionSupersessionError(str(error)) from error
-    if predecessor.get("admission_state") == "SUPERSEDED":
+    original_admission_id = admission_id
+    while predecessor.get("admission_state") == "SUPERSEDED":
         successor_id = predecessor.get("superseded_by")
         if not successor_id:
             raise AdmissionSupersessionError("superseded admission has no successor")
-        successor = admissions.load(successor_id)
-        current = _git(root, "rev-parse", "HEAD")
-        if successor.get("request", {}).get("repository_baseline") != current:
-            raise AdmissionSupersessionError("successor admission baseline is stale")
-        transition = classify_transition(root, predecessor.get("artifacts", {}).get("repository_baseline"),
-                                         published_baseline=published_baseline)
-        return {"admission_id": successor_id, "predecessor": predecessor, "successor": successor,
-                "replayed": True, "transition": transition}
+        try:
+            successor = admissions.load(successor_id)
+        except MissionAdmissionError as error:
+            raise AdmissionSupersessionError(str(error)) from error
+        if successor.get("supersedes") != predecessor.get("admission_id"):
+            raise AdmissionSupersessionError("admission supersession lineage is broken")
+        predecessor = successor
+        admission_id = successor_id
     admitted = predecessor.get("artifacts", {}).get("repository_baseline")
     current = _git(root, "rev-parse", "HEAD")
     if admitted == current:
-        return {"admission_id": admission_id, "predecessor": predecessor, "successor": predecessor, "replayed": False}
+        return {"admission_id": admission_id, "predecessor": predecessor, "successor": predecessor,
+                "replayed": admission_id != original_admission_id}
     if not stage1_transaction:
         raise AdmissionSupersessionError("authoritative Stage 1 transaction is unavailable")
     if stage1_transaction.get("instance_id") != predecessor.get("stage1_identity") and stage1_transaction.get("instance_id") != predecessor.get("request", {}).get("submission_id"):
@@ -292,10 +297,16 @@ def resolve_for_start(root: Path | str, admission_store: Path | str, execution_s
     _validate_lineage_package_digest(predecessor, package_digest)
     authority_digest = _authoritative_stage1_authority_snapshot_digest(stage1_transaction)
     _validate_lineage_authority_snapshot_digest(predecessor, authority_digest)
+    source_digest = _authoritative_stage1_source_digest(stage1_transaction)
+    _validate_lineage_source_digest(predecessor, source_digest)
+    _validate_lineage_authority_snapshot_digest(predecessor, authority_digest)
     if stage1_transaction.get("package_digest") and package_digest != stage1_transaction.get("package_digest"):
         raise AdmissionSupersessionError("package digest differs from Stage 1")
     transition = classify_transition(root, admitted, published_baseline=published_baseline)
-    successor_id = _successor_id(stage1_transaction["instance_id"], current, package_digest, authority_digest)
+    successor_id = _successor_id(
+        stage1_transaction["instance_id"], current, package_digest, authority_digest,
+        predecessor_id=predecessor.get("admission_id") if predecessor.get("supersedes") else None,
+    )
     successor_path = admissions.path(successor_id)
     if successor_path.exists():
         existing = admissions.load(successor_id)
@@ -316,7 +327,7 @@ def resolve_for_start(root: Path | str, admission_store: Path | str, execution_s
     successor["stage1_package_digest"] = package_digest
     if predecessor.get("source_digest") is not None:
         successor["source_digest"] = predecessor["source_digest"]
-    successor["stage1_source_digest"] = _authoritative_stage1_source_digest(stage1_transaction)
+    successor["stage1_source_digest"] = source_digest
     successor["stage1_authority_snapshot_digest"] = authority_digest
     successor["authority_snapshot_digest"] = authority_digest
     successor["artifacts"]["freshness"] = {"admitted_baseline": admitted, "current_baseline": current, "fresh": True}
@@ -343,7 +354,8 @@ def resolve_for_start(root: Path | str, admission_store: Path | str, execution_s
         updates[path] = execution
     _atomic_json_updates(updates)
     return {"admission_id": successor_id, "predecessor": predecessor_updated, "successor": successor,
-            "execution_rebound": bool(matching), "replayed": False, "transition": transition}
+            "original_admission_id": original_admission_id, "execution_rebound": bool(matching),
+            "replayed": bool(predecessor.get("supersedes")), "transition": transition}
 
 
 def resolve_for_resume(root: Path | str, admission_store: Path | str,

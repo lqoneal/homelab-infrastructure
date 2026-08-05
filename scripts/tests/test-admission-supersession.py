@@ -113,6 +113,28 @@ class AdmissionSupersessionTests(unittest.TestCase):
         self.assertEqual("ADMITTED", predecessor["admission_state"])
         self.assertEqual([self.admission_id + ".json"], [path.name for path in self.admissions.glob("*.json")])
 
+    def test_stale_terminal_successor_creates_one_next_generation(self):
+        first = resolve_for_start(self.root, self.admissions, self.executions, self.admission_id,
+                                  stage1_transaction=self.stage1)
+        first_id = first["admission_id"]
+        run = lambda *args: subprocess.run(args, cwd=self.root, check=True, capture_output=True, text=True)
+        (self.root / "scripts" / "zeus").write_text("second published corrective\n")
+        run("git", "add", "scripts/zeus")
+        run("git", "commit", "-m", "second governed publication")
+        second_baseline = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=self.root, text=True).strip()
+        run("git", "update-ref", "refs/remotes/origin/main", second_baseline)
+
+        second = resolve_for_start(self.root, self.admissions, self.executions, self.admission_id,
+                                   stage1_transaction=self.stage1)
+        second_id = second["admission_id"]
+        self.assertNotEqual(first_id, second_id)
+        self.assertEqual(first_id, second["predecessor"]["admission_id"])
+        self.assertEqual(second_id, AdmissionStateStore(self.admissions).load(first_id)["superseded_by"])
+        self.assertEqual(second_id, resolve_for_start(
+            self.root, self.admissions, self.executions, self.admission_id,
+            stage1_transaction=self.stage1)["admission_id"])
+        self.assertEqual(3, len(list(self.admissions.glob("*.json"))))
+
 
 if __name__ == "__main__":
     unittest.main()
