@@ -1,0 +1,142 @@
+schema_version: 1
+document_type: EngineeringWorkOrder
+mission_id: MISSION-ZEUS-RECEIPT-BACKED-QUALIFIED-TRANSITION-POLICY-001
+wop_id: WOP-ZEUS-RECEIPT-BACKED-QUALIFIED-TRANSITION-POLICY-001
+phase_id: MISSION-ZEUS-RECEIPT-BACKED-QUALIFIED-TRANSITION-POLICY-001-DEVELOPMENT
+revision: 1
+status: Active
+title: Receipt-Backed Qualified Repository Transition Policy Corrective
+objective: Correct admission-chain reconciliation so governed implementation descendants
+  may be accepted when their publication and qualification provenance is complete,
+  while unqualified or unauthorized implementation changes continue to fail closed.
+scope:
+- Trace repository-transition classification used by admission supersession and multi-generation
+  admission-chain resolution
+- replace path-only implementation rejection with receipt-backed governed-transition
+  qualification
+- preserve transaction
+- authority
+- package
+- source
+- admission lineage
+- provider
+- dispatch
+- and operator workflow
+- qualify the existing stop-qualification transition without resubmission.
+dependencies:
+- Published main 9c3f515ce40333eb0473dfb1bf7745f7ea7c849d
+- EOS synchronized
+- Engineering Platform validation passed
+- transaction ZEUS-DEVELOPMENT-530cda01-7883-57cb-a67e-c8dc4bc010dc
+- original admission EMM-DEV-ADMISSION-814361acbc225619ade3614a
+- prior successor EMM-DEV-ADMISSION-120e6eb0b34c6cadf46fd857d5e43bc4
+- expected current successor EMM-DEV-ADMISSION-25323f76ce8ec9a4673859a414a5ef92.
+priority: 0
+candidate_state: CANDIDATE
+qualification_requirements:
+- Accept implementation descendants only when published on canonical main
+- ancestry is valid
+- local and remote main match
+- EOS is synchronized
+- required publication provenance exists
+- controlled documents pass
+- Registry passes
+- all four platform stages pass
+- and immutable transaction
+- package
+- source
+- submission
+- and authority bindings remain unchanged. Reject dirty
+- unpublished
+- unmerged
+- rewound
+- ambiguous
+- unrelated
+- digest-changing
+- authority-changing
+- package-changing
+- or unqualified implementation transitions. Preserve the existing Stage 1 transaction
+  and admission chain. Do not resubmit the stop-qualification WOP.
+completion_requirements:
+- Create evidence under engineering/evidence/operation-beta/wop-zeus-receipt-backed-qualified-transition-policy-001
+  including TRANSITION-CLASSIFIER-TRACE.md
+- PATH-ONLY-REJECTION-ROOT-CAUSE.md
+- QUALIFIED-TRANSITION-CONTRACT.md
+- PUBLICATION-PROVENANCE-VERIFICATION.md
+- PLATFORM-QUALIFICATION-BINDING.md
+- IDENTITY-AND-RECEIPT-PRESERVATION.md
+- POSITIVE-QUALIFICATION.md
+- NEGATIVE-QUALIFICATION.md
+- ADMISSION-CHAIN-VERIFICATION.md
+- REGRESSION-RESULTS.md
+- PLATFORM-VALIDATION-REPORT.md
+- 'and COMPLETION-REPORT.md. Completion report must begin with # Completion Report
+  and end with READY_FOR_PUBLICATION or NOT_READY_FOR_PUBLICATION.'
+approval:
+  authorized_lifecycle_state: Active
+authoritative_references:
+- PROC-0001@1.11
+- TPL-0001@1.7
+- STD-0000
+- STD-0001
+- STD-0002
+- STD-0003
+- STD-0004
+execution_package_references:
+  authority_node_id: Engineering Governance
+  authorization_decision_record: Submission constitutes execution authority
+  immutable_wop: WOP-ZEUS-RECEIPT-BACKED-QUALIFIED-TRANSITION-POLICY-001
+sections:
+  mission_classification: Bounded Development corrective for internal Zeus repository-transition
+    qualification.
+  governing_references: PROC-0001@1.11, TPL-0001@1.7, STD-0000, STD-0001, STD-0002,
+    STD-0003, STD-0004.
+  explicit_authority: Engineering Governance authorized execution before submission.
+    Zeus consumes and enforces that authority. This WOP creates no new authority decision.
+  dependencies_and_entry_criteria: Repository identity verified; main published and
+    synchronized; working tree clean; existing Stage 1 transaction and admission chain
+    resolvable; protected digests unchanged.
+  execution_sequence: Trace the classifier; capture the rejection; define the receipt-backed
+    transition contract; implement the corrective; qualify disposable transitions;
+    verify the existing admission chain read-only; validate; commit; push; stop before
+    publication.
+  scope: Trace repository-transition classification used by admission supersession
+    and multi-generation admission-chain resolution; replace path-only implementation
+    rejection with receipt-backed governed-transition qualification; preserve transaction,
+    authority, package, source, admission lineage, provider, dispatch, and operator
+    workflow; qualify the existing stop-qualification transition without resubmission.
+  prohibited_activities: Do not resubmit the stop-qualification WOP. Do not replace
+    the Stage 1 transaction. Do not issue new authority. Do not manually modify live
+    admissions. Do not weaken fail-closed behavior. Do not create or merge a PR during
+    prepublication execution.
+  validation_profile: Focused transition-policy, admission-supersession, admission-lineage,
+    negative, rollback, controlled-document, Registry, platform, and git diff validation.
+  stop_resume_and_escalation: Stop immediately on ambiguous provenance, conflicting
+    receipts, invalid ancestry, digest mismatch, authority mismatch, incomplete qualification,
+    or interrupted execution. Resume only through the canonical Zeus resume workflow
+    while preserving transaction identity, immutable Stage 1 bindings, admission lineage,
+    package digest, source digest, authority snapshot, provider-selection receipt,
+    and dispatch receipt.
+  deliverables: Implementation corrective, tests, controlled-document updates where
+    required, evidence reports, and a Completion Report.
+  publication_and_synchronization: Stop after commit and push. PR creation, merge,
+    EOS synchronization, and post-publication qualification require a separate publication
+    step.
+  completion_report_requirement: Identify the first path-only rejection point, enumerate
+    accepted provenance requirements, list preserved identities and digests, state
+    whether live runtime changed, and provide the publication disposition.
+  success_and_acceptance_criteria: Accept governed implementation descendants only
+    when publication and qualification provenance validate. Reject unqualified implementation
+    changes. Preserve the existing transaction and admission chain without resubmission.
+execution_mode: DEVELOPMENT
+governance_authority: Engineering Governance
+repository_identity: /data/engineering/repositories/homelab
+effect_profile: DEVELOPMENT-QUALIFIED-TRANSITION-POLICY-NONPRODUCTION
+required_execution_files:
+- bootstrap.md
+- roadmap.md
+- mission.yaml
+- gates.yaml
+- manifests/immutable-manifest.yaml
+- source-wop.md
+source_document_digest: 4845b0dd64129e4b5f6f632e47f15943a6d7cf165d9e4e3b70223a4f4e44ce1c

@@ -1,0 +1,22 @@
+schema_version: 1
+manifest_id: WOP-ZEUS-RECEIPT-BACKED-QUALIFIED-TRANSITION-POLICY-001-MANIFEST
+mission_id: MISSION-ZEUS-RECEIPT-BACKED-QUALIFIED-TRANSITION-POLICY-001
+wop_id: WOP-ZEUS-RECEIPT-BACKED-QUALIFIED-TRANSITION-POLICY-001
+execution_mode: DEVELOPMENT
+governance_authority: Engineering Governance
+repository_identity: /data/engineering/repositories/homelab
+effect_profile: DEVELOPMENT-QUALIFIED-TRANSITION-POLICY-NONPRODUCTION
+protected_baselines:
+- OA-v1.0.0
+- OB-PLAN-v1.0.0
+- published main 9c3f515ce40333eb0473dfb1bf7745f7ea7c849d
+- stable Stage 1 transaction
+- complete admission chain
+- immutable package digest
+- source digest
+- submission digest
+- authority snapshot
+- provider-selection receipt
+- dispatch receipt
+- and unrelated runtime records.
+source_document_digest: 4845b0dd64129e4b5f6f632e47f15943a6d7cf165d9e4e3b70223a4f4e44ce1c
