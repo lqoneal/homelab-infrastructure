@@ -1,0 +1,16 @@
+schema_version: 1
+gates:
+- VERIFY repository and runtime identities
+- TRACE transition classifier
+- IDENTIFY path-only rejection boundary
+- DEFINE receipt-backed qualification contract
+- IMPLEMENT governed implementation-transition validation
+- QUALIFY positive and negative transitions
+- VERIFY admission-chain reconciliation
+- RUN tests
+- controlled-document validation
+- Registry validation
+- platform validation
+- and diff checks
+- COMMIT and PUSH prepublication candidate
+- STOP before PR creation.

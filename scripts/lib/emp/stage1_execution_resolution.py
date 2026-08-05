@@ -140,9 +140,12 @@ def _derived_admission(record: Mapping[str, Any], admission_id: str) -> dict[str
             "authority_context": {"admission": {"wop_revision": metadata.get("revision", 1), "authority": {"source": "Stage 1"}}},
         },
         "stage1_identity": record["instance_id"],
+        "stage1_transaction_id": record["instance_id"],
         "stage1_package_digest": record.get("package_digest"),
+        "stage1_source_digest": record.get("source_digest") or ((receipts.get("validation") or {}).get("source_digest")),
         "stage1_authority_snapshot_digest": _stage1_authority_digest(record),
         "stage1_dispatch_receipt_id": dispatch.get("receipt_id"),
+        "stage1_provider_selection": deepcopy(receipts.get("provider_selection")),
         "stage1_execution_id": (receipts.get("execution") or {}).get("execution_id"),
     }
 
@@ -265,7 +268,16 @@ def resolve(root: Path | str, stage1_directory: Path | str, admission_store: Pat
             execution_store: Path | str, identifier: str | None = None,
             execution_id: str | None = None, admission_id: str | None = None,
             hydrate: bool = False, require_lineage_environment: bool = False,
-            resolve_admission_lineage: bool = True) -> dict[str, Any]:
+            resolve_admission_lineage: bool = True, command: str = "resolve") -> dict[str, Any]:
+    if hydrate:
+        # All mutating execution entry points use one transaction-scoped
+        # reconciler.  The reconciler calls this function with hydrate=False,
+        # keeping Stage 1 resolution itself free of persistence side effects.
+        from scripts.lib.emp.runtime_reconciliation import reconcile
+        return reconcile(root, stage1_directory, admission_store, execution_store,
+                         command=command, identifier=identifier, execution_id=execution_id,
+                         admission_id=admission_id,
+                         require_lineage_environment=require_lineage_environment)
     runtime = Stage1Runtime(root, stage1_directory)
     try:
         records = runtime.store.all()
