@@ -116,8 +116,9 @@ class AutonomousLifecycleController:
     publication/destructive work.
     """
 
-    def __init__(self, store: AutonomousLifecycleStore):
+    def __init__(self, store: AutonomousLifecycleStore, *, dispatch_controller=None):
         self.store = store
+        self.dispatch_controller = dispatch_controller
 
     @staticmethod
     def _state(authoritative: Mapping[str, Any]) -> str:
@@ -172,4 +173,18 @@ class AutonomousLifecycleController:
             snapshot["snapshot_digest"] = canonical_digest(snapshot)
             journal["transactions"][transaction_id] = snapshot
             self.store.save(journal)
+        if (policy or {}).get("autonomous_dispatch") and self.dispatch_controller is not None and plan["authoritative_state"] == "DISPATCHED":
+            dispatch_result = self.dispatch_controller.reconcile(
+                authoritative, command=command,
+                provider_launcher=(policy or {}).get("provider_launcher"),
+                session_materializer=(policy or {}).get("session_materializer"),
+                cleanup=(policy or {}).get("cleanup"),
+                policy=policy,
+            )
+            snapshot["autonomous_dispatch"] = dispatch_result
+            snapshot["snapshot_digest"] = canonical_digest(snapshot)
+            with _lock(self.store.lock):
+                journal = self.store.load()
+                journal["transactions"][transaction_id] = snapshot
+                self.store.save(journal)
         return snapshot
