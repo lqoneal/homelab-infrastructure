@@ -287,9 +287,24 @@ def reconcile(root: Path | str, stage1_directory: Path | str, admission_store: P
         if (not receipt_path.exists() or old_admission is None or old_execution is None
                 or admission_partial or execution_partial or stale_execution):
             _atomic_install([(admission_path, admission_value), (execution_path, execution_value), (receipt_path, receipt)])
+        # The autonomous controller is invoked by the same reconciliation
+        # transaction consumed by status/session/start/resume.  It records a
+        # derived lifecycle snapshot, while Stage 1 remains immutable authority.
+        from scripts.lib.emp.autonomous_execution_lifecycle import (
+            AutonomousLifecycleController,
+            AutonomousLifecycleStore,
+        )
+        autonomous = AutonomousLifecycleController(
+            AutonomousLifecycleStore(runtime_root)
+        ).reconcile(
+            transaction,
+            {"admission": admission_value, "execution": execution_value},
+            command=command,
+        )
         result = {**base, "source": "STAGE1_RECONCILIATION", "admission_id": resolved_admission,
                 "admission": admission_value, "execution": execution_value, "execution_id": resolved_execution,
                 "hydrated": bool(old_admission is None or old_execution is None or admission_partial or execution_partial),
+                "autonomous_lifecycle": autonomous,
                 "reconciliation": {"reconciliation_id": reconciliation_id, "classification": sorted(set(classifications)),
                                     "replayed": old_admission is not None and old_execution is not None and not admission_partial and not execution_partial,
                                     "admission_chain": chain_ids, "receipt_path": str(receipt_path)},
