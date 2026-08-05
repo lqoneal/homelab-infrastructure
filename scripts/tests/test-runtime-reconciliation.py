@@ -32,9 +32,11 @@ class RuntimeReconciliationTests(unittest.TestCase):
         self.temp.cleanup()
 
     def resolve(self, **extra):
+        options = {"identifier": TRANSACTION, "execution_id": TRANSACTION,
+                   "hydrate": True, "command": "status"}
+        options.update(extra)
         return resolve(ROOT, self.runtime / "stage1", self.runtime / "mission-admissions",
-                       self.runtime / "mission-executions", identifier=TRANSACTION,
-                       execution_id=TRANSACTION, hydrate=True, command="status", **extra)
+                       self.runtime / "mission-executions", **options)
 
     def test_stage1_only_creates_projections_and_receipt(self):
         result = self.resolve()
@@ -69,6 +71,26 @@ class RuntimeReconciliationTests(unittest.TestCase):
         path.write_text(json.dumps(value))
         with self.assertRaises(RuntimeReconciliationError):
             self.resolve()
+
+    def test_requested_registration_or_admission_identity_fails_with_operands(self):
+        with self.assertRaisesRegex(RuntimeReconciliationError, "canonical_stage1_instance_id"):
+            self.resolve(execution_id="EMM-DEV-21fbb4d8027dadc133d0cdab")
+
+    def test_derived_execution_identity_is_repaired_from_stage1_instance(self):
+        self.resolve()
+        path = self.runtime / "mission-executions" / f"{TRANSACTION}.json"
+        value = json.loads(path.read_text())
+        value["execution_id"] = "ZEUS-DEVELOPMENT-DERIVED-STALE-001"
+        material = dict(value)
+        material.pop("state_digest", None)
+        from scripts.lib.emp.stage1_execution_resolution import _digest
+        value["state_digest"] = _digest(material)
+        path.write_text(json.dumps(value))
+        result = self.resolve()
+        self.assertEqual(result["execution_id"], TRANSACTION)
+        repaired = json.loads(path.read_text())
+        self.assertEqual(repaired["execution_id"], TRANSACTION)
+        self.assertIn("STALE_EXECUTION_PROJECTION", result["reconciliation"]["classification"])
 
     def test_atomic_install_rolls_back_on_replace_failure(self):
         first = self.runtime / "a.json"

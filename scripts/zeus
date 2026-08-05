@@ -1420,8 +1420,12 @@ def main(argv=None):
                 )
             except Stage1ExecutionResolutionError as error:
                 # Existing runtime projections remain the compatibility path;
-                # an absent receipt-backed source is not an execution request.
-                if str(error) != "no receipt-backed Stage 1 transaction exists":
+                # an absent or ambiguous receipt-backed source is not an
+                # execution request when the operator supplied no selector.
+                # Explicit execution/admission requests remain fail-closed.
+                legacy_lookup = not a.execution_id and not a.admission_id
+                if (str(error) != "no receipt-backed Stage 1 transaction exists"
+                        and not (legacy_lookup and "ambiguous receipt-backed Stage 1" in str(error))):
                     raise
                 stage1_resolution = None
             if a.action == "handlers":
@@ -1432,6 +1436,7 @@ def main(argv=None):
                           "transaction_id": stage1_resolution["identities"]["transaction_id"],
                           "admission_id": stage1_resolution["admission_id"],
                           "execution_id": stage1_resolution.get("execution_id"),
+                          "execution_identity_operands": stage1_resolution["identities"].get("execution_identity_operands"),
                           "session_id": None, "session": "NOT_REQUIRED_FOR_STAGE1_RESOLUTION",
                           "hydrated": stage1_resolution.get("hydrated", False),
                           "reconciliation": stage1_resolution.get("reconciliation"),
@@ -1450,6 +1455,8 @@ def main(argv=None):
                 if a.action == "start" and not a.admission_id:
                     a.admission_id = stage1_resolution["admission_id"]
                 if a.action == "resume" and not a.execution_id and stage1_resolution.get("execution_id"):
+                    a.execution_id = stage1_resolution["execution_id"]
+                if a.action == "status" and not a.execution_id and stage1_resolution.get("execution_id"):
                     a.execution_id = stage1_resolution["execution_id"]
             zdcl_operational = bool((selected_admission and selected_admission["request"].get("mode") == "operational" and selected_admission["request"].get("mission_id") == "ZDCL-01") or (selected_execution and selected_execution.get("mode") == "operational" and selected_execution.get("mission_id") == "ZDCL-01"))
             dispatch_state=(
@@ -1518,7 +1525,8 @@ def main(argv=None):
                 result = {**result, "runtime_reconciliation": stage1_resolution.get("reconciliation"),
                           "stage1_resolution": {"transaction_id": stage1_resolution["identities"]["transaction_id"],
                                                  "admission_id": stage1_resolution["admission_id"],
-                                                 "execution_id": stage1_resolution.get("execution_id")}}
+                                                 "execution_id": stage1_resolution.get("execution_id"),
+                                                 "execution_identity_operands": stage1_resolution["identities"].get("execution_identity_operands")}}
             emit(result)
             if a.action != "status" and result["state"] in ("Waiting","Failed"): return 78
         elif a.command=="dispatcher":

@@ -68,6 +68,38 @@ def _find_execution(execution_store: Path, admission_id: str, execution_id: str 
     return matches[0] if matches else None
 
 
+def _canonical_execution_identity(record: Mapping[str, Any]) -> tuple[str, dict[str, Any]]:
+    """Resolve the execution identity from immutable Stage 1 bindings.
+
+    ``instance_id`` is the Stage 1 execution identity.  Registration,
+    admission, receipt, and provider identifiers are related bindings only.
+    Dispatch and provider receipts are checked as independent immutable
+    assertions; they may not replace the Stage 1 identity.
+    """
+    transaction_id = record.get("instance_id")
+    if not transaction_id:
+        raise Stage1ExecutionResolutionError("UNVERIFIABLE_RECORD: Stage 1 instance_id is absent")
+    receipts = record.get("receipts") or {}
+    dispatch = receipts.get("dispatch") or {}
+    provider = receipts.get("provider_selection") or {}
+    operands = {
+        "stage1_instance_id": transaction_id,
+        "dispatch_instance_id": dispatch.get("instance_id"),
+        "provider_transaction_id": provider.get("transaction_id"),
+        "registration_id": (record.get("registration") or {}).get("registration_id"),
+        "admission_id": (receipts.get("admission") or {}).get("admission_id"),
+        "execution_receipt_id": (receipts.get("execution") or {}).get("execution_id"),
+    }
+    for label, observed in (("dispatch_instance_id", operands["dispatch_instance_id"]),
+                            ("provider_transaction_id", operands["provider_transaction_id"]),
+                            ("execution_receipt_id", operands["execution_receipt_id"])):
+        if observed is not None and observed != transaction_id:
+            raise Stage1ExecutionResolutionError(
+                "DIVERGENT_STAGE1_EXECUTION_IDENTITY: "
+                f"canonical={transaction_id} {label}={observed}")
+    return str(transaction_id), operands
+
+
 def _derived_admission(record: Mapping[str, Any], admission_id: str) -> dict[str, Any]:
     """Return an in-memory admission projection, never a fabricated receipt."""
     receipts = record.get("receipts") or {}
@@ -202,6 +234,35 @@ def _read_projection(path: Path) -> dict[str, Any] | None:
     return value
 
 
+def _select_receipt_backed_transaction(records: list[Mapping[str, Any]], *,
+                                       execution_id: str | None = None,
+                                       admission_id: str | None = None) -> Mapping[str, Any]:
+    """Select one Stage 1 transaction using immutable identity bindings."""
+    candidates = [item for item in records
+                  if item.get("lifecycle_integrity") == "RECEIPT_BACKED_V1"]
+    if execution_id:
+        matched = []
+        for item in candidates:
+            receipts = item.get("receipts") or {}
+            dispatch = receipts.get("dispatch") or {}
+            provider = receipts.get("provider_selection") or {}
+            if (item.get("instance_id") == execution_id
+                    or dispatch.get("instance_id") == execution_id
+                    or provider.get("transaction_id") == execution_id):
+                matched.append(item)
+        candidates = matched
+    elif admission_id:
+        candidates = [item for item in candidates
+                      if ((item.get("receipts") or {}).get("admission") or {}).get("admission_id") == admission_id]
+    if len(candidates) != 1:
+        if not candidates:
+            raise Stage1ExecutionResolutionError(
+                "no receipt-backed Stage 1 transaction matches the requested execution/admission identity")
+        raise Stage1ExecutionResolutionError(
+            "ambiguous receipt-backed Stage 1 transaction for requested execution/admission identity")
+    return candidates[0]
+
+
 def _atomic_write_projections(admission_path: Path, admission: Mapping[str, Any], execution_path: Path,
                               execution: Mapping[str, Any]) -> None:
     """Install both projections or leave both stores unchanged."""
@@ -285,15 +346,21 @@ def resolve(root: Path | str, stage1_directory: Path | str, admission_store: Pat
                           if item.get("lifecycle_integrity") == "RECEIPT_BACKED_V1"]
         if not receipt_backed and not identifier:
             raise Stage1ExecutionResolutionError("no receipt-backed Stage 1 transaction exists")
-        record = runtime.resolve_transaction(identifier) if identifier else runtime.resolve_transaction(
-            next(item["instance_id"] for item in receipt_backed
-                 if item.get("state") not in {"REJECTED", "CLOSED"})
-        )
+        if identifier:
+            record = runtime.resolve_transaction(identifier)
+        elif execution_id or admission_id:
+            record = _select_receipt_backed_transaction(
+                records, execution_id=execution_id, admission_id=admission_id)
+        else:
+            record = _select_receipt_backed_transaction(
+                [item for item in receipt_backed
+                 if item.get("state") not in {"REJECTED", "CLOSED"}])
     except (Stage1Error, StopIteration) as error:
         raise Stage1ExecutionResolutionError(str(error)) from error
     receipts = record.get("receipts")
     if record.get("lifecycle_integrity") != "RECEIPT_BACKED_V1" or not isinstance(receipts, Mapping):
         raise Stage1ExecutionResolutionError("Stage 1 record is not receipt-backed")
+    canonical_execution_id, identity_operands = _canonical_execution_identity(record)
     requested_admission_id = admission_id
     receipt_admission_id = (receipts.get("admission") or {}).get("admission_id")
     if not receipt_admission_id:
@@ -349,9 +416,15 @@ def resolve(root: Path | str, stage1_directory: Path | str, admission_store: Pat
                                  source_digest, authority_digest)
     admission = (deepcopy(admission_lineage["admission"])
                  if admission_lineage else _derived_admission(record, resolved_admission_id))
-    resolved_execution_id = execution.get("execution_id") if execution else (receipts.get("execution") or {}).get("execution_id") or record["instance_id"]
+    resolved_execution_id = canonical_execution_id
     if execution_id and execution_id != resolved_execution_id:
-        raise Stage1ExecutionResolutionError("requested execution conflicts with Stage 1 receipt")
+        raise Stage1ExecutionResolutionError(
+            "UNVERIFIABLE_RECORD: requested execution conflicts with Stage 1 receipt: "
+            f"requested={execution_id} canonical_stage1_instance_id={resolved_execution_id} "
+            f"operands={json.dumps(identity_operands, sort_keys=True)}")
+    if execution is not None and execution.get("execution_id") != resolved_execution_id:
+        # A derived projection may be stale, but it cannot redefine Stage 1.
+        execution = None
     admission["stage1_execution_id"] = resolved_execution_id
     if not execution:
         execution = _derived_execution(admission, record, resolved_execution_id)
@@ -363,7 +436,8 @@ def resolve(root: Path | str, stage1_directory: Path | str, admission_store: Pat
                             "package_digest": record.get("package_digest"),
                             "authority_snapshot_digest": authority_digest,
                             "dispatch_receipt_id": (receipts.get("dispatch") or {}).get("receipt_id"),
-                            "execution_id": resolved_execution_id}}
+                            "execution_id": resolved_execution_id,
+                            "execution_identity_operands": identity_operands}}
     if admission_lineage:
         result["admission_lineage"] = {
             "requested_admission_id": requested_admission_id or receipt_admission_id,

@@ -27,6 +27,7 @@ from scripts.lib.emp.stage1_execution_resolution import (
     _derived_execution,
     _digest,
     _find_execution,
+    _canonical_execution_identity,
     _read_projection,
     resolve as resolve_stage1,
 )
@@ -153,6 +154,12 @@ def reconcile(root: Path | str, stage1_directory: Path | str, admission_store: P
             raise RuntimeReconciliationError(f"UNVERIFIABLE_RECORD: {error}") from error
         transaction = base["transaction"]
         transaction_id = transaction["instance_id"]
+        canonical_execution_id, identity_operands = _canonical_execution_identity(transaction)
+        if execution_id and execution_id != canonical_execution_id:
+            raise RuntimeReconciliationError(
+                "UNVERIFIABLE_RECORD: requested execution conflicts with Stage 1 receipt: "
+                f"requested={execution_id} canonical_stage1_instance_id={canonical_execution_id} "
+                f"operands={json.dumps(identity_operands, sort_keys=True)}")
         receipt_admission = (transaction.get("receipts") or {}).get("admission", {}).get("admission_id")
         requested = admission_id or receipt_admission
         if not requested:
@@ -182,12 +189,16 @@ def reconcile(root: Path | str, stage1_directory: Path | str, admission_store: P
             resolved_admission = receipt_admission
             admission = _derived_admission(transaction, resolved_admission)
             chain_ids = [resolved_admission]
-        execution = _find_execution(Path(execution_store), resolved_admission, execution_id,
+        execution = _find_execution(Path(execution_store), resolved_admission, None,
                                     transaction.get("source_digest"),
                                     (transaction.get("receipts") or {}).get("authorization", {}).get("authority_snapshot_digest"))
-        resolved_execution = execution.get("execution_id") if execution else ((transaction.get("receipts") or {}).get("execution") or {}).get("execution_id") or transaction_id
-        if execution_id and execution_id != resolved_execution:
-            raise RuntimeReconciliationError("requested execution conflicts with Stage 1 transaction")
+        resolved_execution = canonical_execution_id
+        stale_execution = execution is not None and execution.get("execution_id") != resolved_execution
+        if stale_execution:
+            if execution.get("stage1_transaction_id") != transaction_id:
+                raise RuntimeReconciliationError(
+                    "DIVERGENT_EXECUTION_TRANSACTION_IDENTITY: derived projection belongs to another Stage 1 transaction")
+            execution = None
         if execution is None:
             execution = _derived_execution(admission, transaction, resolved_execution)
         admission["stage1_execution_id"] = resolved_execution
@@ -206,7 +217,12 @@ def reconcile(root: Path | str, stage1_directory: Path | str, admission_store: P
         if old_admission is not None and not _valid_projection(old_admission, resolved_admission, "admission_id"):
             raise RuntimeReconciliationError("CORRUPTED_RECORD: canonical admission projection is invalid")
         if old_execution is not None and not _valid_projection(old_execution, resolved_execution, "execution_id"):
-            raise RuntimeReconciliationError("CORRUPTED_RECORD: canonical execution projection is invalid")
+            if (old_execution.get("execution_id") != resolved_execution
+                    and old_execution.get("stage1_transaction_id") == transaction_id
+                    and old_execution.get("state_digest") == _digest({k: v for k, v in old_execution.items() if k != "state_digest"})):
+                stale_execution = True
+            else:
+                raise RuntimeReconciliationError("CORRUPTED_RECORD: canonical execution projection is invalid")
         immutable_fields = {
             "stage1_identity": transaction_id,
             "stage1_transaction_id": transaction_id,
@@ -228,6 +244,7 @@ def reconcile(root: Path | str, stage1_directory: Path | str, admission_store: P
         admission_partial = old_admission is not None and any(field not in old_admission for field in admission_required)
         execution_partial = old_execution is not None and any(field not in old_execution for field in execution_required)
         if admission_partial or execution_partial: classifications.append("PARTIAL_PROJECTION")
+        if stale_execution: classifications.append("STALE_EXECUTION_PROJECTION")
         if old_admission is not None and old_execution is not None and not admission_partial and not execution_partial:
             classifications.append("ALREADY_CANONICAL")
         pre_state = _digest({"admission": old_admission, "execution": old_execution})
@@ -241,18 +258,20 @@ def reconcile(root: Path | str, stage1_directory: Path | str, admission_store: P
                    "transaction_id": transaction_id, "requested_command": command,
                    "repository_identity": str(root), "runtime_identity": str(runtime_root),
                    "discovered_representations": discovered, "conflict_classifications": sorted(set(classifications)),
-                   "authority_precedence": ["stage1_transaction_and_receipts", "admission_projection", "execution_projection", "native_session"],
+                   "authority_precedence": ["stage1_instance_id", "dispatch_receipt", "provider_selection_transaction", "execution_projection", "native_session", "operator_argument"],
                    "selected_authoritative_records": {"stage1_transaction": transaction_id, "admission_id": resolved_admission, "execution_id": resolved_execution},
                    "records_created": [str(p) for p, old in ((admission_path, old_admission), (execution_path, old_execution)) if old is None],
-                   "records_repaired": [], "records_superseded": [], "records_rebound": [],
+                   "records_repaired": ([str(execution_path)] if stale_execution else []), "records_superseded": [], "records_rebound": [],
                    "records_preserved": [transaction_id, resolved_admission, resolved_execution], "records_rejected": [],
                    "pre_state_digest": pre_state, "post_state_digest": post_state, "rollback_result": "NOT_REQUIRED",
                    "final_admission_id": resolved_admission, "final_execution_id": resolved_execution,
                    "final_session_id": execution_value.get("session_id"), "final_lifecycle_state": execution_value.get("state"),
                    "next_authorized_action": "Continue the existing receipt-backed execution without resubmission.",
-                   "timestamp": _now()}
+                   "timestamp": _now(),
+                   "execution_identity_operands": identity_operands}
         receipt["receipt_digest"] = _digest(receipt)
-        if not receipt_path.exists() or old_admission is None or old_execution is None or admission_partial or execution_partial:
+        if (not receipt_path.exists() or old_admission is None or old_execution is None
+                or admission_partial or execution_partial or stale_execution):
             _atomic_install([(admission_path, admission_value), (execution_path, execution_value), (receipt_path, receipt)])
         result = {**base, "source": "STAGE1_RECONCILIATION", "admission_id": resolved_admission,
                 "admission": admission_value, "execution": execution_value, "execution_id": resolved_execution,
@@ -260,7 +279,8 @@ def reconcile(root: Path | str, stage1_directory: Path | str, admission_store: P
                 "reconciliation": {"reconciliation_id": reconciliation_id, "classification": sorted(set(classifications)),
                                     "replayed": old_admission is not None and old_execution is not None and not admission_partial and not execution_partial,
                                     "admission_chain": chain_ids, "receipt_path": str(receipt_path)},
-                "identities": {**base["identities"], "admission_id": resolved_admission, "execution_id": resolved_execution}}
+                "identities": {**base["identities"], "admission_id": resolved_admission, "execution_id": resolved_execution,
+                               "execution_identity_operands": identity_operands}}
         result["admission_lineage"] = {"requested_admission_id": requested,
                                         "receipt_admission_id": receipt_admission,
                                         "resolved_admission_id": resolved_admission,
