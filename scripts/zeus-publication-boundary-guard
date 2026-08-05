@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+"""Fail-closed preflight for Zeus Git publication operations.
+
+This guard is intentionally independent of the operator session.  Publication
+authority must be supplied by the governed publication workflow; a prepublication
+WOP cannot authorize a commit or push to main.
+"""
+from __future__ import annotations
+
+import argparse
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+
+class GuardFailure(ValueError):
+    pass
+
+
+def git(root: Path, *args: str) -> str:
+    result = subprocess.run(
+        ["git", "-C", str(root), *args],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode:
+        raise GuardFailure(result.stderr.strip() or "git command failed")
+    return result.stdout.strip()
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--operation", choices=("commit", "push"), required=True)
+    parser.add_argument("--target-ref", required=True)
+    parser.add_argument("--repository", default="/data/engineering/repositories/homelab")
+    args = parser.parse_args()
+    root = Path(args.repository).resolve()
+    try:
+        if git(root, "rev-parse", "--show-toplevel") != str(root):
+            raise GuardFailure("repository identity is not canonical")
+        if git(root, "symbolic-ref", "--quiet", "--short", "HEAD") == "":
+            raise GuardFailure("detached HEAD is not permitted")
+        branch = git(root, "branch", "--show-current")
+        if args.operation == "commit" and branch == "main":
+            raise GuardFailure("prepublication commit on main is forbidden")
+        if args.operation == "commit" and args.target_ref == "refs/heads/main":
+            raise GuardFailure("commit target main is not a prepublication operation")
+        if args.operation == "push" and args.target_ref == "refs/heads/main":
+            if branch != "main":
+                raise GuardFailure("main publication must run from verified main checkout")
+            if os.environ.get("ZEUS_PUBLICATION_AUTHORITY") != "EXPLICIT_GOVERNED_PUBLICATION":
+                raise GuardFailure("push to main requires explicit governed publication authority")
+        if not args.target_ref.startswith("refs/heads/"):
+            raise GuardFailure("unexpected push refspec")
+        if args.operation == "push":
+            remote = git(root, "config", "--get", "remote.origin.url")
+            if not remote:
+                raise GuardFailure("origin remote is unresolved")
+            if git(root, "status", "--porcelain"):
+                raise GuardFailure("working tree is dirty")
+        print(f"PUBLICATION_BOUNDARY_GUARD_PASS operation={args.operation} branch={branch} target={args.target_ref}")
+        return 0
+    except GuardFailure as error:
+        print(f"PUBLICATION_BOUNDARY_GUARD_FAIL {error}", file=sys.stderr)
+        return 78
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
