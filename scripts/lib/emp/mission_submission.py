@@ -106,8 +106,8 @@ def submit_by_mission(
                 for name in (f"WOP-{mission}-FOUNDATION-001", mission)
             ],
             "next_authorized_action": (
-                "Publish and qualify the approved ZDCL WOP contract/package, "
-                "then rerun this command."
+                "Author or provide the complete WOP package and submit it directly "
+                "to Zeus; publication is a later qualified lifecycle phase."
             ),
         }
 

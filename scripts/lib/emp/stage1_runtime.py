@@ -643,6 +643,15 @@ class Stage1Runtime:
                     "synchronization": bool(metadata.get("simulate_synchronization_failure")),
                 },
                 "canonical_mission_linkage": canonical_linkage,
+                "submission_lifecycle": {
+                    "entry_event": "WOP_SUBMITTED",
+                    "ownership": "ZEUS_AFTER_SUBMISSION",
+                    "publication_prerequisite": False,
+                    "publication_state": "PENDING_POST_QUALIFICATION",
+                    "publication_gate": "QUALIFICATION_AND_APPROVAL",
+                    "provider_selection_at_submission": False,
+                    "eos_synchronization_at_submission": False,
+                },
                 "phases": [], "receipts": {}, "evidence": [], "failure": None,
             }
             # Freeze the complete authority chain before provider selection.

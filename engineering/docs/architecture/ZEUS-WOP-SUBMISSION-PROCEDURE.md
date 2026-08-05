@@ -21,7 +21,8 @@ scripts/zeus submit <wop>
 Zeus resolves the authorized WOP, verifies it through the existing Stage 1
 validator, and records the submission. It does not infer approval or generate
 a package without an authoritative contract. If no package exists, it returns
-`WOP_PACKAGE_UNAVAILABLE` with the required publication action.
+`WOP_PACKAGE_UNAVAILABLE` with the action to author or provide the complete WOP
+package. Publication is not a submission prerequisite.
 
 Mission-oriented selection and projection commands are compatibility views;
 they are not additional mandatory execution lifecycle steps. The historical
@@ -54,11 +55,14 @@ published command contracts. Submission does not approve, admit, or execute.
 
 ## Admission contract binding
 
-Admission resolves the published Mission Contract and its referenced WOP
-package before constructing the admission artifact. The package is reused,
-not regenerated. The artifact is bound to the immutable manifest, package
-tree digest, repository, development baseline, existing Stage 1 submission,
-authority, approval reference, lifecycle mode, and dispatch boundary.
+Admission resolves the authoritative Mission Contract and its referenced WOP
+package before constructing the admission artifact. A direct Development WOP
+submission may be unpublished; its Stage 1 transaction and receipt-backed
+package are authoritative for admission and execution. Publication is a later
+qualification and approval phase. The package is reused, not regenerated. The
+artifact is bound to the immutable manifest, package tree digest, repository,
+development baseline, existing Stage 1 submission, authority, approval
+reference, lifecycle mode, and dispatch boundary.
 
 Qualification and operational admission use the same resolver. Qualification
 sets `QUALIFICATION_ONLY` and denies dispatch; operational admission may
@@ -79,6 +83,9 @@ Develop WOP
     -> Engineering Governance authorizes execution
     -> scripts/zeus submit <wop>
     -> Zeus executes
+
+Submission is the first lifecycle event. It does not require merge,
+publication, or EOS synchronization; those remain post-qualification gates.
 ```
 
 When interrupted, `scripts/zeus resume <mission>` is the sole recovery entry

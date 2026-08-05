@@ -277,7 +277,7 @@ class MissionAdmissionRuntime:
             context = {"mode": "qualification", "approval_authority": "PLACEHOLDER-APPROVAL-AUTHORITY", "approval_reference": "PLACEHOLDER-APPROVAL-REFERENCE", "approval_date": "1970-01-01", "authority_node_id": "PLACEHOLDER-AUTHORITY-NODE", "adr_reference": "PLACEHOLDER-ADR", "immutable_wop_reference": "PLACEHOLDER-IMMUTABLE-WOP"}
             state["artifacts"]["authority_context"] = context
             return {"authority_mode": "qualification-placeholder", "operational_authority_allocated": False}
-        binding = self._resolve_published_binding(state)
+        binding = self._resolve_authoritative_binding(state)
         state["artifacts"]["authority_context"] = binding
         return {
             "authority_mode": state["request"]["mode"],
@@ -313,6 +313,7 @@ class MissionAdmissionRuntime:
             "wop_id": binding["wop"]["wop_id"],
             "submission_digest": binding["submission"]["submission_digest"],
             "package_digest": binding["wop"]["package_digest"],
+            "authoritative_package_reused": True,
             "published_package_reused": True,
             "review_required": True,
             "automatically_submitted": False,
@@ -437,11 +438,12 @@ class MissionAdmissionRuntime:
             failures.append({"field": "mission_id", "reason_code": "MISSION_ID_MISMATCH", "message": "submission and contract mission IDs differ"})
         return failures
 
-    def _resolve_published_binding(self, state) -> dict[str, Any]:
-        """Resolve one mission contract and its published WOP package.
+    def _resolve_authoritative_binding(self, state) -> dict[str, Any]:
+        """Resolve one authoritative Mission Contract and WOP package.
 
-        This is the shared resolver for qualification and operational admission;
-        mode changes only the dispatch boundary.
+        A package may be submitted before publication. Publication and EOS
+        synchronization are later lifecycle gates; mode changes only the
+        dispatch boundary.
         """
         request = state["request"]
         mission = request["mission_id"]
@@ -459,7 +461,7 @@ class MissionAdmissionRuntime:
         try:
             metadata, package_evidence = validate_package(package_root)
         except Exception as error:
-            raise StageBlocked("PACKAGE_FAILURE", "published WOP package is invalid", {"error": str(error)}) from error
+            raise StageBlocked("PACKAGE_FAILURE", "authoritative WOP package is invalid", {"error": str(error)}) from error
         if metadata.get("mission_id") != mission or metadata.get("wop_id") != contract["wop"]["id"]:
             raise StageBlocked("AUTHORITY_FAILURE", "mission contract and WOP identity disagree", {
                 "contract_mission": contract.get("mission_id"), "wop_mission": metadata.get("mission_id"),
@@ -482,8 +484,8 @@ class MissionAdmissionRuntime:
             "prohibited_activities": "\n".join(f"- {item}" for item in contract["scope"]["prohibited"]),
             "dependencies_and_entry_criteria": "\n".join(f"- {item}" for item in metadata["dependencies"]),
             "deliverables": "Bounded ZDCL-01 native session foundation and its evidence.",
-            "execution_sequence": "Verify identity and baseline; execute the published WOP gates; qualify; reconcile; close out.",
-            "success_and_acceptance_criteria": "The published WOP gates and mission contract completion criteria pass.",
+            "execution_sequence": "Verify identity and baseline; execute the submitted WOP gates; qualify; reconcile; close out.",
+            "success_and_acceptance_criteria": "The submitted WOP gates and Mission Contract completion criteria pass.",
             "validation_profile": "Published package validation, mission-contract validation, and independent qualification.",
             "publication_and_synchronization": "Publish only within the authorized Development Engineering Platform workflow.",
             "stop_resume_and_escalation": "Stop on authority, package, repository, baseline, or digest mismatch; resume from the persisted checkpoint.",

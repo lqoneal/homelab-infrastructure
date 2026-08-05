@@ -10,7 +10,7 @@ Engineering Governance authorizes execution through submission. Stage 1 transact
 
 ## Canonical command path
 
-`submit`, `execute-mission start`, `status`, `session`, `resume`, `suspend`, `cancel`, qualification, publication preparation, synchronization, and closeout resolve the exact requested transaction through the shared reconciliation transaction before consuming derived runtime state. No command resubmits a WOP or creates authority.
+`submit` is the first lifecycle event. `submit`, `execute-mission start`, `status`, `session`, `resume`, `suspend`, `cancel`, qualification, publication preparation, synchronization, and closeout resolve the exact requested transaction through the shared reconciliation transaction before consuming derived runtime state. Submission does not require publication, merge, or EOS synchronization. No command resubmits a WOP or creates authority.
 
 ## Recovery and closeout
 

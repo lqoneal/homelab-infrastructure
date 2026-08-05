@@ -32,6 +32,9 @@ class DevelopmentModeRecoveryTests(unittest.TestCase):
             self.assertNotIn("execution", result["receipts"])
             self.assertEqual(result["execution_mode"], "DEVELOPMENT")
             self.assertEqual(result["authorization"]["authority"], "Engineering Governance")
+            self.assertEqual(result["submission_lifecycle"]["entry_event"], "WOP_SUBMITTED")
+            self.assertFalse(result["submission_lifecycle"]["publication_prerequisite"])
+            self.assertEqual(result["submission_lifecycle"]["publication_state"], "PENDING_POST_QUALIFICATION")
             self.assertTrue(result["registration"]["registration_id"].startswith("EMM-DEV-"))
             self.assertEqual(result["provenance"]["repository"], str(ROOT))
 

@@ -4,7 +4,7 @@
 
 ### Runtime storage boundary
 
-Repository content, published WOPs, and evidence are immutable inputs. Zeus
+Repository content, submitted WOPs, and evidence are immutable inputs. Zeus
 runtime discovery is automatic and shared by every runtime consumer. It
 resolves command-line `--runtime-root`, `ZEUS_RUNTIME_ROOT`, repository
 `.zeus/config.yaml` (`runtime.root`), the repository-bound user-state default
@@ -19,15 +19,16 @@ without creating state. Existing runtime state is not moved or merged
 automatically. `ZEUS_RUNTIME_ROOT` remains an explicit testing, recovery, and
 isolated-execution override.
 
-Stage 1 is the package-intake and execution-qualification boundary for
-Governance-admitted engineering WOP packages:
+Stage 1 is the first package-intake and execution-qualification boundary for
+Governance-authorized engineering WOP packages. Publication is not an entry
+condition:
 
 ```text
-Engineering Governance -> manual WOP submission -> Mission Admission
+Engineering Governance -> WOP submission -> Mission Admission
                        -> Zeus CLI -> package validation
                        -> repository verification -> Mission Activation
                        -> Mission Contract resolution -> execution verification
-                       -> staged queue
+                       -> staged queue -> qualification -> publication (later)
 ```
 
 The runtime does not dispatch agents, interpret execution files, or publish
