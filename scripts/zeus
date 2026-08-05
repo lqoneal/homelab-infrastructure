@@ -1413,8 +1413,8 @@ def main(argv=None):
                 stage1_resolution = resolve_stage1_execution(
                     ROOT, stage1_directory, admission_directory,
                     execution_directory, execution_id=a.execution_id,
-                    admission_id=a.admission_id, hydrate=a.action in {"start", "resume"},
-                    require_lineage_environment=a.action in {"start", "resume"},
+                    admission_id=a.admission_id, hydrate=a.action in {"start", "resume", "status", "session"},
+                    require_lineage_environment=a.action in {"start", "resume", "status", "session"},
                     resolve_admission_lineage=a.action in {"start", "resume"} or bool(a.admission_id),
                 )
             except Stage1ExecutionResolutionError as error:

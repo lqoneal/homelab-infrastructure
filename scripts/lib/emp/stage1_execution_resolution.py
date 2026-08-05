@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import subprocess
 import tempfile
 from copy import deepcopy
 from pathlib import Path
@@ -212,6 +213,27 @@ def _atomic_write_projections(admission_path: Path, admission: Mapping[str, Any]
             if not supplied or supplied != _digest(material) or value.get(label) != expected:
                 raise Stage1ExecutionResolutionError(f"existing {label} projection conflicts with Stage 1")
         return
+    if existing_admission is not None and existing_execution is None:
+        supplied = existing_admission.get("state_digest")
+        material = dict(existing_admission)
+        material.pop("state_digest", None)
+        if (not supplied or supplied != _digest(material)
+                or existing_admission.get("admission_id") != admission["admission_id"]):
+            raise Stage1ExecutionResolutionError("existing admission projection conflicts with Stage 1")
+        execution_path.parent.mkdir(parents=True, exist_ok=True)
+        descriptor, raw = tempfile.mkstemp(dir=execution_path.parent, prefix=f".{execution_path.name}.")
+        temp = Path(raw)
+        try:
+            with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+                stream.write(json.dumps(dict(execution), indent=2, sort_keys=True) + "\n")
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.replace(temp, execution_path)
+        except OSError as error:
+            raise Stage1ExecutionResolutionError(f"atomic Stage 1 execution hydration failed: {error}") from error
+        finally:
+            temp.unlink(missing_ok=True)
+        return
     if existing_admission is not None or existing_execution is not None:
         raise Stage1ExecutionResolutionError("partial Stage 1 runtime hydration would be non-atomic")
     admission_path.parent.mkdir(parents=True, exist_ok=True)
@@ -288,10 +310,23 @@ def resolve(root: Path | str, stage1_directory: Path | str, admission_store: Pat
     if requested_admission_id or (resolve_admission_lineage and has_lineage):
         try:
             from scripts.lib.emp.admission_supersession import (
-                AdmissionSupersessionError, resolve_for_resume,
+                AdmissionSupersessionError, resolve_for_resume, resolve_for_start,
             )
+            lineage_request = requested_admission_id or receipt_admission_id
+            if hydrate:
+                # Start/resume/status/session use the same atomic reconciler.
+                # The subsequent read-only pass returns the complete chain.
+                resolve_for_start(
+                    root, admission_store, execution_store, lineage_request,
+                    stage1_transaction=record,
+                    published_baseline=(
+                        subprocess.run(["git", "-C", str(root), "rev-parse", "origin/main"],
+                                       capture_output=True, text=True, check=True).stdout.strip()
+                        if require_lineage_environment else None
+                    ),
+                )
             admission_lineage = resolve_for_resume(
-                root, admission_store, requested_admission_id or receipt_admission_id,
+                root, admission_store, lineage_request,
                 stage1_transaction=record,
                 enforce_environment=require_lineage_environment,
             )
