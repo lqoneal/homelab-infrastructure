@@ -69,7 +69,6 @@ from scripts.lib.emp.wop_schema import format_description
 from scripts.lib.emp.wop_validation import validate_source, require_valid_source
 from scripts.lib.emp.repository_identity import RepositoryIdentityError, resolve as resolve_repository_identity
 from scripts.lib.emp.development_dispatch import automatic_executor
-from scripts.lib.emp.autonomous_delivery import AutonomousDeliveryError, reconcile as reconcile_autonomous
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -708,11 +707,6 @@ def main(argv=None):
                 interrupt_after=getattr(a, "interrupt_after", None),
                 packaging=packaging,
             )
-            autonomous = reconcile_autonomous(
-                ROOT, stage1_directory, runtime["root"],
-                identifier=value["instance_id"], command="submit",
-            )
-            value["autonomous_lifecycle"] = autonomous["snapshot"]
             value["packaging"] = packaging
             value["runtime"] = {
                 "root": str(runtime["root"]),
@@ -1310,23 +1304,6 @@ def main(argv=None):
             emit(o.data["missions"])
         elif a.command=="missions": emit(o.select(policy_id=a.policy, timestamp=now(a.at)).data)
         elif a.command=="mission":
-            if a.action in {"status", "blockers", "next", "snapshot"}:
-                try:
-                    autonomous = reconcile_autonomous(
-                        ROOT, stage1_directory, runtime_path(ROOT, ""),
-                        identifier=a.mission_id, command=a.action,
-                    )
-                    if a.action == "status":
-                        emit(autonomous)
-                    else:
-                        emit(autonomous["snapshot"])
-                    return 0 if autonomous["snapshot"]["classification"] != "BLOCKED" else 78
-                except AutonomousDeliveryError:
-                    # Existing Operational Alpha mission views remain the
-                    # compatibility path when the identifier is not a Stage 1
-                    # transaction. Autonomous candidates are never selected
-                    # by guessing among unrelated records.
-                    pass
             assurance = MissionAssurance(ROOT)
             interface = assurance.interface
             if a.action == "requirements":
