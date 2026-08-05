@@ -104,6 +104,19 @@ export CURL_BIN="$MOCK_CURL"
 export MOCK_CURL_ARGS="$TEST_ROOT/curl.args"
 export MOCK_CURL_CONFIG="$TEST_ROOT/curl.config"
 
+# Keep notification assertions portable across validation images.  The
+# options used below are supported by both rg and POSIX grep with extended
+# regular expressions.  CODEX_NOTIFICATION_FORCE_GREP is used by the
+# portability qualification to exercise the fallback even when rg exists.
+codex_notification_search() {
+    if [[ "${CODEX_NOTIFICATION_FORCE_GREP:-0}" != "1" ]] &&
+        command -v rg >/dev/null 2>&1; then
+        rg "$@"
+    else
+        grep -E "$@"
+    fi
+}
+
 # Published examples and common placeholders must fail in the loader before
 # curl is invoked. Error text must not echo the rejected value.
 source "$ROOT/scripts/lib/notifications/ntfy.sh"
@@ -229,18 +242,18 @@ timeout_status=$?
 set -e
 [[ $timeout_status -eq 143 ]]
 
-if rg -n "$PRIVATE_TEST_TOPIC|test-token" "$MOCK_CURL_ARGS" >/dev/null; then
+if codex_notification_search -n "$PRIVATE_TEST_TOPIC|test-token" "$MOCK_CURL_ARGS" >/dev/null; then
     printf 'secret material appeared in curl arguments\n' >&2
     exit 1
 fi
 
-notification_count="$(rg -c '^---$' "$MOCK_CURL_CONFIG")"
+notification_count="$(codex_notification_search -c '^---$' "$MOCK_CURL_CONFIG")"
 [[ $notification_count -ge 9 ]]
-rg -q 'Title: Codex Started' "$MOCK_CURL_CONFIG"
-rg -q 'Title: Codex Complete' "$MOCK_CURL_CONFIG"
-rg -q 'Title: Codex Report Qualification Failed' "$MOCK_CURL_CONFIG"
-rg -q 'Title: Codex Failed' "$MOCK_CURL_CONFIG"
-rg -q 'Title: Codex Interrupted' "$MOCK_CURL_CONFIG"
-rg -q 'Title: Codex Timed Out' "$MOCK_CURL_CONFIG"
+codex_notification_search -q 'Title: Codex Started' "$MOCK_CURL_CONFIG"
+codex_notification_search -q 'Title: Codex Complete' "$MOCK_CURL_CONFIG"
+codex_notification_search -q 'Title: Codex Report Qualification Failed' "$MOCK_CURL_CONFIG"
+codex_notification_search -q 'Title: Codex Failed' "$MOCK_CURL_CONFIG"
+codex_notification_search -q 'Title: Codex Interrupted' "$MOCK_CURL_CONFIG"
+codex_notification_search -q 'Title: Codex Timed Out' "$MOCK_CURL_CONFIG"
 
 printf 'PASS: Codex lifecycle notification controlled tests\n'
