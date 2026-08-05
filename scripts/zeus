@@ -68,6 +68,8 @@ from scripts.lib.emp.admission_supersession import (  # noqa: E402
 from scripts.lib.emp.wop_schema import format_description
 from scripts.lib.emp.wop_validation import validate_source, require_valid_source
 from scripts.lib.emp.repository_identity import RepositoryIdentityError, resolve as resolve_repository_identity
+from scripts.lib.emp.wop_authoring import AuthoringError, author as author_wop, inspect as inspect_authored_wop
+from scripts.lib.emp.wop_verification import verify_artifact, verify_replay
 from scripts.lib.emp.development_dispatch import automatic_executor
 from scripts.lib.emp.canonical_mission_lifecycle import (
     CanonicalMissionLifecycleError,
@@ -476,7 +478,7 @@ def main(argv=None):
     intro = sub.add_parser("intro", help="review operator orientation")
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
     submit = sub.add_parser("submit", help="Submit a Development WOP or source document through Stage 1."); submit.add_argument("wop_package", help="WOP identity, directory, Markdown, or DOCX source"); submit.add_argument("--repository"); submit.add_argument("--baseline"); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append"); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact"); submit.add_argument("--affected-repository", action="append"); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--interrupt-after", choices=("VALIDATED", "AUTHORIZED", "ADMITTED", "EXECUTING", "QUALIFIED", "PUBLICATION_PREPARED", "SYNCHRONIZED")); submit.add_argument("--json", action="store_true"); submit.add_argument("--verbose", action="store_true"); submit.add_argument("--at")
-    wop = sub.add_parser("wop", help="Author and validate Development WOP source documents."); wop.add_argument("action", choices=("format", "template", "init", "validate", "lint", "inspect", "explain")); wop.add_argument("source", nargs="?"); wop.add_argument("--wop-id"); wop.add_argument("--mission-id"); wop.add_argument("--from", dest="template_from"); wop.add_argument("--format", choices=("markdown", "docx"), default="markdown"); wop.add_argument("--output", type=Path); wop.add_argument("--json", action="store_true"); wop.add_argument("--verbose", action="store_true")
+    wop = sub.add_parser("wop", help="Author and validate Development WOP source documents."); wop.add_argument("action", choices=("format", "template", "init", "validate", "lint", "inspect", "explain", "source", "identity", "context", "traceability", "blockers", "readiness", "next", "snapshot", "verify")); wop.add_argument("source", nargs="?"); wop.add_argument("--wop-id"); wop.add_argument("--mission-id"); wop.add_argument("--from", dest="template_from"); wop.add_argument("--replay-against", type=Path); wop.add_argument("--format", choices=("markdown", "docx"), default="markdown"); wop.add_argument("--output", type=Path); wop.add_argument("--json", action="store_true"); wop.add_argument("--verbose", action="store_true")
     doctor = sub.add_parser("doctor", help="Read-only Development platform readiness summary."); doctor.add_argument("--json", action="store_true"); doctor.add_argument("--verbose", action="store_true")
     runtime_admin = sub.add_parser("runtime", help="Inspect or safely adopt the repository-bound Zeus runtime."); runtime_admin.add_argument("action", choices=("status", "identity", "adopt"), nargs="?", default="status"); runtime_admin.add_argument("--source", type=Path); runtime_admin.add_argument("--dry-run", action="store_true"); runtime_admin.add_argument("--json", action="store_true"); runtime_admin.add_argument("--verbose", action="store_true")
     config_admin = sub.add_parser("config", help="Inspect repository-controlled Zeus configuration."); config_admin.add_argument("action", choices=("show",), nargs="?", default="show"); config_admin.add_argument("--json", action="store_true")
@@ -551,6 +553,37 @@ def main(argv=None):
                     print("Execution modes: DEVELOPMENT")
                     print("Submit: zeus submit <WOP_ID_OR_SOURCE>")
                 return 0
+            # P1-G1 structured mission-source authoring.  The existing
+            # --wop-id/--mission-id template mode remains the compatibility
+            # path for hand-authored Development WOP sources.
+            if a.action == "template" and a.source and not a.wop_id and not a.mission_id and not a.template_from:
+                value = author_wop(resolve_wop_source(a.source), ROOT, a.output)
+                if a.json or a.verbose:
+                    emit(value)
+                else:
+                    print(f"WOP authoring: {value['result']}\nWOP ID: {value['wop_id']}\nMission ID: {value['mission_id']}\nReadiness: {value['readiness']}\nOutput: {value['output']}\nTraceability: {value['traceability']}\nNext action: {value['next_action']}")
+                return 0 if value["result"] == "PASS" else 78
+            if a.action == "verify":
+                if not a.source:
+                    raise AuthoringError("verify requires an authored WOP output path")
+                value = verify_replay(Path(a.source), a.replay_against) if a.replay_against else verify_artifact(Path(a.source))
+                emit(value)
+                return 0 if value["result"] == "PASS" else 78
+            if a.action in {"source", "identity", "context", "traceability", "blockers", "readiness", "next", "snapshot"}:
+                value = inspect_authored_wop(resolve_wop_source(a.source), ROOT)
+                projections = {
+                    "source": {"source": value["source"]},
+                    "identity": {key: value[key] for key in ("wop_id", "mission_id", "operation")},
+                    "context": {"operation": value["operation"], "context": value["context"], "repository": value["repository"]},
+                    "traceability": {"source": value["source"], "template": value["template"], "context": value["context"], "source_to_output": value["source_to_output"], "output_digest": value["output_digest"]},
+                    "blockers": {"blockers": value["blockers"], "validation": value["validation"], "lint": value["lint"]},
+                    "readiness": {"readiness": value["readiness"], "blockers": value["blockers"]},
+                    "next": {"next_action": value["next_action"], "readiness": value["readiness"]},
+                    "snapshot": value,
+                }
+                result = projections[a.action]
+                emit(result) if a.json or a.verbose else print(json.dumps(result, indent=2, sort_keys=True))
+                return 0 if value["readiness"] == "ADMISSION_READY" else 78
             if a.action in {"template", "init"}:
                 inherited = None
                 if a.template_from:
