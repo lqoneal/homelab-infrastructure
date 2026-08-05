@@ -29,7 +29,8 @@ negative classifications.
 Validation: the Codex wrapper, notification, and lifecycle-classifier suites pass; Registry passes;
 the canonical controlled-document validator passes 2,863 checks; and
 `git diff --check` passes. Platform stages 1–3 and isolated Stage 4 components
-pass. The active EOS projection currently records `8b755ea` rather than
+pass. The aggregate validator completed with three expected fail-closed
+synchronization failures. The active EOS projection currently records `8b755ea` rather than
 published `64394a5`, so the shared classifier correctly returns `EOS_STALE`;
 this WOP does not synchronize EOS and therefore does not claim aggregate PASS.
 The candidate remains prepublication; no provider, live runtime, EOS, PR, or
