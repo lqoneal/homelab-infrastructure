@@ -733,6 +733,21 @@ class Stage1Runtime:
             "receipt_path": reconciliation["reconciliation"]["receipt_path"],
         }
         value["runtime_projection_state"] = "VERIFIED"
+        try:
+            from scripts.lib.emp.autonomous_delivery import reconcile as reconcile_autonomous
+            autonomous = reconcile_autonomous(
+                self.repository, self.store.directory, self.store.directory.resolve().parent,
+                identifier=value["instance_id"], command="submit",
+            )
+            value["autonomous_lifecycle"] = autonomous["snapshot"]
+        except (OSError, ValueError) as error:
+            value["state"] = "BLOCKED"
+            value["pending_phase"] = "EXECUTION_VERIFIED"
+            value["next_action"] = "Resume the existing transaction to reconcile the autonomous lifecycle ledger"
+            value["failure"] = {
+                "classification": "AUTONOMOUS_LIFECYCLE_PERSISTENCE_FAILURE",
+                "message": str(error), "transaction_id": value["instance_id"],
+            }
         value["updated_at"] = timestamp
         return self.store.save(value)
 
