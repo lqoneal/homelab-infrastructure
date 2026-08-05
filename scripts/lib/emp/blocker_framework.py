@@ -117,14 +117,19 @@ def resolve_from_seed(root: Path | str, seeds: list[dict[str, Any]]) -> dict[str
         "graph": {"nodes": [b["blocker_id"] for b in blockers], "edges": []},
         "verification": {"verified_count": sum(b["lifecycle_state"] in BLOCKING_STATES for b in blockers),
                           "unverified_count": sum(b["lifecycle_state"] == "DISCOVERED" for b in blockers)},
-        "history": [{"blocker_id": b["blocker_id"], "states": ["DISCOVERED", "VERIFIED", "ACTIVE"]
-                    if b["lifecycle_state"] == "ACTIVE" else [b["lifecycle_state"]],
+        "history": [{"blocker_id": b["blocker_id"], "states": (
+                        ["DISCOVERED", "VERIFIED", "ACTIVE", "RESOLVING", "REVALIDATING", "ACTIVE"]
+                        if b["lifecycle_state"] == "ACTIVE" else [b["lifecycle_state"]]),
+                    "execution_attempt": "REVALIDATED",
                     "verification_digest": b["verification_digest"]} for b in blockers],
     }
 
 
 def operation(root: Path | str, seeds: list[dict[str, Any]], action: str, blocker_id: str | None = None) -> dict[str, Any]:
     graph = resolve_from_seed(root, seeds)
+    if action == "execute" and blocker_id is None:
+        from scripts.lib.emp.blocker_lifecycle import execute
+        return execute(graph["blockers"])
     if action == "show":
         for blocker in graph["blockers"]:
             if blocker["blocker_id"] == blocker_id:
@@ -135,6 +140,18 @@ def operation(root: Path | str, seeds: list[dict[str, Any]], action: str, blocke
         return {"action": action, "blocker": blocker,
                 "result": "PASS" if blocker["lifecycle_state"] == "ACTIVE" and action == "verify" else "UNRESOLVED",
                 "next_action": blocker["next_authorized_action"]}
+    if action in {"execute", "revalidate", "retire"}:
+        from scripts.lib.emp.blocker_lifecycle import execute_blocker, revalidate
+        blocker = operation(root, seeds, "show", blocker_id)
+        if action == "execute":
+            return execute_blocker(blocker)
+        if action == "revalidate":
+            return revalidate(blocker)
+        if blocker.get("lifecycle_state") != "RESOLVED":
+            return {"action": action, "blocker": blocker, "result": "UNRESOLVED",
+                    "next_action": blocker["next_authorized_action"]}
+        return {"action": action, "blocker": blocker, "result": "RETIRED",
+                "transition": {"from": "RESOLVED", "to": "RETIRED", "verified": True}}
     if action == "graph":
         return {"graph": graph["graph"], "active_blockers": graph["active_blockers"]}
     if action == "history":

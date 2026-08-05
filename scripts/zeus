@@ -80,6 +80,7 @@ from scripts.lib.emp.qualification_contract import (
     view as view_qualification_contract,
 )
 from scripts.lib.emp.blocker_framework import BlockerFrameworkError, operation as blocker_operation
+from scripts.lib.emp.blocker_lifecycle import BlockerLifecycleError
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -504,7 +505,7 @@ def main(argv=None):
     qualification=sub.add_parser("qualification"); qualification.add_argument("action", choices=("show",), nargs="?", default="show"); qualification.add_argument("identifier", nargs="?", default="qualification"); qualification.add_argument("--json", action="store_true")
     publication=sub.add_parser("publication", help="Show the canonical publication decision."); publication.add_argument("action", choices=("show", "verify"), nargs="?", default="show"); publication.add_argument("--json", action="store_true")
     blockers=sub.add_parser("blockers", help="Show typed blockers from the canonical qualification contract."); blockers.add_argument("--json", action="store_true")
-    blocker=sub.add_parser("blocker", help="Inspect and verify one canonical blocker lifecycle object."); blocker.add_argument("action", choices=("show", "verify", "resolve", "graph", "history")); blocker.add_argument("blocker_id", nargs="?"); blocker.add_argument("--json", action="store_true")
+    blocker=sub.add_parser("blocker", help="Inspect and execute one canonical blocker lifecycle object."); blocker.add_argument("action", choices=("show", "verify", "execute", "resolve", "revalidate", "retire", "graph", "history")); blocker.add_argument("blocker_id", nargs="?"); blocker.add_argument("--json", action="store_true")
     readiness=sub.add_parser("readiness", help="Show canonical publication readiness."); readiness.add_argument("--json", action="store_true")
     snapshot=sub.add_parser("snapshot", help="Show the immutable qualification decision snapshot."); snapshot.add_argument("--json", action="store_true")
     completion=sub.add_parser("completion"); completion.add_argument("action", choices=("show",)); completion.add_argument("identifier")
@@ -814,8 +815,8 @@ def main(argv=None):
                 print(json.dumps(value, indent=2, sort_keys=True))
             if a.action == "verify":
                 return 0 if value.get("result") == "PASS" else 77
-            if a.action == "resolve":
-                return 0 if value.get("result") == "RESOLVED" else 77
+            if a.action in {"resolve", "revalidate", "retire", "execute"}:
+                return 0 if value.get("result") in {"RESOLVED", "RETIRED", "PASS", "IDEMPOTENT_REPLAY"} else 77
             return 0
         if a.command == "next-action":
             canonical = resolve_qualification_contract(ROOT)
