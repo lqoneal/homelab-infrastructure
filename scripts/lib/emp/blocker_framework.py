@@ -52,11 +52,13 @@ def _verify(root: Path, seed: dict[str, Any]) -> tuple[bool, str, str]:
 def _normalize(root: Path, seed: dict[str, Any]) -> dict[str, Any]:
     verified, reason, verification_digest = _verify(root, seed)
     blocker_id = seed["blocker_id"]
+    requested_state = seed.get("lifecycle_state")
+    lifecycle_state = requested_state if requested_state in LIFECYCLE_STATES else ("ACTIVE" if verified else "DISCOVERED")
     blocker = {
         "blocker_id": blocker_id,
         "blocker_type": seed.get("blocker_type") or seed.get("category", "QUALIFICATION"),
         "category": seed.get("category") or seed.get("blocker_type", "QUALIFICATION"),
-        "lifecycle_state": "ACTIVE" if verified else "DISCOVERED",
+        "lifecycle_state": lifecycle_state,
         "severity": seed.get("severity", "BLOCKING"),
         "originating_controller": seed.get("originating_controller", "canonical-qualification-decision-engine"),
         "authoritative_source": seed.get("authoritative_evidence") or seed.get("authoritative_source") or seed.get("evidence_locator"),
@@ -72,7 +74,7 @@ def _normalize(root: Path, seed: dict[str, Any]) -> dict[str, Any]:
         "verification_digest": verification_digest,
         "auto_resolvable": bool(seed.get("auto_resolvable", False)),
         "operator_action_required": not bool(seed.get("auto_resolvable", False)),
-        "publication_blocking": verified and seed.get("publication_impact") == "PUBLICATION_BLOCKED",
+        "publication_blocking": verified and lifecycle_state in BLOCKING_STATES and seed.get("publication_impact") == "PUBLICATION_BLOCKED",
         "retirement_conditions": seed.get("resolution_requirements", "Authoritative evidence no longer reports this condition."),
         "resolution_requirements": seed.get("resolution_requirements") or seed.get("retirement_conditions", "Authoritative evidence no longer reports this condition."),
         "reevaluation_trigger": "every qualification decision and lifecycle transition",

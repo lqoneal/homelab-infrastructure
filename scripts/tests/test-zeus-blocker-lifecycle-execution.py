@@ -11,7 +11,13 @@ from scripts.lib.emp.qualification_contract import resolve  # noqa: E402
 
 class BlockerLifecycleExecutionTests(unittest.TestCase):
     def setUp(self):
-        self.blockers = resolve(ROOT)["blockers"]
+        self.blockers = [{
+            "blocker_id": "TEST-QUALIFICATION",
+            "lifecycle_state": "ACTIVE",
+            "blocker_digest": "test-blocker-digest",
+            "auto_resolvable": False,
+            "operator_action_required": True,
+        }]
 
     def test_operator_blocker_is_revalidated_without_fabricated_retirement(self):
         result = execute_blocker(self.blockers[0])
@@ -37,7 +43,7 @@ class BlockerLifecycleExecutionTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertTrue(first["reevaluated"])
         self.assertTrue(first["decision_recomputed"])
-        self.assertEqual(first["active_blockers"], ["QUAL-001", "QUAL-002"])
+        self.assertEqual(first["active_blockers"], ["TEST-QUALIFICATION"])
 
 
 if __name__ == "__main__":

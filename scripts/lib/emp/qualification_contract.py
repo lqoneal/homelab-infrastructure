@@ -21,7 +21,7 @@ PUBLICATION_STATES = {
     "PUBLICATION_IN_PROGRESS",
     "PUBLICATION_COMPLETE",
 }
-EVIDENCE_ROOT = Path("engineering/evidence/operation-beta/wop-zeus-submission-provenance-bootstrap-001")
+EVIDENCE_ROOT = Path("engineering/evidence/operation-beta/wop-zdcl02-broad-qualification-failure-reconciliation-001")
 CONTRACT_WOP = "WOP-ZDCL02-QUAL-001-QUAL-002-RECONCILIATION-001"
 
 
@@ -78,8 +78,8 @@ def _resolve_base(root: Path | str) -> dict[str, Any]:
     evidence = EVIDENCE_ROOT
     completion_path = evidence / "COMPLETION-REPORT.md"
     completion = _text(repository, completion_path)
-    broad = _text(repository, evidence / "BROAD-REGRESSION-RESULTS.md")
-    contract_resolution = _text(repository, evidence / "QUALIFICATION-CONTRACT-RESOLUTION.md")
+    broad = _text(repository, evidence / "BROAD-QUALIFICATION-RESULTS.md")
+    contract_resolution = _text(repository, evidence / "MANDATORY-FAILURE-RECONCILIATION.md")
     terminal = _terminal_status(completion)
     if terminal is None:
         raise QualificationContractError("QUALIFICATION_RESULT_MISSING: Completion Report has no terminal state")
@@ -98,6 +98,21 @@ def _resolve_base(root: Path | str) -> dict[str, Any]:
             "QUALIFICATION-CONTRACT.md", CONTRACT_WOP,
             "PUBLICATION_BLOCKED", "Produce a definitive broad-suite completion result with no unexplained failures.",
         ))
+
+    retired_conditions = [] if blockers else [
+        _blocker(
+            "QUAL-001", "QUALIFICATION", "RESOLVED", str(completion_path),
+            "QUALIFICATION-CONTRACT.md", CONTRACT_WOP, "QUALIFICATION_RETIRED",
+            "Retired after the current authoritative profile produced a definitive result.",
+        ),
+        _blocker(
+            "QUAL-002", "VALIDATION", "RESOLVED", str(evidence / "BROAD-QUALIFICATION-RESULTS.md"),
+            "QUALIFICATION-CONTRACT.md", CONTRACT_WOP, "QUALIFICATION_RETIRED",
+            "Retired after the current authoritative profile produced zero unexplained failures.",
+        ),
+    ]
+    for retired in retired_conditions:
+        retired["lifecycle_state"] = "RETIRED"
 
     qualification_state = "NOT_QUALIFIED" if blockers else "QUALIFIED_FOR_PUBLICATION"
     publication_state = "PUBLICATION_BLOCKED" if blockers else "PUBLICATION_PENDING_APPROVAL"
@@ -118,6 +133,7 @@ def _resolve_base(root: Path | str) -> dict[str, Any]:
         "eos_status": "UNCHANGED_DEFERRED",
         "provenance_status": "PRESERVED",
         "remaining_blockers": blockers,
+        "retired_conditions": retired_conditions,
         "next_authorized_action": (
             "Resolve QUAL-001 and QUAL-002 under " + CONTRACT_WOP
             if blockers else "Obtain publication approval; publication authority remains separate."
@@ -133,7 +149,7 @@ def resolve(root: Path | str) -> dict[str, Any]:
     from scripts.lib.emp.blocker_framework import resolve_from_seed
 
     contract = _resolve_base(root)
-    framework = resolve_from_seed(root, contract["remaining_blockers"])
+    framework = resolve_from_seed(root, contract["remaining_blockers"] + contract.get("retired_conditions", []))
     active = framework["active_blockers"]
     contract["blockers"] = framework["blockers"]
     contract["active_blockers"] = active

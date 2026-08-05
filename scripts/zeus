@@ -805,7 +805,8 @@ def main(argv=None):
                 emit(value)
             else:
                 print(json.dumps(value, indent=2, sort_keys=True))
-            return 0 if value.get("qualification_state", "NOT_QUALIFIED") == "QUALIFIED_FOR_PUBLICATION" else 77
+            state = value.get("qualification_state") or value.get("contract", {}).get("qualification_state", "NOT_QUALIFIED")
+            return 0 if state == "QUALIFIED_FOR_PUBLICATION" else 77
         if a.command == "blocker":
             contract = resolve_qualification_contract(ROOT)
             value = blocker_operation(ROOT, contract.get("blockers", []), a.action, getattr(a, "blocker_id", None))
@@ -1218,7 +1219,8 @@ def main(argv=None):
             subject = "verify" if a.gate.lower() == "zeus" else a.gate.lower()
             value = view_qualification_contract(ROOT, subject)
             emit(value)
-            return 0 if value.get("qualification_state", "NOT_QUALIFIED") == "QUALIFIED_FOR_PUBLICATION" else 77
+            state = value.get("qualification_state") or value.get("contract", {}).get("qualification_state", "NOT_QUALIFIED")
+            return 0 if state == "QUALIFIED_FOR_PUBLICATION" else 77
         if a.command == "verify":
             if a.gate.upper().startswith("OA-"):
                 if (not a.wop and a.gate.upper() in {"OA-11", "OA-12", "OA-13", "OA-14", "OA-15", "OA-16", "OA-17", "OA-18", "OA-19", "OA-20", "OA-21", "OA-22", "OA-23", "OA-24", "OA-25", "OA-26", "OA-27", "OA-28", "OA-29", "OA-30"}):
