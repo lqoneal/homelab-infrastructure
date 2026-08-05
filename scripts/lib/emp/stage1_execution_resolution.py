@@ -29,7 +29,7 @@ def _digest(value: Any) -> str:
 
 
 def _find_execution(execution_store: Path, admission_id: str, execution_id: str | None,
-                    source_digest: str | None = None):
+                    source_digest: str | None = None, authority_digest: str | None = None):
     matches = []
     for path in sorted(execution_store.glob("*.json")):
         try:
@@ -51,6 +51,14 @@ def _find_execution(execution_store: Path, admission_id: str, execution_id: str 
                 )
                 try:
                     _validate_execution_source_digest(value, source_digest)
+                except AdmissionSupersessionError as error:
+                    raise Stage1ExecutionResolutionError(str(error)) from error
+            if authority_digest is not None:
+                from scripts.lib.emp.admission_supersession import (
+                    AdmissionSupersessionError, _validate_execution_authority_snapshot_digest,
+                )
+                try:
+                    _validate_execution_authority_snapshot_digest(value, authority_digest)
                 except AdmissionSupersessionError as error:
                     raise Stage1ExecutionResolutionError(str(error)) from error
             matches.append(value)
@@ -132,7 +140,7 @@ def _derived_admission(record: Mapping[str, Any], admission_id: str) -> dict[str
         },
         "stage1_identity": record["instance_id"],
         "stage1_package_digest": record.get("package_digest"),
-        "stage1_authority_snapshot_digest": (record.get("authority_snapshot") or {}).get("authority_snapshot_digest"),
+        "stage1_authority_snapshot_digest": _stage1_authority_digest(record),
         "stage1_dispatch_receipt_id": dispatch.get("receipt_id"),
         "stage1_execution_id": (receipts.get("execution") or {}).get("execution_id"),
     }
@@ -162,12 +170,20 @@ def _derived_execution(admission: Mapping[str, Any], record: Mapping[str, Any], 
         "stage1_transaction_id": record["instance_id"],
         "stage1_package_digest": record.get("package_digest"),
         "stage1_source_digest": source_digest,
-        "stage1_authority_snapshot_digest": (record.get("authority_snapshot") or {}).get("authority_snapshot_digest"),
+        "stage1_authority_snapshot_digest": _stage1_authority_digest(record),
         "stage1_dispatch_receipt_id": (record.get("receipts") or {}).get("dispatch", {}).get("receipt_id"),
         "stage1_provider_selection": (record.get("receipts") or {}).get("provider_selection"),
     }
     state["state_digest"] = _digest(state)
     return state
+
+
+def _stage1_authority_digest(record: Mapping[str, Any]) -> str:
+    try:
+        from scripts.lib.emp.admission_supersession import _authoritative_stage1_authority_snapshot_digest
+        return _authoritative_stage1_authority_snapshot_digest(record)
+    except Exception as error:
+        raise Stage1ExecutionResolutionError(str(error)) from error
 
 
 def _read_projection(path: Path) -> dict[str, Any] | None:
@@ -249,8 +265,12 @@ def resolve(root: Path | str, stage1_directory: Path | str, admission_store: Pat
     if not receipt_admission_id:
         raise Stage1ExecutionResolutionError("Stage 1 admission identity is missing")
     try:
-        from scripts.lib.emp.admission_supersession import _authoritative_stage1_source_digest
+        from scripts.lib.emp.admission_supersession import (
+            _authoritative_stage1_authority_snapshot_digest,
+            _authoritative_stage1_source_digest,
+        )
         source_digest = _authoritative_stage1_source_digest(record)
+        authority_digest = _authoritative_stage1_authority_snapshot_digest(record)
     except Exception as error:
         raise Stage1ExecutionResolutionError(str(error)) from error
     resolved_admission_id = receipt_admission_id
@@ -278,7 +298,8 @@ def resolve(root: Path | str, stage1_directory: Path | str, admission_store: Pat
         except (AdmissionSupersessionError, OSError) as error:
             raise Stage1ExecutionResolutionError(str(error)) from error
         resolved_admission_id = admission_lineage["admission_id"]
-    execution = _find_execution(Path(execution_store), resolved_admission_id, execution_id, source_digest)
+    execution = _find_execution(Path(execution_store), resolved_admission_id, execution_id,
+                                 source_digest, authority_digest)
     admission = (deepcopy(admission_lineage["admission"])
                  if admission_lineage else _derived_admission(record, resolved_admission_id))
     resolved_execution_id = execution.get("execution_id") if execution else (receipts.get("execution") or {}).get("execution_id") or record["instance_id"]
@@ -293,7 +314,7 @@ def resolve(root: Path | str, stage1_directory: Path | str, admission_store: Pat
             "execution_id": resolved_execution_id,
             "identities": {"transaction_id": record["instance_id"], "admission_id": resolved_admission_id,
                             "package_digest": record.get("package_digest"),
-                            "authority_snapshot_digest": (record.get("authority_snapshot") or {}).get("authority_snapshot_digest"),
+                            "authority_snapshot_digest": authority_digest,
                             "dispatch_receipt_id": (receipts.get("dispatch") or {}).get("receipt_id"),
                             "execution_id": resolved_execution_id}}
     if admission_lineage:

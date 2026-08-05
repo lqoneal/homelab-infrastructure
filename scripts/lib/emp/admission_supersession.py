@@ -83,6 +83,66 @@ def _authoritative_stage1_source_digest(record: Mapping[str, Any]) -> str:
     return expected
 
 
+def _authoritative_stage1_authority_snapshot_digest(record: Mapping[str, Any]) -> str:
+    """Resolve the immutable authority snapshot from receipt-backed evidence."""
+    receipts = record.get("receipts") or {}
+    candidates: list[tuple[str, Any]] = []
+    authorization = receipts.get("authorization") or {}
+    if authorization.get("authority_snapshot_digest") is not None:
+        candidates.append(("receipts.authorization.authority_snapshot_digest",
+                           authorization["authority_snapshot_digest"]))
+    snapshot = record.get("authority_snapshot") or {}
+    if snapshot.get("authority_snapshot_digest") is not None:
+        candidates.append(("transaction.authority_snapshot.authority_snapshot_digest",
+                           snapshot["authority_snapshot_digest"]))
+    for name in ("provider_selection", "dispatch"):
+        receipt = receipts.get(name) or {}
+        if receipt.get("authority_snapshot_digest") is not None:
+            candidates.append((f"receipts.{name}.authority_snapshot_digest",
+                               receipt["authority_snapshot_digest"]))
+    if not candidates:
+        raise AdmissionSupersessionError("Stage 1 authority snapshot digest is absent")
+    expected = candidates[0][1]
+    for name, value in candidates[1:]:
+        if value != expected:
+            raise AdmissionSupersessionError(
+                f"authority snapshot digest differs within Stage 1: expected={expected} "
+                f"observed={value} source={name}"
+            )
+    return expected
+
+
+def _validate_lineage_authority_snapshot_digest(admission: Mapping[str, Any], expected: str) -> None:
+    """Validate canonical and present generic authority bindings."""
+    artifacts = admission.get("artifacts") or {}
+    authority_context = artifacts.get("authority_context") or {}
+    bindings = (
+        ("admission.stage1_authority_snapshot_digest", admission.get("stage1_authority_snapshot_digest")),
+        ("admission.artifacts.stage1_authority_snapshot_digest",
+         artifacts.get("stage1_authority_snapshot_digest")),
+        ("admission.artifacts.authority_context.authority_snapshot_digest",
+         authority_context.get("authority_snapshot_digest")),
+        ("admission.authority_snapshot_digest", admission.get("authority_snapshot_digest")),
+    )
+    for name, value in bindings:
+        if value is not None and value != expected:
+            raise AdmissionSupersessionError(
+                f"authority snapshot digest differs from Stage 1: expected={expected} "
+                f"observed={value} source={name}"
+            )
+
+
+def _validate_execution_authority_snapshot_digest(projection: Mapping[str, Any], expected: str) -> None:
+    """Validate authority bindings on a derived or migrated execution projection."""
+    for name in ("stage1_authority_snapshot_digest", "authority_snapshot_digest"):
+        value = projection.get(name)
+        if value is not None and value != expected:
+            raise AdmissionSupersessionError(
+                f"authority snapshot digest differs from Stage 1: expected={expected} "
+                f"observed={value} source=execution.{name}"
+            )
+
+
 def _validate_lineage_source_digest(admission: Mapping[str, Any], expected: str) -> None:
     """Validate present canonical and generic source bindings independently."""
     artifacts = admission.get("artifacts") or {}
@@ -230,7 +290,8 @@ def resolve_for_start(root: Path | str, admission_store: Path | str, execution_s
         raise AdmissionSupersessionError("Stage 1 transaction identity does not bind predecessor admission")
     package_digest = _authoritative_stage1_package_digest(stage1_transaction)
     _validate_lineage_package_digest(predecessor, package_digest)
-    authority_digest = predecessor.get("authority_snapshot_digest") or (stage1_transaction.get("authority_snapshot") or {}).get("authority_snapshot_digest")
+    authority_digest = _authoritative_stage1_authority_snapshot_digest(stage1_transaction)
+    _validate_lineage_authority_snapshot_digest(predecessor, authority_digest)
     if stage1_transaction.get("package_digest") and package_digest != stage1_transaction.get("package_digest"):
         raise AdmissionSupersessionError("package digest differs from Stage 1")
     transition = classify_transition(root, admitted, published_baseline=published_baseline)
@@ -256,6 +317,7 @@ def resolve_for_start(root: Path | str, admission_store: Path | str, execution_s
     if predecessor.get("source_digest") is not None:
         successor["source_digest"] = predecessor["source_digest"]
     successor["stage1_source_digest"] = _authoritative_stage1_source_digest(stage1_transaction)
+    successor["stage1_authority_snapshot_digest"] = authority_digest
     successor["authority_snapshot_digest"] = authority_digest
     successor["artifacts"]["freshness"] = {"admitted_baseline": admitted, "current_baseline": current, "fresh": True}
     successor["admission_state"] = "ADMITTED"
@@ -319,7 +381,7 @@ def resolve_for_resume(root: Path | str, admission_store: Path | str,
 
     package_digest = _authoritative_stage1_package_digest(stage1_transaction)
     source_digest = _authoritative_stage1_source_digest(stage1_transaction)
-    authority_digest = (stage1_transaction.get("authority_snapshot") or {}).get("authority_snapshot_digest")
+    authority_digest = _authoritative_stage1_authority_snapshot_digest(stage1_transaction)
     chain: list[dict[str, Any]] = []
     visited: set[str] = set()
     value = predecessor
@@ -334,11 +396,7 @@ def resolve_for_resume(root: Path | str, admission_store: Path | str,
             raise AdmissionSupersessionError("admission lineage transaction binding differs from Stage 1")
         _validate_lineage_package_digest(value, package_digest)
         _validate_lineage_source_digest(value, source_digest)
-        if authority_digest is not None and value.get("authority_snapshot_digest") != authority_digest:
-            raise AdmissionSupersessionError(
-                f"authority snapshot digest differs from Stage 1: expected={authority_digest} "
-                f"observed={value.get('authority_snapshot_digest')}"
-            )
+        _validate_lineage_authority_snapshot_digest(value, authority_digest)
         chain.append(value)
         successor_id = value.get("superseded_by")
         if not successor_id:
