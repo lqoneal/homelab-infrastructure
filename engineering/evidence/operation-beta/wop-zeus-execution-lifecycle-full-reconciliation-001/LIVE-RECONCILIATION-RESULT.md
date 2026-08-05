@@ -1,0 +1,3 @@
+# Live Reconciliation Result
+
+Bounded live reconciliation passed for transaction `ZEUS-DEVELOPMENT-77567054-9398-54b0-be9a-8c1dddf3ba8b`. It created `mission-admissions/EMM-DEV-ADMISSION-2b3a4a0fb355f01ad03974a8.json` and `mission-executions/ZEUS-DEVELOPMENT-77567054-9398-54b0-be9a-8c1dddf3ba8b.json`, preserving the Stage 1 receipt identities. Reconciliation receipt: `ZEUS-RECONCILIATION-7abdf8ef-e66f-59fb-9bc8-24f610eaaf29`. Repeated session resolution was idempotent. A bounded start attempt was correctly fail-closed as `working tree is dirty` because this candidate is unpublished; no provider launch or gate execution occurred.

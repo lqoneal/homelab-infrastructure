@@ -1,0 +1,174 @@
+schema_version: 1
+document_type: EngineeringWorkOrder
+mission_id: MISSION-ZEUS-QUALIFIED-TRANSITION-BOOTSTRAP-AUTHORITY-CORRECTIVE-001
+wop_id: WOP-ZEUS-QUALIFIED-TRANSITION-BOOTSTRAP-AUTHORITY-CORRECTIVE-001
+phase_id: MISSION-ZEUS-QUALIFIED-TRANSITION-BOOTSTRAP-AUTHORITY-CORRECTIVE-001-DEVELOPMENT
+revision: 1
+status: Active
+title: Qualified Transition Bootstrap Authority Corrective
+objective: Establish a narrowly bounded, receipt-backed bootstrap authority rule that
+  allows Zeus to reconcile and continue an already-governed execution across published
+  implementation-bearing repository transitions when the evidence proves that the
+  transition was lawfully merged, synchronized, qualified, identity-preserving, and
+  required to replace the path-based policy that currently blocks its own correction.
+scope:
+- Trace the repository-transition classifier that rejects governed implementation
+  effects
+- capture the exact bootstrap deadlock
+- define a temporary but reusable bootstrap authority contract
+- verify publication
+- synchronization
+- platform qualification
+- controlled-document validation
+- Registry validation
+- pull-request provenance
+- promoted WOP package identity
+- and immutable Stage 1 bindings
+- implement deterministic bootstrap classification
+- preserve fail-closed behavior for unauthorized or unverifiable implementation changes
+- persist the bootstrap rule as a durable Zeus reference
+- and continue the existing receipt-backed transition-policy execution without resubmission.
+dependencies:
+- Published main f2c548594fdfdb01c42555e8a280030f504ed8bc
+- EOS synchronized
+- Engineering Platform validation passed
+- 'PR #67 merged'
+- existing WOP WOP-ZEUS-RECEIPT-BACKED-QUALIFIED-TRANSITION-POLICY-001
+- Stage 1 transaction ZEUS-DEVELOPMENT-5afc9959-aa8d-5dba-86b6-08a8721e1806
+- admission EMM-DEV-ADMISSION-21fbb4d8027dadc133d0cdab
+- package digest 21fbb4d8027dadc133d0cdab4ff602c5a9d408e38041cef9efc00187cf8bd5b2
+- source digest 4845b0dd64129e4b5f6f632e47f15943a6d7cf165d9e4e3b70223a4f4e44ce1c
+- authority-snapshot digest 41b44f210bd3ec51610e23b20dd9cee599ff2d2e1bb67d3f5690fbf76a6c331e
+- provider zeus-local-loneal-01
+- dispatch receipt and complete immutable Stage 1 receipt chain.
+priority: 0
+candidate_state: CANDIDATE
+qualification_requirements:
+- Identify the bootstrap deadlock
+- prove the rejected implementation files were introduced through governed merged
+  PRs
+- prove local main equals origin/main
+- prove EOS synchronization
+- prove all four platform stages pass
+- prove controlled documents and Registry pass
+- prove the promoted WOP package matches the Stage 1 package and source digests
+- prove transaction
+- authority
+- provider
+- dispatch
+- admission
+- and execution identities remain unchanged
+- emit a sealed bootstrap reconciliation receipt
+- reject any transition lacking complete provenance
+- and allow the existing execution to continue without WOP resubmission.
+completion_requirements:
+- Create evidence under engineering/evidence/operation-beta/wop-zeus-qualified-transition-bootstrap-authority-corrective-001/
+  including BOOTSTRAP-DEADLOCK-TRACE.md
+- REJECTED-TRANSITION-INVENTORY.md
+- PR-AND-COMMIT-PROVENANCE.md
+- PUBLICATION-AND-SYNCHRONIZATION-VERIFICATION.md
+- PLATFORM-QUALIFICATION-BINDING.md
+- CONTROLLED-DOCUMENT-AND-REGISTRY-RESULTS.md
+- PACKAGE-AND-SOURCE-DIGEST-PRESERVATION.md
+- IMMUTABLE-IDENTITY-PRESERVATION.md
+- BOOTSTRAP-AUTHORITY-CONTRACT.md
+- BOOTSTRAP-REFERENCE-RECORD.md
+- POSITIVE-QUALIFICATION.md
+- NEGATIVE-QUALIFICATION.md
+- IDEMPOTENCY-AND-REPLAY-REPORT.md
+- ATOMICITY-AND-ROLLBACK.md
+- LIVE-READ-ONLY-VERIFICATION.md
+- LIVE-RECONCILIATION-RESULT.md
+- REGRESSION-RESULTS.md
+- PLATFORM-VALIDATION-REPORT.md
+- 'and COMPLETION-REPORT.md. The Completion Report must begin with # Completion Report'
+- enumerate every accepted and rejected provenance condition
+- identify the persistent Zeus reference location
+- state whether live runtime changed
+- and end with READY_FOR_PUBLICATION
+- QUALIFIED_FOR_EXECUTION_CONTINUATION
+- or NOT_QUALIFIED.
+approval:
+  authorized_lifecycle_state: Active
+authoritative_references:
+- PROC-0001@1.11
+- TPL-0001@1.7
+- STD-0000
+- STD-0001
+- STD-0002
+- STD-0003
+- STD-0004
+- SPEC-0008
+execution_package_references:
+  authority_node_id: Engineering Governance
+  authorization_decision_record: Submission constitutes execution authority
+  immutable_wop: WOP-ZEUS-QUALIFIED-TRANSITION-BOOTSTRAP-AUTHORITY-CORRECTIVE-001
+sections:
+  mission_classification: Bounded Development corrective establishing a receipt-backed
+    bootstrap authority rule for governed implementation-bearing repository transitions.
+  governing_references: PROC-0001@1.11, TPL-0001@1.7, STD-0000, STD-0001, STD-0002,
+    STD-0003, STD-0004, and SPEC-0008.
+  explicit_authority: Engineering Governance authorized execution through submission.
+    Zeus may apply the bootstrap authority rule only to reconcile derived runtime
+    state across a transition whose publication, synchronization, qualification, provenance,
+    and immutable identity preservation are independently verified.
+  dependencies_and_entry_criteria: Canonical repository identity verified; local main
+    equals origin/main; working tree clean except for explicitly classified promoted
+    packages; EOS synchronized; all four platform stages passing; Stage 1 transaction
+    and receipt chain readable; pull-request and commit provenance available; protected
+    digests unchanged.
+  execution_sequence: Verify current state; trace the path-based rejection; inventory
+    changed files; prove merged publication and qualification provenance; define the
+    bootstrap contract; persist the Zeus reference; implement the classifier; qualify
+    disposable states; perform bounded live reconciliation if authorized; verify all
+    execution commands; validate; commit; push; and stop before publication.
+  scope: Repository-transition classification, bootstrap authority, publication provenance,
+    PR and commit lineage, platform qualification, controlled-document and Registry
+    results, package and source identity, runtime reconciliation, admission and execution
+    continuity, tests, evidence, and durable Zeus reference documentation.
+  prohibited_activities: Do not resubmit the target WOP. Do not issue new governance
+    authority. Do not accept implementation paths by filename alone. Do not accept
+    ancestry alone as proof. Do not bypass EOS synchronization or platform validation.
+    Do not rewrite immutable receipts. Do not manually edit live runtime. Do not create
+    or merge a PR during prepublication execution. Do not synchronize EOS from the
+    candidate branch.
+  publication_and_synchronization: Prepublication work stops after candidate commit
+    and push. PR creation, merge, EOS synchronization, post-publication reconciliation,
+    execution continuation, and bootstrap-reference activation require a separate
+    publication stage.
+  stop_resume_and_escalation: Stop fail-closed when publication provenance is absent,
+    PR lineage is ambiguous, local and remote main differ, EOS is unsynchronized,
+    platform validation fails, controlled documents or Registry fail, package or source
+    digests differ, immutable identity changes, ancestry is invalid, or a unique lawful
+    bootstrap decision cannot be proven.
+  success_and_acceptance_criteria: Zeus accepts governed implementation-bearing transitions
+    only when complete receipt-backed publication and qualification evidence exists;
+    rejects all unverifiable transitions; exposes the bootstrap decision through Zeus-specific
+    commands; preserves immutable transaction and execution identity; continues the
+    target execution without resubmission; and persists a durable bootstrap reference
+    for future Zeus resolution.
+  validation_profile: Focused bootstrap-policy, transition-classifier, PR-provenance,
+    publication, synchronization, platform, controlled-document, Registry, package-digest,
+    source-digest, identity-preservation, runtime-reconciliation, admission-lineage,
+    execution-identity, idempotency, rollback, negative, and git diff validation.
+  deliverables: Bootstrap classifier implementation, durable Zeus reference record,
+    shared runtime reconciliation integration, tests, controlled-document updates
+    where required, evidence reports, reconciliation receipt output, Completion Report,
+    and exact post-publication verification commands.
+  completion_report_requirement: Identify the bootstrap deadlock, enumerate every
+    accepted proof requirement, list rejected conditions, state the persistent Zeus
+    reference location, document all immutable identities and digests, state every
+    runtime mutation, report the target execution result, and provide publication
+    readiness and the next Zeus-authorized action.
+execution_mode: DEVELOPMENT
+governance_authority: Engineering Governance
+repository_identity: /data/engineering/repositories/homelab
+effect_profile: DEVELOPMENT-QUALIFIED-TRANSITION-BOOTSTRAP-AUTHORITY-NONPRODUCTION
+required_execution_files:
+- bootstrap.md
+- roadmap.md
+- mission.yaml
+- gates.yaml
+- manifests/immutable-manifest.yaml
+- source-wop.md
+source_document_digest: 97e742b68ad2c8fac54d79ac0ec9ed2867756ab12a0ef16ba102e1cbb3b3954a

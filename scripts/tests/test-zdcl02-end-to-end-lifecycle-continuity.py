@@ -39,6 +39,55 @@ class ZDCL02ContinuityQualificationTests(unittest.TestCase):
             self.assertTrue(snapshot)
             self.assertEqual(result["receipts"]["dispatch"]["authority_snapshot_digest"], snapshot)
             self.assertEqual(result["next_action"], "Await provider launch acknowledgment before EXECUTING")
+            admission = root / "mission-admissions" / f"{result['receipts']['admission']['admission_id']}.json"
+            execution = root / "mission-executions" / f"{result['instance_id']}.json"
+            self.assertTrue(admission.exists())
+            self.assertTrue(execution.exists())
+            self.assertEqual(result["runtime_projection_state"], "VERIFIED")
+            self.assertEqual(result["runtime_reconciliation"]["execution_id"], result["instance_id"])
+            reconciliation_receipt = root / result["runtime_reconciliation"]["receipt_path"].removeprefix(str(root) + "/")
+            self.assertTrue(reconciliation_receipt.exists())
+            receipt = json.loads(reconciliation_receipt.read_text(encoding="utf-8"))
+            self.assertEqual(receipt["transaction_id"], result["instance_id"])
+            self.assertEqual(receipt["new_lifecycle_state"], "DISPATCHED_RUNTIME_VERIFIED")
+            self.assertEqual(receipt["records_verified"], [str(admission), str(execution)])
+
+    def test_replayed_dispatch_repairs_missing_derived_projections_without_resubmission(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            runtime = self._runtime(root / "stage1", executor=automatic_executor(ROOT, registry_path=self._registry(root)))
+            first = runtime.submit_development(FIXTURE)
+            admission = root / "mission-admissions" / f"{first['receipts']['admission']['admission_id']}.json"
+            execution = root / "mission-executions" / f"{first['instance_id']}.json"
+            admission.unlink()
+            execution.unlink()
+            replay = runtime.submit_development(FIXTURE)
+            self.assertTrue(replay["idempotent_replay"])
+            self.assertEqual(replay["instance_id"], first["instance_id"])
+            self.assertTrue(admission.exists())
+            self.assertTrue(execution.exists())
+            self.assertEqual(replay["receipts"], first["receipts"])
+
+    def test_projection_persistence_failure_blocks_submission_before_success(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            runtime = self._runtime(root / "stage1", executor=automatic_executor(ROOT, registry_path=self._registry(root)))
+            import scripts.lib.emp.runtime_reconciliation as reconciliation_module
+            original = reconciliation_module.reconcile
+
+            def fail_reconciliation(*_args, **_kwargs):
+                raise ValueError("injected projection persistence failure")
+
+            reconciliation_module.reconcile = fail_reconciliation
+            try:
+                result = runtime.submit_development(FIXTURE)
+            finally:
+                reconciliation_module.reconcile = original
+            self.assertEqual(result["state"], "BLOCKED")
+            self.assertEqual(result["pending_phase"], "EXECUTION_PERSISTED")
+            self.assertEqual(result["failure"]["classification"], "RUNTIME_PROJECTION_PERSISTENCE_FAILURE")
+            self.assertFalse((root / "mission-admissions").exists())
+            self.assertFalse((root / "mission-executions").exists())
 
     def test_all_transaction_identifiers_resolve_same_record(self):
         with tempfile.TemporaryDirectory() as temp:

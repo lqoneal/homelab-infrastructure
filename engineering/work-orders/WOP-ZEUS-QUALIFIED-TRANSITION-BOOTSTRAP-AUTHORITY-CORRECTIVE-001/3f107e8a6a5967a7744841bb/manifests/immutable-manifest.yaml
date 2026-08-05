@@ -1,0 +1,26 @@
+schema_version: 1
+manifest_id: WOP-ZEUS-QUALIFIED-TRANSITION-BOOTSTRAP-AUTHORITY-CORRECTIVE-001-MANIFEST
+mission_id: MISSION-ZEUS-QUALIFIED-TRANSITION-BOOTSTRAP-AUTHORITY-CORRECTIVE-001
+wop_id: WOP-ZEUS-QUALIFIED-TRANSITION-BOOTSTRAP-AUTHORITY-CORRECTIVE-001
+execution_mode: DEVELOPMENT
+governance_authority: Engineering Governance
+repository_identity: /data/engineering/repositories/homelab
+effect_profile: DEVELOPMENT-QUALIFIED-TRANSITION-BOOTSTRAP-AUTHORITY-NONPRODUCTION
+protected_baselines:
+- OA-v1.0.0
+- OB-PLAN-v1.0.0
+- published main
+- canonical repository history
+- original Stage 1 transaction
+- WOP package
+- package digest
+- source digest
+- authority snapshot
+- provider-selection receipt
+- dispatch receipt
+- admission lineage
+- execution identity
+- EOS state
+- unrelated mission runtime
+- and all immutable provenance records.
+source_document_digest: 97e742b68ad2c8fac54d79ac0ec9ed2867756ab12a0ef16ba102e1cbb3b3954a

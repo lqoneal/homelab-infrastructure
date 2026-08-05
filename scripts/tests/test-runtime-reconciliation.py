@@ -47,6 +47,13 @@ class RuntimeReconciliationTests(unittest.TestCase):
         self.assertEqual(len(list((self.runtime / "mission-executions").glob("*.json"))), 1)
         self.assertEqual(len(list((self.runtime / "evidence/reconciliation-receipts").glob("*.json"))), 1)
 
+    def test_admission_selector_is_preserved_when_stage1_is_ambiguous(self):
+        result = self.resolve(identifier=None, execution_id=None, admission_id=ADMISSION)
+        self.assertEqual(result["admission_id"], ADMISSION)
+        self.assertEqual(result["execution_id"], TRANSACTION)
+        self.assertTrue((self.runtime / "mission-admissions" / f"{ADMISSION}.json").exists())
+        self.assertTrue((self.runtime / "mission-executions" / f"{TRANSACTION}.json").exists())
+
     def test_replay_is_idempotent(self):
         first = self.resolve()
         second = self.resolve()
