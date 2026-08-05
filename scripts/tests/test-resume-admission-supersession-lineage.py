@@ -123,6 +123,41 @@ class ResumeAdmissionLineageTests(unittest.TestCase):
             resolve_for_resume(self.repo, self.admissions, self.successor_id,
                                stage1_transaction=self.record)
 
+    def test_missing_generic_authority_uses_receipt_backed_stage1_binding(self):
+        store = AdmissionStateStore(self.admissions)
+        successor = store.load(self.successor_id)
+        successor.pop("authority_snapshot_digest")
+        store.save(successor)
+        record = deepcopy(self.record)
+        record.pop("authority_snapshot")
+        record["receipts"]["authorization"] = {"authority_snapshot_digest": "authority"}
+        result = resolve_for_resume(self.repo, self.admissions, self.successor_id,
+                                    stage1_transaction=record)
+        self.assertEqual(self.successor_id, result["admission_id"])
+
+    def test_missing_canonical_authority_fails_closed(self):
+        record = deepcopy(self.record)
+        record.pop("authority_snapshot")
+        with self.assertRaisesRegex(AdmissionSupersessionError, "authority snapshot digest is absent"):
+            resolve_for_resume(self.repo, self.admissions, self.successor_id,
+                               stage1_transaction=record)
+
+    def test_conflicting_generic_authority_fails_closed(self):
+        store = AdmissionStateStore(self.admissions)
+        successor = store.load(self.successor_id)
+        successor["authority_snapshot_digest"] = "different-authority"
+        store.save(successor)
+        with self.assertRaisesRegex(AdmissionSupersessionError, "authority snapshot digest differs"):
+            resolve_for_resume(self.repo, self.admissions, self.successor_id,
+                               stage1_transaction=self.record)
+
+    def test_conflicting_authorization_receipt_fails_closed(self):
+        record = deepcopy(self.record)
+        record["receipts"]["authorization"] = {"authority_snapshot_digest": "different-authority"}
+        with self.assertRaisesRegex(AdmissionSupersessionError, "differs within Stage 1"):
+            resolve_for_resume(self.repo, self.admissions, self.successor_id,
+                               stage1_transaction=record)
+
     def test_missing_generic_source_digest_uses_stage1_binding(self):
         store = AdmissionStateStore(self.admissions)
         successor = store.load(self.successor_id)
