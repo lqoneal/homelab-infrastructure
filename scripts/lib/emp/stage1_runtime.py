@@ -21,6 +21,7 @@ from typing import Any, Callable, Iterator, Mapping
 import yaml
 
 from scripts.lib.eos.mission_contract import Resolver
+from scripts.lib.emp.submission_bootstrap import build as build_submission_bootstrap, verify as verify_submission_bootstrap
 
 
 class Stage1Error(ValueError):
@@ -241,6 +242,11 @@ class Stage1Store:
                 for key, fields in required_fields.items():
                     if key in receipts and any(not receipts[key].get(field) for field in fields):
                         raise Stage1Error(f"receipt-backed {key} receipt is incomplete: {path.name}")
+            if value.get("bootstrap_chain"):
+                try:
+                    verify_submission_bootstrap(value["bootstrap_chain"])
+                except ValueError as error:
+                    raise Stage1Error(f"bootstrap chain integrity failure: {error}: {path.name}") from error
         value["state_digest"] = supplied
         return value
 
@@ -678,7 +684,10 @@ class Stage1Runtime:
                 "wop_authority": "Engineering Governance",
                 "transaction_profile": metadata.get("engineering_transaction_profile") or metadata.get("transaction_profile") or "SPEC-0008:DEVELOPMENT",
                 "approval_state": "SUBMISSION_CONSTITUTES_EXECUTION_AUTHORITY",
-                "publication_authority": "Engineering Governance",
+                # Bootstrap and execution authority never imply publication
+                # authority. Publication is resolved at the later gate.
+                "publication_authority": None,
+                "publication_authority_required": True,
                 "provider_qualification_required": True,
                 "permitted_effects": [metadata["effect_profile"]],
                 "prohibited_effects": ["PRODUCTION", "EOS_PUBLICATION", "UNAUTHORIZED_SCOPE_EXPANSION"],
@@ -691,6 +700,44 @@ class Stage1Runtime:
                 package_evidence=package_evidence, packaging=packaging,
                 timestamp=timestamp,
             )
+            # The bootstrap envelope is derived only after source validation,
+            # package promotion, and the authority snapshot are complete.  It
+            # is the canonical identity/provenance chain; the legacy receipt
+            # keys above remain compatibility projections for existing
+            # controllers.
+            package_id = str((packaging or {}).get("package_id") or package_digest[:24])
+            branch = record["submission_branch"]
+            bootstrap_chain = build_submission_bootstrap(
+                metadata=metadata, source=str(source_path),
+                source_digest=record["source_digest"], repository=expected,
+                branch=branch, baseline=baseline, operator=operator,
+                execution_mode="DEVELOPMENT", effect_profile=str(metadata["effect_profile"]),
+                timestamp=timestamp, package_digest=package_digest,
+                package_id=package_id,
+                registration_id=record["registration"]["registration_id"],
+                authority_snapshot_id=snapshot["authority_snapshot_id"],
+                authority_snapshot_digest=snapshot["authority_snapshot_digest"],
+                admission_id=record["receipts"]["admission"]["admission_id"],
+                execution_id=instance_id,
+            )
+            record["submission_transaction_id"] = bootstrap_chain["transaction_id"]
+            record["submission_receipt"] = bootstrap_chain["submission_receipt"]
+            record["provenance_record"] = bootstrap_chain["provenance"]
+            record["execution_transaction"] = {
+                "transaction_id": bootstrap_chain["execution_transaction_id"],
+                "source_transaction_id": bootstrap_chain["transaction_id"],
+                "provenance_id": bootstrap_chain["provenance"]["provenance_id"],
+                "package_digest": package_digest,
+            }
+            record["bootstrap_chain"] = bootstrap_chain
+            record["bootstrap_journal"] = {
+                "schema_version": 1, "transaction_id": bootstrap_chain["transaction_id"],
+                "completed_steps": ["source_validated", "submission_receipt",
+                                     "provenance", "authority_binding", "package",
+                                     "registration", "admission", "execution_identity"],
+                "next_step": "runtime_projection",
+                "resumable": True,
+            }
             record = self._resume_development(record, baseline, protected, timestamp,
                                               interrupt_after=interrupt_after)
             record = self._reconcile_runtime_after_dispatch(record, timestamp)
@@ -980,6 +1027,10 @@ class Stage1Runtime:
             "repository": record.get("repository"),
             "protected_baselines": record.get("protected_baselines", {}),
             "authority_snapshot_digest": (record.get("authority_snapshot") or {}).get("authority_snapshot_digest"),
+            "submission_transaction_id": record.get("submission_transaction_id"),
+            "submission_receipt_id": (record.get("submission_receipt") or {}).get("receipt_id"),
+            "provenance_id": (record.get("provenance_record") or {}).get("provenance_id"),
+            "execution_transaction_id": (record.get("execution_transaction") or {}).get("transaction_id"),
             "authority_identity": snapshot.get("authority_snapshot_id"),
             "runtime_identity": {"instance_id": record.get("instance_id"),
                                  "schema_version": record.get("schema_version"),
