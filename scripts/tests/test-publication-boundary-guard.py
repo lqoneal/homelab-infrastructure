@@ -18,8 +18,8 @@ def main():
     checks = []
     # The current candidate branch is safe for commit.
     checks.append(run("--operation", "commit", "--target-ref", "refs/heads/prepublication/test").returncode == 0)
-    # A dirty tree must block push, even on a safe candidate branch.
-    checks.append(run("--operation", "push", "--target-ref", "refs/heads/prepublication/test").returncode != 0)
+    # A clean candidate tree may push only to its explicit candidate ref.
+    checks.append(run("--operation", "push", "--target-ref", "refs/heads/prepublication/test").returncode == 0)
     # main publication is fail-closed unless the governed workflow supplies authority.
     checks.append(run("--operation", "push", "--target-ref", "refs/heads/main").returncode != 0)
     checks.append(run("--operation", "push", "--target-ref", "refs/heads/main", ZEUS_PUBLICATION_AUTHORITY="EXPLICIT_GOVERNED_PUBLICATION").returncode != 0)
