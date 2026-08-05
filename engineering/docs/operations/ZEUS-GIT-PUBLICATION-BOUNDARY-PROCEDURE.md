@@ -7,13 +7,13 @@ Before committing, verify the canonical repository, non-`main` branch, active
 publication WOP, intended file scope, and clean remote ancestry. Run:
 
 ```text
-scripts/zeus-publication-boundary-guard --operation commit --target-ref refs/heads/<candidate>
+python3 scripts/zeus-publication-boundary-guard --operation commit --target-ref refs/heads/<candidate>
 ```
 
 Before pushing, verify the exact refspec and branch again, then run:
 
 ```text
-scripts/zeus-publication-boundary-guard --operation push --target-ref refs/heads/<candidate>
+python3 scripts/zeus-publication-boundary-guard --operation push --target-ref refs/heads/<candidate>
 git push origin HEAD:refs/heads/<candidate>
 ```
 
