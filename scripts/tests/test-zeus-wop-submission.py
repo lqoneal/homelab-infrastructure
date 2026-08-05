@@ -36,37 +36,39 @@ class ZeusWopSubmissionTests(unittest.TestCase):
             )
             return result.returncode, json.loads(result.stdout)
 
-    def test_mission_id_fails_closed_without_authoritative_package(self):
+    def test_completed_mission_remains_fail_closed_for_new_submission(self):
         from scripts.lib.emp.mission_submission import submit_by_mission
 
-        with patch("scripts.lib.emp.mission_submission._package_candidates", return_value=[]):
-            value = submit_by_mission(ROOT, "ZDCL-01", state_directory=ROOT / ".zeus/runtime/stage1")
+        value = submit_by_mission(ROOT, "ZDCL-01", state_directory=ROOT / ".zeus/runtime/stage1")
         code = 78
         self.assertEqual(code, 78)
         self.assertEqual(value["result"], "FAIL")
-        self.assertEqual(value["resolution"], "WOP_PACKAGE_UNAVAILABLE")
+        self.assertEqual(value["resolution"], "MISSION_NOT_ELIGIBLE")
         self.assertEqual(value["mission_id"], "ZDCL-01")
         self.assertEqual(value["family"], "ZDCL")
         self.assertEqual(value["title"], "Native session foundation")
 
-    def test_mission_id_submission_reuses_published_package(self):
+    def test_eligible_mission_submission_reuses_authoritative_package(self):
         from scripts.lib.emp.mission_submission import submit_by_mission
 
         record = {
-            "wop_id": "WOP-ZDCL-01-FOUNDATION-001",
+            "wop_id": "WOP-CAGF-01-FOUNDATION-001",
             "package_digest": "a" * 64,
             "instance_id": "ZEUS-MISSION-test",
             "state": "STAGED",
         }
-        with patch("scripts.lib.emp.mission_submission.Stage1Runtime.submit", return_value=record):
-            value = submit_by_mission(ROOT, "ZDCL-01", state_directory=ROOT / ".zeus/runtime/stage1")
+        with patch(
+            "scripts.lib.emp.mission_submission._package_candidates",
+            return_value=[Path("/tmp/cagf-direct-submission-package")],
+        ), patch("scripts.lib.emp.mission_submission.Stage1Runtime.submit", return_value=record):
+            value = submit_by_mission(ROOT, "CAGF-01", state_directory=ROOT / ".zeus/runtime/stage1")
         code = 0
         self.assertEqual(code, 0)
         self.assertEqual(value["result"], "PASS")
         self.assertEqual(value["resolution"], "AUTHORITATIVE_PACKAGE_REUSED")
-        self.assertEqual(value["mission_id"], "ZDCL-01")
-        self.assertEqual(value["family"], "ZDCL")
-        self.assertEqual(value["wop_id"], "WOP-ZDCL-01-FOUNDATION-001")
+        self.assertEqual(value["mission_id"], "CAGF-01")
+        self.assertEqual(value["family"], "CAGF")
+        self.assertEqual(value["wop_id"], "WOP-CAGF-01-FOUNDATION-001")
         self.assertTrue(value["package_digest"])
         self.assertTrue(value["submission_id"])
         self.assertEqual(value["selection_rationale"], "first eligible mission in the authoritative Beta sequence")
