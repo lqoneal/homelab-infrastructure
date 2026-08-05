@@ -79,6 +79,7 @@ from scripts.lib.emp.qualification_contract import (
     QualificationContractError, resolve as resolve_qualification_contract,
     view as view_qualification_contract,
 )
+from scripts.lib.emp.blocker_framework import BlockerFrameworkError, operation as blocker_operation
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -494,7 +495,7 @@ def main(argv=None):
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
     accept=sub.add_parser("accept"); accept.add_argument("gate"); accept.add_argument("--reject", action="store_true"); accept.add_argument("--rationale", default=""); accept.add_argument("--at"); accept.add_argument("--yes", action="store_true"); accept.add_argument("--json", action="store_true")
     decline=sub.add_parser("decline"); decline.add_argument("approval_id"); decline.add_argument("--operator", required=True); decline.add_argument("--at")
-    verify=sub.add_parser("verify"); verify.add_argument("gate"); verify.add_argument("--wop"); verify.add_argument("--revision", default="1"); verify.add_argument("--authority-record"); verify.add_argument("--correlation-id", default="zeus-gate-verification")
+    verify=sub.add_parser("verify"); verify.add_argument("gate", nargs="?", default="zeus"); verify.add_argument("--wop"); verify.add_argument("--revision", default="1"); verify.add_argument("--authority-record"); verify.add_argument("--correlation-id", default="zeus-gate-verification"); verify.add_argument("--json", action="store_true")
     provider=sub.add_parser("provider", help="Inspect the Zeus-controlled provider boundary."); provider.add_argument("action", choices=("list", "capabilities", "status")); provider.add_argument("identifier", nargs="?"); provider.add_argument("--json", action="store_true")
     execution=sub.add_parser("execution", help="Inspect or control a Zeus-owned provider execution."); execution.add_argument("action", choices=("status","resolve","bootstrap-actions","show","session","stop","resume","start")); execution.add_argument("identifier", nargs="?"); execution.add_argument("--revision", default="1"); execution.add_argument("--requested-action", default="execute"); execution.add_argument("--authority-record"); execution.add_argument("--correlation-id", default="zeus-execution"); execution.add_argument("--wop"); execution.add_argument("--mission-contract"); execution.add_argument("--branch"); execution.add_argument("--timeout", type=int, default=0); execution.add_argument("--json", action="store_true")
     context=sub.add_parser("context"); context.add_argument("action", choices=("reconstruct",))
@@ -503,6 +504,7 @@ def main(argv=None):
     qualification=sub.add_parser("qualification"); qualification.add_argument("action", choices=("show",)); qualification.add_argument("identifier", nargs="?", default="qualification"); qualification.add_argument("--json", action="store_true")
     publication=sub.add_parser("publication", help="Show the canonical publication decision."); publication.add_argument("action", choices=("show", "verify"), nargs="?", default="show"); publication.add_argument("--json", action="store_true")
     blockers=sub.add_parser("blockers", help="Show typed blockers from the canonical qualification contract."); blockers.add_argument("--json", action="store_true")
+    blocker=sub.add_parser("blocker", help="Inspect and verify one canonical blocker lifecycle object."); blocker.add_argument("action", choices=("show", "verify", "resolve", "graph", "history")); blocker.add_argument("blocker_id", nargs="?"); blocker.add_argument("--json", action="store_true")
     readiness=sub.add_parser("readiness", help="Show canonical publication readiness."); readiness.add_argument("--json", action="store_true")
     snapshot=sub.add_parser("snapshot", help="Show the immutable qualification decision snapshot."); snapshot.add_argument("--json", action="store_true")
     completion=sub.add_parser("completion"); completion.add_argument("action", choices=("show",)); completion.add_argument("identifier")
@@ -803,6 +805,18 @@ def main(argv=None):
             else:
                 print(json.dumps(value, indent=2, sort_keys=True))
             return 0 if value.get("qualification_state", "NOT_QUALIFIED") == "QUALIFIED_FOR_PUBLICATION" else 77
+        if a.command == "blocker":
+            contract = resolve_qualification_contract(ROOT)
+            value = blocker_operation(ROOT, contract.get("blockers", []), a.action, getattr(a, "blocker_id", None))
+            if a.json:
+                emit(value)
+            else:
+                print(json.dumps(value, indent=2, sort_keys=True))
+            if a.action == "verify":
+                return 0 if value.get("result") == "PASS" else 77
+            if a.action == "resolve":
+                return 0 if value.get("result") == "RESOLVED" else 77
+            return 0
         if a.command == "next-action":
             canonical = resolve_qualification_contract(ROOT)
             if a.json:

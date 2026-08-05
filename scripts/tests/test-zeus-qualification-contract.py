@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from scripts.lib.emp.qualification_contract import resolve, view  # noqa: E402
+from scripts.lib.emp.blocker_framework import operation, resolve_from_seed  # noqa: E402
 
 
 class QualificationContractTests(unittest.TestCase):
@@ -25,6 +26,30 @@ class QualificationContractTests(unittest.TestCase):
             value = view(ROOT, subject)
             self.assertEqual(value.get("decision_digest") or value["contract"]["decision_digest"], contract["decision_digest"])
         self.assertFalse(view(ROOT, "readiness")["ready"])
+
+    def test_blocker_lifecycle_is_complete_and_publication_uses_active_only(self):
+        contract = resolve(ROOT)
+        for blocker in contract["active_blockers"]:
+            self.assertEqual(blocker["lifecycle_state"], "ACTIVE")
+            self.assertTrue(blocker["publication_blocking"])
+            self.assertTrue(blocker["verification_digest"])
+            self.assertTrue(blocker["owning_component"])
+            self.assertTrue(blocker["owning_transaction"])
+            self.assertTrue(blocker["owning_mission"])
+            self.assertTrue(blocker["owning_execution"])
+            self.assertTrue(blocker["owning_authority"])
+        self.assertEqual(
+            [item["blocker_id"] for item in contract["active_blockers"]],
+            [item["blocker_id"] for item in contract["remaining_blockers"]],
+        )
+        self.assertEqual(operation(ROOT, contract["blockers"], "verify", "QUAL-001")["result"], "PASS")
+        self.assertEqual(operation(ROOT, contract["blockers"], "resolve", "QUAL-001")["result"], "UNRESOLVED")
+
+    def test_duplicate_blocker_is_merged_deterministically(self):
+        contract = resolve(ROOT)
+        graph = resolve_from_seed(ROOT, [contract["blockers"][0], contract["blockers"][0]])
+        self.assertEqual(graph["duplicate_blockers_merged"], [contract["blockers"][0]["blocker_id"]])
+        self.assertEqual(len(graph["blockers"]), 1)
 
 
 if __name__ == "__main__":

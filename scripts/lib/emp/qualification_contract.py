@@ -68,7 +68,7 @@ def _blocker(blocker_id: str, category: str, severity: str, evidence: str,
     }
 
 
-def resolve(root: Path | str) -> dict[str, Any]:
+def _resolve_base(root: Path | str) -> dict[str, Any]:
     """Resolve one deterministic qualification/publication result.
 
     The resolver is deliberately conservative: absence or incompleteness of
@@ -128,6 +128,44 @@ def resolve(root: Path | str) -> dict[str, Any]:
     return contract
 
 
+def resolve(root: Path | str) -> dict[str, Any]:
+    """Resolve qualification and its canonical blocker lifecycle together."""
+    from scripts.lib.emp.blocker_framework import resolve_from_seed
+
+    contract = _resolve_base(root)
+    framework = resolve_from_seed(root, contract["remaining_blockers"])
+    active = framework["active_blockers"]
+    contract["blockers"] = framework["blockers"]
+    contract["active_blockers"] = active
+    contract["resolved_blockers"] = framework["resolved_blockers"]
+    contract["retired_blockers"] = framework["retired_blockers"]
+    contract["auto_resolution_summary"] = {
+        "eligible": [b["blocker_id"] for b in framework["blockers"] if b["auto_resolvable"]],
+        "resolved": [b["blocker_id"] for b in framework["resolved_blockers"]],
+        "retired": [b["blocker_id"] for b in framework["retired_blockers"]],
+    }
+    contract["operator_actions"] = [
+        {"blocker_id": b["blocker_id"], "action": b["next_authorized_action"]}
+        for b in active if b["operator_action_required"]
+    ]
+    contract["publication_readiness"] = not active
+    contract["remaining_blockers"] = active
+    contract["qualification_state"] = "NOT_QUALIFIED" if active else "QUALIFIED_FOR_PUBLICATION"
+    contract["publication_state"] = "PUBLICATION_BLOCKED" if active else "PUBLICATION_PENDING_APPROVAL"
+    contract["next_authorized_action"] = (
+        "Resolve verified active blockers: " + ", ".join(b["blocker_id"] for b in active)
+        if active else "Obtain publication approval; publication authority remains separate."
+    )
+    contract["blocker_framework"] = {
+        "framework_id": framework["framework_id"],
+        "graph": framework["graph"],
+        "verification": framework["verification"],
+        "duplicate_blockers_merged": framework["duplicate_blockers_merged"],
+    }
+    contract["decision_digest"] = _sha256(contract)
+    return contract
+
+
 def view(root: Path | str, subject: str) -> dict[str, Any]:
     contract = resolve(root)
     subject = subject.lower().replace("_", "-")
@@ -135,10 +173,10 @@ def view(root: Path | str, subject: str) -> dict[str, Any]:
         if subject == "qualification":
             return {k: contract[k] for k in ("schema_version", "contract_id", "qualification_state", "validation_status", "remaining_blockers", "decision_digest")}
         if subject == "publication":
-            return {k: contract[k] for k in ("schema_version", "contract_id", "publication_state", "qualification_state", "remaining_blockers", "next_authorized_action", "decision_digest")}
+            return {k: contract[k] for k in ("schema_version", "contract_id", "publication_state", "qualification_state", "active_blockers", "resolved_blockers", "retired_blockers", "auto_resolution_summary", "operator_actions", "publication_readiness", "next_authorized_action", "decision_digest")}
         if subject == "readiness":
             return {"ready": contract["qualification_state"] == "QUALIFIED_FOR_PUBLICATION", **contract}
         if subject == "blockers":
-            return {"blockers": contract["remaining_blockers"], "decision_digest": contract["decision_digest"]}
+            return {"blockers": contract["blockers"], "active_blockers": contract["active_blockers"], "resolved_blockers": contract["resolved_blockers"], "retired_blockers": contract["retired_blockers"], "decision_digest": contract["decision_digest"]}
         return {"contract": contract, "verified": True}
     raise QualificationContractError(f"UNKNOWN_QUALIFICATION_SUBJECT: {subject}")

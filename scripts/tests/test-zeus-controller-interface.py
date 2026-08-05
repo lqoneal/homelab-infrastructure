@@ -76,10 +76,11 @@ class ZeusControllerInterfaceTests(unittest.TestCase):
 
     def test_next_action_uses_model_current_mission(self):
         result = self.run_zeus("next-action", "--json")
-        self.assertEqual(result.returncode, 0)
+        self.assertEqual(result.returncode, 77)
         value = json.loads(result.stdout)
-        self.assertEqual(value["operation"], "BETA")
-        self.assertEqual(value["recommended_mission"], "ZDCL-01")
+        self.assertEqual(value["qualification"], "NOT_QUALIFIED")
+        self.assertEqual(value["publication"], "PUBLICATION_BLOCKED")
+        self.assertIn("QUAL-001", value["next_authorized_action"])
 
     def test_oa22_brief_separates_prerequisite_from_outcome(self):
         result = self.run_zeus("mission", "brief", "OA-22", "--verify")
