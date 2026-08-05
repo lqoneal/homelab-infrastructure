@@ -22,7 +22,7 @@ PUBLICATION_STATES = {
     "PUBLICATION_COMPLETE",
 }
 EVIDENCE_ROOT = Path("engineering/evidence/operation-beta/wop-zeus-submission-provenance-bootstrap-001")
-CONTRACT_WOP = "WOP-ZDCL02-QUALIFICATION-CONTRACT-RECONCILIATION-001"
+CONTRACT_WOP = "WOP-ZDCL02-QUAL-001-QUAL-002-RECONCILIATION-001"
 
 
 class QualificationContractError(ValueError):
@@ -171,12 +171,12 @@ def view(root: Path | str, subject: str) -> dict[str, Any]:
     subject = subject.lower().replace("_", "-")
     if subject in {"qualification", "publication", "blockers", "readiness", "verify", "snapshot"}:
         if subject == "qualification":
-            return {k: contract[k] for k in ("schema_version", "contract_id", "qualification_state", "validation_status", "remaining_blockers", "decision_digest")}
+            return {k: contract[k] for k in ("schema_version", "contract_id", "qualification_state", "publication_state", "active_blockers", "resolved_blockers", "retired_blockers", "validation_status", "remaining_blockers", "next_authorized_action", "decision_digest")}
         if subject == "publication":
             return {k: contract[k] for k in ("schema_version", "contract_id", "publication_state", "qualification_state", "active_blockers", "resolved_blockers", "retired_blockers", "auto_resolution_summary", "operator_actions", "publication_readiness", "next_authorized_action", "decision_digest")}
         if subject == "readiness":
             return {"ready": contract["qualification_state"] == "QUALIFIED_FOR_PUBLICATION", **contract}
         if subject == "blockers":
-            return {"blockers": contract["blockers"], "active_blockers": contract["active_blockers"], "resolved_blockers": contract["resolved_blockers"], "retired_blockers": contract["retired_blockers"], "decision_digest": contract["decision_digest"]}
+            return {"qualification_state": contract["qualification_state"], "publication_state": contract["publication_state"], "blockers": contract["blockers"], "active_blockers": contract["active_blockers"], "resolved_blockers": contract["resolved_blockers"], "retired_blockers": contract["retired_blockers"], "next_authorized_action": contract["next_authorized_action"], "decision_digest": contract["decision_digest"]}
         return {"contract": contract, "verified": True}
     raise QualificationContractError(f"UNKNOWN_QUALIFICATION_SUBJECT: {subject}")

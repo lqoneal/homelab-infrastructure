@@ -501,7 +501,7 @@ def main(argv=None):
     context=sub.add_parser("context"); context.add_argument("action", choices=("reconstruct",))
     eligibility=sub.add_parser("eligibility"); eligibility.add_argument("action", choices=("evaluate", "show")); eligibility.add_argument("request", type=Path)
     evidence=sub.add_parser("evidence"); evidence.add_argument("action", choices=("show",)); evidence.add_argument("identifier")
-    qualification=sub.add_parser("qualification"); qualification.add_argument("action", choices=("show",)); qualification.add_argument("identifier", nargs="?", default="qualification"); qualification.add_argument("--json", action="store_true")
+    qualification=sub.add_parser("qualification"); qualification.add_argument("action", choices=("show",), nargs="?", default="show"); qualification.add_argument("identifier", nargs="?", default="qualification"); qualification.add_argument("--json", action="store_true")
     publication=sub.add_parser("publication", help="Show the canonical publication decision."); publication.add_argument("action", choices=("show", "verify"), nargs="?", default="show"); publication.add_argument("--json", action="store_true")
     blockers=sub.add_parser("blockers", help="Show typed blockers from the canonical qualification contract."); blockers.add_argument("--json", action="store_true")
     blocker=sub.add_parser("blocker", help="Inspect and verify one canonical blocker lifecycle object."); blocker.add_argument("action", choices=("show", "verify", "resolve", "graph", "history")); blocker.add_argument("blocker_id", nargs="?"); blocker.add_argument("--json", action="store_true")
