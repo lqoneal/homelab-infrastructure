@@ -35,9 +35,11 @@ from scripts.lib.eos.mission_assurance import MissionAssurance, MissionAssurance
 from scripts.lib.eos import capability_registry  # noqa: E402
 from scripts.lib.eos import mission_knowledge  # noqa: E402
 from scripts.lib.eos import operational_beta  # noqa: E402
+from scripts.lib.eos.platform_sync_verification import verify as verify_platform_sync  # noqa: E402
 from scripts.lib.emp import progressive_oa  # noqa: E402
 from scripts.lib.emp.progressive_gate import ProgressiveGateError, ProgressiveGateService  # noqa: E402
 from scripts.lib.emp.stage1_runtime import Stage1Error, Stage1Runtime  # noqa: E402
+from scripts.lib.emp.submission_boundary import SubmissionError, submit as submit_wop_boundary  # noqa: E402
 from scripts.lib.emp.mission_submission import submit_by_mission  # noqa: E402
 from scripts.lib.emp.oa01_verification import OA01MissionVerification, OA01VerificationError  # noqa: E402
 from scripts.lib.emp.oa01_implementation import OA01ImplementationError, qualify as qualify_oa01_implementation  # noqa: E402
@@ -102,7 +104,8 @@ def command_inventory(parser) -> dict:
 
 def platform_verify(parser) -> dict:
     """Read-only integrated verification; it never initializes or adopts runtime."""
-    checks = {}
+    sync = verify_platform_sync(ROOT, Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")), "homelab")
+    checks = sync["checks"]
     head = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True, check=False).stdout.strip()
     branch = subprocess.run(["git", "-C", str(ROOT), "branch", "--show-current"], capture_output=True, text=True, check=False).stdout.strip()
     checks["repository"] = {"result": "PASS" if head else "FAIL", "root": str(ROOT), "head": head, "branch": branch}
@@ -122,16 +125,14 @@ def platform_verify(parser) -> dict:
     checks["validator"] = {"result": "PASS", "service": "scripts.lib.emp.wop_validation"}
     checks["packaging"] = {"result": "PASS", "service": "scripts.lib.emp.wop_packaging"}
     checks["controllers"] = {"result": "PASS", "domains": ["authoring", "execution", "administration"]}
-    checks["eos"] = {"result": "DEFERRED", "reason": "candidate branch is not published to main"}
-    checks["synchronization"] = {"result": "DEFERRED", "reason": "candidate branch is not published to main"}
     inventory = command_inventory(parser)
     checks["cli_namespace"] = {"result": "PASS", "top_level_count": len(inventory), "commands": inventory}
     doctor = doctor_report()
     checks["doctor"] = {"result": doctor["result"], "next_action": doctor["next_action"]}
-    defects = [name for name, value in checks.items() if value.get("result") == "FAIL"]
+    defects = [name for name, value in checks.items() if value.get("result") in {"FAIL", "BLOCKED"}]
     result = "FAIL" if defects else "PASS"
     return {"result": result, "checks": checks, "defects": defects,
-            "read_only": True, "next_action": "Review and publish the candidate, then synchronize EOS" if not defects else "Resolve the reported defect"}
+            "read_only": True, "next_action": sync["next_action"] if not defects else "Resolve the reported defect"}
 
 
 def protected_baseline_summary(value) -> str:
@@ -728,6 +729,28 @@ def main(argv=None):
             return 0 if result == "PASS" else 1
         if a.command == "submit" and not a.repository:
             source = resolve_wop_source(a.wop_package)
+            # Authored Phase 1 outputs cross the bounded P2 submission
+            # boundary.  Legacy package submissions retain their existing
+            # Stage 1 path and lifecycle semantics.
+            if source.with_suffix(source.suffix + ".traceability.json").is_file():
+                runtime = initialize_runtime(ROOT, explicit=getattr(a, "runtime_root", None))
+                value = submit_wop_boundary(
+                    source, repository=ROOT,
+                    store_directory=runtime["root"] / "submissions",
+                )
+                if getattr(a, "json", False) or getattr(a, "verbose", False):
+                    emit(value)
+                else:
+                    print("WOP submission requested")
+                    print("-----------------------")
+                    print(f"Submission      : {value['submission_id']}")
+                    print(f"Mission         : {value['mission_id']}")
+                    print(f"WOP             : {value['wop_id']}")
+                    print(f"State           : {value['submission_state']}")
+                    print(f"Result          : {value['submission_result']}")
+                    print(f"Duplicate       : {value['duplicate_submission']}")
+                    print(f"Next action     : {value['next_action']}")
+                return 0
             # This is the authoritative first lifecycle stage.  It is repeated
             # at submission time even when an advisory inspection was run.
             if not is_canonical_package(source):
@@ -1629,7 +1652,7 @@ def main(argv=None):
                 emit(ConvergenceRuntime(Path(a.repository)).operational_wop(intent=a.intent,flow=flow))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (PackagingError, RuntimeAdoptionError, RuntimeDiscoveryError, OrchestrationError, Stage1Error, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, mission_knowledge.MissionKnowledgeError, operational_beta.OperationalBetaError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+    except (PackagingError, RuntimeAdoptionError, RuntimeDiscoveryError, OrchestrationError, Stage1Error, SubmissionError, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, mission_knowledge.MissionKnowledgeError, operational_beta.OperationalBetaError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr)
         if isinstance(error, PackagingError):
             if getattr(locals().get("a", None), "json", False):

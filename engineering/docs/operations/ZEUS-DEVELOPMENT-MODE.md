@@ -29,6 +29,15 @@ existing Stage 1 runtime record and advances the persisted, idempotent
 lifecycle through authorization, admission, execution, qualification,
 publication preparation, synchronization, and closeout.
 
+For a canonical authored WOP with an adjacent immutable traceability record,
+`zeus submit <WOP>` uses the P2-G1 submission boundary. It verifies
+`ADMISSION_READY`, Operation Beta, Mission/WOP identity, repository identity,
+and source/output provenance, then writes one deterministic submission receipt
+and one admission-request projection with state `ADMISSION_REQUESTED`. A
+replay is `IDEMPOTENT`; it does not invoke Mission Admission or execution.
+The authoritative next action is `EVALUATE_MISSION_ADMISSION`. Legacy package
+submissions retain the Stage 1 lifecycle described below.
+
 Zeus is also responsible for automatic WOP packaging. The operator may submit
 an existing canonical package directory, a repository-resolved WOP identity, or
 a Markdown/DOCX source document. Zeus preserves the source document, resolves
@@ -85,8 +94,12 @@ scripts/zeus submit <wop>
 
 `zeus doctor` diagnoses components and reports `READY_FOR_REVIEW` for a
 healthy unpublished recovery branch. `zeus platform verify` is an integrated,
-read-only consistency check. Neither command initializes runtime, adopts
-legacy state, packages a source, authorizes work, or synchronizes EOS.
+read-only consistency check over repository identity, published baseline,
+canonical EOS projections, baseline parity, and checkpoint provenance. After a
+published baseline is synchronized it reports `EOS: PASS` and
+`Synchronization: PASS`; stale or mismatched EOS state fails closed with the
+specific blocker. Neither command initializes runtime, adopts legacy state,
+packages a source, authorizes work, or synchronizes EOS.
 
 The WOP source document is the sole operator-authored engineering artifact;
 all package, manifest, registration, provenance, runtime, lifecycle,
