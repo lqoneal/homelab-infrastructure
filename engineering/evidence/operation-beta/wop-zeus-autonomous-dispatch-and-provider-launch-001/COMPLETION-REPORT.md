@@ -18,13 +18,22 @@ The exact `-n`, `-c`, and `-q` assertions pass with no `rg`, with forced grep,
 and with an isolated rg-compatible shim. No production notification behavior
 was changed.
 
-Validation: the Codex wrapper and notification suites pass; Registry passes;
+Platform lifecycle corrective: `scripts/lib/eos/validation_lifecycle.py` now
+classifies published state and qualified prepublication candidates from shared
+branch, ancestry, remote-parity, cleanliness, EOS, and checkpoint operands.
+Stage 2 validates a candidate against published `main`; Stage 4 uses the same
+published baseline for operational and checkpoint checks. Candidate EOS sync is
+rejected. Disposable lifecycle coverage passes 4 tests and preserves strict
+negative classifications.
+
+Validation: the Codex wrapper, notification, and lifecycle-classifier suites pass; Registry passes;
 the canonical controlled-document validator passes 2,863 checks; and
 `git diff --check` passes. Platform stages 1–3 and isolated Stage 4 components
-pass, but the aggregate platform runner did not return a completion marker or
-exit status in the bounded environment, so full Stage 4 is recorded as
-INCOMPLETE rather than PASS. The candidate remains prepublication; no provider,
-live runtime, EOS, PR, or merge operation is performed by this WOP.
+pass. The active EOS projection currently records `8b755ea` rather than
+published `64394a5`, so the shared classifier correctly returns `EOS_STALE`;
+this WOP does not synchronize EOS and therefore does not claim aggregate PASS.
+The candidate remains prepublication; no provider, live runtime, EOS, PR, or
+merge operation is performed by this WOP.
 
 Preserved: Stage 1 transaction, WOP, package/source/authority identities, admission, execution, provider-selection receipt, dispatch receipt, and all immutable receipt history. No live provider, runtime, EOS, or unrelated mission was modified.
 

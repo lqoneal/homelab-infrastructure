@@ -65,6 +65,30 @@ eos_repository_state() {
     fi
 }
 
+eos_repository_lifecycle_json() {
+    local project="${1:-homelab}"
+    local root classifier
+    root="$(eos_project_root "$project")"
+    classifier="$root/scripts/lib/eos/validation_lifecycle.py"
+    PYTHONDONTWRITEBYTECODE=1 python3 "$classifier" classify \
+        --root "$root" --workspace "$(eos_workspace)" --project "$project"
+}
+
+eos_repository_lifecycle_classification() {
+    eos_repository_lifecycle_json "${1:-homelab}" | jq -r '.classification'
+}
+
+eos_repository_lifecycle_expected_commit() {
+    local project="${1:-homelab}"
+    local classification expected
+    classification="$(eos_repository_lifecycle_classification "$project" 2>/dev/null || true)"
+    if [[ "$classification" == "UNPUBLISHED_CANDIDATE" ]]; then
+        expected="$(eos_repository_lifecycle_json "$project" | jq -r '.published_baseline')"
+        [[ -n "$expected" && "$expected" != "null" ]] && printf '%s\n' "$expected" && return 0
+    fi
+    eos_repository_commit "$project"
+}
+
 eos_render_state() {
     local state
     state="$(eos_state_path)"

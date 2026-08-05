@@ -8,6 +8,12 @@ eos_synchronization_tool() {
 
 eos_synchronize() {
     local project="${1:-homelab}"
+    local lifecycle_classification
+    lifecycle_classification="$(eos_repository_lifecycle_classification "$project" 2>/dev/null || true)"
+    if [[ "$lifecycle_classification" == "UNPUBLISHED_CANDIDATE" ]]; then
+        echo "FAIL: EOS synchronization is prohibited from an unpublished candidate" >&2
+        return 78
+    fi
     python3 "$(eos_synchronization_tool)" synchronize \
         --root "$(eos_project_root homelab)" \
         --workspace "$(eos_workspace)" \

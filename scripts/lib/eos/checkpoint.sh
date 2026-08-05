@@ -302,7 +302,7 @@ eos_checkpoint_sync_status() {
     esac
 
     recorded="$(eos_checkpoint_recorded_commit "$checkpoint" || true)"
-    current="$(eos_repository_commit "$project")"
+    current="$(eos_repository_lifecycle_expected_commit "$project")"
     if [[ -z "$recorded" ]]; then
         echo "unavailable (checkpoint has no repository commit)"
         return 1

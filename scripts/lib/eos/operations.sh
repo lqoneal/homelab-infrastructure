@@ -254,7 +254,7 @@ eos_operational_validate() {
     jq -e '.schema_version == 1 and .project and .repository.commit and .eos.active_checkpoint' "$state" >/dev/null \
         || { echo "FAIL: operational state schema"; return 1; }
 
-    expected_commit="$(eos_repository_commit "$project")"
+    expected_commit="$(eos_repository_lifecycle_expected_commit "$project")"
     observed_commit="$(jq -r '.repository.commit' "$state")"
     [[ "$expected_commit" == "$observed_commit" ]] \
         || { echo "FAIL: operational state repository commit is stale"; return 1; }

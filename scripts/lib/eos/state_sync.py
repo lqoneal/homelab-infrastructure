@@ -81,7 +81,22 @@ def git(root: Path, *args: str) -> str:
         ) from error
 
 
-def render(root: Path, eos_workspace: Path, project: str) -> dict[Path, bytes]:
+def classify_lifecycle(root: Path, workspace: Path, project: str) -> dict[str, Any]:
+    """Load the shared lifecycle classifier without duplicating its policy."""
+    import importlib.util
+
+    path = root / "scripts/lib/eos/validation_lifecycle.py"
+    if not path.is_file():
+        path = Path(__file__).with_name("validation_lifecycle.py")
+    spec = importlib.util.spec_from_file_location("eos_validation_lifecycle", path)
+    if spec is None or spec.loader is None:
+        raise SynchronizationError(f"lifecycle classifier unavailable: {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.classify(root, workspace, project)
+
+
+def render(root: Path, eos_workspace: Path, project: str, revision: str | None = None) -> dict[Path, bytes]:
     matrix_path = root / "engineering/eos/repository-eos-authority.yaml"
     project_path = root / "docs/project/PROJ-0001-PROJECT_STATE.md"
     registry_path = root / "engineering/registry/work-registry.yaml"
@@ -93,33 +108,47 @@ def render(root: Path, eos_workspace: Path, project: str) -> dict[Path, bytes]:
         sources.append(progress_path)
     if emm_path.is_file():
         sources.append(emm_path)
-    for source in sources:
-        if not source.is_file():
-            raise SynchronizationError(f"canonical source missing: {source}")
+    def source_bytes(path: Path) -> bytes:
+        if revision:
+            relative = str(path.relative_to(root))
+            try:
+                return subprocess.run(
+                    ["git", "-C", str(root), "show", f"{revision}:{relative}"],
+                    check=True,
+                    capture_output=True,
+                ).stdout
+            except subprocess.CalledProcessError as error:
+                raise SynchronizationError(f"canonical source missing at {revision}: {path}") from error
+        if not path.is_file():
+            raise SynchronizationError(f"canonical source missing: {path}")
+        return path.read_bytes()
 
-    matrix = load_yaml(matrix_path)
+    for source in sources:
+        source_bytes(source)
+
+    matrix = yaml.safe_load(source_bytes(matrix_path))
     if matrix.get("schema_version") != SCHEMA_VERSION:
         raise SynchronizationError("unsupported authority-matrix schema version")
     if matrix.get("canonical_platform_state") != "repository":
         raise SynchronizationError("repository must be canonical platform state")
 
-    metadata = frontmatter(project_path)
+    metadata = frontmatter_bytes(source_bytes(project_path), project_path)
     if metadata.get("document_id") != "PROJ-0001" or metadata.get("status") != "Active":
         raise SynchronizationError("PROJ-0001 must be the Active project-state source")
 
-    registry = load_yaml(registry_path)
-    interface = load_yaml(interface_path)
-    emm = load_yaml(emm_path) if emm_path.is_file() else None
-    oa_lifecycle = operational_alpha_lifecycle(progress_path) if progress_path.is_file() else None
+    registry = yaml.safe_load(source_bytes(registry_path))
+    interface = yaml.safe_load(source_bytes(interface_path))
+    emm = yaml.safe_load(source_bytes(emm_path)) if emm_path.is_file() else None
+    oa_lifecycle = operational_alpha_lifecycle_bytes(source_bytes(progress_path), progress_path) if progress_path.is_file() else None
     if interface.get("schema_version") == 3 and (
         not isinstance(emm, dict) or emm.get("schema_version") != 1 or not emm.get("emm_id")
     ):
         raise SynchronizationError("valid Operational Alpha EMM is required")
-    head = git(root, "rev-parse", "HEAD")
-    branch = git(root, "branch", "--show-current")
+    head = revision or git(root, "rev-parse", "HEAD")
+    branch = "main" if revision else git(root, "branch", "--show-current")
     remote = git(root, "remote", "get-url", "origin") if git(root, "remote") else ""
     source_digests = {
-        str(path.relative_to(root)): digest(path.read_bytes()) for path in sources
+        str(path.relative_to(root)): digest(source_bytes(path)) for path in sources
     }
 
     state_dir = eos_workspace / "eos/state"
@@ -199,6 +228,36 @@ def render(root: Path, eos_workspace: Path, project: str) -> dict[Path, bytes]:
     }
 
 
+def frontmatter_bytes(data: bytes, path: Path) -> dict[str, Any]:
+    text = data.decode("utf-8")
+    if not text.startswith("---\n"):
+        raise SynchronizationError(f"{path} has no YAML front matter")
+    try:
+        _, header, _ = text.split("---", 2)
+        value = yaml.safe_load(header)
+    except (ValueError, yaml.YAMLError) as error:
+        raise SynchronizationError(f"invalid front matter in {path}: {error}") from error
+    if not isinstance(value, dict):
+        raise SynchronizationError(f"{path} front matter must be a mapping")
+    return value
+
+
+def operational_alpha_lifecycle_bytes(data: bytes, path: Path) -> dict[str, str]:
+    values = dict(re.findall(
+        r"^([A-Z0-9_-]+)=([^\n]+)$", data.decode("utf-8"), re.MULTILINE
+    ))
+    required = (
+        "CURRENT_IMPLEMENTATION_WOP", "CURRENT_GATE", "CURRENT_GATE_STATE",
+        "CURRENT_EXECUTION_STATE", "SUCCESSOR_ELIGIBILITY", "HISTORICAL_PROGRESSIVE_RUNTIME",
+    )
+    missing = [field for field in required if not values.get(field)]
+    if missing:
+        raise SynchronizationError(
+            "Operational Alpha lifecycle projection is incomplete: " + ", ".join(missing)
+        )
+    return {field: values[field] for field in required}
+
+
 def atomic_write(path: Path, data: bytes) -> bool:
     if path.is_file() and path.read_bytes() == data:
         return False
@@ -233,14 +292,28 @@ def main() -> int:
     parser.add_argument("--project", default="homelab")
     args = parser.parse_args()
     try:
-        expected = render(args.root.resolve(), args.workspace.resolve(), args.project)
+        lifecycle = classify_lifecycle(args.root.resolve(), args.workspace.resolve(), args.project)
+        if lifecycle["classification"] == "UNPUBLISHED_CANDIDATE":
+            expected = render(
+                args.root.resolve(), args.workspace.resolve(), args.project,
+                str(lifecycle["published_baseline"]),
+            )
+        else:
+            expected = render(args.root.resolve(), args.workspace.resolve(), args.project)
         if args.action == "validate":
             drift = validate(expected)
             if drift:
                 for path in drift:
                     print(f"DRIFT: {path}")
                 return 1
-            print("Repository–EOS synchronization validation passed.")
+            if lifecycle["classification"] == "UNPUBLISHED_CANDIDATE":
+                print("CLASSIFIED: UNPUBLISHED_CANDIDATE")
+                print(f"Published baseline: {lifecycle['published_baseline']}")
+                print(f"Candidate head: {lifecycle['head']}")
+                print(f"EOS baseline: {lifecycle['eos_baseline']}")
+                print("Candidate parity: local == remote")
+            else:
+                print("Repository–EOS synchronization validation passed.")
             return 0
         if args.action == "render":
             for path, data in expected.items():

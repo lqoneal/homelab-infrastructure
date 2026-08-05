@@ -219,7 +219,7 @@ eos_platform_qualify() {
 eos_platform_validate() {
     local project="${1:-homelab}"
     local root platform_root validator runtime_test registry_test management_test etp_test
-    local context management_project_id failures=0
+    local context management_project_id failures=0 lifecycle_classification lifecycle_json
     root="$(eos_project_root "$project")"
     platform_root="$(eos_project_root homelab)"
     if [[ "$project" == "homelab" ]]; then
@@ -253,8 +253,18 @@ eos_platform_validate() {
     echo "VALIDATION STAGE 2 — SYNCHRONIZATION"
     echo "-------------------------------------"
 
+    lifecycle_json="$(eos_repository_lifecycle_json "$project" 2>/dev/null || true)"
+    lifecycle_classification="$(jq -r '.classification // "UNCLASSIFIED"' <<<"$lifecycle_json")"
     if eos_synchronization_validate "$project" >/dev/null; then
-        echo "PASS: repository–EOS synchronization"
+        if [[ "$lifecycle_classification" == "UNPUBLISHED_CANDIDATE" ]]; then
+            echo "CLASSIFIED: UNPUBLISHED_CANDIDATE"
+            echo "Published baseline: $(jq -r '.published_baseline' <<<"$lifecycle_json")"
+            echo "Candidate head: $(jq -r '.head' <<<"$lifecycle_json")"
+            echo "EOS baseline: $(jq -r '.eos_baseline' <<<"$lifecycle_json")"
+            echo "Candidate parity: local == remote"
+        else
+            echo "PASS: repository–EOS synchronization"
+        fi
     else
         echo "FAIL: repository–EOS synchronization"
         ((failures++)) || true
