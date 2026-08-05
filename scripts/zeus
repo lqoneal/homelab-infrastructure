@@ -69,6 +69,11 @@ from scripts.lib.emp.wop_schema import format_description
 from scripts.lib.emp.wop_validation import validate_source, require_valid_source
 from scripts.lib.emp.repository_identity import RepositoryIdentityError, resolve as resolve_repository_identity
 from scripts.lib.emp.development_dispatch import automatic_executor
+from scripts.lib.emp.canonical_mission_lifecycle import (
+    CanonicalMissionLifecycleError,
+    mission_list as canonical_mission_list,
+    view as canonical_mission_view,
+)
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -821,6 +826,14 @@ def main(argv=None):
             return 0 if value.get("result") == "PASS" else 77
         beta_subject = str(getattr(a, "mission_id", "") or "").upper()
         beta_action = getattr(a, "action", "")
+        if a.command == "mission" and beta_action == "list" and not beta_subject:
+            value = canonical_mission_list(ROOT)
+            emit_controller(value, json_mode=a.json, verify=a.verify, title="Mission list")
+            return 0 if value.get("result", "PASS") in ("PASS", "NO_ELIGIBLE_MISSION") else 78
+        if a.command == "mission" and beta_subject == "STOPQ-01":
+            value = canonical_mission_view(ROOT, beta_action, beta_subject)
+            emit_controller(value, json_mode=a.json, verify=a.verify, title=f"Canonical mission {beta_action}")
+            return 0 if value.get("result") == "PASS" else 78
         beta_mission = beta_subject.startswith(("BETA-", "ZDCL-", "CAGF-", "EPE-"))
         beta_family = beta_subject in {"ZDCL", "CAGF", "EPE"}
         beta_candidate = a.command == "mission" and beta_action == "roadmap" and beta_subject != "OA"

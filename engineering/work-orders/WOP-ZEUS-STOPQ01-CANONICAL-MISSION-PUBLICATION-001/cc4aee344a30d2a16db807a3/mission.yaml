@@ -1,0 +1,160 @@
+schema_version: 1
+document_type: EngineeringWorkOrder
+mission_id: MISSION-ZEUS-STOPQ01-CANONICAL-MISSION-PUBLICATION-001
+wop_id: WOP-ZEUS-STOPQ01-CANONICAL-MISSION-PUBLICATION-001
+phase_id: MISSION-ZEUS-STOPQ01-CANONICAL-MISSION-PUBLICATION-001-DEVELOPMENT
+revision: 1
+status: Active
+title: STOPQ-01 Canonical Beta Mission Publication
+objective: Publish STOPQ-01 as a canonical disposable Beta mission with a valid Mission
+  Contract, Beta mission registry entry, authoritative WOP package, execution-handler
+  binding, controlled hung-job workload, stop qualification contract, and Zeus-specific
+  verification interfaces required to prove that Zeus can terminate a hung provider
+  job.
+scope:
+- Inventory the canonical Beta mission architecture
+- define STOPQ-01
+- create its Mission Contract
+- register it in the Beta mission registry and roadmap
+- create and validate its authoritative operational WOP package
+- bind it to a cancellation-capable Zeus handler
+- define a controlled hung workload
+- define graceful and escalated termination behavior
+- define stop receipts
+- process-death evidence
+- idempotent replay
+- qualification
+- and closeout
+- update controlled documentation
+- qualify mission discovery and preflight
+- commit and push a prepublication candidate
+- stop before PR creation or publication.
+dependencies:
+- Published canonical main df4c1de80247c48913dca1c0ea6298a66862e245
+- EOS synchronized
+- Engineering Platform validation passing
+- Beta operation ACTIVE_DEVELOPMENT
+- production baseline OA-v1.0.0
+- development baseline OB-PLAN-v1.0.0
+- Zeus stop interface available
+- cancellation-capable handlers zeus.operational.artifact and zeus.operational.zdcl01-native-session
+  available
+- current executable mission NONE.
+priority: 0
+candidate_state: CANDIDATE
+qualification_requirements:
+- STOPQ-01 must be uniquely discoverable through zeus mission list and mission-specific
+  commands
+- resolve exactly one Mission Contract
+- resolve one authoritative package
+- bind only to a qualified cancellation-capable handler
+- launch only a disposable non-production hung workload
+- expose the provider process identity
+- permit zeus stop STOPQ-01 with bounded graceful timeout and forced escalation
+- verify process death independently
+- record stop reason and receipt
+- reach STOPPED or TERMINATED
+- support idempotent stop replay
+- preserve unrelated missions and runtime
+- and close with Zeus-specific evidence.
+completion_requirements:
+- Create evidence under engineering/evidence/operation-beta/wop-zeus-stopq01-canonical-mission-publication-001/
+  including MISSION-ARCHITECTURE-INVENTORY.md
+- STOPQ01-MISSION-CONTRACT-REPORT.md
+- BETA-REGISTRY-INTEGRATION.md
+- AUTHORITATIVE-PACKAGE-REPORT.md
+- HANDLER-BINDING-REPORT.md
+- CONTROLLED-HUNG-WORKLOAD.md
+- STOP-LIFECYCLE-CONTRACT.md
+- PROCESS-TERMINATION-EVIDENCE-CONTRACT.md
+- IDEMPOTENT-REPLAY-CONTRACT.md
+- ZEUS-DISCOVERY-VERIFICATION.md
+- PREFLIGHT-QUALIFICATION.md
+- NEGATIVE-QUALIFICATION.md
+- CONTROLLED-DOCUMENT-RECONCILIATION.md
+- REGRESSION-RESULTS.md
+- PLATFORM-VALIDATION-REPORT.md
+- 'and COMPLETION-REPORT.md. The Completion Report must begin with # Completion Report
+  and end with READY_FOR_PUBLICATION or NOT_READY_FOR_PUBLICATION.'
+approval:
+  authorized_lifecycle_state: Active
+authoritative_references:
+- PROC-0001@1.11
+- TPL-0001@1.7
+- STD-0000
+- STD-0001
+- STD-0002
+- STD-0003
+- STD-0004
+- SPEC-0008
+execution_package_references:
+  authority_node_id: Engineering Governance
+  authorization_decision_record: Submission constitutes execution authority
+  immutable_wop: WOP-ZEUS-STOPQ01-CANONICAL-MISSION-PUBLICATION-001
+sections:
+  mission_classification: Bounded Development mission-publication work establishing
+    a canonical disposable Beta stop-qualification mission.
+  governing_references: PROC-0001@1.11, TPL-0001@1.7, STD-0000, STD-0001, STD-0002,
+    STD-0003, STD-0004, SPEC-0008, the Mission Contract framework, the Beta mission
+    registry, and Zeus execution lifecycle procedures.
+  explicit_authority: Engineering Governance authorizes creation and prepublication
+    qualification of STOPQ-01 and its supporting Mission Contract, registry entry,
+    package, controlled documentation, tests, and evidence. This WOP does not authorize
+    publication, execution of STOPQ-01, termination of unrelated processes, or changes
+    to CAGF-01 or EPE-01.
+  dependencies_and_entry_criteria: Canonical repository identity verified; local main
+    equals origin/main; working tree clean; EOS synchronized; platform validation
+    passing; Beta mission registry readable; Mission Contract framework valid; cancellation-capable
+    handler inventory available.
+  execution_sequence: Inventory canonical mission structures; define STOPQ-01; create
+    its Mission Contract and registry entry; create its operational WOP package; bind
+    the qualified handler; implement the controlled hung workload and stop contract;
+    add verification interfaces; qualify disposable behavior; validate the platform;
+    commit; push; and stop before publication.
+  scope: STOPQ-01 Mission Contract, Beta mission registry entry, roadmap relationship,
+    operational WOP package, handler binding, controlled workload, stop lifecycle,
+    process evidence, qualification, closeout, controlled documentation, tests, and
+    evidence.
+  prohibited_activities: Do not submit or execute STOPQ-01 during this prepublication
+    WOP. Do not terminate any live or unrelated process. Do not modify CAGF-01 or
+    EPE-01. Do not bypass Mission Contract authority. Do not create or merge a PR.
+    Do not synchronize EOS from the candidate branch. Do not weaken stop fail-closed
+    behavior.
+  publication_and_synchronization: Prepublication execution stops after candidate
+    commit and push. Publication, EOS synchronization, post-publication mission discovery,
+    STOPQ-01 submission, hung-workload launch, stop execution, qualification, and
+    closeout require a separate authorized publication and execution stage.
+  stop_resume_and_escalation: Stop fail-closed if STOPQ-01 conflicts with an existing
+    mission identity, more than one Mission Contract resolves, the package is ambiguous,
+    handler cancellation capability cannot be proven, the workload could affect non-disposable
+    processes, process ownership cannot be verified, or platform validation fails.
+  success_and_acceptance_criteria: STOPQ-01 is represented by one canonical Mission
+    Contract, one registry identity, one authoritative WOP package, one qualified
+    handler binding, one disposable hung workload contract, and complete Zeus-specific
+    discovery and verification output; all validation passes; and the candidate is
+    ready for publication without executing the stop test.
+  validation_profile: Mission Contract validation, Beta registry validation, package
+    validation, handler capability verification, controlled-workload safety, stop-state-machine
+    tests, process-ownership tests, graceful-timeout tests, escalation tests, idempotent
+    replay tests, negative tests, controlled-document validation, Registry validation,
+    platform validation, and git diff validation.
+  deliverables: STOPQ-01 Mission Contract, Beta mission registry entry, authoritative
+    operational WOP package, handler binding, controlled hung workload, stop and termination
+    contracts, controlled documentation, tests, evidence, Completion Report, and exact
+    publication and execution commands.
+  completion_report_requirement: Identify every artifact created, Mission Contract
+    and package identities, handler binding, workload safety boundary, stop lifecycle,
+    evidence requirements, negative qualification, Zeus discovery results, publication
+    readiness, and next authorized action.
+execution_mode: DEVELOPMENT
+governance_authority: Engineering Governance
+repository_identity: /data/engineering/repositories/homelab
+effect_profile: DEVELOPMENT-CANONICAL-MISSION-PUBLICATION-NONPRODUCTION
+required_execution_files:
+- bootstrap.md
+- roadmap.md
+- mission.yaml
+- gates.yaml
+- manifests/immutable-manifest.yaml
+- source-wop.md
+source_document_digest: db783687dca4e69d8753944de28699a55bc8960c3c048b985d5828d1f09ba4ab

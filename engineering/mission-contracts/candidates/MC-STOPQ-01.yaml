@@ -1,0 +1,55 @@
+schema_version: 1
+document_type: MissionContract
+contract_id: MC-STOPQ-01
+mission_id: STOPQ-01
+registry_id: EMP-WORK-BETA-STOPQ-01
+wop:
+  id: WOP-ZEUS-STOPQ01-CANONICAL-MISSION-PUBLICATION-001
+  locator: engineering/operational-packages/STOPQ-01/mission.yaml
+  digest: e9057a4ea059f79cd0cd42a3e68febe94b312a8d8072f80ca66ceed6f396e5c5
+repository:
+  identity: homelab
+  root: /data/engineering/repositories/homelab
+  branch: main
+  baseline: df4c1de80247c48913dca1c0ea6298a66862e245
+scope:
+  objective: Execute the disposable STOPQ-01 mission under explicit post-publication authority.
+  package_locator: engineering/operational-packages/STOPQ-01/mission.yaml
+permissions:
+  inspect: true
+  modify: true
+  generate_evidence: true
+  reconcile_metadata: true
+  stage: true
+  commit: false
+  create_branch: false
+  push: false
+  publish: false
+  rollback: true
+  reconcile_state: true
+  close_mission: true
+roles:
+  human_authorizer: Engineering Governance
+  repository_operator: repository-operator
+  orchestration_agent: Zeus
+  execution_agent: Zeus
+  implementation_owner: Engineering Platform
+  document_owner: Engineering Governance
+  review_owner: Engineering Governance
+  qualification_owner: independent-qualification
+  publication_owner: Engineering Governance
+  evidence_reviewer: independent-qualification
+approvals:
+  activation: pending-publication-approval
+  publication: operator-required
+dirty_tree:
+  policy: CLEAN_REQUIRED
+lifecycle: candidate
+activation: {}
+interruption:
+  behavior: Resume the publication transaction from its journal after revalidating EOS and platform parity.
+closeout:
+  requirements:
+    - STOPQ-01 qualification evidence complete
+    - process death independently verified
+    - canonical mission closeout receipt emitted

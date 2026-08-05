@@ -48,6 +48,13 @@ KEYS = {
     "execution_package_authority_node_id": "execution_package_authority_node_id",
     "execution package authorization decision record": "execution_package_authorization_decision_record",
     "execution_package_authorization_decision_record": "execution_package_authorization_decision_record",
+    "target operation": "target_operation", "target_operation": "target_operation",
+    "target mission id": "target_mission_id", "target_mission_id": "target_mission_id",
+    "target mission class": "target_mission_class", "target_mission_class": "target_mission_class",
+    "target mission contract locator": "target_mission_contract_locator",
+    "target registry locator": "target_registry_locator",
+    "target package locator": "target_package_locator",
+    "activation policy": "activation_policy", "publication approval policy": "publication_approval_policy",
 }
 
 for _section in (
@@ -265,7 +272,17 @@ def package(source: Path, destination_root: Path, repository_root: Path | str | 
         "effect_profile": metadata["effect_profile"],
         "required_execution_files": ["bootstrap.md", "roadmap.md", "mission.yaml", "gates.yaml", "manifests/immutable-manifest.yaml", source_copy.name],
         "source_document_digest": digest,
+    }
+        target_fields = {
+            key: metadata[key] for key in (
+                "target_operation", "target_mission_id", "target_mission_class",
+                "target_mission_contract_locator", "target_registry_locator",
+                "target_package_locator", "activation_policy",
+                "publication_approval_policy",
+            ) if metadata.get(key) not in (None, "")
         }
+        if target_fields:
+            mission["target_mission"] = target_fields
         (temporary / "mission.yaml").write_text(yaml.safe_dump(mission, sort_keys=False), encoding="utf-8")
         (temporary / "bootstrap.md").write_text(
         f"# {mission['title']}\n\n{mission['objective']}\n\nSource: {source_copy.name}\n", encoding="utf-8")

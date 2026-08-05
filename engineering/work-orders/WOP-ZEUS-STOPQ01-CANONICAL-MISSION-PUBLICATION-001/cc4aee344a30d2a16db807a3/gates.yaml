@@ -1,0 +1,37 @@
+schema_version: 1
+gates:
+- VERIFY canonical repository and Beta mission architecture
+- INVENTORY mission-contract
+- registry
+- roadmap
+- WOP-package
+- handler
+- runtime
+- stop
+- qualification
+- and closeout interfaces
+- DEFINE STOPQ-01 identity and authority
+- CREATE Mission Contract
+- REGISTER Beta mission
+- CREATE authoritative operational WOP package
+- BIND cancellation-capable handler
+- IMPLEMENT controlled hung workload
+- DEFINE graceful and forced termination
+- DEFINE stop receipt and process evidence
+- DEFINE idempotent replay
+- UPDATE controlled documentation
+- QUALIFY disposable fixtures
+- VERIFY Zeus mission discovery
+- contract
+- authority
+- readiness
+- preflight
+- blockers
+- next action
+- and snapshot
+- RUN Registry
+- controlled-document
+- platform
+- and diff validation
+- COMMIT and PUSH prepublication candidate
+- STOP before PR creation.

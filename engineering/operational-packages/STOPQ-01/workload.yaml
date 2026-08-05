@@ -1,0 +1,7 @@
+schema_version: 1
+mission_id: STOPQ-01
+workload_id: controlled-hung-job
+disposable: true
+process_ownership_required: true
+external_effects: false
+termination: bounded-graceful-then-forced
