@@ -294,12 +294,18 @@ def reconcile(root: Path | str, stage1_directory: Path | str, admission_store: P
             AutonomousLifecycleController,
             AutonomousLifecycleStore,
         )
+        from scripts.lib.emp.autonomous_dispatch import (
+            AutonomousDispatchController,
+            LaunchStore,
+        )
         autonomous = AutonomousLifecycleController(
-            AutonomousLifecycleStore(runtime_root)
+            AutonomousLifecycleStore(runtime_root),
+            dispatch_controller=AutonomousDispatchController(LaunchStore(runtime_root)),
         ).reconcile(
             transaction,
             {"admission": admission_value, "execution": execution_value},
             command=command,
+            policy={"autonomous_dispatch": os.environ.get("ZEUS_AUTONOMOUS_DISPATCH") == "1"},
         )
         result = {**base, "source": "STAGE1_RECONCILIATION", "admission_id": resolved_admission,
                 "admission": admission_value, "execution": execution_value, "execution_id": resolved_execution,
