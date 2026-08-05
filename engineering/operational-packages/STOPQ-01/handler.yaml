@@ -1,0 +1,5 @@
+schema_version: 1
+mission_id: STOPQ-01
+handler_id: zeus.operational.artifact
+cancellation_capable: true
+production: false

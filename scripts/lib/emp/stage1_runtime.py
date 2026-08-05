@@ -576,6 +576,12 @@ class Stage1Runtime:
                                       evidence={"reason_code": "PROTECTED_BASELINE_UNAVAILABLE", "tag": tag})
                 protected[tag] = result.stdout.strip()
             package_digest = self._tree_digest(root)
+            # Target-mission metadata is a derived linkage, never a replacement
+            # for the immutable Stage 1 transaction or its package digest.
+            from scripts.lib.emp.canonical_mission_lifecycle import derive_linkage
+            canonical_linkage = derive_linkage(
+                metadata, source_path, package_digest=package_digest
+            )
             manifest_path = root / "manifests/immutable-manifest.yaml"
             try:
                 manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
@@ -601,6 +607,8 @@ class Stage1Runtime:
             if existing:
                 if existing.get("package_digest") != package_digest:
                     raise Stage1Error("development submission identity collision")
+                if canonical_linkage and not existing.get("canonical_mission_linkage"):
+                    existing["canonical_mission_linkage"] = canonical_linkage
                 if existing.get("state") != "CLOSED":
                     existing = self._resume_development(existing, baseline, protected, timestamp,
                                                         interrupt_after=interrupt_after)
@@ -634,6 +642,7 @@ class Stage1Runtime:
                     "publication": bool(metadata.get("simulate_publication_failure")),
                     "synchronization": bool(metadata.get("simulate_synchronization_failure")),
                 },
+                "canonical_mission_linkage": canonical_linkage,
                 "phases": [], "receipts": {}, "evidence": [], "failure": None,
             }
             # Freeze the complete authority chain before provider selection.

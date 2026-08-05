@@ -1,0 +1,22 @@
+schema_version: 1
+manifest_id: WOP-ZEUS-STOPQ01-CANONICAL-MISSION-PUBLICATION-001-MANIFEST
+mission_id: MISSION-ZEUS-STOPQ01-CANONICAL-MISSION-PUBLICATION-001
+wop_id: WOP-ZEUS-STOPQ01-CANONICAL-MISSION-PUBLICATION-001
+execution_mode: DEVELOPMENT
+governance_authority: Engineering Governance
+repository_identity: /data/engineering/repositories/homelab
+effect_profile: DEVELOPMENT-CANONICAL-MISSION-PUBLICATION-NONPRODUCTION
+protected_baselines:
+- OA-v1.0.0
+- OB-PLAN-v1.0.0
+- published main df4c1de80247c48913dca1c0ea6298a66862e245
+- existing Beta mission registry
+- CAGF-01
+- EPE-01
+- Mission Contract framework
+- execution handlers
+- runtime records
+- EOS state
+- controlled documentation
+- and unrelated mission identities.
+source_document_digest: db783687dca4e69d8753944de28699a55bc8960c3c048b985d5828d1f09ba4ab

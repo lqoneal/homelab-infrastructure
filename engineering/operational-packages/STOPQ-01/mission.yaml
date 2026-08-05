@@ -1,0 +1,14 @@
+schema_version: 1
+document_type: CanonicalOperationalMissionPackage
+mission_id: STOPQ-01
+work_item_id: EMP-WORK-BETA-STOPQ-01
+status: Active
+mission_class: disposable-operational-qualification
+handler: zeus.operational.artifact
+workload: controlled-hung-job
+stop_contract: graceful-timeout-then-forced-escalation
+required_evidence:
+  - provider_process_identity
+  - stop_receipt
+  - process_death_verification
+  - replay_result
