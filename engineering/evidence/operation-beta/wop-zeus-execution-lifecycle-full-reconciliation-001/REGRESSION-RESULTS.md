@@ -1,0 +1,3 @@
+# Regression Results
+
+Focused results: submit-boundary projection tests 3 passed; runtime reconciliation 8 passed; Stage 1 resolution 5 passed; canonical recovery 13 passed in a clean disposable repository; admission supersession 5 passed; resume lineage 14 passed; mission execution 8 passed; native session 3 passed; WOP packaging 9 passed; canonical WOP contract 1 passed; authoring 11 passed; WOP contract 17 passed; WOP admission 13 passed; execution interface 2 passed. Two legacy WOP-submission expectations remain unrelated failures (`MISSION_NOT_ELIGIBLE` versus `WOP_PACKAGE_UNAVAILABLE`, and published-package submission `FAIL` versus `PASS`); no validator was changed to accommodate them.

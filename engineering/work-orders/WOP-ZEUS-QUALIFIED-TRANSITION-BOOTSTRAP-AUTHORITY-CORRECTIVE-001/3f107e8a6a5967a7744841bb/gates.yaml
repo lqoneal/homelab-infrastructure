@@ -1,0 +1,21 @@
+schema_version: 1
+gates:
+- VERIFY repository and runtime state
+- TRACE the path-based rejection
+- INVENTORY the rejected transition
+- CAPTURE PR
+- commit
+- publication
+- synchronization
+- Registry
+- controlled-document
+- and platform provenance
+- DEFINE the qualified bootstrap contract
+- PERSIST the Zeus bootstrap reference
+- IMPLEMENT deterministic classification
+- QUALIFY positive and negative conditions
+- VERIFY the target execution read-only
+- RUN one bounded live reconciliation after qualification
+- VALIDATE tests and platform
+- COMMIT and PUSH
+- STOP before PR creation.

@@ -386,7 +386,12 @@ def resolve(root: Path | str, stage1_directory: Path | str, admission_store: Pat
     has_lineage = isinstance(lineage_projection, Mapping) and (
         lineage_projection.get("superseded_by") or lineage_projection.get("supersedes")
     )
-    if requested_admission_id or (resolve_admission_lineage and has_lineage):
+    # A receipt-backed first-generation admission may legitimately have no
+    # derived projection yet.  Resolve lineage only when the requested or
+    # discovered admission projection exists; the reconciler will materialize
+    # the missing receipt-backed projection atomically.
+    if ((requested_admission_id and admission_path.exists())
+            or (resolve_admission_lineage and has_lineage)):
         try:
             from scripts.lib.emp.admission_supersession import (
                 AdmissionSupersessionError, resolve_for_resume, resolve_for_start,

@@ -147,7 +147,7 @@ def reconcile(root: Path | str, stage1_directory: Path | str, admission_store: P
         try:
             base = resolve_stage1(root, stage1_directory, admission_store, execution_store,
                                   identifier=identifier, execution_id=execution_id,
-                                  admission_id=None, hydrate=False,
+                                  admission_id=admission_id, hydrate=False,
                                   require_lineage_environment=False,
                                   resolve_admission_lineage=False)
         except Stage1ExecutionResolutionError as error:
@@ -170,7 +170,7 @@ def reconcile(root: Path | str, stage1_directory: Path | str, admission_store: P
         # the immutable Stage 1 receipt and never fabricated as new admissions.
         existing_admission = _read_projection(Path(admission_store) / f"{requested}.json")
         lineage = existing_admission and (existing_admission.get("superseded_by") or existing_admission.get("supersedes"))
-        if lineage or admission_id:
+        if existing_admission is not None and (lineage or admission_id):
             from scripts.lib.emp.admission_supersession import resolve_for_start, resolve_for_resume
             published = None
             if require_lineage_environment:
@@ -256,16 +256,30 @@ def reconcile(root: Path | str, stage1_directory: Path | str, admission_store: P
         receipt_path = runtime_root / "evidence" / "reconciliation-receipts" / f"{reconciliation_id}.json"
         receipt = {"schema_version": 1, "reconciliation_id": reconciliation_id,
                    "transaction_id": transaction_id, "requested_command": command,
+                   "wop_id": transaction.get("wop_id"),
+                   "mission_id": transaction.get("mission_id"),
                    "repository_identity": str(root), "runtime_identity": str(runtime_root),
+                   "previous_lifecycle_state": transaction.get("state"),
+                   "new_lifecycle_state": "DISPATCHED_RUNTIME_VERIFIED",
+                   "authority_snapshot_digest": immutable_fields["stage1_authority_snapshot_digest"],
+                   "repository_baseline": transaction.get("repository_baseline"),
+                   "package_digest": transaction.get("package_digest"),
+                   "source_digest": transaction.get("source_digest"),
+                   "provider_id": ((transaction.get("receipts") or {}).get("dispatch") or {}).get("provider_id"),
+                   "dispatch_receipt_id": ((transaction.get("receipts") or {}).get("dispatch") or {}).get("receipt_id"),
                    "discovered_representations": discovered, "conflict_classifications": sorted(set(classifications)),
                    "authority_precedence": ["stage1_instance_id", "dispatch_receipt", "provider_selection_transaction", "execution_projection", "native_session", "operator_argument"],
                    "selected_authoritative_records": {"stage1_transaction": transaction_id, "admission_id": resolved_admission, "execution_id": resolved_execution},
+                   "records_prepared": [str(admission_path), str(execution_path), str(receipt_path)],
+                   "records_persisted": [str(admission_path), str(execution_path), str(receipt_path)],
+                   "records_verified": [str(admission_path), str(execution_path)],
                    "records_created": [str(p) for p, old in ((admission_path, old_admission), (execution_path, old_execution)) if old is None],
                    "records_repaired": ([str(execution_path)] if stale_execution else []), "records_superseded": [], "records_rebound": [],
                    "records_preserved": [transaction_id, resolved_admission, resolved_execution], "records_rejected": [],
                    "pre_state_digest": pre_state, "post_state_digest": post_state, "rollback_result": "NOT_REQUIRED",
                    "final_admission_id": resolved_admission, "final_execution_id": resolved_execution,
                    "final_session_id": execution_value.get("session_id"), "final_lifecycle_state": execution_value.get("state"),
+                   "blockers": [],
                    "next_authorized_action": "Continue the existing receipt-backed execution without resubmission.",
                    "timestamp": _now(),
                    "execution_identity_operands": identity_operands}

@@ -604,6 +604,7 @@ class Stage1Runtime:
                 if existing.get("state") != "CLOSED":
                     existing = self._resume_development(existing, baseline, protected, timestamp,
                                                         interrupt_after=interrupt_after)
+                existing = self._reconcile_runtime_after_dispatch(existing, timestamp)
                 existing["idempotent_replay"] = True
                 return existing
             operator = self.operator_resolver()
@@ -674,8 +675,66 @@ class Stage1Runtime:
             )
             record = self._resume_development(record, baseline, protected, timestamp,
                                               interrupt_after=interrupt_after)
+            record = self._reconcile_runtime_after_dispatch(record, timestamp)
             record["idempotent_replay"] = False
             return record
+
+    def _reconcile_runtime_after_dispatch(self, record: Mapping[str, Any], timestamp: str) -> dict[str, Any]:
+        """Seal dispatched Stage 1 state with its canonical runtime projections.
+
+        Stage 1 receipts remain immutable authority.  Admission and execution
+        files are derived projections and are installed by the shared atomic
+        reconciler.  A submission is not allowed to return ``DISPATCHED``
+        until both projections and the reconciliation receipt verify.  If the
+        projection transaction cannot complete, persist a durable blocked
+        checkpoint so the existing transaction can be resumed without
+        resubmission.
+        """
+        value = deepcopy(dict(record))
+        if "dispatch" not in (value.get("receipts") or {}):
+            return value
+        try:
+            from scripts.lib.emp.runtime_reconciliation import reconcile
+
+            runtime_root = self.store.directory.resolve().parent
+            reconciliation = reconcile(
+                self.repository,
+                self.store.directory,
+                runtime_root / "mission-admissions",
+                runtime_root / "mission-executions",
+                command="submit",
+                execution_id=value["instance_id"],
+                require_lineage_environment=False,
+            )
+        except (OSError, ValueError) as error:
+            value["state"] = "BLOCKED"
+            value["pending_phase"] = "EXECUTION_PERSISTED"
+            value["next_action"] = "Resume the existing transaction to reconcile admission and execution projections"
+            value["failure"] = {
+                "classification": "RUNTIME_PROJECTION_PERSISTENCE_FAILURE",
+                "message": str(error),
+                "transaction_id": value["instance_id"],
+            }
+            value.setdefault("evidence", []).append({
+                "type": "lifecycle-reconciliation-failure",
+                "classification": "RUNTIME_PROJECTION_PERSISTENCE_FAILURE",
+                "message": str(error),
+                "transaction_id": value["instance_id"],
+                "timestamp": timestamp,
+            })
+            value["updated_at"] = timestamp
+            return self.store.save(value)
+
+        value["runtime_reconciliation"] = {
+            "reconciliation_id": reconciliation["reconciliation"]["reconciliation_id"],
+            "classification": reconciliation["reconciliation"]["classification"],
+            "admission_id": reconciliation["admission_id"],
+            "execution_id": reconciliation["execution_id"],
+            "receipt_path": reconciliation["reconciliation"]["receipt_path"],
+        }
+        value["runtime_projection_state"] = "VERIFIED"
+        value["updated_at"] = timestamp
+        return self.store.save(value)
 
     def _resume_development(self, record: dict[str, Any], baseline: str,
                             protected: Mapping[str, str], timestamp: str,
