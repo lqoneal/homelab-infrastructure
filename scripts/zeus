@@ -75,6 +75,10 @@ from scripts.lib.emp.canonical_mission_lifecycle import (
     mission_list as canonical_mission_list,
     view as canonical_mission_view,
 )
+from scripts.lib.emp.qualification_contract import (
+    QualificationContractError, resolve as resolve_qualification_contract,
+    view as view_qualification_contract,
+)
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -496,7 +500,11 @@ def main(argv=None):
     context=sub.add_parser("context"); context.add_argument("action", choices=("reconstruct",))
     eligibility=sub.add_parser("eligibility"); eligibility.add_argument("action", choices=("evaluate", "show")); eligibility.add_argument("request", type=Path)
     evidence=sub.add_parser("evidence"); evidence.add_argument("action", choices=("show",)); evidence.add_argument("identifier")
-    qualification=sub.add_parser("qualification"); qualification.add_argument("action", choices=("show",)); qualification.add_argument("identifier")
+    qualification=sub.add_parser("qualification"); qualification.add_argument("action", choices=("show",)); qualification.add_argument("identifier", nargs="?", default="qualification"); qualification.add_argument("--json", action="store_true")
+    publication=sub.add_parser("publication", help="Show the canonical publication decision."); publication.add_argument("action", choices=("show", "verify"), nargs="?", default="show"); publication.add_argument("--json", action="store_true")
+    blockers=sub.add_parser("blockers", help="Show typed blockers from the canonical qualification contract."); blockers.add_argument("--json", action="store_true")
+    readiness=sub.add_parser("readiness", help="Show canonical publication readiness."); readiness.add_argument("--json", action="store_true")
+    snapshot=sub.add_parser("snapshot", help="Show the immutable qualification decision snapshot."); snapshot.add_argument("--json", action="store_true")
     completion=sub.add_parser("completion"); completion.add_argument("action", choices=("show",)); completion.add_argument("identifier")
     resume_parser = sub.add_parser("resume", help="Resume an existing Development transaction by identity.")
     resume_parser.add_argument("identifier", nargs="?", help="WOP, mission, registration, package, or transaction identity")
@@ -781,7 +789,28 @@ def main(argv=None):
             else:
                 print(f"Mission      : {value['mission_id']}\nExecution    : {value['execution_id']}\nState        : {value['state']}\nStop result  : {value.get('stop_result', 'STOPPED')}\nNext action  : scripts/zeus resume {value['mission_id']}")
             return 0
+        if a.command in {"qualification", "publication", "blockers", "readiness", "snapshot"}:
+            subject = {
+                "qualification": "qualification",
+                "publication": "publication",
+                "blockers": "blockers",
+                "readiness": "readiness",
+                "snapshot": "snapshot",
+            }[a.command]
+            value = view_qualification_contract(ROOT, subject)
+            if getattr(a, "json", False):
+                emit(value)
+            else:
+                print(json.dumps(value, indent=2, sort_keys=True))
+            return 0 if value.get("qualification_state", "NOT_QUALIFIED") == "QUALIFIED_FOR_PUBLICATION" else 77
         if a.command == "next-action":
+            canonical = resolve_qualification_contract(ROOT)
+            if a.json:
+                emit({"next_authorized_action": canonical["next_authorized_action"], "qualification": canonical["qualification_state"], "publication": canonical["publication_state"], "decision_digest": canonical["decision_digest"]})
+            else:
+                print(f"Qualification: {canonical['qualification_state']}\nPublication: {canonical['publication_state']}\nNext Action: {canonical['next_authorized_action']}")
+            return 0 if canonical["qualification_state"] == "QUALIFIED_FOR_PUBLICATION" else 77
+        if a.command == "next-action-legacy-disabled":
             beta = operational_beta.next_action(ROOT)
             if beta.get("result") == "PASS":
                 if a.json:
@@ -1170,6 +1199,11 @@ def main(argv=None):
                 "idempotent_replay": replay,
             })
             return 0
+        if a.command == "verify" and a.gate.lower() in {"qualification", "publication", "blockers", "readiness", "snapshot", "zeus"}:
+            subject = "verify" if a.gate.lower() == "zeus" else a.gate.lower()
+            value = view_qualification_contract(ROOT, subject)
+            emit(value)
+            return 0 if value.get("qualification_state", "NOT_QUALIFIED") == "QUALIFIED_FOR_PUBLICATION" else 77
         if a.command == "verify":
             if a.gate.upper().startswith("OA-"):
                 if (not a.wop and a.gate.upper() in {"OA-11", "OA-12", "OA-13", "OA-14", "OA-15", "OA-16", "OA-17", "OA-18", "OA-19", "OA-20", "OA-21", "OA-22", "OA-23", "OA-24", "OA-25", "OA-26", "OA-27", "OA-28", "OA-29", "OA-30"}):
@@ -1644,7 +1678,7 @@ def main(argv=None):
                 emit(ConvergenceRuntime(Path(a.repository)).operational_wop(intent=a.intent,flow=flow))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (PackagingError, RuntimeAdoptionError, RuntimeDiscoveryError, OrchestrationError, Stage1Error, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, mission_knowledge.MissionKnowledgeError, operational_beta.OperationalBetaError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+    except (PackagingError, RuntimeAdoptionError, RuntimeDiscoveryError, OrchestrationError, Stage1Error, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, QualificationContractError, mission_knowledge.MissionKnowledgeError, operational_beta.OperationalBetaError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr)
         if isinstance(error, PackagingError):
             if getattr(locals().get("a", None), "json", False):
