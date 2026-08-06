@@ -71,6 +71,37 @@ paths and digests under `packages/`, `mission-contracts/`,
 `execution-authority/`, `receipts/`, and `journals/`, with exactly one artifact
 of each required class.
 
+Bootstrap has two explicit, non-interchangeable modes. For a verified P3-G1
+admission, the canonical P4-G1 bootstrap command is:
+
+```text
+scripts/zeus --runtime-root <RUNTIME> bootstrap admission <ADMISSION_TRANSACTION_OR_RECEIPT> --json
+```
+
+The separate legacy repository-operational lifecycle must be selected explicitly:
+
+```text
+scripts/zeus --runtime-root <RUNTIME> bootstrap operational --json
+```
+
+`zeus bootstrap` without a mode fails with `BOOTSTRAP_MODE_REQUIRED`; an
+admission parse failure never falls through to operational bootstrap. Admission
+mode consumes only the `P3_G1_ADMISSION` contract and stops before provider
+selection or execution. Operational mode consumes no P3-G1 admission artifact
+and is not a Phase 4 bootstrap result. Use `zeus bootstrap --help`,
+`zeus bootstrap admission --help`, and `zeus bootstrap operational --help` for
+the mode-specific contracts.
+
+Bootstrap validates the admission transaction and all five admission artifacts
+against the published repository baseline before provisioning exactly one
+bootstrap transaction, canonical execution record, bootstrap receipt, bootstrap
+journal, and provider-readiness projection. The terminal state is
+`READY_FOR_EXECUTION_PROVIDER` with `provider_ready: true` and next action
+`EVALUATE_EXECUTION_PROVIDER`. Replay is `IDEMPOTENT`; provider selection,
+provider sessions, dispatch, and execution remain outside this gate. Bootstrap
+artifact verification is read-only and rejects altered, missing, conflicting,
+or partially unrecoverable state.
+
 Zeus is also responsible for automatic WOP packaging. The operator may submit
 an existing canonical package directory, a repository-resolved WOP identity, or
 a Markdown/DOCX source document. Zeus preserves the source document, resolves

@@ -50,7 +50,7 @@ counting, suppression, and recovery are specified in
 From the repository root, run:
 
 ```text
-scripts/zeus bootstrap
+scripts/zeus bootstrap operational
 scripts/zeus status
 ```
 
@@ -71,11 +71,11 @@ without clearing missions or lifecycle records.
 
 ## Lifecycle, recovery, and troubleshooting
 
-The state is created by `zeus bootstrap`, updated atomically by Zeus, and
+The state is created by `zeus bootstrap operational`, updated atomically by Zeus, and
 retained across invocations. Never hand-edit it. Backups must preserve the
 state file as a unit while Zeus is idle.
 
-If no operational state exists, run `scripts/zeus bootstrap`; this is the
+If no operational state exists, run `scripts/zeus bootstrap operational`; this is the
 deterministic recovery path for an uninitialized runtime. Bootstrap does not
 replace corrupted or incompatible state. Preserve the failed file for
 investigation, restore a known-good whole-file backup, then rerun bootstrap.
@@ -85,7 +85,7 @@ records must then be reconciled from their authoritative source records.
 
 Common failures:
 
-- `operational state does not exist`: run bootstrap.
+- `operational state does not exist`: run `bootstrap operational`.
 - `incompatible orchestration schema version`: use a compatible Zeus release
   or an explicitly qualified migration; bootstrap never guesses a migration.
 - `invalid orchestration store`: preserve and restore the file; initialization

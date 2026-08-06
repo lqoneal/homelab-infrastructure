@@ -41,6 +41,8 @@ from scripts.lib.emp.progressive_gate import ProgressiveGateError, ProgressiveGa
 from scripts.lib.emp.stage1_runtime import Stage1Error, Stage1Runtime  # noqa: E402
 from scripts.lib.emp.submission_boundary import SubmissionError, submit as submit_wop_boundary  # noqa: E402
 from scripts.lib.emp.mission_admission_boundary import MissionAdmissionBoundaryError, admit as admit_mission_boundary  # noqa: E402
+from scripts.lib.emp.bootstrap_boundary import BootstrapBoundaryError, bootstrap as bootstrap_admission  # noqa: E402
+from scripts.lib.emp.bootstrap_verification import BootstrapVerificationError, verify_bootstrap_replay  # noqa: E402
 from scripts.lib.emp.mission_submission import submit_by_mission  # noqa: E402
 from scripts.lib.emp.oa01_verification import OA01MissionVerification, OA01VerificationError  # noqa: E402
 from scripts.lib.emp.oa01_implementation import OA01ImplementationError, qualify as qualify_oa01_implementation  # noqa: E402
@@ -411,7 +413,7 @@ def main(argv=None):
         index = arguments.index("--runtime-root")
         if index + 1 < len(arguments):
             os.environ["ZEUS_RUNTIME_ROOT"] = arguments[index + 1]
-    override = "--state" in arguments or bool(os.environ.get("ZEUS_STATE")) or any(item in {"wop", "submit", "admit"} for item in arguments)
+    override = "--state" in arguments or bool(os.environ.get("ZEUS_STATE")) or any(item in {"wop", "submit", "admit", "bootstrap", "bootstrap-verify"} for item in arguments)
     test_mode = os.environ.get("ZEUS_TESTING")
     testing = test_mode is not None
     operator_path = None
@@ -452,7 +454,34 @@ def main(argv=None):
     p.add_argument("--runtime-root", type=Path, help="explicit mutable Zeus runtime override")
     p.add_argument("--verbose", action="store_true", help="show operator orientation before command output")
     sub = p.add_subparsers(dest="command")
-    sub.add_parser("bootstrap")
+    bootstrap_command = sub.add_parser(
+        "bootstrap",
+        help=("Select an explicit bootstrap lifecycle: admission consumes a P3-G1 "
+              "admission transaction/receipt; operational runs the separate legacy "
+              "repository bootstrap."),
+        description=("Bootstrap lifecycle selector. A mode is required; omitted or "
+                     "ambiguous mode never falls through to another lifecycle."),
+    )
+    bootstrap_modes = bootstrap_command.add_subparsers(dest="bootstrap_mode", metavar="{admission,operational}")
+    admission_bootstrap = bootstrap_modes.add_parser(
+        "admission",
+        help="Canonical P4-G1 admission-driven bootstrap (P3_G1_ADMISSION -> READY_FOR_EXECUTION_PROVIDER).",
+        description=("Consume one P3-G1 admission transaction or receipt. This mode "
+                     "does not select a provider, dispatch work, or start execution."),
+    )
+    admission_bootstrap.add_argument("admission", help="P3-G1 admission transaction or admission receipt")
+    admission_bootstrap.add_argument("--json", action="store_true")
+    operational_bootstrap = bootstrap_modes.add_parser(
+        "operational",
+        help="Separate legacy repository-operational bootstrap lifecycle.",
+        description=("Run the legacy operational bootstrap. This mode does not consume "
+                     "a P3-G1 admission transaction or receipt."),
+    )
+    operational_bootstrap.add_argument("--json", action="store_true")
+    bootstrap_verify = sub.add_parser("bootstrap-verify", help="Read-only verification of two P4-G1 bootstrap responses.")
+    bootstrap_verify.add_argument("first", type=Path)
+    bootstrap_verify.add_argument("replay", type=Path)
+    bootstrap_verify.add_argument("--json", action="store_true")
     status_parser = sub.add_parser("status")
     status_parser.add_argument("--json", action="store_true")
     authority = sub.add_parser("authority")
@@ -819,7 +848,64 @@ def main(argv=None):
         environment_state = os.environ.get("ZEUS_STATE")
         requested_state = a.state or (Path(environment_state) if environment_state else None)
         if a.command == "bootstrap":
-            emit(bootstrap(ROOT, requested_state))
+            if a.bootstrap_mode is None:
+                print(
+                    "BOOTSTRAP_MODE_REQUIRED\n"
+                    "Valid forms:\n"
+                    "  zeus bootstrap admission <ADMISSION_TRANSACTION_OR_RECEIPT> --json\n"
+                    "  zeus bootstrap operational [--json]",
+                    file=sys.stderr,
+                )
+                return 2
+            if a.bootstrap_mode == "admission":
+                runtime = initialize_runtime(ROOT, explicit=getattr(a, "runtime_root", None))
+                value = bootstrap_admission(
+                    a.admission, repository=ROOT, runtime_root=runtime["root"], at=getattr(a, "at", None),
+                )
+                if a.json:
+                    emit(value)
+                else:
+                    print(
+                    "Zeus Bootstrap\n"
+                    "---------------\n"
+                    "Mode           : ADMISSION\n"
+                    f"Bootstrap      : {value['bootstrap_id']}\n"
+                    f"State          : {value['bootstrap_state']}\n"
+                    f"Result         : {value['bootstrap_result']}\n"
+                    f"Duplicate      : {value.get('duplicate_bootstrap', 'NEW')}\n"
+                    f"Next action    : {value['next_action']}"
+                    )
+                return 0
+            if a.bootstrap_mode == "operational":
+                initialize_runtime(ROOT, explicit=getattr(a, "runtime_root", None))
+                value = bootstrap(ROOT, requested_state)
+                value = {**value, "bootstrap_mode": "OPERATIONAL"}
+                emit(value) if a.json else print(
+                    "Zeus Bootstrap\n"
+                    "---------------\n"
+                    "Mode           : OPERATIONAL\n"
+                    "Lifecycle      : LEGACY_OPERATIONAL_BOOTSTRAP\n"
+                    f"State          : {value.get('operational_readiness', 'READY')}\n"
+                    f"State path     : {value.get('state_path', 'UNRESOLVED')}"
+                )
+                return 0
+            print("BOOTSTRAP_MODE_INVALID", file=sys.stderr)
+            return 2
+            return 0
+        if a.command == "bootstrap-verify":
+            first = json.loads(a.first.read_text(encoding="utf-8"))
+            replay = json.loads(a.replay.read_text(encoding="utf-8"))
+            runtime = initialize_runtime(ROOT, explicit=getattr(a, "runtime_root", None))
+            value = verify_bootstrap_replay(first, replay, runtime_root=runtime["root"], repository=ROOT)
+            emit(value) if a.json else print(
+                "Bootstrap Verification\n"
+                "-----------------------\n"
+                f"Result         : {value['result']}\n"
+                f"State          : {value['bootstrap_state']}\n"
+                f"Provider ready : {value['provider_ready']}\n"
+                f"Replay         : {value['duplicate_bootstrap']}\n"
+                f"Next action    : {value['next_action']}"
+            )
             return 0
         if a.command == "intro":
             if a.status:
