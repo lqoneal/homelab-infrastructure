@@ -67,6 +67,12 @@ AUTHORIZED_CANDIDATE_PATHS = frozenset({
     "engineering/evidence/operation-beta/p5-g4-post-publication-invocation-baseline-reconciliation-completion-report.md",
     "engineering/evidence/operation-beta/p5-g5-execution-start-foundation-completion-report.md",
     "engineering/evidence/operation-beta/p5-g5-post-publication-execution-start-provenance-reconciliation-completion-report.md",
+    "scripts/lib/emp/codex_adapter.py",
+    "scripts/lib/emp/codex_app_server_broker.py",
+    "scripts/lib/emp/codex_interactive.py",
+    "scripts/tests/test-zeus-p5-g6-codex-adapter.py",
+    "scripts/tests/test-zeus-p5-g6-codex-interactive.py",
+    "engineering/evidence/operation-beta/p5-g6-controlled-active-execution-foundation-completion-report.md",
 })
 
 

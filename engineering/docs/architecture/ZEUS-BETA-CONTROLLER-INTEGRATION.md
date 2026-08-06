@@ -103,3 +103,43 @@ mandatory lifecycle command. Both paths resolve the same authoritative WOP
 and never fabricate a package or approval. Interrupted work is resumed only
 through `scripts/zeus resume <mission>`; admission, receipt, publication, and
 recovery reconciliation remain internal Zeus mechanisms.
+
+## Codex interactive provider boundary
+
+P5-G6 has three explicit execution modes. Direct interactive is the default:
+Zeus resolves context and launches the native Codex CLI with inherited terminal
+streams. Explicit remote interactive resolves the mission/repository/execution
+context, starts or reuses a verified remote-capable app-server endpoint, and
+launches `codex --remote <endpoint>` under the recorded session identity. The official Codex client owns terminal
+rendering, keyboard input, paste, resize, thread, and turn presentation.
+Zeus remains the lifecycle, authority, approval, evidence, replay, and
+recovery controller; `engctl codex` remains the emergency recovery path and
+is not a Zeus-managed authority bypass.
+
+Managed execution remains `MANAGED_STDIO` and is never advertised as remotely
+attachable. Interactive use is an explicitly bound `INTERACTIVE_REMOTE`
+provider started with the installed listener syntax:
+`codex app-server --listen ws://127.0.0.1:<port>`. Zeus selects a free
+loopback port, records the endpoint receipt, and performs a WebSocket plus
+JSON-RPC initialize readiness probe before launching the official client.
+Process existence alone is not readiness; stale, non-loopback, wrong-scheme,
+or non-responding endpoints fail closed with diagnostics.
+
+### P5-G6 corrective convergence
+
+The direct launcher locator is repository-root-derived and canonical:
+`scripts/lib/eos/codex-direct-launch.sh`. Both Zeus and `engctl codex` resolve
+that same regular executable, and pre-launch validation rejects missing,
+non-executable, or repository-escaping paths with structured blocker codes.
+`scripts/zeus codex shell --preflight` is redirect-safe and does not launch
+Codex; native TUI acceptance remains a separate attached-terminal operation.
+
+Remote diagnosis and remote operation consume the same endpoint transaction.
+The transaction records loopback allocation, listener startup, WebSocket and
+JSON-RPC readiness, endpoint identity, and a durable receipt containing
+`endpoint_owner_session_id`, `endpoint_creation_transaction_id`, listener PID,
+and endpoint URI. Diagnostic receipts are ephemeral and cleaned up after the
+probe. Operational receipts remain owned by the interactive session until
+client exit reconciliation. An endpoint created by `shell --remote` is never
+required to pre-exist; `REMOTE_ENDPOINT_MISSING` applies only to explicit
+attach/reuse.

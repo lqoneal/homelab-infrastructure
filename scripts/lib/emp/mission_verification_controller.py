@@ -20,9 +20,11 @@ from scripts.lib.emp.repository_identity import resolve
 from scripts.lib.eos.canonical_baseline import resolve as resolve_baseline
 from scripts.lib.emp.runtime_paths import resolve_runtime
 from scripts.lib.eos import operational_beta
+from scripts.lib.emp import codex_adapter
 
 
 SCHEMA_VERSION = 1
+PUBLISHED_BASELINE = "05167c58b5b95342734d4bf5c77f5e4c8eb77cb4"
 
 
 class MissionVerificationError(ValueError):
@@ -377,6 +379,13 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         checks["downstream_boundary"] = "FAIL"
     if not baseline_ok:
         checks["artifact_integrity"] = "FAIL"
+    codex_stage = codex_adapter.status(root, mission_id, runtime_root=runtime) if execution_start_stage.get("result") == "PASS" else {}
+    if codex_stage.get("state") == "NOT_STARTED":
+        codex_stage = {}
+    mission_work_started = bool(codex_stage.get("mission_work_started", execution_start_stage.get("mission_work_started", False)))
+    repository_work_started = bool(codex_stage.get("repository_work_started", execution_start_stage.get("repository_work_started", False)))
+    execution_monitoring_active = codex_stage.get("execution_monitoring") == "ACTIVE"
+    execution_stage = execution_start_stage
     checks.update({
         "repository_identity": "PASS" if repository_data.get("repository_path") else "FAIL",
         "repository_baseline": "PASS" if baseline_ok else "FAIL",
@@ -416,8 +425,8 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         "execution_session_created": bool(execution_start_stage.get("execution_session_created")),
         "provider_process_bound": bool(execution_start_stage.get("provider_process_bound")),
         "execution_adapter_mode": execution_start_stage.get("execution_adapter_mode"),
-        "repository_work_started": bool(execution_start_stage.get("repository_work_started")),
-        "execution_monitoring_active": bool(execution_start_stage.get("execution_monitoring_active")),
+        "repository_work_started": repository_work_started,
+        "execution_monitoring_active": execution_monitoring_active,
         "completion_reported": bool(execution_start_stage.get("completion_reported")),
         "provider_session_created": bool(provider_session_stage.get("provider_session_created")),
         "provider_session_authorized": bool(provider_session_stage.get("provider_session_authorized")),
@@ -429,7 +438,7 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         "provider_acknowledged": bool(provider_invocation_stage.get("provider_acknowledged")),
         "execution_start_eligible": bool(provider_invocation_stage.get("execution_start_eligible")),
         "execution_started": bool(execution_start_stage.get("execution_started")),
-        "mission_work_started": bool(execution_start_stage.get("mission_work_started")),
+        "mission_work_started": mission_work_started,
         "invocation_provenance_baseline": provider_invocation_stage.get("invocation_provenance_baseline"),
         "execution_start_provenance_baseline": execution_start_stage.get("execution_start_provenance_baseline"),
         "execution_start_baseline_relationship": execution_start_stage.get("execution_start_baseline_relationship", execution_start_stage.get("baseline_relationship")),
@@ -437,11 +446,11 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         "current_published_baseline": execution_start_stage.get("current_published_baseline", provider_invocation_stage.get("current_published_baseline", baseline_resolution.get("published_head"))),
         "baseline_relationship": provider_invocation_stage.get("baseline_relationship", baseline_resolution.get("baseline_relationship")),
         "replay": {"submission": "IDEMPOTENT" if chain else "UNKNOWN", "admission": "IDEMPOTENT" if chain else "UNKNOWN", "bootstrap": "IDEMPOTENT" if chain else "UNKNOWN", "provider_session": provider_session_stage.get("replay", "UNKNOWN"), "provider_invocation": provider_invocation_stage.get("invocation_replay", provider_invocation_stage.get("replay", "UNKNOWN")), "execution_start": execution_start_stage.get("execution_start_replay", "NOT_STARTED")},
-        "lifecycle": {"submission_state": chain.get("submission", {}).get("submission_state"), "admission_state": chain.get("admission", {}).get("admission_state"), "bootstrap_state": chain.get("bootstrap", {}).get("bootstrap_state"), "provider_ready": chain.get("bootstrap", {}).get("provider_ready", False), "provider_selected": bool(provider_stage), "provider_qualified": bool(provider_stage.get("provider_qualified", False)), "dispatch_eligible": bool(provider_stage.get("dispatch_eligible", False)), "provider_id": provider_stage.get("provider_id"), "dispatch_created": bool(dispatch_stage), "provider_session_created": bool(provider_session_stage.get("provider_session_created")), "provider_session_authorized": bool(provider_session_stage.get("provider_session_authorized")), "provider_session_id": provider_session_stage.get("provider_session_id"), "provider_session_state": provider_session_stage.get("session_state"), "provider_invoked": bool(provider_invocation_stage.get("provider_invoked", provider_session_stage.get("provider_invoked", False))), "provider_acknowledged": bool(provider_invocation_stage.get("provider_acknowledged", False)), "provider_invocation_id": provider_invocation_stage.get("provider_invocation_id"), "provider_invocation_state": provider_invocation_stage.get("provider_invocation_state"), "invocation_provenance_baseline": provider_invocation_stage.get("invocation_provenance_baseline"), "execution_start_provenance_baseline": execution_start_stage.get("execution_start_provenance_baseline"), "current_published_baseline": execution_start_stage.get("current_published_baseline", provider_invocation_stage.get("current_published_baseline")), "execution_start_baseline_relationship": execution_start_stage.get("execution_start_baseline_relationship", execution_start_stage.get("baseline_relationship")), "execution_start_integrity": execution_start_stage.get("execution_start_integrity", "FAIL" if execution_start_stage else "NOT_STARTED"), "baseline_relationship": execution_start_stage.get("execution_start_baseline_relationship", execution_start_stage.get("baseline_relationship")), "execution_start_eligible": bool(provider_invocation_stage.get("execution_start_eligible", False)), "execution_start_state": execution_start_stage.get("execution_start_state"), "execution_start_authorized": bool(execution_start_stage.get("execution_start_authorized", False)), "execution_session_created": bool(execution_start_stage.get("execution_session_created", False)), "provider_process_bound": bool(execution_start_stage.get("provider_process_bound", False)), "execution_id": execution_start_stage.get("execution_id"), "execution_session_id": execution_start_stage.get("execution_session_id"), "execution_started": bool(execution_start_stage.get("execution_started", False)), "mission_work_started": bool(execution_start_stage.get("mission_work_started", False)), "repository_work_started": bool(execution_start_stage.get("repository_work_started", False)), "execution_monitoring_active": bool(execution_start_stage.get("execution_monitoring_active", False)), "completion_reported": bool(execution_start_stage.get("completion_reported", False))},
+        "lifecycle": {"submission_state": chain.get("submission", {}).get("submission_state"), "admission_state": chain.get("admission", {}).get("admission_state"), "bootstrap_state": chain.get("bootstrap", {}).get("bootstrap_state"), "provider_ready": chain.get("bootstrap", {}).get("provider_ready", False), "provider_selected": bool(provider_stage), "provider_qualified": bool(provider_stage.get("provider_qualified", False)), "dispatch_eligible": bool(provider_stage.get("dispatch_eligible", False)), "provider_id": provider_stage.get("provider_id"), "dispatch_created": bool(dispatch_stage), "provider_session_created": bool(provider_session_stage.get("provider_session_created")), "provider_session_authorized": bool(provider_session_stage.get("provider_session_authorized")), "provider_session_id": provider_session_stage.get("provider_session_id"), "provider_session_state": provider_session_stage.get("session_state"), "provider_invoked": bool(provider_invocation_stage.get("provider_invoked", provider_session_stage.get("provider_invoked", False))), "provider_acknowledged": bool(provider_invocation_stage.get("provider_acknowledged", False)), "provider_invocation_id": provider_invocation_stage.get("provider_invocation_id"), "provider_invocation_state": provider_invocation_stage.get("provider_invocation_state"), "invocation_provenance_baseline": provider_invocation_stage.get("invocation_provenance_baseline"), "execution_start_provenance_baseline": execution_start_stage.get("execution_start_provenance_baseline"), "current_published_baseline": execution_start_stage.get("current_published_baseline", provider_invocation_stage.get("current_published_baseline")), "execution_start_baseline_relationship": execution_start_stage.get("execution_start_baseline_relationship", execution_start_stage.get("baseline_relationship")), "execution_start_integrity": execution_start_stage.get("execution_start_integrity", "FAIL" if execution_start_stage else "NOT_STARTED"), "baseline_relationship": execution_start_stage.get("execution_start_baseline_relationship", execution_start_stage.get("baseline_relationship")), "execution_start_eligible": bool(provider_invocation_stage.get("execution_start_eligible", False)), "execution_start_state": execution_start_stage.get("execution_start_state"), "execution_start_authorized": bool(execution_start_stage.get("execution_start_authorized", False)), "execution_session_created": bool(execution_start_stage.get("execution_session_created", False)), "provider_process_bound": bool(execution_start_stage.get("provider_process_bound", False)), "execution_id": execution_start_stage.get("execution_id"), "execution_session_id": execution_start_stage.get("execution_session_id"), "execution_started": bool(execution_start_stage.get("execution_started", False)), "mission_work_started": mission_work_started, "repository_work_started": repository_work_started, "execution_monitoring_active": execution_monitoring_active, "completion_reported": bool(execution_stage.get("completion_reported", False))},
         "provider_selection": provider_stage,
         "dispatch": dispatch_stage,
         "provider_session": provider_session_stage,
-        "provider_invocation": provider_invocation_stage, "execution_start": execution_start_stage,
+        "provider_invocation": provider_invocation_stage, "execution_start": execution_start_stage, "codex": codex_stage,
         "artifacts": artifacts, "legacy_excluded": True, "blockers": blockers, "next_authorized_action": next_action,
     }
 

@@ -89,6 +89,16 @@ from scripts.lib.emp import dispatch_foundation
 from scripts.lib.emp import provider_session
 from scripts.lib.emp import provider_invocation
 from scripts.lib.emp import execution_start
+from scripts.lib.emp import codex_adapter
+from scripts.lib.emp import codex_interactive
+from scripts.lib.emp import codex_reconciliation
+
+CODEX_CONTROLLER_ROUTING = {
+    "status": "managed.status", "logs": "managed.logs", "artifacts": "managed.artifacts",
+    "start": "managed.start", "resume": "managed.resume", "stop": "managed.stop",
+    "shell": "interactive.shell", "interactive": "interactive.shell", "attach": "interactive.attach",
+    "reconcile": "reconciliation.reconcile",
+}
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -457,6 +467,10 @@ def main(argv=None):
         operator_path = Path("/tmp/zeus-wop-authoring-interface-state.json")
     if "doctor" in arguments:
         operator_path = Path("/tmp/zeus-doctor-interface-state.json")
+    if "codex" in arguments:
+        # Codex lifecycle commands must not initialize or mutate the
+        # controller-owned runtime merely to render operator orientation.
+        operator_path = Path("/tmp/zeus-codex-state/zeus-codex-interface-state.json")
     if testing:
         configured = os.environ.get("ZEUS_OPERATOR_STATE")
         if configured:
@@ -471,7 +485,7 @@ def main(argv=None):
                 "mission", "explain", "authority", "capabilities", "capability",
                 "lifecycle", "list", "show", "assurance", "context", "evidence",
                 "qualification", "completion", "resume", "stop", "policy", "validate", "submit",
-                "dispatcher", "dispatch", "provider-session", "provider-invocation", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform", "admit", "provider", "publication",
+                "dispatcher", "dispatch", "provider-session", "provider-invocation", "execution-start", "codex", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform", "admit", "provider", "publication",
             } else interface_store.increment()
         )
         if "--verbose" in arguments:
@@ -590,6 +604,7 @@ def main(argv=None):
     provider_session_parser=sub.add_parser("provider-session", help="Create or verify the canonical provider session; never invokes a provider or starts execution."); provider_session_parser.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization")); provider_session_parser.add_argument("mission_id", nargs="?"); provider_session_parser.add_argument("--json", action="store_true")
     provider_invocation_parser=sub.add_parser("provider-invocation", help="Create or verify one bounded provider acknowledgement; never starts execution or mission work."); provider_invocation_parser.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization", "package", "acknowledgement")); provider_invocation_parser.add_argument("mission_id", nargs="?"); provider_invocation_parser.add_argument("--json", action="store_true")
     execution_start_parser=sub.add_parser("execution-start", help="Create or verify one bounded idle execution-start session; never begins mission work."); execution_start_parser.add_argument("action", choices=("create", "verify", "status", "authorization", "package", "session", "artifacts")); execution_start_parser.add_argument("mission_id", nargs="?"); execution_start_parser.add_argument("--json", action="store_true")
+    codex_parser=sub.add_parser("codex", help="Operate the Zeus-owned Codex session (managed or operator-interactive).", add_help=False); codex_parser.add_argument("action", choices=("shell", "interactive", "attach", "reconcile", "start", "resume", "stop", "status", "logs", "artifacts")); codex_parser.add_argument("mission_id", nargs="?"); codex_parser.add_argument("--approve", action="store_true", help="required for mission-bound shell, start, resume, stop, or reconciliation mutation"); codex_parser.add_argument("--diagnose", action="store_true", help="probe a remote endpoint without opening Codex"); codex_parser.add_argument("--preflight", action="store_true", help="validate direct launch without opening Codex"); codex_parser.add_argument("--remote", action="store_true", help="explicitly select REMOTE_INTERACTIVE; shell defaults to DIRECT_INTERACTIVE"); codex_parser.add_argument("--prompt", help="bounded initial prompt for managed start"); codex_parser.add_argument("--codex-bin", default="codex", help=argparse.SUPPRESS); codex_parser.add_argument("--session"); codex_parser.add_argument("--mode", choices=("DIRECT_INTERACTIVE", "REMOTE_INTERACTIVE", "OPERATOR_INTERACTIVE", "ZEUS_MANAGED")); codex_parser.add_argument("--latest", action="store_true"); codex_parser.add_argument("--active", action="store_true"); codex_parser.add_argument("--json", action="store_true"); codex_parser.add_argument("--help", action="store_true", dest="codex_help", help="show help for this Codex command")
     orchestrate=sub.add_parser("orchestrate"); orchestrate.add_argument("action", choices=("status", "verify")); orchestrate.add_argument("--json", action="store_true")
     agent=sub.add_parser("agent"); agent.add_argument("action", choices=("list","registry","status","qualify","revoke","select")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--mission-class", default="engineering"); agent.add_argument("--tool", action="append", default=["zeus-cli", "bounded-artifact-handler"]); agent.add_argument("--profile", action="append", default=["controlled-wop-only", "exact-repository-baseline", "no-unreviewed-external-effects"]); agent.add_argument("--json", action="store_true")
     provider=sub.add_parser("provider", help="Select or verify the canonical provider for one Beta mission without dispatch."); provider.add_argument("action", choices=("select", "verify", "candidates", "status", "qualification", "artifacts")); provider.add_argument("mission_id"); provider.add_argument("--json", action="store_true")
@@ -608,7 +623,7 @@ def main(argv=None):
     try:
         stage1_directory = None
         stage1 = None
-        if a.command not in {"wop", "doctor", "runtime", "config", "synchronize", "platform"}:
+        if a.command not in {"wop", "doctor", "runtime", "config", "synchronize", "platform", "codex"}:
             stage1_directory = Path(
                 os.environ.get("ZEUS_STAGE1_STATE", runtime_path(ROOT, "stage1"))
             )
@@ -1296,6 +1311,85 @@ def main(argv=None):
                 elif a.action == "artifacts":
                     value = {key: value.get(key) for key in ("result", "mission_id", "execution_id", "artifacts", "blockers", "read_only")}
             emit(value) if a.json else print(execution_start.render(value))
+            return 0 if value.get("result") == "PASS" else 78
+        if a.command == "codex":
+            if a.codex_help:
+                print(f"Usage: scripts/zeus codex {a.action} [MISSION_ID] [options]")
+                if a.action in {"shell", "interactive"}:
+                    print("Open native Codex directly under Zeus; use --remote for the explicit remote app-server path.")
+                    print("Use --remote --diagnose to establish and probe the loopback endpoint without opening Codex.")
+                    print("State: INTERACTIVE_SESSION_OPEN; no mission or repository work is implied.")
+                elif a.action == "attach":
+                    print("Attach to a compatible live Zeus broker session without creating a provider or thread.")
+                elif a.action in {"start", "resume"}:
+                    print("Start or resume the managed Zeus app-server session; --approve is required.")
+                elif a.action == "stop":
+                    print("Stop a Zeus Codex session; --approve is required and no work is started by stop.")
+                else:
+                    print("Read-only inspection of the managed or interactive Zeus Codex session.")
+                return 0
+            mission_id = str(a.mission_id).upper() if a.mission_id else None
+            try:
+                if a.diagnose and not a.remote:
+                    raise codex_interactive.InteractiveCodexError("REMOTE_MODE_REQUIRED",
+                        "--diagnose is only valid with explicit --remote", next_action="SELECT_REMOTE_INTERACTIVE")
+                if a.preflight and (a.action not in {"shell", "interactive"} or a.remote):
+                    raise codex_interactive.InteractiveCodexError("DIRECT_PREFLIGHT_ONLY",
+                        "--preflight is only valid for direct interactive shell", next_action="SELECT_DIRECT_INTERACTIVE")
+                # Keep this table explicit.  In particular, read-only actions
+                # must not probe the interactive controller as a fallback:
+                # probing was the original status -> shell defect.
+                managed_id = mission_id or "MISSION-BETA-562F443E16C69401"
+                if a.action not in CODEX_CONTROLLER_ROUTING:
+                    raise RuntimeError(f"unmapped codex action: {a.action}")
+                interactive_read = bool(a.session or a.mode in {"DIRECT_INTERACTIVE", "REMOTE_INTERACTIVE", "OPERATOR_INTERACTIVE"})
+                if a.action == "status":
+                    value = (codex_interactive.status(ROOT, mission_id, session_id=a.session, latest=a.latest, active=a.active, runtime_root=a.runtime_root)
+                             if interactive_read else codex_adapter.status(ROOT, managed_id, runtime_root=a.runtime_root))
+                elif a.action == "logs":
+                    value = (codex_interactive.logs(ROOT, mission_id, session_id=a.session, latest=a.latest, active=a.active, runtime_root=a.runtime_root)
+                             if interactive_read else codex_adapter.logs(ROOT, managed_id, runtime_root=a.runtime_root))
+                elif a.action == "artifacts":
+                    value = (codex_interactive.artifacts(ROOT, mission_id, session_id=a.session, latest=a.latest, active=a.active, runtime_root=a.runtime_root)
+                             if interactive_read else codex_adapter.artifacts(ROOT, managed_id, runtime_root=a.runtime_root))
+                elif a.action == "reconcile":
+                    value = codex_reconciliation.reconcile(ROOT, runtime_root=a.runtime_root, approve=a.approve)
+                elif a.action == "shell":
+                    value = (codex_interactive.direct_launcher_preflight(ROOT, mission_id, approval=a.approve, codex_bin=a.codex_bin)
+                             if a.preflight else (codex_interactive.diagnose(ROOT, mission_id, approval=a.approve, codex_bin=a.codex_bin, runtime_root=a.runtime_root)
+                             if a.diagnose and a.remote else codex_interactive.shell(ROOT, mission_id, approval=a.approve,
+                             codex_bin=a.codex_bin, remote=a.remote, runtime_root=a.runtime_root)))
+                elif a.action == "interactive":
+                    value = (codex_interactive.direct_launcher_preflight(ROOT, mission_id, approval=a.approve, codex_bin=a.codex_bin)
+                             if a.preflight else (codex_interactive.diagnose(ROOT, mission_id, approval=a.approve, codex_bin=a.codex_bin, runtime_root=a.runtime_root)
+                             if a.diagnose and a.remote else codex_interactive.shell(ROOT, mission_id, approval=a.approve,
+                             codex_bin=a.codex_bin, remote=a.remote, runtime_root=a.runtime_root)))
+                elif a.action == "attach":
+                    value = codex_interactive.attach(ROOT, mission_id, session_id=a.session, runtime_root=a.runtime_root)
+                elif a.action == "start":
+                    value = codex_adapter.start(ROOT, managed_id, approval=a.approve, prompt=a.prompt, codex_bin=a.codex_bin, runtime_root=a.runtime_root)
+                elif a.action == "resume":
+                    value = codex_adapter.resume(ROOT, managed_id, approval=a.approve, codex_bin=a.codex_bin, runtime_root=a.runtime_root)
+                elif a.action == "stop":
+                    value = (codex_interactive.stop(ROOT, mission_id, session_id=a.session, approval=a.approve, runtime_root=a.runtime_root)
+                             if interactive_read else codex_adapter.stop(ROOT, managed_id, approval=a.approve, runtime_root=a.runtime_root))
+                else:
+                    raise RuntimeError(f"unmapped codex action: {a.action}")
+            except (codex_adapter.CodexAdapterError, codex_interactive.InteractiveCodexError, codex_reconciliation.ReconciliationError) as error:
+                value = {"result": "FAIL", "mission_id": mission_id,
+                         "blockers": [{"code": error.code, "message": error.message, **getattr(error, "details", {})}],
+                         "next_authorized_action": error.next_action,
+                         "read_only": a.action in {"status", "logs", "artifacts"}}
+            if a.json:
+                emit(value)
+            else:
+                print("Zeus Codex Session\n-------------------")
+                for key in ("result", "mission_id", "session_id", "execution_id", "provider_id", "repository_id", "execution_mode", "session_mode", "provider_mode", "transport", "mode", "state", "process_alive", "direct_launcher", "launcher", "launcher_present", "launcher_regular_file", "launcher_executable", "launcher_within_repository", "codex_binary", "codex_executable", "auth_config", "repository_binding", "mission_binding", "authority_context", "pty_required_for_launch", "codex_not_launched", "remote_endpoint", "endpoint_uri", "listener_pid", "listener_exit_code", "failure_phase", "process_alive", "pty_binding", "terminal_io", "mission_bound", "execution_bound", "repository_bound", "mission_work_started", "repository_work_started", "execution_monitoring", "replay", "next_authorized_action"):
+                    if key in value:
+                        print(f"{key.replace('_', ' ').title():24}: {value[key]}")
+                blockers = value.get("blockers", [])
+                print(f"Blockers                 : {'NONE' if not blockers else ', '.join(item.get('code', 'UNKNOWN') for item in blockers)}")
+                print(f"Read-only                : {'YES' if value.get('read_only') else 'NO'}")
             return 0 if value.get("result") == "PASS" else 78
         if a.command == "orchestrate":
             value = mission_knowledge.orchestration_verification(ROOT)

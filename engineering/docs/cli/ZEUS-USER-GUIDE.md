@@ -543,6 +543,167 @@ orphaned, forged, stale, duplicate, or conflicting execution-start state
 fails closed. Execution start is not mission work; the next boundary is
 `BEGIN_CONTROLLED_MISSION_WORK`.
 
+### P5-G6 controlled Codex sessions
+
+The normal operator entry point is direct native Codex launched under the Zeus
+lifecycle wrapper:
+
+```text
+scripts/zeus codex shell
+scripts/zeus codex shell <MISSION_ID> --approve
+scripts/zeus codex attach <MISSION_ID>
+```
+
+`status`, `logs`, and `artifacts` are read-only managed projections. They use
+one explicit controller, never allocate a PTY, launch a provider, consume
+stdin, or change terminal mode. `status --json` writes exactly one JSON
+document to stdout; diagnostics belong on stderr. `shell` resolves the Zeus
+context and launches the ordinary Codex CLI directly with inherited terminal
+streams through the shared native launcher; Zeus does not emulate the Codex
+terminal or parse its keyboard input. Opening a shell is only
+`INTERACTIVE_SESSION_OPEN`; it does not mean mission or repository work
+started. The official client owns thread/turn presentation and remains open
+until the operator exits or Zeus records a controlled failure.
+Mission-bound shells use the published authority chain and execution
+package. Non-mission shells are explicitly unbound and do not imply a WOP or
+Mission Contract.
+
+The official Codex client owns terminal settings, multiline editing, resize,
+Unicode, ANSI, and bracketed-paste behavior. Zeus owns process lifecycle and
+records metadata only; it does not rewrite or store pasted instruction text.
+
+Zeus lifecycle around the selected native or remote client is recorded as:
+
+```text
+CREATED -> ATTACHING -> ATTACHED -> REMOTE_CLIENT_ACTIVE
+                                      |
+                         client exit/signal -> STOPPING -> STOPPED
+                         provider failure   -> FAILED
+```
+
+Zeus-local inspection and lifecycle commands remain outside Codex prompts.
+The official client’s own commands govern conversation presentation; exiting
+the client performs a controlled Zeus stop. `attach` reconnects to a compatible
+Zeus remote endpoint without creating a provider.
+For exact interactive inspection, select the record explicitly:
+
+```text
+scripts/zeus codex status --session <SESSION_ID> --json
+scripts/zeus codex logs --session <SESSION_ID>
+scripts/zeus codex artifacts --session <SESSION_ID>
+scripts/zeus codex status --mode OPERATOR_INTERACTIVE --latest --json
+scripts/zeus codex status --mode OPERATOR_INTERACTIVE --active --json
+```
+
+The managed adapter's durable broker is not silently replaced by an ordinary
+interactive launch. If its provider cannot expose a compatible remote
+endpoint, `attach` fails closed with the provider and recovery action instead
+of creating a duplicate provider. `resume` is identity-checked managed
+recovery and is never an implicit fresh session.
+
+The remote contract is verified only for explicit remote launch. For Codex CLI
+`0.146.1`, Zeus requires `codex --remote ws://127.0.0.1:<port>` and starts an
+authorized separate `codex app-server --listen ws://127.0.0.1:<port>` provider
+when the managed provider is `MANAGED_STDIO`. The listener is loopback-only and
+is not ready until a WebSocket JSON-RPC `initialize` probe succeeds. Diagnose
+without opening the client with:
+
+```text
+scripts/zeus codex shell --remote --diagnose
+```
+
+The diagnostic form is explicitly remote-only:
+
+```text
+scripts/zeus codex shell --remote --diagnose
+```
+
+Direct launcher preflight is redirect-safe and never opens Codex:
+
+```text
+scripts/zeus codex shell --preflight
+```
+
+It resolves the canonical repository-relative launcher
+`scripts/lib/eos/codex-direct-launch.sh`, verifies its file, executable, and
+repository-boundary properties, checks the Codex binary and authentication
+configuration, and reports `TTY_REQUIRED_FOR_LAUNCH=YES`. A real direct shell
+still requires an attached terminal and inherited streams. Zeus and
+`engctl codex` resolve the same launcher; defects are reported as
+`DIRECT_LAUNCHER_MISSING`, `DIRECT_LAUNCHER_NOT_EXECUTABLE`, or
+`DIRECT_LAUNCHER_PATH_ESCAPE`, never as a raw filesystem exception.
+
+Remote diagnosis and operational launch share one endpoint-establishment
+transaction. Both establish and verify the loopback WebSocket/JSON-RPC
+listener and persist its endpoint receipt. Diagnostic mode then cleans up
+without launching the official client; operational mode passes the verified
+URI to `codex --remote`, records the client PID, monitors exit, and cleans up
+the listener it owns. `REMOTE_ENDPOINT_MISSING` is reserved for explicit
+attach/reuse; normal `shell --remote` creates its endpoint.
+
+Direct mode is `DIRECT_INTERACTIVE` (`CODEX_CLI`, `DIRECT_TERMINAL`) and does
+not create a listener or select a provider session. Remote mode is
+`REMOTE_INTERACTIVE` (`APP_SERVER_REMOTE`, `WEBSOCKET`) and never silently
+falls back to direct or stdio. Managed mode is `ZEUS_MANAGED`
+(`APP_SERVER_MANAGED`, `STDIO`).
+
+Provider records distinguish `MANAGED_STDIO` (`remote_capable=false`) from
+`INTERACTIVE_REMOTE` (`remote_capable=true`). A live stdio-only provider is not
+selected for remote attach; Zeus either reuses a verified remote-capable
+provider or establishes one separate, explicitly identified interactive
+provider. Endpoint receipts include the URI, listener PID, transport,
+readiness result, and failure phase.
+
+The managed execution interface remains Zeus:
+
+```text
+scripts/zeus codex start <MISSION_ID> --approve
+scripts/zeus codex status <MISSION_ID>
+scripts/zeus codex resume <MISSION_ID> --approve
+scripts/zeus codex stop <MISSION_ID> --approve
+scripts/zeus codex logs <MISSION_ID>
+scripts/zeus codex artifacts <MISSION_ID>
+```
+
+`codex start` first verifies the canonical execution-start chain, then binds
+one deterministic session to the mission, execution, provider, repository,
+and published baseline before launching the idle Codex application server.
+Operator approval is
+required for start, resume, and stop. Zeus owns the session identity, process
+identity, working directory, logs, append-only events, interruption state,
+and replay; the Codex process does not own lifecycle authority.
+`codex shell --help`, `start --help`, `attach --help`, `resume --help`,
+`stop --help`, `status --help`, `logs --help`, and `artifacts --help` provide
+command-specific guidance. `--approve` is required for mission-bound shell,
+managed start/resume, and stop.
+
+Zeus records structured request decisions supplied by a provider request
+surface as `ALREADY_AUTHORIZED`, `OPERATOR_DECISION_REQUIRED`, or
+`PROHIBITED`. Opaque terminal prompts are never parsed as authority and are
+not silently approved. Direct `engctl codex` remains a recovery and
+diagnostic path; it bypasses Zeus mission lifecycle projections and is not a
+Zeus-managed session.
+
+The observed `Codex could not find bubblewrap on PATH` warning is an
+environment diagnostic, not a terminal-rendering failure. The supported
+disposition is `SYSTEM_BUBBLEWRAP=PREFERRED`; the bundled provider fallback is
+`BUNDLED_BUBBLEWRAP=SUPPORTED`. No host package was installed or changed.
+
+The runtime handshake sends only the newline-delimited JSON-RPC `initialize`
+request through a durable Zeus broker. A `READY` session proves that the
+provider process and application server initialized; the official remote
+client then performs the documented initialize/thread/turn lifecycle. Zeus
+does not infer protocol completion from process readiness.
+Codex state uses a writable per-session `CODEX_HOME`; local auth/configuration
+are referenced without copying credentials. Startup diagnostics are sanitized
+and available through `codex status` and `codex logs`.
+
+The adapter starts only the first controlled mission-work boundary. It does
+not authorize publication, EOS synchronization, mission closeout, completion,
+or work outside the verified repository/execution binding. Status, logs, and
+artifacts are read-only projections. An interrupted process is reported as
+`INTERRUPTED` and must be resumed through Zeus after reconciliation.
+
 Publication verification owns only summarized publication and stage state.
 Detailed provenance belongs to `provider-invocation verify`, and execution
 identity, adapter mode, session binding, replay, and mission-work boundaries

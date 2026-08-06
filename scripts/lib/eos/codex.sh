@@ -84,6 +84,7 @@ eos_codex_run() {
     local repository host start_epoch end_epoch elapsed duration governance
     local contract contract_config notify_config qualification_root qualification_state qualifier
     local child_pid="" final_sent=0 codex_exit=0
+    local direct_launcher
     local -a codex_args=()
 
     while (($#)); do
@@ -127,6 +128,16 @@ eos_codex_run() {
     if ! command -v "$codex_bin" >/dev/null 2>&1; then
         printf 'ERROR: Codex executable is unavailable.\n' >&2
         return 127
+    fi
+    repository_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+    direct_launcher="$repository_root/scripts/lib/eos/codex-direct-launch.sh"
+    if [[ ! -f "$direct_launcher" ]]; then
+        printf 'ERROR: DIRECT_LAUNCHER_MISSING: %s\n' "$direct_launcher" >&2
+        return 78
+    fi
+    if [[ ! -x "$direct_launcher" ]]; then
+        printf 'ERROR: DIRECT_LAUNCHER_NOT_EXECUTABLE: %s\n' "$direct_launcher" >&2
+        return 78
     fi
 
     repository="$(eos_codex_repository_name)"
@@ -179,9 +190,9 @@ eos_codex_run() {
     export ENGINEERING_CODEX_WOP="$work_order"
     if ((mission_timeout > 0)); then
         timeout --preserve-status --signal=TERM --kill-after=5 \
-            "$mission_timeout" "$codex_bin" "${codex_args[@]}" <&0 &
+            "$mission_timeout" "$direct_launcher" "$codex_bin" "${codex_args[@]}" <&0 &
     else
-        "$codex_bin" "${codex_args[@]}" <&0 &
+        "$direct_launcher" "$codex_bin" "${codex_args[@]}" <&0 &
     fi
     child_pid=$!
     wait "$child_pid" || codex_exit=$?

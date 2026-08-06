@@ -15,6 +15,7 @@ from scripts.lib.emp.provider_selection import _mission_artifacts, _verify_set
 from scripts.lib.emp import provider_session
 from scripts.lib.emp import provider_invocation
 from scripts.lib.emp import execution_start
+from scripts.lib.emp import codex_adapter
 
 
 class CanonicalRuntimeMissionError(ValueError):
@@ -132,6 +133,12 @@ def discover(repository: Path | str, mission_id: str) -> dict[str, Any]:
         session_stage = {}
         invocation_stage = {}
         execution_stage = {}
+    codex_stage = codex_adapter.status(root, mission_id, runtime_root=runtime) if execution_stage.get("result") == "PASS" else {}
+    if codex_stage.get("state") == "NOT_STARTED":
+        codex_stage = {}
+    mission_work_started = bool(codex_stage.get("mission_work_started", execution_stage.get("mission_work_started", False)))
+    repository_work_started = bool(codex_stage.get("repository_work_started", execution_stage.get("repository_work_started", False)))
+    execution_monitoring_active = codex_stage.get("execution_monitoring") == "ACTIVE"
     return {
         "result": "PASS", "mission": "DISCOVERABLE", "mission_id": mission_id,
         "wop_id": submission.get("wop_id"), "operation": "BETA",
@@ -140,7 +147,7 @@ def discover(repository: Path | str, mission_id: str) -> dict[str, Any]:
         "bootstrap_id": bootstrap["bootstrap_id"], "bootstrap_state": bootstrap["bootstrap_state"],
         "bootstrap_result": bootstrap["bootstrap_result"], "provider_ready": True,
         "provider_selected": provider_selected, "provider_qualified": provider_qualified,
-        "dispatch_eligible": dispatch_eligible, "dispatch_created": bool(dispatch_stage), "provider_session_created": bool(session_stage.get("provider_session_created")), "provider_session_authorized": bool(session_stage.get("provider_session_authorized")), "provider_session_id": session_stage.get("provider_session_id"), "provider_session_state": session_stage.get("session_state"), "provider_invoked": bool(invocation_stage.get("provider_invoked", session_stage.get("provider_invoked", False))), "provider_acknowledged": bool(invocation_stage.get("provider_acknowledged", False)), "provider_invocation_id": invocation_stage.get("provider_invocation_id"), "provider_invocation_state": invocation_stage.get("provider_invocation_state"), "invocation_provenance_baseline": invocation_stage.get("invocation_provenance_baseline"), "execution_start_eligible": bool(invocation_stage.get("execution_start_eligible", False)), "execution_start_verification": execution_stage.get("result", "NOT_STARTED"), "execution_id": execution_stage.get("execution_id"), "execution_session_id": execution_stage.get("execution_session_id"), "execution_start_state": execution_stage.get("execution_start_state"), "execution_start_authorized": bool(execution_stage.get("execution_start_authorized", False)), "execution_session_created": bool(execution_stage.get("execution_session_created", False)), "provider_process_bound": bool(execution_stage.get("provider_process_bound", False)), "execution_adapter_mode": execution_stage.get("execution_adapter_mode"), "execution_started": bool(execution_stage.get("execution_started", False)), "mission_work_started": bool(execution_stage.get("mission_work_started", False)), "repository_work_started": bool(execution_stage.get("repository_work_started", False)), "execution_monitoring_active": bool(execution_stage.get("execution_monitoring_active", False)), "completion_reported": bool(execution_stage.get("completion_reported", False)),
+        "dispatch_eligible": dispatch_eligible, "dispatch_created": bool(dispatch_stage), "provider_session_created": bool(session_stage.get("provider_session_created")), "provider_session_authorized": bool(session_stage.get("provider_session_authorized")), "provider_session_id": session_stage.get("provider_session_id"), "provider_session_state": session_stage.get("session_state"), "provider_invoked": bool(invocation_stage.get("provider_invoked", session_stage.get("provider_invoked", False))), "provider_acknowledged": bool(invocation_stage.get("provider_acknowledged", False)), "provider_invocation_id": invocation_stage.get("provider_invocation_id"), "provider_invocation_state": invocation_stage.get("provider_invocation_state"), "invocation_provenance_baseline": invocation_stage.get("invocation_provenance_baseline"), "execution_start_eligible": bool(invocation_stage.get("execution_start_eligible", False)), "execution_start_verification": execution_stage.get("result", "NOT_STARTED"), "execution_id": execution_stage.get("execution_id"), "execution_session_id": execution_stage.get("execution_session_id"), "execution_start_state": execution_stage.get("execution_start_state"), "execution_start_authorized": bool(execution_stage.get("execution_start_authorized", False)), "execution_session_created": bool(execution_stage.get("execution_session_created", False)), "provider_process_bound": bool(execution_stage.get("provider_process_bound", False)), "execution_adapter_mode": execution_stage.get("execution_adapter_mode"), "execution_started": bool(execution_stage.get("execution_started", False)), "mission_work_started": mission_work_started, "repository_work_started": repository_work_started, "execution_monitoring_active": execution_monitoring_active, "completion_reported": bool(execution_stage.get("completion_reported", False)), "codex_session_id": codex_stage.get("session_id"), "codex_session_state": codex_stage.get("state"), "codex_process_alive": codex_stage.get("process_alive", False),
         "execution_start_provenance_baseline": execution_stage.get("execution_start_provenance_baseline"),
         "execution_start_baseline_relationship": execution_stage.get("execution_start_baseline_relationship", execution_stage.get("baseline_relationship")),
         "execution_start_integrity": execution_stage.get("execution_start_integrity", "FAIL" if execution_stage else "NOT_STARTED"),
@@ -155,7 +162,7 @@ def discover(repository: Path | str, mission_id: str) -> dict[str, Any]:
         "dispatch": dispatch_stage or {},
         "provider_session": session_stage,
         "provider_invocation": invocation_stage,
-        "execution_start": execution_stage,
+        "execution_start": execution_stage, "codex": codex_stage,
         "artifacts": {name: {"path": str(path), "digest": (value.get("transaction_digest") if name == "bootstrap_transaction" else value.get("artifact_digest"))} for name, (path, value) in artifacts.items()},
     }
 
