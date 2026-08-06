@@ -136,7 +136,7 @@ def _wop(package: dict[str, Any], mission_id: str, wop_id: str, root: Path) -> d
 
 
 def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str | None = None,
-           include_provider_invocation: bool = True) -> dict[str, Any]:
+           include_provider_invocation: bool = True, include_execution_start: bool = True) -> dict[str, Any]:
     """Return the stable JSON contract for one canonical mission.
 
     All reads occur before the result is returned.  No directory, receipt,
@@ -172,7 +172,7 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         authority = {"framework": "UNKNOWN", "integrity": "FAIL", "resolution": "FAIL", "oa_authority": "UNKNOWN", "oa_fallback": "PROHIBITED"}
 
     checks = {key: "PASS" for key in ("mission_discovery", "wop", "submission", "admission", "bootstrap",
-        "execution_record", "provider_readiness", "provider_session", "provider_invocation",
+        "execution_record", "provider_readiness", "provider_session", "provider_invocation", "execution_start",
         "artifact_cardinality", "artifact_integrity", "identity_chain", "downstream_boundary")}
     chain: dict[str, Any] = {}
     artifacts: dict[str, dict[str, Any]] = {}
@@ -333,11 +333,31 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
             blockers.append({"code": getattr(error, "code", "PROVIDER_INVOCATION_INVALID"), "message": str(error)})
     else:
         checks["provider_invocation"] = "PASS"
+
+    execution_start_stage: dict[str, Any] = {}
+    if include_execution_start and provider_invocation_stage.get("result") == "PASS":
+        try:
+            from scripts.lib.emp import execution_start
+            execution_start_stage = execution_start.verify(root, mission_id, runtime_root=runtime)
+            if execution_start_stage.get("result") == "PASS" and execution_start_stage.get("execution_start_created") is not False:
+                checks["execution_start"] = "PASS"
+                artifacts.update(execution_start_stage.get("artifacts", {}))
+            elif execution_start_stage.get("result") == "PASS":
+                checks["execution_start"] = "PASS"
+            elif execution_start_stage.get("result") != "PASS":
+                checks["execution_start"] = "FAIL"
+                blockers.extend(execution_start_stage.get("blockers", []))
+        except Exception as error:
+            checks["execution_start"] = "FAIL"
+            blockers.append({"code": "EXECUTION_START_VERIFICATION_FAILURE", "message": str(error)})
     downstream = []
     # P5-G3 provider sessions are a controlled pre-invocation foundation
     # artifact.  Their own controller verifies integrity and boundary; they
     # are not an execution/downstream effect for mission verification.
-    for directory in ("providers", "dispatch", "executions", "execution-sessions"):
+    # Canonical P5-G5 execution-start artifacts are verified by the
+    # execution-start controller above.  Legacy/uncontrolled execution stores
+    # remain downstream effects and continue to fail closed.
+    for directory in ("providers", "dispatch", "executions"):
         for path in (runtime / directory).glob("*.json") if (runtime / directory).is_dir() else ():
             try:
                 value = _load(path)
@@ -372,7 +392,7 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
     if result == "FAIL":
         next_action = blockers[0].get("message", "Resolve blockers")
     else:
-        next_action = (provider_invocation_stage.get("next_authorized_action") if provider_invocation_stage.get("provider_invoked") else (provider_session_stage.get("next_authorized_action") if provider_session_stage.get("provider_session_created") else ("ESTABLISH_PROVIDER_SESSION" if dispatch_stage else ("EVALUATE_PROVIDER_DISPATCH" if provider_stage else "EVALUATE_EXECUTION_PROVIDER"))))
+        next_action = (execution_start_stage.get("next_authorized_action") if execution_start_stage.get("execution_started") else (provider_invocation_stage.get("next_authorized_action") if provider_invocation_stage.get("provider_invoked") else (provider_session_stage.get("next_authorized_action") if provider_session_stage.get("provider_session_created") else ("ESTABLISH_PROVIDER_SESSION" if dispatch_stage else ("EVALUATE_PROVIDER_DISPATCH" if provider_stage else "EVALUATE_EXECUTION_PROVIDER")))))
     return {
         "schema_version": SCHEMA_VERSION, "result": result, "mission_verification": result, "read_only": True,
         "mission_id": mission_id, "wop_id": chain.get("submission", {}).get("wop_id"),
@@ -387,6 +407,18 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         }},
         "runtime": runtime_data, "checks": checks,
         "provider_invocation_verification": provider_invocation_stage.get("result", "PASS"),
+        "execution_start_verification": execution_start_stage.get("result", "NOT_STARTED"),
+        "execution_id": execution_start_stage.get("execution_id"),
+        "execution_session_id": execution_start_stage.get("execution_session_id"),
+        "execution_start_state": execution_start_stage.get("execution_start_state"),
+        "execution_start_result": execution_start_stage.get("execution_start_result"),
+        "execution_start_authorized": bool(execution_start_stage.get("execution_start_authorized")),
+        "execution_session_created": bool(execution_start_stage.get("execution_session_created")),
+        "provider_process_bound": bool(execution_start_stage.get("provider_process_bound")),
+        "execution_adapter_mode": execution_start_stage.get("execution_adapter_mode"),
+        "repository_work_started": bool(execution_start_stage.get("repository_work_started")),
+        "execution_monitoring_active": bool(execution_start_stage.get("execution_monitoring_active")),
+        "completion_reported": bool(execution_start_stage.get("completion_reported")),
         "provider_session_created": bool(provider_session_stage.get("provider_session_created")),
         "provider_session_authorized": bool(provider_session_stage.get("provider_session_authorized")),
         "provider_session_id": provider_session_stage.get("provider_session_id"),
@@ -401,12 +433,12 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         "invocation_provenance_baseline": provider_invocation_stage.get("invocation_provenance_baseline"),
         "current_published_baseline": provider_invocation_stage.get("current_published_baseline", baseline_resolution.get("published_head")),
         "baseline_relationship": provider_invocation_stage.get("baseline_relationship", baseline_resolution.get("baseline_relationship")),
-        "replay": {"submission": "IDEMPOTENT" if chain else "UNKNOWN", "admission": "IDEMPOTENT" if chain else "UNKNOWN", "bootstrap": "IDEMPOTENT" if chain else "UNKNOWN", "provider_session": provider_session_stage.get("replay", "UNKNOWN"), "provider_invocation": provider_invocation_stage.get("invocation_replay", provider_invocation_stage.get("replay", "UNKNOWN"))},
-        "lifecycle": {"submission_state": chain.get("submission", {}).get("submission_state"), "admission_state": chain.get("admission", {}).get("admission_state"), "bootstrap_state": chain.get("bootstrap", {}).get("bootstrap_state"), "provider_ready": chain.get("bootstrap", {}).get("provider_ready", False), "provider_selected": bool(provider_stage), "provider_qualified": bool(provider_stage.get("provider_qualified", False)), "dispatch_eligible": bool(provider_stage.get("dispatch_eligible", False)), "provider_id": provider_stage.get("provider_id"), "dispatch_created": bool(dispatch_stage), "provider_session_created": bool(provider_session_stage.get("provider_session_created")), "provider_session_authorized": bool(provider_session_stage.get("provider_session_authorized")), "provider_session_id": provider_session_stage.get("provider_session_id"), "provider_session_state": provider_session_stage.get("session_state"), "provider_invoked": bool(provider_invocation_stage.get("provider_invoked", provider_session_stage.get("provider_invoked", False))), "provider_acknowledged": bool(provider_invocation_stage.get("provider_acknowledged", False)), "provider_invocation_id": provider_invocation_stage.get("provider_invocation_id"), "provider_invocation_state": provider_invocation_stage.get("provider_invocation_state"), "invocation_provenance_baseline": provider_invocation_stage.get("invocation_provenance_baseline"), "current_published_baseline": provider_invocation_stage.get("current_published_baseline"), "baseline_relationship": provider_invocation_stage.get("baseline_relationship"), "execution_start_eligible": bool(provider_invocation_stage.get("execution_start_eligible", False)), "execution_started": bool(provider_invocation_stage.get("execution_started", False)), "mission_work_started": bool(provider_invocation_stage.get("mission_work_started", False))},
+        "replay": {"submission": "IDEMPOTENT" if chain else "UNKNOWN", "admission": "IDEMPOTENT" if chain else "UNKNOWN", "bootstrap": "IDEMPOTENT" if chain else "UNKNOWN", "provider_session": provider_session_stage.get("replay", "UNKNOWN"), "provider_invocation": provider_invocation_stage.get("invocation_replay", provider_invocation_stage.get("replay", "UNKNOWN")), "execution_start": execution_start_stage.get("execution_start_replay", "NOT_STARTED")},
+        "lifecycle": {"submission_state": chain.get("submission", {}).get("submission_state"), "admission_state": chain.get("admission", {}).get("admission_state"), "bootstrap_state": chain.get("bootstrap", {}).get("bootstrap_state"), "provider_ready": chain.get("bootstrap", {}).get("provider_ready", False), "provider_selected": bool(provider_stage), "provider_qualified": bool(provider_stage.get("provider_qualified", False)), "dispatch_eligible": bool(provider_stage.get("dispatch_eligible", False)), "provider_id": provider_stage.get("provider_id"), "dispatch_created": bool(dispatch_stage), "provider_session_created": bool(provider_session_stage.get("provider_session_created")), "provider_session_authorized": bool(provider_session_stage.get("provider_session_authorized")), "provider_session_id": provider_session_stage.get("provider_session_id"), "provider_session_state": provider_session_stage.get("session_state"), "provider_invoked": bool(provider_invocation_stage.get("provider_invoked", provider_session_stage.get("provider_invoked", False))), "provider_acknowledged": bool(provider_invocation_stage.get("provider_acknowledged", False)), "provider_invocation_id": provider_invocation_stage.get("provider_invocation_id"), "provider_invocation_state": provider_invocation_stage.get("provider_invocation_state"), "invocation_provenance_baseline": provider_invocation_stage.get("invocation_provenance_baseline"), "current_published_baseline": provider_invocation_stage.get("current_published_baseline"), "baseline_relationship": provider_invocation_stage.get("baseline_relationship"), "execution_start_eligible": bool(provider_invocation_stage.get("execution_start_eligible", False)), "execution_start_state": execution_start_stage.get("execution_start_state"), "execution_start_authorized": bool(execution_start_stage.get("execution_start_authorized", False)), "execution_session_created": bool(execution_start_stage.get("execution_session_created", False)), "provider_process_bound": bool(execution_start_stage.get("provider_process_bound", False)), "execution_started": bool(execution_start_stage.get("execution_started", False)), "mission_work_started": bool(execution_start_stage.get("mission_work_started", False))},
         "provider_selection": provider_stage,
         "dispatch": dispatch_stage,
         "provider_session": provider_session_stage,
-        "provider_invocation": provider_invocation_stage,
+        "provider_invocation": provider_invocation_stage, "execution_start": execution_start_stage,
         "artifacts": artifacts, "legacy_excluded": True, "blockers": blockers, "next_authorized_action": next_action,
     }
 

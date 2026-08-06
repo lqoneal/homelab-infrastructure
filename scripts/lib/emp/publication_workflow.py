@@ -18,6 +18,7 @@ from scripts.lib.emp.provider_selection import verify as verify_provider
 from scripts.lib.emp.dispatch_foundation import verify as verify_dispatch
 from scripts.lib.emp.provider_session import verify as verify_provider_session
 from scripts.lib.emp.provider_invocation import verify as verify_provider_invocation
+from scripts.lib.emp.execution_start import verify as verify_execution_start
 from scripts.lib.eos import operational_beta
 from scripts.lib.eos.canonical_baseline import resolve as resolve_baseline
 from scripts.lib.eos.platform_sync_verification import verify as verify_platform
@@ -36,6 +37,7 @@ CANONICAL_COMMANDS = {
     "provider": "scripts/zeus provider verify <MISSION_ID>",
     "provider_session": "scripts/zeus provider-session verify <MISSION_ID>",
     "provider_invocation": "scripts/zeus provider-invocation verify <MISSION_ID>",
+    "execution_start": "scripts/zeus execution-start verify <MISSION_ID>",
 }
 AUTHORIZED_CANDIDATE_PATHS = frozenset({
     "engineering/docs/cli/ZEUS-USER-GUIDE.md",
@@ -48,6 +50,7 @@ AUTHORIZED_CANDIDATE_PATHS = frozenset({
     "scripts/lib/emp/canonical_runtime_mission.py",
     "scripts/lib/emp/provider_session.py",
     "scripts/lib/emp/provider_invocation.py",
+    "scripts/lib/emp/execution_start.py",
     "scripts/lib/eos/canonical_baseline.py",
     "scripts/tests/test-zeus-mission-verification-controller.py",
     "scripts/tests/test-zeus-p4-g3-runtime-discovery.py",
@@ -59,8 +62,10 @@ AUTHORIZED_CANDIDATE_PATHS = frozenset({
     "engineering/docs/cli/ZEUS-USER-GUIDE.md",
     "scripts/tests/test-zeus-p5-g4-provider-invocation.py",
     "scripts/tests/test-zeus-canonical-baseline-resolution.py",
+    "scripts/tests/test-zeus-p5-g5-execution-start.py",
     "engineering/evidence/operation-beta/p5-g4-provider-invocation-foundation-completion-report.md",
     "engineering/evidence/operation-beta/p5-g4-post-publication-invocation-baseline-reconciliation-completion-report.md",
+    "engineering/evidence/operation-beta/p5-g5-execution-start-foundation-completion-report.md",
 })
 
 
@@ -143,6 +148,7 @@ def _projection_schema(root: Path, mission_id: str) -> dict[str, Any]:
         "next": ("scripts/zeus", "mission", "next", mission_id, "--json"),
         "snapshot": ("scripts/zeus", "mission", "snapshot", mission_id, "--json"),
         "verify": ("scripts/zeus", "mission", "verify", mission_id, "--json"),
+        "execution_start": ("scripts/zeus", "execution-start", "verify", mission_id, "--json"),
     }
     required = {
         "status": ("provider_session_created", "provider_invoked", "execution_started"),
@@ -150,6 +156,7 @@ def _projection_schema(root: Path, mission_id: str) -> dict[str, Any]:
         "next": ("next_authorized_action",),
         "snapshot": ("provider_session_id", "provider_invocation_id"),
         "verify": ("mission_verification",),
+        "execution_start": ("execution_start_state", "execution_start_replay", "mission_work_started"),
     }
     results: dict[str, Any] = {}
     blockers: list[dict[str, str]] = []
@@ -219,6 +226,9 @@ def verify(root: Path | str, mission_id: str) -> dict[str, Any]:
     provider_invocation = verify_provider_invocation(root, mission_id)
     if provider_invocation.get("result") != "PASS" and provider_invocation.get("provider_invocation_created") is not False:
         blockers.append({"code": "POST_SYNC_STAGE_FAILURE", "message": "provider-invocation verification failed"})
+    execution_start = verify_execution_start(root, mission_id)
+    if execution_start.get("result") != "PASS" and execution_start.get("execution_start_created") is not False:
+        blockers.append({"code": "POST_SYNC_STAGE_FAILURE", "message": "execution-start verification failed"})
     projection_schema = _projection_schema(root, mission_id)
     blockers.extend(projection_schema.get("blockers", []))
 
@@ -262,16 +272,18 @@ def verify(root: Path | str, mission_id: str) -> dict[str, Any]:
         "validators": validators,
         "platform_verification": platform.get("result"),
         "mission_verification": mission.get("result"),
-        "stage_verification": "PASS" if provider.get("result") == "PASS" and dispatch.get("result") == "PASS" and provider_session.get("result") == "PASS" and provider_invocation.get("result") == "PASS" else "FAIL",
+        "stage_verification": "PASS" if provider.get("result") == "PASS" and dispatch.get("result") == "PASS" and provider_session.get("result") == "PASS" and provider_invocation.get("result") == "PASS" and execution_start.get("result") == "PASS" else "FAIL",
         "dispatch_verification": dispatch.get("result"),
         "provider_session_verification": provider_session.get("result"),
         "provider_invocation_verification": provider_invocation.get("result"),
+        "execution_start_verification": execution_start.get("result"),
         "final_projection_schema_verification": projection_schema.get("result"),
         "mission": {"result": mission.get("result"), "next_authorized_action": mission.get("next_authorized_action"), "blockers": mission.get("blockers", [])},
         "provider": {"result": provider.get("result"), "provider_id": provider.get("provider_id"), "provider_selected": provider.get("provider_selected"), "dispatch_created": provider.get("dispatch_created"), "execution_started": provider.get("execution_started"), "next_authorized_action": provider.get("next_authorized_action")},
         "dispatch": {"result": dispatch.get("result"), "dispatch_id": dispatch.get("dispatch_id"), "dispatch_state": dispatch.get("dispatch_state"), "dispatch_created": bool(dispatch.get("dispatch_id")), "provider_session_created": dispatch.get("provider_session_created"), "provider_invoked": dispatch.get("provider_invoked"), "execution_started": dispatch.get("execution_started"), "next_authorized_action": dispatch.get("next_authorized_action")},
         "provider_session": {"result": provider_session.get("result"), "provider_session_id": provider_session.get("provider_session_id"), "provider_session_created": provider_session.get("provider_session_created"), "provider_session_authorized": provider_session.get("provider_session_authorized"), "provider_invoked": provider_session.get("provider_invoked"), "execution_started": provider_session.get("execution_started"), "next_authorized_action": provider_session.get("next_authorized_action")},
         "provider_invocation": {"result": provider_invocation.get("result"), "provider_invocation_id": provider_invocation.get("provider_invocation_id"), "provider_invocation_state": provider_invocation.get("provider_invocation_state"), "provider_invoked": provider_invocation.get("provider_invoked"), "provider_acknowledged": provider_invocation.get("provider_acknowledged"), "execution_started": provider_invocation.get("execution_started"), "next_authorized_action": provider_invocation.get("next_authorized_action")},
+        "execution_start": {"result": execution_start.get("result"), "execution_id": execution_start.get("execution_id"), "execution_start_state": execution_start.get("execution_start_state"), "execution_started": execution_start.get("execution_started"), "execution_adapter_mode": execution_start.get("execution_adapter_mode"), "mission_work_started": execution_start.get("mission_work_started"), "next_authorized_action": execution_start.get("next_authorized_action")},
         "final_projection": projection_schema,
         "obsolete_entry_points": obsolete,
         "canonical_commands": CANONICAL_COMMANDS,

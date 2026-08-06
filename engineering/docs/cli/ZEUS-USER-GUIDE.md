@@ -524,3 +524,28 @@ procedure must be fail-closed, for example:
 python3 -m pytest -q scripts/tests/test-zeus-p5-g4-provider-invocation.py || exit 1
 scripts/zeus mission verify <MISSION_ID> --json || exit 1
 ```
+
+### Execution-start foundation
+
+`scripts/zeus execution-start create <MISSION_ID>` establishes one
+deterministic Zeus execution-start transaction only after the acknowledged
+provider invocation verifies. The current bounded adapter is explicitly
+`execution_adapter_mode=QUALIFICATION_ADAPTER`: it creates a provider-bound,
+idle execution session projection and acknowledgement, but does not launch
+Codex, deliver the WOP, monitor a process, begin mission work, mutate the
+repository, or report completion. A future real adapter must satisfy the
+separate `REAL_CODEX` process/session and acknowledgement contract.
+
+Use `execution-start verify`, `status`, `authorization`, `package`, `session`,
+and `artifacts` for read-only inspection. Replay is idempotent and preserves
+the execution identity and all eight canonical artifact digests. Partial,
+orphaned, forged, stale, duplicate, or conflicting execution-start state
+fails closed. Execution start is not mission work; the next boundary is
+`BEGIN_CONTROLLED_MISSION_WORK`.
+
+Publication verification owns only summarized publication and stage state.
+Detailed provenance belongs to `provider-invocation verify`, and execution
+identity, adapter mode, session binding, replay, and mission-work boundaries
+belong to `execution-start verify`. These command-specific schemas prevent a
+summary projection from being treated as a complete nested controller
+record. Structured verification commands must stop on failure with `|| exit 1`.

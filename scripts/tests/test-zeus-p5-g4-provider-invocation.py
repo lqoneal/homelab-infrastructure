@@ -54,7 +54,7 @@ class ProviderInvocationFoundationTests(unittest.TestCase):
         value = provider_invocation.verify(ROOT, MISSION)
         self.assertEqual(value["result"], "PASS")
         self.assertEqual(value["invocation_provenance_baseline"], "b37a5fb2e11df8026afeff1bd231902cd54711ac")
-        self.assertEqual(value["current_published_baseline"], "ae0395e62a5409e245912eb979a924bb9cb08e8c")
+        self.assertEqual(value["current_published_baseline"], "2507b441fdf0d083e35647e6874860365025ae18")
         self.assertEqual(value["baseline_relationship"], "ANCESTOR")
         self.assertEqual(value["invocation_integrity"], "PASS")
 
@@ -83,13 +83,13 @@ class ProviderInvocationFoundationTests(unittest.TestCase):
         verified = zeus("mission", "verify", MISSION)
         self.assertTrue(status["provider_invoked"])
         self.assertTrue(status["provider_acknowledged"])
-        self.assertEqual(status["next_authorized_action"], "START_EXECUTION")
+        self.assertEqual(status["next_authorized_action"], "BEGIN_CONTROLLED_MISSION_WORK")
         self.assertEqual(status["invocation_provenance_baseline"], "b37a5fb2e11df8026afeff1bd231902cd54711ac")
-        self.assertEqual(status["current_published_baseline"], "ae0395e62a5409e245912eb979a924bb9cb08e8c")
+        self.assertEqual(status["current_published_baseline"], "2507b441fdf0d083e35647e6874860365025ae18")
         self.assertEqual(status["baseline_relationship"], "ANCESTOR")
         self.assertEqual(lifecycle["provider_invocation_state"], "READY_FOR_EXECUTION_START")
         self.assertEqual(lifecycle["baseline_relationship"], "ANCESTOR")
-        self.assertEqual(next_value["next_authorized_action"], "START_EXECUTION")
+        self.assertEqual(next_value["next_authorized_action"], "BEGIN_CONTROLLED_MISSION_WORK")
         self.assertEqual(snapshot["provider_invocation_id"], status["provider_invocation_id"])
         self.assertEqual(verified["mission_verification"], "PASS")
         self.assertEqual(verified["checks"]["provider_invocation"], "PASS")
@@ -100,6 +100,7 @@ class ProviderInvocationFoundationTests(unittest.TestCase):
         self.assertEqual(value["result"], "PASS", value)
         self.assertEqual({key: item["result"] for key, item in value["commands"].items()}, {
             "status": "PASS", "lifecycle": "PASS", "next": "PASS", "snapshot": "PASS", "verify": "PASS",
+            "execution_start": "PASS",
         })
 
     def test_read_only_verification_does_not_change_repository(self):
