@@ -66,6 +66,7 @@ AUTHORIZED_CANDIDATE_PATHS = frozenset({
     "engineering/evidence/operation-beta/p5-g4-provider-invocation-foundation-completion-report.md",
     "engineering/evidence/operation-beta/p5-g4-post-publication-invocation-baseline-reconciliation-completion-report.md",
     "engineering/evidence/operation-beta/p5-g5-execution-start-foundation-completion-report.md",
+    "engineering/evidence/operation-beta/p5-g5-post-publication-execution-start-provenance-reconciliation-completion-report.md",
 })
 
 

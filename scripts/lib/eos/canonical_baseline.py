@@ -123,3 +123,33 @@ def resolve(
         "publication_parity": checks["publication_parity"], "eos_parity": checks["eos_parity"],
         "runtime_binding": checks["runtime_binding"], "checks": checks, "errors": errors,
     }
+
+
+def resolve_execution_start_baseline(
+    root: Path | str,
+    eos_workspace: Path | str,
+    provenance_baseline: str,
+    *,
+    runtime_identity: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Resolve immutable execution-start provenance against current publication."""
+    value = resolve(
+        root, eos_workspace,
+        mission_provenance_baseline=provenance_baseline,
+        runtime_identity=runtime_identity,
+    )
+    relationship = value.get("baseline_relationship")
+    accepted = relationship in {"IDENTICAL", "ANCESTOR"}
+    errors = list(value.get("errors", []))
+    if not accepted and not any(item.get("code") == "EXECUTION_PROVENANCE_INVALID" for item in errors):
+        errors.append({"code": "EXECUTION_PROVENANCE_INVALID", "message": "execution-start provenance is not identical to or an ancestor of current publication"})
+    result = "PASS" if value.get("result") == "PASS" and accepted else "FAIL"
+    return {
+        **value,
+        "result": result,
+        "errors": errors,
+        "execution_start_provenance_baseline": value.get("provenance_baseline"),
+        "current_published_baseline": value.get("published_head"),
+        "baseline_relationship": relationship,
+        "provenance_valid": result == "PASS",
+    }

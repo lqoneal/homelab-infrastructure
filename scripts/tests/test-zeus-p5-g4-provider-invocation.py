@@ -54,7 +54,7 @@ class ProviderInvocationFoundationTests(unittest.TestCase):
         value = provider_invocation.verify(ROOT, MISSION)
         self.assertEqual(value["result"], "PASS")
         self.assertEqual(value["invocation_provenance_baseline"], "b37a5fb2e11df8026afeff1bd231902cd54711ac")
-        self.assertEqual(value["current_published_baseline"], "2507b441fdf0d083e35647e6874860365025ae18")
+        self.assertEqual(value["current_published_baseline"], "a16b3e3d72d23b265fdde5b6be4c40b90a48321e")
         self.assertEqual(value["baseline_relationship"], "ANCESTOR")
         self.assertEqual(value["invocation_integrity"], "PASS")
 
@@ -85,7 +85,7 @@ class ProviderInvocationFoundationTests(unittest.TestCase):
         self.assertTrue(status["provider_acknowledged"])
         self.assertEqual(status["next_authorized_action"], "BEGIN_CONTROLLED_MISSION_WORK")
         self.assertEqual(status["invocation_provenance_baseline"], "b37a5fb2e11df8026afeff1bd231902cd54711ac")
-        self.assertEqual(status["current_published_baseline"], "2507b441fdf0d083e35647e6874860365025ae18")
+        self.assertEqual(status["current_published_baseline"], "a16b3e3d72d23b265fdde5b6be4c40b90a48321e")
         self.assertEqual(status["baseline_relationship"], "ANCESTOR")
         self.assertEqual(lifecycle["provider_invocation_state"], "READY_FOR_EXECUTION_START")
         self.assertEqual(lifecycle["baseline_relationship"], "ANCESTOR")

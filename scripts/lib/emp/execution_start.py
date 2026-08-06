@@ -16,6 +16,7 @@ from scripts.lib.emp.mission_admission_boundary import _digest
 from scripts.lib.emp.production_execution import atomic_write, digest, identifier, load_json
 from scripts.lib.emp.provider_invocation import verify as verify_provider_invocation
 from scripts.lib.emp.runtime_paths import resolve_runtime
+from scripts.lib.eos.canonical_baseline import resolve, resolve_execution_start_baseline
 from scripts.lib.eos import operational_beta
 
 
@@ -93,7 +94,7 @@ def _verify_set(runtime: Path, found: dict[str, list[tuple[Path, dict[str, Any]]
         raise ExecutionStartError("EXECUTION_STATE_INVALID", "execution start is not controlled-execution-ready")
     binding_fields = ("mission_id", "provider_invocation_id", "provider_session_id", "provider_id",
                       "dispatch_id", "repository_identity", "current_published_baseline",
-                      "invocation_provenance_baseline", "execution_package_digest",
+                      "execution_start_provenance_baseline", "invocation_provenance_baseline", "execution_package_digest",
                       "execution_authority_digest", "mission_contract_digest")
     for key, value in values.items():
         if value.get("artifact_type") != ARTIFACT_TYPES[key]:
@@ -160,7 +161,24 @@ def _resolve(root: Path, mission_id: str, runtime: Path, existing: Mapping[str, 
     required = ("mission_contract", "execution_authority", "execution_package")
     if any(name not in mission_refs for name in required):
         raise ExecutionStartError("EXECUTION_PACKAGE_INCOMPLETE", "execution-start bindings are incomplete")
-    existing_provenance = (existing or {}).get("invocation_provenance_baseline")
+    # Execution-start provenance is the immutable baseline captured by the
+    # execution-start chain.  It is distinct from the provider-invocation
+    # provenance baseline and must never be substituted with it.  Existing
+    # P5-G5 artifacts used the canonical field current_published_baseline for
+    # this immutable value; preserve that artifact schema read-only.
+    baseline_source = ((existing or {}).get("execution_start_provenance_baseline")
+                       or (existing or {}).get("current_published_baseline"))
+    if not baseline_source:
+        published = resolve(root, Path("/data/engineering"))
+        baseline_source = published.get("published_head")
+    baseline = resolve_execution_start_baseline(
+        root, Path("/data/engineering"), baseline_source,
+        runtime_identity=_load(runtime / "runtime-identity.json"),
+    )
+    if baseline.get("result") != "PASS":
+        raise ExecutionStartError("EXECUTION_PROVENANCE_INVALID", "execution-start provenance baseline is invalid against the current publication")
+    execution_start_provenance = baseline["execution_start_provenance_baseline"]
+    invocation_provenance = invocation["invocation_provenance_baseline"]
     invocation_id = invocation["provider_invocation_id"]
     inputs = {
         "mission_id": mission_id, "wop_id": mission.get("wop_id"), "submission_id": mission.get("submission_id"),
@@ -172,16 +190,31 @@ def _resolve(root: Path, mission_id: str, runtime: Path, existing: Mapping[str, 
         "execution_package_digest": mission_refs["execution_package"]["digest"],
         "provider_invocation_package_digest": package["digest"],
         "repository_identity": (mission.get("repository") or {}).get("repository_identity"),
-        "current_published_baseline": invocation["current_published_baseline"],
-        "invocation_provenance_baseline": invocation["invocation_provenance_baseline"],
+        "current_published_baseline": baseline["current_published_baseline"],
+        "execution_start_provenance_baseline": execution_start_provenance,
+        "invocation_provenance_baseline": invocation_provenance,
         "execution_start_contract": [CONTRACT, VERSION],
     }
-    if existing_provenance and existing_provenance != inputs["invocation_provenance_baseline"]:
-        raise ExecutionStartError("EXECUTION_INPUT_MISMATCH", "immutable invocation provenance changed")
-    execution_id = identifier("EXECUTION-START", inputs)
+    if existing:
+        existing_execution_provenance = (existing.get("execution_start_provenance_baseline")
+                                         or existing.get("current_published_baseline"))
+        if existing_execution_provenance != execution_start_provenance:
+            raise ExecutionStartError("EXECUTION_INPUT_MISMATCH", "immutable execution-start provenance changed")
+        if existing.get("invocation_provenance_baseline") != invocation_provenance:
+            raise ExecutionStartError("EXECUTION_INPUT_MISMATCH", "immutable invocation provenance changed")
+    immutable_inputs = {key: value for key, value in inputs.items() if key != "current_published_baseline"}
+    execution_id = (existing or {}).get("execution_id") or identifier("EXECUTION-START", immutable_inputs)
     session_id = identifier("EXECUTION-SESSION", {"execution_id": execution_id, "provider_invocation_id": invocation_id})
+    if existing:
+        critical_fields = tuple(key for key in inputs if key not in {"current_published_baseline", "execution_start_contract", "execution_start_provenance_baseline"})
+        if any(existing.get(key) != inputs[key] for key in critical_fields):
+            raise ExecutionStartError("EXECUTION_INPUT_MISMATCH", "execution-critical input differs from immutable execution binding")
+        if existing.get("execution_start_contract") != {"id": CONTRACT, "version": VERSION}:
+            raise ExecutionStartError("EXECUTION_INPUT_MISMATCH", "execution-start contract version changed")
+        if existing.get("execution_session_id") != session_id:
+            raise ExecutionStartError("EXECUTION_INPUT_MISMATCH", "immutable execution session binding changed")
     return {"invocation": invocation, "mission": mission, "inputs": inputs, "execution_id": execution_id,
-            "execution_session_id": session_id, "provider_invocation_package": package}
+            "baseline": baseline, "execution_session_id": session_id, "provider_invocation_package": package}
 
 
 def _expected(resolved: Mapping[str, Any], runtime: Path) -> dict[str, dict[str, Any]]:
@@ -216,10 +249,17 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         found = _found(runtime, mission_id); existing = _verify_set(runtime, found)
         anchor = _load(existing["artifacts"]["execution_start_transaction"]["path"]) if existing else None
         resolved = _resolve(root, mission_id, runtime, existing=anchor)
-        if existing and existing.get("execution_id") != resolved["execution_id"]:
-            raise ExecutionStartError("EXECUTION_INPUT_MISMATCH", "execution-critical input differs from immutable execution binding")
         if existing:
-            existing.update({"current_published_baseline": resolved["inputs"]["current_published_baseline"], "read_only": True})
+            existing.update({
+                "execution_start_provenance_baseline": resolved["inputs"]["execution_start_provenance_baseline"],
+                "invocation_provenance_baseline": resolved["inputs"]["invocation_provenance_baseline"],
+                "current_published_baseline": resolved["inputs"]["current_published_baseline"],
+                "execution_start_baseline_relationship": resolved["baseline"]["baseline_relationship"],
+                "execution_start_integrity": "PASS",
+                # Compatibility field: this relationship is now explicitly
+                # the execution-start relationship, never the invocation one.
+                "baseline_relationship": resolved["baseline"]["baseline_relationship"],
+                "read_only": True})
             return existing
         return {"result": "PASS", "mission_id": mission_id, "execution_start_created": False,
                 "execution_started": False, "mission_work_started": False, "read_only": True,

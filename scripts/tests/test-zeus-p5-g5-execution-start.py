@@ -11,6 +11,7 @@ from pathlib import Path
 
 from scripts.lib.emp import execution_start
 from scripts.lib.emp.publication_workflow import AUTHORIZED_CANDIDATE_PATHS, _projection_schema, _scope
+from scripts.lib.eos.canonical_baseline import resolve_execution_start_baseline
 
 ROOT = Path(__file__).resolve().parents[2]
 MISSION = "MISSION-BETA-562F443E16C69401"
@@ -50,6 +51,46 @@ class ExecutionStartFoundationTests(unittest.TestCase):
         self.assertEqual(first["execution_start_replay"], "IDEMPOTENT")
         self.assertEqual(first["execution_id"], "EXECUTION-START-5a6fec74-3c4b-5271-8c96-4cc89fe8855e")
         self.assertEqual(len(first["artifacts"]), 8)
+        self.assertEqual(first["execution_start_provenance_baseline"], "2507b441fdf0d083e35647e6874860365025ae18")
+        self.assertEqual(first["invocation_provenance_baseline"], "b37a5fb2e11df8026afeff1bd231902cd54711ac")
+        self.assertEqual(first["current_published_baseline"], "a16b3e3d72d23b265fdde5b6be4c40b90a48321e")
+        self.assertEqual(first["execution_start_baseline_relationship"], "ANCESTOR")
+        self.assertEqual(first["execution_start_integrity"], "PASS")
+
+    def test_invocation_and_execution_start_provenance_are_distinct(self):
+        value = execution_start.verify(ROOT, MISSION)
+        self.assertNotEqual(value["execution_start_provenance_baseline"], value["invocation_provenance_baseline"])
+        self.assertEqual(value["execution_start_provenance_baseline"], "2507b441fdf0d083e35647e6874860365025ae18")
+        self.assertEqual(value["invocation_provenance_baseline"], "b37a5fb2e11df8026afeff1bd231902cd54711ac")
+
+    def test_invocation_provenance_cannot_substitute_for_execution_start(self):
+        value = resolve_execution_start_baseline(
+            ROOT, Path("/data/engineering"),
+            "b37a5fb2e11df8026afeff1bd231902cd54711ac",
+        )
+        self.assertEqual(value["execution_start_provenance_baseline"], "b37a5fb2e11df8026afeff1bd231902cd54711ac")
+        self.assertNotEqual(value["execution_start_provenance_baseline"], "2507b441fdf0d083e35647e6874860365025ae18")
+
+    def test_execution_start_baseline_resolver_accepts_ancestor(self):
+        value = resolve_execution_start_baseline(
+            ROOT, Path("/data/engineering"),
+            "2507b441fdf0d083e35647e6874860365025ae18",
+        )
+        self.assertEqual(value["result"], "PASS", value)
+        self.assertEqual(value["baseline_relationship"], "ANCESTOR")
+        self.assertEqual(value["execution_start_provenance_baseline"], "2507b441fdf0d083e35647e6874860365025ae18")
+
+    def test_execution_start_baseline_resolver_accepts_identical(self):
+        current = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True,
+                                 text=True, check=True).stdout.strip()
+        value = resolve_execution_start_baseline(ROOT, Path("/data/engineering"), current)
+        self.assertEqual(value["result"], "PASS", value)
+        self.assertEqual(value["baseline_relationship"], "IDENTICAL")
+
+    def test_execution_start_baseline_resolver_rejects_unrelated(self):
+        value = resolve_execution_start_baseline(ROOT, Path("/data/engineering"), "0" * 40)
+        self.assertEqual(value["result"], "FAIL")
+        self.assertFalse(value["provenance_valid"])
 
     def test_cli_surfaces_and_projection_schema(self):
         status = zeus("execution-start", "status", MISSION)
