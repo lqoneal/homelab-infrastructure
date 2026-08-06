@@ -17,6 +17,7 @@ from scripts.lib.emp.mission_verification_controller import verify as verify_mis
 from scripts.lib.emp.provider_selection import verify as verify_provider
 from scripts.lib.emp.dispatch_foundation import verify as verify_dispatch
 from scripts.lib.emp.provider_session import verify as verify_provider_session
+from scripts.lib.emp.provider_invocation import verify as verify_provider_invocation
 from scripts.lib.eos import operational_beta
 from scripts.lib.eos.canonical_baseline import resolve as resolve_baseline
 from scripts.lib.eos.platform_sync_verification import verify as verify_platform
@@ -34,6 +35,7 @@ CANONICAL_COMMANDS = {
     "mission": "scripts/zeus mission verify <MISSION_ID>",
     "provider": "scripts/zeus provider verify <MISSION_ID>",
     "provider_session": "scripts/zeus provider-session verify <MISSION_ID>",
+    "provider_invocation": "scripts/zeus provider-invocation verify <MISSION_ID>",
 }
 AUTHORIZED_CANDIDATE_PATHS = frozenset({
     "engineering/docs/cli/ZEUS-USER-GUIDE.md",
@@ -45,6 +47,7 @@ AUTHORIZED_CANDIDATE_PATHS = frozenset({
     "scripts/lib/emp/dispatch_foundation.py",
     "scripts/lib/emp/canonical_runtime_mission.py",
     "scripts/lib/emp/provider_session.py",
+    "scripts/lib/emp/provider_invocation.py",
     "scripts/tests/test-zeus-mission-verification-controller.py",
     "scripts/tests/test-zeus-p4-g3-runtime-discovery.py",
     "scripts/tests/test-zeus-p5-g1-provider-selection.py",
@@ -53,6 +56,8 @@ AUTHORIZED_CANDIDATE_PATHS = frozenset({
     "engineering/evidence/operation-beta/p5-g3-provider-session-foundation-completion-report.md",
     "scripts/zeus",
     "engineering/docs/cli/ZEUS-USER-GUIDE.md",
+    "scripts/tests/test-zeus-p5-g4-provider-invocation.py",
+    "engineering/evidence/operation-beta/p5-g4-provider-invocation-foundation-completion-report.md",
 })
 
 
@@ -127,6 +132,50 @@ def _validator_result(root: Path, name: str, command: tuple[str, ...]) -> dict[s
     return value
 
 
+def _projection_schema(root: Path, mission_id: str) -> dict[str, Any]:
+    """Validate each public projection against its own response schema."""
+    commands = {
+        "status": ("scripts/zeus", "mission", "status", mission_id, "--json"),
+        "lifecycle": ("scripts/zeus", "mission", "lifecycle", mission_id, "--json"),
+        "next": ("scripts/zeus", "mission", "next", mission_id, "--json"),
+        "snapshot": ("scripts/zeus", "mission", "snapshot", mission_id, "--json"),
+        "verify": ("scripts/zeus", "mission", "verify", mission_id, "--json"),
+    }
+    required = {
+        "status": ("provider_session_created", "provider_invoked", "execution_started"),
+        "lifecycle": ("lifecycle",),
+        "next": ("next_authorized_action",),
+        "snapshot": ("provider_session_id", "provider_invocation_id"),
+        "verify": ("mission_verification",),
+    }
+    results: dict[str, Any] = {}
+    blockers: list[dict[str, str]] = []
+    for name, command in commands.items():
+        observed = _command(root, *command)
+        item: dict[str, Any] = {"result": observed.get("result"), "returncode": observed.get("returncode"), "command": observed.get("command")}
+        if observed.get("returncode") != 0:
+            item["reason"] = observed.get("stderr", "command failed").strip() or "command failed"
+            blockers.append({"code": "PROJECTION_COMMAND_FAILURE", "message": f"{name}: {item['reason']}"})
+        else:
+            try:
+                value = __import__("json").loads(observed.get("stdout", ""))
+                missing = [key for key in required[name] if key not in value]
+                if name == "verify" and value.get("mission_verification") != "PASS":
+                    missing.append("mission_verification=PASS")
+                if missing:
+                    item["result"] = "FAIL"
+                    item["missing"] = missing
+                    blockers.append({"code": "PROJECTION_SCHEMA_FAILURE", "message": f"{name}: missing {', '.join(missing)}"})
+                else:
+                    item["result"] = "PASS"
+            except (TypeError, ValueError) as error:
+                item["result"] = "FAIL"
+                item["reason"] = str(error)
+                blockers.append({"code": "PROJECTION_JSON_FAILURE", "message": f"{name}: {error}"})
+        results[name] = item
+    return {"result": "PASS" if not blockers else "FAIL", "commands": results, "blockers": blockers}
+
+
 def verify(root: Path | str, mission_id: str) -> dict[str, Any]:
     """Verify the current publication/reconciliation state without mutation."""
     root = Path(root).resolve()
@@ -164,6 +213,11 @@ def verify(root: Path | str, mission_id: str) -> dict[str, Any]:
     provider_session = verify_provider_session(root, mission_id)
     if provider_session.get("result") != "PASS":
         blockers.append({"code": "POST_SYNC_STAGE_FAILURE", "message": "provider-session verification failed"})
+    provider_invocation = verify_provider_invocation(root, mission_id)
+    if provider_invocation.get("result") != "PASS" and provider_invocation.get("provider_invocation_created") is not False:
+        blockers.append({"code": "POST_SYNC_STAGE_FAILURE", "message": "provider-invocation verification failed"})
+    projection_schema = _projection_schema(root, mission_id)
+    blockers.extend(projection_schema.get("blockers", []))
 
     validators = {
         "registry": _validator_result(root, "registry", ("scripts/engctl", "registry", "validate")),
@@ -205,13 +259,17 @@ def verify(root: Path | str, mission_id: str) -> dict[str, Any]:
         "validators": validators,
         "platform_verification": platform.get("result"),
         "mission_verification": mission.get("result"),
-        "stage_verification": "PASS" if provider.get("result") == "PASS" and dispatch.get("result") == "PASS" and provider_session.get("result") == "PASS" else "FAIL",
+        "stage_verification": "PASS" if provider.get("result") == "PASS" and dispatch.get("result") == "PASS" and provider_session.get("result") == "PASS" and provider_invocation.get("result") == "PASS" else "FAIL",
         "dispatch_verification": dispatch.get("result"),
         "provider_session_verification": provider_session.get("result"),
+        "provider_invocation_verification": provider_invocation.get("result"),
+        "final_projection_schema_verification": projection_schema.get("result"),
         "mission": {"result": mission.get("result"), "next_authorized_action": mission.get("next_authorized_action"), "blockers": mission.get("blockers", [])},
         "provider": {"result": provider.get("result"), "provider_id": provider.get("provider_id"), "provider_selected": provider.get("provider_selected"), "dispatch_created": provider.get("dispatch_created"), "execution_started": provider.get("execution_started"), "next_authorized_action": provider.get("next_authorized_action")},
         "dispatch": {"result": dispatch.get("result"), "dispatch_id": dispatch.get("dispatch_id"), "dispatch_state": dispatch.get("dispatch_state"), "dispatch_created": bool(dispatch.get("dispatch_id")), "provider_session_created": dispatch.get("provider_session_created"), "provider_invoked": dispatch.get("provider_invoked"), "execution_started": dispatch.get("execution_started"), "next_authorized_action": dispatch.get("next_authorized_action")},
         "provider_session": {"result": provider_session.get("result"), "provider_session_id": provider_session.get("provider_session_id"), "provider_session_created": provider_session.get("provider_session_created"), "provider_session_authorized": provider_session.get("provider_session_authorized"), "provider_invoked": provider_session.get("provider_invoked"), "execution_started": provider_session.get("execution_started"), "next_authorized_action": provider_session.get("next_authorized_action")},
+        "provider_invocation": {"result": provider_invocation.get("result"), "provider_invocation_id": provider_invocation.get("provider_invocation_id"), "provider_invocation_state": provider_invocation.get("provider_invocation_state"), "provider_invoked": provider_invocation.get("provider_invoked"), "provider_acknowledged": provider_invocation.get("provider_acknowledged"), "execution_started": provider_invocation.get("execution_started"), "next_authorized_action": provider_invocation.get("next_authorized_action")},
+        "final_projection": projection_schema,
         "obsolete_entry_points": obsolete,
         "canonical_commands": CANONICAL_COMMANDS,
         "blockers": blockers,
@@ -241,6 +299,8 @@ def render(value: dict[str, Any]) -> str:
         f"Provider verification  : {value.get('stage_verification')}",
         f"Provider selected      : {'YES' if provider.get('provider_selected') else 'NO'}",
         f"Dispatch verification  : {value.get('dispatch_verification', 'NOT_RUN')}",
+        f"Provider invocation     : {value.get('provider_invocation_verification', 'NOT_RUN')}",
+        f"Projection schemas      : {value.get('final_projection_schema_verification', 'NOT_RUN')}",
         f"Dispatch created       : {'YES' if value.get('dispatch', {}).get('dispatch_created') else 'NO'}",
         f"Execution started     : {'YES' if value.get('dispatch', {}).get('execution_started') else 'NO'}",
         f"Replay                 : {value.get('publication_replay')}",

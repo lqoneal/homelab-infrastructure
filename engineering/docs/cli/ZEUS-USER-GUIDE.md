@@ -467,3 +467,52 @@ python3 -m pytest -q scripts/tests/test-zeus-p5-g3-provider-session.py scripts/t
 Running `pytest -q scripts/tests/...` directly is not the supported publication
 harness invocation because it can fail before collection with
 `ModuleNotFoundError: No module named 'scripts'`.
+
+## P5-G4 provider invocation foundation
+
+Provider invocation means that Zeus resolved the canonical invocation package
+and received a provider-bound acknowledgement. It is distinct from execution:
+the P5-G4 terminal state is `READY_FOR_EXECUTION_START`, while execution and
+mission work remain false.
+
+```text
+scripts/zeus provider-invocation create <MISSION_ID> --json
+scripts/zeus provider-invocation verify <MISSION_ID> --json
+scripts/zeus provider-invocation status <MISSION_ID> --json
+scripts/zeus provider-invocation authorization <MISSION_ID> --json
+scripts/zeus provider-invocation package <MISSION_ID> --json
+scripts/zeus provider-invocation acknowledgement <MISSION_ID> --json
+scripts/zeus provider-invocation artifacts <MISSION_ID> --json
+```
+
+The package is resolved from the authoritative mission, dispatch, provider
+session, Mission Contract, execution authority/package, repository identity,
+published baseline, mission provenance, and published Operation Beta authority
+chain. Its identity is deterministic and excludes timestamps, process IDs,
+terminal IDs, and transient credentials. Zeus owns authorization, binding,
+replay, and verification; `engctl codex` remains a low-level compatibility
+launcher and is not called by P5-G4.
+
+This implementation uses `invocation_mode=QUALIFICATION_ADAPTER`. The adapter
+exercises the complete package boundary and returns a deterministic provider
+acknowledgement without starting a provider process, execution, or mission
+work. A real `engctl codex` integration is deferred until a separately
+authorized cutover defines credentials, launch supervision, acknowledgement,
+interruption, and resume behavior.
+
+Replay returns the unchanged invocation and artifact digests as
+`IDEMPOTENT`. Partial, forged, stale, substituted, cross-mission, conflicting,
+or path-escaping state fails closed. No invocation projection may claim
+`READY_FOR_EXECUTION_START` without a valid acknowledgement and all seven
+canonical artifacts.
+
+Publication final-projection checks are schema-specific: status checks
+stage-state fields, lifecycle checks its lifecycle object, next checks only its
+next action, snapshot checks identities, and verify checks
+`mission_verification=PASS`. Every structured Python assertion in a publication
+procedure must be fail-closed, for example:
+
+```bash
+python3 -m pytest -q scripts/tests/test-zeus-p5-g4-provider-invocation.py || exit 1
+scripts/zeus mission verify <MISSION_ID> --json || exit 1
+```

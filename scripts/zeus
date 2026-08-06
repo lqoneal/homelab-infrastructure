@@ -87,6 +87,7 @@ from scripts.lib.emp import provider_selection
 from scripts.lib.emp import publication_workflow
 from scripts.lib.emp import dispatch_foundation
 from scripts.lib.emp import provider_session
+from scripts.lib.emp import provider_invocation
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -469,7 +470,7 @@ def main(argv=None):
                 "mission", "explain", "authority", "capabilities", "capability",
                 "lifecycle", "list", "show", "assurance", "context", "evidence",
                 "qualification", "completion", "resume", "stop", "policy", "validate", "submit",
-                "dispatcher", "dispatch", "provider-session", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform", "admit", "provider", "publication",
+                "dispatcher", "dispatch", "provider-session", "provider-invocation", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform", "admit", "provider", "publication",
             } else interface_store.increment()
         )
         if "--verbose" in arguments:
@@ -586,6 +587,7 @@ def main(argv=None):
     dispatcher=sub.add_parser("dispatcher"); dispatcher.add_argument("action", choices=("status","agents","assignment","execution","eens","evidence","reconciliation")); dispatcher.add_argument("--identifier")
     dispatch=sub.add_parser("dispatch", help="Create or verify the bounded provider dispatch foundation; never invokes a provider."); dispatch.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization", "package")); dispatch.add_argument("mission_id", nargs="?"); dispatch.add_argument("--json", action="store_true")
     provider_session_parser=sub.add_parser("provider-session", help="Create or verify the canonical provider session; never invokes a provider or starts execution."); provider_session_parser.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization")); provider_session_parser.add_argument("mission_id", nargs="?"); provider_session_parser.add_argument("--json", action="store_true")
+    provider_invocation_parser=sub.add_parser("provider-invocation", help="Create or verify one bounded provider acknowledgement; never starts execution or mission work."); provider_invocation_parser.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization", "package", "acknowledgement")); provider_invocation_parser.add_argument("mission_id", nargs="?"); provider_invocation_parser.add_argument("--json", action="store_true")
     orchestrate=sub.add_parser("orchestrate"); orchestrate.add_argument("action", choices=("status", "verify")); orchestrate.add_argument("--json", action="store_true")
     agent=sub.add_parser("agent"); agent.add_argument("action", choices=("list","registry","status","qualify","revoke","select")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--mission-class", default="engineering"); agent.add_argument("--tool", action="append", default=["zeus-cli", "bounded-artifact-handler"]); agent.add_argument("--profile", action="append", default=["controlled-wop-only", "exact-repository-baseline", "no-unreviewed-external-effects"]); agent.add_argument("--json", action="store_true")
     provider=sub.add_parser("provider", help="Select or verify the canonical provider for one Beta mission without dispatch."); provider.add_argument("action", choices=("select", "verify", "candidates", "status", "qualification", "artifacts")); provider.add_argument("mission_id"); provider.add_argument("--json", action="store_true")
@@ -1055,7 +1057,7 @@ def main(argv=None):
         }:
             value = verify_mission(ROOT, beta_subject, runtime_root=a.runtime_root)
             if beta_action == "lifecycle":
-                value = {"result": value["result"], "mission_id": beta_subject, "lifecycle": value["lifecycle"], "provider_selected": value["lifecycle"].get("provider_selected"), "provider_qualified": value["lifecycle"].get("provider_qualified"), "dispatch_eligible": value["lifecycle"].get("dispatch_eligible"), "provider_id": value["lifecycle"].get("provider_id"), "dispatch_created": value["lifecycle"].get("dispatch_created"), "provider_session_created": value["lifecycle"].get("provider_session_created"), "provider_invoked": value["lifecycle"].get("provider_invoked"), "execution_started": value["lifecycle"].get("execution_started"), "next_authorized_action": value["next_authorized_action"], "blockers": value["blockers"], "read_only": True}
+                value = {"result": value["result"], "mission_id": beta_subject, "lifecycle": value["lifecycle"], "provider_selected": value["lifecycle"].get("provider_selected"), "provider_qualified": value["lifecycle"].get("provider_qualified"), "dispatch_eligible": value["lifecycle"].get("dispatch_eligible"), "provider_id": value["lifecycle"].get("provider_id"), "dispatch_created": value["lifecycle"].get("dispatch_created"), "provider_session_created": value["lifecycle"].get("provider_session_created"), "provider_session_authorized": value["lifecycle"].get("provider_session_authorized"), "provider_session_id": value["lifecycle"].get("provider_session_id"), "provider_session_state": value["lifecycle"].get("provider_session_state"), "provider_invoked": value["lifecycle"].get("provider_invoked"), "provider_acknowledged": value["lifecycle"].get("provider_acknowledged"), "provider_invocation_id": value["lifecycle"].get("provider_invocation_id"), "provider_invocation_state": value["lifecycle"].get("provider_invocation_state"), "execution_start_eligible": value["lifecycle"].get("execution_start_eligible"), "execution_started": value["lifecycle"].get("execution_started"), "mission_work_started": value["lifecycle"].get("mission_work_started"), "next_authorized_action": value["next_authorized_action"], "blockers": value["blockers"], "read_only": True}
             elif beta_action == "evidence":
                 value = {"result": value["result"], "mission_id": beta_subject, "checks": value["checks"], "replay": value["replay"], "blockers": value["blockers"], "read_only": True}
             elif beta_action == "artifacts":
@@ -1256,6 +1258,24 @@ def main(argv=None):
                 elif a.action == "authorization":
                     value = {key: value.get(key) for key in ("result", "mission_id", "provider_session_id", "provider_session_authorized", "provider_invoked", "execution_started", "next_authorized_action", "blockers", "read_only")}
             emit(value) if a.json else print(provider_session.render(value))
+            return 0 if value.get("result") == "PASS" else 78
+        if a.command == "provider-invocation":
+            mission_id = str(a.mission_id or "MISSION-BETA-562F443E16C69401").upper()
+            if a.action == "create":
+                value = provider_invocation.create(ROOT, mission_id)
+            else:
+                value = provider_invocation.verify(ROOT, mission_id)
+                if a.action == "status":
+                    value = {key: value.get(key) for key in ("result", "mission_id", "provider_invocation_id", "provider_invocation_created", "provider_invocation_state", "provider_invocation_result", "provider_invocation_authorized", "provider_session_id", "provider_id", "invocation_mode", "provider_invoked", "provider_acknowledged", "execution_start_eligible", "execution_started", "mission_work_started", "invocation_replay", "next_authorized_action", "blockers", "read_only")}
+                elif a.action == "artifacts":
+                    value = {key: value.get(key) for key in ("result", "mission_id", "provider_invocation_id", "artifacts", "blockers", "read_only")}
+                elif a.action == "authorization":
+                    value = {key: value.get(key) for key in ("result", "mission_id", "provider_invocation_id", "provider_invocation_authorized", "provider_session_id", "provider_id", "execution_start_eligible", "execution_started", "next_authorized_action", "blockers", "read_only")}
+                elif a.action == "package":
+                    value = {key: value.get(key) for key in ("result", "mission_id", "provider_invocation_id", "artifacts", "provider_session_id", "provider_id", "blockers", "read_only")}
+                elif a.action == "acknowledgement":
+                    value = {key: value.get(key) for key in ("result", "mission_id", "provider_invocation_id", "provider_session_id", "provider_id", "provider_acknowledged", "invocation_mode", "artifacts", "blockers", "read_only")}
+            emit(value) if a.json else print(provider_invocation.render(value))
             return 0 if value.get("result") == "PASS" else 78
         if a.command == "orchestrate":
             value = mission_knowledge.orchestration_verification(ROOT)

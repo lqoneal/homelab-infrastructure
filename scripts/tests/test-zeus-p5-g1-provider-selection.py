@@ -55,7 +55,7 @@ class ProviderSelectionQualification(unittest.TestCase):
         self.assertTrue(value["read_only"])
         self.assertEqual(mission["result"], "PASS")
         self.assertEqual(mission["lifecycle"]["provider_selected"], True)
-        self.assertEqual(mission["next_authorized_action"], "INVOKE_PROVIDER")
+        self.assertEqual(mission["next_authorized_action"], "START_EXECUTION")
         self.assertEqual(before, after)
 
 
