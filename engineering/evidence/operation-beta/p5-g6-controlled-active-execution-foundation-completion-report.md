@@ -220,6 +220,18 @@ skipped by existing test policy; Python and shell syntax validation plus
 
 ## Runtime reconciliation boundary
 
+### Post-publication corrective
+
+The published controller initially replayed a pre-correction receipt and did
+not expose listener inventory. The post-publication correction versions new
+receipts, scans loopback Codex listeners, returns complete session/listener and
+orphan details, derives multidimensional lifecycle state, requires verified
+ownership for mutation, preserves unknown listeners, and supports explicit
+`--dry-run` plus approval-gated reconciliation. Historical runtime records are
+not rewritten by this handoff. The current sandbox read-only inventory observed
+the two historical remote records but no live listener PIDs in its process
+view; host-terminal acceptance remains required.
+
 The Codex sandbox is prohibited from writing authoritative Zeus runtime state.
 The reconciliation controller is repository code executed by Zeus; it accepts
 an explicit runtime root, supports read-only inventory/dry-run and
@@ -245,25 +257,51 @@ Operator review commands, using the controller-owned runtime selected by Zeus:
 
 ```bash
 # Read-only inventory and dry-run disposition review.
-scripts/zeus codex reconcile --json
+scripts/zeus codex reconcile --mode REMOTE_INTERACTIVE --dry-run --json
 
 # Review listener/session dispositions, including process identity checks.
-scripts/zeus codex reconcile --json | jq '.reconciliation.entries'
+scripts/zeus codex reconcile --mode REMOTE_INTERACTIVE --dry-run --json | jq '.matching_sessions, .live_listeners, .orphan_listeners'
 
 # Explicitly approve controlled reconciliation and receipt-backed termination.
-scripts/zeus codex reconcile --approve --json
+scripts/zeus codex reconcile --mode REMOTE_INTERACTIVE --approve --json
 
 # Re-run read-only inventory; verify listener shutdown and socket closure.
-scripts/zeus codex reconcile --json | jq '{entries: .reconciliation.entries, terminations: .reconciliation.termination_receipts, unreconciled_orphans: .reconciliation.unreconciled_orphans}'
+scripts/zeus codex reconcile --mode REMOTE_INTERACTIVE --dry-run --json | jq '{sessions: .matching_sessions, listeners: .live_listeners, terminations: .reconciliation.termination_receipts, unreconciled_orphans: .unreconciled_orphans}'
 
 # Attach or stop a retained detached session after reviewing its exact ID.
 scripts/zeus codex attach --session <SESSION_ID>
 scripts/zeus codex stop --session <SESSION_ID> --approve --json
 
 # Confirm zero unreconciled orphans and idempotent replay.
-scripts/zeus codex reconcile --json | jq '.reconciliation.unreconciled_orphans'
-scripts/zeus codex reconcile --approve --json | jq '{replayed: .replayed, unreconciled_orphans: .reconciliation.unreconciled_orphans}'
+scripts/zeus codex reconcile --mode REMOTE_INTERACTIVE --dry-run --json | jq '.unreconciled_orphans'
+scripts/zeus codex reconcile --mode REMOTE_INTERACTIVE --approve --json | jq '{replayed: .replayed, unreconciled_orphans: .unreconciled_orphans}'
 ```
+
+Post-publication verification completed with mission verification, execution
+start verification, platform verification, registry validation, integrated
+validation, EOS validation, and `git diff --check` all passing. `HEAD` and
+`origin/main` remain `07d7294a071d1121a65807cf8e5b3d77d17820c9`; the local
+corrective is intentionally uncommitted for operator review. No approved host
+mutation was executed from the Codex sandbox, and no managed stdio provider
+was targeted.
+
+The ownership qualification corrective normalizes `/proc` start ticks with
+boot identity, preserves legacy receipt fields without comparing epoch time to
+ticks, resolves Codex home from authoritative nested receipts, and aggregates
+broker/Node/native process trees into one endpoint termination unit. A unit is
+executable only for `OWNERSHIP_VERIFIED` or
+`OWNERSHIP_RECOVERED_VERIFIED`; partial, unknown, mismatched, or ambiguous
+identity remains fail-closed. The reviewed plan therefore has stable unit and
+action identifiers and records all member identities before mutation.
+
+This corrective also exports the canonical `termination_units` collection at
+top level. Diagnostic, historical orphan, and retained detached endpoints are
+all represented; only the first two can carry required actions. The plan has a
+stable SHA-256 `plan_digest` and approval requires the exact digest from the
+read-only review. Missing legacy start ticks or transaction IDs are recovered
+only from non-conflicting receipt evidence; they are not treated as immutable
+mismatches. A complete live `/proc` identity reports `VERIFIED`, while an
+unreadable identity reports `UNAVAILABLE`.
 
 Automated verification stops here. From a real operator terminal, run:
 
@@ -280,3 +318,46 @@ markers, clean terminal restoration, and `MISSION_WORK_STARTED=NO` /
 `REPOSITORY_WORK_STARTED=NO`. This handoff remains
 `STATUS=AWAITING_OPERATOR_REVIEW`; no real-terminal acceptance was performed
 from the non-interactive API session.
+
+The final ownership qualification update adds a unit-level report with boot,
+start-tick, transaction, command, Codex-home, endpoint, process-tree,
+process-identity, and session-binding results, plus missing evidence,
+recoverable evidence, immutable conflicts, and promotion reasons. Legacy
+receipt omissions are promoted only when the live immutable identity and
+receipt-backed ownership chain agree; unknown or conflicting listeners remain
+preserved and non-executable. Remote status consumes the same canonical
+multidimensional projection, preserving the retained detached session's
+`DETACHED`/`EXITED`/`READY`/`ATTACH_OR_STOP` lifecycle.
+
+The partial-reconciliation corrective establishes strict result semantics:
+completed work plus safely preserved partial-ownership listeners is `PARTIAL`,
+not `RECONCILIATION_NOT_APPLIED` or `FAIL`. The response records
+`reconciliation_applied`, `reconciliation_fully_converged`, preserved-target
+dispositions, separate orphan/cardinality counts, and the next action
+`RECONCILE_REMAINING_ORPHAN_OWNERSHIP`. Completed receipts are consumed by
+canonical inventory and status; replay is idempotent with zero new signals,
+process exits, socket closures, or mutation receipts. Host reconciliation
+remains deferred to the operator-controlled Zeus command.
+
+The final terminal-semantics corrective distinguishes preserved targets from
+failed reconciliation. A healthy read-only inventory with zero executable
+actions and only partial-ownership `PRESERVE_TARGET` dispositions returns
+`PASS` with `reconciliation_required=false`, while retaining
+`reconciliation_fully_converged=false` under the strict convergence policy.
+The next action is `REVIEW_PRESERVED_TARGETS`. Application history is exposed
+as `reconciliation_already_applied`; mutation in the current invocation is
+`reconciliation_applied_this_invocation`; and replay state is always explicit
+(`IDEMPOTENT` or `NOT_REQUIRED`). No authoritative runtime mutation was
+performed by Codex.
+
+## Completed-plan replay projection corrective
+
+The completed diagnostic plan is replayable only through its existing
+authoritative successful receipt. Replay lookup now distinguishes the
+requested historical digest from the fresh current plan digest, reports
+`replay_result=IDEMPOTENT`, and projects
+`reconciliation_already_applied=true` with zero new mutation counters. The
+current preserved orphan dispositions and retained detached session determine
+the replay next action. Missing or conflicting receipt matches fail closed;
+the historical mutation receipt is not rewritten and no authoritative runtime
+mutation is performed by Codex.

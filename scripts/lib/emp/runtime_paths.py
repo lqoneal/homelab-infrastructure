@@ -85,7 +85,13 @@ def _check_candidate(path: Path, identity: dict[str, str], *, create: bool) -> s
         except OSError as error:
             return f"parent path cannot be created: {error}"
     if not os.access(parent, os.W_OK | os.X_OK):
-        return "runtime path is not writable"
+        # Controller-owned Zeus state may be intentionally read-only to a
+        # Codex sandbox.  Read-only verification can consume a bound runtime;
+        # initialization and every mutating path still require writability.
+        if not create:
+            pass
+        else:
+            return "runtime path is not writable"
     marker = path / "runtime-identity.json"
     if marker.exists():
         try:

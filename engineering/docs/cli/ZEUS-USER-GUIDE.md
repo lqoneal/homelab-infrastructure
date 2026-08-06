@@ -711,6 +711,95 @@ belong to `execution-start verify`. These command-specific schemas prevent a
 summary projection from being treated as a complete nested controller
 record. Structured verification commands must stop on failure with `|| exit 1`.
 
+### P5-G6 post-publication runtime reconciliation
+
+`codex reconcile` is a controller-owned runtime inventory. The canonical
+read-only form is:
+
+```bash
+scripts/zeus codex reconcile --mode REMOTE_INTERACTIVE --dry-run
+```
+
+Omitting `--dry-run` is also read-only unless `--approve` is present. Approved
+mutation is explicit:
+
+```bash
+scripts/zeus codex reconcile --mode REMOTE_INTERACTIVE --approve
+```
+
+The structured result includes matching sessions, live/owned/orphan listeners,
+stale and detached sessions, proposed actions, ownership checks, cardinality,
+and multidimensional `session_state`, `client_state`, `listener_state`,
+`attachment_state`, and `provider_state`. Each endpoint is normalized to one
+termination unit; broker, Node, and native child processes are not separate
+actions. Only `OWNERSHIP_VERIFIED` or `OWNERSHIP_RECOVERED_VERIFIED` listeners
+may be stopped. Unknown, partial, mismatched, or ambiguous ownership remains untouched and is reported
+as an actionable orphan.
+
+The JSON response exposes `termination_units`, `plan_schema_version`,
+`plan_digest`, `required_action_count`, `executable_action_count`, and an
+ownership summary. An approved command must include the exact digest returned
+by the reviewed dry run:
+
+```bash
+scripts/zeus codex reconcile --mode REMOTE_INTERACTIVE --approve \
+  --plan-digest <REVIEWED_PLAN_DIGEST>
+```
+
+Missing or changed digests are rejected before signaling. A read-only plan
+with no executable actions returns `FAIL` and
+`RECONCILE_PROCESS_IDENTITY_AND_OWNERSHIP`; an executable plan returns
+`BLOCKED_PENDING_APPROVAL` until explicitly approved.
+
+Diagnostic sessions are proposed for cleanup after readiness succeeds and the
+client was never launched. A remote client exit leaves its verified listener as
+`DETACHED/EXITED/READY/DETACHED/READY`, with next action `ATTACH_OR_STOP`.
+Attach reuses the recorded endpoint and session identity:
+
+```bash
+scripts/zeus codex attach --session <SESSION_ID> --approve
+scripts/zeus codex stop --session <SESSION_ID> --approve
+```
+
+Stop is receipt-backed, verifies process identity and socket closure, and is
+idempotent. The managed stdio provider is a separate lifecycle and is not a
+remote reconciliation target.
+
+Remote reconciliation exposes a flattened ownership qualification report for
+every termination unit. It distinguishes immutable conflicts from recoverable
+legacy omissions; a receipt-backed live process tree may therefore be
+`OWNERSHIP_RECOVERED_VERIFIED`, while ambiguous evidence remains
+`OWNERSHIP_PARTIAL` and conflicts remain `OWNERSHIP_MISMATCH`. Remote status
+uses the same canonical projection, so a retained listener is shown as
+`DETACHED`/`EXITED`/`READY` with `ATTACH_OR_STOP`.
+
+An approved run that completes some actions while preserving non-executable
+targets returns `PARTIAL`, with `reconciliation_applied=true` and
+`reconciliation_fully_converged=false`. Preserved targets include their
+endpoint, ownership result, missing evidence, immutable conflicts, and next
+operator action; they are not reported as failed mutations. The strict
+default policy keeps `TERMINAL_STATE=false` until remaining orphan ownership
+is resolved. Replaying a completed plan by its prior `--plan-digest` is
+idempotent and sends no new signals or receipts.
+
+When no executable action remains and only explicitly preserved partial-
+ownership targets are present, a read-only review returns `PASS` with
+`reconciliation_required=false`, `reconciliation_fully_converged=false`, and
+`next_authorized_action=REVIEW_PRESERVED_TARGETS`. This is a reviewable safe
+disposition, not a failed mutation. The response separates
+`reconciliation_applied_this_invocation` from
+`reconciliation_already_applied`; `replay_result` is always explicit
+(`IDEMPOTENT` or `NOT_REQUIRED`).
+
+When `--approve --plan-digest` names a previously completed plan, Zeus looks
+up its authoritative completed receipt and projects it against a fresh current
+inventory. The response exposes `replay_context` with the requested,
+completed-historical, and current plan digests. Historical application is
+reported as `reconciliation_already_applied=true`; no current mutation is
+performed, and the next action reflects the current disposition (for example
+`REVIEW_PRESERVED_TARGETS`). Missing or conflicting completed receipts return
+`NOT_FOUND` or `CONFLICT` and fail closed.
+
 ### P5-G5 canonical projection reconciliation
 
 For the authoritative `MISSION-BETA-*` runtime, `mission verify`, `status`,

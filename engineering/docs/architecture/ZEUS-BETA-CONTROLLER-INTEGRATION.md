@@ -127,6 +127,38 @@ or non-responding endpoints fail closed with diagnostics.
 
 ### P5-G6 corrective convergence
 
+Post-publication reconciliation is Zeus-owned. `codex reconcile` inventories
+remote session records and loopback `app-server --listen` processes, exposes
+ownership and cardinality details, and derives independent session, client,
+listener, attachment, and provider states. The default and `--dry-run` forms
+are read-only. `--approve` permits only ownership-verified listener stops,
+records append-only termination receipts, updates the authoritative session
+projection through Zeus, and replays idempotently. Diagnostic listeners are
+stopped after a successful readiness receipt; an operational client exit
+retains one verified listener as a detached reusable session. Unknown or
+partial orphans are preserved and surfaced for operator review. Managed stdio
+providers are outside the remote reconciliation target set.
+
+Process ownership uses one canonical Linux identity tuple:
+`boot_id`, `pid`, `process_start_ticks` (the `/proc` clock-tick value),
+executable, command digest, and process group. Wall-clock receipt timestamps
+are never compared to `/proc` ticks. Legacy receipts are recoverable only
+when immutable endpoint, transaction, command, group, and boot evidence
+agrees; otherwise ownership remains partial or unknown. Codex home resolution
+prefers the session, endpoint/ready receipt environment, then the broker
+command line. Broker, Node, and native children are aggregated into one
+endpoint termination unit, with all member PIDs and process groups
+revalidated immediately before signaling.
+
+The endpoint unit is the canonical contract consumed by inventory, diagnostic
+and orphan classification, retained-session projection, action generation,
+pre-signal validation, and status output. Its stable fields include the unit
+ID, endpoint, roots, members, groups, socket owner, process-tree digest,
+ownership evidence digest, classification, and required disposition. The
+reviewed plan exports these units at top level and computes a SHA-256 digest
+over the stable unit/action set. Approval requires that digest; missing or
+changed digests fail before mutation.
+
 The direct launcher locator is repository-root-derived and canonical:
 `scripts/lib/eos/codex-direct-launch.sh`. Both Zeus and `engctl codex` resolve
 that same regular executable, and pre-launch validation rejects missing,
@@ -143,3 +175,31 @@ probe. Operational receipts remain owned by the interactive session until
 client exit reconciliation. An endpoint created by `shell --remote` is never
 required to pre-exist; `REMOTE_ENDPOINT_MISSING` applies only to explicit
 attach/reuse.
+
+Reconciliation result state is separate from cardinality state. `PASS`
+requires strict terminal convergence; `PARTIAL` means at least one mutation
+was applied while safely preserved targets remain; and `FAIL` means no
+authorized mutation was applied or an attempted mutation failed. Cardinality
+separately reports active sessions, detached sessions, diagnostic listeners,
+preserved orphans, and verified-owned orphans. A completed diagnostic receipt
+is consumed by inventory and status, so replay does not recreate the action or
+resend its signal.
+
+When cardinality is healthy and all remaining actions are non-executable
+`PRESERVE_TARGET` dispositions, terminal review is not represented as a
+mutation failure: the read-only result is `PASS`, while
+`reconciliation_required=false` and `reconciliation_fully_converged=false`
+make the strict-convergence boundary explicit. The next action is
+`REVIEW_PRESERVED_TARGETS`. Application state is split into
+`reconciliation_applied_this_invocation` and
+`reconciliation_already_applied`; replay reports `IDEMPOTENT`, and a normal
+non-replay response reports `NOT_REQUIRED` rather than a null replay value.
+
+Completed-plan replay is receipt-backed and current-plan-independent. Zeus
+matches the requested historical digest only to an approved successful
+reconciliation receipt, then overlays that historical application result on
+the fresh canonical inventory. The response keeps
+`requested_plan_digest`, `matched_completed_plan_digest`, and
+`current_plan_digest` separate in `replay_context`; it does not execute the
+current preserved-target plan. Missing or conflicting receipt matches are
+explicit replay failures.

@@ -428,10 +428,16 @@ def _package(root: Path, mission_id: str | None, runtime: Path) -> dict[str, Any
 
 def _result(session: Mapping[str, Any], *, read_only: bool) -> dict[str, Any]:
     alive = _alive(session.get("pid"))
+    listener_alive = bool(session.get("listener_alive")) or _alive(session.get("listener_pid"))
     state = session.get("state")
     if state in ACTIVE_STATES and not alive:
         state = "STOPPED"
     execution_mode = session.get("execution_mode", DIRECT_INTERACTIVE)
+    session_state = session.get("session_state") or ("DETACHED" if listener_alive and not alive else state)
+    client_state = session.get("client_state") or session.get("remote_client_state", "NOT_STARTED")
+    listener_state = session.get("listener_state") or ("READY" if listener_alive else "STOPPED")
+    attachment_state = session.get("attachment_state") or ("ATTACHED" if session.get("attached") else "DETACHED")
+    provider_state = session.get("provider_state") or ("READY" if listener_alive else "STOPPED")
     return {"result": "FAIL" if state == "FAILED" else "PASS", "session_id": session["session_id"], "mission_id": session.get("mission_id"),
             "execution_id": session.get("execution_id"), "provider_id": session.get("provider_id"),
             "immutable_binding_class": session.get("immutable_binding_class"),
@@ -445,13 +451,16 @@ def _result(session: Mapping[str, Any], *, read_only: bool) -> dict[str, Any]:
             "zeus_provider_control": bool(session.get("zeus_provider_control")),
             "provider_mode": session.get("provider_mode"), "transport": session.get("provider_transport"),
             "endpoint_uri": session.get("remote_endpoint"), "listener_id": session.get("listener_id"),
-            "listener_pid": session.get("listener_pid"), "listener_alive": _alive(session.get("listener_pid")),
+            "listener_pid": session.get("listener_pid"), "listener_alive": listener_alive,
             "socket_listening": session.get("socket_listening", False),
             "readiness_probe": session.get("readiness_probe", "NOT_RUN"),
             "readiness_result": session.get("readiness_result", "NOT_RUN"),
             "remote_capable": bool(session.get("remote_capable")),
             "remote_client_pid": session.get("remote_client_pid"),
             "remote_client_state": session.get("remote_client_state", "NOT_STARTED"),
+            "session_state": session_state, "client_state": client_state,
+            "listener_state": listener_state, "attachment_state": attachment_state,
+            "provider_state": provider_state,
             "failure_phase": session.get("failure_phase"),
             "terminal_resize": "PASS", "mission_binding": "PASS" if session.get("mission_id") else "NOT_APPLICABLE",
             "execution_binding": "PASS" if session.get("execution_id") else "NOT_APPLICABLE",
@@ -466,7 +475,7 @@ def _result(session: Mapping[str, Any], *, read_only: bool) -> dict[str, Any]:
             "attached": bool(alive and state in ACTIVE_STATES), "session_mode": "OPERATOR_INTERACTIVE",
             "mission_bound": bool(session.get("mission_id")), "execution_bound": bool(session.get("execution_id")),
             "repository_bound": True, "authority_mode": session.get("authority_mode"),
-            "failure": session.get("failure"), "next_authorized_action": "RECONCILE_PROVIDER_SESSION" if state == "FAILED" else ("CONTINUE_INTERACTIVE_SESSION" if alive else "START_INTERACTIVE_SESSION")}
+            "failure": session.get("failure"), "next_authorized_action": session.get("session_next_authorized_action") or ("RECONCILE_PROVIDER_SESSION" if state == "FAILED" else ("CONTINUE_INTERACTIVE_SESSION" if alive else "START_INTERACTIVE_SESSION"))}
 
 
 def _make_session(root: Path, runtime: Path, mission_id: str | None, approval: bool,
@@ -556,7 +565,7 @@ def _legacy_shell(repository: Path | str, mission_id: str | None = None, *, appr
             next_action="USE_THE_MANAGED_OWNER_TERMINAL_OR_RECONCILE_BROKER_ATTACHMENT",
         )
     if _session_id:
-        session = _existing(runtime, mission, _session_id, active=True)
+        session = _existing(runtime, mission, _session_id, active=False)
         if not session:
             raise InteractiveCodexError("SESSION_NOT_ATTACHABLE", "requested interactive session is not live")
         log_path = Path(session["log_path"])
@@ -955,7 +964,7 @@ def shell(repository: Path | str, mission_id: str | None = None, *, approval: bo
         return _direct_shell(root, runtime, session, log_path, mission=mission, codex_bin=codex_bin, argv=argv)
     managed = codex_adapter._existing(runtime, mission) if mission else None
     if _session_id:
-        session = _existing(runtime, mission, _session_id, active=True)
+        session = _existing(runtime, mission, _session_id, active=False)
         if not session:
             raise InteractiveCodexError("SESSION_NOT_ATTACHABLE", "requested interactive session is not live")
         log_path = Path(session["log_path"])
@@ -965,7 +974,19 @@ def shell(repository: Path | str, mission_id: str | None = None, *, approval: bo
     endpoint = None
     broker = None
     owns_broker = False
-    if (managed and managed.get("state") == "READY" and _alive(managed.get("provider_pid")
+    if (_session_id and session.get("remote_endpoint") and _alive(session.get("listener_pid"))):
+        endpoint = session["remote_endpoint"]
+        try:
+            probe = codex_app_server_broker.websocket_readiness(endpoint)
+        except (OSError, ValueError, TimeoutError) as error:
+            raise InteractiveCodexError("STALE_REMOTE_SESSION", f"detached endpoint failed readiness: {error}",
+                                        next_action="RECONCILE_PROVIDER_SESSION") from error
+        session = dict(session, pid=session.get("listener_pid"), provider_pid=session.get("listener_pid"),
+                       remote_endpoint=endpoint, provider_transport="WEBSOCKET",
+                       provider_mode="INTERACTIVE_REMOTE", remote_capable=True,
+                       listener_pid=session.get("listener_pid"), socket_listening=True,
+                       readiness_probe=probe, readiness_result="PASS", remote_client=True)
+    elif (managed and managed.get("state") == "READY" and _alive(managed.get("provider_pid")
         ) and managed.get("provider_mode") == "INTERACTIVE_REMOTE"
         and managed.get("remote_capable") and managed.get("remote_endpoint", "").startswith("ws://")
         and managed.get("readiness_result") == "PASS"):
@@ -1124,7 +1145,36 @@ def status(repository: Path | str, mission_id: str | None = None, *, session_id:
                 "execution_mode": DIRECT_INTERACTIVE, "provider_mode": "CODEX_CLI",
                 "transport": "DIRECT_TERMINAL", "read_only": True,
                 "blockers": [], "next_authorized_action": "START_INTERACTIVE_SESSION"}
-    return _result(session, read_only=True)
+    result = _result(session, read_only=True)
+    # Remote lifecycle is authoritative in the reconciliation projection.
+    # Raw legacy fields may say STOPPED while the listener is intentionally
+    # retained and reusable; status must expose the same dimensions as
+    # reconcile/attach/stop.
+    if session.get("execution_mode") == REMOTE_INTERACTIVE:
+        try:
+            from scripts.lib.emp import codex_reconciliation
+            projection = codex_reconciliation._inventory_v2(runtime, root)
+            canonical = next((item for item in projection.get("matching_sessions", [])
+                              if item.get("session_id") == session.get("session_id")), None)
+            if canonical:
+                result.update({key: canonical.get(key) for key in (
+                    "session_state", "client_state", "listener_state", "attachment_state",
+                    "provider_state", "listener_alive", "socket_listening", "ownership_result",
+                    "session_next_authorized_action", "endpoint_uri", "listener_pid",
+                    "remote_client_pid", "process_group", "process_groups", "member_pids",
+                    "root_pids", "termination_unit_id", "recommended_disposition")})
+                result["state"] = canonical.get("session_state")
+                result["process_alive"] = canonical.get("listener_alive")
+                result["remote_client_state"] = canonical.get("client_state")
+                result["next_authorized_action"] = canonical.get("session_next_authorized_action")
+                result["ownership"] = canonical.get("ownership", {})
+                result["ownership_report"] = canonical.get("ownership", {}).get("ownership_report", {})
+                result["lifecycle_schema_version"] = 2
+        except (OSError, ValueError, KeyError):
+            # Status remains read-only and retains the record projection if
+            # an inventory source is unavailable.
+            pass
+    return result
 
 
 def record_request_decision(repository: Path | str, session_id: str, request: Mapping[str, Any],
@@ -1164,6 +1214,13 @@ def stop(repository: Path | str, mission_id: str | None = None, *, session_id: s
     session = _existing(runtime, str(mission_id).upper() if mission_id else None, session_id=session_id)
     if not session:
         raise InteractiveCodexError("SESSION_NOT_FOUND", "no interactive session belongs to the requested mission")
+    if session.get("execution_mode") == REMOTE_INTERACTIVE and session.get("remote_endpoint"):
+        from scripts.lib.emp import codex_reconciliation
+        try:
+            return codex_reconciliation.reconcile(repository, runtime_root=runtime_root, approve=True,
+                                                   target_session_id=session["session_id"], dry_run=False)
+        except codex_reconciliation.ReconciliationError as error:
+            raise InteractiveCodexError(error.code, error.message, next_action=error.next_action) from error
     if _alive(session.get("pid")):
         os.killpg(session.get("process_group") or session["pid"], signal.SIGTERM)
     return _result(_load(_path(runtime, session["session_id"])), read_only=False)
@@ -1171,7 +1228,7 @@ def stop(repository: Path | str, mission_id: str | None = None, *, session_id: s
 
 def attach(repository: Path | str, mission_id: str | None = None, *, session_id: str | None = None,
            runtime_root: Path | str | None = None) -> dict[str, Any]:
-    session = status(repository, mission_id, session_id=session_id, active=True, runtime_root=runtime_root)
+    session = status(repository, mission_id, session_id=session_id, active=False, runtime_root=runtime_root)
     if session.get("state") == "NOT_STARTED" and mission_id:
         managed = codex_adapter._existing(_runtime(Path(repository).resolve(), runtime_root), str(mission_id).upper())
         if managed and managed.get("state") == "READY" and _alive(managed.get("provider_pid")) and managed.get("control_socket"):
