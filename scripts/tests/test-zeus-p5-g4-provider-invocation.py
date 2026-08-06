@@ -50,6 +50,14 @@ class ProviderInvocationFoundationTests(unittest.TestCase):
         self.assertEqual(value["next_authorized_action"], "START_EXECUTION")
         self.assertEqual(value["invocation_mode"], "QUALIFICATION_ADAPTER")
 
+    def test_publication_advance_preserves_invocation_provenance(self):
+        value = provider_invocation.verify(ROOT, MISSION)
+        self.assertEqual(value["result"], "PASS")
+        self.assertEqual(value["invocation_provenance_baseline"], "b37a5fb2e11df8026afeff1bd231902cd54711ac")
+        self.assertEqual(value["current_published_baseline"], "ae0395e62a5409e245912eb979a924bb9cb08e8c")
+        self.assertEqual(value["baseline_relationship"], "ANCESTOR")
+        self.assertEqual(value["invocation_integrity"], "PASS")
+
     def test_exact_artifact_cardinality_and_digests(self):
         value = provider_invocation.verify(ROOT, MISSION)
         self.assertEqual(len(value["artifacts"]), 7)
@@ -76,11 +84,16 @@ class ProviderInvocationFoundationTests(unittest.TestCase):
         self.assertTrue(status["provider_invoked"])
         self.assertTrue(status["provider_acknowledged"])
         self.assertEqual(status["next_authorized_action"], "START_EXECUTION")
+        self.assertEqual(status["invocation_provenance_baseline"], "b37a5fb2e11df8026afeff1bd231902cd54711ac")
+        self.assertEqual(status["current_published_baseline"], "ae0395e62a5409e245912eb979a924bb9cb08e8c")
+        self.assertEqual(status["baseline_relationship"], "ANCESTOR")
         self.assertEqual(lifecycle["provider_invocation_state"], "READY_FOR_EXECUTION_START")
+        self.assertEqual(lifecycle["baseline_relationship"], "ANCESTOR")
         self.assertEqual(next_value["next_authorized_action"], "START_EXECUTION")
         self.assertEqual(snapshot["provider_invocation_id"], status["provider_invocation_id"])
         self.assertEqual(verified["mission_verification"], "PASS")
         self.assertEqual(verified["checks"]["provider_invocation"], "PASS")
+        self.assertEqual(verified["baseline_relationship"], "ANCESTOR")
 
     def test_publication_projection_schema_is_fail_closed(self):
         value = _projection_schema(ROOT, MISSION)

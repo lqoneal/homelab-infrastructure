@@ -25,11 +25,15 @@ class CanonicalBaselineResolutionTests(unittest.TestCase):
         value = resolve(ROOT, EOS, mission_provenance_baseline=commit("HEAD"))
         self.assertEqual(value["result"], "PASS")
         self.assertEqual(value["mission_baseline_relationship"], "EQUAL")
+        self.assertEqual(value["baseline_relationship"], "IDENTICAL")
+        self.assertTrue(value["provenance_valid"])
 
     def test_current_publication_descends_from_mission_provenance(self):
         value = resolve(ROOT, EOS, mission_provenance_baseline="df7fcd9a42e87a8bf09722a903dfb3753d60d856")
         self.assertEqual(value["result"], "PASS")
         self.assertEqual(value["mission_baseline_relationship"], "ANCESTOR")
+        self.assertEqual(value["baseline_relationship"], "ANCESTOR")
+        self.assertEqual(value["provenance_baseline"], "df7fcd9a42e87a8bf09722a903dfb3753d60d856")
 
     def test_unrelated_and_missing_provenance_fail_closed(self):
         unrelated = resolve(ROOT, EOS, mission_provenance_baseline="0000000000000000000000000000000000000001")

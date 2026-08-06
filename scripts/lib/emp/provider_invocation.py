@@ -148,7 +148,18 @@ def _published_baseline(root: Path, runtime: Path) -> dict[str, Any]:
         raise ProviderInvocationError("BASELINE_RESOLUTION_FAILURE", str(error)) from error
 
 
-def _resolve_package(root: Path, mission_id: str, runtime: Path) -> dict[str, Any]:
+def _baseline_for_invocation(root: Path, runtime: Path, provenance_baseline: str) -> dict[str, Any]:
+    try:
+        return resolve_baseline(
+            root, Path("/data/engineering"),
+            mission_provenance_baseline=provenance_baseline,
+            runtime_identity=_load(runtime / "runtime-identity.json"),
+        )
+    except Exception as error:
+        raise ProviderInvocationError("BASELINE_RESOLUTION_FAILURE", str(error)) from error
+
+
+def _resolve_package(root: Path, mission_id: str, runtime: Path, *, existing: Mapping[str, Any] | None = None) -> dict[str, Any]:
     authority = operational_beta.authority(root)
     if not (authority.get("result") == "PASS" and authority.get("authority_framework") == "OPERATION_BETA" and authority.get("authority_integrity") == "PASS" and authority.get("authority_resolution") == "PASS" and authority.get("oa_authority") == "SUPERSEDED"):
         raise ProviderInvocationError("AUTHORITY_FAILURE", "published Operation Beta authority chain failed")
@@ -159,9 +170,17 @@ def _resolve_package(root: Path, mission_id: str, runtime: Path) -> dict[str, An
     dispatch_refs = session.get("dispatch_artifacts", {})
     if not session.get("provider_session_id") or not session.get("provider_id") or not session.get("dispatch_id"):
         raise ProviderInvocationError("PROVIDER_SESSION_BINDING_MISSING", "provider session chain is incomplete")
-    baseline = _published_baseline(root, runtime)
+    # Existing invocation provenance is immutable.  It is resolved against
+    # the current publication by the shared resolver, so a later publication
+    # is accepted when it is IDENTICAL or an ANCESTOR relationship.  New
+    # invocations bind to the current published baseline.
+    provenance_baseline = (existing or {}).get("current_published_baseline")
+    if not provenance_baseline:
+        current = _published_baseline(root, runtime)
+        provenance_baseline = current.get("published_head")
+    baseline = _baseline_for_invocation(root, runtime, provenance_baseline)
     if baseline.get("result") != "PASS":
-        raise ProviderInvocationError("BASELINE_RESOLUTION_FAILURE", "current published baseline did not resolve")
+        raise ProviderInvocationError("INVOCATION_PROVENANCE_INVALID", "invocation provenance baseline is invalid against the current publication")
     # The mission verifier is intentionally called with invocation integration
     # disabled to avoid a circular resolver; it still verifies every prior stage.
     from scripts.lib.emp.mission_verification_controller import verify as verify_mission
@@ -178,6 +197,9 @@ def _resolve_package(root: Path, mission_id: str, runtime: Path) -> dict[str, An
     required_refs = ("mission_contract", "execution_authority", "execution_package", "execution_record")
     if any(name not in refs for name in required_refs):
         raise ProviderInvocationError("INVOCATION_PACKAGE_INCOMPLETE", "canonical execution references are incomplete")
+    mission_provenance = (existing or {}).get("mission_provenance_baseline")
+    if existing is None:
+        mission_provenance = (mission.get("repository") or {}).get("mission_provenance_baseline")
     package_inputs = {
         "mission_id": mission_id, "wop_id": mission.get("wop_id"), "submission_id": mission.get("submission_id"),
         "admission_id": mission.get("admission_id"), "bootstrap_id": mission.get("bootstrap_id"),
@@ -187,14 +209,17 @@ def _resolve_package(root: Path, mission_id: str, runtime: Path) -> dict[str, An
         "execution_package_digest": refs["execution_package"]["digest"],
         "execution_authority_digest": refs["execution_authority"]["digest"],
         "repository_identity": baseline["identity"]["repository_identity"],
-        "current_published_baseline": baseline["published_head"],
-        "mission_provenance_baseline": baseline["mission_provenance_baseline"],
+        "current_published_baseline": provenance_baseline,
+        "mission_provenance_baseline": mission_provenance,
     }
     invocation_id = identifier("PROVIDER-INVOCATION", package_inputs)
     return {
         "mission": mission, "session": session, "provider": provider, "authority": authority,
         "baseline": baseline, "refs": refs, "dispatch_refs": dispatch_refs, "selection_refs": selection,
         "package_inputs": package_inputs, "provider_invocation_id": invocation_id,
+        "invocation_provenance_baseline": provenance_baseline,
+        "current_published_baseline": baseline["published_head"],
+        "baseline_relationship": baseline.get("baseline_relationship", baseline.get("mission_baseline_relationship")),
     }
 
 
@@ -236,11 +261,19 @@ def _expected(root: Path, runtime: Path, resolved: Mapping[str, Any]) -> dict[st
 def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str | None = None) -> dict[str, Any]:
     root, mission_id, runtime = Path(repository).resolve(), str(mission_id).upper(), _runtime(Path(repository).resolve(), runtime_root)
     try:
-        resolved = _resolve_package(root, mission_id, runtime)
-        existing = _verify_set(runtime, _found(runtime, mission_id))
+        found = _found(runtime, mission_id)
+        existing = _verify_set(runtime, found)
+        anchor = _load(existing["artifacts"]["provider_invocation_transaction"]["path"]) if existing else None
+        resolved = _resolve_package(root, mission_id, runtime, existing=anchor)
         if existing:
             if existing.get("provider_invocation_id") != resolved["provider_invocation_id"]:
-                raise ProviderInvocationError("INVOCATION_STALE", "existing invocation package is stale")
+                raise ProviderInvocationError("INVOCATION_INPUT_MISMATCH", "invocation-critical input differs from immutable invocation binding")
+            existing.update({
+                "invocation_provenance_baseline": resolved["invocation_provenance_baseline"],
+                "current_published_baseline": resolved["current_published_baseline"],
+                "baseline_relationship": resolved["baseline_relationship"],
+                "invocation_integrity": "PASS",
+            })
             return existing
         return {"result": "PASS", "mission_id": mission_id, "provider_session_id": resolved["session"]["provider_session_id"], "provider_id": resolved["session"]["provider_id"], "provider_invocation_created": False, "provider_invoked": False, "execution_started": False, "mission_work_started": False, "read_only": True, "blockers": [], "next_authorized_action": "AUTHORIZE_PROVIDER_INVOCATION"}
     except ProviderInvocationError as error:
@@ -250,13 +283,14 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
 def create(repository: Path | str, mission_id: str, *, runtime_root: Path | str | None = None) -> dict[str, Any]:
     root, mission_id, runtime = Path(repository).resolve(), str(mission_id).upper(), _runtime(Path(repository).resolve(), runtime_root)
     try:
-        resolved = _resolve_package(root, mission_id, runtime)
-        existing = _verify_set(runtime, _found(runtime, mission_id))
+        found = _found(runtime, mission_id)
+        existing = _verify_set(runtime, found)
+        anchor = _load(existing["artifacts"]["provider_invocation_transaction"]["path"]) if existing else None
+        resolved = _resolve_package(root, mission_id, runtime, existing=anchor)
         if existing:
             if existing.get("provider_invocation_id") != resolved["provider_invocation_id"]:
-                raise ProviderInvocationError("INVOCATION_CONFLICT", "conflicting invocation state exists")
+                raise ProviderInvocationError("INVOCATION_INPUT_MISMATCH", "invocation-critical input differs from immutable invocation binding")
             return {**existing, "read_only": False, "duplicate_provider_invocation": "IDEMPOTENT"}
-        found = _found(runtime, mission_id)
         if any(found.values()):
             raise ProviderInvocationError("INVOCATION_PARTIAL_STATE", "partial invocation state exists")
         values = _expected(root, runtime, resolved)

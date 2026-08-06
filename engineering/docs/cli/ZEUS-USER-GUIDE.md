@@ -457,6 +457,14 @@ publication procedure and engctl. The controller distinguishes candidate,
 publication, reconciliation, and harness failures; a completed publication
 replays as `PUBLICATION_RECONCILED`/`IDEMPOTENT`. An uncommitted candidate is
 reported as `CANDIDATE_SCOPE_FAILURE` rather than being silently accepted.
+
+Provider-invocation verification preserves the invocation's immutable
+provenance baseline across later publications. The canonical baseline
+resolver reports `IDENTICAL` or `ANCESTOR` only when repository/runtime parity
+and invocation-critical bindings remain valid; unrelated, missing, invalid,
+or repository-mismatched baselines fail closed. The verification output
+separates `invocation_provenance_baseline` from
+`current_published_baseline`.
 The repository-native focused-test launcher must be module-based so the
 repository root is on Python's import path. Use:
 

@@ -99,7 +99,7 @@ def resolve(
                 errors.append({"code": "MISSION_PROVENANCE_NOT_ANCESTOR", "message": "mission provenance baseline is not an ancestor of current publication"})
                 relationship = "UNRELATED"
             else:
-                relationship = "EQUAL" if provenance == published else "ANCESTOR"
+                relationship = "IDENTICAL" if provenance == published else "ANCESTOR"
         except BaselineResolutionError as error:
             errors.append({"code": error.code, "message": str(error)})
 
@@ -108,13 +108,18 @@ def resolve(
         "publication_parity": "PASS" if head and head == published and branch == "main" else "FAIL",
         "eos_parity": "PASS" if eos_baseline and eos_baseline == head else "FAIL",
         "runtime_binding": "PASS" if runtime_ok else "FAIL",
-        "mission_provenance": "PASS" if mission_provenance_baseline is None or relationship in {"EQUAL", "ANCESTOR"} else "FAIL",
+        "mission_provenance": "PASS" if mission_provenance_baseline is None or relationship in {"IDENTICAL", "ANCESTOR"} else "FAIL",
     }
     return {
         "result": "PASS" if not errors else "FAIL", "repository_identity": "PASS" if identity else "FAIL",
         "identity": identity,
         "current_head": head, "published_head": published, "eos_baseline": eos_baseline,
-        "mission_provenance_baseline": provenance, "mission_baseline_relationship": relationship,
+        "mission_provenance_baseline": provenance,
+        "provenance_baseline": provenance,
+        "mission_baseline_relationship": "EQUAL" if relationship == "IDENTICAL" else relationship,
+        "baseline_relationship": relationship,
+        "provenance_valid": checks["mission_provenance"] == "PASS",
+        "published_parity": checks["publication_parity"],
         "publication_parity": checks["publication_parity"], "eos_parity": checks["eos_parity"],
         "runtime_binding": checks["runtime_binding"], "checks": checks, "errors": errors,
     }

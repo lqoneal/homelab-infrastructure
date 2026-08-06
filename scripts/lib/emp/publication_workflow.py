@@ -48,6 +48,7 @@ AUTHORIZED_CANDIDATE_PATHS = frozenset({
     "scripts/lib/emp/canonical_runtime_mission.py",
     "scripts/lib/emp/provider_session.py",
     "scripts/lib/emp/provider_invocation.py",
+    "scripts/lib/eos/canonical_baseline.py",
     "scripts/tests/test-zeus-mission-verification-controller.py",
     "scripts/tests/test-zeus-p4-g3-runtime-discovery.py",
     "scripts/tests/test-zeus-p5-g1-provider-selection.py",
@@ -57,7 +58,9 @@ AUTHORIZED_CANDIDATE_PATHS = frozenset({
     "scripts/zeus",
     "engineering/docs/cli/ZEUS-USER-GUIDE.md",
     "scripts/tests/test-zeus-p5-g4-provider-invocation.py",
+    "scripts/tests/test-zeus-canonical-baseline-resolution.py",
     "engineering/evidence/operation-beta/p5-g4-provider-invocation-foundation-completion-report.md",
+    "engineering/evidence/operation-beta/p5-g4-post-publication-invocation-baseline-reconciliation-completion-report.md",
 })
 
 
