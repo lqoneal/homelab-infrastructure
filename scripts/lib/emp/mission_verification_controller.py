@@ -17,11 +17,11 @@ from typing import Any
 from scripts.lib.emp.bootstrap_boundary import _transaction_digest
 from scripts.lib.emp.mission_admission_boundary import _digest
 from scripts.lib.emp.repository_identity import resolve
+from scripts.lib.eos.canonical_baseline import resolve as resolve_baseline
 from scripts.lib.emp.runtime_paths import resolve_runtime
 from scripts.lib.eos import operational_beta
 
 
-PUBLISHED_BASELINE = "df7fcd9a42e87a8bf09722a903dfb3753d60d856"
 SCHEMA_VERSION = 1
 
 
@@ -94,7 +94,10 @@ def _repository(root: Path, runtime: Path) -> tuple[dict[str, Any], dict[str, An
                 "repository_id": identity["repository_id"], "repository_identity": identity["repository_identity"]}
     if any(marker.get(key) != value for key, value in expected.items()):
         raise MissionVerificationError("RUNTIME_IDENTITY_MISMATCH", "runtime identity does not bind to repository")
-    repository = {**identity, "branch": branch, "current_baseline": head, "published_baseline": PUBLISHED_BASELINE}
+    baseline = resolve_baseline(root, Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")), runtime_identity=marker)
+    repository = {**identity, "branch": branch, "current_baseline": baseline["current_head"],
+                 "published_baseline": baseline["published_head"], "eos_baseline": baseline["eos_baseline"],
+                 "baseline_resolution": baseline}
     return repository, marker
 
 
@@ -205,6 +208,19 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         blockers.append({"code": getattr(error, "code", "MISSION_NOT_DISCOVERABLE"), "message": str(error)})
         submission = admission = bootstrap = {}
 
+    if chain and repository_data.get("baseline_resolution"):
+        provenance = admission.get("repository_baseline") or bootstrap.get("repository_baseline")
+        baseline = resolve_baseline(
+            root, Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")),
+            mission_provenance_baseline=provenance,
+            runtime_identity=_load(runtime / "runtime-identity.json"),
+        )
+        repository_data["baseline_resolution"] = baseline
+        repository_data["mission_provenance_baseline"] = baseline.get("mission_provenance_baseline")
+        repository_data["mission_baseline_relationship"] = baseline.get("mission_baseline_relationship")
+        for error in baseline.get("errors", []):
+            blockers.append(error)
+
     if chain:
         try:
             if submission.get("submission_state") != "ADMISSION_REQUESTED" or submission.get("submission_result") != "PASS":
@@ -229,7 +245,7 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
                 artifacts[field] = {"path": str(path), "digest": admission[field]["digest"]}
                 if value.get("mission_id") != mission_id or value.get("wop_id") != submission["wop_id"]:
                     raise MissionVerificationError("ADMISSION_ARTIFACT_MISMATCH", f"{label} identity mismatch")
-            if admission.get("operation") != "BETA" or admission.get("repository_baseline") != PUBLISHED_BASELINE:
+            if admission.get("operation") != "BETA" or admission.get("repository_baseline") != repository_data.get("mission_provenance_baseline"):
                 raise MissionVerificationError("REPOSITORY_BASELINE_MISMATCH", "admission baseline or operation is invalid")
             checks["wop"] = "PASS"; checks["admission"] = "PASS"
         except Exception as error:
@@ -269,9 +285,10 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         checks["downstream_boundary"] = "FAIL"
         blockers.append({"code": "DOWNSTREAM_EFFECT_DETECTED", "message": "canonical mission has downstream artifacts"})
 
-    baseline_ok = repository_data.get("current_baseline") == PUBLISHED_BASELINE
-    if not baseline_ok:
-        blockers.append({"code": "REPOSITORY_BASELINE_MISMATCH", "message": "current repository is not the published baseline"})
+    baseline_resolution = repository_data.get("baseline_resolution", {})
+    baseline_ok = baseline_resolution.get("publication_parity") == "PASS"
+    if not baseline_ok and not any(item.get("code") == "PUBLICATION_PARITY_FAILURE" for item in blockers):
+        blockers.append({"code": "PUBLICATION_PARITY_FAILURE", "message": "current repository is not the published baseline"})
     if not repository_data.get("repository_path"):
         checks["downstream_boundary"] = "FAIL"
     if not baseline_ok:
@@ -279,6 +296,7 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
     checks.update({
         "repository_identity": "PASS" if repository_data.get("repository_path") else "FAIL",
         "repository_baseline": "PASS" if baseline_ok else "FAIL",
+        "mission_provenance": baseline_resolution.get("checks", {}).get("mission_provenance", "FAIL"),
         "runtime_repository_binding": "PASS" if runtime_data.get("identity") == "PASS" and repository_data.get("repository_path") else "FAIL",
         "authoritative_runtime": "PASS" if runtime_data.get("identity") == "PASS" else "FAIL",
         "runtime_identity": runtime_data.get("identity", "FAIL"),
@@ -295,7 +313,13 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         "mission_id": mission_id, "wop_id": chain.get("submission", {}).get("wop_id"),
         "submission_id": chain.get("submission", {}).get("submission_id"), "admission_id": chain.get("admission", {}).get("admission_id"),
         "bootstrap_id": chain.get("bootstrap", {}).get("bootstrap_id"),
-        "authority": authority, "repository": {"identity": "PASS" if repository_data.get("repository_path") else "FAIL", "baseline": "PASS" if baseline_ok else "FAIL", **repository_data},
+        "authority": authority, "repository": {"identity": "PASS" if repository_data.get("repository_path") else "FAIL", "baseline": "PASS" if baseline_ok else "FAIL", **repository_data, **{
+            "current_baseline": baseline_resolution.get("current_head"),
+            "published_baseline": baseline_resolution.get("published_head"),
+            "eos_baseline": baseline_resolution.get("eos_baseline"),
+            "mission_provenance_baseline": baseline_resolution.get("mission_provenance_baseline"),
+            "mission_baseline_relationship": baseline_resolution.get("mission_baseline_relationship"),
+        }},
         "runtime": runtime_data, "checks": checks,
         "replay": {"submission": "IDEMPOTENT" if chain else "UNKNOWN", "admission": "IDEMPOTENT" if chain else "UNKNOWN", "bootstrap": "IDEMPOTENT" if chain else "UNKNOWN"},
         "lifecycle": {"submission_state": chain.get("submission", {}).get("submission_state"), "admission_state": chain.get("admission", {}).get("admission_state"), "bootstrap_state": chain.get("bootstrap", {}).get("bootstrap_state"), "provider_ready": chain.get("bootstrap", {}).get("provider_ready", False), "provider_selected": chain.get("bootstrap", {}).get("provider_selected", False), "dispatch_created": chain.get("bootstrap", {}).get("dispatch_created", False), "execution_started": chain.get("bootstrap", {}).get("execution_started", False)},
@@ -308,4 +332,5 @@ def render(value: dict[str, Any]) -> str:
     checks = value.get("checks", {})
     replay = value.get("replay", {})
     def status(key: str) -> str: return checks.get(key, "FAIL")
-    return "\n".join(("Zeus Mission Verification", "-------------------------", f"Result              : {value.get('result')}", f"mission_verification: {value.get('mission_verification', value.get('result'))}", f"Mission             : {value.get('mission_id')}", "Operation           : BETA", f"Authority           : {value.get('authority', {}).get('integrity', 'FAIL')}", f"OA authority        : {value.get('authority', {}).get('oa_authority', 'UNKNOWN')}", f"Repository identity : {value.get('repository', {}).get('identity')}", f"Repository baseline : {value.get('repository', {}).get('baseline')}", f"Runtime identity    : {value.get('runtime', {}).get('identity')}", f"WOP                 : {status('wop')}", f"Submission          : {status('submission')}", f"Admission           : {status('admission')}", f"Bootstrap           : {status('bootstrap')}", f"Execution record    : {status('execution_record')}", f"Provider readiness  : {status('provider_readiness')}", f"Artifact integrity  : {status('artifact_integrity')}", f"Artifact cardinality: {status('artifact_cardinality')}", f"Replay              : {replay.get('submission')}", f"Provider selected   : {'YES' if lifecycle.get('provider_selected') else 'NO'}", f"Dispatch created    : {'YES' if lifecycle.get('dispatch_created') else 'NO'}", f"Execution started   : {'YES' if lifecycle.get('execution_started') else 'NO'}", f"Blockers            : {'NONE' if not value.get('blockers') else ', '.join(item.get('code', 'UNKNOWN') for item in value['blockers'])}", f"Next action         : {value.get('next_authorized_action')}", "Read-only           : YES", "read_only: true", ""))
+    repository = value.get("repository", {})
+    return "\n".join(("Zeus Mission Verification", "-------------------------", f"Result              : {value.get('result')}", f"mission_verification: {value.get('mission_verification', value.get('result'))}", f"Mission             : {value.get('mission_id')}", "Operation           : BETA", f"Authority           : {value.get('authority', {}).get('integrity', 'FAIL')}", f"OA authority        : {value.get('authority', {}).get('oa_authority', 'UNKNOWN')}", f"Repository identity : {repository.get('identity')}", f"Repository baseline : {repository.get('baseline')}", f"Current published baseline : {repository.get('published_baseline')}", f"Mission provenance baseline: {repository.get('mission_provenance_baseline')}", f"Baseline relationship       : {repository.get('mission_baseline_relationship')}", f"Published baseline parity  : {repository.get('baseline')}", f"Mission provenance          : {value.get('checks', {}).get('mission_provenance')}", f"Runtime identity    : {value.get('runtime', {}).get('identity')}", f"WOP                 : {status('wop')}", f"Submission          : {status('submission')}", f"Admission           : {status('admission')}", f"Bootstrap           : {status('bootstrap')}", f"Execution record    : {status('execution_record')}", f"Provider readiness  : {status('provider_readiness')}", f"Artifact integrity  : {status('artifact_integrity')}", f"Artifact cardinality: {status('artifact_cardinality')}", f"Replay              : {replay.get('submission')}", f"Provider selected   : {'YES' if lifecycle.get('provider_selected') else 'NO'}", f"Dispatch created   : {'YES' if lifecycle.get('dispatch_created') else 'NO'}", f"Execution started  : {'YES' if lifecycle.get('execution_started') else 'NO'}", f"Blockers            : {'NONE' if not value.get('blockers') else ', '.join(item.get('code', 'UNKNOWN') for item in value['blockers'])}", f"Next action         : {value.get('next_authorized_action')}", "Read-only           : YES", "read_only: true", ""))

@@ -5,7 +5,7 @@ import subprocess
 from pathlib import Path
 from typing import Any, Mapping
 
-from scripts.lib.emp.repository_identity import resolve as resolve_repository_identity
+from scripts.lib.eos.canonical_baseline import resolve as resolve_baseline
 from scripts.lib.eos.state_sync import SynchronizationError, frontmatter, render, validate
 
 
@@ -53,17 +53,13 @@ def verify(root: Path | str, eos_workspace: Path | str, project: str = "homelab"
     """Resolve current repository/EOS state without synchronization side effects."""
     root, workspace = Path(root).resolve(), Path(eos_workspace).resolve()
     checks: dict[str, dict[str, Any]] = {}
-    try:
-        identity = resolve_repository_identity(root)
-        checks["repository_identity"] = {"result": "PASS", "identity": identity}
-    except Exception as error:
-        return assess({"repository_identity": {"result": "FAIL", "reason": str(error)}})
-
-    head, head_error = _git(root, "rev-parse", "HEAD")
-    branch, branch_error = _git(root, "branch", "--show-current")
-    origin, origin_error = _git(root, "rev-parse", "origin/main")
+    baseline = resolve_baseline(root, workspace, project)
+    identity = baseline["identity"]
+    head, origin = baseline["current_head"], baseline["published_head"]
+    branch = _git(root, "branch", "--show-current")[0]
     dirty, dirty_error = _git(root, "status", "--porcelain")
-    published = not any((head_error, branch_error, origin_error)) and branch == "main" and bool(head) and head == origin
+    checks["repository_identity"] = {"result": baseline["checks"]["repository_identity"], "identity": identity}
+    published = baseline["publication_parity"] == "PASS"
     checks["published_baseline"] = {"result": "PASS" if published else "FAIL", "branch": branch, "head": head, "origin_main": origin, "clean": not bool(dirty), "working_tree": "clean" if not dirty else "candidate changes present", "reason": "HEAD equals origin/main on main; local candidate changes are reported separately" if published and dirty else ("HEAD equals origin/main on clean main" if published else "repository is not at the published main baseline")}
 
     eos_id_path = workspace / "eos/state/EOS-ID.md"
@@ -71,11 +67,11 @@ def verify(root: Path | str, eos_workspace: Path | str, project: str = "homelab"
     manifest_path = workspace / "eos/state/EOS-MANIFEST.md"
     try:
         eos_id, eos_state, eos_manifest = frontmatter(eos_id_path), frontmatter(eos_state_path), frontmatter(manifest_path)
-        identity_matches = eos_id.get("repository_root") == identity["repository_path"] and eos_id.get("repository_remote") == identity["repository_identity"] and eos_state.get("project") == project and eos_manifest.get("project") == project
-        state_matches = eos_state.get("repository_commit") == head
-        checks["eos"] = {"result": "PASS" if identity_matches and state_matches else "FAIL", "state": str(eos_state_path), "manifest": str(manifest_path), "repository_commit": eos_state.get("repository_commit"), "repository_branch": eos_state.get("repository_branch"), "reason": "EOS identity and recorded repository baseline resolved" if identity_matches and state_matches else "EOS identity or recorded repository baseline mismatch"}
-        parity = eos_state.get("repository_commit") == head == origin
-        checks["baseline_parity"] = {"result": "PASS" if parity else "FAIL", "repository_head": head, "origin_main": origin, "eos_repository_commit": eos_state.get("repository_commit"), "reason": "repository HEAD, origin/main, and EOS baseline are equal" if parity else "repository and EOS baselines disagree"}
+        identity_matches = baseline["checks"]["repository_identity"] == "PASS" and baseline["checks"]["eos_parity"] == "PASS"
+        state_matches = baseline["checks"]["eos_parity"] == "PASS"
+        checks["eos"] = {"result": "PASS" if identity_matches and state_matches else "FAIL", "state": str(eos_state_path), "manifest": str(manifest_path), "repository_commit": baseline["eos_baseline"], "repository_branch": eos_state.get("repository_branch"), "reason": "EOS identity and recorded repository baseline resolved" if identity_matches and state_matches else "EOS identity or recorded repository baseline mismatch"}
+        parity = baseline["checks"]["eos_parity"] == "PASS" and baseline["checks"]["publication_parity"] == "PASS"
+        checks["baseline_parity"] = {"result": "PASS" if parity else "FAIL", "repository_head": head, "origin_main": origin, "eos_repository_commit": baseline["eos_baseline"], "reason": "repository HEAD, origin/main, and EOS baseline are equal" if parity else "repository and EOS baselines disagree"}
         try:
             drift = validate(render(root, workspace, project))
             checks["manifest_consistency"] = {"result": "PASS" if not drift else "FAIL", "reason": "canonical EOS projection matches EOS-STATE and EOS-MANIFEST" if not drift else "canonical EOS projection drift: " + ", ".join(drift)}

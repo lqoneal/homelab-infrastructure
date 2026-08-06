@@ -269,6 +269,18 @@ they bind to the requested canonical mission chain. Operation Beta remains
 authoritative; Operational Alpha is historical/superseded and cannot be a
 fallback authority.
 
+Baseline semantics are explicit. `current_baseline`/`published_baseline` are
+resolved from the live repository (`HEAD` and `origin/main`) and EOS must
+match them. `mission_provenance_baseline` remains the immutable commit stored
+in the mission artifacts. It is valid after publication when it is reachable
+and an ancestor of the current publication (or equal to it). Therefore a
+compatible publication does not invalidate an already materialized mission.
+The resolver fails closed with precise blockers such as
+`PUBLICATION_PARITY_FAILURE`, `EOS_BASELINE_MISMATCH`,
+`MISSION_PROVENANCE_BASELINE_MISSING`, `MISSION_PROVENANCE_NOT_ANCESTOR`,
+`RUNTIME_REPOSITORY_BINDING_MISMATCH`, or `REPOSITORY_IDENTITY_MISMATCH`.
+Platform and mission verification consume this same read-only resolver.
+
 The supporting mission views `status`, `authority`, `lifecycle`, `evidence`,
 `artifacts`, `replay`, `blockers`, `next`, and `snapshot` use the same
 canonical projection for `MISSION-BETA-*` IDs. Capability or roadmap checks

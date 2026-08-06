@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any
 
@@ -9,6 +10,7 @@ from scripts.lib.emp.bootstrap_boundary import _transaction_digest
 from scripts.lib.emp.mission_admission_boundary import _canonical, _digest, _load
 from scripts.lib.emp.repository_identity import resolve
 from scripts.lib.emp.runtime_paths import runtime_root
+from scripts.lib.eos.canonical_baseline import resolve as resolve_baseline
 
 
 class CanonicalRuntimeMissionError(ValueError):
@@ -65,6 +67,14 @@ def discover(repository: Path | str, mission_id: str) -> dict[str, Any]:
     if admission.get("admission_id") != bootstrap.get("admission_id") or submission.get("submission_id") != admission.get("submission_id"):
         raise CanonicalRuntimeMissionError("canonical identity chain is inconsistent")
     identity = resolve(root)
+    baseline = resolve_baseline(
+        root, Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")),
+        mission_provenance_baseline=bootstrap.get("repository_baseline"),
+        runtime_identity=_load(runtime / "runtime-identity.json"),
+    )
+    if baseline["result"] != "PASS":
+        first = baseline["errors"][0] if baseline["errors"] else {"code": "PUBLICATION_PARITY_FAILURE", "message": "canonical baseline resolution failed"}
+        raise CanonicalRuntimeMissionError(f"{first['code']}: {first['message']}")
     if admission.get("operation") != "BETA" or bootstrap.get("repository_baseline") != admission.get("repository_baseline"):
         raise CanonicalRuntimeMissionError("Operation Beta or baseline binding is invalid")
     artifacts = {"bootstrap_transaction": (bootstrap_path, bootstrap)}
@@ -82,7 +92,8 @@ def discover(repository: Path | str, mission_id: str) -> dict[str, Any]:
         "bootstrap_result": bootstrap["bootstrap_result"], "provider_ready": True,
         "provider_selected": False, "dispatch_created": False, "execution_started": False,
         "next_action": bootstrap["next_action"], "next_authorized_action": bootstrap["next_action"],
-        "repository": identity, "repository_baseline": bootstrap["repository_baseline"],
+        "repository": {**identity, "current_baseline": baseline["current_head"], "published_baseline": baseline["published_head"], "eos_baseline": baseline["eos_baseline"], "mission_provenance_baseline": baseline["mission_provenance_baseline"], "mission_baseline_relationship": baseline["mission_baseline_relationship"]},
+        "repository_baseline": bootstrap["repository_baseline"], "baseline_resolution": baseline,
         "authority": "Operation Beta", "blockers": [],
         "artifacts": {name: {"path": str(path), "digest": (value.get("transaction_digest") if name == "bootstrap_transaction" else value.get("artifact_digest"))} for name, (path, value) in artifacts.items()},
     }
