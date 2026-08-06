@@ -272,8 +272,22 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
             checks["bootstrap"] = "FAIL"; checks["execution_record"] = "FAIL"; checks["provider_readiness"] = "FAIL"; checks["artifact_integrity"] = "FAIL"
             blockers.append({"code": getattr(error, "code", "BOOTSTRAP_DIGEST_FAILURE"), "message": str(error)})
 
+    provider_stage: dict[str, Any] = {}
+    try:
+        # Provider-selection artifacts are the authorized P5-G1 boundary and
+        # are therefore not downstream effects.  The provider controller
+        # remains the authoritative validator; this projection only exposes
+        # its validated terminal state in mission views.
+        from scripts.lib.emp.provider_selection import _mission_artifacts, _verify_set
+        provider_stage = _verify_set(runtime, _mission_artifacts(runtime, mission_id)) or {}
+        if provider_stage.get("result") != "PASS" and any(_mission_artifacts(runtime, mission_id).values()):
+            raise MissionVerificationError("PROVIDER_SELECTION_ARTIFACT_MISMATCH", "provider-selection artifacts are invalid")
+    except Exception as error:
+        if any((runtime / directory).glob("*.json") for directory in ("provider-selection", "selected-providers", "provider-qualifications", "provider-selection-receipts", "provider-selection-journals", "dispatch-readiness") if (runtime / directory).is_dir()):
+            checks["artifact_integrity"] = "FAIL"
+            blockers.append({"code": getattr(error, "code", "PROVIDER_SELECTION_ARTIFACT_MISMATCH"), "message": str(error)})
     downstream = []
-    for directory in ("providers", "provider-selection", "provider-sessions", "dispatch", "dispatches", "executions", "execution-sessions"):
+    for directory in ("providers", "provider-sessions", "dispatch", "dispatches", "executions", "execution-sessions"):
         for path in (runtime / directory).glob("*.json") if (runtime / directory).is_dir() else ():
             try:
                 value = _load(path)
@@ -307,7 +321,7 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
     if result == "FAIL":
         next_action = blockers[0].get("message", "Resolve blockers")
     else:
-        next_action = "EVALUATE_EXECUTION_PROVIDER"
+        next_action = "EVALUATE_PROVIDER_DISPATCH" if provider_stage else "EVALUATE_EXECUTION_PROVIDER"
     return {
         "schema_version": SCHEMA_VERSION, "result": result, "mission_verification": result, "read_only": True,
         "mission_id": mission_id, "wop_id": chain.get("submission", {}).get("wop_id"),
@@ -322,7 +336,8 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         }},
         "runtime": runtime_data, "checks": checks,
         "replay": {"submission": "IDEMPOTENT" if chain else "UNKNOWN", "admission": "IDEMPOTENT" if chain else "UNKNOWN", "bootstrap": "IDEMPOTENT" if chain else "UNKNOWN"},
-        "lifecycle": {"submission_state": chain.get("submission", {}).get("submission_state"), "admission_state": chain.get("admission", {}).get("admission_state"), "bootstrap_state": chain.get("bootstrap", {}).get("bootstrap_state"), "provider_ready": chain.get("bootstrap", {}).get("provider_ready", False), "provider_selected": chain.get("bootstrap", {}).get("provider_selected", False), "dispatch_created": chain.get("bootstrap", {}).get("dispatch_created", False), "execution_started": chain.get("bootstrap", {}).get("execution_started", False)},
+        "lifecycle": {"submission_state": chain.get("submission", {}).get("submission_state"), "admission_state": chain.get("admission", {}).get("admission_state"), "bootstrap_state": chain.get("bootstrap", {}).get("bootstrap_state"), "provider_ready": chain.get("bootstrap", {}).get("provider_ready", False), "provider_selected": bool(provider_stage), "provider_qualified": bool(provider_stage.get("provider_qualified", False)), "dispatch_eligible": bool(provider_stage.get("dispatch_eligible", False)), "provider_id": provider_stage.get("provider_id"), "dispatch_created": chain.get("bootstrap", {}).get("dispatch_created", False), "execution_started": chain.get("bootstrap", {}).get("execution_started", False)},
+        "provider_selection": provider_stage,
         "artifacts": artifacts, "legacy_excluded": True, "blockers": blockers, "next_authorized_action": next_action,
     }
 

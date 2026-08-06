@@ -11,6 +11,7 @@ from scripts.lib.emp.mission_admission_boundary import _canonical, _digest, _loa
 from scripts.lib.emp.repository_identity import resolve
 from scripts.lib.emp.runtime_paths import runtime_root
 from scripts.lib.eos.canonical_baseline import resolve as resolve_baseline
+from scripts.lib.emp.provider_selection import _mission_artifacts, _verify_set
 
 
 class CanonicalRuntimeMissionError(ValueError):
@@ -83,6 +84,19 @@ def discover(repository: Path | str, mission_id: str) -> dict[str, Any]:
         artifacts[field] = (path, value)
         if value.get("mission_id") != mission_id:
             raise CanonicalRuntimeMissionError(f"{field} mission identity mismatch")
+    provider_stage = _verify_set(runtime, _mission_artifacts(runtime, mission_id))
+    if provider_stage:
+        for key, descriptor in provider_stage["artifacts"].items():
+            artifacts[key] = (Path(descriptor["path"]), _load(Path(descriptor["path"])))
+        provider_selected = True
+        provider_qualified = bool(provider_stage.get("provider_qualified"))
+        dispatch_eligible = bool(provider_stage.get("dispatch_eligible"))
+        next_action = "EVALUATE_PROVIDER_DISPATCH"
+    else:
+        provider_selected = False
+        provider_qualified = False
+        dispatch_eligible = False
+        next_action = bootstrap["next_action"]
     return {
         "result": "PASS", "mission": "DISCOVERABLE", "mission_id": mission_id,
         "wop_id": submission.get("wop_id"), "operation": "BETA",
@@ -90,11 +104,15 @@ def discover(repository: Path | str, mission_id: str) -> dict[str, Any]:
         "admission_id": admission["admission_id"], "admission_state": admission["admission_state"],
         "bootstrap_id": bootstrap["bootstrap_id"], "bootstrap_state": bootstrap["bootstrap_state"],
         "bootstrap_result": bootstrap["bootstrap_result"], "provider_ready": True,
-        "provider_selected": False, "dispatch_created": False, "execution_started": False,
-        "next_action": bootstrap["next_action"], "next_authorized_action": bootstrap["next_action"],
+        "provider_selected": provider_selected, "provider_qualified": provider_qualified,
+        "dispatch_eligible": dispatch_eligible, "dispatch_created": False, "execution_started": False,
+        "next_action": next_action, "next_authorized_action": next_action,
         "repository": {**identity, "current_baseline": baseline["current_head"], "published_baseline": baseline["published_head"], "eos_baseline": baseline["eos_baseline"], "mission_provenance_baseline": baseline["mission_provenance_baseline"], "mission_baseline_relationship": baseline["mission_baseline_relationship"]},
         "repository_baseline": bootstrap["repository_baseline"], "baseline_resolution": baseline,
         "authority": "Operation Beta", "blockers": [],
+        "provider_id": provider_stage.get("provider_id") if provider_stage else None,
+        "provider_selection_id": provider_stage.get("provider_selection_id") if provider_stage else None,
+        "provider_selection": provider_stage or {},
         "artifacts": {name: {"path": str(path), "digest": (value.get("transaction_digest") if name == "bootstrap_transaction" else value.get("artifact_digest"))} for name, (path, value) in artifacts.items()},
     }
 

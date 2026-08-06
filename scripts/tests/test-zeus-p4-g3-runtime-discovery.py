@@ -24,8 +24,8 @@ class P4G3RuntimeDiscoveryTests(unittest.TestCase):
             self.assertEqual(value["mission"], "DISCOVERABLE")
             self.assertEqual(value["bootstrap_state"], "READY_FOR_EXECUTION_PROVIDER")
             self.assertTrue(value["provider_ready"])
-            self.assertFalse(value["provider_selected"])
-            self.assertEqual(value["next_action"], "EVALUATE_EXECUTION_PROVIDER")
+            self.assertTrue(value["provider_selected"])
+            self.assertEqual(value["next_action"], "EVALUATE_PROVIDER_DISPATCH")
         after = {p: p.read_bytes() for p in Path("/home/loneal/.local/state/zeus-runtime/homelab-6bd83f9079d6fc57").rglob("*.json")}
         self.assertEqual(before, after)
 

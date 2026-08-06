@@ -352,3 +352,32 @@ zeus runtime adopt
 
 The second invocation is idempotent. Do not edit runtime JSON or copy runtime
 directories manually.
+## P5-G1 provider selection
+
+For a verified Operation Beta mission whose bootstrap state is
+`READY_FOR_EXECUTION_PROVIDER`, Zeus exposes the bounded provider-selection
+gate:
+
+```text
+scripts/zeus provider candidates <MISSION_ID> --json
+scripts/zeus provider select <MISSION_ID>
+scripts/zeus provider verify <MISSION_ID> --json
+```
+
+The selector consumes the published execution-agent registry and its existing
+qualification records.  Eligibility requires an active, qualified,
+repository-scoped candidate with the mission capability, declared tools,
+trust/authentication identities, and compatible baseline.  Policy
+`ZEUS-P5-G1-PROVIDER-SELECTION/v1` ranks eligible candidates by the explicit
+`(provider_id, provider_type)` ordering and records every candidate and
+exclusion reason.
+
+Selection creates exactly one immutable mission-bound transaction, selected
+provider, qualification, receipt, journal, and dispatch-readiness projection.
+Replay reuses those records and reports `IDEMPOTENT`.  A partial or conflicting
+chain fails closed.  `provider verify` is read-only and never creates a
+provider session, invokes a provider, creates dispatch, or starts execution.
+
+The selection terminal state is `READY_FOR_PROVIDER_DISPATCH`; the next action
+is `EVALUATE_PROVIDER_DISPATCH`.  Provider dispatch is a later gate and is not
+authorized by P5-G1.

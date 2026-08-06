@@ -40,7 +40,7 @@ class CanonicalBaselineResolutionTests(unittest.TestCase):
 
     def test_eos_and_publication_are_current(self):
         value = resolve(ROOT, EOS)
-        self.assertEqual(value["current_head"], "149252f1806058c9dac765b3718948a82840a592")
+        self.assertEqual(value["current_head"], commit("HEAD"))
         self.assertEqual(value["published_head"], value["current_head"])
         self.assertEqual(value["eos_baseline"], value["current_head"])
         self.assertEqual(value["publication_parity"], "PASS")

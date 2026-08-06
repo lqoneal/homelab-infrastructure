@@ -83,9 +83,36 @@ from scripts.lib.emp.canonical_mission_lifecycle import (
 )
 from scripts.lib.emp.canonical_runtime_mission import CanonicalRuntimeMissionError, view as canonical_runtime_mission_view
 from scripts.lib.emp.mission_verification_controller import verify as verify_mission, render as render_mission
+from scripts.lib.emp import provider_selection
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
+
+
+def render_provider(value: dict) -> str:
+    candidate_count = len(value.get("candidate_evaluation", []))
+    blockers = value.get("blockers", [])
+    return "\n".join((
+        "Zeus Provider Selection",
+        "-----------------------",
+        f"Result                    : {value.get('result')}",
+        f"Mission                   : {value.get('mission_id')}",
+        f"Provider selection state  : {value.get('provider_selection_state', 'READY_FOR_PROVIDER_DISPATCH' if value.get('provider_selected') else 'NOT_MATERIALIZED')}",
+        f"Provider selection result : {value.get('provider_selection_result', value.get('result'))}",
+        f"Provider selected         : {'YES' if value.get('provider_selected') else 'NO'}",
+        f"Provider qualified        : {'YES' if value.get('provider_qualified') else 'NO'}",
+        f"Provider ID               : {value.get('provider_id') or value.get('eligible_provider') or 'NONE'}",
+        f"Selection policy          : {((value.get('selection_policy') or {}).get('id') if isinstance(value.get('selection_policy'), dict) else value.get('selection_policy')) or 'MISSING'}",
+        f"Candidate evaluation      : {'PRESENT' if candidate_count else 'MISSING'} ({candidate_count})",
+        f"Dispatch eligible         : {'TRUE' if value.get('dispatch_eligible') else 'FALSE'}",
+        f"Provider session created  : {'YES' if value.get('provider_session_created') else 'NO'}",
+        f"Dispatch created          : {'YES' if value.get('dispatch_created') else 'NO'}",
+        f"Execution started         : {'YES' if value.get('execution_started') else 'NO'}",
+        f"Replay                   : {value.get('duplicate_provider_selection', value.get('replay', 'NOT_RUN'))}",
+        f"Blockers                 : {'NONE' if not blockers else ', '.join(item.get('code', 'UNKNOWN') for item in blockers)}",
+        f"Next action              : {value.get('next_authorized_action')}",
+        "Read-only               : YES" if value.get("read_only") else "Read-only               : NO (selection materialized)",
+    ))
 
 
 def command_inventory(parser) -> dict:
@@ -439,7 +466,7 @@ def main(argv=None):
                 "mission", "explain", "authority", "capabilities", "capability",
                 "lifecycle", "list", "show", "assurance", "context", "evidence",
                 "qualification", "completion", "resume", "stop", "policy", "validate", "submit",
-                "dispatcher", "dispatch", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform", "admit",
+                "dispatcher", "dispatch", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform", "admit", "provider",
             } else interface_store.increment()
         )
         if "--verbose" in arguments:
@@ -553,6 +580,7 @@ def main(argv=None):
     dispatch=sub.add_parser("dispatch"); dispatch.add_argument("action", choices=("status", "verify")); dispatch.add_argument("--json", action="store_true")
     orchestrate=sub.add_parser("orchestrate"); orchestrate.add_argument("action", choices=("status", "verify")); orchestrate.add_argument("--json", action="store_true")
     agent=sub.add_parser("agent"); agent.add_argument("action", choices=("list","registry","status","qualify","revoke","select")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--mission-class", default="engineering"); agent.add_argument("--tool", action="append", default=["zeus-cli", "bounded-artifact-handler"]); agent.add_argument("--profile", action="append", default=["controlled-wop-only", "exact-repository-baseline", "no-unreviewed-external-effects"]); agent.add_argument("--json", action="store_true")
+    provider=sub.add_parser("provider", help="Select or verify the canonical provider for one Beta mission without dispatch."); provider.add_argument("action", choices=("select", "verify", "candidates", "status", "qualification", "artifacts")); provider.add_argument("mission_id"); provider.add_argument("--json", action="store_true")
     gate=sub.add_parser("gate"); gate.add_argument("action", choices=("show", "objective", "evidence", "receipt", "carry-forward", "validate-carry-forward")); gate.add_argument("gate_id")
     next_action=sub.add_parser("next-action"); next_action.add_argument("--json", action="store_true")
     a=p.parse_args(arguments)
@@ -998,7 +1026,7 @@ def main(argv=None):
         }:
             value = verify_mission(ROOT, beta_subject, runtime_root=a.runtime_root)
             if beta_action == "lifecycle":
-                value = {"result": value["result"], "mission_id": beta_subject, "lifecycle": value["lifecycle"], "next_authorized_action": value["next_authorized_action"], "blockers": value["blockers"], "read_only": True}
+                value = {"result": value["result"], "mission_id": beta_subject, "lifecycle": value["lifecycle"], "provider_selected": value["lifecycle"].get("provider_selected"), "provider_qualified": value["lifecycle"].get("provider_qualified"), "dispatch_eligible": value["lifecycle"].get("dispatch_eligible"), "provider_id": value["lifecycle"].get("provider_id"), "dispatch_created": value["lifecycle"].get("dispatch_created"), "execution_started": value["lifecycle"].get("execution_started"), "next_authorized_action": value["next_authorized_action"], "blockers": value["blockers"], "read_only": True}
             elif beta_action == "evidence":
                 value = {"result": value["result"], "mission_id": beta_subject, "checks": value["checks"], "replay": value["replay"], "blockers": value["blockers"], "read_only": True}
             elif beta_action == "artifacts":
@@ -1298,6 +1326,23 @@ def main(argv=None):
                 value = agent_registry(ROOT)
             emit(value)
             return 0
+        if a.command == "provider":
+            if not str(a.mission_id).upper().startswith("MISSION-BETA-"):
+                raise provider_selection.ProviderSelectionError("MISSION_NOT_CANONICAL", "provider selection requires a canonical Beta mission")
+            if a.action == "select":
+                value = provider_selection.select(ROOT, a.mission_id)
+            else:
+                value = provider_selection.verify(ROOT, a.mission_id)
+                if a.action == "candidates":
+                    value = {"result": value.get("result"), "mission_id": value.get("mission_id"), "selection_policy": value.get("selection_policy"), "registry_digest": value.get("registry_digest"), "candidate_evaluation": value.get("candidate_evaluation", []), "blockers": value.get("blockers", []), "read_only": True}
+                elif a.action == "status":
+                    value = {key: value.get(key) for key in ("result", "mission_id", "provider_selection_id", "provider_id", "provider_qualified", "dispatch_eligible", "next_authorized_action", "blockers", "read_only")}
+                elif a.action == "qualification":
+                    value = {"result": value.get("result"), "mission_id": value.get("mission_id"), "provider_id": value.get("provider_id"), "provider_qualified": value.get("provider_qualified"), "candidate_evaluation": value.get("candidate_evaluation", []), "blockers": value.get("blockers", []), "read_only": True}
+                elif a.action == "artifacts":
+                    value = {"result": value.get("result"), "mission_id": value.get("mission_id"), "artifacts": value.get("artifacts", {}), "provider_selection_id": value.get("provider_selection_id"), "blockers": value.get("blockers", []), "read_only": True}
+            emit(value) if a.json else print(render_provider(value))
+            return 0 if value.get("result") == "PASS" else 78
         if a.command == "gate" and a.action in ("show", "objective", "evidence", "receipt"):
             if a.action == "receipt" and a.gate_id.upper() in {"OA-11", "OA-12", "OA-13", "OA-14", "OA-15", "OA-16", "OA-17"}:
                 gate_id = a.gate_id.upper()

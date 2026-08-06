@@ -30,7 +30,7 @@ class MissionVerificationControllerTests(unittest.TestCase):
         self.assertEqual(value["result"], "PASS")
         self.assertTrue(value["read_only"])
         self.assertEqual(value["replay"], {"submission": "IDEMPOTENT", "admission": "IDEMPOTENT", "bootstrap": "IDEMPOTENT"})
-        self.assertEqual(value["next_authorized_action"], "EVALUATE_EXECUTION_PROVIDER")
+        self.assertEqual(value["next_authorized_action"], "EVALUATE_PROVIDER_DISPATCH")
 
     def test_fixture_pass_and_digest_failure(self) -> None:
         holder = self.isolated_runtime()
