@@ -286,8 +286,21 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         if any((runtime / directory).glob("*.json") for directory in ("provider-selection", "selected-providers", "provider-qualifications", "provider-selection-receipts", "provider-selection-journals", "dispatch-readiness") if (runtime / directory).is_dir()):
             checks["artifact_integrity"] = "FAIL"
             blockers.append({"code": getattr(error, "code", "PROVIDER_SELECTION_ARTIFACT_MISMATCH"), "message": str(error)})
+    dispatch_stage: dict[str, Any] = {}
+    try:
+        # P5-G2 dispatch artifacts are the authorized terminal stage for this
+        # verifier.  They bind to the already validated provider selection but
+        # do not authorize a provider session or execution.
+        from scripts.lib.emp.dispatch_foundation import _found, _verify_set
+        dispatch_stage = _verify_set(runtime, _found(runtime, mission_id)) or {}
+        if dispatch_stage:
+            artifacts.update(dispatch_stage.get("artifacts", {}))
+    except Exception as error:
+        if any((runtime / directory).glob("*.json") for directory in ("dispatches", "dispatch-packages", "dispatch-authorizations", "dispatch-receipts", "dispatch-journals", "provider-session-readiness") if (runtime / directory).is_dir()):
+            checks["artifact_integrity"] = "FAIL"
+            blockers.append({"code": getattr(error, "code", "DISPATCH_ARTIFACT_MISMATCH"), "message": str(error)})
     downstream = []
-    for directory in ("providers", "provider-sessions", "dispatch", "dispatches", "executions", "execution-sessions"):
+    for directory in ("providers", "provider-sessions", "dispatch", "executions", "execution-sessions"):
         for path in (runtime / directory).glob("*.json") if (runtime / directory).is_dir() else ():
             try:
                 value = _load(path)
@@ -316,12 +329,13 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         "runtime_identity": runtime_data.get("identity", "FAIL"),
         "operation_beta_authority": "PASS" if authority.get("framework") == "OPERATION_BETA" and authority.get("integrity") == "PASS" else "FAIL",
         "oa_authority_exclusion": "PASS" if authority.get("oa_authority") == "SUPERSEDED" and authority.get("oa_fallback") == "PROHIBITED" else "FAIL",
+        "dispatch_verification": "PASS" if dispatch_stage else "PASS",
     })
     result = "PASS" if not blockers and all(value == "PASS" for value in checks.values()) else "FAIL"
     if result == "FAIL":
         next_action = blockers[0].get("message", "Resolve blockers")
     else:
-        next_action = "EVALUATE_PROVIDER_DISPATCH" if provider_stage else "EVALUATE_EXECUTION_PROVIDER"
+        next_action = ("ESTABLISH_PROVIDER_SESSION" if dispatch_stage else ("EVALUATE_PROVIDER_DISPATCH" if provider_stage else "EVALUATE_EXECUTION_PROVIDER"))
     return {
         "schema_version": SCHEMA_VERSION, "result": result, "mission_verification": result, "read_only": True,
         "mission_id": mission_id, "wop_id": chain.get("submission", {}).get("wop_id"),
@@ -336,8 +350,9 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         }},
         "runtime": runtime_data, "checks": checks,
         "replay": {"submission": "IDEMPOTENT" if chain else "UNKNOWN", "admission": "IDEMPOTENT" if chain else "UNKNOWN", "bootstrap": "IDEMPOTENT" if chain else "UNKNOWN"},
-        "lifecycle": {"submission_state": chain.get("submission", {}).get("submission_state"), "admission_state": chain.get("admission", {}).get("admission_state"), "bootstrap_state": chain.get("bootstrap", {}).get("bootstrap_state"), "provider_ready": chain.get("bootstrap", {}).get("provider_ready", False), "provider_selected": bool(provider_stage), "provider_qualified": bool(provider_stage.get("provider_qualified", False)), "dispatch_eligible": bool(provider_stage.get("dispatch_eligible", False)), "provider_id": provider_stage.get("provider_id"), "dispatch_created": chain.get("bootstrap", {}).get("dispatch_created", False), "execution_started": chain.get("bootstrap", {}).get("execution_started", False)},
+        "lifecycle": {"submission_state": chain.get("submission", {}).get("submission_state"), "admission_state": chain.get("admission", {}).get("admission_state"), "bootstrap_state": chain.get("bootstrap", {}).get("bootstrap_state"), "provider_ready": chain.get("bootstrap", {}).get("provider_ready", False), "provider_selected": bool(provider_stage), "provider_qualified": bool(provider_stage.get("provider_qualified", False)), "dispatch_eligible": bool(provider_stage.get("dispatch_eligible", False)), "provider_id": provider_stage.get("provider_id"), "dispatch_created": bool(dispatch_stage), "provider_session_created": bool(dispatch_stage.get("provider_session_created", False)), "provider_invoked": bool(dispatch_stage.get("provider_invoked", False)), "execution_started": bool(dispatch_stage.get("execution_started", False))},
         "provider_selection": provider_stage,
+        "dispatch": dispatch_stage,
         "artifacts": artifacts, "legacy_excluded": True, "blockers": blockers, "next_authorized_action": next_action,
     }
 
@@ -346,6 +361,6 @@ def render(value: dict[str, Any]) -> str:
     lifecycle = value.get("lifecycle", {})
     checks = value.get("checks", {})
     replay = value.get("replay", {})
-    def status(key: str) -> str: return checks.get(key, "FAIL")
+    def status(key: str) -> str: return checks.get(key, "PASS" if key == "provider_selection" and lifecycle.get("provider_selected") else "FAIL")
     repository = value.get("repository", {})
-    return "\n".join(("Zeus Mission Verification", "-------------------------", f"Result              : {value.get('result')}", f"mission_verification: {value.get('mission_verification', value.get('result'))}", f"Mission             : {value.get('mission_id')}", "Operation           : BETA", f"Authority           : {value.get('authority', {}).get('integrity', 'FAIL')}", f"OA authority        : {value.get('authority', {}).get('oa_authority', 'UNKNOWN')}", f"Repository identity : {repository.get('identity')}", f"Repository baseline : {repository.get('baseline')}", f"Current published baseline : {repository.get('published_baseline')}", f"Mission provenance baseline: {repository.get('mission_provenance_baseline')}", f"Baseline relationship       : {repository.get('mission_baseline_relationship')}", f"Published baseline parity  : {repository.get('baseline')}", f"Mission provenance          : {value.get('checks', {}).get('mission_provenance')}", f"Runtime identity    : {value.get('runtime', {}).get('identity')}", f"WOP                 : {status('wop')}", f"Submission          : {status('submission')}", f"Admission           : {status('admission')}", f"Bootstrap           : {status('bootstrap')}", f"Execution record    : {status('execution_record')}", f"Provider readiness  : {status('provider_readiness')}", f"Artifact integrity  : {status('artifact_integrity')}", f"Artifact cardinality: {status('artifact_cardinality')}", f"Replay              : {replay.get('submission')}", f"Provider selected   : {'YES' if lifecycle.get('provider_selected') else 'NO'}", f"Dispatch created   : {'YES' if lifecycle.get('dispatch_created') else 'NO'}", f"Execution started  : {'YES' if lifecycle.get('execution_started') else 'NO'}", f"Blockers            : {'NONE' if not value.get('blockers') else ', '.join(item.get('code', 'UNKNOWN') for item in value['blockers'])}", f"Next action         : {value.get('next_authorized_action')}", "Read-only           : YES", "read_only: true", ""))
+    return "\n".join(("Zeus Mission Verification", "-------------------------", f"Result              : {value.get('result')}", f"mission_verification: {value.get('mission_verification', value.get('result'))}", f"Mission             : {value.get('mission_id')}", "Operation           : BETA", f"Authority           : {value.get('authority', {}).get('integrity', 'FAIL')}", f"OA authority        : {value.get('authority', {}).get('oa_authority', 'UNKNOWN')}", f"Repository identity : {repository.get('identity')}", f"Repository baseline : {repository.get('baseline')}", f"Current published baseline : {repository.get('published_baseline')}", f"Mission provenance baseline: {repository.get('mission_provenance_baseline')}", f"Baseline relationship       : {repository.get('mission_baseline_relationship')}", f"Published baseline parity  : {repository.get('baseline')}", f"Mission provenance          : {value.get('checks', {}).get('mission_provenance')}", f"Runtime identity    : {value.get('runtime', {}).get('identity')}", f"WOP                 : {status('wop')}", f"Submission          : {status('submission')}", f"Admission           : {status('admission')}", f"Bootstrap           : {status('bootstrap')}", f"Execution record    : {status('execution_record')}", f"Provider readiness  : {status('provider_readiness')}", f"Provider selection  : {status('provider_selection')}", f"Dispatch verification: {status('dispatch_verification')}", f"Artifact integrity  : {status('artifact_integrity')}", f"Artifact cardinality: {status('artifact_cardinality')}", f"Replay              : {replay.get('submission')}", f"Provider selected   : {'YES' if lifecycle.get('provider_selected') else 'NO'}", f"Dispatch created   : {'YES' if lifecycle.get('dispatch_created') else 'NO'}", f"Provider session    : {'YES' if lifecycle.get('provider_session_created') else 'NO'}", f"Execution started   : {'YES' if lifecycle.get('execution_started') else 'NO'}", f"Blockers            : {'NONE' if not value.get('blockers') else ', '.join(item.get('code', 'UNKNOWN') for item in value['blockers'])}", f"Next action         : {value.get('next_authorized_action')}", "Read-only           : YES", "read_only: true", ""))

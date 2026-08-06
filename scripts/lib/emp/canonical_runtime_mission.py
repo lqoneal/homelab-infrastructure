@@ -85,6 +85,12 @@ def discover(repository: Path | str, mission_id: str) -> dict[str, Any]:
         if value.get("mission_id") != mission_id:
             raise CanonicalRuntimeMissionError(f"{field} mission identity mismatch")
     provider_stage = _verify_set(runtime, _mission_artifacts(runtime, mission_id))
+    dispatch_stage = None
+    try:
+        from scripts.lib.emp.dispatch_foundation import _found, _verify_set as verify_dispatch_set
+        dispatch_stage = verify_dispatch_set(runtime, _found(runtime, mission_id))
+    except Exception as error:
+        raise CanonicalRuntimeMissionError(str(error)) from error
     if provider_stage:
         for key, descriptor in provider_stage["artifacts"].items():
             artifacts[key] = (Path(descriptor["path"]), _load(Path(descriptor["path"])))
@@ -97,6 +103,10 @@ def discover(repository: Path | str, mission_id: str) -> dict[str, Any]:
         provider_qualified = False
         dispatch_eligible = False
         next_action = bootstrap["next_action"]
+    if dispatch_stage:
+        for key, descriptor in dispatch_stage["artifacts"].items():
+            artifacts[key] = (Path(descriptor["path"]), _load(Path(descriptor["path"])))
+        next_action = "ESTABLISH_PROVIDER_SESSION"
     return {
         "result": "PASS", "mission": "DISCOVERABLE", "mission_id": mission_id,
         "wop_id": submission.get("wop_id"), "operation": "BETA",
@@ -105,7 +115,7 @@ def discover(repository: Path | str, mission_id: str) -> dict[str, Any]:
         "bootstrap_id": bootstrap["bootstrap_id"], "bootstrap_state": bootstrap["bootstrap_state"],
         "bootstrap_result": bootstrap["bootstrap_result"], "provider_ready": True,
         "provider_selected": provider_selected, "provider_qualified": provider_qualified,
-        "dispatch_eligible": dispatch_eligible, "dispatch_created": False, "execution_started": False,
+        "dispatch_eligible": dispatch_eligible, "dispatch_created": bool(dispatch_stage), "provider_session_created": bool(dispatch_stage and dispatch_stage.get("provider_session_created")), "provider_invoked": bool(dispatch_stage and dispatch_stage.get("provider_invoked")), "execution_started": bool(dispatch_stage and dispatch_stage.get("execution_started")),
         "next_action": next_action, "next_authorized_action": next_action,
         "repository": {**identity, "current_baseline": baseline["current_head"], "published_baseline": baseline["published_head"], "eos_baseline": baseline["eos_baseline"], "mission_provenance_baseline": baseline["mission_provenance_baseline"], "mission_baseline_relationship": baseline["mission_baseline_relationship"]},
         "repository_baseline": bootstrap["repository_baseline"], "baseline_resolution": baseline,
@@ -113,6 +123,7 @@ def discover(repository: Path | str, mission_id: str) -> dict[str, Any]:
         "provider_id": provider_stage.get("provider_id") if provider_stage else None,
         "provider_selection_id": provider_stage.get("provider_selection_id") if provider_stage else None,
         "provider_selection": provider_stage or {},
+        "dispatch": dispatch_stage or {},
         "artifacts": {name: {"path": str(path), "digest": (value.get("transaction_digest") if name == "bootstrap_transaction" else value.get("artifact_digest"))} for name, (path, value) in artifacts.items()},
     }
 

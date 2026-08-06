@@ -381,3 +381,53 @@ provider session, invokes a provider, creates dispatch, or starts execution.
 The selection terminal state is `READY_FOR_PROVIDER_DISPATCH`; the next action
 is `EVALUATE_PROVIDER_DISPATCH`.  Provider dispatch is a later gate and is not
 authorized by P5-G1.
+
+## P5-G2 provider dispatch foundation
+
+After provider selection verifies, the bounded dispatch gate is:
+
+```text
+scripts/zeus dispatch create <MISSION_ID>
+scripts/zeus dispatch verify <MISSION_ID> --json
+scripts/zeus dispatch status <MISSION_ID>
+scripts/zeus dispatch artifacts <MISSION_ID> --json
+scripts/zeus dispatch authorization <MISSION_ID> --json
+scripts/zeus dispatch package <MISSION_ID> --json
+```
+
+Dispatch creation is deterministic and create-only. It provisions exactly one
+dispatch transaction, package, authorization record, receipt, journal, and
+provider-session-readiness projection in the authoritative runtime. Replaying
+unchanged inputs reuses the immutable chain and reports `IDEMPOTENT`; partial,
+forged, stale, or conflicting state fails closed. The package references the
+canonical mission, execution record, execution package, Mission Contract,
+execution authority, provider selection, repository identity, current
+published baseline, and immutable mission provenance.
+
+The terminal state is `READY_FOR_PROVIDER_SESSION`. This gate does not invoke
+the provider, create a provider session, launch Codex, start execution, or
+collect execution evidence. The next action is
+`ESTABLISH_PROVIDER_SESSION`, which requires a later authorized gate.
+
+## Publication workflow stabilization
+
+Publication verification is exposed through the stable Zeus contract:
+
+```text
+scripts/zeus publication status
+scripts/zeus publication verify <MISSION_ID>
+scripts/zeus publication verify <MISSION_ID> --json
+```
+
+The read-only controller uses `scripts/zeus platform verify`,
+`scripts/zeus authority validate`, `scripts/zeus mission verify`, and
+`scripts/zeus provider verify`, together with the supported engctl contracts
+`registry validate`, `validate homelab`, `eos validate homelab`, and
+`eos sync-validate homelab`. It never calls an internal Python implementation
+path such as the nonexistent `scripts/validate-engineering-platform.py`.
+
+Publication mutation and EOS synchronization remain owned by the governed
+publication procedure and engctl. The controller distinguishes candidate,
+publication, reconciliation, and harness failures; a completed publication
+replays as `PUBLICATION_RECONCILED`/`IDEMPOTENT`. An uncommitted candidate is
+reported as `CANDIDATE_SCOPE_FAILURE` rather than being silently accepted.

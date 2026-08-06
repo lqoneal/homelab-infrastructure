@@ -84,6 +84,8 @@ from scripts.lib.emp.canonical_mission_lifecycle import (
 from scripts.lib.emp.canonical_runtime_mission import CanonicalRuntimeMissionError, view as canonical_runtime_mission_view
 from scripts.lib.emp.mission_verification_controller import verify as verify_mission, render as render_mission
 from scripts.lib.emp import provider_selection
+from scripts.lib.emp import publication_workflow
+from scripts.lib.emp import dispatch_foundation
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -466,7 +468,7 @@ def main(argv=None):
                 "mission", "explain", "authority", "capabilities", "capability",
                 "lifecycle", "list", "show", "assurance", "context", "evidence",
                 "qualification", "completion", "resume", "stop", "policy", "validate", "submit",
-                "dispatcher", "dispatch", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform", "admit", "provider",
+                "dispatcher", "dispatch", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform", "admit", "provider", "publication",
             } else interface_store.increment()
         )
         if "--verbose" in arguments:
@@ -546,6 +548,10 @@ def main(argv=None):
     config_admin = sub.add_parser("config", help="Inspect repository-controlled Zeus configuration."); config_admin.add_argument("action", choices=("show",), nargs="?", default="show"); config_admin.add_argument("--json", action="store_true")
     sync_admin = sub.add_parser("synchronize", help="Report synchronization readiness; mutation requires explicit engctl authority."); sync_admin.add_argument("--json", action="store_true")
     platform_admin = sub.add_parser("platform", help="Read-only integrated platform verification."); platform_admin.add_argument("action", choices=("verify",)); platform_admin.add_argument("--json", action="store_true"); platform_admin.add_argument("--verbose", action="store_true")
+    publication_admin = sub.add_parser("publication", help="Read-only publication and reconciliation verification; publication mutation remains governed by the publication procedure.")
+    publication_admin.add_argument("action", choices=("status", "verify"))
+    publication_admin.add_argument("mission_id", nargs="?", help="canonical mission ID for mission/stage verification")
+    publication_admin.add_argument("--json", action="store_true")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
     show = sub.add_parser("mission", help="Resolve, inspect, and submit authoritative missions. `mission verify` is the comprehensive read-only acceptance controller."); show.add_argument("action", choices=("list","completed","history","archive","submit","show","state","status","readiness","eligibility","blockers","contract","authority","next","snapshot","lifecycle","evidence","artifacts","replay","qualify","acceptance-summary","accept","close","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependencies","dependency-graph","metrics","portfolio","queue","health","roadmap","brief")); show.add_argument("mission_id", nargs="?", help="canonical mission ID, for example MISSION-BETA-..."); show.add_argument("--package", type=Path, help="optional explicit authoritative WOP package"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true"); show.add_argument("--yes", action="store_true"); show.add_argument("--rationale", default="")
     operation = sub.add_parser("operation"); operation.add_argument("action", choices=("show", "status", "roadmap", "metrics", "health", "verify", "next-action")); operation.add_argument("operation_id", nargs="?", default="BETA"); operation.add_argument("--json", action="store_true"); operation.add_argument("--verify", action="store_true")
@@ -577,7 +583,7 @@ def main(argv=None):
     admit_mission=sub.add_parser("admit-mission", help="Admit a staged mission through the protected admission boundary."); admit_mission.add_argument("action", choices=("start","resume","status")); admit_mission.add_argument("--admission-id"); admit_mission.add_argument("--mode", choices=("qualification","operational")); admit_mission.add_argument("--intent"); admit_mission.add_argument("--mission"); admit_mission.add_argument("--phase"); admit_mission.add_argument("--work-item"); admit_mission.add_argument("--principal"); admit_mission.add_argument("--submitter"); admit_mission.add_argument("--submission-id"); admit_mission.add_argument("--repository", default=str(ROOT)); admit_mission.add_argument("--at"); admit_mission.add_argument("--max-stages", type=int); admit_mission.add_argument("--wop"); admit_mission.add_argument("--revision", default="1"); admit_mission.add_argument("--authority-record"); admit_mission.add_argument("--correlation-id", default="zeus-mission-admission"); admit_mission.add_argument("--human", action="store_true", help="render the resolved admission as operator-readable text"); admit_mission.add_argument("--json", action="store_true", help="render the resolved admission as JSON")
     execute_mission=sub.add_parser("execute-mission", help="Start or resume execution only after admission succeeds."); execute_mission.add_argument("action", choices=("start","resume","status","suspend","cancel","session","evidence","handlers")); execute_mission.add_argument("--admission-id"); execute_mission.add_argument("--execution-id"); execute_mission.add_argument("--reason", default="OPERATOR"); execute_mission.add_argument("--at"); execute_mission.add_argument("--max-gates", type=int); execute_mission.add_argument("--wop"); execute_mission.add_argument("--revision", default="1"); execute_mission.add_argument("--authority-record"); execute_mission.add_argument("--correlation-id", default="zeus-mission-execution")
     dispatcher=sub.add_parser("dispatcher"); dispatcher.add_argument("action", choices=("status","agents","assignment","execution","eens","evidence","reconciliation")); dispatcher.add_argument("--identifier")
-    dispatch=sub.add_parser("dispatch"); dispatch.add_argument("action", choices=("status", "verify")); dispatch.add_argument("--json", action="store_true")
+    dispatch=sub.add_parser("dispatch", help="Create or verify the bounded provider dispatch foundation; never invokes a provider."); dispatch.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization", "package")); dispatch.add_argument("mission_id", nargs="?"); dispatch.add_argument("--json", action="store_true")
     orchestrate=sub.add_parser("orchestrate"); orchestrate.add_argument("action", choices=("status", "verify")); orchestrate.add_argument("--json", action="store_true")
     agent=sub.add_parser("agent"); agent.add_argument("action", choices=("list","registry","status","qualify","revoke","select")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--mission-class", default="engineering"); agent.add_argument("--tool", action="append", default=["zeus-cli", "bounded-artifact-handler"]); agent.add_argument("--profile", action="append", default=["controlled-wop-only", "exact-repository-baseline", "no-unreviewed-external-effects"]); agent.add_argument("--json", action="store_true")
     provider=sub.add_parser("provider", help="Select or verify the canonical provider for one Beta mission without dispatch."); provider.add_argument("action", choices=("select", "verify", "candidates", "status", "qualification", "artifacts")); provider.add_argument("mission_id"); provider.add_argument("--json", action="store_true")
@@ -766,6 +772,27 @@ def main(argv=None):
                 print(f"Read-only   : YES")
                 print(f"Next action : {value['next_action']}")
             return 0 if value["result"] == "PASS" else 1
+        if a.command == "publication":
+            mission_id = a.mission_id or "MISSION-BETA-562F443E16C69401"
+            if a.action == "verify" or a.mission_id:
+                value = publication_workflow.verify(ROOT, mission_id)
+            else:
+                value = publication_workflow.verify(ROOT, mission_id)
+                value = {
+                    "schema_version": value.get("schema_version"),
+                    "result": value.get("result"),
+                    "publication_state": value.get("publication_state"),
+                    "publication_replay": value.get("publication_replay"),
+                    "push_required": value.get("push_required"),
+                    "eos_sync_required": value.get("eos_sync_required"),
+                    "repository": value.get("repository"),
+                    "candidate_scope": value.get("candidate_scope"),
+                    "blockers": value.get("blockers"),
+                    "next_authorized_action": value.get("next_authorized_action"),
+                    "read_only": True,
+                }
+            emit(value) if a.json else print(publication_workflow.render(value))
+            return 0 if value.get("result") == "PASS" else 78
         if a.command == "runtime":
             if a.action == "adopt":
                 value = adopt_runtime(ROOT, source=a.source, dry_run=a.dry_run)
@@ -1026,7 +1053,7 @@ def main(argv=None):
         }:
             value = verify_mission(ROOT, beta_subject, runtime_root=a.runtime_root)
             if beta_action == "lifecycle":
-                value = {"result": value["result"], "mission_id": beta_subject, "lifecycle": value["lifecycle"], "provider_selected": value["lifecycle"].get("provider_selected"), "provider_qualified": value["lifecycle"].get("provider_qualified"), "dispatch_eligible": value["lifecycle"].get("dispatch_eligible"), "provider_id": value["lifecycle"].get("provider_id"), "dispatch_created": value["lifecycle"].get("dispatch_created"), "execution_started": value["lifecycle"].get("execution_started"), "next_authorized_action": value["next_authorized_action"], "blockers": value["blockers"], "read_only": True}
+                value = {"result": value["result"], "mission_id": beta_subject, "lifecycle": value["lifecycle"], "provider_selected": value["lifecycle"].get("provider_selected"), "provider_qualified": value["lifecycle"].get("provider_qualified"), "dispatch_eligible": value["lifecycle"].get("dispatch_eligible"), "provider_id": value["lifecycle"].get("provider_id"), "dispatch_created": value["lifecycle"].get("dispatch_created"), "provider_session_created": value["lifecycle"].get("provider_session_created"), "provider_invoked": value["lifecycle"].get("provider_invoked"), "execution_started": value["lifecycle"].get("execution_started"), "next_authorized_action": value["next_authorized_action"], "blockers": value["blockers"], "read_only": True}
             elif beta_action == "evidence":
                 value = {"result": value["result"], "mission_id": beta_subject, "checks": value["checks"], "replay": value["replay"], "blockers": value["blockers"], "read_only": True}
             elif beta_action == "artifacts":
@@ -1199,9 +1226,21 @@ def main(argv=None):
             emit_controller(value, json_mode=a.json, verify=a.verify, title=f"Mission {a.action}")
             return 0 if value.get("result", "PASS") in ("PASS", "BLOCKED") else 77
         if a.command == "dispatch":
-            value = mission_knowledge.dispatch_verification(ROOT)
-            emit_controller(value, json_mode=a.json, verify=a.action == "verify", title="Dispatch")
-            return 0 if value.get("result") == "PASS" else 77
+            mission_id = str(a.mission_id or "MISSION-BETA-562F443E16C69401").upper()
+            if a.action == "create":
+                value = dispatch_foundation.create(ROOT, mission_id)
+            else:
+                value = dispatch_foundation.verify(ROOT, mission_id)
+                if a.action == "status":
+                    value = {key: value.get(key) for key in ("result", "mission_id", "dispatch_id", "dispatch_state", "dispatch_authorized", "provider_id", "provider_session_eligible", "provider_session_created", "provider_invoked", "execution_started", "next_authorized_action", "blockers", "read_only")}
+                elif a.action == "artifacts":
+                    value = {key: value.get(key) for key in ("result", "mission_id", "dispatch_id", "artifacts", "blockers", "read_only")}
+                elif a.action == "authorization":
+                    value = {key: value.get(key) for key in ("result", "mission_id", "dispatch_id", "dispatch_authorized", "provider_id", "provider_session_eligible", "blockers", "read_only")}
+                elif a.action == "package":
+                    value = {key: value.get(key) for key in ("result", "mission_id", "dispatch_id", "artifacts", "provider_id", "blockers", "read_only")}
+            emit(value) if a.json else print(dispatch_foundation.render(value))
+            return 0 if value.get("result") == "PASS" else 78
         if a.command == "orchestrate":
             value = mission_knowledge.orchestration_verification(ROOT)
             emit_controller(value, json_mode=a.json, verify=a.action == "verify", title="Orchestration")
@@ -1831,7 +1870,7 @@ def main(argv=None):
                 emit(ConvergenceRuntime(Path(a.repository)).operational_wop(intent=a.intent,flow=flow))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (PackagingError, RuntimeAdoptionError, RuntimeDiscoveryError, OrchestrationError, Stage1Error, SubmissionError, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, mission_knowledge.MissionKnowledgeError, operational_beta.OperationalBetaError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+    except (PackagingError, RuntimeAdoptionError, RuntimeDiscoveryError, OrchestrationError, Stage1Error, SubmissionError, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, mission_knowledge.MissionKnowledgeError, operational_beta.OperationalBetaError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, provider_selection.ProviderSelectionError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr)
         if isinstance(error, PackagingError):
             if getattr(locals().get("a", None), "json", False):
