@@ -213,6 +213,23 @@ class BootstrapBoundaryTests(unittest.TestCase):
             self.assertEqual(first["provider_readiness"]["digest"],
                              json.loads(Path(first["provider_readiness"]["path"]).read_text())["artifact_digest"])
 
+    def test_legacy_mission_execution_records_are_excluded_from_p4_boundary(self):
+        with tempfile.TemporaryDirectory(prefix="zeus-p4-legacy-store-") as name:
+            directory = Path(name)
+            _, _, runtime, environment, admission, _ = self.setup_admission(directory)
+            admission_path = runtime / "admissions" / f"{admission['admission_id']}.json"
+            command = self.bootstrap_command(admission_path, runtime)
+            first = json.loads(subprocess.run(command, cwd=ROOT, env=environment, text=True,
+                                              capture_output=True, check=True).stdout)
+            legacy = runtime / "mission-executions" / "LEGACY-EXECUTION.json"
+            legacy.parent.mkdir(parents=True, exist_ok=True)
+            legacy.write_text(json.dumps({"lifecycle": "legacy-operational"}), encoding="utf-8")
+            replay = json.loads(subprocess.run(command, cwd=ROOT, env=environment, text=True,
+                                               capture_output=True, check=True).stdout)
+            verified = verify_bootstrap_replay(first, replay, runtime_root=runtime, repository=ROOT)
+            self.assertEqual(verified["result"], "PASS")
+            self.assertEqual(verified["downstream_artifacts"], "NONE")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -246,6 +246,34 @@ primitive also requires an interpreter compatibility update. Neither path
 changes the read-only behavior or the Engineering Execution Interface's role
 as canonical resolver.
 
+## Comprehensive canonical mission verification
+
+For a materialized Operation Beta mission, the sprint-level acceptance command is:
+
+```text
+scripts/zeus mission verify MISSION-ID
+scripts/zeus mission verify MISSION-ID --json
+```
+
+`mission verify` resolves the authoritative runtime internally and verifies
+repository identity and published baseline, Operation Beta authority and the
+Operational Alpha exclusion, mission identity, WOP provenance, submission,
+admission, bootstrap, execution-record and provider-readiness artifacts,
+mission-scoped cardinality/integrity, replay determinism, and the downstream
+provider/dispatch boundary. It is strictly read-only: it does not submit,
+admit, bootstrap, replay, select a provider, dispatch, execute, mutate EOS, or
+modify the repository. A failure exits nonzero and returns `result: FAIL` with
+the causal blocker code and next authorized action. Legacy
+`mission-executions` records and unrelated runtime records are excluded unless
+they bind to the requested canonical mission chain. Operation Beta remains
+authoritative; Operational Alpha is historical/superseded and cannot be a
+fallback authority.
+
+The supporting mission views `status`, `authority`, `lifecycle`, `evidence`,
+`artifacts`, `replay`, `blockers`, `next`, and `snapshot` use the same
+canonical projection for `MISSION-BETA-*` IDs. Capability or roadmap checks
+are not substitutes for authoritative mission verification.
+
 ## Production agent qualification
 
 `zeus agent status` and `zeus agent registry` display the integrity-validated

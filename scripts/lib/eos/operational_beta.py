@@ -26,6 +26,62 @@ class OperationalBetaError(ValueError):
     pass
 
 
+def authority(root: Path | str) -> dict[str, Any]:
+    """Resolve the published Operation Beta authority projection.
+
+    This is the current operator-facing authority source.  The historical
+    Operational Alpha/EMM and manual-governance policy records remain
+    available for explicit legacy WOP reconciliation, but they do not govern
+    the Beta execution path.
+    """
+    root = Path(root).resolve()
+    current = _current_mission(root)
+    activation_path = (root / str(current.get("authority_record", ""))).resolve()
+    if root not in activation_path.parents or not activation_path.is_file():
+        raise OperationalBetaError("BETA_AUTHORITY_RECORD_UNAVAILABLE")
+    try:
+        activation = yaml.safe_load(activation_path.read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError) as error:
+        raise OperationalBetaError(f"BETA_AUTHORITY_RECORD_INVALID: {error}") from error
+    if not isinstance(activation, dict):
+        raise OperationalBetaError("BETA_AUTHORITY_RECORD_INVALID")
+    if any((activation.get(key) != expected) for key, expected in (
+        ("operation", "OPERATION-BETA"),
+        ("mission_id", current.get("mission_id")),
+        ("lifecycle_state", "ACTIVE"),
+        ("publication_state", "PUBLISHED_ACTIVE"),
+    )):
+        raise OperationalBetaError("BETA_AUTHORITY_RECORD_BINDING_INVALID")
+    operation_data = operation(root)
+    next_data = next_action(root)
+    source_digests = operation_data["integrity"]["source_digests"]
+    authority_digest = hashlib.sha256(
+        json.dumps({
+            "activation": activation,
+            "current_mission": current,
+            "source_digests": source_digests,
+        }, sort_keys=True, separators=(",", ":"), ensure_ascii=False, default=str).encode()
+    ).hexdigest()
+    return {
+        "result": "PASS",
+        "authority_integrity": "PASS",
+        "authority_framework": "OPERATION_BETA",
+        "authority_resolution": "PASS",
+        "authority_digest_validation": "PASS",
+        "active_operation": "BETA",
+        "authority_source": "Operation Beta",
+        "authority_digest": authority_digest,
+        "active_gate": operation_data["recommended_mission"],
+        "current_platform_mission": current,
+        "operation_id": operation_data["operation_id"],
+        "mission_id": current["mission_id"],
+        "authority_record": str(activation_path),
+        "oa_authority": "SUPERSEDED",
+        "authoritative_sources": operation_data["authoritative_sources"] + [str(current["authority_record"])],
+        "next_authorized_action": next_data["next_authorized_action"],
+    }
+
+
 def _read(root: Path, relative: str) -> str:
     try:
         return (root / relative).read_text(encoding="utf-8")

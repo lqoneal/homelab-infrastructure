@@ -81,6 +81,8 @@ from scripts.lib.emp.canonical_mission_lifecycle import (
     mission_list as canonical_mission_list,
     view as canonical_mission_view,
 )
+from scripts.lib.emp.canonical_runtime_mission import CanonicalRuntimeMissionError, view as canonical_runtime_mission_view
+from scripts.lib.emp.mission_verification_controller import verify as verify_mission, render as render_mission
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -494,6 +496,7 @@ def main(argv=None):
     authority.add_argument("--action-name")
     authority.add_argument("--authority-record")
     authority.add_argument("--correlation-id", default="zeus-operator")
+    authority.add_argument("--json", action="store_true")
     lifecycle_view = sub.add_parser("lifecycle")
     lifecycle_view.add_argument("wop_id")
     lifecycle_view.add_argument("--revision", default="1")
@@ -517,7 +520,7 @@ def main(argv=None):
     sync_admin = sub.add_parser("synchronize", help="Report synchronization readiness; mutation requires explicit engctl authority."); sync_admin.add_argument("--json", action="store_true")
     platform_admin = sub.add_parser("platform", help="Read-only integrated platform verification."); platform_admin.add_argument("action", choices=("verify",)); platform_admin.add_argument("--json", action="store_true"); platform_admin.add_argument("--verbose", action="store_true")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
-    show = sub.add_parser("mission", help="Resolve, inspect, and submit authoritative missions."); show.add_argument("action", choices=("list","completed","history","archive","submit","show","state","status","readiness","eligibility","blockers","contract","authority","next","snapshot","qualify","acceptance-summary","accept","close","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependencies","dependency-graph","metrics","portfolio","queue","health","roadmap","brief")); show.add_argument("mission_id", nargs="?", help="canonical mission ID, for example ZDCL-01"); show.add_argument("--package", type=Path, help="optional explicit authoritative WOP package"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true"); show.add_argument("--yes", action="store_true"); show.add_argument("--rationale", default="")
+    show = sub.add_parser("mission", help="Resolve, inspect, and submit authoritative missions. `mission verify` is the comprehensive read-only acceptance controller."); show.add_argument("action", choices=("list","completed","history","archive","submit","show","state","status","readiness","eligibility","blockers","contract","authority","next","snapshot","lifecycle","evidence","artifacts","replay","qualify","acceptance-summary","accept","close","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependencies","dependency-graph","metrics","portfolio","queue","health","roadmap","brief")); show.add_argument("mission_id", nargs="?", help="canonical mission ID, for example MISSION-BETA-..."); show.add_argument("--package", type=Path, help="optional explicit authoritative WOP package"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true"); show.add_argument("--yes", action="store_true"); show.add_argument("--rationale", default="")
     operation = sub.add_parser("operation"); operation.add_argument("action", choices=("show", "status", "roadmap", "metrics", "health", "verify", "next-action")); operation.add_argument("operation_id", nargs="?", default="BETA"); operation.add_argument("--json", action="store_true"); operation.add_argument("--verify", action="store_true")
     assurance = sub.add_parser("assurance"); assurance.add_argument("action", choices=("capabilities",))
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
@@ -986,6 +989,30 @@ def main(argv=None):
             return 0 if value.get("result") == "PASS" else 77
         beta_subject = str(getattr(a, "mission_id", "") or "").upper()
         beta_action = getattr(a, "action", "")
+        # MISSION-BETA records are the P4 canonical runtime chain.  All
+        # mission inspection surfaces converge on the same read-only
+        # verification projection so status, evidence, replay, and verify
+        # cannot silently consult legacy mission-executions records.
+        if a.command == "mission" and beta_subject.startswith("MISSION-BETA-") and beta_action in {
+            "lifecycle", "evidence", "artifacts", "replay", "verify",
+        }:
+            value = verify_mission(ROOT, beta_subject, runtime_root=a.runtime_root)
+            if beta_action == "lifecycle":
+                value = {"result": value["result"], "mission_id": beta_subject, "lifecycle": value["lifecycle"], "next_authorized_action": value["next_authorized_action"], "blockers": value["blockers"], "read_only": True}
+            elif beta_action == "evidence":
+                value = {"result": value["result"], "mission_id": beta_subject, "checks": value["checks"], "replay": value["replay"], "blockers": value["blockers"], "read_only": True}
+            elif beta_action == "artifacts":
+                value = {"result": value["result"], "mission_id": beta_subject, "artifacts": value["artifacts"], "checks": {key: value["checks"][key] for key in ("artifact_cardinality", "artifact_integrity", "identity_chain")}, "legacy_excluded": value["legacy_excluded"], "read_only": True}
+            elif beta_action == "replay":
+                value = {"result": value["result"], "mission_id": beta_subject, "replay": value["replay"], "read_only": True, "blockers": value["blockers"]}
+            emit(value) if a.json else (print(render_mission(value)) if beta_action == "verify" else print(f"Mission             : {beta_subject}\nResult              : {value.get('result')}\nNext action         : {value.get('next_authorized_action', 'SEE JSON/STATUS')}\nRead-only           : YES"))
+            return 0 if value.get("result") == "PASS" else 78
+        if a.command == "mission" and beta_subject.startswith("MISSION-BETA-") and beta_action in {
+            "status", "state", "readiness", "blockers", "next", "snapshot", "show", "authority",
+        }:
+            value = canonical_runtime_mission_view(ROOT, beta_action, beta_subject)
+            emit_controller(value, json_mode=a.json, verify=a.verify, title=f"Runtime mission {beta_action}")
+            return 0
         if a.command == "mission" and beta_action == "list" and not beta_subject:
             value = canonical_mission_list(ROOT)
             emit_controller(value, json_mode=a.json, verify=a.verify, title="Mission list")
@@ -1183,7 +1210,11 @@ def main(argv=None):
             return 0 if value.get("result") == "PASS" else 77
         if a.command == "authority":
             if a.action in ("resolve", "show", "validate"):
-                if not a.wop or not a.revision or not a.action_name:
+                if not a.wop:
+                    value = operational_beta.authority(ROOT)
+                    emit(value)
+                    return 0
+                if not a.revision or not a.action_name:
                     raise OrchestrationError("convergence authority resolution requires --wop, --revision, and --action-name")
                 value = ConvergenceRuntime(ROOT).resolve(
                     wop_id=a.wop, revision=a.revision, action=a.action_name,
@@ -1191,8 +1222,7 @@ def main(argv=None):
                 )
                 emit(value)
                 return 0 if value["outcome"] == "RESOLVED" else 77
-            emit({"baseline": ConvergenceRuntime(ROOT).emm()["baseline_id"],
-                  "capabilities": ConvergenceRuntime(ROOT).capabilities()})
+            emit(operational_beta.authority(ROOT))
             return 0
         if a.command == "capabilities":
             emit(ConvergenceRuntime(ROOT).capabilities())
@@ -1418,7 +1448,7 @@ def main(argv=None):
         if not state.exists() and a.command == "status" and not (testing or override):
             # Status is a read-only projection and must remain useful before a
             # mutable orchestration runtime has ever been initialized.
-            value = resolve_operational_alpha_status(ROOT)
+            value = operational_beta.authority(ROOT)
             value["mission_admission"] = stage1.status()
             operation_view = operational_beta.operation(ROOT)
             value["current_platform_mission"] = operation_view["current_platform_mission"]
@@ -1426,7 +1456,7 @@ def main(argv=None):
             if a.json:
                 emit(value)
             else:
-                print(operational_alpha_status_text(value), end="")
+                print(f"Operation Beta authority: PASS\nActive gate: {value['active_gate']}\nNext authorized action: {value['next_authorized_action']}\n", end="")
             return 0
         if requested_state is None and not state.exists():
             raise OrchestrationError(
@@ -1435,14 +1465,14 @@ def main(argv=None):
         o=MissionOrchestrator(OrchestrationStore(state))
         if a.command=="status":
             if not (testing or override):
-                value = resolve_operational_alpha_status(ROOT)
+                value = operational_beta.authority(ROOT)
                 value["mission_admission"] = stage1.status()
                 value["current_platform_mission"] = operational_beta.operation(ROOT)["current_platform_mission"]
                 value["current_executable_mission"] = operational_beta.operation(ROOT)["current_executable_mission"]
                 if a.json:
                     emit(value)
                 else:
-                    print(operational_alpha_status_text(value), end="")
+                    print(f"Operation Beta authority: PASS\nActive gate: {value['active_gate']}\nNext authorized action: {value['next_authorized_action']}\n", end="")
                 return 0
             value = authority_status(o.status())
             value["mission_admission"] = stage1.status()

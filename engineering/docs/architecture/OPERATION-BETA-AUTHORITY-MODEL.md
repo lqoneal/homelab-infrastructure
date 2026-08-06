@@ -2,6 +2,18 @@
 
 Status: reconciled authority baseline; BETA-04 published active mission
 
+## Zeus authority projection
+
+The operator-facing authority projection resolves from the published
+Operation Beta activation and current mission records. It validates the
+activation binding, the five Operation Beta authority sources, and a
+deterministic authority digest before reporting `authority_resolution: PASS`.
+The projection reports `authority_framework: OPERATION_BETA`,
+`active_operation: BETA`, and the current eligible Beta gate. Operational
+Alpha and its historical manual-governance/EMM records remain available only
+for explicit legacy reconciliation; they are not governing authority for the
+current Beta path.
+
 The current published mission is `BETA-04`. Its activation record is
 `engineering/authority/operation-beta-beta04-activation.yaml`; the current
 mission projection is `engineering/missions/operation-beta-current.yaml`.

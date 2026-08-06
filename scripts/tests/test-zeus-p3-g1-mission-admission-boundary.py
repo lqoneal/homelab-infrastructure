@@ -127,6 +127,21 @@ class MissionAdmissionBoundaryTests(unittest.TestCase):
                 self.assertEqual(count, 1)
             self.assertFalse(list((runtime / "mission-executions").glob("*.json")))
 
+    def test_legacy_mission_execution_records_are_excluded_from_admission_boundary(self):
+        with tempfile.TemporaryDirectory(prefix="zeus-p3-legacy-store-") as name:
+            directory = Path(name)
+            wop, submission, runtime, environment = self.authored_and_submitted(directory)
+            command = self.admission_command(wop, submission, runtime)
+            first = json.loads(subprocess.run(command, cwd=ROOT, env=environment, text=True,
+                                              capture_output=True, check=True).stdout)
+            replay = json.loads(subprocess.run(command, cwd=ROOT, env=environment, text=True,
+                                               capture_output=True, check=True).stdout)
+            legacy = runtime / "mission-executions" / "LEGACY-EXECUTION.json"
+            legacy.parent.mkdir(parents=True, exist_ok=True)
+            legacy.write_text(json.dumps({"lifecycle": "legacy-operational"}), encoding="utf-8")
+            verified = verify_admission_replay(first, replay, runtime_root=runtime, wop=wop, repository=ROOT)
+            self.assertEqual(verified["result"], "PASS")
+
     def test_altered_receipt_and_wop_fail_closed(self):
         with tempfile.TemporaryDirectory(prefix="zeus-p3-invalid-") as name:
             directory = Path(name)

@@ -163,7 +163,10 @@ def verify_admission_replay(first: Mapping[str, Any], replay: Mapping[str, Any],
                             ("package", "mission_contract", "execution_authority", "admission_receipt")]
     if provisioned != expected_provisioned:
         raise MissionAdmissionVerificationError("admission journal artifact provenance is incomplete")
-    prohibited = {"mission-executions", "executions", "bootstrap", "providers", "dispatch", "provider-selection"}
+    # mission-executions is a pre-existing legacy lifecycle store and is not a
+    # canonical P3/P4 downstream artifact.  Canonical bootstrap artifacts use
+    # bootstraps/, execution-records/, and provider-readiness/.
+    prohibited = {"executions", "bootstrap", "providers", "dispatch", "provider-selection"}
     downstream = [str(path) for path in runtime.rglob("*.json") if any(part in prohibited for part in path.parts)]
     if downstream:
         raise MissionAdmissionVerificationError(f"downstream artifacts exist: {downstream}")

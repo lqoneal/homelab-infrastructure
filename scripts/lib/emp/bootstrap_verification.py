@@ -97,7 +97,11 @@ def verify_bootstrap_replay(first: Mapping[str, Any], replay: Mapping[str, Any],
     }
     if record.get("bindings") != expected_bindings:
         raise BootstrapVerificationError("execution record admission artifact bindings are invalid")
-    prohibited = {"providers", "provider-sessions", "dispatch", "dispatches", "executions", "mission-executions", "bootstrap-sessions"}
+    # mission-executions is a pre-existing legacy lifecycle store.  It is
+    # deliberately excluded from canonical P4 downstream-effect checks; the
+    # canonical P4 execution boundary is represented by execution-records,
+    # while provider/session/dispatch/execution stores remain prohibited.
+    prohibited = {"providers", "provider-sessions", "dispatch", "dispatches", "executions", "bootstrap-sessions"}
     downstream = [str(path) for path in runtime.rglob("*.json") if any(part in prohibited for part in path.parts)]
     if downstream:
         raise BootstrapVerificationError(f"downstream artifacts exist: {downstream}")

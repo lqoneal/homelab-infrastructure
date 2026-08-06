@@ -103,7 +103,7 @@ class OperationalAlphaStatusTests(unittest.TestCase):
         with self.assertRaisesRegex(OperationalAlphaStatusError, "resolution options"):
             resolve(root)
 
-    def test_cli_excludes_superseded_progressive_runtime(self) -> None:
+    def test_cli_resolves_current_operation_beta_authority(self) -> None:
         result = subprocess.run(
             [str(ROOT / "scripts/zeus"), "status", "--json"], cwd=ROOT,
             env={**os.environ, "ZEUS_NO_INTRO": "1"}, text=True,
@@ -111,9 +111,10 @@ class OperationalAlphaStatusTests(unittest.TestCase):
         )
         self.assertEqual(0, result.returncode, result.stderr)
         value = json.loads(result.stdout)
-        self.assertEqual("OA-08", value["active_gate"])
-        self.assertEqual("ACTIVE", value["status"])
-        self.assertEqual("EXCLUDED_EVIDENCE_ONLY", value["historical_progressive_runtime"])
+        self.assertEqual("OPERATION_BETA", value["authority_framework"])
+        self.assertEqual("BETA", value["active_operation"])
+        self.assertEqual("PASS", value["authority_integrity"])
+        self.assertEqual("SUPERSEDED", value["oa_authority"])
 
     def test_dispatcher_status_uses_convergence_prerequisites_not_pmct(self) -> None:
         result = subprocess.run(
