@@ -118,6 +118,50 @@ the same identities and files recovered and verified without recreation.
 
 P5-G5 completion does not authorize controlled mission work.
 
+## P5-G5 canonical reconciliation
+
+At the current published baseline
+`738273c16d04c6540d70a05d3435c8da0472a131`, the bounded projection
+reconciliation is PASS for `MISSION-BETA-562F443E16C69401`.
+
+The canonical runtime mission and mission-verification controllers now consume
+the verified execution-start chain for execution identity, execution state,
+current published baseline, execution-start provenance, relationship, replay,
+work boundaries, blockers, and next action. Invocation provenance remains
+independent:
+
+```text
+execution_start_provenance_baseline=2507b441fdf0d083e35647e6874860365025ae18
+invocation_provenance_baseline=b37a5fb2e11df8026afeff1bd231902cd54711ac
+current_published_baseline=738273c16d04c6540d70a05d3435c8da0472a131
+execution_start_baseline_relationship=ANCESTOR
+execution_start_integrity=PASS
+execution_start_state=READY_FOR_CONTROLLED_EXECUTION
+execution_started=true
+mission_work_started=false
+repository_work_started=false
+execution_start_replay=IDEMPOTENT
+blockers=[]
+next_authorized_action=BEGIN_CONTROLLED_MISSION_WORK
+```
+
+Beta mission `status`, `state`, `readiness`, `next`, `snapshot`, `lifecycle`,
+`health`, `brief`, and `roadmap` use the same read-only canonical mission
+projection where applicable. Duplicate controller assignments were removed;
+the compatibility `baseline_relationship` field is derived from the
+execution-start relationship. Authority continues to resolve from the
+published Operation Beta authority chain; this repository session has no WOP
+provenance marker and is not treated as authority.
+
+Focused regression coverage proves that invocation and execution-start
+provenance project simultaneously, execution-start identity and replay remain
+stable, and all mission projections converge without runtime mutation.
+Platform, authority, Registry, syntax, and `git diff --check` validation pass.
+
+No provider or Codex was contacted. No process, mission work, repository work,
+publication, commit, push, or EOS synchronization occurred. P5-G6 remains
+deferred.
+
 ## Validation timeout diagnostic reconciliation
 
 A previously observed bounded validation timeout was investigated with direct,

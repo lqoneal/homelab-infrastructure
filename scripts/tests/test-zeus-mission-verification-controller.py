@@ -43,6 +43,13 @@ class MissionVerificationControllerTests(unittest.TestCase):
         self.assertEqual(value["lifecycle"]["provider_invocation_state"], "READY_FOR_EXECUTION_START")
         self.assertEqual(value["lifecycle"]["provider_invocation_id"], "PROVIDER-INVOCATION-a02accc6-3ff0-50d2-a4b2-266ca5b51ff6")
         self.assertTrue(value["lifecycle"]["execution_started"])
+        self.assertEqual(value["execution_start_provenance_baseline"], "2507b441fdf0d083e35647e6874860365025ae18")
+        self.assertEqual(value["invocation_provenance_baseline"], "b37a5fb2e11df8026afeff1bd231902cd54711ac")
+        self.assertEqual(value["execution_start_baseline_relationship"], "ANCESTOR")
+        self.assertEqual(value["execution_start_integrity"], "PASS")
+        self.assertEqual(value["lifecycle"]["execution_start_provenance_baseline"], value["execution_start_provenance_baseline"])
+        self.assertEqual(value["lifecycle"]["current_published_baseline"], value["current_published_baseline"])
+        self.assertEqual(value["lifecycle"]["execution_started"], value["execution_started"])
 
     def test_fixture_pass_and_digest_failure(self) -> None:
         holder = self.isolated_runtime()

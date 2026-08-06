@@ -549,3 +549,16 @@ identity, adapter mode, session binding, replay, and mission-work boundaries
 belong to `execution-start verify`. These command-specific schemas prevent a
 summary projection from being treated as a complete nested controller
 record. Structured verification commands must stop on failure with `|| exit 1`.
+
+### P5-G5 canonical projection reconciliation
+
+For the authoritative `MISSION-BETA-*` runtime, `mission verify`, `status`,
+`state`, `readiness`, `next`, `snapshot`, `lifecycle`, `health`, `brief`, and
+`roadmap` consume the same read-only canonical runtime discovery. Execution
+start owns `execution_id`, `execution_session_id`,
+`execution_start_provenance_baseline`, `current_published_baseline`,
+`execution_start_baseline_relationship`, integrity, replay, and the mission
+work boundary. Provider invocation continues to own the distinct
+`invocation_provenance_baseline`; it is never reused as execution-start
+provenance. Every projection therefore reports the same execution state and
+next action while retaining command-specific schemas.
