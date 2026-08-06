@@ -38,6 +38,39 @@ replay is `IDEMPOTENT`; it does not invoke Mission Admission or execution.
 The authoritative next action is `EVALUATE_MISSION_ADMISSION`. Legacy package
 submissions retain the Stage 1 lifecycle described below.
 
+For an accepted published submission, the bounded P3-G1 admission command is:
+
+```text
+scripts/zeus --runtime-root <RUNTIME> admit <SUBMISSION_RECEIPT> --wop <AUTHORED_WOP> --json
+```
+
+It verifies the immutable submission receipt, authored-WOP provenance,
+Operation Beta, Mission/WOP identity, repository identity, and the
+`ADMISSION_REQUESTED` request projection before provisioning exactly one
+immutable execution package, Mission Contract, execution-authority record,
+admission receipt, and admission journal. The resulting state is
+`ADMISSION_COMPLETE` with `bootstrap_eligible: true`; it creates no execution
+or bootstrap artifact. Repeating the same request returns the same immutable
+identities with `duplicate_admission: IDEMPOTENT`.
+
+The P3-G1 operator verification procedure replays that canonical command
+twice using the `receipt_path` returned by `zeus submit`:
+
+```text
+scripts/zeus --runtime-root <RUNTIME> admit <RECEIPT_PATH> --wop <WOP_PATH> --json
+scripts/zeus --runtime-root <RUNTIME> admit <RECEIPT_PATH> --wop <WOP_PATH> --json
+```
+
+Verification treats the digest-backed response transaction as Mission
+Admission authority evidence when `transaction_type` is `mission-admission`,
+the transaction digest verifies, and admission is complete/pass. The canonical
+bootstrap boundary is `bootstrap_eligible: true` with
+`next_action: EVALUATE_BOOTSTRAP_ELIGIBILITY`; verification does not rename
+that action or start bootstrap. Artifact checks use the returned canonical
+paths and digests under `packages/`, `mission-contracts/`,
+`execution-authority/`, `receipts/`, and `journals/`, with exactly one artifact
+of each required class.
+
 Zeus is also responsible for automatic WOP packaging. The operator may submit
 an existing canonical package directory, a repository-resolved WOP identity, or
 a Markdown/DOCX source document. Zeus preserves the source document, resolves

@@ -40,6 +40,7 @@ from scripts.lib.emp import progressive_oa  # noqa: E402
 from scripts.lib.emp.progressive_gate import ProgressiveGateError, ProgressiveGateService  # noqa: E402
 from scripts.lib.emp.stage1_runtime import Stage1Error, Stage1Runtime  # noqa: E402
 from scripts.lib.emp.submission_boundary import SubmissionError, submit as submit_wop_boundary  # noqa: E402
+from scripts.lib.emp.mission_admission_boundary import MissionAdmissionBoundaryError, admit as admit_mission_boundary  # noqa: E402
 from scripts.lib.emp.mission_submission import submit_by_mission  # noqa: E402
 from scripts.lib.emp.oa01_verification import OA01MissionVerification, OA01VerificationError  # noqa: E402
 from scripts.lib.emp.oa01_implementation import OA01ImplementationError, qualify as qualify_oa01_implementation  # noqa: E402
@@ -410,7 +411,7 @@ def main(argv=None):
         index = arguments.index("--runtime-root")
         if index + 1 < len(arguments):
             os.environ["ZEUS_RUNTIME_ROOT"] = arguments[index + 1]
-    override = "--state" in arguments or bool(os.environ.get("ZEUS_STATE")) or any(item in {"wop", "submit"} for item in arguments)
+    override = "--state" in arguments or bool(os.environ.get("ZEUS_STATE")) or any(item in {"wop", "submit", "admit"} for item in arguments)
     test_mode = os.environ.get("ZEUS_TESTING")
     testing = test_mode is not None
     operator_path = None
@@ -434,7 +435,7 @@ def main(argv=None):
                 "mission", "explain", "authority", "capabilities", "capability",
                 "lifecycle", "list", "show", "assurance", "context", "evidence",
                 "qualification", "completion", "resume", "stop", "policy", "validate", "submit",
-                "dispatcher", "dispatch", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform",
+                "dispatcher", "dispatch", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform", "admit",
             } else interface_store.increment()
         )
         if "--verbose" in arguments:
@@ -479,6 +480,7 @@ def main(argv=None):
     intro = sub.add_parser("intro", help="review operator orientation")
     intro.add_argument("--status", action="store_true", help="show orientation state as JSON")
     submit = sub.add_parser("submit", help="Submit a Development WOP or source document through Stage 1."); submit.add_argument("wop_package", help="WOP identity, directory, Markdown, or DOCX source"); submit.add_argument("--repository"); submit.add_argument("--baseline"); submit.add_argument("--priority", type=int, default=0); submit.add_argument("--order", type=int, default=0); submit.add_argument("--approval", action="append"); submit.add_argument("--dependency", action="append", default=[]); submit.add_argument("--impact"); submit.add_argument("--affected-repository", action="append"); submit.add_argument("--resources-available", action="store_true"); submit.add_argument("--blocking-condition", action="append", default=[]); submit.add_argument("--interrupt-after", choices=("VALIDATED", "AUTHORIZED", "ADMITTED", "EXECUTING", "QUALIFIED", "PUBLICATION_PREPARED", "SYNCHRONIZED")); submit.add_argument("--json", action="store_true"); submit.add_argument("--verbose", action="store_true"); submit.add_argument("--at")
+    admit = sub.add_parser("admit", help="Provision a submitted mission admission package without execution."); admit.add_argument("submission", help="canonical P2 submission receipt"); admit.add_argument("--wop", required=True, type=Path, help="authored WOP validated by the submission"); admit.add_argument("--json", action="store_true"); admit.add_argument("--at")
     wop = sub.add_parser("wop", help="Author and validate Development WOP source documents."); wop.add_argument("action", choices=("format", "template", "init", "validate", "lint", "inspect", "explain", "source", "identity", "context", "traceability", "blockers", "readiness", "next", "snapshot", "verify")); wop.add_argument("source", nargs="?"); wop.add_argument("--wop-id"); wop.add_argument("--mission-id"); wop.add_argument("--from", dest="template_from"); wop.add_argument("--replay-against", type=Path); wop.add_argument("--format", choices=("markdown", "docx"), default="markdown"); wop.add_argument("--output", type=Path); wop.add_argument("--json", action="store_true"); wop.add_argument("--verbose", action="store_true")
     doctor = sub.add_parser("doctor", help="Read-only Development platform readiness summary."); doctor.add_argument("--json", action="store_true"); doctor.add_argument("--verbose", action="store_true")
     runtime_admin = sub.add_parser("runtime", help="Inspect or safely adopt the repository-bound Zeus runtime."); runtime_admin.add_argument("action", choices=("status", "identity", "adopt"), nargs="?", default="status"); runtime_admin.add_argument("--source", type=Path); runtime_admin.add_argument("--dry-run", action="store_true"); runtime_admin.add_argument("--json", action="store_true"); runtime_admin.add_argument("--verbose", action="store_true")
@@ -727,6 +729,22 @@ def main(argv=None):
             value = {"result": result, "next_action": "scripts/engctl eos sync-validate homelab", "mutating": False, "reason": "synchronized" if result == "PASS" else "recovery branch must be reconciled with EOS project main"}
             emit(value) if a.json else print(f"Synchronization readiness: {result}\nReason: {value['reason']}\nNext action: scripts/engctl eos sync-validate homelab")
             return 0 if result == "PASS" else 1
+        if a.command == "admit":
+            runtime = initialize_runtime(ROOT, explicit=getattr(a, "runtime_root", None))
+            value = admit_mission_boundary(
+                a.submission, wop=a.wop, repository=ROOT,
+                runtime_root=runtime["root"], at=a.at,
+            )
+            emit(value) if a.json else print(
+                "Mission Admission\n"
+                "-----------------\n"
+                f"Admission       : {value['admission_id']}\n"
+                f"State           : {value['admission_state']}\n"
+                f"Result          : {value['admission_result']}\n"
+                f"Duplicate       : {value['duplicate_admission']}\n"
+                f"Next action     : {value['next_action']}"
+            )
+            return 0
         if a.command == "submit" and not a.repository:
             source = resolve_wop_source(a.wop_package)
             # Authored Phase 1 outputs cross the bounded P2 submission
