@@ -16,6 +16,7 @@ from typing import Any
 from scripts.lib.emp.mission_verification_controller import verify as verify_mission
 from scripts.lib.emp.provider_selection import verify as verify_provider
 from scripts.lib.emp.dispatch_foundation import verify as verify_dispatch
+from scripts.lib.emp.provider_session import verify as verify_provider_session
 from scripts.lib.eos import operational_beta
 from scripts.lib.eos.canonical_baseline import resolve as resolve_baseline
 from scripts.lib.eos.platform_sync_verification import verify as verify_platform
@@ -32,6 +33,7 @@ CANONICAL_COMMANDS = {
     "eos_sync_validate": "scripts/engctl eos sync-validate homelab",
     "mission": "scripts/zeus mission verify <MISSION_ID>",
     "provider": "scripts/zeus provider verify <MISSION_ID>",
+    "provider_session": "scripts/zeus provider-session verify <MISSION_ID>",
 }
 AUTHORIZED_CANDIDATE_PATHS = frozenset({
     "engineering/docs/cli/ZEUS-USER-GUIDE.md",
@@ -41,10 +43,16 @@ AUTHORIZED_CANDIDATE_PATHS = frozenset({
     "scripts/lib/emp/mission_verification_controller.py",
     "scripts/lib/emp/publication_workflow.py",
     "scripts/lib/emp/dispatch_foundation.py",
+    "scripts/lib/emp/canonical_runtime_mission.py",
+    "scripts/lib/emp/provider_session.py",
     "scripts/tests/test-zeus-mission-verification-controller.py",
     "scripts/tests/test-zeus-p4-g3-runtime-discovery.py",
     "scripts/tests/test-zeus-p5-g1-provider-selection.py",
     "scripts/tests/test-zeus-p5-g2-dispatch-foundation.py",
+    "scripts/tests/test-zeus-p5-g3-provider-session.py",
+    "engineering/evidence/operation-beta/p5-g3-provider-session-foundation-completion-report.md",
+    "scripts/zeus",
+    "engineering/docs/cli/ZEUS-USER-GUIDE.md",
 })
 
 
@@ -153,6 +161,9 @@ def verify(root: Path | str, mission_id: str) -> dict[str, Any]:
     dispatch = verify_dispatch(root, mission_id)
     if dispatch.get("result") != "PASS":
         blockers.append({"code": "POST_SYNC_STAGE_FAILURE", "message": "dispatch verification failed"})
+    provider_session = verify_provider_session(root, mission_id)
+    if provider_session.get("result") != "PASS":
+        blockers.append({"code": "POST_SYNC_STAGE_FAILURE", "message": "provider-session verification failed"})
 
     validators = {
         "registry": _validator_result(root, "registry", ("scripts/engctl", "registry", "validate")),
@@ -194,11 +205,13 @@ def verify(root: Path | str, mission_id: str) -> dict[str, Any]:
         "validators": validators,
         "platform_verification": platform.get("result"),
         "mission_verification": mission.get("result"),
-        "stage_verification": "PASS" if provider.get("result") == "PASS" and dispatch.get("result") == "PASS" else "FAIL",
+        "stage_verification": "PASS" if provider.get("result") == "PASS" and dispatch.get("result") == "PASS" and provider_session.get("result") == "PASS" else "FAIL",
         "dispatch_verification": dispatch.get("result"),
+        "provider_session_verification": provider_session.get("result"),
         "mission": {"result": mission.get("result"), "next_authorized_action": mission.get("next_authorized_action"), "blockers": mission.get("blockers", [])},
         "provider": {"result": provider.get("result"), "provider_id": provider.get("provider_id"), "provider_selected": provider.get("provider_selected"), "dispatch_created": provider.get("dispatch_created"), "execution_started": provider.get("execution_started"), "next_authorized_action": provider.get("next_authorized_action")},
         "dispatch": {"result": dispatch.get("result"), "dispatch_id": dispatch.get("dispatch_id"), "dispatch_state": dispatch.get("dispatch_state"), "dispatch_created": bool(dispatch.get("dispatch_id")), "provider_session_created": dispatch.get("provider_session_created"), "provider_invoked": dispatch.get("provider_invoked"), "execution_started": dispatch.get("execution_started"), "next_authorized_action": dispatch.get("next_authorized_action")},
+        "provider_session": {"result": provider_session.get("result"), "provider_session_id": provider_session.get("provider_session_id"), "provider_session_created": provider_session.get("provider_session_created"), "provider_session_authorized": provider_session.get("provider_session_authorized"), "provider_invoked": provider_session.get("provider_invoked"), "execution_started": provider_session.get("execution_started"), "next_authorized_action": provider_session.get("next_authorized_action")},
         "obsolete_entry_points": obsolete,
         "canonical_commands": CANONICAL_COMMANDS,
         "blockers": blockers,

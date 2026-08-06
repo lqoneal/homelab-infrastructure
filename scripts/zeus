@@ -86,6 +86,7 @@ from scripts.lib.emp.mission_verification_controller import verify as verify_mis
 from scripts.lib.emp import provider_selection
 from scripts.lib.emp import publication_workflow
 from scripts.lib.emp import dispatch_foundation
+from scripts.lib.emp import provider_session
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
@@ -468,7 +469,7 @@ def main(argv=None):
                 "mission", "explain", "authority", "capabilities", "capability",
                 "lifecycle", "list", "show", "assurance", "context", "evidence",
                 "qualification", "completion", "resume", "stop", "policy", "validate", "submit",
-                "dispatcher", "dispatch", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform", "admit", "provider", "publication",
+                "dispatcher", "dispatch", "provider-session", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform", "admit", "provider", "publication",
             } else interface_store.increment()
         )
         if "--verbose" in arguments:
@@ -584,6 +585,7 @@ def main(argv=None):
     execute_mission=sub.add_parser("execute-mission", help="Start or resume execution only after admission succeeds."); execute_mission.add_argument("action", choices=("start","resume","status","suspend","cancel","session","evidence","handlers")); execute_mission.add_argument("--admission-id"); execute_mission.add_argument("--execution-id"); execute_mission.add_argument("--reason", default="OPERATOR"); execute_mission.add_argument("--at"); execute_mission.add_argument("--max-gates", type=int); execute_mission.add_argument("--wop"); execute_mission.add_argument("--revision", default="1"); execute_mission.add_argument("--authority-record"); execute_mission.add_argument("--correlation-id", default="zeus-mission-execution")
     dispatcher=sub.add_parser("dispatcher"); dispatcher.add_argument("action", choices=("status","agents","assignment","execution","eens","evidence","reconciliation")); dispatcher.add_argument("--identifier")
     dispatch=sub.add_parser("dispatch", help="Create or verify the bounded provider dispatch foundation; never invokes a provider."); dispatch.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization", "package")); dispatch.add_argument("mission_id", nargs="?"); dispatch.add_argument("--json", action="store_true")
+    provider_session_parser=sub.add_parser("provider-session", help="Create or verify the canonical provider session; never invokes a provider or starts execution."); provider_session_parser.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization")); provider_session_parser.add_argument("mission_id", nargs="?"); provider_session_parser.add_argument("--json", action="store_true")
     orchestrate=sub.add_parser("orchestrate"); orchestrate.add_argument("action", choices=("status", "verify")); orchestrate.add_argument("--json", action="store_true")
     agent=sub.add_parser("agent"); agent.add_argument("action", choices=("list","registry","status","qualify","revoke","select")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--mission-class", default="engineering"); agent.add_argument("--tool", action="append", default=["zeus-cli", "bounded-artifact-handler"]); agent.add_argument("--profile", action="append", default=["controlled-wop-only", "exact-repository-baseline", "no-unreviewed-external-effects"]); agent.add_argument("--json", action="store_true")
     provider=sub.add_parser("provider", help="Select or verify the canonical provider for one Beta mission without dispatch."); provider.add_argument("action", choices=("select", "verify", "candidates", "status", "qualification", "artifacts")); provider.add_argument("mission_id"); provider.add_argument("--json", action="store_true")
@@ -1241,6 +1243,20 @@ def main(argv=None):
                     value = {key: value.get(key) for key in ("result", "mission_id", "dispatch_id", "artifacts", "provider_id", "blockers", "read_only")}
             emit(value) if a.json else print(dispatch_foundation.render(value))
             return 0 if value.get("result") == "PASS" else 78
+        if a.command == "provider-session":
+            mission_id = str(a.mission_id or "MISSION-BETA-562F443E16C69401").upper()
+            if a.action == "create":
+                value = provider_session.create(ROOT, mission_id)
+            else:
+                value = provider_session.verify(ROOT, mission_id)
+                if a.action == "status":
+                    value = {key: value.get(key) for key in ("result", "mission_id", "provider_session_id", "session_state", "dispatch_id", "provider_id", "provider_session_authorized", "provider_session_created", "provider_invoked", "invocation_started", "execution_started", "next_authorized_action", "blockers", "read_only")}
+                elif a.action == "artifacts":
+                    value = {key: value.get(key) for key in ("result", "mission_id", "provider_session_id", "artifacts", "blockers", "read_only")}
+                elif a.action == "authorization":
+                    value = {key: value.get(key) for key in ("result", "mission_id", "provider_session_id", "provider_session_authorized", "provider_invoked", "execution_started", "next_authorized_action", "blockers", "read_only")}
+            emit(value) if a.json else print(provider_session.render(value))
+            return 0 if value.get("result") == "PASS" else 78
         if a.command == "orchestrate":
             value = mission_knowledge.orchestration_verification(ROOT)
             emit_controller(value, json_mode=a.json, verify=a.action == "verify", title="Orchestration")
@@ -1870,7 +1886,7 @@ def main(argv=None):
                 emit(ConvergenceRuntime(Path(a.repository)).operational_wop(intent=a.intent,flow=flow))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (PackagingError, RuntimeAdoptionError, RuntimeDiscoveryError, OrchestrationError, Stage1Error, SubmissionError, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, mission_knowledge.MissionKnowledgeError, operational_beta.OperationalBetaError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, provider_selection.ProviderSelectionError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+    except (PackagingError, RuntimeAdoptionError, RuntimeDiscoveryError, OrchestrationError, Stage1Error, SubmissionError, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, mission_knowledge.MissionKnowledgeError, operational_beta.OperationalBetaError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, provider_selection.ProviderSelectionError, provider_session.ProviderSessionError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr)
         if isinstance(error, PackagingError):
             if getattr(locals().get("a", None), "json", False):

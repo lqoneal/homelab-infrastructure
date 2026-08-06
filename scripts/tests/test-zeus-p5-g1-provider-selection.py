@@ -40,7 +40,9 @@ class ProviderSelectionQualification(unittest.TestCase):
         self.assertEqual(len(value["artifacts"]), 6)
         for directory in STAGE_DIRS:
             self.assertEqual(len(list((RUNTIME / directory).glob("*.json"))), 1)
-        for directory in ("provider-sessions", "dispatch", "executions", "execution-sessions"):
+        # P5-G3 provider sessions are controlled pre-invocation artifacts;
+        # only provider invocation and execution stores remain downstream.
+        for directory in ("dispatch", "executions", "execution-sessions"):
             paths = RUNTIME / directory
             self.assertFalse(any(json.loads(path.read_text()).get("mission_id") == MISSION for path in paths.glob("*.json")) if paths.is_dir() else False)
 
@@ -53,7 +55,7 @@ class ProviderSelectionQualification(unittest.TestCase):
         self.assertTrue(value["read_only"])
         self.assertEqual(mission["result"], "PASS")
         self.assertEqual(mission["lifecycle"]["provider_selected"], True)
-        self.assertEqual(mission["next_authorized_action"], "ESTABLISH_PROVIDER_SESSION")
+        self.assertEqual(mission["next_authorized_action"], "INVOKE_PROVIDER")
         self.assertEqual(before, after)
 
 

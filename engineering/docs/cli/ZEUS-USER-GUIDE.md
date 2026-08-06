@@ -409,6 +409,32 @@ the provider, create a provider session, launch Codex, start execution, or
 collect execution evidence. The next action is
 `ESTABLISH_PROVIDER_SESSION`, which requires a later authorized gate.
 
+## P5-G3 provider session foundation
+
+The bounded provider-session gate is operator-driven:
+
+```text
+scripts/zeus provider-session create <MISSION_ID>
+scripts/zeus provider-session verify <MISSION_ID> --json
+scripts/zeus provider-session status <MISSION_ID>
+scripts/zeus provider-session artifacts <MISSION_ID> --json
+scripts/zeus provider-session authorization <MISSION_ID> --json
+```
+
+Creation derives one deterministic provider session from the published
+dispatch and the unchanged provider selection. It provisions exactly one
+provider session, receipt, journal, authorization, and readiness artifact.
+Replay is idempotent. Verification rechecks the published mission, authority,
+repository/runtime bindings, dispatch digests, provider-selection digests,
+artifact integrity, and cardinality. Missing, malformed, cross-mission, stale,
+substituted, or tampered state fails closed.
+
+The terminal state is `READY_FOR_PROVIDER_INVOCATION`. This gate does not
+invoke the provider, start invocation, start execution, create an execution
+session or record, mutate dispatch/provider selection, or collect execution
+evidence. The next action is `INVOKE_PROVIDER`, which requires a later
+operator-authorized gate.
+
 ## Publication workflow stabilization
 
 Publication verification is exposed through the stable Zeus contract:
@@ -431,3 +457,13 @@ publication procedure and engctl. The controller distinguishes candidate,
 publication, reconciliation, and harness failures; a completed publication
 replays as `PUBLICATION_RECONCILED`/`IDEMPOTENT`. An uncommitted candidate is
 reported as `CANDIDATE_SCOPE_FAILURE` rather than being silently accepted.
+The repository-native focused-test launcher must be module-based so the
+repository root is on Python's import path. Use:
+
+```text
+python3 -m pytest -q scripts/tests/test-zeus-p5-g3-provider-session.py scripts/tests/test-zeus-mission-verification-controller.py
+```
+
+Running `pytest -q scripts/tests/...` directly is not the supported publication
+harness invocation because it can fail before collection with
+`ModuleNotFoundError: No module named 'scripts'`.

@@ -29,8 +29,16 @@ class MissionVerificationControllerTests(unittest.TestCase):
         value = verify(ROOT, MISSION)
         self.assertEqual(value["result"], "PASS")
         self.assertTrue(value["read_only"])
-        self.assertEqual(value["replay"], {"submission": "IDEMPOTENT", "admission": "IDEMPOTENT", "bootstrap": "IDEMPOTENT"})
-        self.assertEqual(value["next_authorized_action"], "ESTABLISH_PROVIDER_SESSION")
+        self.assertEqual(value["replay"], {"submission": "IDEMPOTENT", "admission": "IDEMPOTENT", "bootstrap": "IDEMPOTENT", "provider_session": "IDEMPOTENT"})
+        self.assertEqual(value["next_authorized_action"], "INVOKE_PROVIDER")
+        self.assertEqual(value["checks"]["provider_session"], "PASS")
+        self.assertEqual(value["replay"]["provider_session"], "IDEMPOTENT")
+        self.assertTrue(value["lifecycle"]["provider_session_created"])
+        self.assertTrue(value["lifecycle"]["provider_session_authorized"])
+        self.assertEqual(value["lifecycle"]["provider_session_id"], "PROVIDER-SESSION-65d0fe07-1d02-562d-9da2-f766f3e87ef4")
+        self.assertEqual(value["lifecycle"]["provider_session_state"], "READY_FOR_PROVIDER_INVOCATION")
+        self.assertFalse(value["lifecycle"]["provider_invoked"])
+        self.assertFalse(value["lifecycle"]["execution_started"])
 
     def test_fixture_pass_and_digest_failure(self) -> None:
         holder = self.isolated_runtime()
