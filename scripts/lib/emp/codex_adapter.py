@@ -738,6 +738,18 @@ def status(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         value["history_reconciliation"] = {"result": "FAIL", "history_disposition": "INDETERMINATE",
                                             "blockers": [{"code": error.code, "message": error.message}],
                                             "read_only": True}
+    try:
+        from scripts.lib.emp import execution_monitoring
+        from scripts.lib.emp.legacy_lifecycle_reconciliation import inspect as inspect_legacy
+        transaction_path, transaction = execution_monitoring._find_transaction(runtime, session["execution_id"])
+        monitoring = execution_monitoring._monitoring_record(runtime, str(transaction["execution_id"]))
+        legacy = inspect_legacy(repository, runtime, transaction=transaction, monitoring=monitoring)
+        value.update({"state": "RECONCILED_HISTORICAL", "execution_monitoring": "INACTIVE",
+                      "mission_work_started": True, "repository_work_started": False,
+                      "next_authorized_action": "OPERATOR_REVIEW_LEGACY_LIFECYCLE_RECONCILIATION",
+                      "legacy_reconciliation": legacy})
+    except Exception:
+        pass
     return value
 
 

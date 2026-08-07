@@ -137,6 +137,23 @@ class SemanticValidationTests(unittest.TestCase):
         self.assertIn(result["status"], {"PASS", "PASS_WITH_MANUAL_CRITERIA"})
         self.assertEqual([], validation.errors)
 
+    def test_governance_procedures_resolve_to_procedure_profile(self) -> None:
+        paths = (
+            ROOT / "engineering/docs/architecture/ZEUS-WOP-SUBMISSION-PROCEDURE.md",
+            ROOT / "engineering/docs/operations/ZEUS-DEVELOPMENT-MODE.md",
+            ROOT / "engineering/docs/operations/ZEUS-EXECUTION-LIFECYCLE-PROCEDURE.md",
+        )
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertEqual("Procedure", validator.semantic_profile_for(path))
+                validation = validator.Validation()
+                result = validator.semantic_validate_path(
+                    validation, path, validator.load_semantic_catalog()
+                )
+                self.assertEqual("Procedure", result["profile"])
+                self.assertIn(result["status"], {"PASS", "PASS_WITH_MANUAL_CRITERIA"})
+                self.assertEqual([], validation.errors)
+
     def test_cli_propagates_real_semantic_failure_exit_code(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as directory:
             path = Path(directory) / "ROADMAP.md"

@@ -531,9 +531,9 @@ class Stage1Runtime:
             if metadata.get("execution_mode") != "DEVELOPMENT":
                 raise Stage1Error("development submission requires execution_mode=DEVELOPMENT",
                                   evidence={"reason_code": "DEVELOPMENT_MODE_REQUIRED"})
-            if metadata.get("governance_authority") != "Engineering Governance":
-                raise Stage1Error("development submission requires Engineering Governance authority",
-                                  evidence={"reason_code": "GOVERNANCE_AUTHORITY_REQUIRED"})
+            # The canonical Zeus submission operation is the governance
+            # submission act. Legacy governance_authority metadata remains
+            # accepted, but is not a second authority assertion.
             declared_authority = {
                 "authority": metadata.get("authority"),
                 "execution_authority": metadata.get("execution_authority"),
@@ -637,7 +637,7 @@ class Stage1Runtime:
                                "operator": operator},
                 "authorization": {"mode": "MANUAL_GOVERNANCE_DEVELOPMENT",
                                    "authority": "Engineering Governance",
-                                   "decision": "SUBMISSION_CONSTITUTES_EXECUTION_AUTHORITY"},
+                                   "decision": "SUBMISSION_AUTHORITY_ONLY"},
                 "failure_injection": {
                     "publication": bool(metadata.get("simulate_publication_failure")),
                     "synchronization": bool(metadata.get("simulate_synchronization_failure")),
@@ -668,7 +668,7 @@ class Stage1Runtime:
                 "governance_authority": "Engineering Governance",
                 "wop_authority": "Engineering Governance",
                 "transaction_profile": metadata.get("engineering_transaction_profile") or metadata.get("transaction_profile") or "SPEC-0008:DEVELOPMENT",
-                "approval_state": "SUBMISSION_CONSTITUTES_EXECUTION_AUTHORITY",
+                "approval_state": "SUBMISSION_AUTHORITY_ONLY",
                 "publication_authority": "Engineering Governance",
                 "provider_qualification_required": True,
                 "permitted_effects": [metadata["effect_profile"]],

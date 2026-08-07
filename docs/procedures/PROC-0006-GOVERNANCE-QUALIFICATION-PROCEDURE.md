@@ -1,11 +1,11 @@
 ---
 document_id: PROC-0006
 title: Governance Qualification Procedure
-version: 1.5
+version: 1.6
 status: Draft
 owner: Engineering Governance
 created: 2026-07-18
-last_updated: 2026-07-29
+last_updated: 2026-08-07
 phase: Governance Stabilization Procedure Integration
 domain: Engineering Governance
 classification: Engineering Procedure
@@ -544,6 +544,33 @@ criterion correctness, evidence sufficiency, complete criterion coverage,
 whole-subject semantic completeness, and the evidence basis for the acceptance
 recommendation.
 
+For evidence proportionality, the reviewer shall first classify the applicable
+criterion as static or operational. A static capability may be fully satisfied
+through deterministic static, fixture, or validation evidence when that is
+what the criterion claims. A criterion whose claim concerns live execution,
+runtime behavior, provider interaction, state transition, recovery,
+monitoring, interruption, or another operational condition is operational.
+For an operational criterion, implementation evidence, static inspection,
+tests, simulation, disposable-runtime testing, and inactive-state verification
+are insufficient for a fully satisfied determination by themselves. The
+evidence package shall include a successful demonstration under the true
+active condition governed by the criterion, followed by authoritative
+verification of that demonstration.
+
+Qualification shall distinguish at least `IMPLEMENTED`, `TESTED`,
+`INACTIVE_RUNTIME_VERIFIED`, `ACTIVELY_DEMONSTRATED`, and
+`FULLY_SATISFIED`. For an operational criterion, `IMPLEMENTED` or `TESTED`
+does not imply `FULLY_SATISFIED`, and the invalid combination
+`ACTIVE_DEMONSTRATION=NOT_PERFORMED` with `FULLY_SATISFIED=YES` shall be
+rejected. If the applicable active condition was not demonstrated, the result
+shall remain `PARTIAL` or `BLOCKED` as supported by the evidence; it shall not
+be reported as fully satisfied. Historical qualification conclusions and the
+contract applicable when they were made shall be preserved; this rule does not
+rewrite prior evidence, and later reconciliation may identify a need for
+requalification. This requirement adds no execution, approval, publication,
+or lifecycle authority and does not permit a qualification subject to
+self-qualify.
+
 An omitted or unresolved applicable criterion is blocking. Automated presence
 checks do not establish technical correctness. Manual and partially automated
 criteria require independent evidence and an attributable disposition.
@@ -714,3 +741,4 @@ The following remain Deferred Execution and require separate authorization:
 | 1.3 | 2026-07-28 | Adds independent review of Engineering Assurance derived evidence while preserving qualification ownership and all external approval, publication, lifecycle, and operational authorities. |
 | 1.4 | 2026-07-29 | Reconciled qualification finding classification with PROC-0005 by separating preserved validator exit status from the governed disposition of intentional Markdown hard-break findings. |
 | 1.5 | 2026-07-29 | Classified publication qualification reports and finding matrices as intrinsic outputs routed to the active PROC-0005 output ledger or a post-finalization successor transaction. |
+| 1.6 candidate | 2026-08-07 | Added the explicit true-active-condition evidence rule for runtime-dependent qualification while preserving external approval, publication, lifecycle, and execution authority. |

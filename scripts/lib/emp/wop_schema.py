@@ -28,7 +28,7 @@ def validate_optional_approval_date(value: Any) -> bool:
 SCHEMA_VERSION = "development-wop/1"
 REQUIRED_FIELDS = (
     "wop_id", "mission_id", "title", "objective", "scope", "dependencies",
-    "execution_mode", "governance_authority", "repository_identity",
+    "execution_mode", "repository_identity",
     "effect_profile", "protected_baselines", "gates",
     "qualification_requirements", "completion_requirements",
     "approval_authorized_lifecycle_state", "authoritative_references",
@@ -51,7 +51,7 @@ FIELD_DESCRIPTIONS = {
     "scope": "Bounded scope; no production capability work",
     "dependencies": "Prerequisite identities, or none",
     "execution_mode": "DEVELOPMENT",
-    "governance_authority": "Issuing authority; normally Engineering Governance",
+    "governance_authority": "Legacy-compatible non-authoritative metadata; submission authority comes from the canonical Zeus interface",
     "repository_identity": "Canonical repository path or identity",
     "effect_profile": "Non-production effect profile",
     "protected_baselines": "Immutable baseline references",
@@ -79,7 +79,7 @@ def format_description() -> dict:
         "field_descriptions": FIELD_DESCRIPTIONS,
         "supported_sources": ["Markdown", "DOCX", "canonical package directory", "repository-resolved WOP ID"],
         "execution_modes": ["DEVELOPMENT"],
-        "governance_authority": "Engineering Governance",
+        "governance_authority": "Legacy metadata is accepted but does not establish submission or execution authority",
         "package_behavior": "Validate source, construct and validate an immutable package in isolation, then atomically promote it.",
         "validation_sequence": ["extract", "resolve required metadata", "validate package", "preserve source", "verify digest", "promote", "initialize runtime", "submit"],
         "canonical_command": "zeus submit <WOP_ID_OR_SOURCE>",

@@ -86,14 +86,16 @@ values are never valid successful admission metadata.
 
 ## Stable operator boundary
 
-Engineering Governance establishes execution authority before submission. The
+The authoritative Zeus submission interface carries submission authority. The
 operator-visible sequence is:
 
 ```text
 Develop WOP
-    -> Engineering Governance authorizes execution
     -> scripts/zeus submit <wop>
-    -> Zeus executes
+    -> validate/register/provenance
+    -> resolve mission/WOP authority and admission
+    -> execution authorization and applicable approvals
+    -> Zeus may execute only when downstream gates pass
 ```
 
 When interrupted, `scripts/zeus resume <mission>` is the sole recovery entry
@@ -116,8 +118,21 @@ scripts/zeus submit <wop>
 scripts/zeus resume <mission>
 ```
 
-Their meanings are stable. `submit` submits a Governance-authorized WOP to
-Zeus; `resume` continues an interrupted mission from its last valid execution
+Their meanings are stable. `submit` is the canonical governance submission
+act. It does not itself authorize execution, production effects, acceptance,
+publication, synchronization, or closeout; those remain downstream controlled
+acts. `resume` continues an interrupted mission from its last valid execution
 state. Additional mandatory commands, manual receipt management, manual
 publication or recovery reconciliation, or exposure of internal lifecycle
 generations require an explicit Engineering Governance architecture decision.
+
+The invariant is `AUTHORITATIVE_SUBMISSION_IS_SUBMISSION_ACT=YES`,
+`SECOND_GOVERNANCE_SUBMISSION_DECLARATION_REQUIRED=NO`, and
+`DEVELOPMENT_PRODUCTION_SUBMISSION_PROTOCOL_DISTINCTION=NONE`.
+
+## Outputs and evidence
+
+The procedure produces a validated submission receipt, registration and
+provenance projection, downstream admission readiness, and a deterministic
+next action. These outputs and their reconciliation evidence are inspected
+before any downstream lifecycle transition is accepted.

@@ -41,8 +41,8 @@ def validate_metadata(metadata: Mapping[str, Any], *, source: Path | str = "<sou
     errors: list[str] = []
     if metadata.get("wop_id") and not is_wop_id(metadata["wop_id"]):
         errors.append("wop_id must match the canonical WOP identity format")
-    if metadata.get("execution_mode") and str(metadata["execution_mode"]).upper() != "DEVELOPMENT":
-        errors.append("execution_mode must be DEVELOPMENT")
+    if metadata.get("execution_mode") and str(metadata["execution_mode"]).upper() not in {"DEVELOPMENT", "PRODUCTION"}:
+        errors.append("execution_mode must be DEVELOPMENT or PRODUCTION")
     if metadata.get("approval_authorized_lifecycle_state") not in (None, "Active"):
         errors.append("approval_authorized_lifecycle_state must be Active")
     references = metadata.get("authoritative_references")
