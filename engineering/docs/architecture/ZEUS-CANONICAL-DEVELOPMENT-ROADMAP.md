@@ -1,7 +1,9 @@
 # Zeus Canonical Development Roadmap
 
 **Status:** Planning Reference
-**Purpose:** Preserve the canonical Zeus development sequence for Operation Beta and subsequent Zeus maturity phases.
+**Purpose:** Define the substantive capability and completion architecture for
+Operation Beta and preserve the historical Zeus maturity traceability that
+supports it.
 **Execution Authority:** None. This roadmap defines planned engineering progression only. Missions, WOPs, approvals, and execution records retain execution authority.
 
 ## Operation Beta namespace boundary
@@ -14,6 +16,108 @@ traceability; no native Beta mission binding is established by that identifier.
 The unfinished P5 coordinates remain unbound pending a separately authorized
 capability and mission disposition. Native Beta mission selection continues
 through the published Operation Beta mission model.
+
+## Current Operation Beta development position
+
+The current native development context is `OPERATION-BETA` with platform
+context `BETA-04` (`Runtime readiness and controller activation`). `BETA-04`
+is the current platform context, not a currently executable mission. The
+current native recommended mission is `CAGF-01`; it is eligible after
+`ZDCL-01`, but it has no WOP, is not selected, and is not executable. A
+recommendation remains advisory and does not create mission or execution
+authority. The current executable mission is `NONE`.
+
+The P5 labels below preserve Zeus maturity-phase capability traceability. They
+are not an active required continuation of `P5-G6` and do not override the
+Operation Beta mission model. `P5-G6` is historical accepted/published
+evidence with no native Beta binding. `P5-G7` through `P5-G10` remain unbound
+planning coordinates; numbering does not create a Beta mission dependency.
+
+Operation Beta ordering permits multiple available missions and multiple
+eligible missions where individual prerequisites pass. Roadmap order alone
+does not create dependency or execution authority. Dependency ordering is
+required only where a technical prerequisite, qualified interface or artifact,
+resource constraint, safety boundary, or explicit operator decision establishes
+it. A mission's authority is resolved independently from another mission's
+authority, lifecycle, completion, recommendation, selection, or identifier.
+
+## Unified Operation Beta development model
+
+Operation Beta is the unified engineering objective. The Canonical Zeus
+Development Roadmap is its substantive capability and completion architecture;
+it is not a second mission competing with `BETA-04`. `BETA-04` remains the
+published native platform context for runtime readiness and controller
+activation. Its valid runtime and controller requirements are incorporated into
+the Operation Beta capability baseline and do not define Operation Beta
+completion by themselves.
+
+The distinction is normative:
+
+- **Operation Beta** owns the long-lived engineering objective and integrated
+  completion criteria.
+- **This roadmap** owns the capability architecture, technical relationships,
+  qualification boundaries, and completion contract for that objective.
+- **BETA-04** is the current platform context and bounded runtime/controller
+  readiness contribution, not a superior mission or an authority source for
+  another mission.
+- **A mission** is an independently authoritative bounded increment. Operation
+  membership, roadmap position, recommendation, selection, or completion of
+  another mission does not grant it authority.
+- **A planning coordinate** such as `P5-G7` is non-authoritative until a
+  separately governed mission disposition exists.
+- **A WOP** is executable only under its own mission authority, admission, and
+  execution controls.
+
+The required capability families are `ZEUS/ZDCL`, canonical source and
+projection (`CAGF`-class), executable mission infrastructure (`EPE`-class),
+canonical management (`CM`), engineering events and notifications (`EENS`),
+engineering management and orchestration (`EMP`), roadmap/architecture
+convergence, and integrated qualification. These families may be advanced by
+multiple independently authoritative missions or coordinated capability work;
+the family list does not create a mission hierarchy.
+
+### Capability-oriented execution model
+
+The recommended development model is capability-converged and technically
+dependency-driven:
+
+0. Preserve and reuse the qualified Zeus/ZDCL foundation and historical P5-G6
+   evidence; do not rerun accepted P5-G6 work.
+1. Qualify canonical source ownership and deterministic projection capability.
+   `CAGF-01` is the current preferred producer, not the source of another
+   mission's authority.
+2. Advance CM, EENS, and EMP through independently authoritative increments
+   where their published interfaces, inputs, ownership boundaries, and
+   qualification scopes permit safe parallel work.
+3. Advance executable mission infrastructure through EPE-class increments
+   once the required canonical source/projection capability and other
+   qualified inputs exist. `EPE-01` requires that capability, not CAGF-01's
+   authority or mission identity. An equivalent qualified producer may satisfy
+   the technical input if governed records permit it.
+4. Integrate Zeus with the canonical CM/EENS/EMP/EPE interfaces without
+   duplicating their authoritative state or lifecycle ownership.
+5. Qualify the integrated lifecycle, evidence, approval, execution,
+   interruption/resume, publication, repository/EOS reconciliation, and
+   Zeus-native verification behavior.
+
+The sequence is a technical coordination model, not a chain of delegated
+mission authority. Multiple missions may be independently authorized and
+eligible at the same time; Zeus selection and recommendation remain distinct
+from authority and execution.
+
+### Operation Beta completion contract
+
+Operation Beta is complete only when every required capability family in this
+roadmap has reached its required implementation and qualification boundary,
+the documented technical dependencies and interfaces are satisfied, and the
+integrated system has passed the governed lifecycle qualification. That
+qualification must cover mission discovery, independent authority resolution,
+WOP admission and execution controls, monitoring, evidence and closeout,
+interruption/resume, publication, repository/EOS reconciliation, and
+Zeus-native independent verification. No required family may remain planning
+only, and unresolved critical architecture or authority contradictions fail
+closed. Mission numbering and completion of a predecessor mission alone do not
+declare Operation Beta complete or authorize another mission.
 
 ## Canonical Roadmap Preservation Rule
 
@@ -186,7 +290,7 @@ Current reconciled disposition:
 
 PARTIALLY_SATISFIED
 
-Current canonical gate:
+Historical roadmap gate reference; not the current native Beta position:
 
 P5-G6
 
@@ -460,12 +564,17 @@ Exact command naming remains an implementation decision.
 
 ---
 
-# Current Canonical Progress
+# Zeus Maturity-Phase Progress and Native Operation Position
 
-PHASE_CURRENT=5
+ZEUS_MATURITY_PHASE_CURRENT=5
 PHASE_TOTAL=12
 
-CANONICAL_GATE_CURRENT=P5-G6
+NATIVE_OPERATION_CURRENT=OPERATION-BETA
+CURRENT_PLATFORM_CONTEXT=BETA-04
+CURRENT_CANONICAL_DEVELOPMENT_POSITION=OPERATION-BETA_UNIFIED_CAPABILITY_ARCHITECTURE
+CURRENT_RECOMMENDED_MISSION=CAGF-01
+CURRENT_EXECUTABLE_MISSION=NONE
+CANONICAL_GATE_CURRENT=NONE_NATIVE_BETA_GATE
 CANONICAL_GATE_TOTAL=10
 
 P5_G1=SATISFIED
@@ -479,12 +588,38 @@ P5_G8=PARTIALLY_SATISFIED
 P5_G9=UNSATISFIED
 P5_G10=UNSATISFIED
 
-NEXT_CANONICAL_GATE=P5-G6
+NEXT_CANONICAL_DEVELOPMENT_WORK=CAGF-01
+NEXT_CANONICAL_GATE=NONE_UNBOUND_P5_NAMESPACE
+
+P5_G6_DISPOSITION=HISTORICAL_ACCEPTED_PUBLISHED_EVIDENCE_NO_NATIVE_BETA_BINDING
+P5_G7_DISPOSITION=UNBOUND_PLANNING_COORDINATE
+P5_G8_DISPOSITION=UNBOUND_PLANNING_COORDINATE
+P5_G9_DISPOSITION=UNBOUND_PLANNING_COORDINATE
+P5_G10_DISPOSITION=UNBOUND_PLANNING_COORDINATE
+
+## Native mission integration points
+
+`CAGF-01` is an eligible and recommended native Beta mission with dependency
+`ZDCL-01`, which is complete. No WOP exists, it is not selected, and it is not
+executable. `EPE-01` is planned and currently blocked by the missing qualified
+canonical source/projection capability. `CAGF-01` is the preferred/current
+producer in the native planning projection, but its mission authority is
+independent and does not authorize EPE-01. An equivalent qualified producer
+could satisfy the technical input if the applicable governed records permit
+it.
+
+`CM-01` through `CM-06`, `EENS-A` through `EENS-G`, and `EMP-A` through
+`EMP-H` remain planning or supporting capability tracks without native Beta
+mission authority in the current published state. They must not be inferred
+as executable missions from this roadmap.
 
 ## Governing Planning / Execution Rule
 
-Roadmap state defines planned engineering progression.
+Roadmap state defines the planned capability progression and Operation Beta
+completion architecture.
 
-Roadmap state does not create execution authority.
+Roadmap state does not create execution authority, mission-to-mission authority,
+or a dependency on another mission's authority, lifecycle, completion,
+recommendation, selection, or identifier.
 
 Historical implementation is reconciled against this roadmap by capability, not by historical gate label.

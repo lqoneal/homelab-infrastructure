@@ -201,7 +201,11 @@ def semantic_profile_for(path: Path, metadata: dict[str, Any] | None = None) -> 
         relative = str(path.relative_to(ROOT)).lower()
     except ValueError:
         relative = str(path).lower()
-    if name == "roadmap.md" or "implementation-roadmap" in name:
+    if (
+        name == "roadmap.md"
+        or "implementation-roadmap" in name
+        or name == "zeus-canonical-development-roadmap.md"
+    ):
         return "Roadmap"
     if name == "gate-specification.yaml":
         return "Gate Specification"

@@ -126,6 +126,17 @@ class SemanticValidationTests(unittest.TestCase):
         self.assertIn(result["status"], {"PASS", "PASS_WITH_MANUAL_CRITERIA"})
         self.assertEqual([], validation.errors)
 
+    def test_canonical_zeus_development_roadmap_resolves_to_roadmap_profile(self) -> None:
+        path = ROOT / "engineering/docs/architecture/ZEUS-CANONICAL-DEVELOPMENT-ROADMAP.md"
+        self.assertEqual("Roadmap", validator.semantic_profile_for(path))
+        validation = validator.Validation()
+        result = validator.semantic_validate_path(
+            validation, path, validator.load_semantic_catalog()
+        )
+        self.assertEqual("Roadmap", result["profile"])
+        self.assertIn(result["status"], {"PASS", "PASS_WITH_MANUAL_CRITERIA"})
+        self.assertEqual([], validation.errors)
+
     def test_cli_propagates_real_semantic_failure_exit_code(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as directory:
             path = Path(directory) / "ROADMAP.md"
