@@ -32,7 +32,7 @@ Controllers use four non-interchangeable terms:
 - **Current Executable Mission**: the one mission with a fresh executable
   admission, or `NONE`.
 - **Recommended Mission**: the eligible successor selected from roadmap
-  authority, currently `ZDCL-01`.
+  authority, currently `CAGF-01`.
 - **Next Authorized Action**: the exact permitted transition; a recommendation
   is not execution authority.
 
