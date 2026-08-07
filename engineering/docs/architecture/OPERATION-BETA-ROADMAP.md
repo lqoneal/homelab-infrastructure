@@ -31,6 +31,23 @@ authorized WOP before submission or admission.
 
 The rows express recommended order, not implementation authority. Parallel work is allowed only where a future mission contract proves that its inputs are published, qualified, and independent.
 
+## Mission availability and ordering semantics
+
+This roadmap may expose multiple available or eligible missions at the same
+time. A roadmap row or arrow expresses planning and organizational order; it
+does not by itself create a dependency, selection, authorization, or execution
+requirement. A mission becomes required to precede another only when an
+authoritative mission contract, prerequisite, dependency, authority condition,
+resource constraint, or safety boundary establishes that relationship.
+
+`AVAILABLE`, `ELIGIBLE`, `RECOMMENDED`, `SELECTED`, `AUTHORIZED`, `ACTIVE`,
+`BLOCKED`, and `DEFERRED` are distinct states. In particular, a recommendation
+is advisory and does not constitute selection or execution authority. An
+operator or Zeus may select an alternate mission only when it is independently
+eligible and the applicable authority and admission requirements are met.
+Runtime/resource concurrency constraints are separate from mission eligibility
+and do not convert an advisory roadmap sequence into a global strict order.
+
 ## Promotion gates
 
 Every increment must resolve its objective, verify its authority and baseline,
