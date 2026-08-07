@@ -19,6 +19,7 @@ from xml.etree import ElementTree
 
 import yaml
 from scripts.lib.emp.wop_schema import REQUIRED_FIELDS
+from scripts.lib.wop.canonical_package import CanonicalPackageError, load as load_canonical_package, package_digest as canonical_package_digest
 
 
 class PackagingError(ValueError):
@@ -207,6 +208,8 @@ def extract(source: Path, *, validate: bool = True) -> tuple[dict[str, Any], str
 
 
 def package(source: Path, destination_root: Path, repository_root: Path | str | None = None) -> tuple[Path, dict[str, Any]]:
+    if is_canonical_source(source):
+        return adapt_canonical_package(source, destination_root, repository_root=repository_root)
     from scripts.lib.emp.wop_validation import require_valid_source
     validation = require_valid_source(source, repository_root=repository_root)
     metadata = dict(validation.metadata)
@@ -324,6 +327,157 @@ def package(source: Path, destination_root: Path, repository_root: Path | str | 
 
 def is_canonical_package(source: Path) -> bool:
     return source.is_dir() and (source / "mission.yaml").is_file() and (source / "manifests/immutable-manifest.yaml").is_file()
+
+
+def is_canonical_source(source: Path) -> bool:
+    """Return true only for an explicitly identified canonical package YAML."""
+    source = Path(source)
+    if not source.is_file() or source.suffix.lower() not in {".yaml", ".yml"}:
+        return False
+    try:
+        value = yaml.safe_load(source.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, yaml.YAMLError):
+        return False
+    return isinstance(value, Mapping) and value.get("schema_version") == "canonical-wop-package/1" and isinstance(value.get("package_identity"), Mapping)
+
+
+def _canonical_stage1_metadata(package_value: Mapping[str, Any], canonical_digest: str, source_digest_value: str) -> dict[str, Any]:
+    identity = package_value["package_identity"]
+    requirements = package_value["requirements"]
+    reconciliation = package_value.get("reconciliation_contract", {})
+    authority = package_value.get("authority_binding", {})
+    scope = [str(item.get("objective", item["requirement_id"])) for item in requirements]
+    dependencies = [
+        str(declaration.get("id"))
+        for declaration in package_value.get("technical_prerequisites", {}).get("declarations", [])
+        if isinstance(declaration, Mapping) and declaration.get("id")
+    ] or ["none"]
+    return {
+        "schema_version": 1,
+        "document_type": "EngineeringWorkOrder",
+        "mission_id": str(identity["mission_id"]),
+        "wop_id": str(identity["wop_id"]),
+        "phase_id": str(identity["mission_id"]) + "-DEVELOPMENT",
+        "revision": int(identity["revision"]),
+        "status": "Active",
+        "title": f"Canonical package adapter for {identity['gate_id']}",
+        "objective": f"Adapt validated {package_value['schema_version']} package {identity['package_id']} into the existing Zeus Stage 1 package model.",
+        "scope": scope,
+        "dependencies": dependencies,
+        "priority": 0,
+        "candidate_state": "CANDIDATE",
+        "qualification_requirements": [str(item.get("acceptance", item["requirement_id"])) for item in requirements],
+        "completion_requirements": ["canonical package provenance preserved", "Stage 1 package validation passes", "operator review before submission"],
+        "approval": {"authorized_lifecycle_state": "Active"},
+        "authoritative_references": ["PROC-0001@1.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004"],
+        "execution_package_references": {
+            "authority_node_id": "canonical-package-adapter",
+            "authorization_decision_record": "EXTERNAL_AUTHORITY_REQUIRED",
+            "immutable_wop": str(identity["wop_id"]),
+        },
+        "sections": {
+            "completion_report_requirement": "Record canonical and Stage 1 identities, validation evidence, and the next governed lifecycle action.",
+            "deliverables": ["validated canonical package", "deterministic Stage 1 representation", "provenance mapping"],
+            "execution_sequence": package_value.get("bootstrap", {}).get("steps", []),
+            "dependencies_and_entry_criteria": package_value.get("technical_prerequisites", {}),
+            "explicit_authority": authority,
+            "governing_references": ["canonical package schema", "published WOP architecture", "existing Stage 1 runtime"],
+            "mission_classification": "Development WOP source adapter; non-authoritative until existing lifecycle authority is resolved.",
+            "prohibited_activities": package_value.get("publication_boundary", {}).get("prohibited_effects", []),
+            "publication_and_synchronization": package_value.get("publication_boundary", {}),
+            "scope": scope,
+            "stop_resume_and_escalation": package_value.get("recovery_contract", {}),
+            "success_and_acceptance_criteria": [str(item.get("acceptance", item["requirement_id"])) for item in requirements],
+            "validation_profile": package_value.get("evidence_contract", {}),
+        },
+        "execution_mode": "DEVELOPMENT",
+        "governance_authority": str(authority.get("authority_source", "External mission authority")),
+        "repository_identity": str(reconciliation.get("repository_identity", "")),
+        "effect_profile": "DEVELOPMENT-NONPRODUCTION-READONLY-ADAPTER",
+        "required_execution_files": ["bootstrap.md", "roadmap.md", "mission.yaml", "gates.yaml", "manifests/immutable-manifest.yaml", "source-wop.yaml"],
+        "source_document_digest": source_digest_value,
+        "canonical_package_schema": str(package_value["schema_version"]),
+        "canonical_package_id": str(identity["package_id"]),
+        "canonical_package_digest": canonical_digest,
+        "canonical_gate_id": str(identity["gate_id"]),
+        "canonical_baseline_commit": str(identity["baseline_commit"]),
+        "canonical_authority_classification": "EXTERNAL_ONLY_NON_AUTHORITATIVE_SOURCE",
+    }
+
+
+def adapt_canonical_package(source: Path, destination_root: Path, repository_root: Path | str | None = None) -> tuple[Path, dict[str, Any]]:
+    """Adapt a validated canonical YAML package into the existing Stage 1 tree.
+
+    This function does not create authority or lifecycle records.  It only
+    creates the representation consumed by the existing Stage 1 validator and
+    runtime, preserving canonical and derived digests as separate identities.
+    """
+    from scripts.lib.emp.wop_validation import validate_generated_package
+
+    source = Path(source).resolve()
+    try:
+        package_value = load_canonical_package(source)
+    except CanonicalPackageError as error:
+        raise PackagingError(f"canonical WOP package rejected: {error}") from error
+    digest = canonical_package_digest(package_value)
+    raw_digest = source_digest(source)
+    identity = package_value["package_identity"]
+    package_id = f"canonical-{digest[:24]}"
+    destination_root = Path(destination_root).resolve()
+    destination = destination_root / str(identity["wop_id"]) / package_id
+    if destination.exists():
+        validate_generated_package(destination)
+        manifest = yaml.safe_load((destination / "manifests" / "immutable-manifest.yaml").read_text(encoding="utf-8")) or {}
+        if manifest.get("canonical_package_digest") != digest or manifest.get("canonical_source_digest") != raw_digest:
+            raise PackagingError("existing adapted package canonical provenance mismatch")
+        return destination, {"packaged": True, "adapted": True, "replayed": True, "package_id": package_id,
+                             "canonical_package_digest": digest, "source_digest": raw_digest, "stage1_package": str(destination)}
+
+    staging_parent = destination_root if destination_root.is_dir() else destination_root.parent
+    staging_parent.mkdir(parents=True, exist_ok=True)
+    staging = Path(tempfile.mkdtemp(prefix=".zeus-canonical-wop-staging-", dir=str(staging_parent)))
+    temporary = staging / package_id
+    temporary.mkdir()
+    try:
+        metadata = _canonical_stage1_metadata(package_value, digest, raw_digest)
+        (temporary / "source-wop.yaml").write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+        (temporary / "mission.yaml").write_text(yaml.safe_dump(metadata, sort_keys=False), encoding="utf-8")
+        bootstrap = package_value["bootstrap"]
+        (temporary / "bootstrap.md").write_text("# Canonical WOP bootstrap\n\n" + "\n".join(f"- {step}" for step in bootstrap["steps"]) + "\n", encoding="utf-8")
+        (temporary / "roadmap.md").write_text("# Canonical WOP requirements\n\n" + "\n".join(f"- {item['requirement_id']}: {item['objective']}" for item in package_value["requirements"]) + "\n", encoding="utf-8")
+        (temporary / "gates.yaml").write_text(yaml.safe_dump({"schema_version": 1, "gates": package_value["requirements"], "canonical_execution_graph": package_value["execution_graph"]}, sort_keys=False), encoding="utf-8")
+        manifests = temporary / "manifests"
+        manifests.mkdir()
+        manifest = {
+            "schema_version": 1,
+            "manifest_id": str(identity["wop_id"]) + "-CANONICAL-ADAPTER-MANIFEST",
+            "mission_id": str(identity["mission_id"]),
+            "wop_id": str(identity["wop_id"]),
+            "execution_mode": "DEVELOPMENT",
+            "governance_authority": metadata["governance_authority"],
+            "repository_identity": metadata["repository_identity"],
+            "effect_profile": metadata["effect_profile"],
+            "protected_baselines": [str(identity["baseline_commit"])],
+            "source_document_digest": raw_digest,
+            "canonical_package_schema": package_value["schema_version"],
+            "canonical_package_id": str(identity["package_id"]),
+            "canonical_package_digest": digest,
+            "canonical_source_digest": raw_digest,
+            "canonical_gate_id": str(identity["gate_id"]),
+            "canonical_baseline_commit": str(identity["baseline_commit"]),
+            "canonical_authority_classification": "EXTERNAL_ONLY_NON_AUTHORITATIVE_SOURCE",
+        }
+        (manifests / "immutable-manifest.yaml").write_text(yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8")
+        validate_generated_package(temporary)
+        destination_root.mkdir(parents=True, exist_ok=True)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        os.replace(temporary, destination)
+        staging.rmdir()
+        return destination, {"packaged": True, "adapted": True, "replayed": False, "package_id": package_id,
+                             "canonical_package_digest": digest, "source_digest": raw_digest, "stage1_package": str(destination)}
+    except Exception:
+        shutil.rmtree(staging, ignore_errors=True)
+        raise
 
 
 def template_metadata(wop_id: str, mission_id: str, repository_identity: str) -> dict[str, Any]:

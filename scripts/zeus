@@ -2,7 +2,7 @@
 """Minimal operator interface for supervised Zeus orchestration."""
 
 from __future__ import annotations
-import argparse, json, os, subprocess, sys
+import argparse, json, os, subprocess, sys, tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 import yaml
@@ -61,8 +61,9 @@ from scripts.lib.emp.controller_presentation import emit as emit_controller  # n
 from scripts.lib.emp.runtime_paths import RuntimeDiscoveryError, initialize_runtime, runtime_path, resolve_runtime, runtime_identity
 from scripts.lib.emp.runtime_adoption import RuntimeAdoptionError, adopt as adopt_runtime
 from scripts.lib.emp.native_session import NativeSessionStore, NativeSessionError
-from scripts.lib.emp.wop_packaging import (PackagingError, docx_template, extract, is_canonical_package,
-    lint_source, markdown_template, package as package_wop, source_digest, template_metadata)
+from scripts.lib.emp.wop_packaging import (PackagingError, adapt_canonical_package, docx_template, extract,
+    is_canonical_package, is_canonical_source, lint_source, markdown_template, package as package_wop,
+    source_digest, template_metadata)
 from scripts.lib.emp.stage1_runtime import validate_package
 from scripts.lib.emp.stage1_execution_resolution import (  # noqa: E402
     Stage1ExecutionResolutionError, resolve as resolve_stage1_execution,
@@ -104,6 +105,36 @@ CODEX_CONTROLLER_ROUTING = {
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
 def emit(value): print(json.dumps(value, sort_keys=True))
+
+
+def canonical_wop_readonly_view(source: Path) -> dict:
+    """Validate a canonical YAML source through the existing Stage 1 model.
+
+    The adapter is isolated in a temporary directory so review commands do
+    not create a package, registration, receipt, or lifecycle state.
+    """
+    with tempfile.TemporaryDirectory(prefix=".zeus-canonical-wop-review-") as temporary:
+        adapted, adaptation = adapt_canonical_package(source, Path(temporary) / "work-orders", repository_root=ROOT)
+        metadata, evidence = validate_package(adapted)
+        manifest = yaml.safe_load((adapted / "manifests" / "immutable-manifest.yaml").read_text(encoding="utf-8")) or {}
+        return {
+            "result": "PASS",
+            "source": str(source.resolve()),
+            "source_type": "canonical-wop-package/1",
+            "canonical_package_id": manifest.get("canonical_package_id"),
+            "canonical_package_digest": manifest.get("canonical_package_digest"),
+            "canonical_source_digest": manifest.get("canonical_source_digest"),
+            "canonical_schema_version": manifest.get("canonical_package_schema"),
+            "wop_id": metadata.get("wop_id"),
+            "mission_id": metadata.get("mission_id"),
+            "gate_id": metadata.get("canonical_gate_id"),
+            "stage1_representation": "temporary-package-directory",
+            "stage1_validation": evidence,
+            "adaptation": adaptation,
+            "authority": "EXTERNAL_ONLY_NON_AUTHORITATIVE_SOURCE",
+            "mutating": False,
+            "next_action": "Review canonical package; submit only through the existing governed lifecycle",
+        }
 
 
 def render_provider(value: dict) -> str:
@@ -265,6 +296,9 @@ def resolve_wop_source(value: str) -> Path:
             nested = sorted({path.parent.resolve() for path in candidate.rglob("mission.yaml") if is_canonical_package(path.parent)})
             if len(nested) == 1:
                 return nested[0]
+            canonical_sources = sorted(path.resolve() for path in candidate.rglob("*.yaml") if is_canonical_source(path))
+            if len(canonical_sources) == 1:
+                return canonical_sources[0]
         return candidate.resolve()
     roots = (ROOT / "engineering/work-orders", ROOT / "engineering/wop-packages", ROOT / "engineering/wops", ROOT / "engineering/evidence")
     matches = []
@@ -273,7 +307,12 @@ def resolve_wop_source(value: str) -> Path:
             continue
         for child in sorted(directory.iterdir()):
             if child.name == value and (child.is_dir() or child.is_file()):
-                matches.append(child.resolve())
+                resolved_child = child.resolve()
+                if child.is_dir() and not is_canonical_package(child):
+                    canonical_sources = sorted(path.resolve() for path in child.rglob("*.yaml") if is_canonical_source(path))
+                    if len(canonical_sources) == 1:
+                        resolved_child = canonical_sources[0]
+                matches.append(resolved_child)
         for metadata_path in sorted(directory.rglob("mission.yaml")):
             try:
                 metadata = yaml.safe_load(metadata_path.read_text(encoding="utf-8"))
@@ -658,11 +697,32 @@ def main(argv=None):
             if a.action == "verify":
                 if not a.source:
                     raise AuthoringError("verify requires an authored WOP output path")
+                canonical_source = resolve_wop_source(a.source)
+                if is_canonical_source(canonical_source):
+                    value = canonical_wop_readonly_view(canonical_source)
+                    emit(value)
+                    return 0
                 value = verify_replay(Path(a.source), a.replay_against) if a.replay_against else verify_artifact(Path(a.source))
                 emit(value)
                 return 0 if value["result"] == "PASS" else 78
             if a.action in {"source", "identity", "context", "traceability", "blockers", "readiness", "next", "snapshot"}:
-                value = inspect_authored_wop(resolve_wop_source(a.source), ROOT)
+                resolved_source = resolve_wop_source(a.source)
+                if is_canonical_source(resolved_source):
+                    value = canonical_wop_readonly_view(resolved_source)
+                    projections = {
+                        "source": {"source": value["source"], "source_type": value["source_type"]},
+                        "identity": {key: value[key] for key in ("canonical_package_id", "canonical_package_digest", "wop_id", "mission_id", "gate_id")},
+                        "context": {"source_type": value["source_type"], "schema_version": value["canonical_schema_version"], "authority": value["authority"]},
+                        "traceability": {"canonical_package_id": value["canonical_package_id"], "canonical_package_digest": value["canonical_package_digest"], "canonical_source_digest": value["canonical_source_digest"], "stage1_validation": value["stage1_validation"]},
+                        "blockers": {"blockers": [], "validation": value["stage1_validation"]},
+                        "readiness": {"readiness": "REVIEW_ONLY", "blockers": []},
+                        "next": {"next_action": value["next_action"], "readiness": "REVIEW_ONLY"},
+                        "snapshot": value,
+                    }
+                    result = projections[a.action]
+                    emit(result) if a.json or a.verbose else print(json.dumps(result, indent=2, sort_keys=True))
+                    return 0
+                value = inspect_authored_wop(resolved_source, ROOT)
                 projections = {
                     "source": {"source": value["source"]},
                     "identity": {key: value[key] for key in ("wop_id", "mission_id", "operation")},
@@ -713,7 +773,10 @@ def main(argv=None):
                 raise PackagingError(f"wop {a.action} requires a source")
             source = resolve_wop_source(a.source)
             if a.action in {"validate", "lint", "inspect", "explain"}:
-                if is_canonical_package(source):
+                if is_canonical_source(source):
+                    value = canonical_wop_readonly_view(source)
+                    value["schema_version"] = value["canonical_schema_version"]
+                elif is_canonical_package(source):
                     metadata, evidence = validate_package(source)
                     try:
                         from scripts.lib.emp.repository_identity import canonicalize_metadata
@@ -881,11 +944,13 @@ def main(argv=None):
                 return 0
             # This is the authoritative first lifecycle stage.  It is repeated
             # at submission time even when an advisory inspection was run.
-            if not is_canonical_package(source):
+            if not is_canonical_package(source) and not is_canonical_source(source):
                 require_valid_source(source, repository_root=ROOT)
             packaging = {"packaged": False, "source": str(source)}
             package_source = source
-            if not is_canonical_package(source):
+            if is_canonical_source(source):
+                package_source, packaging = package_wop(source, ROOT / "engineering" / "work-orders", repository_root=ROOT)
+            elif not is_canonical_package(source):
                 package_source, packaging = package_wop(source, ROOT / "engineering" / "work-orders", repository_root=ROOT)
             # Runtime initialization is deliberately after source extraction,
             # package generation, and full package validation. A packaging

@@ -1,5 +1,11 @@
 # Zeus WOP Submission Procedure
 
+The shared semantic WOP contract is owned by
+`WOP-SCHEMA-AND-EXECUTION-INTERFACE.md`. This procedure owns the submission
+boundary only. It must consume the canonical normalized WOP projection and
+must not define a competing identity, revision, package, or legacy-resolution
+model.
+
 ## Authoritative sequence
 
 ```text
@@ -17,6 +23,15 @@ The canonical operator-facing execution entry point is:
 ```text
 scripts/zeus submit <wop>
 ```
+
+The supported `<wop>` source set includes authored Markdown/DOCX, an existing
+Stage 1 package directory, and a validated `canonical-wop-package/1` YAML
+source. Canonical YAML is adapted deterministically into the existing Stage 1
+package-directory model before the same submission, registration, authority,
+and admission interfaces are used. Its canonical package digest is preserved
+as source provenance and is not replaced by the raw-file or Stage 1 tree
+digest. Validation, inspection, and verification of canonical YAML are
+read-only and never create submission or authority state.
 
 Zeus resolves the authorized WOP, verifies it through the existing Stage 1
 validator, and records the submission. It does not infer approval or generate

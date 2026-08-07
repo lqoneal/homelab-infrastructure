@@ -1,5 +1,11 @@
 # Zeus Stage 1 Runtime Architecture
 
+Stage 1 implements the package-intake portion of the shared WOP contract owned
+by `WOP-SCHEMA-AND-EXECUTION-INTERFACE.md`. Its package validator and staged
+projection are implementation owners for intake mechanics, not independent
+owners of WOP identity, revision, authority, or legacy semantics. Future
+consumers shall use the normalized WOP resolution contract defined there.
+
 ## Purpose and boundary
 
 ### Runtime storage boundary
@@ -33,6 +39,23 @@ Engineering Governance -> manual WOP submission -> Mission Admission
 The runtime does not dispatch agents, interpret execution files, or publish
 execution lifecycle events. Existing later-stage and qualification commands
 remain separate.
+
+### Canonical package source adaptation
+
+`canonical-wop-package/1` YAML is an explicit source type. Zeus validates it
+with the canonical package validator, then adapts it into the existing Stage 1
+package-directory shape for validation and governed submission. The adapter is
+not a second lifecycle and does not create authority. Read-only review uses an
+isolated temporary representation; a governed submission may materialize the
+same deterministic Stage 1 tree through the existing submission boundary.
+
+The canonical package digest remains the immutable source identity. The Stage
+1 package-tree digest is a separate derived lifecycle identity, and the raw
+YAML/Git digest is repository provenance only. Stage 1 manifests retain all
+three distinctions. Canonical source provenance replaces authored-source
+sidecar traceability for this source type; Stage 1 registration and provenance
+remain the sole lifecycle owners. Invalid schema, identity, authority,
+dependency, or integrity input fails before Stage 1 packaging.
 
 ## Components
 
