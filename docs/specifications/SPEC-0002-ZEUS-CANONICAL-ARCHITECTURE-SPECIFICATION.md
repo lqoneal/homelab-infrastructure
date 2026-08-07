@@ -1,15 +1,15 @@
 ---
 document_id: SPEC-0002
 title: Zeus Canonical Architecture Specification
-version: 1.3
+version: 1.4
 status: Draft
 owner: Homelab Infrastructure
 created: 2026-07-30
-last_updated: 2026-07-30
+last_updated: 2026-08-07
 phase: Zeus Operational Alpha
 domain: Engineering Architecture
 classification: Engineering Specification
-predecessor_revision: SPEC-0002@1.2
+predecessor_revision: SPEC-0002@1.3
 successor_revision: null
 approval_status: Pending
 approval_authority: null
@@ -198,6 +198,64 @@ synchronization remain independent state dimensions. Authority effectiveness
 and planning eligibility are derived predicates, not new mutable lifecycles.
 Additional detail uses reason codes, conditions, evidence, and successor
 records unless a demonstrable requirement justifies a new state.
+
+### ZCA-P-012 — Personal engineering operating model
+
+Zeus is primarily a personal engineering execution and orchestration system.
+Its documentation architecture shall be rigorous where rigor improves
+determinism, discoverability, machine interpretation, repeatability,
+efficiency, integrity, traceability, recoverability, evidence, reconciliation,
+or preservation of user intent. It shall not import enterprise approval,
+segregation-of-duties, committee, compliance, or administrative ceremony
+unless the applicable control mitigates a concrete technical, integrity,
+safety, destructive-action, credential, external-system, or irreversible-state
+risk.
+
+This principle does not weaken credential, destructive-action, repository,
+runtime, identity, provenance, replay, publication, synchronization, or
+irreversible-effect protections. It requires those protections to be tied to
+the risk they control and to the smallest authoritative boundary that needs
+them.
+
+### ZCA-P-013 — Authorized forward progress
+
+Within an applicable Development Mode or other authorized execution scope,
+the default is to allow authorized forward progress after the required facts
+have been verified. Zeus shall stop when proceeding would be unsafe or
+non-deterministic, including for authority ambiguity where authority is
+required, conflicting identity or bindings, duplicate active execution,
+destructive or irreversible action without explicit intent, loss of required
+evidence, unreconcilable state, credential/security-boundary violation, or an
+actual mission/WOP/procedure blocker. Optional descriptive or administrative
+incompleteness does not independently block when Zeus can deterministically
+reconcile the required state.
+
+Explicit user authorization is the primary source of operator intent within
+the applicable scope. It does not replace mission/WOP scope, technical
+integrity checks, qualification, publication, or destructive-action
+boundaries, and it does not create authority that the governing records do not
+grant.
+
+### ZCA-P-014 — Procedure-first operational instruction
+
+Controlled procedures should be usable as machine-consumable operational
+instruction. Where applicable, a procedure should identify entry conditions,
+identity and state verification, authorized action, execution controller,
+required output, completion condition, fail-closed conditions, recovery,
+evidence, reconciliation, and the next authorized action. The sequence is a
+documentation contract; it does not transfer ownership or create authority.
+
+Zeus shall verify a fact once at a genuine trust or mutation boundary, retain
+its provenance, and reuse it until an invalidation condition requires
+re-verification. Repeated ceremony without a changed fact is not an
+independent safety control.
+
+Roadmap, mission, WOP, execution, qualification, publication, EENS, and EOS
+records retain their existing information ownership. A roadmap remains
+planning structure and never independently authorizes execution. A qualification
+claim for a runtime-dependent capability still requires the true active
+demonstration defined by PROC-0006; implementation or inactive evidence alone
+does not establish full satisfaction.
 
 ## 4. Terminology
 
@@ -1896,3 +1954,4 @@ agent, or newer timestamp.
 | 1.1 | 2026-07-30 | Draft | Incorporated ADR-0001 Draft 1.1 by making Authority Records authoritative and Mission Contracts derived, removing Execution Grant from the standard path, defining generalized resource conflicts, enforcing Governance/EMP/Zeus/WOP/EENS/EOS boundaries, and specifying minimal orthogonal Governance, execution, and synchronization states. |
 | 1.2 | 2026-07-30 | Draft | Specified complete Authority Record identity, lineage, effectiveness, qualification, audit, and synchronization contracts; byte-reproducible Mission Contract derivation and publication; exact EMP/Zeus ownership; EOS non-authority; orthogonal state dimensions; reboot, power-loss, partial-effect, duplicate, stale-state, synchronization, and distributed recovery; and deterministic autonomous selection, resumability, evidence qualification, and horizontal-scaling readiness without adding authority objects, Execution Grants, or lifecycle states. |
 | 1.3 | 2026-07-30 | Draft | Reconciled the specification to ADR-0001 Draft 1.3 by adding exact normative mappings for all 14 canonical components, 32 architectural invariants, 13 canonical interfaces, and 16 Future Implementation units; established zero-orphan bidirectional assessment-to-implementation traceability and required negative evidence without changing an architectural decision. |
+| 1.4 | 2026-08-07 | Draft | Added the personal engineering operating model, risk-proportional security boundary, authorized-forward-progress rule, user-intent boundary, and procedure-first/fact-reuse contract without changing authority ownership, execution authority, lifecycle ownership, or runtime implementation. |

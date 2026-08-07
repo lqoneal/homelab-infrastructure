@@ -1,16 +1,16 @@
 ---
 document_id: SPEC-0001
 title: Controlled Document Representation Specification
-version: 1.7
+version: 1.8
 status: Draft
 owner: EOS Program
 created: 2026-07-08
-last_updated: 2026-07-28
+last_updated: 2026-08-07
 phase: Governance Framework Modernization
 domain: Engineering Governance
 classification: Engineering Specification
 source_of_truth: true
-predecessor_revision: SPEC-0001@1.6
+predecessor_revision: SPEC-0001@1.7
 successor_revision: null
 approval_status: Pending
 approval_authority: null
@@ -279,6 +279,37 @@ tags:
 ### 6.6 Metadata Extensions
 
 Document-class-specific standards may require additional fields. Extensions shall have one defined meaning, shall not conflict with this model, and shall remain machine-readable.
+
+### 6.7 Operational-value classification
+
+Metadata remains mandatory when this specification or an applicable
+class-specific profile requires it. Simplification of operator workflow does
+not waive required identity, lifecycle, relationship, provenance, integrity,
+approval, persistence, or authority metadata.
+
+For additional fields and class-specific profiles, requirement strength shall
+be proportional to the operational value of the field to Zeus:
+
+| Class | Meaning | Missing or invalid value |
+| --- | --- | --- |
+| `REQUIRED_OPERATIONAL` | Zeus cannot safely discover, classify, relate, sequence, execute, monitor, reconcile, recover, or verify the applicable operation without the field. | Fail closed at the affected operation. |
+| `RECONCILABLE_OPERATIONAL` | Zeus can deterministically derive the field from authoritative records while preserving source provenance. | Reconcile and record the derivation; continue only after verification succeeds. |
+| `ADVISORY` | The field improves operator visibility or efficiency but is not needed for correct execution. | Warn or report; do not independently block. |
+| `ADMINISTRATIVE_ONLY` | The field serves organizational or compliance administration without a current operational use for Zeus. | Do not make mandatory solely by analogy to enterprise systems. |
+
+An applicable profile may require an administrative field when a superior
+authority expressly assigns it an operational, integrity, publication, or
+qualification purpose. A profile shall state that purpose and shall not use
+administrative classification to conceal a required engineering fact.
+
+Before each mutation or protected decision, consumers shall reuse a verified
+fact until a defined invalidation condition occurs. Re-verification is required
+when source state, baseline, authority, identity, binding, relevant revision,
+runtime continuity, or integrity changes, or when the existing evidence can no
+longer establish the fact. A record is an execution prerequisite only when its
+existence or content is necessary for deterministic operation, recovery,
+integrity, traceability, or an applicable authority boundary; record presence
+alone shall not create another prerequisite.
 
 ---
 
@@ -1150,6 +1181,7 @@ or override the represented behavior.
 | 1.5 | 2026-07-17 | Defined repository representation for mission classification, Completion Reports, Governance Conformance Reviews, and non-authoritative handoff references under EGR-000002 and EWO-000018. |
 | 1.6 | 2026-07-28 | Draft successor adds reusable semantic validation profiles, permanent completeness criteria, command-interface validation, criterion traceability, machine-readable automation coverage, additive implementation synchronization, deterministic repository-wide implementation coverage, and repository-independent engineering contract conformance with invariant, compatibility, and canonical JSON evidence without changing class, lifecycle, persistence, publication, implementation, or qualification ownership. |
 | 1.7 | 2026-07-29 | Defined publication transactions as immutable inputs, append-only governed outputs, exclusions, persistence results, and one final transaction manifest without recursive input-plan regeneration. |
+| 1.8 | 2026-08-07 | Added operational-value classification for metadata, deterministic reconciliation and fact reuse, and the rule that records become prerequisites only when required for operation, recovery, integrity, traceability, or authority. Preserved mandatory core metadata and fail-closed integrity controls. |
 
 ---
 
