@@ -1,0 +1,394 @@
+catalog_id: OPERATION-BETA-CANONICAL-GATE-CATALOG
+status: PLANNING_CANDIDATE
+operation: OPERATION-BETA
+published_baseline: f65fa1bb5b445e6ca44330020808b193437190a2
+authority: NONE
+mission_authority_model: INDEPENDENT
+mission_authority_dependencies: []
+dependency_classes: [TECHNICAL_CAPABILITY, INTERFACE, DATA, ARTIFACT, QUALIFICATION, ENVIRONMENT, RESOURCE, INTEGRATION, PUBLICATION_BASELINE, SAFETY]
+gates:
+  - gate_id: OB-ZEUS-G00
+    capability_family: ZEUS_ZDCL
+    title: "Qualified Zeus and ZDCL execution foundation"
+    canonical_owner: ZEUS_ZDCL_canonical_owner
+    objective: "Qualified Zeus and ZDCL execution foundation"
+    scope: "P5-G1..G5; ZDCL-01"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: []
+    technical_dependencies: []
+    parallelism_constraints: HISTORICAL_ALREADY_SATISFIED
+    interfaces_produced: ["qualified_execution_identity","provider_session_binding"]
+    consumers: ["OB-ZEUS-G01","OB-CM-G01","OB-EPE-G01"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: HISTORICAL_ALREADY_SATISFIED
+    roadmap_requirements_satisfied: ["P5-G1..G5","ZDCL-01"]
+  - gate_id: OB-ZEUS-G01
+    capability_family: ZEUS_ZDCL
+    title: "Monitoring pause/resume and provider recovery"
+    canonical_owner: ZEUS_ZDCL_canonical_owner
+    objective: "Monitoring pause/resume and provider recovery"
+    scope: "P5-G6; P5-G7; P5-G8"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["qualified_execution_foundation"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:qualified_execution_foundation"]
+    parallelism_constraints: SEQUENTIAL_TECHNICAL_DEPENDENCY
+    interfaces_produced: ["authoritative_liveness","progress_projection","recovery_reentry"]
+    consumers: ["OB-ZEUS-G02","OB-CM-G03","OB-IQ-G01"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: PARTIALLY_SATISFIED
+    roadmap_requirements_satisfied: ["P5-G6","P5-G7","P5-G8"]
+  - gate_id: OB-ZEUS-G02
+    capability_family: ZEUS_ZDCL
+    title: "Completion closeout and lifecycle qualification foundation"
+    canonical_owner: ZEUS_ZDCL_canonical_owner
+    objective: "Completion closeout and lifecycle qualification foundation"
+    scope: "P5-G9; P5-G10; Phase_6; Phase_7"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["monitoring_and_recovery","evidence_qualification"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:monitoring_and_recovery","TECHNICAL_CAPABILITY:evidence_qualification"]
+    parallelism_constraints: SEQUENTIAL_TECHNICAL_DEPENDENCY
+    interfaces_produced: ["completion_receipt","closeout_projection"]
+    consumers: ["OB-IQ-G01","OB-IQ-G02","OB-CM-G03"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: NEW_UNSATISFIED
+    roadmap_requirements_satisfied: ["P5-G9","P5-G10","Phase_6","Phase_7"]
+  - gate_id: OB-CAGF-G01
+    capability_family: CAGF
+    title: "Canonical source ownership and deterministic projection"
+    canonical_owner: CAGF_canonical_owner
+    objective: "Canonical source ownership and deterministic projection"
+    scope: "CAGF_01_through_05; canonical_source_projection_foundation"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["qualified_Beta_baseline"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:qualified_Beta_baseline"]
+    parallelism_constraints: READY_FOR_PARALLEL_IMPLEMENTATION
+    interfaces_produced: ["QUALIFIED_CANONICAL_SOURCE_PROJECTION","source_digest","projection_manifest"]
+    consumers: ["OB-EPE-G01","OB-CM-G01","OB-EMP-G02","OB-ARCH-G01"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: NEW_UNSATISFIED
+    roadmap_requirements_satisfied: ["CAGF_01_through_05","canonical_source_projection_foundation"]
+  - gate_id: OB-EPE-G01
+    capability_family: EPE
+    title: "Executable mission contract and task/state execution foundation"
+    canonical_owner: EPE_canonical_owner
+    objective: "Executable mission contract and task/state execution foundation"
+    scope: "EPE_01_through_05; executable_mission_infrastructure"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["QUALIFIED_CANONICAL_SOURCE_PROJECTION","qualified_Zeus_foundation","WOP_contract"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:QUALIFIED_CANONICAL_SOURCE_PROJECTION","TECHNICAL_CAPABILITY:qualified_Zeus_foundation","TECHNICAL_CAPABILITY:WOP_contract"]
+    parallelism_constraints: SEQUENTIAL_TECHNICAL_DEPENDENCY
+    interfaces_produced: ["deterministic_task_graph","execution_transaction","resume_projection"]
+    consumers: ["OB-ZEUS-G02","OB-CM-G03","OB-IQ-G01"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: BLOCKED_BY_MISSING_TECHNICAL_INPUT
+    roadmap_requirements_satisfied: ["EPE_01_through_05","executable_mission_infrastructure"]
+  - gate_id: OB-CM-G01
+    capability_family: CM
+    title: "Canonical package identity manifest and gate/work-unit contract"
+    canonical_owner: CM_canonical_owner
+    objective: "Canonical package identity manifest and gate/work-unit contract"
+    scope: "CM-01; CM-02"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["qualified_Zeus_stage1"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:qualified_Zeus_stage1"]
+    parallelism_constraints: PARALLEL_AFTER_INTERFACE_FREEZE
+    interfaces_produced: ["canonical_package","normalized_locator","resolver_interface"]
+    consumers: ["OB-CM-G02","OB-EPE-G01","Zeus"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: NEW_UNSATISFIED
+    roadmap_requirements_satisfied: ["CM-01","CM-02"]
+  - gate_id: OB-CM-G02
+    capability_family: CM
+    title: "Resolver submission admission and work-unit authority interface"
+    canonical_owner: CM_canonical_owner
+    objective: "Resolver submission admission and work-unit authority interface"
+    scope: "CM-03; CM-04"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["canonical_package","Zeus_authority_resolution"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:canonical_package","TECHNICAL_CAPABILITY:Zeus_authority_resolution"]
+    parallelism_constraints: SEQUENTIAL_TECHNICAL_DEPENDENCY
+    interfaces_produced: ["subordinate_work_request","authority_decision_input","admission_receipt"]
+    consumers: ["OB-CM-G03","OB-EPE-G01","Zeus"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: NEW_UNSATISFIED
+    roadmap_requirements_satisfied: ["CM-03","CM-04"]
+  - gate_id: OB-CM-G03
+    capability_family: CM
+    title: "Managed execution monitoring recovery evidence reconciliation and demonstration"
+    canonical_owner: CM_canonical_owner
+    objective: "Managed execution monitoring recovery evidence reconciliation and demonstration"
+    scope: "CM-05; CM-06; managed_WOP_convergence"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["subordinate_work_request","execution_monitor","recovery_interface"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:subordinate_work_request","TECHNICAL_CAPABILITY:execution_monitor","TECHNICAL_CAPABILITY:recovery_interface"]
+    parallelism_constraints: SEQUENTIAL_TECHNICAL_DEPENDENCY
+    interfaces_produced: ["managed_lifecycle_projection","reconciliation_record","demonstration_receipt"]
+    consumers: ["OB-IQ-G01","EMP","Zeus"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: NEW_UNSATISFIED
+    roadmap_requirements_satisfied: ["CM-05","CM-06","managed_WOP_convergence"]
+  - gate_id: OB-EENS-G01
+    capability_family: EENS
+    title: "Durable event envelope append replay and checkpoint foundation"
+    canonical_owner: EENS_canonical_owner
+    objective: "Durable event envelope append replay and checkpoint foundation"
+    scope: "EENS-A; EENS-B; EENS-C"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["lifecycle_event_contracts"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:lifecycle_event_contracts"]
+    parallelism_constraints: PARALLEL_AFTER_INTERFACE_FREEZE
+    interfaces_produced: ["event_envelope","append_receipt","replay_checkpoint"]
+    consumers: ["OB-EENS-G02","OB-EMP-G02","OB-CM-G03","Zeus"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: PARTIALLY_SATISFIED
+    roadmap_requirements_satisfied: ["EENS-A","EENS-B","EENS-C"]
+  - gate_id: OB-EENS-G02
+    capability_family: EENS
+    title: "Cross-lifecycle production delivery notification and roadmap integration"
+    canonical_owner: EENS_canonical_owner
+    objective: "Cross-lifecycle production delivery notification and roadmap integration"
+    scope: "EENS-D; EENS-E; EENS-F; EENS-G"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["durable_event_foundation","Zeus_lifecycle_events"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:durable_event_foundation","TECHNICAL_CAPABILITY:Zeus_lifecycle_events"]
+    parallelism_constraints: PARALLEL_AFTER_INTERFACE_FREEZE
+    interfaces_produced: ["delivery_obligation","notification_receipt","roadmap_progress_event"]
+    consumers: ["OB-CM-G03","OB-EMP-G02","OB-ARCH-G02","OB-IQ-G01"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: NEW_UNSATISFIED
+    roadmap_requirements_satisfied: ["EENS-D","EENS-E","EENS-F","EENS-G"]
+  - gate_id: OB-EMP-G01
+    capability_family: EMP
+    title: "Work Registry and canonical management-state foundation"
+    canonical_owner: EMP_canonical_owner
+    objective: "Work Registry and canonical management-state foundation"
+    scope: "EMP-A; EMP-B; EMP-C; EMP-D"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["work_registry_records"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:work_registry_records"]
+    parallelism_constraints: PARALLEL_AFTER_INTERFACE_FREEZE
+    interfaces_produced: ["management_state","portfolio_projection","dependency_projection"]
+    consumers: ["OB-EMP-G02","OB-ARCH-G02","Zeus"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: PARTIALLY_SATISFIED
+    roadmap_requirements_satisfied: ["EMP-A","EMP-B","EMP-C","EMP-D"]
+  - gate_id: OB-EMP-G02
+    capability_family: EMP
+    title: "Federated management projections and bounded action routing"
+    canonical_owner: EMP_canonical_owner
+    objective: "Federated management projections and bounded action routing"
+    scope: "EMP-E; EMP-F; EMP-G; EMP-H"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["canonical_owner_interfaces","EENS_and_Zeus_views"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:canonical_owner_interfaces","TECHNICAL_CAPABILITY:EENS_and_Zeus_views"]
+    parallelism_constraints: PARALLEL_AFTER_INTERFACE_FREEZE
+    interfaces_produced: ["federated_read_model","action_request","management_health_projection"]
+    consumers: ["OB-ARCH-G02","OB-IQ-G01","operator_presentation"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: NEW_UNSATISFIED
+    roadmap_requirements_satisfied: ["EMP-E","EMP-F","EMP-G","EMP-H"]
+  - gate_id: OB-ARCH-G01
+    capability_family: ROADMAP_ARCHITECTURE
+    title: "Canonical roadmap model provenance and historical reconciliation"
+    canonical_owner: ROADMAP_ARCHITECTURE_canonical_owner
+    objective: "Canonical roadmap model provenance and historical reconciliation"
+    scope: "roadmap_role; unified_OB_model; P5_reconciliation; traceability"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["published_unified_roadmap","historical_capability_records"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:published_unified_roadmap","TECHNICAL_CAPABILITY:historical_capability_records"]
+    parallelism_constraints: PARALLEL_AFTER_INTERFACE_FREEZE
+    interfaces_produced: ["gate_catalog","roadmap_revision","traceability_map"]
+    consumers: ["OB-ARCH-G02","OB-CAGF-G01","Zeus","OB-IQ-G02"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: NEW_UNSATISFIED
+    roadmap_requirements_satisfied: ["roadmap_role","unified_OB_model","P5_reconciliation","traceability"]
+  - gate_id: OB-ARCH-G02
+    capability_family: ROADMAP_ARCHITECTURE
+    title: "Planned-versus-actual progress drift and remaining-plan projection"
+    canonical_owner: ROADMAP_ARCHITECTURE_canonical_owner
+    objective: "Planned-versus-actual progress drift and remaining-plan projection"
+    scope: "roadmap_R5; roadmap_R9; roadmap_R10; roadmap_R12; roadmap_R13; roadmap_R14; roadmap_R15"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["gate_catalog","native_projections","planned_actual_reconciliation"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:gate_catalog","TECHNICAL_CAPABILITY:native_projections","TECHNICAL_CAPABILITY:planned_actual_reconciliation"]
+    parallelism_constraints: SEQUENTIAL_TECHNICAL_DEPENDENCY
+    interfaces_produced: ["roadmap_progress","alignment_state","drift_record","remaining_plan"]
+    consumers: ["OB-IQ-G02","Zeus","EMP"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: PLANNING_ONLY_NOT_YET_GATE_READY
+    roadmap_requirements_satisfied: ["roadmap_R5","roadmap_R9","roadmap_R10","roadmap_R12","roadmap_R13","roadmap_R14","roadmap_R15"]
+  - gate_id: OB-IQ-G01
+    capability_family: INTEGRATED_QUALIFICATION
+    title: "Integrated mission lifecycle and evidence qualification"
+    canonical_owner: INTEGRATED_QUALIFICATION_canonical_owner
+    objective: "Integrated mission lifecycle and evidence qualification"
+    scope: "integrated_lifecycle; evidence_qualification; independent_authority"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["all_upstream_family_boundaries","evidence_and_approval_contracts"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:all_upstream_family_boundaries","TECHNICAL_CAPABILITY:evidence_and_approval_contracts"]
+    parallelism_constraints: SEQUENTIAL_TECHNICAL_DEPENDENCY
+    interfaces_produced: ["integrated_qualification_record","lifecycle_receipt","blocker_report"]
+    consumers: ["OB-IQ-G02","Operation_Beta_completion"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: BLOCKED_BY_MISSING_TECHNICAL_INPUT
+    roadmap_requirements_satisfied: ["integrated_lifecycle","evidence_qualification","independent_authority"]
+  - gate_id: OB-IQ-G02
+    capability_family: INTEGRATED_QUALIFICATION
+    title: "Operation Beta completion publication repository/EOS and native verification"
+    canonical_owner: INTEGRATED_QUALIFICATION_canonical_owner
+    objective: "Operation Beta completion publication repository/EOS and native verification"
+    scope: "Operation_Beta_completion_contract; publication; repository_EOS; native_verification"
+    entry_conditions: "Independent gate authority, applicable baseline, and owner records are available."
+    required_technical_inputs: ["integrated_lifecycle_qualification","governed_publication","repository_EOS_parity"]
+    technical_dependencies: ["TECHNICAL_CAPABILITY:integrated_lifecycle_qualification","TECHNICAL_CAPABILITY:governed_publication","TECHNICAL_CAPABILITY:repository_EOS_parity"]
+    parallelism_constraints: SEQUENTIAL_TECHNICAL_DEPENDENCY
+    interfaces_produced: ["Operation_Beta_completion_receipt","final_native_snapshot","reconciled_baseline"]
+    consumers: ["Operation_Beta_authority","roadmap_completion_projection"]
+    implementation_requirements: "Implement once at the canonical owner; preserve independent mission authority; validate deterministically."
+    prohibited_scope: ["mission_to_mission_authority","synthetic_Mission_Contract","new_WOP_or_execution","unrelated_refactor"]
+    verification_requirements: "Positive, negative, provenance, dependency, replay, and fail-closed verification."
+    zeus_native_verification: "Native Zeus status, verify, readiness, dependency, evidence, snapshot, and next-action surfaces as applicable."
+    evidence_requirements: "Gate contract, source provenance, tests, qualification record, receipts, and blocker disposition."
+    qualification_requirements: "Independent qualification under PMCT, controlled-document, registry, and applicable owner procedures."
+    exit_criteria: "All scope, inputs, interfaces, verification, evidence, and qualification conditions pass."
+    failure_behavior: "Fail closed; preserve immutable prior evidence; expose the exact missing or contradictory condition."
+    replay_idempotency_requirements: "Repeated derivation or verification is deterministic and creates no duplicate authority, execution, evidence, or receipt."
+    completion_state: BLOCKED_BY_MISSING_TECHNICAL_INPUT
+    roadmap_requirements_satisfied: ["Operation_Beta_completion_contract","publication","repository_EOS","native_verification"]
+traceability:
+  uncovered_roadmap_requirements: []
+  historical_reuse:
+    - source: P5-G1..P5-G5
+      gate: OB-ZEUS-G00
+      disposition: REUSE_QUALIFIED_FOUNDATION
+    - source: P5-G6
+      gate: OB-ZEUS-G01
+      disposition: HISTORICAL_ACCEPTED_PUBLISHED_EVIDENCE_AND_PARTIAL_CAPABILITY_NO_RERUN
+    - source: P5-G7..P5-G10
+      gate: OB-ZEUS-G01/OB-ZEUS-G02
+      disposition: PLANNING_TRACEABILITY_ONLY_NO_NATIVE_P5_BINDING
+validation:
+  dependency_cycles: 0
+  duplicate_capabilities: 0
+  mission_authority_dependencies: 0
+  roadmap_requirements_uncovered: 0
