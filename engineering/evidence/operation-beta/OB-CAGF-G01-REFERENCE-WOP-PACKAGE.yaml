@@ -1,0 +1,184 @@
+schema_version: canonical-wop-package/1
+package_identity:
+  package_id: OB-CAGF-G01-REFERENCE-PACKAGE-001
+  wop_id: WOP-OB-CAGF-G01-REFERENCE-001
+  mission_id: MISSION-BETA-562F443E16C69401
+  gate_id: OB-CAGF-G01
+  revision: 1
+  baseline_commit: c0ca86279d4257a6248e620752bfc40247cf4d4e
+authority_binding:
+  authority_source: independent mission authority plus later WOP authority
+  mission_to_mission: false
+bootstrap:
+  steps:
+    - verify package integrity and repository identity
+    - verify baseline provenance and independent authority
+    - resolve technical prerequisites and existing satisfied requirements
+    - execute only separately authorized unmet requirements
+    - collect evidence and stop at publication boundary
+requirements:
+  - requirement_id: CAGF-G01-R01
+    objective: declare canonical owners without replacing them
+    verification: owner records resolve uniquely
+    evidence: owner-resolution-report
+    acceptance: ownership is explicit and non-authoritative projection consumers are identified
+    failure_behavior: fail closed on missing or conflicting owners
+    replay_behavior: reuse the same owner-resolution evidence
+    technical_dependencies: []
+  - requirement_id: CAGF-G01-R02
+    objective: normalize source-bound inputs
+    verification: normalized input digest set is reproducible
+    evidence: normalized-input-report
+    acceptance: identical qualified inputs normalize identically
+    failure_behavior: fail closed on missing or stale source
+    replay_behavior: classify unchanged normalized inputs as previously satisfied
+    technical_dependencies:
+      - kind: TECHNICAL_CAPABILITY
+        requirement_id: CAGF-G01-R01
+  - requirement_id: CAGF-G01-R03
+    objective: calculate stable source digests
+    verification: digest set matches canonical input bytes
+    evidence: source-digest-report
+    acceptance: every canonical input has a stable digest
+    failure_behavior: fail closed on digest mismatch
+    replay_behavior: same digest set yields same package identity
+    technical_dependencies:
+      - kind: DATA
+        requirement_id: CAGF-G01-R02
+  - requirement_id: CAGF-G01-R04
+    objective: reject invalid identity, dependency, cycle, stale, and conflicting inputs
+    verification: negative validation suite
+    evidence: fail-closed-validation-report
+    acceptance: each invalid input class blocks before generation
+    failure_behavior: no projection or publication artifact is promoted
+    replay_behavior: rejected inputs remain rejected without mutation
+    technical_dependencies:
+      - kind: QUALIFICATION
+        requirement_id: CAGF-G01-R03
+  - requirement_id: CAGF-G01-R05
+    objective: generate one deterministic bounded projection
+    verification: generator output and repeat-run comparison
+    evidence: generator-run-report
+    acceptance: qualified inputs produce the declared projection family only
+    failure_behavior: generation failure blocks publication
+    replay_behavior: unchanged inputs reuse the same output identity
+    technical_dependencies:
+      - kind: TECHNICAL_CAPABILITY
+        requirement_id: CAGF-G01-R04
+  - requirement_id: CAGF-G01-R06
+    objective: keep source ownership separate from derived projection output
+    verification: authority classification inspection
+    evidence: source-projection-separation-report
+    acceptance: generated artifacts are disposable and non-authoritative
+    failure_behavior: authority ambiguity blocks qualification
+    replay_behavior: projection regeneration does not alter source authority
+    technical_dependencies:
+      - kind: INTEGRATION
+        requirement_id: CAGF-G01-R05
+  - requirement_id: CAGF-G01-R07
+    objective: publish immutable provenance and output manifest
+    verification: manifest digest and completeness check
+    evidence: provenance-manifest
+    acceptance: all owners, inputs, digests, generator, and output are attributable
+    failure_behavior: incomplete provenance blocks publication
+    replay_behavior: same inputs produce the same manifest identity
+    technical_dependencies:
+      - kind: ARTIFACT
+        requirement_id: CAGF-G01-R05
+  - requirement_id: CAGF-G01-R08
+    objective: qualify byte stability
+    verification: independent repeat generation and byte comparison
+    evidence: byte-stability-report
+    acceptance: identical qualified inputs produce byte-identical output
+    failure_behavior: nondeterminism blocks qualification
+    replay_behavior: replay does not rewrite a qualified identical artifact
+    technical_dependencies:
+      - kind: QUALIFICATION
+        requirement_id: CAGF-G01-R07
+  - requirement_id: CAGF-G01-R09
+    objective: qualify idempotent replay
+    verification: repeated validation and generation exercise
+    evidence: replay-report
+    acceptance: replay creates no duplicate authority, WOP, execution, or unintended artifact
+    failure_behavior: replay mismatch blocks qualification
+    replay_behavior: report IDEMPOTENT and retain the original identity
+    technical_dependencies:
+      - kind: QUALIFICATION
+        requirement_id: CAGF-G01-R08
+  - requirement_id: CAGF-G01-R10
+    objective: enforce a bounded publication boundary
+    verification: effect and publication-scope inspection
+    evidence: publication-boundary-report
+    acceptance: only the qualified derived projection is eligible for publication
+    failure_behavior: authority, mission, execution, WOP, and EOS mutation is rejected
+    replay_behavior: repeated publication preparation is a no-op for the same identity
+    technical_dependencies:
+      - kind: SAFETY
+        requirement_id: CAGF-G01-R09
+  - requirement_id: CAGF-G01-R11
+    objective: expose status, provenance, blockers, and next action through Zeus
+    verification: native mission/gate snapshot
+    evidence: zeus-native-verification-report
+    acceptance: Zeus independently verifies the derived capability without treating it as authority
+    failure_behavior: missing native visibility blocks qualification
+    replay_behavior: repeated snapshot resolves the same capability identity
+    technical_dependencies:
+      - kind: INTERFACE
+        requirement_id: CAGF-G01-R10
+  - requirement_id: CAGF-G01-R12
+    objective: expose a reusable qualified technical input to downstream gates
+    verification: consumer contract and repository/EOS consistency check
+    evidence: downstream-consumer-readiness-report
+    acceptance: consumers can resolve the qualified projection by capability, not mission authority
+    failure_behavior: unresolved consumer contract blocks completion
+    replay_behavior: consumer resolution remains stable across replay
+    technical_dependencies:
+      - kind: INTEGRATION
+        requirement_id: CAGF-G01-R11
+execution_graph:
+  model: HYBRID
+  parallel_safe_requirements: [CAGF-G01-R01]
+evidence_contract:
+  implementation_and_qualification_separate: true
+  attribution: [package_id, mission_id, gate_id, requirement_id, execution_id, repository, baseline, verification_action]
+recovery_contract:
+  checkpoint_fields: [requirement_state, evidence_refs, failure_state, next_authorized_action]
+  interruption_behavior: resume from last verified requirement without blind replay
+failure_model:
+  fail_closed_on: [integrity, repository_mismatch, baseline_mismatch, missing_prerequisite, conflicting_prerequisite, verification_failure, evidence_failure, approval_gap, stale_state, publication_failure, repository_eos_divergence]
+publication_boundary:
+  implementation_complete: false
+  qualification_complete: false
+  publication_authorized: false
+  published: false
+  repository_reconciled: false
+  eos_synchronized: false
+  closed: false
+reconciliation_contract:
+  repository_eos_must_remain_consistent: true
+  no_implicit_eos_mutation: true
+closeout_contract:
+  requires: [qualification_evidence, publication_boundary_evidence, zeus_native_snapshot, repository_eos_validation]
+extensions:
+  - type: CAGF_SOURCE_PROJECTION
+    schema_version: 1
+    payload:
+      projection_family: operation-beta-mission-readiness
+      source_owners: [mission-knowledge-model, capability-registry, emm, pmct-gate-authority, engineering-governance, eos, repository-identity]
+      normalized_inputs: [mission-records, gate-records, baseline-record, repository-identity-record]
+      source_digests: [sha256-per-canonical-input]
+      freshness_rules: fail-closed-on-stale-input
+      identity_rules: unique-mission-gate-repository-baseline-identities
+      generator:
+        identity: canonical-package-reference-generator
+        digest: recorded-at-qualification
+        deterministic: true
+      projection:
+        name: operation-beta-mission-readiness
+        authority: false
+        disposable: true
+      provenance_manifest: immutable-input-generator-output-manifest
+      publication_policy: bounded-derived-projection-only
+      qualification: [byte-stability, replay-idempotency, negative-validation, zeus-native-verification]
+integrity:
+  package_digest: e9b41fa064f48a95a211993a350e006fcd90bda5036636a1e5f18f54dc6c8db3

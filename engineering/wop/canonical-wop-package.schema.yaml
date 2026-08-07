@@ -1,0 +1,45 @@
+schema_version: canonical-wop-package/1
+title: Canonical portable WOP package contract
+type: object
+required:
+  - schema_version
+  - package_identity
+  - authority_binding
+  - bootstrap
+  - requirements
+  - execution_graph
+  - evidence_contract
+  - recovery_contract
+  - failure_model
+  - publication_boundary
+  - reconciliation_contract
+  - closeout_contract
+  - extensions
+properties:
+  schema_version: {const: canonical-wop-package/1}
+  package_identity:
+    type: object
+    required: [package_id, wop_id, mission_id, gate_id, revision, baseline_commit]
+  authority_binding:
+    type: object
+    required: [authority_source]
+    properties:
+      mission_to_mission: {const: false}
+  bootstrap:
+    type: object
+    required: [steps]
+  requirements:
+    type: array
+    minItems: 1
+  execution_graph:
+    type: object
+    required: [model]
+    properties:
+      model: {enum: [DAG, HYBRID]}
+  extensions:
+    type: array
+  integrity:
+    type: object
+    properties:
+      package_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+additionalProperties: true
