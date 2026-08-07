@@ -89,7 +89,7 @@ Lawrence O'Neal / authenticated principal loneal
 Zeus CLI / Authority Resolution Runtime
                        |
                        v
-Controlled-document execution authority
+Submitted-WOP work authority and Zeus safety resolution
                        |
                        v
 Engineering Management Platform
@@ -106,14 +106,16 @@ Project repositories and authoritative engineering records
 
 The layers cooperate without transferring authority. Lawrence O'Neal is the
 sole ultimate engineering authority; the Zeus CLI is the authoritative
-interface through which he exercises it. Controlled documentation is the
-normal operational source of execution authority.
+interface through which he exercises it. An operator-submitted WOP is the
+normal source of bounded work authority. Controlled documentation and EMP
+records provide validation, safety, lifecycle, evidence, and management
+projections and do not create a second generic authority grant.
 
 - Zeus resolves, validates, reconciles, and executes controlled authority.
 - Engineering Governance establishes governance, activates Engineering Work Orders, and accepts outcomes.
 - EMP owns portfolio coordination and work-management information within the scope defined here.
 - EOS owns reusable operational engineering services and derived engineering views.
-- Project and domain records own project-specific engineering facts, execution authority, evidence, and outcomes.
+- Project and domain records own project-specific engineering facts, applicable domain safety decisions, evidence, and outcomes.
 
 EMP management state never expands an Engineering Work Order, performs a governance transition, or makes a project record authoritative.
 

@@ -409,73 +409,55 @@ class ConvergenceRuntime:
     def _manual_governance_authority(
         self, *, wop: Mapping[str, Any], action: str
     ) -> tuple[dict[str, Any], str] | None:
-        """Resolve an explicit manual-governance root delegation, if present.
+        """Resolve the submitted-WOP authority carried by a WOP.
 
-        This is intentionally stricter than a submitter-name check.  The WOP
-        must carry a complete attestation and the active policy must be an
-        EMM-resolved authoritative source.  Absence returns ``None`` so the
-        normal Authority Record contract remains the default.
+        ``manual_governance_authority`` is retained as a historical field name
+        on immutable WOPs.  It is interpreted only as submission provenance;
+        it is not a second authority grant and no policy or Authority Record
+        is consulted here.  New submissions should use
+        ``submission_authority``.
         """
-        delegation = wop.get("manual_governance_authority")
+        delegation = wop.get("submission_authority") or wop.get("manual_governance_authority")
         if delegation is None:
             return None
         if not isinstance(delegation, Mapping):
-            raise ConvergenceRuntimeError("manual-governance delegation must be a mapping")
+            raise ConvergenceRuntimeError("submitted-WOP authority must be a mapping")
 
-        entity = self._entity(
-            "ManualGovernanceWOPAuthorityPolicy",
-            "MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY",
-            "1.0",
-        )
-        if (
-            entity.get("classification") != "Authoritative"
-            or entity.get("authoritative_owner") != "Engineering Governance"
-            or not entity.get("source_digest")
-        ):
-            raise ConvergenceRuntimeError("manual-governance policy EMM identity is invalid")
-        policy_path, policy_digest = self._source(entity)
-        policy = load_mapping(policy_path)
-        if (
-            policy.get("policy_id") != "MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY"
-            or str(policy.get("revision")) != "1.0"
-            or policy.get("classification") != "Authoritative"
-            or policy.get("authoritative_owner") != "Engineering Governance"
-            or str(policy.get("lifecycle_state", "")).upper() != "ACTIVE"
-            or policy.get("mode") != "MANUAL_GOVERNANCE"
-        ):
-            raise ConvergenceRuntimeError("manual-governance policy is not active")
-
-        submission = delegation.get("governance_submission")
-        permitted = delegation.get("permitted_actions")
+        submission = delegation.get("submission") or delegation.get("governance_submission") or delegation
+        permitted = delegation.get("permitted_actions") or delegation.get("authorized_actions")
         required = (
-            delegation.get("policy_id") == policy["policy_id"],
-            str(delegation.get("policy_revision")) == str(policy["revision"]),
-            str(delegation.get("delegation_state", "")).upper() == "ACTIVE",
             isinstance(submission, Mapping),
             isinstance(permitted, list) and bool(permitted),
         )
         if not all(required):
-            raise ConvergenceRuntimeError("manual-governance delegation is incomplete")
+            raise ConvergenceRuntimeError("submitted-WOP authority is incomplete")
         assert isinstance(submission, Mapping)
         if (
             submission.get("submitted") is not True
-            or submission.get("submitted_by") != "Engineering Governance"
             or not isinstance(submission.get("submission_id"), str)
             or not submission["submission_id"].strip()
-            or not isinstance(submission.get("directive_id"), str)
-            or not submission["directive_id"].strip()
         ):
-            raise ConvergenceRuntimeError("manual-governance submission attestation is invalid")
+            raise ConvergenceRuntimeError("submitted-WOP identity attestation is invalid")
         if action not in permitted:
-            raise ConvergenceRuntimeError("manual-governance delegation does not permit requested action")
+            raise ConvergenceRuntimeError("submitted WOP does not permit requested action")
+        gate = wop.get("approval_gate")
+        if gate not in (None, False, "", [], {}):
+            approval = wop.get("approval")
+            if not isinstance(approval, Mapping) or str(approval.get("status", "")).lower() not in {"approved", "accepted"}:
+                raise ConvergenceRuntimeError("OPERATOR_APPROVAL_REQUIRED: submitted WOP declares an approval gate")
+        admission = wop.get("admission")
+        if admission is not None:
+            if not isinstance(admission, Mapping) or admission.get("admission_decision") != "ACCEPTED" or admission.get("wop_id") != wop.get("wop_id"):
+                raise ConvergenceRuntimeError("WOP_ADMISSION_REQUIRED: submitted WOP is not admitted")
         return {
-            "policy_id": policy["policy_id"],
-            "policy_revision": str(policy["revision"]),
-            "policy_digest": policy_digest,
+            "mode": "SUBMITTED_WOP",
+            "authority_source": "operator-submitted WOP",
+            "wop_id": str(wop.get("wop_id")),
+            "wop_revision": str(wop.get("revision")),
             "submission_id": submission["submission_id"],
-            "directive_id": submission["directive_id"],
             "permitted_action": action,
-        }, policy_digest
+            "scope_digest": delegation.get("scope_digest"),
+        }, digest(delegation)
 
     def resolve(self, *, wop_id: str, revision: str | int, action: str,
                 correlation_id: str, authority_record_id: str | None = None) -> dict[str, Any]:
@@ -493,17 +475,31 @@ class ConvergenceRuntime:
                 "owner": wop_entity["authoritative_owner"], "source_digest": wop_digest,
                 "status": wop["status"],
             })
+            receipt["wop_identity"] = {"wop_id": wop_id, "revision": str(revision),
+                                       "source_digest": wop_digest}
+            receipt["mission_id"] = wop.get("mission_id")
+            receipt["scope"] = wop.get("scope", [])
+            receipt["lifecycle"] = wop.get("lifecycle", {"status": wop.get("status")})
+            receipt["admission_state"] = (wop.get("admission") or {}).get(
+                "admission_decision", "NOT_PRESENT"
+            )
+            receipt["approvals"] = wop.get("approval") or wop.get("approval_gate") or []
+            receipt["published_baseline"] = self.emm()["baseline_id"]
+            receipt["eos_synchronization"] = "DERIVED_READ_ONLY"
+            receipt["session_readiness"] = "NOT_REQUESTED"
             authority = self._authority(authority_record_id)
             if authority is None:
                 manual_governance = self._manual_governance_authority(
                     wop=wop, action=action
                 )
                 if manual_governance is None:
-                    receipt["reasons"].append("AUTHORITY_RECORD_REQUIRED")
+                    receipt["reasons"].append("SUBMITTED_WOP_AUTHORITY_REQUIRED")
                 else:
                     delegation, _ = manual_governance
                     receipt["inputs"]["manual_governance_wop"] = delegation
-                    receipt["authority_mode"] = "MANUAL_GOVERNANCE_WOP"
+                    receipt["authority_mode"] = "SUBMITTED_WOP"
+                    receipt["authority_source"] = "operator-submitted WOP"
+                    receipt["session_readiness"] = "READY_AFTER_PROVIDER_QUALIFICATION"
                     receipt["outcome"] = "RESOLVED"
             else:
                 record, authority_digest = authority
@@ -534,10 +530,16 @@ class ConvergenceRuntime:
                     if completed_execution_verification:
                         receipt["verification_scope"] = "COMPLETED_EXECUTION"
                     receipt["outcome"] = "RESOLVED"
+                    receipt["authority_source"] = "Authority Record"
             receipt["emm_digest"] = digest(self.emm())
         except ConvergenceRuntimeError as error:
             receipt["outcome"] = "NOT_FOUND" if "not found" in str(error) else "INTEGRITY_FAILURE"
             receipt["reasons"].append(str(error))
+        receipt["blockers"] = list(receipt["reasons"])
+        receipt["next_authorized_action"] = (
+            "RUN_EXECUTION_SAFETY_CHECKS" if receipt["outcome"] == "RESOLVED"
+            else "STOP_AND_RESOLVE_BLOCKERS"
+        )
         receipt["receipt_digest"] = digest({k: v for k, v in receipt.items() if k != "receipt_digest"})
         return receipt
 
@@ -692,12 +694,11 @@ class ConvergenceRuntime:
         elif isinstance(manual_input, Mapping):
             approval_reference = str(manual_input["submission_id"])
             authority_lineage = {
-                "mode": "MANUAL_GOVERNANCE_WOP",
+                "mode": "SUBMITTED_WOP",
+                "authority_source": "operator-submitted WOP",
                 "root_implementation_wop": receipt["inputs"]["implementation_wop"],
-                "policy_id": manual_input["policy_id"],
-                "policy_revision": manual_input["policy_revision"],
                 "submission_id": manual_input["submission_id"],
-                "directive_id": manual_input["directive_id"],
+                "scope_digest": manual_input.get("scope_digest"),
             }
         else:
             raise ConvergenceRuntimeError("resolved flow lacks an authority lineage")

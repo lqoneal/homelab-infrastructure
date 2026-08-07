@@ -252,13 +252,11 @@ Completion Report and Qualification
 This procedure owns the canonical lifecycle:
 
 ```text
-Governance Decision
+Operator-submitted WOP
         ↓
-Authority Record
+WOP validation and admission
         ↓
-EMM Resolution
-        ↓
-Implementation WOP
+EMM / repository / provider safety resolution
         ↓
 Qualified Capability Execution
         ↓
@@ -281,13 +279,12 @@ action, blockers, and source records without prompt history. Conversational
 context may identify the requested mission but shall not supply missing
 procedure, authority, state, or completion semantics.
 
-The normal resolved authority contract is the SPEC-0014 Authority Record, exact
-EMM entity revisions, and the baseline-bound Implementation WOP. While the
-manual-governance policy is active, an exact EMM-resolved WOP may instead be
-the root authority for its own explicit allowlisted actions if its governance
-submission and active delegation validate. The Work Registry and historical
-EWOs may be consumed as traceability inputs but cannot grant, deny, or replace
-either current contract for Operational Alpha.
+The normal current Zeus work-authority contract is the operator-submitted WOP
+and its exact EMM/repository identity binding. EMM, admission, baseline,
+provider, lifecycle, and session results are safety predicates. A historical
+Authority Record, Work Registry entry, or EWO may remain a traceability or
+domain-specific input where its owning contract requires it, but none is a
+generic second grant of the submitted WOP's work authority.
 
 Authority Records, Operational Gate Plans, and Activation Records are
 constructed and published through `OPERATIONAL-ALPHA-CONTROLLED-ARTIFACT-
@@ -334,10 +331,11 @@ but it is not an authority gate. When used, it may carry WOP provenance:
 engctl codex --wop WOP-ID -- [codex arguments ...]
 ```
 
-Execution authority is resolved from published controlled documentation,
-mission eligibility, convergence authority, EMM, and the applicable
-Implementation WOP or manual-governance root WOP. An EWO identifier is neither
-required nor sufficient for Operational Alpha execution. Wrapper start,
+Work authority is resolved from the operator-submitted WOP. Execution safety
+is resolved from published controlled documentation, mission eligibility,
+convergence/EMM bindings, provider qualification, baseline, lifecycle, and
+the applicable WOP execution contract. An EWO identifier is neither required
+nor sufficient for Operational Alpha execution. Wrapper start,
 completion, failure, timeout, and interruption events are operational metadata
 only and do not grant authority.
 
@@ -499,12 +497,14 @@ engctl registry validate
 engctl execution snapshot --mission <MISSION-ID>
 ```
 
-A missing, ambiguous, stale, or conflicting SPEC-0014 resolution receipt, EMM
-revision, or Implementation WOP blocks Operational Alpha implementation. A
-missing Authority Record also blocks unless the exact WOP has a valid active
-manual-governance submission and its requested action is explicitly
-allowlisted. Legacy Mission Contract failures are traceability observations,
-not authority-resolution inputs. Resolve a current failure as follows:
+A missing, ambiguous, stale, or conflicting WOP, EMM revision, repository
+baseline, or applicable safety receipt blocks Operational Alpha
+implementation. A missing generic Authority Record is not an additional
+blocker when the submitted WOP is otherwise valid; an Authority Record remains
+required only where a separate domain contract explicitly makes it a safety or
+identity prerequisite. Legacy Mission Contract failures are traceability
+observations, not authority-resolution inputs. Resolve a current failure as
+follows:
 
 1. preserve the normal authority-resolution result;
 2. evaluate every Governance Bootstrap Condition predicate defined by

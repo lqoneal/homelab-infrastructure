@@ -59,11 +59,11 @@ entities:
     source_digest: 233ff3f23ff1309e1c0fe5e26f362ecb3e870a55419a06d07cbfb48ebe95fd7a
   - entity_type: ManualGovernanceWOPAuthorityPolicy
     entity_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
-    revision: 1.0
+    revision: 2.0
     authoritative_owner: Engineering Governance
     classification: Authoritative
     source: engineering/authority/manual-governance-wop-authority-policy.yaml
-    source_digest: 073277ec16872534fc5ed8d3da6f5ced7e3013a8497a8a28bec636a9e54ea913
+    source_digest: 120c8a441ee4e224bc6283eb12f29127f43f69abe8902730c446066bbe963c9e
   - entity_type: ImplementationWOP
     entity_id: WOP-OA-01-ROOT-ADMISSION-001
     revision: 1

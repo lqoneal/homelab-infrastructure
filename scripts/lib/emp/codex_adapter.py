@@ -164,8 +164,12 @@ def _package(root: Path, mission_id: str, runtime: Path) -> dict[str, Any]:
         "execution_start_baseline_relationship": execution.get("execution_start_baseline_relationship"),
         "execution_package_digest": None, "execution_authority_digest": None,
         "scope": {"owner": "Zeus", "mission_work_started": False,
-                  "repository_work_started": False, "operator_approval_required": True,
-                  "stop_boundary": "FIRST_CONTROLLED_EXECUTION_BOUNDARY"},
+                  "repository_work_started": False, "operator_approval_required": False,
+                  "stop_boundary": "FIRST_CONTROLLED_EXECUTION_BOUNDARY",
+                  "sandbox": "workspace-write"},
+        "work_authority": {"source": "operator-submitted WOP",
+                            "wop_id": execution.get("wop_id"),
+                            "admission_id": execution.get("admission_id")},
         "authority": authority,
     }
     start_transaction = runtime / "execution-start-transactions" / f"{execution_id}.json"
@@ -713,6 +717,7 @@ def _result(session: Mapping[str, Any], *, read_only: bool = True) -> dict[str, 
             "startup_diagnostics": session.get("startup_diagnostics"),
             "mission_bound": True, "execution_bound": True, "repository_bound": True,
             "authority": "PASS", "session_identity": "PASS", "provider_identity": "PASS",
+            "sandbox": (session.get("scope") or {}).get("sandbox", "workspace-write"),
             "execution_monitoring": "ACTIVE" if alive else "INACTIVE",
             "mission_work_started": bool(session.get("mission_work_started")),
             "repository_work_started": bool(session.get("repository_work_started")),
@@ -842,9 +847,6 @@ def begin_controlled_mission_work(repository: Path | str, mission_id: str, *, ap
     the bound broker to create a controlled turn, then atomically records the
     active projection consumed by P5-G6 monitoring.
     """
-    if not approval:
-        raise CodexAdapterError("OPERATOR_APPROVAL_REQUIRED", "--approve is required to begin controlled mission work",
-                                next_action="APPROVE_BEGIN_CONTROLLED_MISSION_WORK")
     root = Path(repository).resolve(); runtime = _runtime(root, runtime_root); mission = str(mission_id).upper()
     from scripts.lib.emp.execution_start import verify as verify_execution_start
     execution = verify_execution_start(root, mission, runtime_root=runtime)
@@ -882,12 +884,12 @@ def begin_controlled_mission_work(repository: Path | str, mission_id: str, *, ap
     if not session:
         if not launch:
             raise CodexAdapterError("SESSION_NOT_READY", "bound provider session is not available")
-        start(repository, mission, approval=True, prompt=prompt, runtime_root=runtime, codex_bin=codex_bin)
+        start(repository, mission, approval=approval, prompt=prompt, runtime_root=runtime, codex_bin=codex_bin)
         session = _existing(runtime, mission)
     elif not _provider_control_ready(session):
         if not launch:
             raise CodexAdapterError("SESSION_NOT_READY", "bound provider session is not live")
-        resume(repository, mission, approval=True, runtime_root=runtime, codex_bin=codex_bin)
+        resume(repository, mission, approval=approval, runtime_root=runtime, codex_bin=codex_bin)
         session = _existing(runtime, mission)
     if not session or not _provider_control_ready(session):
         raise CodexAdapterError("PROVIDER_NOT_ALIVE", "bound provider session is not live",
@@ -954,8 +956,6 @@ def begin_controlled_mission_work(repository: Path | str, mission_id: str, *, ap
 def start(repository: Path | str, mission_id: str, *, approval: bool = False,
            prompt: str | None = None, runtime_root: Path | str | None = None,
            codex_bin: str = "codex", launch: bool = True, _resume: bool = False) -> dict[str, Any]:
-    if not approval:
-        raise CodexAdapterError("OPERATOR_APPROVAL_REQUIRED", "operator approval is required before Codex launch", next_action="APPROVE_AND_START_CODEX")
     root = Path(repository).resolve(); runtime = _runtime(root, runtime_root); mission_id = str(mission_id).upper()
     package = _package(root, mission_id, runtime)
     existing = _existing(runtime, mission_id)
@@ -992,7 +992,7 @@ def start(repository: Path | str, mission_id: str, *, approval: bool = False,
                **package, "session_id": session_id, "state": "CREATED", "pid": None,
                "command": command, "log_path": str(log_path), "event_directory": str(event_directory),
                "mission_work_started": False, "repository_work_started": False,
-               "started_by": "zeus", "operator_approval": True, "path": str(_session_path(runtime, session_id)),
+               "started_by": "zeus", "operator_approval": False, "path": str(_session_path(runtime, session_id)),
                "app_server_handshake": "NOT_RUN", "startup_diagnostics": None,
                "execution_mode": "ZEUS_MANAGED", "session_mode": "ZEUS_MANAGED",
                "provider_mode": "APP_SERVER_MANAGED", "provider_transport": "STDIO",
@@ -1026,8 +1026,6 @@ def start(repository: Path | str, mission_id: str, *, approval: bool = False,
 
 def resume(repository: Path | str, mission_id: str, *, approval: bool = False,
            runtime_root: Path | str | None = None, codex_bin: str = "codex") -> dict[str, Any]:
-    if not approval:
-        raise CodexAdapterError("OPERATOR_APPROVAL_REQUIRED", "operator approval is required before resume")
     runtime = _runtime(Path(repository).resolve(), runtime_root); mission_id = str(mission_id).upper(); session = _existing(runtime, mission_id)
     if not session:
         raise CodexAdapterError("SESSION_NOT_FOUND", "no Codex session belongs to mission")
@@ -1039,8 +1037,6 @@ def resume(repository: Path | str, mission_id: str, *, approval: bool = False,
 
 def stop(repository: Path | str, mission_id: str, *, approval: bool = False,
          runtime_root: Path | str | None = None) -> dict[str, Any]:
-    if not approval:
-        raise CodexAdapterError("OPERATOR_APPROVAL_REQUIRED", "operator approval is required before stop")
     runtime = _runtime(Path(repository).resolve(), runtime_root); session = _existing(runtime, str(mission_id).upper())
     if not session:
         raise CodexAdapterError("SESSION_NOT_FOUND", "no Codex session belongs to mission")

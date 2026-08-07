@@ -1,20 +1,20 @@
 # Zeus Mission Admission Runtime
 
-Admission is a required Controlled Mission Authority input, not standing
-execution authority. Every protected execution boundary independently
+Admission is a required validation boundary, not a second work-authority
+grant. Every protected execution boundary independently
 revalidates the integrity-bound admission receipt together with the current
 Mission Contract, WOP, repository, predecessor receipt, and active gate.
 Missing or invalid admission remains admitted only as a governance fact and
 cannot dispatch execution or produce protected effects.
 
 The production operator is Lawrence O'Neal, authenticated as `loneal`.
-Operational admission verifies signed operator-owned authority records; it
-does not seek a second human approver. Zeus remains unable to originate an
+Operational admission verifies the identity-bound submitted WOP and does not
+seek a second generic human approver. Zeus remains unable to originate an
 approval or bypass admission policy.
 
-Under the current temporary Governance operating directive, Engineering
-Governance is the sole Mission Admission Authority. Manual WOP submission by
-Engineering Governance is intentional submission and admission. The runtime's
+Under the current submission protocol, the operator-submitted WOP is the work
+authority and admission is the lifecycle entry decision. Submission by the
+operator is intentional submission; the runtime's
 repository identity, repository integrity, package integrity, qualification,
 and policy stages determine execution readiness only. Their failure records an
 execution blocker; it does not reject, reverse, or invalidate Governance
@@ -95,8 +95,9 @@ package path and digest, immutable-manifest reference, repository and
 baselines, submission, work-item declaration, submitter, principal, authority,
 approval, lifecycle authorization, mode, dispatch permission, and next action.
 The WOP package is validated in place and its published identity is preserved.
-Missing contract, package, digest, authority, approval, or baseline binding
-fails closed with the exact field-level diagnostic.
+Missing contract, package, digest, WOP identity, or baseline binding fails
+closed with the exact field-level diagnostic. A missing approval fails closed
+only when the submitted WOP explicitly declares an approval gate.
 
 ## Operational workflow
 
@@ -121,12 +122,12 @@ baseline.
 For a manually submitted Governance WOP, failed repository identity,
 repository integrity, or package integrity produces a structured objective
 execution blocker while Mission Status remains `ADMITTED`. Other
-execution-authority facts are evaluated after admission during activation,
+execution-safety facts are evaluated after admission during activation,
 Mission Contract resolution, and execution verification. A later
-execution-verification failure does not reverse the recorded admission.
+execution-verification failure does not reverse the recorded admission or
+recast those safety checks as a second operator authority grant.
 For Operational Alpha, `dispatch_permitted` is resolved only from the published
-convergence authority receipt: an exact EMM-bound Implementation WOP, applicable
-Authority Record or allowlisted Manual-Governance Root WOP, and published
+convergence receipt: an exact EMM-bound submitted WOP and published
 Operational Gate Plan. Progressive PMCT, legacy authority publication,
 baseline-bound production dispatcher activation, and legacy agent qualification
 remain compatibility or historical qualification capabilities; they are not

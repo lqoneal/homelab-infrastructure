@@ -139,7 +139,7 @@ procedure's human-governance decision controls.
 | Technical or Qualification Reviewer | Supply findings, validation, qualification, risk, and recommendations. | Technical gate results within assigned authority. | Governance disposition, lifecycle approval, publication authorization, or implementation authority. |
 | Decision Subject Owner | Provide the exact subject, requested effects, alternatives, and impact analysis. | Subject content within preparation authority. | Approval or acceptance. |
 | Publication Authority or Executor | Consume an Approved decision only when separately named and authorized. | Operational execution within the exact publication boundary. | Governance approval, lifecycle approval, or implementation authority. |
-| Engineering Executor | Consume separately granted engineering execution authority. | Bounded execution choices under that authority. | Authority from approval or publication alone. |
+| Engineering Executor | Consume the identity-bound submitted WOP within its exact scope. | Bounded execution choices under that scope. | Scope expansion or authority from a derived approval/publication record. |
 | Auditor | Reconstruct authority, inputs, decision, routing, and outcomes. | Audit findings. | Modification or ratification of the decision. |
 
 One actor may hold multiple roles only when the applicable authority permits it
@@ -312,10 +312,11 @@ implementation.
 
 ## 12. Engineering Execution Authorization
 
-Engineering execution authorization is a separate decision field. When
-granted, it shall identify the controlled execution authority, exact scope,
+Engineering execution conditions are a WOP scope and safety concern, not a
+mandatory second operator grant. The submitted WOP shall identify exact scope,
 executor or eligible role, environment, constraints, evidence, validation,
-expiry, and stop conditions.
+expiry, and stop conditions. Any approval boundary it explicitly declares
+remains a separate gate within that WOP.
 
 A GPDR, published procedure, lifecycle approval, publication commit, baseline
 eligibility decision, or successful qualification does not by itself authorize

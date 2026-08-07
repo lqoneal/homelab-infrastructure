@@ -153,9 +153,13 @@ The Engineering Platform shall be organized into architectural layers. Each laye
 
   - Automation components shall obtain engineering guidance through the Knowledge Layer rather than embedding procedural logic.
 
-  - Only the Governance Layer grants implementation authority.
+  - The submitted WOP is the work-authority boundary for implementation within
+    its explicit scope; the Governance Layer owns policy and controlled
+    lifecycle, while Zeus validates admission and execution safety.
 
-  - Execution components operate only on Active Engineering Work Orders produced by the Authorization Layer.
+  - Execution components operate only on identity-bound, admitted submitted
+    WOPs; legacy Active EWO routing is retained only where a current domain
+    explicitly preserves it.
 
   - Every engineering action shall remain traceable from governance through persistence and presentation.
 
@@ -308,9 +312,9 @@ This interaction architecture is intentionally high-level. Detailed interaction 
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | Discovery                    | Observation that identifies new information or potential work. Creates or updates Mission Proposals; never authorizes execution.    |
 | Mission Proposal             | Non-executable planning artifact describing a candidate mission and preliminary roadmap.                                            |
-| Authorization Request        | Formal acceptance of one Mission Proposal for governance review; requests implementation authority.                                 |
-| Engineering Work Order (EWO) | The only object that grants implementation authority after governance approval.                                                     |
-| Mission                      | Executable body of authorized engineering work governed by one Active EWO.                                                          |
+| Authorization Request        | Formal acceptance of one Mission Proposal for governance review; requests a bounded submitted-WOP scope and its applicable safety review. |
+| Engineering Work Order (EWO) / submitted WOP | The bounded work package whose submitted scope authorizes the contained work; legacy EWO records remain historical where superseded. |
+| Mission                      | Executable body of work contained in an admitted submitted WOP, with its applicable safety and lifecycle controls.                  |
 | Handoff                      | Atomic execution unit within a Mission. All execution, evidence, notifications, and resume points are tracked at the handoff level. |
 | Evidence                     | Immutable engineering records generated throughout planning, authorization, execution, qualification, and closure.                  |
 
@@ -340,7 +344,9 @@ Each architectural chapter in the final controlled specification shall use the f
 
   - Use 'Authorization Request' only for the governance object created from an accepted Mission Proposal.
 
-  - Use 'Engineering Work Order (EWO)' when referring to implementation authority; use 'Active EWO' once execution authority has been granted.
+  - Use 'submitted WOP' when referring to current Zeus work authority. Use
+    'Active EWO' only for domains that still explicitly govern historical EWO
+    lifecycle semantics.
 
   - Refer to Handoffs as the atomic execution unit throughout the specification.
 

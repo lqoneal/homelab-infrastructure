@@ -28,9 +28,10 @@ authority. Historical records remain retained evidence; they are not a current
 authority source for an Operational Alpha action.
 
 No planning document, generated projection, command output, workspace
-permission, or successful verification grants authority. This specification
-does not authorize implementation, dispatch, acceptance, publication, or a
-lifecycle transition.
+permission, or successful verification creates authority. The operator's
+identity-bound WOP submission is the work-authority source for the WOP's
+explicit scope. This specification defines admission and execution safety;
+those controls do not grant authority a second time.
 
 ## Execution-First Engineering Philosophy
 
@@ -70,13 +71,13 @@ supersedes it.
 
 ## Canonical authority chain
 
-An Operational Alpha action is eligible only when this exact, version-pinned
-chain resolves:
+An Operational Alpha action is eligible only when the submitted WOP and its
+downstream safety chain resolve:
 
 ```text
-Governance Decision → Authority Record → Engineering Metadata Model (EMM)
-→ published Implementation WOP → canonical resolution receipt
-→ qualified capability → action
+operator-submitted WOP → admission and identity binding → EMM/repository,
+provider, prerequisite, lifecycle, and baseline checks → qualified capability
+→ action
 ```
 
 Each arrow is directional. A consumer may retain a receipt or projection but
@@ -85,10 +86,10 @@ digest-mismatched input fails closed.
 
 | Object | Single authoritative owner | Required identity and state |
 | --- | --- | --- |
-| Governance Decision | Governance | immutable decision id, scope, target, and digest |
-| Authority Record | Governance | one decision binding, baseline, permitted action, lifecycle and expiry |
+| WOP submission | operator through Zeus | immutable WOP identity, submission identity, scope, exclusions, and digest |
+| Admission and safety resolution | Zeus and named control owners | derived validation, prerequisite, provider, lifecycle, and baseline predicates |
 | Engineering metadata entity | named EMM entity owner | entity type/id/revision/schema/owner digest |
-| Implementation WOP | assigned WOP owner | baseline-bound revision in `READY`; `ACTIVE` only after a resolved Authority Record permits activation |
+| Implementation WOP | assigned WOP owner | baseline-bound submitted revision whose scope remains the hard work boundary |
 | Resolution receipt | Metadata Engine | exact input manifest, compatibility result, source digests, outcome |
 | Qualification result | Qualification Engine | sealed criteria, evidence, result, and digest |
 | Operational Gate Plan | assigned WOP owner | exact WOP/baseline binding, lifecycle, source digest, and handler-compatible actions |
@@ -105,24 +106,20 @@ one outcome: `RESOLVED`, `NOT_FOUND`, `AMBIGUOUS_RESOLUTION`,
 `INTEGRITY_FAILURE`, `INCOMPATIBLE_VERSION`, or `PRECONDITION_FAILED`.
 
 Only `RESOLVED` permits the next lifecycle operation. The receipt is derived
-and expires with any bound source revision, baseline, or Authority Record.
+and expires with any bound source revision, baseline, or submitted-WOP
+identity. A domain Authority Record may be included only when its owning
+contract requires it as a safety or identity input; it is not a generic second
+grant of operator work authority.
 
 ## Manual-governance WOP authority policy
 
-While `MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY@1.0` remains `ACTIVE`, an
-explicitly submitted Engineering Governance WOP may be the root authority for
-its own bounded, allowlisted actions. It is not an inferred exception: the WOP
-must be EMM-registered and contain an exact governance-submission attestation,
-an active delegation state, the governing policy identity, and its permitted
-action list. The resolver records that mode and submission identity in its
-receipt.
-
-This temporary path admits only the root WOP actions needed to create or
-validate the subordinate artifacts it explicitly delegates. Those artifacts
-must bind back to that exact WOP, revision, policy, and submission identity.
-An autonomous WOP, or a WOP with an incomplete or inactive attestation,
-continues to require the normal Authority Record contract. The runtime never
-infers manual authority from a title, operator identity, or command.
+`MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY` records the submission protocol. An
+identity-bound submitted WOP is the authority boundary for its own bounded,
+explicitly scoped actions. The resolver records the WOP and submission identity in
+its receipt. Admission, provider qualification, dependencies, lifecycle,
+baseline, and any explicit in-WOP approval gates remain required; none is a
+second generic corrective, implementation, or execution grant. The runtime
+never infers authority from a title, operator identity, or command alone.
 
 ## Operational execution contract
 
@@ -157,10 +154,10 @@ framework never permits a candidate or resolver to advance OA lifecycle state.
 
 The controlled WOP lifecycle is `DRAFT → READY → ACTIVE → EXECUTING →
 VERIFIED → QUALIFIED → ACCEPTED → CLOSED`, with `BLOCKED`, `SUPERSEDED`, and
-`ARCHIVED` as explicit non-progress alternatives. `READY` is not authority to
-execute. A resolver-confirmed Authority Record is the only admission to
-`ACTIVE`; an execution capability may begin only from `ACTIVE` with a passing
-preflight qualification. A failure preserves the source facts, records an
+`ARCHIVED` as explicit non-progress alternatives. The submitted WOP supplies
+work authority within its scope. Lifecycle state still does not bypass
+admission, provider, baseline, prerequisite, or explicit approval checks; an
+execution capability may begin only after those safety predicates pass. A failure preserves the source facts, records an
 event, and moves only the affected WOP or projection to `BLOCKED`.
 
 There is one valid predecessor for each normal transition. A transition receipt
@@ -191,8 +188,9 @@ execution state.
 
 Operational Alpha dispatcher admission resolves exclusively from a successful
 convergence receipt for the requested WOP and action. The receipt binds the
-EMM, exact Implementation WOP, Authority Record or active allowlisted
-Manual-Governance Root WOP, and published Operational Gate Plan. Progressive
+EMM, exact identity-bound submitted WOP, and published Operational Gate Plan.
+A domain Authority Record may be included only when its owning contract
+requires it as a safety or identity input. Progressive
 PMCT, legacy authority publications, production-dispatcher activation, and
 legacy agent qualification may remain available for historical evidence or
 compatibility diagnostics, but they shall not grant, deny, or modify an
@@ -257,6 +255,6 @@ acceptance or later execution.
 Conformance requires exactly one owner for every authoritative fact; exact
 baseline and version resolution; no authority or synchronization cycles;
 directional synchronization; reproducible projections; sealed qualification;
-and either an Authority Record that resolves for the specific WOP, action, and
-baseline or an active, EMM-resolved manual-governance WOP policy with an exact
-allowlisted submission.
+and a submitted WOP that resolves for the specific WOP, action, and baseline.
+Any additional Authority Record is validated only when a separate domain
+contract requires it and is not treated as a second operator authorization.

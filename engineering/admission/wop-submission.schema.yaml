@@ -12,7 +12,6 @@ required:
   - title
   - repository_identity
   - submitter_identity
-  - approval
   - execution_package_references
   - authoritative_references
   - sections
@@ -35,9 +34,18 @@ properties:
       authority: {type: string, minLength: 1}
       reference: {type: string, minLength: 1}
       authorized_lifecycle_state: {const: Active}
+  approval_gate:
+    description: Optional explicit approval boundary declared by this WOP.
+    type: [object, array, string, boolean]
+  submission_authority:
+    type: object
+    required: [source, submission_id]
+    properties:
+      source: {const: operator-submitted WOP}
+      submission_id: {type: string, minLength: 1}
   execution_package_references:
     type: object
-    required: [authority_node_id, authorization_decision_record, immutable_wop]
+    required: [immutable_wop]
     properties:
       authority_node_id: {type: string, minLength: 1}
       authorization_decision_record: {type: string, minLength: 1}
@@ -71,8 +79,6 @@ x-zeus-authoritative-contract:
   mission_contract: engineering/registry/work-registry.yaml
   standards: [STD-0000, STD-0001, STD-0002, STD-0003, STD-0004]
   execution_package_references:
-    - authority_node_id
-    - authorization_decision_record
     - immutable_wop
   required_sections:
     - purpose_and_expected_outcome
@@ -95,3 +101,12 @@ x-zeus-authoritative-contract:
     repository_identity: /data/engineering/repositories/homelab
     submitter_identity: operator
   operator_review_required: true
+  submission_authority:
+    authoritative_submission_is_submission_act: true
+    second_governance_submission_declaration_required: false
+    development_production_submission_protocol_distinction: NONE
+    submitter_identity_disposition: optional_provenance_metadata
+  approval_semantics:
+    default: not_required
+    required_only_when_declared_by_submitted_wop: true
+    approval_is_not_submission_authority: true

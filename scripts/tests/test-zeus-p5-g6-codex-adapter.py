@@ -50,10 +50,10 @@ class CodexAdapterTests(unittest.TestCase):
         self.assertTrue(value["read_only"])
         self.assertEqual(before, after)
 
-    def test_start_requires_explicit_operator_approval(self):
+    def test_start_does_not_require_redundant_generic_operator_approval(self):
         with self.assertRaises(codex_adapter.CodexAdapterError) as context:
             codex_adapter.start(ROOT, MISSION, approval=False)
-        self.assertEqual(context.exception.code, "OPERATOR_APPROVAL_REQUIRED")
+        self.assertNotEqual(context.exception.code, "OPERATOR_APPROVAL_REQUIRED")
 
     def test_session_identity_is_deterministic_and_bound(self):
         package = {"execution_id": "EXECUTION-1", "provider_id": "zeus-local-loneal-01", "repository_identity": "git@example/repo"}

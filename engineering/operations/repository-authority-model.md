@@ -12,7 +12,7 @@ production authority domain defined by the Authority Ownership Specification.
 | mission, phase, work item | Mission and Work Authority | `loneal` |
 | repository identity and baseline | Repository Authority | `loneal` |
 | authority node | Governance Authority | `loneal` |
-| approval and authorization decision | Approval Authority | `loneal` |
+| WOP submission and any declared approval gate | Work Authority / WOP Gate Authority | `loneal` |
 | identity record | Identity Authority | `loneal` |
 | governing baseline | Governance and Qualification Authority | `loneal` |
 | operational configuration and revocation | Publication and Execution Authority | `loneal` |
@@ -24,9 +24,10 @@ satisfy the human ownership relationship for all record types; each record
 still requires its own valid content, signature, dependencies, and provenance.
 
 Zeus may persist and enforce an authenticated operator decision, but it cannot
-create the decision merely because a command was invoked. Commands represent
-the operator's authority; repository policy determines whether that authority
-is sufficient and whether the requested transition is valid.
+create the decision merely because a command was invoked. The submitted WOP
+represents the operator's work authority within its scope; repository policy
+determines whether that authority is sufficient and whether the requested
+transition is valid. Admission and safety checks are not additional grants.
 
 This model is extended by changing data, not control flow. Later domain
 delegation uses different owner assignments, enrollment records, trust-policy

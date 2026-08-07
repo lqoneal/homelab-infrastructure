@@ -38,10 +38,10 @@ zeus orchestrate verify
 For Zeus Operational Alpha, the operator is Lawrence O'Neal and the production
 principal is `loneal`. The authenticated Zeus CLI is the authoritative
 interface through which Lawrence O'Neal exercises engineering authority,
-subject to repository policy and runtime validation. Controlled documentation
-remains the normal operational source of execution authority. Zeus does not
-gain independent authority from the session and does not invent approval
-records.
+subject to repository policy and runtime validation. The submitted WOP is the
+normal operational source of work authority for its explicit scope. Zeus does
+not gain independent authority from the session and does not invent approval
+records; explicit WOP approval gates remain visible and enforced.
 
 ## Global launcher
 

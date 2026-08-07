@@ -31,9 +31,7 @@ REQUIRED_FIELDS = (
     "execution_mode", "repository_identity",
     "effect_profile", "protected_baselines", "gates",
     "qualification_requirements", "completion_requirements",
-    "approval_authorized_lifecycle_state", "authoritative_references",
-    "execution_package_authority_node_id",
-    "execution_package_authorization_decision_record",
+    "authoritative_references",
     "sections_completion_report_requirement", "sections_deliverables",
     "sections_dependencies_and_entry_criteria", "sections_execution_sequence",
     "sections_explicit_authority", "sections_governing_references",
@@ -42,7 +40,12 @@ REQUIRED_FIELDS = (
     "sections_stop_resume_and_escalation",
     "sections_success_and_acceptance_criteria", "sections_validation_profile",
 )
-OPTIONAL_FIELDS = ("revision", "priority", "development_operator")
+OPTIONAL_FIELDS = (
+    "revision", "priority", "development_operator", "approval_gate",
+    "submission_authority", "approval_authorized_lifecycle_state",
+    "execution_package_authority_node_id",
+    "execution_package_authorization_decision_record",
+)
 FIELD_DESCRIPTIONS = {
     "wop_id": "Immutable WOP identity (WOP-...)",
     "mission_id": "Mission identity governed by this WOP",
@@ -58,10 +61,10 @@ FIELD_DESCRIPTIONS = {
     "gates": "Validation and lifecycle gates",
     "qualification_requirements": "Evidence required for qualification",
     "completion_requirements": "Evidence required for closeout",
-    "approval_authorized_lifecycle_state": "Approval must authorize Active",
+    "approval_authorized_lifecycle_state": "Legacy approval metadata; an approval is required only for an explicit in-WOP gate",
     "authoritative_references": "Published governing procedure, template, and standards",
-    "execution_package_authority_node_id": "Published authority node binding",
-    "execution_package_authorization_decision_record": "Published authorization decision record",
+    "execution_package_authority_node_id": "Legacy execution-package metadata; not a generic operator authority grant",
+    "execution_package_authorization_decision_record": "Legacy execution-package metadata; not a generic operator authority grant",
 }
 for _field in REQUIRED_FIELDS:
     FIELD_DESCRIPTIONS.setdefault(

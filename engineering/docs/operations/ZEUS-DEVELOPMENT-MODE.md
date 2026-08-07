@@ -22,11 +22,13 @@ isolated runtime; read-only controllers do not initialize or write runtime
 state.
 
 A valid Development WOP explicitly declares `execution_mode: DEVELOPMENT`,
-binds `/data/engineering/repositories/homelab`, names Engineering Governance,
-and carries a bounded effect profile. Submission validates the package and
+binds `/data/engineering/repositories/homelab`, and carries a bounded effect
+profile. Submission through the authoritative Zeus interface is the governance
+submission act; a second Engineering Governance declaration is not required.
+Submission validates the package and
 repository first. Acceptance then generates registration and provenance in the
 existing Stage 1 runtime record and advances the persisted, idempotent
-lifecycle through authorization, admission, execution, qualification,
+lifecycle through authority resolution, admission, execution, qualification,
 publication preparation, synchronization, and closeout.
 
 For a canonical authored WOP with an adjacent immutable traceability record,
@@ -47,8 +49,9 @@ scripts/zeus --runtime-root <RUNTIME> admit <SUBMISSION_RECEIPT> --wop <AUTHORED
 It verifies the immutable submission receipt, authored-WOP provenance,
 Operation Beta, Mission/WOP identity, repository identity, and the
 `ADMISSION_REQUESTED` request projection before provisioning exactly one
-immutable execution package, Mission Contract, execution-authority record,
-admission receipt, and admission journal. The resulting state is
+immutable execution package, Mission Contract, execution-safety projection,
+admission receipt, and admission journal. The execution-safety projection is
+not a second operator work-authority grant. The resulting state is
 `ADMISSION_COMPLETE` with `bootstrap_eligible: true`; it creates no execution
 or bootstrap artifact. Repeating the same request returns the same immutable
 identities with `duplicate_admission: IDEMPOTENT`.

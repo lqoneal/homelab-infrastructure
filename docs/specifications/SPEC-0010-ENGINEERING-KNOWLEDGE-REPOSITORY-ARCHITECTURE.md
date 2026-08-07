@@ -379,8 +379,10 @@ documentation change is intentionally omitted.
 Production implementation, automated mission capture, a query/graph service,
 cross-repository synchronization, and legacy evidence backfill are deferred
 because this mission authorizes architecture and documentation only. Each
-requires separate bounded implementation authority, threat modeling,
-acceptance criteria, migration design, and operational qualification.
+requires a separately submitted WOP whose scope contains the implementation,
+plus threat modeling, acceptance criteria, migration design, and operational
+qualification; that WOP is the work-authority boundary and its safety controls
+remain separately enforced.
 
 ## Revision History
 

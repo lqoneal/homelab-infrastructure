@@ -99,7 +99,7 @@ class AdmissionTests(unittest.TestCase):
         result = self.decide(value).data
         fields = {failure["field"] for failure in result["validation_failures"]}
         self.assertEqual(result["admission_decision"], "RESUBMISSION_REQUIRED")
-        self.assertTrue({"approval", "sections.scope",
+        self.assertTrue({"sections.scope",
                          "execution_package_references.immutable_wop"} <= fields)
         self.assertEqual(len(result["execution_status"]), 5)
         self.assertIn("required_submission_format", result)

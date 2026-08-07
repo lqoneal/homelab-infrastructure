@@ -19,10 +19,11 @@ runtime state. It does not replace the domain owners below:
 
 The secondary owners shall reference and implement this shared contract; they
 shall not define competing WOP identity, revision, or resolution semantics.
-Where a domain owner imposes additional authority or execution requirements,
-those requirements are additive and remain owned by that domain. A WOP is an
-execution instruction and scope contract; it is not an independent source of
-execution authority.
+Where a domain owner imposes additional safety, admission, qualification, or
+explicit in-WOP approval requirements, those requirements are additive and
+remain owned by that domain. The submitted WOP is the operator's work-
+authority boundary for the work it contains; downstream controls validate and
+constrain execution without becoming a second grant of that authority.
 
 ## Normative WOP definition
 
@@ -38,14 +39,17 @@ The WOP therefore has these properties:
 ```text
 EXECUTION_INSTRUCTION=YES
 EXECUTION_SCOPE_CONTRACT=YES
-EXECUTION_AUTHORITY_SOURCE=NO_UNLESS_SEPARATELY_GRANTED
+SUBMITTED_WOP_WORK_AUTHORITY=YES
+EXECUTION_SAFETY_RESOLUTION=REQUIRED
 ```
 
-Mission or user authority, an applicable roadmap, and the governing authority
-record may authorize work. The WOP records and operationalizes that bounded
-work; its lifecycle state, package presence, gate position, or readiness
-projection cannot independently authorize admission, execution, publication,
-or synchronization.
+The operator-submitted WOP authorizes the bounded work it explicitly contains.
+Mission, repository, baseline, provider, lifecycle, admission, and integrity
+records remain required safety and identity inputs where applicable. The WOP's
+lifecycle state, package presence, gate position, or readiness projection
+cannot bypass those controls or independently authorize publication or
+synchronization. An approval is required only when the submitted WOP declares
+that approval gate.
 
 ## Canonical identity and relationships
 

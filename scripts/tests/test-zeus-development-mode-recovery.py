@@ -8,6 +8,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[2]
 
 import sys
@@ -31,9 +33,34 @@ class DevelopmentModeRecoveryTests(unittest.TestCase):
             self.assertEqual(result["next_action"], "Dispatch to a qualified Development execution agent")
             self.assertNotIn("execution", result["receipts"])
             self.assertEqual(result["execution_mode"], "DEVELOPMENT")
-            self.assertEqual(result["authorization"]["authority"], "Engineering Governance")
+            self.assertEqual(result["authorization"]["authority_source"], "operator-submitted WOP")
             self.assertTrue(result["registration"]["registration_id"].startswith("EMM-DEV-"))
             self.assertEqual(result["provenance"]["repository"], str(ROOT))
+
+    def test_submission_is_authoritative_without_redundant_governance_declaration(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            package = Path(temporary) / "package"
+            shutil.copytree(FIXTURE, package)
+            for relative in ("mission.yaml", "manifests/immutable-manifest.yaml"):
+                path = package / relative
+                value = yaml.safe_load(path.read_text(encoding="utf-8"))
+                value.pop("governance_authority", None)
+                path.write_text(yaml.safe_dump(value, sort_keys=False), encoding="utf-8")
+            result = self.runtime(Path(temporary) / "stage1").submit_development(package)
+            self.assertIn(result["state"], {"AWAITING_EXECUTION_DISPATCH", "DISPATCHED"})
+            self.assertEqual(result["authorization"]["decision"], "SUBMISSION_AUTHORITY_ESTABLISHED")
+            self.assertEqual(result["authority_snapshot"]["approval_state"], "NOT_REQUIRED_UNLESS_DECLARED_IN_WOP")
+            self.assertNotIn("execution", result["receipts"])
+            self.assertNotIn("publication", result["receipts"])
+
+    def test_submission_does_not_create_execution_or_publication_authority(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            result = self.runtime(Path(temporary) / "stage1").submit_development(FIXTURE)
+            self.assertEqual(result["authorization"]["decision"], "SUBMISSION_AUTHORITY_ESTABLISHED")
+            self.assertNotEqual(result["state"], "EXECUTING")
+            self.assertNotIn("execution", result["receipts"])
+            self.assertNotIn("publication", result["receipts"])
+            self.assertIn("PRODUCTION", result["authority_snapshot"]["prohibited_effects"])
 
     def test_repeated_submission_is_idempotent(self):
         with tempfile.TemporaryDirectory() as temporary:

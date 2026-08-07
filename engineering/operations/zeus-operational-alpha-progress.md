@@ -127,7 +127,9 @@ historical Progressive state remains evidence only and cannot select the next ac
 - P0: extend operational admission to independently reload and verify the ARB
   provenance records; current WOP admission policy remains unchanged.
 - P1: persist externally published ARB and WOP receipts in an append-only audit
-  service after that service receives separate implementation authority.
+  service after the submitted WOP passes the applicable admission, provider,
+  and publication-safety controls; no generic second implementation grant is
+  required.
 - P0: publish the P2-019 implementation baseline, activate the production
   dispatcher, register and independently qualify a production execution agent,
   then perform the separately controlled first operational WOP qualification.

@@ -503,7 +503,9 @@ information owner maintains its representation.
 
 Produce the TPL-0002 Completion Report and complete TPL-0003 evidence package.
 Every stage and state domain shall be accounted for. Follow-on work remains
-unauthorized unless supported by separate authority.
+outside scope unless explicitly contained in the submitted WOP or covered by
+a newly submitted WOP; no second generic follow-on authority record is needed
+for work already within scope.
 
 ## 10. Baseline Effect Model
 

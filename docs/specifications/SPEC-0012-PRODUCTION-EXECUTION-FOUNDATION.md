@@ -31,9 +31,12 @@ relations:
 
 Lawrence O'Neal is the ultimate human authority and `loneal` is the
 authenticated production principal. The Zeus CLI is the authoritative
-instruction interface. Controlled documentation is the normal operational
-source of execution authority. The dispatcher resolves and enforces that
-authority; it cannot create, broaden, or repair authority by itself.
+instruction interface. For submitted work, the operator-submitted WOP is the
+normal operational source of work authority for its declared scope. Controlled
+documentation, the dispatcher, admission, provider, baseline, lifecycle, and
+session checks resolve execution safety and cannot create, broaden, or repair
+authority by themselves. An approval is required only when the submitted WOP
+declares that approval gate.
 
 This specification provides a commissionable implementation foundation. It
 does not commission a dispatcher, qualify a production agent, dispatch an
@@ -54,12 +57,13 @@ PLANNED
   -> OPERATIONALLY_ELIGIBLE
 ```
 
-Implementation, qualification, commissioning, and operational execution are
-distinct authority purposes. Each transition is sequential, provenance-bound,
-digest-protected, and supported by its named authorization and evidence.
-Qualification authorization permits bounded qualification using production
-implementations and contracts, but it does not assert that qualification
-succeeded. Operational authority resolution accepts only
+Implementation, qualification, commissioning, and operational execution remain
+distinct capability-lifecycle and safety states. Each transition is
+sequential, provenance-bound, digest-protected, and supported by its named
+control and evidence; these states do not add a generic operator grant to a
+submitted WOP. Qualification control permits bounded qualification using
+production implementations and contracts, but it does not assert that
+qualification succeeded. Operational safety resolution accepts only
 `OPERATIONALLY_ELIGIBLE`; it shall not treat an earlier state as operational.
 
 Insufficient authority produces an actionable safe-stop record identifying the

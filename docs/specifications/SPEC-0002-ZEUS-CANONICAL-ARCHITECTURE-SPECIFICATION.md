@@ -729,6 +729,16 @@ component.
 
 ## 8. Authority architecture
 
+### 8.0 Current Zeus WOP submission precedence
+
+For the current Zeus submission path, an identity-bound operator-submitted WOP
+is the authority boundary for the work explicitly contained in that WOP.
+Authority Records and Mission Contracts described elsewhere in this
+specification remain applicable only to domains that explicitly retain that
+architecture; they are not generic corrective, implementation, or execution
+grants for a submitted WOP. Admission, identity, scope, provider, lifecycle,
+baseline, publication, and explicit in-WOP approval controls remain required.
+
 ### 8.1 Authority Record, Mission Contract, and REAC required fields
 
 Every Authority Record revision shall contain:

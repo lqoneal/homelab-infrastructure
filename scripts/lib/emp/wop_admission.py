@@ -44,11 +44,9 @@ REQUIRED_SUBMISSION_FORMAT = {
     "title": "<title>",
     "repository_identity": "<repository identity>",
     "submitter_identity": "<submitter identity>",
-    "approval": {
-        "authority": "<approval authority>",
-        "reference": "<approval reference>",
-        "date": "<ISO-8601 date>",
-        "authorized_lifecycle_state": "Active",
+    "submission_authority": {
+        "source": "operator-submitted WOP",
+        "submission_id": "<submission identifier>",
     },
     "execution_package_references": {
         key: f"<{key}>" for key in REQUIRED_EXECUTION_REFERENCES
@@ -64,6 +62,9 @@ REQUIRED_SUBMISSION_FORMAT = {
 OPTIONAL_CONVERGENCE_FIELDS = {
     "authority_lineage",
     "convergence_flow_digest",
+    "approval_gate",
+    "submission_authority",
+    "approval",
 }
 
 
@@ -186,7 +187,7 @@ class AdmissionController:
         if submission.get("status") != "Active":
             failures.append(ValidationFailure(
                 "INACTIVE_SUBMISSION", "status", "only Active Work Orders are admissible",
-                "Obtain approval and submit the Active revision."
+                "Submit the Active revision; approval is required only for an approval gate declared by the WOP."
             ))
         if submission.get("repository_identity") != expected_repository:
             failures.append(ValidationFailure(
@@ -196,12 +197,16 @@ class AdmissionController:
             ))
 
         approval = submission.get("approval")
-        if not isinstance(approval, Mapping):
+        sections = submission.get("sections")
+        explicit_gate = submission.get("approval_gate") or (
+            sections.get("approval_gates") if isinstance(sections, Mapping) else None
+        )
+        if approval is not None and not isinstance(approval, Mapping):
             failures.append(ValidationFailure(
-                "APPROVAL_BLOCK_MISSING", "approval", "approval must be an object",
-                "Provide authority, reference, and authorized_lifecycle_state; date is optional."
+                "INVALID_APPROVAL_BLOCK", "approval", "approval must be an object when supplied",
+                "Provide the declared in-WOP approval gate as an object."
             ))
-        else:
+        elif isinstance(approval, Mapping):
             for field in ("authority", "reference", "authorized_lifecycle_state"):
                 require(f"approval.{field}", approval.get(field), f"Provide approval.{field}.")
             if approval.get("authorized_lifecycle_state") != "Active":
@@ -216,6 +221,12 @@ class AdmissionController:
                     "approval.date must use ISO-8601 format when supplied",
                     "Omit approval.date when no authoritative date exists, or provide an ISO-8601 date/time."
                 ))
+        elif explicit_gate not in (None, False, "", [], {}):
+            failures.append(ValidationFailure(
+                "APPROVAL_GATE_UNSATISFIED", "approval",
+                "the submitted WOP declares an approval gate but supplies no approval",
+                "Resolve the approval gate declared by the WOP before admission."
+            ))
 
         package = submission.get("execution_package_references")
         if not isinstance(package, Mapping):
@@ -231,7 +242,6 @@ class AdmissionController:
                     f"Provide execution_package_references.{field}."
                 )
 
-        sections = submission.get("sections")
         if not isinstance(sections, Mapping):
             failures.append(ValidationFailure(
                 "SECTIONS_MISSING", "sections", "sections must be an object",

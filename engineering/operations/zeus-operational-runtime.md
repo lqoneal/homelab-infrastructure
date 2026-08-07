@@ -7,8 +7,8 @@ The authoritative production ownership model is
 authenticated as principal `loneal`, is the sole ultimate engineering
 authority for every Zeus Operational Alpha domain. The authenticated Zeus CLI
 is the authoritative interface through which he exercises that authority.
-Controlled documentation is the normal operational source of execution
-authority. Zeus resolves, validates, reconciles, and executes that authority;
+The submitted WOP is the normal operational source of work authority. Zeus
+resolves, validates, reconciles, and executes within that authority;
 it is not an independent authority.
 
 The repository root discovered from `scripts/zeus` defines the Zeus runtime.
@@ -155,11 +155,10 @@ state and artifact-manifest digests. The tracked
 `engineering/authority/operational-authority-state.yaml` is a migration
 fallback until the first runtime-store publication, not an activation target.
 
-ZEUS-P2-014 commissioned the repository-fixed source through controlled
-enrollment, signing, readiness, and activation. Operational resolution still
-requires a complete mission/work item, repository assertion, signed operator
-approval, authority binding, governing baseline, and authenticated principal
-record at that location. Tests may use an isolated source override only when
+Operational resolution requires a complete mission/work item, repository
+assertion, submitted-WOP binding, governing baseline, and authenticated
+principal record. A signed operator approval is required only for a gate
+explicitly declared by the submitted WOP. Tests may use an isolated source override only when
 `ZEUS_TESTING=1`; production ignores the override.
 
 The runtime validates ownership labels, lifecycle and qualification state,
@@ -201,9 +200,9 @@ scripts/zeus admit-mission start --mode qualification \
 ```
 
 Operational mode accepts mission, work-item, and principal selectors.
-Execution authority is evaluated separately through activation, Mission
-Contract resolution, and execution verification. A failure there stops
-execution without reversing admission. Neither path automatically dispatches.
+Execution safety is evaluated through Mission Contract resolution and
+execution verification. A failure there stops execution without reversing
+admission. Neither path automatically dispatches.
 Stage evidence, interruption, resume, replay, failure categories, and recovery
 are specified in
 `engineering/operations/zeus-mission-admission-runtime.md`.

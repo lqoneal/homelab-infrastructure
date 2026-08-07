@@ -1235,14 +1235,14 @@ identifiers in this record.
 
 | Attribute | Resolution |
 |---|---|
-| Architectural decision | The standard chain ends with the effective Authority Record as authority; derived Mission Contract and qualified WOP lead directly to Zeus execution checks. There is no Execution Grant. |
+| Architectural decision | For the current Zeus submission path, the standard chain ends with the identity-bound submitted WOP as work authority; admission, provider qualification, baseline, lifecycle, and explicit in-WOP gates lead directly to Zeus execution checks. There is no generic corrective, implementation, or Execution Grant. |
 | Rationale | A routine second grant duplicates governance authority and creates another revocation, identity, and reconciliation problem. |
 | Alternatives considered | Mandatory Execution Grant; optional implicit grant; WOP qualification as grant; no post-WOP authority object. |
 | Rejected alternatives | Both grant variants create or hide a second authority object. Qualification evaluates conformity and is not approval. |
 | Affected subsystems | Governance, WOP, Zeus EWI, admission, compatibility. |
-| Authoritative owners | Governance owns Authority Record conditions; EWI owns initiation within those conditions. |
+| Authoritative owners | The operator-submitted WOP owns work scope; named control owners own validation predicates; EWI owns initiation only after those predicates pass. |
 | Lifecycle impacts | No additional lifecycle state or transition is introduced. |
-| Implementation constraints | Pre-dispatch revalidation of authority, conditions, receipts, freshness, claims, and environment; delayed authorization requires a future controlled architectural extension with demonstrated need. |
+| Implementation constraints | Pre-dispatch revalidation of WOP identity, scope, conditions, receipts, freshness, claims, and environment; no delayed generic authorization artifact may be introduced without demonstrated need. |
 | Backward compatibility | Existing Execution Grant representations become compatibility evidence or are ignored after explicit migration; they cannot be required by the canonical path. |
 | Future implementation | ADR-FI-005. |
 

@@ -169,7 +169,10 @@ Engineering Governance is the controlled function used to:
 * accept completed engineering work;
 * authorize governance revisions.
 
-Implementation agents possess only the bounded execution authority explicitly resolved from the applicable controlled authority model. For Operational Alpha this is the published convergence authority chain and its authorized WOP; historical EWOs do not grant or block Operational Alpha execution.
+Implementation agents possess only the bounded work authority explicitly
+contained in the identity-bound submitted WOP. For Operational Alpha, Zeus
+resolves that WOP and its safety predicates; historical EWOs do not grant or
+block current execution.
 
 Zeus is the authority-resolution, validation, reconciliation, and execution
 system. It does not invent approvals or self-authorize. When normal controlled
@@ -179,14 +182,11 @@ controlled documentation, never execution outside it.
 
 ### Manual Governance WOP Authority
 
-Until Engineering Governance declares Zeus capable of autonomous WOP
-generation, an explicitly submitted Engineering Governance WOP may serve as
-the bounded root authority for its declared and allowlisted scope. The WOP
-must be resolved from EMM and validate against the active
-`MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY`; the runtime shall retain complete
-lineage from every subordinate artifact to that WOP submission. This exception
-does not apply to autonomous WOPs or incomplete manual-submission records,
-which continue to require the normal Authority Record contract.
+An identity-bound operator-submitted WOP is the bounded work-authority source
+for its declared and allowlisted scope. The WOP must be resolved from EMM and
+admitted; the runtime shall retain complete lineage from every subordinate
+artifact to that WOP submission. The policy records the submission protocol and
+does not create a separate corrective, implementation, or execution grant.
 
 ### Governance Bootstrap Continuity
 

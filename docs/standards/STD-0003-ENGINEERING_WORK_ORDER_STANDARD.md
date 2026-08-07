@@ -51,15 +51,14 @@ mission_assurance_requirements:
 
 ## Operational Alpha convergence migration
 
-For Operational Alpha, SPEC-0014 is the controlling execution-authority
-model. The legacy Active Engineering Work Order / Work Registry Mission
+For Operational Alpha, SPEC-0014 is the controlling submission and execution
+safety model. The legacy Active Engineering Work Order / Work Registry Mission
 Contract pair is retained only for historical traceability and shall not be
-used to resolve a new Operational Alpha action. The current authority is the
-version-pinned Authority Record and published Implementation WOP resolved from
-EMM under SPEC-0014. A `READY` WOP is non-executing; only a resolver-confirmed
-Authority Record may make a WOP `ACTIVE`, except for the bounded root actions
-of an explicitly submitted manual-governance WOP while the active
-manual-governance policy applies.
+used to resolve a new Operational Alpha action. The operator-submitted WOP is
+the work-authority source for its explicit scope. Admission and execution
+safety resolve identity, integrity, baseline, provider, lifecycle, dependency,
+and explicit in-WOP approval conditions; none of those predicates is a second
+grant of operator authority.
 
 ## Purpose
 
@@ -83,12 +82,10 @@ For Operational Alpha, this standard applies to every Implementation WOP or manu
 
 ### Principle 1 — Explicit Authorization
 
-Operational Alpha work shall be performed only under an `ACTIVE` Implementation
-WOP whose specific action is resolved by a valid Authority Record. During the
-active manual-governance phase, an exact EMM-resolved governance-submitted WOP
-may instead resolve its explicitly allowlisted root actions under
-`MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY`; autonomous WOPs do not qualify for
-this exception.
+Operational Alpha work shall be performed only under an identity-bound,
+admitted submitted WOP whose specific action is within its explicit scope.
+`MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY` records the submission protocol and
+does not create an additional authority object.
 
 ---
 
@@ -100,7 +97,9 @@ Each Operational Alpha WOP shall authorize only one defined engineering mission 
 
 ### Principle 3 — Defined Authority
 
-Every Operational Alpha WOP shall explicitly define or resolve the authority granted to the implementation agent.
+Every Operational Alpha WOP shall explicitly define its scope, exclusions,
+and execution-safety conditions. Submission is the authority boundary;
+downstream resolution verifies containment and readiness.
 
 Authority not explicitly granted is prohibited.
 
@@ -305,9 +304,11 @@ Engineering Work Orders shall comply with:
 * Engineering Document Lifecycle Standard;
 * Engineering Document Persistence Standard.
 
-Implementation agents verify that the Implementation WOP is `ACTIVE` and that
-the applicable SPEC-0014 Authority Record resolves before execution. Neither
-the WOP alone nor its `READY` state conveys execution authority.
+Implementation agents verify that the submitted WOP is identity-bound,
+admitted, lifecycle-eligible, and that all applicable SPEC-0014 safety checks
+resolve before execution. A separate generic corrective, implementation, or
+execution-authority record is not required. Explicit approval gates declared
+by the WOP remain enforced.
 
 Lifecycle state transitions remain the responsibility of Engineering Governance.
 

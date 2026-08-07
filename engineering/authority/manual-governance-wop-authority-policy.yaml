@@ -1,13 +1,14 @@
 schema_version: 1
 policy_id: MANUAL-GOVERNANCE-WOP-AUTHORITY-POLICY
-revision: '1.0'
+revision: '2.0'
 classification: Authoritative
 authoritative_owner: Engineering Governance
 lifecycle_state: ACTIVE
 mode: MANUAL_GOVERNANCE
 purpose: >-
-  Define the temporary admission model for WOPs explicitly submitted by
-  Engineering Governance before autonomous WOP generation is declared capable.
+  Define the temporary admission model for WOPs submitted through the
+  authoritative Zeus interface before autonomous WOP generation is declared
+  capable. Submission itself is the governance submission act.
 development_mode:
   status: ACTIVE
   submission_command: "zeus submit <WOP_ID_OR_PACKAGE>"
@@ -23,20 +24,28 @@ activation_condition: >-
   Engineering Governance declares Zeus capable of autonomous WOP generation
   and replaces or supersedes this policy through a controlled directive.
 manual_submission_requirements:
-  - exact EMM-registered ImplementationWOP identity and revision
-  - governance_submission.submitted is true
-  - governance_submission.submitted_by is Engineering Governance
-  - governance_submission.submission_id is non-empty
-  - governance_submission.directive_id is non-empty
-  - delegation_state is ACTIVE
-  - non-empty permitted_actions allowlist
+  - exact identity-bound submitted-WOP identity and revision
+  - authoritative Zeus submission receipt is present and integrity-bound
+  - the requested action is explicitly contained in the submitted WOP scope
+submission_authority:
+  authoritative_submission_is_submission_act: true
+  second_governance_submission_declaration_required: false
+  development_production_submission_protocol_distinction: NONE
+  legacy_fields:
+    governance_authority: accepted_non_authoritative_metadata
+    governance_submission: accepted_non_authoritative_metadata
+    submitted_by: accepted_provenance_metadata
+    submitter_identity: accepted_provenance_metadata
+  execution_safety: resolved downstream by admission, prerequisites, provider, lifecycle, baseline, session, and applicable approvals
+  publication_authority: resolved downstream; not created by submission
 runtime_rules:
-  - A conforming manual-governance WOP is the root authority only for its allowlisted actions.
+  - A conforming submitted WOP is the work-authority boundary only for its explicit scope.
   - A derived Authority Record is not required to admit an allowlisted root action.
   - All subordinate artifacts must retain the exact WOP identity, revision, policy id, and submission id.
-  - Autonomous WOPs and manual WOPs without every required submission field require the normal Authority Record contract.
-  - The runtime never infers a manual-governance submission from a WOP title, submitter string, or command invocation.
-  - A Development WOP is authoritative only when it explicitly declares execution_mode DEVELOPMENT, binds the canonical repository, and names Engineering Governance; acceptance generates registration and provenance in the existing Stage 1 record.
+  - Every submitted WOP is the work-authority boundary for its own explicit scope; no generic corrective, implementation, or execution grant is required.
+  - Admission, identity, integrity, provider, lifecycle, baseline, and explicit in-WOP approval checks remain mandatory downstream controls.
+  - The runtime never infers a submission from a WOP title, submitter string, or command invocation; it consumes the identity-bound submitted WOP.
+  - Development and Production use one canonical submission protocol. Their execution and effect controls remain downstream and distinct where required.
   - Development Mode never grants production authority, modifies protected baselines, or implements a capability outside the submitted WOP scope.
 traceability:
   directive: Controlled Change Directive — Manual Governance WOP Authority Policy

@@ -148,7 +148,10 @@ Each controlled document class shall perform its assigned engineering responsibi
 
 ### Principle 5 — Explicit Execution Authority
 
-Repository modification and engineering execution shall occur only under explicit, bounded authority. An Active Engineering Work Order is the ordinary mission-specific execution authority.
+Repository modification and engineering execution shall occur only under
+explicit, bounded authority. For the current Zeus submission protocol, the
+operator-submitted WOP is the mission-specific work-authority boundary; its
+scope and explicit gates remain hard limits.
 
 During Transitional Engineering Handoff Governance, a Governance-issued
 Engineering Handoff supplies constitutional initiation authority under
@@ -338,7 +341,11 @@ Relationships are controlled engineering information. They shall be explicit whe
 
 ### Authority
 
-The Active Engineering Work Order is the ordinary single mission-specific execution authority. Conversational context, task notes, derived views, generated instructions, and implementation-agent inference shall not expand its authority.
+The submitted WOP is the ordinary single mission-specific work-authority
+boundary. Conversational context, task notes, derived views, generated
+instructions, and implementation-agent inference shall not expand its scope.
+Admission and execution-safety predicates validate the WOP; they do not grant
+authority a second time.
 
 A Governance-issued Engineering Handoff may initiate EWO construction during
 the Charter-defined transitional period, but the resulting EWO remains the
@@ -360,7 +367,10 @@ Repository-governed Engineering Work Orders shall be persisted under `docs/work-
 
 ### Lifecycle
 
-Engineering Work Orders follow the common controlled-document lifecycle defined by STD-0001 and represented by SPEC-0001. Only an Active Engineering Work Order conveys execution authority.
+Engineering Work Orders follow the common controlled-document lifecycle defined
+by STD-0001 and represented by SPEC-0001. A submitted WOP conveys authority for
+its explicit scope; lifecycle and execution-safety checks determine whether
+that scoped work may proceed.
 
 Engineering Governance controls activation, supersedence, and archival. Implementation agents report execution status but do not approve lifecycle transitions. Completion reporting does not create a separate lifecycle state.
 
@@ -432,7 +442,9 @@ The disposition recorded about the decision subject is distinct from the EGR pub
 
 An EGR shall identify every controlled record and exact revision whose approval, lifecycle, authority, baseline eligibility, deferral, rejection, or supersedence is affected. Authority not explicitly recorded remains ungranted.
 
-An EGR may authorize a governance change or lifecycle transition within its scope. Only an Active Engineering Work Order authorizes bounded engineering execution. When execution is required to implement an EGR, the work shall be separately authorized by an Active EWO or superior controlled execution authority.
+An EGR may authorize a governance change or lifecycle transition within its
+scope. When engineering execution is required, the submitted WOP is the
+bounded work-authority source; its admission and safety controls still apply.
 
 Approval of an EGR does not by itself modify another controlled record. Authorized changes to affected records, indexes, baselines, or implementation artifacts shall occur only through separately authorized complete revisions or operations.
 

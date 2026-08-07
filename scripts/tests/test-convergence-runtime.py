@@ -28,7 +28,7 @@ class ConvergenceRuntimeTests(unittest.TestCase):
             action="activate", correlation_id="test-no-authority",
         )
         self.assertEqual("PRECONDITION_FAILED", value["outcome"])
-        self.assertEqual(["AUTHORITY_RECORD_REQUIRED"], value["reasons"])
+        self.assertEqual(["SUBMITTED_WOP_AUTHORITY_REQUIRED"], value["reasons"])
         self.assertTrue(value["receipt_digest"])
 
     def test_artifacts_and_synchronization_are_derived_and_directional(self):
@@ -104,7 +104,7 @@ class ConvergenceRuntimeTests(unittest.TestCase):
                 correlation_id="manual-governance",
             )
             self.assertEqual("RESOLVED", resolved["outcome"])
-            self.assertEqual("MANUAL_GOVERNANCE_WOP", resolved["authority_mode"])
+            self.assertEqual("SUBMITTED_WOP", resolved["authority_mode"])
             generated = runtime.operational_wop(
                 intent="create subordinate artifact",
                 flow=runtime.execution_flow(
@@ -113,7 +113,7 @@ class ConvergenceRuntimeTests(unittest.TestCase):
                 ),
             )
             self.assertEqual(
-                "MANUAL_GOVERNANCE_WOP", generated["wop"]["authority_lineage"]["mode"]
+                "SUBMITTED_WOP", generated["wop"]["authority_lineage"]["mode"]
             )
             self.assertEqual("WOP-MANUAL", generated["wop"]["authority_lineage"]["submission_id"])
             denied = runtime.resolve(
@@ -131,7 +131,7 @@ class ConvergenceRuntimeTests(unittest.TestCase):
         self.assertEqual("RESOLVED", value["outcome"])
         self.assertEqual("NONE", value["lifecycle_effect"])
         self.assertEqual("OA-01-BOOTSTRAP-GATE-ACTIONS", value["action_specification"]["id"])
-        self.assertEqual("MANUAL_GOVERNANCE_WOP", value["authority_receipt"]["authority_mode"])
+        self.assertEqual("SUBMITTED_WOP", value["authority_receipt"]["authority_mode"])
 
     def test_published_framework_creates_only_nonpersisted_candidates(self):
         candidate = self.runtime.artifact_candidate(

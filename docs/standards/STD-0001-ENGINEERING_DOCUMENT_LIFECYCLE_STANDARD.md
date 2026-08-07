@@ -171,7 +171,10 @@ No one state shall be inferred solely from another.
 
 An Active record may exercise only the authority assigned to its document class and delegated scope.
 
-Active status alone does not authorize engineering execution. Only an Active Engineering Work Order authorizes bounded engineering execution.
+Active status alone does not bypass execution safety. For the current Zeus
+submission protocol, an identity-bound submitted WOP authorizes bounded work
+within its explicit scope; admission, provider, baseline, lifecycle, and
+explicit WOP gates still control whether it may proceed.
 
 ### Principle 6 — Stable Baselines
 
@@ -240,7 +243,9 @@ Examples:
 * an Active Engineering Work Order authorizes bounded engineering execution;
 * an Active index provides authoritative repository discovery without replacing indexed records.
 
-Active status does not expand class responsibility or transfer authority. Only an Active Engineering Work Order authorizes execution.
+Active status does not expand class responsibility or transfer authority. A
+submitted WOP is the current Zeus work-authority boundary, and its scope may
+not be expanded by lifecycle or derived records.
 
 An Active revision may have `persistence_status: Pending` only when explicit Engineering Governance authority permits activation while prohibiting or deferring commit. Pending persistence shall remain visible and blocks any claim that historical persistence or persistence qualification is complete.
 

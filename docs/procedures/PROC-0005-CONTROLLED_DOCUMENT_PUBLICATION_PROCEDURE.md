@@ -73,9 +73,11 @@ by existing Governance records into an executable workflow without redefining
 those requirements.
 
 The procedure separates technical qualification, Governance approval,
-publication execution, persistence, and downstream implementation authority.
-It creates none of those authorities and shall not be used as a substitute for
-an explicit authorization.
+publication execution, persistence, and downstream execution-safety controls.
+It creates none of those controls or operator work authority. The submitted
+WOP remains the work-authority boundary for contained implementation work;
+this procedure shall not be used as a substitute for its required submission,
+admission, or explicit in-WOP approval gate.
 
 ## 2. Scope and Applicability
 
@@ -156,8 +158,10 @@ publish, or convert a publication outcome into a Governance or baseline state.
   approved by Engineering Governance or a superior authority that properly
   holds or delegates lifecycle-transition authority. Publication authority
   does not independently approve a lifecycle transition.
-- **Implementation authority:** Separate authority to execute engineering work
-  described by a controlled document. Publication does not provide it.
+- **Submitted-WOP work authority:** The bounded operator work authority for
+  implementation explicitly contained in the submitted WOP. Publication does
+  not broaden it; publication, lifecycle, baseline, and provider controls
+  remain separately required.
 - **Immutable baseline:** The verified repository locator that preserves the
   exact published revision and its atomic supporting updates.
 - **Publication input manifest:** The immutable exact publication content,
@@ -382,9 +386,10 @@ During Transitional Engineering Handoff Governance, a Governance-issued
 Engineering Handoff satisfies the Draft preparation and workflow-initiation
 authority precondition when the proposed document and scope are explicit in
 that Handoff. It does not by itself satisfy content approval,
-lifecycle-transition approval, publication execution, commit, push, tag,
-qualification, or downstream implementation authority. Those authorities and
-gates remain separately required by this procedure and its governing records.
+lifecycle-transition approval, publication execution, commit, push, tag, or
+qualification. Those publication and lifecycle controls remain separately
+required by this procedure and its governing records; it does not broaden the
+work authority already bounded by the submitted WOP.
 
 ## 7. Publication Lifecycle
 
@@ -1122,8 +1127,8 @@ only as derived readiness evidence.
 A publication conforms to this procedure when:
 
 - all applicable stages and tailored controls are attributable;
-- technical qualification, Governance approval, publication, and
-  implementation authority remain separate;
+- technical qualification, Governance approval, publication, and execution-
+  safety controls remain separate;
 - the common lifecycle and class-specific requirements are preserved;
 - one exact frozen publication set is authorized and published atomically;
 - the immutable input manifest, append-only output ledger, frozen output
@@ -1188,7 +1193,7 @@ this table if any inconsistency is discovered.
 
 Automation shall validate the actor and authority reference before accepting an
 event. It shall not synthesize PASS, REJECTED, WITHDRAWN, lifecycle approval,
-publication authority, or corrective authority from repository state.
+publication authority, or submitted-WOP work authority from repository state.
 
 ## Engineering Assurance Evidence in Publication
 

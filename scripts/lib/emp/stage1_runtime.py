@@ -131,7 +131,7 @@ def _authority_snapshot(record: Mapping[str, Any], captured_at: str) -> dict[str
         "protected_baselines": record.get("protected_baselines", {}),
         "execution_mode": record.get("execution_mode"),
         "effect_profile": record.get("effect_profile"),
-        "governance_authority": (record.get("authorization") or {}).get("authority"),
+        "governance_authority": (record.get("authorization") or {}).get("authority_source"),
         "publication_authority": "Engineering Governance",
         "approval_state": (record.get("authorization") or {}).get("decision"),
         "provider_qualification_required": True,
@@ -531,16 +531,21 @@ class Stage1Runtime:
             if metadata.get("execution_mode") != "DEVELOPMENT":
                 raise Stage1Error("development submission requires execution_mode=DEVELOPMENT",
                                   evidence={"reason_code": "DEVELOPMENT_MODE_REQUIRED"})
-            # The canonical Zeus submission operation is the governance
-            # submission act. Legacy governance_authority metadata remains
-            # accepted, but is not a second authority assertion.
+            # The canonical Zeus submission operation is the operator's
+            # submitted-WOP authority act. Legacy authority metadata remains
+            # accepted as provenance, but is not a second authority assertion.
             declared_authority = {
                 "authority": metadata.get("authority"),
                 "execution_authority": metadata.get("execution_authority"),
                 "publication_authority": metadata.get("publication_authority"),
             }
+            declared_values = {str(value) for value in declared_authority.values() if value}
+            allowed_sources = {"operator-submitted WOP", "Engineering Governance"}
             conflicts = [key for key, value in declared_authority.items()
-                         if value and value != "Engineering Governance"]
+                         if value and str(value) not in allowed_sources]
+            if len(declared_values) > 1:
+                conflicts.extend(key for key, value in declared_authority.items()
+                                 if value and key not in conflicts)
             if conflicts:
                 raise Stage1Error(
                     "authority chain sources disagree: " + ", ".join(conflicts),
@@ -635,9 +640,9 @@ class Stage1Runtime:
                 "provenance": {"repository": expected, "baseline": baseline,
                                "package_digest": package_digest, "generated_at": timestamp,
                                "operator": operator},
-                "authorization": {"mode": "MANUAL_GOVERNANCE_DEVELOPMENT",
-                                   "authority": "Engineering Governance",
-                                   "decision": "SUBMISSION_AUTHORITY_ONLY"},
+                "authorization": {"mode": "SUBMITTED_WOP",
+                                   "authority_source": "operator-submitted WOP",
+                                   "decision": "SUBMISSION_AUTHORITY_ESTABLISHED"},
                 "failure_injection": {
                     "publication": bool(metadata.get("simulate_publication_failure")),
                     "synchronization": bool(metadata.get("simulate_synchronization_failure")),
@@ -665,10 +670,10 @@ class Stage1Runtime:
                 "protected_baselines": protected,
                 "execution_mode": "DEVELOPMENT",
                 "effect_profile": metadata["effect_profile"],
-                "governance_authority": "Engineering Governance",
-                "wop_authority": "Engineering Governance",
+                "governance_authority": "operator-submitted WOP",
+                "wop_authority": "operator-submitted WOP",
                 "transaction_profile": metadata.get("engineering_transaction_profile") or metadata.get("transaction_profile") or "SPEC-0008:DEVELOPMENT",
-                "approval_state": "SUBMISSION_AUTHORITY_ONLY",
+                "approval_state": "NOT_REQUIRED_UNLESS_DECLARED_IN_WOP",
                 "publication_authority": "Engineering Governance",
                 "provider_qualification_required": True,
                 "permitted_effects": [metadata["effect_profile"]],
@@ -907,7 +912,7 @@ class Stage1Runtime:
             "validation": receipt("validation", {"source": str(package_source), "source_digest": source_digest, "validator": "stage1.validate_package", "result": package_evidence.get("result", "PASS"), "failures": package_evidence.get("failures", [])}),
             "packaging": receipt("packaging", {"package": record.get("package"), "package_digest": package_digest, "source_digest": source_digest, "transactional_promotion": bool((packaging or {}).get("packaged", False))}),
             "registration": receipt("registration", {"registration_id": record["registration"]["registration_id"], "wop_id": record["wop_id"], "package_digest": package_digest, "repository_baseline": record["repository_baseline"]}),
-            "authorization": receipt("authorization", {"authority": "Engineering Governance", "decision": record["authorization"]["decision"], "effect_profile": record["effect_profile"], "repository": record["repository"], "protected_baselines": record["protected_baselines"]}),
+            "authorization": receipt("authorization", {"authority_source": "operator-submitted WOP", "decision": record["authorization"]["decision"], "effect_profile": record["effect_profile"], "repository": record["repository"], "protected_baselines": record["protected_baselines"]}),
             "admission": receipt("admission", {"admission_id": f"EMM-DEV-ADMISSION-{package_digest[:24]}", "wop_id": record["wop_id"], "execution_mode": "DEVELOPMENT", "executor_requirements": ["qualified Development execution agent"], "effect_profile": record["effect_profile"]}),
         }
 

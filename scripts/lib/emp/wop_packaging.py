@@ -262,15 +262,15 @@ def package(source: Path, destination_root: Path, repository_root: Path | str | 
         "priority": int(metadata.get("priority", 0)), "candidate_state": "CANDIDATE",
         "qualification_requirements": metadata["qualification_requirements"],
         "completion_requirements": metadata["completion_requirements"],
-        "approval": {"authorized_lifecycle_state": metadata["approval_authorized_lifecycle_state"]},
+        "approval": metadata.get("approval", {}) if metadata.get("approval_gate") else {},
         "authoritative_references": metadata["authoritative_references"],
-        "execution_package_references": {
-            "authority_node_id": metadata["execution_package_authority_node_id"],
-            "authorization_decision_record": metadata["execution_package_authorization_decision_record"],
-            "immutable_wop": metadata["wop_id"],
-        },
+        "execution_package_references": {"immutable_wop": metadata["wop_id"]},
         "sections": sections,
-        "execution_mode": execution_mode, "governance_authority": metadata["governance_authority"],
+        # Retain the legacy field for package compatibility, but do not make
+        # it a required second authority artifact. Submission authority is
+        # established by the identity-bound submitted WOP at Zeus intake.
+        "execution_mode": execution_mode,
+        "governance_authority": metadata.get("governance_authority", "operator-submitted WOP"),
         "repository_identity": metadata["repository_identity"],
         "effect_profile": metadata["effect_profile"],
         "required_execution_files": ["bootstrap.md", "roadmap.md", "mission.yaml", "gates.yaml", "manifests/immutable-manifest.yaml", source_copy.name],
@@ -295,7 +295,7 @@ def package(source: Path, destination_root: Path, repository_root: Path | str | 
         "\n\nCompletion requirements:\n" +
         "\n".join(f"- {item}" for item in metadata["completion_requirements"]) + "\n", encoding="utf-8")
         (temporary / "gates.yaml").write_text(yaml.safe_dump({"schema_version": 1, "gates": metadata["gates"]}, sort_keys=False), encoding="utf-8")
-        manifest = {"schema_version": 1, "manifest_id": str(metadata["wop_id"]) + "-MANIFEST", "mission_id": metadata["mission_id"], "wop_id": metadata["wop_id"], "execution_mode": execution_mode, "governance_authority": metadata["governance_authority"], "repository_identity": metadata["repository_identity"], "effect_profile": metadata["effect_profile"], "protected_baselines": metadata["protected_baselines"], "source_document_digest": digest}
+        manifest = {"schema_version": 1, "manifest_id": str(metadata["wop_id"]) + "-MANIFEST", "mission_id": metadata["mission_id"], "wop_id": metadata["wop_id"], "execution_mode": execution_mode, "governance_authority": metadata.get("governance_authority", "operator-submitted WOP"), "repository_identity": metadata["repository_identity"], "effect_profile": metadata["effect_profile"], "protected_baselines": metadata["protected_baselines"], "source_document_digest": digest}
         manifest_dir = temporary / "manifests"; manifest_dir.mkdir()
         (manifest_dir / "immutable-manifest.yaml").write_text(yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8")
 
@@ -368,13 +368,9 @@ def _canonical_stage1_metadata(package_value: Mapping[str, Any], canonical_diges
         "candidate_state": "CANDIDATE",
         "qualification_requirements": [str(item.get("acceptance", item["requirement_id"])) for item in requirements],
         "completion_requirements": ["canonical package provenance preserved", "Stage 1 package validation passes", "operator review before submission"],
-        "approval": {"authorized_lifecycle_state": "Active"},
+        "approval": {},
         "authoritative_references": ["PROC-0001@1.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004"],
-        "execution_package_references": {
-            "authority_node_id": "canonical-package-adapter",
-            "authorization_decision_record": "EXTERNAL_AUTHORITY_REQUIRED",
-            "immutable_wop": str(identity["wop_id"]),
-        },
+        "execution_package_references": {"immutable_wop": str(identity["wop_id"])},
         "sections": {
             "completion_report_requirement": "Record canonical and Stage 1 identities, validation evidence, and the next governed lifecycle action.",
             "deliverables": ["validated canonical package", "deterministic Stage 1 representation", "provenance mapping"],

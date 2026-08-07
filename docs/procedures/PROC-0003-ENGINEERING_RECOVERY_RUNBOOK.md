@@ -83,7 +83,8 @@ baseline being protected.
 
 Recovery qualification and restoration qualification are separate decisions.
 Corrective action, including filesystem repair, media replacement, and
-platform update, requires authority distinct from diagnostic qualification
+platform update, requires an identity-bound submitted WOP whose scope contains
+the action; it does not require a second generic corrective-authority grant.
 unless the mission explicitly combines them.
 
 ## Preconditions
@@ -153,7 +154,7 @@ Apply the following order and preserve evidence at each boundary:
 4. acquire original non-mutating evidence;
 5. qualify the evidence and isolate the failing layer or variable;
 6. preserve required artifacts and establish rollback;
-7. request or confirm separate corrective authority;
+7. verify that the submitted WOP explicitly contains the corrective action;
 8. perform recovery or repair only when supported; and
 9. validate restoration and operational deployment as separate decisions.
 
@@ -458,7 +459,8 @@ failure. Do not repeatedly power-cycle it. At the local console:
 6. preserve logs to separate media when safe;
 7. perform read-only filesystem and media assessment; and
 8. decide whether the evidence indicates configuration, filesystem, transport,
-   power, or media failure before requesting corrective authority.
+   power, or media failure before preparing or submitting a corrective WOP
+   whose scope contains the repair.
 
 Do not run a modifying filesystem check, rewrite configuration, remount a
 questionable filesystem read-write, or conceal the original symptom during

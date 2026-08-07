@@ -115,9 +115,12 @@ Command output SHALL be considered a derived engineering view.
 
 ## 5.1 Command Authority Standard
 
-For Operational Alpha, the authority owner is the SPEC-0014 Authority Record
-and its resolved baseline-bound Implementation WOP. Classification determines
-whether recorded authority is sufficient; it never creates authority.
+For current Zeus submission, the operator-submitted WOP owns work authority
+for its explicit scope. Classification determines whether the submitted work
+has the required safety controls; it never creates a second authority grant.
+Historical Authority Records and domain-specific decisions remain applicable
+only when their owning contract requires them for safety, identity, or an
+explicit in-WOP approval gate.
 
 ### Automatic
 
@@ -181,11 +184,11 @@ fails closed. Zeus consumes the resolved contract for its own qualified
 lifecycle and SHALL NOT infer dispatch authority from implementation state.
 
 The resolved Operational Alpha contract binds repository identity and baseline,
-Authority Record, exact EMM revisions, Implementation WOP, scope, objective,
-lifecycle position, capability, evidence, reconciliation obligations, and next
-authorized action. A WOP is a bounded execution package only after Authority
-Record resolution; neither a WOP nor workspace permission creates an
-engineering decision.
+exact EMM revisions, the submitted WOP, scope, objective, lifecycle position,
+capability, evidence, reconciliation obligations, and next authorized action.
+A WOP is a bounded work-authority and execution package after validation and
+admission; neither workspace permission nor a readiness projection bypasses
+the required safety controls or creates an unbounded engineering decision.
 
 Required inputs are the repository identity and HEAD, exact controlled-owner
 identities and revisions, the unique Mission Contract and registry record,
