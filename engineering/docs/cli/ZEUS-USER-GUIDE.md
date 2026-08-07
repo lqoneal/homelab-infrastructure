@@ -543,6 +543,22 @@ orphaned, forged, stale, duplicate, or conflicting execution-start state
 fails closed. Execution start is not mission work; the next boundary is
 `BEGIN_CONTROLLED_MISSION_WORK`.
 
+After operator review of the bound authority, the canonical consumer of that
+boundary is:
+
+```text
+scripts/zeus execution-start begin <MISSION_ID> --approve --json
+```
+
+`begin` does not create a second execution lifecycle. It verifies the existing
+execution-start record, reuses its mission/WOP/provider/invocation/session
+bindings, asks the same provider broker for one controlled thread/turn, and
+then records an identity-preserving active-execution and monitoring
+projection. A provider/session startup or acknowledgement failure is
+fail-closed before active projection commit. Repeating `begin` against the
+same active transition returns `REPLAY=IDEMPOTENT`; it does not start another
+execution, provider process, session, or turn.
+
 ### P5-G6 controlled Codex sessions
 
 The normal operator entry point is direct native Codex launched under the Zeus
@@ -671,7 +687,10 @@ and published baseline before launching the idle Codex application server.
 Operator approval is
 required for start, resume, and stop. Zeus owns the session identity, process
 identity, working directory, logs, append-only events, interruption state,
-and replay; the Codex process does not own lifecycle authority.
+and replay; the Codex process does not own lifecycle authority. `codex start`
+remains provider/session preparation and does not consume
+`BEGIN_CONTROLLED_MISSION_WORK`; use `execution-start begin` for the bound
+active transition.
 `codex shell --help`, `start --help`, `attach --help`, `resume --help`,
 `stop --help`, `status --help`, `logs --help`, and `artifacts --help` provide
 command-specific guidance. `--approve` is required for mission-bound shell,
@@ -812,3 +831,57 @@ work boundary. Provider invocation continues to own the distinct
 `invocation_provenance_baseline`; it is never reused as execution-start
 provenance. Every projection therefore reports the same execution state and
 next action while retaining command-specific schemas.
+
+### P5-G6 execution monitoring
+
+The read-only execution monitor is distinct from provider/session status. It
+resolves the canonical execution-start transaction, mission/WOP/provider/
+session bindings, execution state, provider and execution liveness, current
+work position, blockers, approvals, roadmap position, source digests, and
+next authorized action. Provider process existence alone never projects active
+execution.
+
+Use the Zeus-native interfaces:
+
+```text
+scripts/zeus execution status <EXECUTION_ID> --json
+scripts/zeus execution verify <EXECUTION_ID> --json
+```
+
+`execution verify` independently checks identity, bindings, state, liveness,
+position, blocker/approval projection, progress, provenance, and idempotent
+replay. The projection reports `PHASE_CURRENT/PHASE_TOTAL` and
+`GATE_CURRENT/GATE_TOTAL` from the source-bound canonical roadmap revision;
+these are structural orientation metrics, not completion percentages.
+
+Monitoring is read-only. It does not start mission or repository work, grant
+approval, advance lifecycle state, or create execution records. Contradictory
+execution and monitoring state fails closed with
+`RECONCILE_EXECUTION_STATE`. Optional execution-scoped EENS events are read as
+source evidence when present; EENS remains a projection/transport layer and
+not an independent execution authority.
+
+### P5-G6 acceptance reconciliation
+
+When a host operator has already recorded P5-G6 acceptance in the controlled
+completion evidence, Zeus discovers that decision through the existing gate
+acceptance path. Readiness and the canonical disposition are read-only:
+
+```text
+scripts/zeus verify P5-G6 --json
+scripts/zeus gate show P5-G6 --json
+```
+
+If no machine-readable record exists, the one-time import is explicitly marked
+as reconciliation of the existing decision and does not request or create a
+new operator decision:
+
+```text
+scripts/zeus accept P5-G6 --reconcile-existing --yes --json
+```
+
+Replay is idempotent. The resulting record is Zeus-owned acceptance state,
+bound to the active execution projection, execution verification, and the
+completion report digest. P5-G6 acceptance does not authorize publication or
+P5-G7 execution. The manual shell acceptance block is therefore redundant for
+future gates; use the canonical Zeus path and retain the report as evidence.

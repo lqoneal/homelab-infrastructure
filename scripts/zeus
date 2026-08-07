@@ -21,7 +21,7 @@ from scripts.lib.emp.mission_execution_runtime import ExecutionStateStore, Missi
 from scripts.lib.emp.gate_handlers import operational_framework  # noqa: E402
 from scripts.lib.emp.production_execution import dispatch_readiness, load_json, load_registry  # noqa: E402
 from scripts.lib.emp.next_action import NextActionError, human_text as next_action_text, resolve_next_action  # noqa: E402
-from scripts.lib.emp.gate_approval import GateApprovalError, GateApprovalService, approve_command, verify_command  # noqa: E402
+from scripts.lib.emp.gate_approval import GateApprovalError, GateApprovalService, P5GateAcceptanceService, approve_command, verify_command  # noqa: E402
 from scripts.lib.emp.gate_decision import decide as decide_gate, review as review_gate  # noqa: E402
 from scripts.lib.emp.oa02_lifecycle import resolve as resolve_oa02, verify as verify_oa02  # noqa: E402
 from scripts.lib.emp.agent_qualification import AgentQualificationError, qualify as qualify_agent, registry as agent_registry, revoke as revoke_agent, runtime_registry_path, select as select_agent  # noqa: E402
@@ -89,6 +89,7 @@ from scripts.lib.emp import dispatch_foundation
 from scripts.lib.emp import provider_session
 from scripts.lib.emp import provider_invocation
 from scripts.lib.emp import execution_start
+from scripts.lib.emp import execution_monitoring
 from scripts.lib.emp import codex_adapter
 from scripts.lib.emp import codex_interactive
 from scripts.lib.emp import codex_reconciliation
@@ -97,7 +98,7 @@ CODEX_CONTROLLER_ROUTING = {
     "status": "managed.status", "logs": "managed.logs", "artifacts": "managed.artifacts",
     "start": "managed.start", "resume": "managed.resume", "stop": "managed.stop",
     "shell": "interactive.shell", "interactive": "interactive.shell", "attach": "interactive.attach",
-    "reconcile": "reconciliation.reconcile",
+    "reconcile": "reconciliation.reconcile", "supersede": "managed.supersede",
 }
 
 def now(value): return datetime.fromisoformat(value.replace("Z", "+00:00")) if value else datetime.now(timezone.utc)
@@ -467,7 +468,7 @@ def main(argv=None):
         operator_path = Path("/tmp/zeus-wop-authoring-interface-state.json")
     if "doctor" in arguments:
         operator_path = Path("/tmp/zeus-doctor-interface-state.json")
-    if "codex" in arguments:
+    if "codex" in arguments or "execution" in arguments:
         # Codex lifecycle commands must not initialize or mutate the
         # controller-owned runtime merely to render operator orientation.
         operator_path = Path("/tmp/zeus-codex-state/zeus-codex-interface-state.json")
@@ -484,7 +485,7 @@ def main(argv=None):
                 "status", "intro", "next-action", "state", "health", "operation",
                 "mission", "explain", "authority", "capabilities", "capability",
                 "lifecycle", "list", "show", "assurance", "context", "evidence",
-                "qualification", "completion", "resume", "stop", "policy", "validate", "submit",
+                "qualification", "completion", "resume", "stop", "policy", "validate", "submit", "execution",
                 "dispatcher", "dispatch", "provider-session", "provider-invocation", "execution-start", "codex", "orchestrate", "doctor", "runtime", "config", "synchronize", "platform", "admit", "provider", "publication",
             } else interface_store.increment()
         )
@@ -574,10 +575,10 @@ def main(argv=None):
     operation = sub.add_parser("operation"); operation.add_argument("action", choices=("show", "status", "roadmap", "metrics", "health", "verify", "next-action")); operation.add_argument("operation_id", nargs="?", default="BETA"); operation.add_argument("--json", action="store_true"); operation.add_argument("--verify", action="store_true")
     assurance = sub.add_parser("assurance"); assurance.add_argument("action", choices=("capabilities",))
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
-    accept=sub.add_parser("accept"); accept.add_argument("gate"); accept.add_argument("--reject", action="store_true"); accept.add_argument("--rationale", default=""); accept.add_argument("--at"); accept.add_argument("--yes", action="store_true"); accept.add_argument("--json", action="store_true")
+    accept=sub.add_parser("accept"); accept.add_argument("gate"); accept.add_argument("--reject", action="store_true"); accept.add_argument("--reconcile-existing", action="store_true", help="import an already-recorded operator acceptance without creating a new decision"); accept.add_argument("--rationale", default=""); accept.add_argument("--at"); accept.add_argument("--yes", action="store_true"); accept.add_argument("--json", action="store_true")
     decline=sub.add_parser("decline"); decline.add_argument("approval_id"); decline.add_argument("--operator", required=True); decline.add_argument("--at")
-    verify=sub.add_parser("verify"); verify.add_argument("gate"); verify.add_argument("--wop"); verify.add_argument("--revision", default="1"); verify.add_argument("--authority-record"); verify.add_argument("--correlation-id", default="zeus-gate-verification")
-    execution=sub.add_parser("execution"); execution.add_argument("action", choices=("status","resolve","bootstrap-actions")); execution.add_argument("identifier"); execution.add_argument("--revision", default="1"); execution.add_argument("--requested-action", default="execute"); execution.add_argument("--authority-record"); execution.add_argument("--correlation-id", default="zeus-execution")
+    verify=sub.add_parser("verify"); verify.add_argument("gate"); verify.add_argument("--wop"); verify.add_argument("--revision", default="1"); verify.add_argument("--authority-record"); verify.add_argument("--correlation-id", default="zeus-gate-verification"); verify.add_argument("--json", action="store_true")
+    execution=sub.add_parser("execution"); execution.add_argument("action", choices=("status","verify","resolve","bootstrap-actions")); execution.add_argument("identifier"); execution.add_argument("--revision", default="1"); execution.add_argument("--requested-action", default="execute"); execution.add_argument("--authority-record"); execution.add_argument("--correlation-id", default="zeus-execution"); execution.add_argument("--json", action="store_true")
     context=sub.add_parser("context"); context.add_argument("action", choices=("reconstruct",))
     eligibility=sub.add_parser("eligibility"); eligibility.add_argument("action", choices=("evaluate", "show")); eligibility.add_argument("request", type=Path)
     evidence=sub.add_parser("evidence"); evidence.add_argument("action", choices=("show",)); evidence.add_argument("identifier")
@@ -603,12 +604,12 @@ def main(argv=None):
     dispatch=sub.add_parser("dispatch", help="Create or verify the bounded provider dispatch foundation; never invokes a provider."); dispatch.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization", "package")); dispatch.add_argument("mission_id", nargs="?"); dispatch.add_argument("--json", action="store_true")
     provider_session_parser=sub.add_parser("provider-session", help="Create or verify the canonical provider session; never invokes a provider or starts execution."); provider_session_parser.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization")); provider_session_parser.add_argument("mission_id", nargs="?"); provider_session_parser.add_argument("--json", action="store_true")
     provider_invocation_parser=sub.add_parser("provider-invocation", help="Create or verify one bounded provider acknowledgement; never starts execution or mission work."); provider_invocation_parser.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization", "package", "acknowledgement")); provider_invocation_parser.add_argument("mission_id", nargs="?"); provider_invocation_parser.add_argument("--json", action="store_true")
-    execution_start_parser=sub.add_parser("execution-start", help="Create or verify one bounded idle execution-start session; never begins mission work."); execution_start_parser.add_argument("action", choices=("create", "verify", "status", "authorization", "package", "session", "artifacts")); execution_start_parser.add_argument("mission_id", nargs="?"); execution_start_parser.add_argument("--json", action="store_true")
-    codex_parser=sub.add_parser("codex", help="Operate the Zeus-owned Codex session (managed or operator-interactive).", add_help=False); codex_parser.add_argument("action", choices=("shell", "interactive", "attach", "reconcile", "start", "resume", "stop", "status", "logs", "artifacts")); codex_parser.add_argument("mission_id", nargs="?"); codex_parser.add_argument("--approve", action="store_true", help="required for mission-bound shell, start, resume, stop, or reconciliation mutation"); codex_parser.add_argument("--dry-run", action="store_true", help="force read-only reconciliation"); codex_parser.add_argument("--plan-digest", help="require this reviewed reconciliation plan digest before mutation"); codex_parser.add_argument("--diagnose", action="store_true", help="probe a remote endpoint without opening Codex"); codex_parser.add_argument("--preflight", action="store_true", help="validate direct launch without opening Codex"); codex_parser.add_argument("--remote", action="store_true", help="explicitly select REMOTE_INTERACTIVE; shell defaults to DIRECT_INTERACTIVE"); codex_parser.add_argument("--prompt", help="bounded initial prompt for managed start"); codex_parser.add_argument("--codex-bin", default="codex", help=argparse.SUPPRESS); codex_parser.add_argument("--session"); codex_parser.add_argument("--mode", choices=("DIRECT_INTERACTIVE", "REMOTE_INTERACTIVE", "OPERATOR_INTERACTIVE", "ZEUS_MANAGED")); codex_parser.add_argument("--latest", action="store_true"); codex_parser.add_argument("--active", action="store_true"); codex_parser.add_argument("--json", action="store_true"); codex_parser.add_argument("--help", action="store_true", dest="codex_help", help="show help for this Codex command")
+    execution_start_parser=sub.add_parser("execution-start", help="Create, verify, or begin one bound execution-start lifecycle."); execution_start_parser.add_argument("action", choices=("create", "verify", "begin", "status", "authorization", "package", "session", "artifacts")); execution_start_parser.add_argument("mission_id", nargs="?"); execution_start_parser.add_argument("--approve", action="store_true", help="required for BEGIN_CONTROLLED_MISSION_WORK"); execution_start_parser.add_argument("--prompt"); execution_start_parser.add_argument("--codex-bin", default="codex", help=argparse.SUPPRESS); execution_start_parser.add_argument("--json", action="store_true")
+    codex_parser=sub.add_parser("codex", help="Operate the Zeus-owned Codex session (managed or operator-interactive).", add_help=False); codex_parser.add_argument("action", choices=("shell", "interactive", "attach", "reconcile", "supersede", "start", "resume", "stop", "status", "logs", "artifacts")); codex_parser.add_argument("mission_id", nargs="?"); codex_parser.add_argument("--approve", action="store_true", help="required for mission-bound shell, start, resume, stop, or reconciliation mutation"); codex_parser.add_argument("--dry-run", action="store_true", help="force read-only reconciliation"); codex_parser.add_argument("--plan-digest", help="require this reviewed reconciliation plan digest before mutation"); codex_parser.add_argument("--diagnose", action="store_true", help="probe a remote endpoint without opening Codex"); codex_parser.add_argument("--preflight", action="store_true", help="validate direct launch without opening Codex"); codex_parser.add_argument("--remote", action="store_true", help="explicitly select REMOTE_INTERACTIVE; shell defaults to DIRECT_INTERACTIVE"); codex_parser.add_argument("--prompt", help="bounded initial prompt for managed start"); codex_parser.add_argument("--reason", default="NON_AUTHORITATIVE_RECONCILED_HISTORY", help=argparse.SUPPRESS); codex_parser.add_argument("--codex-bin", default="codex", help=argparse.SUPPRESS); codex_parser.add_argument("--session"); codex_parser.add_argument("--mode", choices=("DIRECT_INTERACTIVE", "REMOTE_INTERACTIVE", "OPERATOR_INTERACTIVE", "ZEUS_MANAGED")); codex_parser.add_argument("--latest", action="store_true"); codex_parser.add_argument("--active", action="store_true"); codex_parser.add_argument("--json", action="store_true"); codex_parser.add_argument("--help", action="store_true", dest="codex_help", help="show help for this Codex command")
     orchestrate=sub.add_parser("orchestrate"); orchestrate.add_argument("action", choices=("status", "verify")); orchestrate.add_argument("--json", action="store_true")
     agent=sub.add_parser("agent"); agent.add_argument("action", choices=("list","registry","status","qualify","revoke","select")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--mission-class", default="engineering"); agent.add_argument("--tool", action="append", default=["zeus-cli", "bounded-artifact-handler"]); agent.add_argument("--profile", action="append", default=["controlled-wop-only", "exact-repository-baseline", "no-unreviewed-external-effects"]); agent.add_argument("--json", action="store_true")
     provider=sub.add_parser("provider", help="Select or verify the canonical provider for one Beta mission without dispatch."); provider.add_argument("action", choices=("select", "verify", "candidates", "status", "qualification", "artifacts")); provider.add_argument("mission_id"); provider.add_argument("--json", action="store_true")
-    gate=sub.add_parser("gate"); gate.add_argument("action", choices=("show", "objective", "evidence", "receipt", "carry-forward", "validate-carry-forward")); gate.add_argument("gate_id")
+    gate=sub.add_parser("gate"); gate.add_argument("action", choices=("show", "objective", "evidence", "receipt", "carry-forward", "validate-carry-forward")); gate.add_argument("gate_id"); gate.add_argument("--json", action="store_true")
     next_action=sub.add_parser("next-action"); next_action.add_argument("--json", action="store_true")
     a=p.parse_args(arguments)
     if a.runtime_root is not None:
@@ -623,7 +624,7 @@ def main(argv=None):
     try:
         stage1_directory = None
         stage1 = None
-        if a.command not in {"wop", "doctor", "runtime", "config", "synchronize", "platform", "codex"}:
+        if a.command not in {"wop", "doctor", "runtime", "config", "synchronize", "platform", "codex", "execution"}:
             stage1_directory = Path(
                 os.environ.get("ZEUS_STAGE1_STATE", runtime_path(ROOT, "stage1"))
             )
@@ -1298,16 +1299,26 @@ def main(argv=None):
             mission_id = str(a.mission_id or "MISSION-BETA-562F443E16C69401").upper()
             if a.action == "create":
                 value = execution_start.create(ROOT, mission_id)
+            elif a.action == "begin":
+                try:
+                    value = codex_adapter.begin_controlled_mission_work(
+                        ROOT, mission_id, approval=a.approve, prompt=a.prompt,
+                        codex_bin=a.codex_bin, runtime_root=a.runtime_root,
+                    )
+                except codex_adapter.CodexAdapterError as error:
+                    value = {"result": "FAIL", "mission_id": mission_id,
+                             "blockers": [{"code": error.code, "message": error.message}],
+                             "next_authorized_action": error.next_action, "read_only": False}
             else:
                 value = execution_start.verify(ROOT, mission_id)
                 if a.action == "status":
-                    value = {key: value.get(key) for key in ("result", "mission_id", "execution_id", "execution_session_id", "execution_start_state", "execution_start_result", "execution_start_authorized", "execution_session_created", "execution_started", "provider_process_bound", "provider_id", "provider_invocation_id", "execution_adapter_mode", "mission_work_started", "repository_work_started", "execution_monitoring_active", "completion_reported", "execution_start_replay", "next_authorized_action", "blockers", "read_only")}
+                    value = {key: value.get(key) for key in ("result", "mission_id", "execution_id", "execution_session_id", "codex_session_id", "provider_session_id", "execution_start_state", "execution_start_result", "execution_start_authorized", "execution_session_created", "execution_started", "provider_process_bound", "provider_id", "provider_invocation_id", "execution_adapter_mode", "mission_work_started", "repository_work_started", "execution_monitoring_active", "completion_reported", "execution_start_replay", "next_authorized_action", "blockers", "read_only")}
                 elif a.action == "authorization":
                     value = {key: value.get(key) for key in ("result", "mission_id", "execution_id", "execution_start_authorized", "execution_session_created", "execution_started", "next_authorized_action", "blockers", "read_only")}
                 elif a.action == "package":
                     value = {key: value.get(key) for key in ("result", "mission_id", "execution_id", "execution_start_state", "execution_adapter_mode", "artifacts", "blockers", "read_only")}
                 elif a.action == "session":
-                    value = {key: value.get(key) for key in ("result", "mission_id", "execution_id", "execution_session_id", "execution_session_created", "provider_process_bound", "execution_adapter_mode", "blockers", "read_only")}
+                    value = {key: value.get(key) for key in ("result", "mission_id", "execution_id", "execution_session_id", "codex_session_id", "provider_session_id", "execution_session_created", "provider_process_bound", "execution_adapter_mode", "blockers", "read_only")}
                 elif a.action == "artifacts":
                     value = {key: value.get(key) for key in ("result", "mission_id", "execution_id", "artifacts", "blockers", "read_only")}
             emit(value) if a.json else print(execution_start.render(value))
@@ -1330,6 +1341,8 @@ def main(argv=None):
                     print("Inventory Codex remote sessions/listeners; default is read-only dry-run.")
                     print("Use --mode REMOTE_INTERACTIVE and --dry-run for explicit read-only review.")
                     print("Use --approve for ownership-verified Zeus listener mutation and receipts.")
+                elif a.action == "supersede":
+                    print("Supersede one reconciled stale managed session; --session accepts a Codex-managed session ID or its uniquely bound execution/provider session ID, with --approve.")
                 else:
                     print("Read-only inspection of the managed or interactive Zeus Codex session.")
                 return 0
@@ -1361,6 +1374,12 @@ def main(argv=None):
                     value = codex_reconciliation.reconcile(ROOT, runtime_root=a.runtime_root, approve=a.approve,
                                                             mode=a.mode, dry_run=True if a.dry_run else None,
                                                             expected_plan_digest=a.plan_digest)
+                elif a.action == "supersede":
+                    if not a.approve:
+                        raise codex_adapter.CodexAdapterError("OPERATOR_APPROVAL_REQUIRED", "--approve is required for session supersession", next_action="APPROVE_SESSION_SUPERSESSION")
+                    if not a.session:
+                        raise codex_adapter.CodexAdapterError("OLD_SESSION_REQUIRED", "--session is required for session supersession", next_action="SELECT_STALE_SESSION")
+                    value = codex_adapter.supersede_session(ROOT, managed_id, a.session, reason=a.reason, runtime_root=a.runtime_root)
                 elif a.action == "shell":
                     value = (codex_interactive.direct_launcher_preflight(ROOT, mission_id, approval=a.approve, codex_bin=a.codex_bin)
                              if a.preflight else (codex_interactive.diagnose(ROOT, mission_id, approval=a.approve, codex_bin=a.codex_bin, runtime_root=a.runtime_root)
@@ -1540,6 +1559,11 @@ def main(argv=None):
             emit(value) if a.json else print(render_provider(value))
             return 0 if value.get("result") == "PASS" else 78
         if a.command == "gate" and a.action in ("show", "objective", "evidence", "receipt"):
+            if a.gate_id.upper() == "P5-G6" and a.action in {"show", "receipt"}:
+                value = P5GateAcceptanceService(ROOT, runtime=getattr(a, "runtime_root", None)).readiness()
+                value["acceptance_record"] = value.get("acceptance_record")
+                emit(value)
+                return 0 if value.get("canonical_disposition") == "ACCEPTED" else 77
             if a.action == "receipt" and a.gate_id.upper() in {"OA-11", "OA-12", "OA-13", "OA-14", "OA-15", "OA-16", "OA-17"}:
                 gate_id = a.gate_id.upper()
                 state = progressive_oa.load_state(ROOT)
@@ -1586,6 +1610,16 @@ def main(argv=None):
             })
             return 0
         if a.command == "verify":
+            if a.gate.upper() == "P5-G6":
+                value = P5GateAcceptanceService(ROOT, runtime=getattr(a, "runtime_root", None)).readiness()
+                emit(value) if a.json else print("\n".join([
+                    "Gate: P5-G6",
+                    f"Acceptance readiness: {value['acceptance_readiness']}",
+                    f"Manual acceptance discovered: {value['manual_acceptance_discovered']}",
+                    f"Canonical disposition: {value['canonical_disposition']}",
+                    f"Next action: {value['next_authorized_action']}",
+                ]))
+                return 0 if value["acceptance_readiness"] == "PASS" else 77
             if a.gate.upper().startswith("OA-"):
                 if (not a.wop and a.gate.upper() in {"OA-11", "OA-12", "OA-13", "OA-14", "OA-15", "OA-16", "OA-17", "OA-18", "OA-19", "OA-20", "OA-21", "OA-22", "OA-23", "OA-24", "OA-25", "OA-26", "OA-27", "OA-28", "OA-29", "OA-30"}):
                     value = ProgressiveGateService(ROOT).verify(a.gate.upper())
@@ -1627,6 +1661,29 @@ def main(argv=None):
             emit(evaluate_eligibility(a.request))
             return 0
         if a.command == "accept":
+            if a.gate.upper() == "P5-G6":
+                service = P5GateAcceptanceService(ROOT, runtime=getattr(a, "runtime_root", None))
+                if not a.reconcile_existing:
+                    raise GateApprovalError(
+                        "P5-G6 is already accepted in the evidence; use --reconcile-existing to import that existing decision"
+                    )
+                record, replay = service.reconcile_existing()
+                value = {
+                    "gate_id": "P5-G6",
+                    "acceptance_result": "ACCEPTED",
+                    "acceptance_reconciliation": "APPLIED" if not replay else "IDEMPOTENT",
+                    "new_operator_decision": False,
+                    "record": record,
+                    "publication_authorized": False,
+                    "p5_g7_authorized": False,
+                }
+                if a.json:
+                    emit(value)
+                else:
+                    print("P5-G6_ACCEPTANCE_RECONCILIATION=" + value["acceptance_reconciliation"])
+                    print("P5-G6_CANONICAL_DISPOSITION=ACCEPTED")
+                    print("NEW_OPERATOR_DECISION=NO")
+                return 0
             service = GateApprovalService.configured(ROOT)
             summary = review_gate(service, a.gate)
             if not a.json:
@@ -1772,8 +1829,12 @@ def main(argv=None):
             else:
                 emit(interface.snapshot(a.mission_id))
         elif a.command=="execution":
+            if a.action in {"status", "verify"} and (str(a.identifier).upper().startswith("EXECUTION-") or a.action == "verify"):
+                value = execution_monitoring.verify(ROOT, a.identifier, runtime_root=a.runtime_root) if a.action == "verify" else execution_monitoring.status(ROOT, a.identifier, runtime_root=a.runtime_root)
+                emit(value) if a.json else print(execution_monitoring.render(value))
+                return 0 if value.get("result") == "PASS" else 78
             if a.action == "status":
-                emit({"execution_id": a.identifier, "status": "USE_EXECUTE_MISSION_STATUS"})
+                emit({"execution_id": a.identifier, "status": "USE_EXECUTE_MISSION_STATUS", "read_only": True})
                 return 0
             if a.action == "bootstrap-actions":
                 emit(ConvergenceRuntime(ROOT).bootstrap_gate_action_specification(

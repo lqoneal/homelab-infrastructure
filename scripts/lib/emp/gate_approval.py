@@ -21,10 +21,162 @@ from scripts.lib.emp.authority_resolution import AuthorityResolutionError, autho
 
 GATE_PATTERN = re.compile(r"OA-(0[1-9]|[12][0-9]|30)")
 RUN_PATTERN = re.compile(r"PMCT-\d{8}T\d{6}Z-[0-9a-f]{12}")
+P5_GATE = "P5-G6"
+P5_ACCEPTANCE_REPORT = Path(
+    "engineering/evidence/operation-beta/"
+    "p5-g6-controlled-active-execution-foundation-completion-report.md"
+ )
 
 
 class GateApprovalError(RuntimeError):
     """A safe gate verification or acceptance refusal."""
+
+
+def _digest(value: Any) -> str:
+    return hashlib.sha256(
+        json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    ).hexdigest()
+
+
+class P5GateAcceptanceService:
+    """Adapter for P5 acceptance in the existing Zeus gate path.
+
+    Reconciliation imports a decision already recorded in the completion
+    evidence. It never creates another operator decision.
+    """
+
+    def __init__(self, repository: Path, *, runtime: Path | None = None):
+        self.repository = repository.resolve()
+        self.runtime = runtime
+
+    @property
+    def record_directory(self) -> Path:
+        return self.repository / ".zeus/runtime/acceptance" / P5_GATE
+
+    def _report(self) -> tuple[Path, dict[str, str]]:
+        path = self.repository / P5_ACCEPTANCE_REPORT
+        if not path.is_file():
+            raise GateApprovalError(f"P5-G6 acceptance evidence is missing: {path}")
+        fields: dict[str, str] = {}
+        for line in path.read_text(encoding="utf-8").splitlines():
+            key, separator, value = line.partition("=")
+            if separator:
+                fields[key] = value
+        required = {
+            "P5_G6_OPERATOR_ACCEPTANCE": "ACCEPTED",
+            "TRUE_ACTIVE_P5_G6_DEMONSTRATION": "PASS",
+            "P5_G6_DISPOSITION": "ACCEPTED",
+            "PUBLICATION_AUTHORIZED_BY_THIS_ACCEPTANCE": "NO",
+            "P5_G7_AUTHORIZED_BY_THIS_ACCEPTANCE": "NO",
+        }
+        if any(fields.get(key) != value for key, value in required.items()):
+            raise GateApprovalError("manual P5-G6 acceptance evidence is incomplete or conflicting")
+        return path, fields
+
+    def _execution_id(self, fields: dict[str, str]) -> str:
+        if fields.get("EXECUTION_ID"):
+            return fields["EXECUTION_ID"]
+        raise GateApprovalError("P5-G6 acceptance evidence has no execution binding")
+
+    def current_record(self) -> Path | None:
+        records = sorted(self.record_directory.glob("*.json")) if self.record_directory.is_dir() else []
+        if len(records) > 1:
+            raise GateApprovalError("multiple P5-G6 acceptance reconciliation records exist")
+        if not records:
+            return None
+        value = _json(records[0])
+        supplied = value.get("record_digest")
+        expected = _digest({key: item for key, item in value.items() if key != "record_digest"})
+        if supplied != expected or value.get("record_type") != "ACCEPTANCE_RECONCILIATION":
+            raise GateApprovalError("P5-G6 acceptance reconciliation record integrity failure")
+        return records[0]
+
+    def readiness(self) -> dict[str, Any]:
+        report, fields = self._report()
+        from scripts.lib.emp import execution_monitoring
+
+        execution = execution_monitoring.verify(
+            self.repository, self._execution_id(fields), runtime_root=self.runtime
+        )
+        checks = {
+            "active_execution_observed": "PASS" if execution.get("execution_state") == "EXECUTING" else "FAIL",
+            "provider_liveness_observed": "PASS" if execution.get("provider_liveness") == "ALIVE" else "FAIL",
+            "mission_work_state_observed": "PASS" if execution.get("mission_work_state") == "STARTED" else "FAIL",
+            "repository_work_state_observed": "PASS" if execution.get("repository_work_state") in {"STARTED", "NOT_STARTED"} else "FAIL",
+            "current_work_position_observed": "PASS" if execution.get("current_work_position") else "FAIL",
+            "progress_projection_observed": "PASS" if execution.get("progress_state") == "ACTIVE" else "FAIL",
+            "blocker_projection_observed": "PASS" if isinstance(execution.get("blockers"), list) else "FAIL",
+            "approval_projection_observed": "PASS" if isinstance(execution.get("approvals_required"), list) else "FAIL",
+            "phase_gate_projection_observed": "PASS" if execution.get("phase", {}).get("id") == "P5" and execution.get("gate", {}).get("id") == P5_GATE else "FAIL",
+            "projection_verification": "PASS" if execution.get("projection_verification") == "PASS" else "FAIL",
+            "execution_verify": "PASS" if execution.get("verification_result") == "PASS" else "FAIL",
+            "identity_continuity": "PASS" if all(execution.get(key) for key in ("mission_id", "wop_id", "execution_id", "session_id", "provider_id", "provider_session_id")) else "FAIL",
+            "true_active_demonstration": "PASS" if fields.get("TRUE_ACTIVE_P5_G6_DEMONSTRATION") == "PASS" else "FAIL",
+            "completion_evidence": "PASS" if report.is_file() else "FAIL",
+        }
+        blockers = [key for key, value in checks.items() if value != "PASS"]
+        accepted = self.current_record()
+        return {
+            "gate_id": P5_GATE,
+            "acceptance_readiness": "PASS" if not blockers else "BLOCKED",
+            "checks": checks,
+            "blockers": blockers,
+            "manual_acceptance_discovered": "PASS",
+            "canonical_disposition": "ACCEPTED" if accepted else "PENDING_RECONCILIATION",
+            "acceptance_record": str(accepted) if accepted else None,
+            "execution": execution,
+            "next_authorized_action": "RECONCILE_EXISTING_P5_G6_ACCEPTANCE" if not accepted and not blockers else "OPERATOR_REVIEW" if accepted else "RECONCILE_EXECUTION_STATE",
+            "read_only": True,
+        }
+
+    def reconcile_existing(self) -> tuple[dict[str, Any], bool]:
+        readiness = self.readiness()
+        if readiness["acceptance_readiness"] != "PASS":
+            raise GateApprovalError("P5-G6 acceptance reconciliation is blocked: " + ", ".join(readiness["blockers"]))
+        existing_path = self.current_record()
+        if existing_path is not None:
+            return _json(existing_path), True
+        report, fields = self._report()
+        execution = readiness["execution"]
+        evidence = {
+            "completion_report": str(report),
+            "completion_report_digest": _sha256(report),
+            "execution_monitoring": execution.get("source_records"),
+            "execution_monitoring_digest": execution.get("source_digests"),
+            "execution_verify": "PASS",
+        }
+        acceptance_id = "P5-G6-RECONCILIATION-" + _digest({"gate": P5_GATE, "evidence": evidence})[:16]
+        record = {
+            "schema_version": 1,
+            "record_type": "ACCEPTANCE_RECONCILIATION",
+            "acceptance_id": acceptance_id,
+            "mission_id": execution["mission_id"],
+            "wop_id": execution["wop_id"],
+            "gate_id": P5_GATE,
+            "execution_id": execution["execution_id"],
+            "acceptance_result": "ACCEPTED",
+            "decision_origin": "EXISTING_MANUAL_ACCEPTANCE",
+            "new_operator_decision": False,
+            "accepted_by": "OPERATOR_AS_RECORDED_IN_EXISTING_EVIDENCE",
+            "accepted_at": fields.get("P5_G6_ACCEPTED_AT"),
+            "evidence_binding": evidence,
+            "criteria_result": "PASS",
+            "publication_authorized": False,
+            "p5_g7_authorized": False,
+            "replay": "IDEMPOTENT",
+        }
+        record["record_digest"] = _digest(record)
+        target = self.record_directory / f"{acceptance_id}.json"
+        if target.is_file():
+            existing = _json(target)
+            if existing != record:
+                raise GateApprovalError("conflicting P5-G6 reconciliation record exists")
+            return existing, True
+        self.record_directory.mkdir(parents=True, exist_ok=True)
+        temporary = target.with_suffix(".tmp")
+        temporary.write_text(json.dumps(record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        temporary.replace(target)
+        return record, False
 
 
 def _json(path: Path) -> dict[str, Any]:

@@ -82,6 +82,22 @@ def _path(runtime: Path, key: str, descriptor: Mapping[str, Any]) -> Path:
     return path
 
 
+def _canonical_wop_binding(values: Mapping[str, Mapping[str, Any]]) -> str:
+    """Resolve the one WOP binding shared by the execution-start artifacts.
+
+    The execution-start artifact chain is the authoritative source consumed by
+    verification, monitoring, and the bound active-transition adapter.  A
+    missing or divergent WOP must fail closed before any lifecycle consumer
+    can use the projection.
+    """
+    candidates = [value.get("wop_id") for value in values.values()]
+    if not candidates or any(not candidate for candidate in candidates):
+        raise ExecutionStartError("WOP_BINDING_MISSING", "execution-start has no complete bound WOP")
+    if len(set(candidates)) != 1:
+        raise ExecutionStartError("WOP_BINDING_MISMATCH", "execution-start artifacts disagree on bound WOP")
+    return str(candidates[0])
+
+
 def _verify_set(runtime: Path, found: dict[str, list[tuple[Path, dict[str, Any]]]]) -> dict[str, Any] | None:
     if not any(found.values()):
         return None
@@ -89,10 +105,11 @@ def _verify_set(runtime: Path, found: dict[str, list[tuple[Path, dict[str, Any]]
         raise ExecutionStartError("EXECUTION_CARDINALITY_CONFLICT", "execution-start artifact cardinality is not exactly one per class")
     values = {key: items[0][1] for key, items in found.items()}
     anchor = values["execution_start_transaction"]
+    wop_id = _canonical_wop_binding(values)
     execution_id = anchor.get("execution_id")
     if not execution_id or anchor.get("execution_start_state") != "READY_FOR_CONTROLLED_EXECUTION":
         raise ExecutionStartError("EXECUTION_STATE_INVALID", "execution start is not controlled-execution-ready")
-    binding_fields = ("mission_id", "provider_invocation_id", "provider_session_id", "provider_id",
+    binding_fields = ("mission_id", "wop_id", "provider_invocation_id", "provider_session_id", "provider_id",
                       "dispatch_id", "repository_identity", "current_published_baseline",
                       "execution_start_provenance_baseline", "invocation_provenance_baseline", "execution_package_digest",
                       "execution_authority_digest", "mission_contract_digest")
@@ -122,7 +139,7 @@ def _verify_set(runtime: Path, found: dict[str, list[tuple[Path, dict[str, Any]]
         raise ExecutionStartError("EXECUTION_MODE_INVALID", "unsupported execution adapter mode")
     if values["execution_start_acknowledgement"].get("acknowledged") is not True:
         raise ExecutionStartError("EXECUTION_ACKNOWLEDGEMENT_MISSING", "execution acknowledgement is absent")
-    return {"result": "PASS", "mission_id": anchor["mission_id"], "execution_id": execution_id,
+    return {"result": "PASS", "mission_id": anchor["mission_id"], "wop_id": wop_id, "execution_id": execution_id,
             "execution_session_id": anchor["execution_session_id"], "execution_start_state": anchor["execution_start_state"],
             "execution_start_result": "PASS", "execution_start_authorized": True,
             "execution_session_created": True, "execution_started": True,
@@ -260,6 +277,19 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
                 # the execution-start relationship, never the invocation one.
                 "baseline_relationship": resolved["baseline"]["baseline_relationship"],
                 "read_only": True})
+            # Execution identity remains the immutable qualification session;
+            # consumers resolve the current subordinate provider session when
+            # a reconciled predecessor has been superseded.
+            try:
+                from scripts.lib.emp.codex_adapter import current_session
+                replacement = current_session(root, mission_id, runtime_root=runtime)
+            except Exception:
+                replacement = None
+            if replacement:
+                existing["session_id"] = replacement.get("session_id")
+                existing["codex_session_id"] = replacement.get("session_id")
+                existing["session_binding"] = "PASS"
+                existing["supersedes_session"] = replacement.get("supersedes_session")
             return existing
         return {"result": "PASS", "mission_id": mission_id, "execution_start_created": False,
                 "execution_started": False, "mission_work_started": False, "read_only": True,
