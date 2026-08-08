@@ -65,6 +65,30 @@ orphaned canonical transitions fail closed. Stage 1 and provider/runtime
 records remain subordinate compatibility evidence until their later lifecycle
 waves qualify their integration; they cannot advance the canonical state.
 
+P3 artifact cardinality is scoped to the requested canonical identity, not to
+the total number of JSON files in the append-only runtime directories. The
+current P3 set is the exactly one artifact set bound to the active P2
+Mission/WOP/submission identity and repository runtime. Preserved records for
+other missions, prior submissions, superseded revisions, or explicit legacy
+compatibility remain historical evidence and are excluded from current
+authority. Zero current candidates, more than one exact current candidate,
+identity/digest disagreement, or a current P3 set with missing artifacts
+fails closed. No historical artifact is deleted, rewritten, or selected by
+recency.
+
+P4 bootstrap cardinality follows the same mission-scoped rule. The current P4
+set is the exactly one artifact chain bound to the active Mission ID, WOP ID,
+submission receipt, admission receipt, bootstrap ID, repository binding, and
+bootstrap transaction provenance. Preserved P4 chains for other missions,
+historical submissions, superseded revisions, or explicit legacy compatibility
+are classified as historical/subordinate and do not compete with current
+cardinality. The P4 verifier also scopes prohibited downstream-artifact checks
+to that same identity, so historical dispatch/provider/session evidence cannot
+invalidate a current pre-provider P4 chain. Zero current candidates, duplicate
+current candidates, invalid identity or digest provenance, and any downstream
+artifact bound to the current chain fail closed. Replay returns the same
+bootstrap identity and remains idempotent.
+
 ## Authority and mission-native aggregate boundary
 
 Current consumers use the `ZEUS-CANONICAL-AUTHORITY-RECEIPT/1` adapter. A P2

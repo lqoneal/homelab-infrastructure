@@ -15,8 +15,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from scripts.lib.emp.bootstrap_boundary import BootstrapBoundaryError, bootstrap  # noqa: E402
-from scripts.lib.emp.bootstrap_verification import verify_bootstrap_replay  # noqa: E402
+from scripts.lib.emp.bootstrap_boundary import (  # noqa: E402
+    BootstrapBoundaryError,
+    _scoped_bootstrap_cardinality,
+    bootstrap,
+)
+from scripts.lib.emp.bootstrap_verification import BootstrapVerificationError, verify_bootstrap_replay  # noqa: E402
+from scripts.lib.emp.canonical_lifecycle_resolver import resolve as resolve_lifecycle  # noqa: E402
 
 
 def p3_test_module():
@@ -229,6 +234,122 @@ class BootstrapBoundaryTests(unittest.TestCase):
             verified = verify_bootstrap_replay(first, replay, runtime_root=runtime, repository=ROOT)
             self.assertEqual(verified["result"], "PASS")
             self.assertEqual(verified["downstream_artifacts"], "NONE")
+
+    def test_historical_downstream_beta_artifacts_are_excluded_from_current_p4(self):
+        with tempfile.TemporaryDirectory(prefix="zeus-p4-historical-downstream-") as name:
+            directory = Path(name)
+            _, _, runtime, _, admission, _ = self.setup_admission(directory)
+            admission_path = runtime / "admissions" / f"{admission['admission_id']}.json"
+            first = bootstrap(admission_path, repository=ROOT, runtime_root=runtime)
+            historical = runtime / "dispatches" / "HISTORICAL-BETA-DISPATCH.json"
+            historical.parent.mkdir(parents=True, exist_ok=True)
+            historical.write_text(json.dumps({
+                "mission_id": "MISSION-BETA-HISTORICAL",
+                "wop_id": "WOP-BETA-HISTORICAL",
+                "submission_id": "SUBMISSION-BETA-HISTORICAL",
+                "admission_id": "ADMISSION-BETA-HISTORICAL",
+                "bootstrap_id": "BOOTSTRAP-BETA-HISTORICAL",
+                "artifact_type": "dispatch-transaction",
+            }), encoding="utf-8")
+            replay = bootstrap(admission_path, repository=ROOT, runtime_root=runtime)
+            verified = verify_bootstrap_replay(first, replay, runtime_root=runtime, repository=ROOT)
+            self.assertEqual(verified["result"], "PASS")
+            self.assertEqual(verified["downstream_artifacts"], "NONE")
+            self.assertEqual(verified["historical_downstream_artifacts"], [str(historical)])
+
+    def test_current_downstream_artifact_fails_closed(self):
+        with tempfile.TemporaryDirectory(prefix="zeus-p4-current-downstream-") as name:
+            directory = Path(name)
+            _, _, runtime, _, admission, _ = self.setup_admission(directory)
+            admission_path = runtime / "admissions" / f"{admission['admission_id']}.json"
+            first = bootstrap(admission_path, repository=ROOT, runtime_root=runtime)
+            current = runtime / "dispatches" / "CURRENT-DISPATCH.json"
+            current.parent.mkdir(parents=True, exist_ok=True)
+            current.write_text(json.dumps({
+                "mission_id": first["mission_id"], "wop_id": first["wop_id"],
+                "submission_id": first["submission_id"], "admission_id": first["admission_id"],
+                "bootstrap_id": first["bootstrap_id"], "artifact_type": "dispatch-transaction",
+            }), encoding="utf-8")
+            with self.assertRaises(BootstrapVerificationError) as context:
+                verify_bootstrap_replay(first, {**first, "duplicate_bootstrap": "IDEMPOTENT"},
+                                        runtime_root=runtime, repository=ROOT)
+            self.assertIn("current downstream artifacts exist", str(context.exception))
+
+    def test_current_and_historical_p4_sets_are_scoped(self):
+        with tempfile.TemporaryDirectory(prefix="zeus-p4-scoped-history-") as name:
+            directory = Path(name)
+            _, _, runtime, _, admission, _ = self.setup_admission(directory)
+            admission_path = runtime / "admissions" / f"{admission['admission_id']}.json"
+            first = bootstrap(admission_path, repository=ROOT, runtime_root=runtime)
+            for directory_name, field in (
+                ("bootstraps", "bootstrap_transaction"),
+                ("execution-records", "execution_record"),
+                ("bootstrap-receipts", "bootstrap_receipt"),
+                ("bootstrap-journals", "bootstrap_journal"),
+                ("provider-readiness", "provider_readiness"),
+            ):
+                source = Path(first[field]["path"])
+                historical = json.loads(source.read_text(encoding="utf-8"))
+                historical.update({
+                    "mission_id": "MISSION-HISTORICAL-P4",
+                    "wop_id": "WOP-HISTORICAL-P4",
+                    "submission_id": "SUBMISSION-HISTORICAL-P4",
+                    "admission_id": "ADMISSION-HISTORICAL-P4",
+                    "bootstrap_id": "BOOTSTRAP-HISTORICAL-P4",
+                })
+                (runtime / directory_name / f"BOOTSTRAP-HISTORICAL-P4.json").write_text(
+                    json.dumps(historical), encoding="utf-8"
+                )
+            replay = bootstrap(admission_path, repository=ROOT, runtime_root=runtime)
+            verified = verify_bootstrap_replay(first, replay, runtime_root=runtime, repository=ROOT)
+            self.assertEqual(verified["result"], "PASS")
+            self.assertEqual(verified["artifact_classification"]["current"],
+                             {directory_name: 1 for directory_name in (
+                                 "bootstraps", "execution-records", "bootstrap-receipts",
+                                 "bootstrap-journals", "provider-readiness")})
+            self.assertEqual(verified["artifact_classification"]["historical"],
+                             {directory_name: 1 for directory_name in (
+                                 "bootstraps", "execution-records", "bootstrap-receipts",
+                                 "bootstrap-journals", "provider-readiness")})
+
+    def test_two_current_p4_sets_fail_closed(self):
+        with tempfile.TemporaryDirectory(prefix="zeus-p4-scoped-conflict-") as name:
+            directory = Path(name)
+            _, _, runtime, _, admission, _ = self.setup_admission(directory)
+            admission_path = runtime / "admissions" / f"{admission['admission_id']}.json"
+            first = bootstrap(admission_path, repository=ROOT, runtime_root=runtime)
+            for field in first.values():
+                if isinstance(field, dict) and field.get("path"):
+                    source = Path(field["path"])
+                    if source.parent.name in ("bootstraps", "execution-records", "bootstrap-receipts",
+                                              "bootstrap-journals", "provider-readiness"):
+                        (source.parent / f"DUPLICATE-{source.name}").write_bytes(source.read_bytes())
+            with self.assertRaises(BootstrapBoundaryError):
+                bootstrap(admission_path, repository=ROOT, runtime_root=runtime)
+
+    def test_historical_only_p4_set_fails_current_resolution_closed(self):
+        with tempfile.TemporaryDirectory(prefix="zeus-p4-scoped-only-history-") as name:
+            directory = Path(name)
+            _, _, runtime, _, admission, _ = self.setup_admission(directory)
+            admission_path = runtime / "admissions" / f"{admission['admission_id']}.json"
+            first = bootstrap(admission_path, repository=ROOT, runtime_root=runtime)
+            for field in first.values():
+                if isinstance(field, dict) and field.get("path"):
+                    source = Path(field["path"])
+                    if source.parent.name in ("bootstraps", "execution-records", "bootstrap-receipts",
+                                              "bootstrap-journals", "provider-readiness"):
+                        value = json.loads(source.read_text(encoding="utf-8"))
+                        value.update({
+                            "mission_id": admission["mission_id"],
+                            "wop_id": "WOP-HISTORICAL-P4",
+                            "submission_id": "SUBMISSION-HISTORICAL-P4",
+                            "admission_id": "ADMISSION-HISTORICAL-P4",
+                            "bootstrap_id": "BOOTSTRAP-HISTORICAL-P4",
+                        })
+                        source.write_text(json.dumps(value), encoding="utf-8")
+            result = resolve_lifecycle(ROOT, admission["mission_id"], runtime_root=runtime)
+            self.assertEqual(result["result"], "FAIL")
+            self.assertEqual(result["blockers"][0]["code"], "CANONICAL_P4_CURRENT_MISSING")
 
 
 if __name__ == "__main__":

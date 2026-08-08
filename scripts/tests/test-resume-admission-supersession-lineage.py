@@ -19,6 +19,7 @@ from scripts.lib.emp.admission_supersession import (  # noqa: E402
 )
 from scripts.lib.emp.mission_admission_runtime import AdmissionStateStore  # noqa: E402
 from scripts.lib.emp.stage1_execution_resolution import resolve  # noqa: E402
+from scripts.lib.emp.runtime_reconciliation import RuntimeReconciliationError  # noqa: E402
 from scripts.lib.emp.stage1_runtime import Stage1Store  # noqa: E402
 
 
@@ -102,23 +103,20 @@ class ResumeAdmissionLineageTests(unittest.TestCase):
         self.assertEqual(self.successor_id, direct["admission_id"])
         self.assertEqual(before, {path: path.read_bytes() for path in self.admissions.glob("*.json")})
 
-    def test_stale_terminal_chain_reconciles_atomically(self):
+    def test_stale_terminal_chain_fails_closed_without_mutation(self):
         run = lambda *args: subprocess.run(args, cwd=self.repo, check=True, capture_output=True, text=True)
         (self.repo / "scripts" / "zeus").write_text("second governed publication\n")
         run("git", "add", "scripts/zeus")
         run("git", "commit", "-m", "second governed publication")
         current = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=self.repo, text=True).strip()
         run("git", "update-ref", "refs/remotes/origin/main", current)
-        result = resolve(self.repo, self.stage1, self.admissions, self.executions,
-                         admission_id=self.predecessor_id, execution_id=self.transaction_id,
-                         hydrate=True, require_lineage_environment=True)
-        self.assertEqual(3, len(result["admission_lineage"]["lineage"]))
-        terminal = result["admission_id"]
-        replay = resolve(self.repo, self.stage1, self.admissions, self.executions,
-                         admission_id=self.predecessor_id, execution_id=self.transaction_id,
-                         hydrate=True, require_lineage_environment=True)
-        self.assertEqual(terminal, replay["admission_id"])
-        self.assertEqual(3, len(list(self.admissions.glob("*.json"))))
+        before = {path: path.read_bytes() for path in self.admissions.glob("*.json")}
+        with self.assertRaisesRegex(RuntimeReconciliationError, "successor admission baseline is stale"):
+            resolve(self.repo, self.stage1, self.admissions, self.executions,
+                    admission_id=self.predecessor_id, execution_id=self.transaction_id,
+                    hydrate=True, require_lineage_environment=True)
+        self.assertEqual(before, {path: path.read_bytes() for path in self.admissions.glob("*.json")})
+        self.assertEqual(2, len(list(self.admissions.glob("*.json"))))
 
     def test_unrelated_and_broken_lineage_fail_closed(self):
         with self.assertRaises(AdmissionSupersessionError):

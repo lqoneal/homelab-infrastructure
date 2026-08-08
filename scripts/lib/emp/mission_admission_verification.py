@@ -7,6 +7,7 @@ from typing import Any, Mapping
 
 from scripts.lib.emp.mission_admission_boundary import _digest as _canonical_digest
 from scripts.lib.emp.mission_admission_boundary import _load as _canonical_load
+from scripts.lib.emp.bootstrap_boundary import _scoped_admission_cardinality
 from scripts.lib.emp.repository_identity import resolve
 from scripts.lib.emp.wop_verification import verify_artifact
 
@@ -150,9 +151,19 @@ def verify_admission_replay(first: Mapping[str, Any], replay: Mapping[str, Any],
         "admission_receipt": runtime / "receipts",
         "admission_journal": runtime / "journals",
     }
-    counts = {name: len(list(path.glob("*.json"))) for name, path in classes.items()}
+    cardinality = _scoped_admission_cardinality(runtime, first)
+    counts = {
+        "immutable_execution_package": cardinality["current"]["packages"],
+        "mission_contract": cardinality["current"]["mission-contracts"],
+        "execution_authority": cardinality["current"]["execution-authority"],
+        "admission_receipt": cardinality["current"]["receipts"],
+        "admission_journal": cardinality["current"]["journals"],
+    }
     if any(count != 1 for count in counts.values()):
-        raise MissionAdmissionVerificationError(f"required artifact cardinality is not exactly one: {counts}")
+        raise MissionAdmissionVerificationError(
+            "current admission artifact cardinality is not exactly one: "
+            f"{counts}; historical artifacts preserved: {cardinality['historical']}"
+        )
     if any(paths[key].name != f"{first['admission_id']}.json" for key in paths):
         raise MissionAdmissionVerificationError("canonical artifact filename does not match admission identity")
     if not all(paths[key].is_file() for key in paths):
@@ -167,7 +178,21 @@ def verify_admission_replay(first: Mapping[str, Any], replay: Mapping[str, Any],
     # canonical P3/P4 downstream artifact.  Canonical bootstrap artifacts use
     # bootstraps/, execution-records/, and provider-readiness/.
     prohibited = {"executions", "bootstrap", "providers", "dispatch", "provider-selection"}
-    downstream = [str(path) for path in runtime.rglob("*.json") if any(part in prohibited for part in path.parts)]
+    downstream = []
+    for path in runtime.rglob("*.json"):
+        if not any(part in prohibited for part in path.parts):
+            continue
+        try:
+            value = _load(path)
+        except MissionAdmissionVerificationError:
+            continue
+        # Runtime history for other missions is not downstream evidence for
+        # this admission.  Only an artifact carrying this admission's current
+        # mission/submission identity can block the P3 replay boundary.
+        if (value.get("mission_id") == first.get("mission_id") and
+                (value.get("admission_id") == first.get("admission_id") or
+                 value.get("submission_id") == first.get("submission_id"))):
+            downstream.append(str(path))
     if downstream:
         raise MissionAdmissionVerificationError(f"downstream artifacts exist: {downstream}")
     return {
@@ -189,6 +214,7 @@ def verify_admission_replay(first: Mapping[str, Any], replay: Mapping[str, Any],
             "submission_admission_identity_parity": "PASS", "operation_beta": "PASS",
             "repository_identity": "PASS", "immutable_provenance": "PASS",
             "no_operational_alpha_fallback": "PASS", "artifact_counts": counts,
+            "historical_artifact_counts": cardinality["historical"],
             "downstream_artifacts": "NONE",
         },
     }

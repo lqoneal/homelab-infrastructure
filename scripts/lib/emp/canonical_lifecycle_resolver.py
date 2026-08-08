@@ -67,6 +67,59 @@ def _one(directory: Path, mission_id: str, label: str) -> tuple[Path, dict[str, 
     return found[0] if found else None
 
 
+def _current_p4(directory: Path, mission_id: str, canonical_identity: Mapping[str, Any],
+                admission_id: str) -> tuple[tuple[Path, dict[str, Any]] | None, dict[str, int]]:
+    """Select P4 by the active P2/P3 identity, preserving historical P4 sets."""
+    found = _records(directory, mission_id)
+    current = [
+        item for item in found
+        if all(item[1].get(field) == canonical_identity.get(field)
+               for field in ("mission_id", "wop_id", "submission_id"))
+        and item[1].get("admission_id") == admission_id
+    ]
+    if len(current) > 1:
+        raise CanonicalLifecycleResolutionError(
+            "CANONICAL_TRANSITION_CARDINALITY_CONFLICT",
+            f"more than one current P4 bootstrap resolves {mission_id}",
+        )
+    if not current and found:
+        raise CanonicalLifecycleResolutionError(
+            "CANONICAL_P4_CURRENT_MISSING",
+            f"P4 bootstrap records exist for {mission_id}, but none bind to the current P2/P3 chain",
+        )
+    return (current[0] if current else None,
+            {"current": len(current), "historical": len(found) - len(current)})
+
+
+def _current_p3(directory: Path, mission_id: str, canonical_identity: Mapping[str, Any]) -> tuple[tuple[Path, dict[str, Any]] | None, dict[str, int]]:
+    """Select the P3 set linked to the active P2 submission identity.
+
+    P3 directories preserve records across missions and historical revisions.
+    For a requested mission, only the set carrying the exact current P2
+    mission/WOP/submission identity is current.  Same-mission records with a
+    different submission or WOP remain historical/superseded evidence.  More
+    than one exact current set is an ambiguity and is rejected.
+    """
+    found = _records(directory, mission_id)
+    current = [
+        item for item in found
+        if all(item[1].get(field) == canonical_identity.get(field)
+               for field in ("mission_id", "wop_id", "submission_id"))
+    ]
+    if len(current) > 1:
+        raise CanonicalLifecycleResolutionError(
+            "CANONICAL_TRANSITION_CARDINALITY_CONFLICT",
+            f"more than one current P3 admission resolves {mission_id}",
+        )
+    if not current and found:
+        raise CanonicalLifecycleResolutionError(
+            "CANONICAL_P3_CURRENT_MISSING",
+            f"P3 admission records exist for {mission_id}, but none bind to the current P2 submission",
+        )
+    return (current[0] if current else None,
+            {"current": len(current), "historical": len(found) - len(current)})
+
+
 def _identity_matches(expected: Mapping[str, Any], observed: Mapping[str, Any], fields: tuple[str, ...], label: str) -> None:
     mismatches = [field for field in fields if expected.get(field) != observed.get(field)]
     if mismatches:
@@ -116,11 +169,16 @@ def resolve(repository: Path | str, mission_id: str, *, runtime_root: Path | str
         return _fail(mission, getattr(error, "code", "CANONICAL_RESOLUTION_FAILED"), str(error))
 
     try:
-        p3 = _one(runtime / "admissions", mission, "P3 admission")
-        p4 = _one(runtime / "bootstraps", mission, "P4 bootstrap")
+        p3, p3_cardinality = _current_p3(runtime / "admissions", mission, {
+            "mission_id": p2.get("mission_id"),
+            "wop_id": p2.get("wop_id"),
+            "submission_id": p2.get("submission_id"),
+        })
+        p4_records = _records(runtime / "bootstraps", mission)
+        p4 = None
     except CanonicalLifecycleResolutionError as error:
         return _fail(mission, error.code, str(error))
-    downstream_exists = bool(p3 or p4 or _records(runtime / "stage1", mission))
+    downstream_exists = bool(p3 or p4_records or _records(runtime / "stage1", mission))
     if p2.get("result") == "MISSION_NOT_FOUND":
         if downstream_exists:
             return _fail(mission, "CANONICAL_SUBMISSION_MISSING", "downstream lifecycle evidence exists without a canonical P2 submission receipt")
@@ -161,6 +219,7 @@ def resolve(repository: Path | str, mission_id: str, *, runtime_root: Path | str
         "historical_projections": "PRESERVED_AND_EXCLUDED_FROM_CURRENT_STATE",
         "legacy_stage1_projection": _legacy_projection(runtime, mission),
         "lifecycle_chain": chain,
+        "p3_cardinality": p3_cardinality,
     })
     p2_receipt = _load(Path(p2["submission_receipt"]["path"]))
     canonical_identity = {
@@ -213,6 +272,13 @@ def resolve(repository: Path | str, mission_id: str, *, runtime_root: Path | str
         "receipt": {"path": str(admission_path), "digest": admission.get("transaction_digest")},
         "next_action": "EVALUATE_BOOTSTRAP_ELIGIBILITY",
     })
+
+    try:
+        p4, p4_cardinality = _current_p4(runtime / "bootstraps", mission, canonical_identity,
+                                          admission.get("admission_id"))
+    except CanonicalLifecycleResolutionError as error:
+        return _fail(mission, error.code, str(error), chain=chain)
+    base["p4_cardinality"] = p4_cardinality
 
     if p4 is None:
         base["lifecycle_chain"] = chain

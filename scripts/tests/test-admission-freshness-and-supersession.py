@@ -11,6 +11,7 @@ import tempfile
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
@@ -63,7 +64,21 @@ class AdmissionFreshnessTests(unittest.TestCase):
             admission_dir.mkdir()
             old_path = ROOT / ".zeus/runtime/mission-admissions" / f"{OLD_ADMISSION}.json"
             shutil.copy2(old_path, admission_dir / old_path.name)
-            state = MissionAdmissionRuntime(ROOT, AdmissionStateStore(admission_dir)).start(self.request(), at=AT)
+            runtime = Path(directory) / "runtime"
+            execution_dir = runtime / "mission-executions"
+            execution_dir.mkdir(parents=True)
+            shutil.copy2(
+                ROOT / ".zeus/runtime/mission-executions" / f"{OLD_EXECUTION}.json",
+                execution_dir / f"{OLD_EXECUTION}.json",
+            )
+            # Current lineage resolution uses the selected repository-bound
+            # runtime. Keep this fixture isolated rather than consulting the
+            # repository's historical runtime.
+            with patch(
+                "scripts.lib.emp.mission_admission_runtime.runtime_path",
+                side_effect=lambda _root, *parts: runtime.joinpath(*parts),
+            ):
+                state = MissionAdmissionRuntime(ROOT, AdmissionStateStore(admission_dir)).start(self.request(), at=AT)
             lineage = state["supersession"]
             self.assertEqual(lineage["prior_admission_id"], OLD_ADMISSION)
             self.assertEqual(lineage["cancelled_execution_id"], OLD_EXECUTION)

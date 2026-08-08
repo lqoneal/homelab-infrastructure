@@ -130,6 +130,15 @@ provider sessions, dispatch, and execution remain outside this gate. Bootstrap
 artifact verification is read-only and rejects altered, missing, conflicting,
 or partially unrecoverable state.
 
+P4 artifact verification is mission-scoped: one current bootstrap transaction,
+execution record, receipt, journal, and provider-readiness projection must bind
+to the requested Mission/WOP/submission/admission/bootstrap chain. Historical
+Beta P4 and downstream provider/session artifacts remain append-only evidence
+and do not count against current cardinality. A second current chain, missing
+current artifact, identity or digest contradiction, or current-chain
+downstream artifact fails closed; an exact replay returns `IDEMPOTENT` without
+creating a new bootstrap.
+
 Zeus is also responsible for automatic WOP packaging. The operator may submit
 an existing canonical package directory, a repository-resolved WOP identity, or
 a Markdown/DOCX source document. Zeus preserves the source document, resolves

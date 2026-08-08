@@ -15,6 +15,14 @@ Read-only resolution does not create files. The first mutating command calls
 and `runtime-identity.json`. Initialization is deterministic and idempotent.
 Existing stores are never moved, merged, or silently adopted when ownership
 cannot be proven. Explicit override rejection is fail-closed.
+
+The repository-bound user-state runtime is authoritative for current Zeus
+operation; repository-local `.zeus/runtime` content is historical or explicit
+legacy compatibility state unless adopted through the native transaction. The
+legacy operational `active-publication.json` pointer is not a prerequisite for
+canonical P2/P3/P4 submission, admission, or mission discovery. An explicit
+`--state` orchestration override is an isolated engineering/test surface and
+must remain independent of that historical OA pointer.
 ## Legacy runtime adoption
 
 An existing valid Zeus runtime is adopted or migrated only through the native

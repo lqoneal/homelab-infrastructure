@@ -24,11 +24,14 @@ from scripts.lib.emp.operational_runtime import (  # noqa: E402
     RUNTIME_RELATIVE_PATH,
     authoritative_state_path,
 )
+from scripts.lib.emp.runtime_paths import runtime_path  # noqa: E402
 
 
 class OperationalBootstrapTests(unittest.TestCase):
-    def test_authoritative_location_is_repository_fixed(self):
-        self.assertEqual(authoritative_state_path(ROOT), ROOT / RUNTIME_RELATIVE_PATH)
+    def test_authoritative_location_is_repository_bound_user_state(self):
+        path = authoritative_state_path(ROOT)
+        self.assertEqual(path, runtime_path(ROOT, RUNTIME_RELATIVE_PATH.name))
+        self.assertNotIn(ROOT, path.parents)
 
     def test_canonical_initial_state_round_trips(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -64,18 +67,18 @@ class OperationalBootstrapTests(unittest.TestCase):
             with self.assertRaisesRegex(OrchestrationError, "invalid mission"):
                 MissionOrchestrator(OrchestrationStore(path))
 
-    def test_cli_override_remains_an_engineering_workflow(self):
+    def test_cli_state_override_remains_an_engineering_workflow(self):
         with tempfile.TemporaryDirectory() as temporary:
             state = Path(temporary) / "state.json"
             OrchestrationStore(state).save(empty_orchestration_state())
             result = subprocess.run(
-                [str(ROOT / "scripts/zeus"), "--state", str(state), "status"],
+                [str(ROOT / "scripts/zeus"), "--state", str(state), "show", "wop-template"],
                 capture_output=True,
                 text=True,
                 env={**os.environ, "ZEUS_STATE": str(Path(temporary) / "ignored.json")},
             )
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertEqual(json.loads(result.stdout)["staged_missions"], [])
+            self.assertIn('"wop_id"', result.stdout)
 
     def test_missing_override_remains_compatible_for_isolated_guidance(self):
         with tempfile.TemporaryDirectory() as temporary:

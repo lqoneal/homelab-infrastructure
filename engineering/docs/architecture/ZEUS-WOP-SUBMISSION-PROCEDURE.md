@@ -69,6 +69,28 @@ contiguous P2 identity chain; duplicate, orphaned, or conflicting canonical
 transactions fail closed. Stage 1 and historical/provider projections remain
 compatibility evidence and do not advance current state.
 
+P3 admission artifact cardinality is evaluated within the selected P2
+Mission/WOP/submission identity and repository-bound admission transaction.
+The resolver permits multiple preserved P3 artifact sets in the append-only
+runtime when they belong to other missions, historical submissions,
+superseded revisions, or legacy compatibility. It requires exactly one
+identity-valid current set for the requested mission. Historical evidence is
+never deleted or rewritten; zero current candidates, duplicate current
+candidates, digest/provenance mismatch, and identity conflict remain
+fail-closed. Replaying the selected admission remains deterministic and
+idempotent.
+
+P4 bootstrap artifact cardinality is evaluated within the selected P2/P3
+Mission/WOP/submission/admission identity and bootstrap provenance. The
+append-only runtime may contain preserved P4 chains and downstream provider
+evidence for historical missions; those records are classified as historical
+or compatibility evidence and are excluded from current P4 authority. Zeus
+requires exactly one current bootstrap chain, rejects zero or duplicate current
+chains, rejects identity/digest/provenance contradictions, and scopes the
+pre-provider downstream check to the requested current chain. Historical
+artifacts are never deleted or rewritten, and replay of the current bootstrap
+is deterministic and idempotent.
+
 Mission-oriented selection and projection commands are compatibility views;
 they are not additional mandatory execution lifecycle steps. The historical
 command form is:

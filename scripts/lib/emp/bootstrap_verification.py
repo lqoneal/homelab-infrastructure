@@ -11,6 +11,8 @@ from scripts.lib.emp.bootstrap_boundary import (
     _descriptor_path,
     _verify_admission,
     _load,
+    _p4_identity_matches,
+    _scoped_bootstrap_cardinality,
     _transaction_digest,
 )
 from scripts.lib.emp.repository_identity import resolve
@@ -65,9 +67,18 @@ def verify_bootstrap_replay(first: Mapping[str, Any], replay: Mapping[str, Any],
             values[field] = _artifact(path, descriptor.get("digest"), directory)
         if path.name != f"{first['bootstrap_id']}.json":
             raise BootstrapVerificationError(f"{field} filename identity mismatch")
-    counts = {directory: len(list((runtime / directory).glob("*.json"))) for directory in BOOTSTRAP_CLASSES}
+    scoped = _scoped_bootstrap_cardinality(runtime, first)
+    counts = scoped["counts"]["current"]
+    if any(scoped["counts"]["invalid"].values()):
+        raise BootstrapVerificationError(
+            "invalid bootstrap artifacts are present: "
+            f"{scoped['counts']['invalid']}"
+        )
     if any(count != 1 for count in counts.values()):
-        raise BootstrapVerificationError(f"bootstrap artifact cardinality is invalid: {counts}")
+        raise BootstrapVerificationError(
+            "current bootstrap artifact cardinality is invalid: "
+            f"{counts}; historical artifacts preserved: {scoped['counts']['historical']}"
+        )
     record = values["execution_record"]
     if record.get("artifact_type") != "canonical-execution-record" or record.get("provider_ready") is not True:
         raise BootstrapVerificationError("execution record is invalid")
@@ -102,11 +113,31 @@ def verify_bootstrap_replay(first: Mapping[str, Any], replay: Mapping[str, Any],
     # canonical P4 execution boundary is represented by execution-records,
     # while provider/session/dispatch/execution stores remain prohibited.
     prohibited = {"providers", "provider-sessions", "dispatch", "dispatches", "executions", "bootstrap-sessions"}
-    downstream = [str(path) for path in runtime.rglob("*.json") if any(part in prohibited for part in path.parts)]
+    downstream: list[str] = []
+    historical_downstream: list[str] = []
+    expected_identity = {
+        "mission_id": first.get("mission_id"),
+        "wop_id": first.get("wop_id"),
+        "submission_id": first.get("submission_id"),
+        "admission_id": first.get("admission_id"),
+        "bootstrap_id": first.get("bootstrap_id"),
+    }
+    for path in runtime.rglob("*.json"):
+        if not any(part in prohibited for part in path.parts):
+            continue
+        try:
+            value = _load(path)
+        except (OSError, ValueError) as error:
+            raise BootstrapVerificationError(f"invalid downstream artifact: {path}") from error
+        if _p4_identity_matches(value, expected_identity):
+            downstream.append(str(path))
+        else:
+            historical_downstream.append(str(path))
     if downstream:
-        raise BootstrapVerificationError(f"downstream artifacts exist: {downstream}")
+        raise BootstrapVerificationError(f"current downstream artifacts exist: {downstream}")
     return {"result": "PASS", "bootstrap_state": first["bootstrap_state"],
             "bootstrap_result": first["bootstrap_result"], "provider_ready": True,
             "provider_selected": False, "dispatch_created": False, "execution_started": False,
             "next_action": first["next_action"], "duplicate_bootstrap": "IDEMPOTENT",
-            "artifact_counts": counts, "downstream_artifacts": "NONE"}
+            "artifact_counts": counts, "artifact_classification": scoped["counts"],
+            "downstream_artifacts": "NONE", "historical_downstream_artifacts": historical_downstream}

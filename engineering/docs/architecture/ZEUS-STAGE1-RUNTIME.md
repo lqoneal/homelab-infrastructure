@@ -179,6 +179,16 @@ authority evidence is fail-closed. Provider, session, process, monitoring,
 and evidence records are subordinate observations and do not authorize
 execution.
 
+Admission supersession and resume use distinct mutation contracts. A governed
+supersession may atomically create a fresh successor admission and rebind a
+predecessor execution when the repository baseline has advanced. The
+read-only resume resolver never creates that successor: if the terminal
+admission is stale, missing, contradictory, or ambiguous, resume fails closed
+without changing admission or execution records. Cancelled execution
+identities remain lineage evidence only when they are present in the selected
+repository-bound runtime; historical repository-local runtime records are not
+implicitly consulted by the current resolver.
+
 Stage 1 is not the owner of generic current mission discovery. The live
 `zeus mission list` surface merges its planning entries with the canonical P2
 submission index, and mission-specific read surfaces resolve the same
