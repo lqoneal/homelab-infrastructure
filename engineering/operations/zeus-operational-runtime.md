@@ -51,12 +51,16 @@ controller commands never create or lock runtime files. `submit`, `admit`,
 and fail closed when the selected root is unavailable or read-only. Published
 evidence remains append-only and is never repaired in place.
 
-Current-valid reconciliation receipts are generated from live repository,
-origin, EOS, runtime, mission, WOP, and predecessor-receipt projections. The
-receipt records both the immutable receipt-provenance baseline and the current
-published baseline. Legitimate descendant publication is reconciled through a
-durable lineage receipt; historical receipts are not rewritten. Non-descendant,
-forged, mismatched, or ambiguous lineage fails closed.
+Current-valid reconciliation evidence is resolved from live repository,
+origin, EOS, runtime, mission, WOP, and receipt projections. Git/EOS live
+projections own the current published baseline; a reconciliation receipt is
+supplemental immutable evidence of a particular publication transition and is
+not required for every routine descendant publication. When generated, it
+records its resolved operands and predecessor lineage so an independent
+verifier can reproduce it. Historical receipts are not rewritten. Non-
+descendant, rewritten, forged, mismatched, conflicting, or ambiguous lineage
+fails closed, while a valid stale reconciliation receipt remains historical
+supplemental evidence beneath the live current projection.
 
 `--state` and `ZEUS_STATE` are retained only as explicit engineering and test
 overrides. Bootstrap refuses to initialize either override unless it resolves

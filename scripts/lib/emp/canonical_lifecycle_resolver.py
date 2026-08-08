@@ -297,13 +297,13 @@ def resolve(repository: Path | str, mission_id: str, *, runtime_root: Path | str
         return _fail(mission, getattr(error, "code", "CANONICAL_P4_CHAIN_INVALID"), str(error), chain=chain)
 
     lineage = admission_facts.get("repository_lineage") or {}
-    if lineage.get("baseline_relationship") == "ANCESTOR":
+    if lineage.get("baseline_relationship") in {"IDENTICAL", "ANCESTOR"}:
         try:
-            if not (runtime / "reconciliations").is_dir():
-                raise LifecycleBaselineReconciliationError(
-                    "RECONCILIATION_REQUIRED",
-                    "current publication is a descendant of lifecycle provenance but no durable reconciliation receipt exists",
-                )
+            # Git/EOS live projections own the current baseline.  A
+            # reconciliation receipt is supplemental transition evidence, not
+            # a per-publication authority record.  Matching receipts are
+            # validated by verify_current; routine descendants therefore
+            # resolve even when no new receipt was authored.
             base["postpublication_reconciliation"] = verify_current(
                 root,
                 runtime,
@@ -313,6 +313,7 @@ def resolve(repository: Path | str, mission_id: str, *, runtime_root: Path | str
                     "submission_id": canonical_identity.get("submission_id"),
                     "admission_id": admission.get("admission_id"),
                     "bootstrap_id": bootstrap.get("bootstrap_id"),
+                    "receipt_provenance_baseline": admission.get("repository_baseline"),
                 },
                 current_published_baseline=str(lineage.get("current_published_baseline")),
             )

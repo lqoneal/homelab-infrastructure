@@ -185,6 +185,23 @@ normalization adapter that preserves its original identity, digest, source,
 and limitations. A legacy package with ambiguous identity, authority,
 integrity, or execution scope is read-only or invalid rather than guessed.
 
+The canonical user-facing submission interface is `zeus submit`. It resolves
+and classifies source contract before CLI-shape routing. A valid promotable
+Development source may receive identity-preserving automatic canonicalization
+into the Phase-1 provenance contract: source bytes, WOP ID, Mission ID, and
+source digest remain authoritative; derived template/context/output and replay
+digests are recorded; an existing provenance envelope is verified. A missing
+sidecar is therefore not a legacy discriminator, and `--repository` is not a
+legacy discriminator. Only explicitly classified packages/admission records
+use compatibility Stage 1 semantics. Ambiguous, conflicting, or digest-stale
+provenance fails closed.
+
+Submission of a WOP is authority for work explicitly contained in that WOP;
+canonicalization does not create a second generic corrective, implementation,
+execution, or approval grant. `approval_state` remains
+`NOT_REQUIRED_UNLESS_DECLARED_IN_WOP`, while an explicit approval gate in the
+WOP remains enforceable at admission or the applicable downstream boundary.
+
 The target canonical package is transferable as one unit and will eventually
 provide manifest, integrity, bootstrap, execution, gates, recovery, closeout,
 and source content. WOP-M2 owns the concrete package/manifest layout. External
@@ -306,13 +323,18 @@ contract and authority bindings, principal, submitter, mode, and lifecycle
 authorization. The submission ID is resolved before the request digest and
 idempotency identity are calculated.
 
-An admission is reusable only while those bindings remain compatible and its
-admitted baseline equals the current repository `HEAD`. A baseline change
-makes the admission stale for new execution; it does not mutate the old
-record. The replacement admission records the prior admission, any cancelled
-incompatible execution, both baselines, and the supersession reason. Stale,
-superseded, rejected, or incompatible-cancelled admissions fail closed at the
-execution boundary.
+An admission records the repository baseline that formed its immutable
+provenance. A baseline change does not mutate that record. For the canonical
+receipt-backed lifecycle, current validity is resolved from synchronized live
+`HEAD`, `origin/main`, EOS, repository identity, and verified descendant
+lineage; a legitimate descendant therefore does not require rewriting or
+reissuing the admission receipt. An operation that explicitly requires a
+fresh equal-baseline admission must declare that stricter contract at its
+boundary. The replacement admission records the prior admission, any
+cancelled incompatible execution, both baselines, and the supersession
+reason. Stale, superseded, rejected, or incompatible-cancelled admissions
+fail closed at the execution boundary, as do non-descendant, rewritten,
+identity-mismatched, forged, or ambiguous publication lineages.
 
 ## Stable operator contract
 

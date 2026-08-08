@@ -14,8 +14,12 @@ Each mission projection exposes exactly:
 - `historical_admissions`: immutable prior admissions;
 - `historical_executions`: immutable completed, cancelled, failed, or superseded executions.
 
-An admission is current only when its lifecycle permits execution and its bound
-repository baseline equals the current Development baseline. An execution is
+An admission is current only when its lifecycle permits execution and its
+immutable bound repository provenance is valid against the synchronized live
+Development baseline. The canonical resolver proves repository identity,
+`HEAD == origin/main == EOS`, and descendant ancestry; legitimate subsequent
+publication does not mutate the admission record. A boundary that requires a
+fresh equal-baseline admission must say so explicitly. An execution is
 current only while it is in an active execution state. Cancelled and completed
 records are never selected by recency.
 

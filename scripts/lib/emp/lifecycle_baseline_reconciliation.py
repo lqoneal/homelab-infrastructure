@@ -12,7 +12,7 @@ from typing import Any, Mapping
 
 from scripts.lib.emp.repository_identity import resolve as resolve_repository_identity
 from scripts.lib.eos.canonical_baseline import resolve as resolve_baseline
-from scripts.lib.eos.canonical_baseline import resolve_provenance_lineage
+from scripts.lib.eos.canonical_baseline import resolve_commit_lineage, resolve_provenance_lineage
 
 
 RECONCILIATION_DIRECTORY = "reconciliations"
@@ -92,25 +92,30 @@ def _verify_record(
     identity = resolve_repository_identity(repository)
     if record.get("repository_identity") != identity:
         raise LifecycleBaselineReconciliationError("RECONCILIATION_REPOSITORY_IDENTITY_MISMATCH", "reconciliation repository identity differs from live repository")
-    head = _git(repository, "rev-parse", "HEAD")
-    origin = _git(repository, "rev-parse", "origin/main")
-    if record.get("current_head") != head or record.get("origin_main") != origin:
-        raise LifecycleBaselineReconciliationError("RECONCILIATION_REPOSITORY_PROJECTION_MISMATCH", "reconciliation HEAD/origin projection differs from live repository")
-    if record.get("current_published_baseline") != current_published_baseline:
-        raise LifecycleBaselineReconciliationError("RECONCILIATION_BASELINE_MISMATCH", "reconciliation is not bound to current publication")
-    eos = resolve_baseline(
+    recorded_baseline = str(record.get("current_published_baseline", ""))
+    recorded_lineage = resolve_commit_lineage(
         repository,
-        Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")),
-        mission_provenance_baseline=str(record.get("receipt_provenance_baseline", "")),
+        str(record.get("receipt_provenance_baseline", "")),
+        recorded_baseline,
     )
-    if eos.get("result") != "PASS" or eos.get("eos_baseline") != current_published_baseline:
-        raise LifecycleBaselineReconciliationError("RECONCILIATION_EOS_PROJECTION_MISMATCH", "reconciliation EOS projection differs from live published baseline")
-    lineage = resolve_provenance_lineage(repository, str(record.get("receipt_provenance_baseline", "")), current_published_baseline=current_published_baseline)
-    if lineage.get("result") != "PASS" or lineage.get("baseline_relationship") not in {"IDENTICAL", "ANCESTOR"}:
-        raise LifecycleBaselineReconciliationError("RECONCILIATION_LINEAGE_INVALID", "reconciliation publication lineage is invalid")
-    if record.get("publication_lineage") != lineage:
+    if recorded_lineage.get("result") != "PASS" or recorded_lineage.get("baseline_relationship") not in {"IDENTICAL", "ANCESTOR"}:
+        raise LifecycleBaselineReconciliationError("RECONCILIATION_LINEAGE_INVALID", "recorded reconciliation publication lineage is invalid")
+    if record.get("publication_lineage") != recorded_lineage:
         raise LifecycleBaselineReconciliationError("RECONCILIATION_LINEAGE_MISMATCH", "reconciliation lineage does not match live publication")
-    return {"result": "PASS", "classification": "CURRENT_CANONICAL", "lineage": lineage}
+    if record.get("current_head") != recorded_baseline or record.get("origin_main") != recorded_baseline:
+        raise LifecycleBaselineReconciliationError("RECONCILIATION_REPOSITORY_PROJECTION_MISMATCH", "recorded reconciliation HEAD/origin do not match its recorded publication baseline")
+    if record.get("eos_published_baseline") != recorded_baseline:
+        raise LifecycleBaselineReconciliationError("RECONCILIATION_EOS_PROJECTION_MISMATCH", "recorded reconciliation EOS baseline does not match its recorded publication baseline")
+    live_lineage = resolve_commit_lineage(repository, recorded_baseline, current_published_baseline)
+    if live_lineage.get("result") != "PASS" or live_lineage.get("baseline_relationship") not in {"IDENTICAL", "ANCESTOR"}:
+        raise LifecycleBaselineReconciliationError("RECONCILIATION_LINEAGE_INVALID", "recorded publication is not an ancestor of the live publication")
+    return {
+        "result": "PASS",
+        "classification": "CURRENT_CANONICAL" if recorded_baseline == current_published_baseline else "HISTORICAL_SUPPLEMENTAL",
+        "lineage": recorded_lineage,
+        "live_lineage": live_lineage,
+        "recorded_baseline": recorded_baseline,
+    }
 
 
 def reconcile(repository: Path | str, runtime: Path | str, mission: Mapping[str, Any]) -> dict[str, Any]:
@@ -137,6 +142,10 @@ def reconcile(repository: Path | str, runtime: Path | str, mission: Mapping[str,
     )
     if lineage.get("result") != "PASS" or lineage.get("baseline_relationship") not in {"IDENTICAL", "ANCESTOR"}:
         raise LifecycleBaselineReconciliationError("RECONCILIATION_LINEAGE_INVALID", "receipt provenance is not a valid publication ancestor")
+    previous_baseline = str(mission.get("previous_published_baseline") or mission["receipt_provenance_baseline"])
+    previous_lineage = resolve_commit_lineage(root, previous_baseline, origin)
+    if previous_lineage.get("result") != "PASS" or previous_lineage.get("baseline_relationship") not in {"IDENTICAL", "ANCESTOR"}:
+        raise LifecycleBaselineReconciliationError("RECONCILIATION_PREDECESSOR_INVALID", "previous publication is not a valid ancestor of the live publication")
 
     payload = {
         "schema_version": 1,
@@ -159,7 +168,7 @@ def reconcile(repository: Path | str, runtime: Path | str, mission: Mapping[str,
         "origin_main": origin,
         "eos_published_baseline": eos.get("eos_baseline"),
         "receipt_provenance_baseline": mission["receipt_provenance_baseline"],
-        "previous_published_baseline": mission["receipt_provenance_baseline"],
+        "previous_published_baseline": previous_baseline,
         "current_published_baseline": origin,
         "publication_lineage": lineage,
         "mission_id": mission["mission_id"],
@@ -236,6 +245,9 @@ def reconcile_mission(repository: Path | str, runtime: Path | str, mission_id: s
         "next_authorized_action": resolved.get("next_authorized_action"),
         "authority": resolved.get("authority"),
     }
+    reconciliation_view = resolved.get("postpublication_reconciliation") or {}
+    if reconciliation_view.get("latest_historical_baseline"):
+        mission["previous_published_baseline"] = reconciliation_view["latest_historical_baseline"]
     return reconcile(root, runtime_root, mission)
 
 
@@ -246,21 +258,67 @@ def verify_current(
     expected: Mapping[str, Any],
     current_published_baseline: str,
 ) -> dict[str, Any]:
-    """Verify the one current reconciliation receipt for a canonical chain."""
-    candidates = []
-    for path, record in _current_records(Path(runtime).resolve(), str(expected["mission_id"]).upper()):
-        if record.get("current_published_baseline") == current_published_baseline:
-            candidates.append((path, record))
-    if len(candidates) != 1:
-        raise LifecycleBaselineReconciliationError(
-            "RECONCILIATION_CARDINALITY_INVALID",
-            f"current reconciliation cardinality is {len(candidates)}",
-        )
-    path, record = candidates[0]
-    result = _verify_record(
-        record,
-        repository=Path(repository).resolve(),
-        expected=expected,
+    """Verify live lineage and supplemental receipts for a canonical chain.
+
+    Git/EOS are the live current-baseline authority.  Reconciliation receipts
+    preserve historical transition evidence and are not required for every
+    descendant publication.  Any matching receipt is still validated so a
+    forged or contradictory artifact cannot be silently ignored.
+    """
+    live = resolve_provenance_lineage(
+        Path(repository),
+        str(expected.get("receipt_provenance_baseline", expected.get("repository_baseline", ""))),
         current_published_baseline=current_published_baseline,
     )
-    return {**result, "receipt_path": str(path), "receipt_digest": record["receipt_digest"]}
+    if live.get("result") != "PASS" or live.get("baseline_relationship") not in {"IDENTICAL", "ANCESTOR"}:
+        raise LifecycleBaselineReconciliationError(
+            "RECONCILIATION_LINEAGE_INVALID",
+            "live publication is not a valid descendant of immutable lifecycle provenance",
+        )
+    eos = resolve_baseline(
+        Path(repository),
+        Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")),
+        mission_provenance_baseline=str(expected.get("receipt_provenance_baseline", expected.get("repository_baseline", ""))),
+    )
+    if eos.get("result") != "PASS" or eos.get("eos_baseline") != current_published_baseline:
+        raise LifecycleBaselineReconciliationError(
+            "RECONCILIATION_EOS_PROJECTION_MISMATCH",
+            "live EOS baseline does not match the current published repository projection",
+        )
+    current: list[tuple[Path, dict[str, Any], dict[str, Any]]] = []
+    historical: list[tuple[Path, dict[str, Any], dict[str, Any]]] = []
+    for path, record in _current_records(Path(runtime).resolve(), str(expected["mission_id"]).upper()):
+        result = _verify_record(
+            record,
+            repository=Path(repository).resolve(),
+            expected=expected,
+            current_published_baseline=current_published_baseline,
+        )
+        item = (path, record, result)
+        if result["classification"] == "CURRENT_CANONICAL":
+            current.append(item)
+        else:
+            historical.append(item)
+    if len(current) > 1:
+        raise LifecycleBaselineReconciliationError(
+            "RECONCILIATION_CARDINALITY_INVALID",
+            f"more than one current reconciliation receipt exists for {expected['mission_id']}",
+        )
+    value: dict[str, Any] = {
+        "result": "PASS",
+        "classification": "CURRENT_CANONICAL" if current else "LIVE_PROJECTION",
+        "live_lineage": live,
+        "current_receipt_count": len(current),
+        "historical_receipt_count": len(historical),
+        "current_baseline_source": "LIVE_GIT_ORIGIN_EOS_PROJECTION",
+    }
+    if current:
+        path, record, result = current[0]
+        value.update({"receipt_path": str(path), "receipt_digest": record["receipt_digest"], "lineage": result["lineage"]})
+    if historical:
+        value["historical_receipts"] = [
+            {"path": str(path), "receipt_digest": record["receipt_digest"], "recorded_baseline": result["recorded_baseline"]}
+            for path, record, result in historical
+        ]
+        value["latest_historical_baseline"] = historical[-1][2]["recorded_baseline"]
+    return value

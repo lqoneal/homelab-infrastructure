@@ -35,6 +35,86 @@ def _commit(value: Any, code: str, label: str) -> str:
     return text
 
 
+def resolve_commit_lineage(
+    root: Path | str,
+    provenance_baseline: str,
+    current_published_baseline: str,
+) -> dict[str, Any]:
+    """Resolve immutable commit ancestry without substituting live authority.
+
+    This helper is deliberately independent of HEAD/origin/EOS parity.  It is
+    used to verify historical publication evidence at the baseline it records.
+    The live ``resolve_provenance_lineage`` wrapper separately proves that the
+    requested target is the currently synchronized publication projection.
+    """
+    repository = Path(root).resolve()
+    errors: list[dict[str, str]] = []
+    try:
+        provenance = _commit(
+            provenance_baseline,
+            "MISSION_PROVENANCE_BASELINE_MISSING",
+            "mission provenance baseline",
+        )
+        target = _commit(
+            current_published_baseline,
+            "CURRENT_PUBLISHED_BASELINE_MISSING",
+            "current published baseline",
+        )
+    except BaselineResolutionError as error:
+        return {
+            "result": "FAIL",
+            "provenance_baseline": None,
+            "current_published_baseline": None,
+            "baseline_relationship": "INVALID",
+            "errors": [{"code": error.code, "message": str(error)}],
+        }
+
+    provenance_reachable = subprocess.run(
+        ["git", "-C", str(repository), "cat-file", "-e", f"{provenance}^{{commit}}"],
+        capture_output=True,
+        check=False,
+    ).returncode == 0
+    target_reachable = subprocess.run(
+        ["git", "-C", str(repository), "cat-file", "-e", f"{target}^{{commit}}"],
+        capture_output=True,
+        check=False,
+    ).returncode == 0
+    if not provenance_reachable:
+        errors.append({
+            "code": "MISSION_PROVENANCE_BASELINE_MISSING",
+            "message": "receipt provenance baseline is not a reachable commit",
+        })
+    if not target_reachable:
+        errors.append({
+            "code": "CURRENT_PUBLISHED_BASELINE_MISSING",
+            "message": "publication baseline is not a reachable commit",
+        })
+
+    if not errors and provenance == target:
+        relationship = "IDENTICAL"
+    elif not errors and subprocess.run(
+        ["git", "-C", str(repository), "merge-base", "--is-ancestor", provenance, target],
+        capture_output=True,
+        check=False,
+    ).returncode == 0:
+        relationship = "ANCESTOR"
+    else:
+        relationship = "UNRELATED"
+        if not errors:
+            errors.append({
+                "code": "MISSION_PROVENANCE_NOT_ANCESTOR",
+                "message": "receipt provenance baseline is not an ancestor of the publication baseline",
+            })
+
+    return {
+        "result": "PASS" if not errors else "FAIL",
+        "provenance_baseline": provenance,
+        "current_published_baseline": target,
+        "baseline_relationship": relationship,
+        "errors": errors,
+    }
+
+
 def resolve_provenance_lineage(
     root: Path | str,
     provenance_baseline: str,
@@ -88,31 +168,9 @@ def resolve_provenance_lineage(
             "message": "current repository HEAD, origin/main, and published baseline are not equal",
         })
 
-    reachable = subprocess.run(
-        ["git", "-C", str(repository), "cat-file", "-e", f"{provenance}^{{commit}}"],
-        capture_output=True,
-        check=False,
-    ).returncode == 0
-    if not reachable:
-        errors.append({
-            "code": "MISSION_PROVENANCE_BASELINE_MISSING",
-            "message": "receipt provenance baseline is not a reachable commit",
-        })
-        relationship = "UNREACHABLE"
-    elif provenance == target:
-        relationship = "IDENTICAL"
-    elif subprocess.run(
-        ["git", "-C", str(repository), "merge-base", "--is-ancestor", provenance, target],
-        capture_output=True,
-        check=False,
-    ).returncode == 0:
-        relationship = "ANCESTOR"
-    else:
-        relationship = "UNRELATED"
-        errors.append({
-            "code": "MISSION_PROVENANCE_NOT_ANCESTOR",
-            "message": "receipt provenance baseline is not an ancestor of the current publication",
-        })
+    commit_lineage = resolve_commit_lineage(repository, provenance, target)
+    relationship = commit_lineage["baseline_relationship"]
+    errors.extend(commit_lineage["errors"])
 
     return {
         "result": "PASS" if not errors else "FAIL",
