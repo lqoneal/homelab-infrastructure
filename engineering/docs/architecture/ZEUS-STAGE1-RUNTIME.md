@@ -6,6 +6,31 @@ projection are implementation owners for intake mechanics, not independent
 owners of WOP identity, revision, authority, or legacy semantics. Future
 consumers shall use the normalized WOP resolution contract defined there.
 
+## Current-state projection rule
+
+Stage 1 consumers follow the Zeus Live Projection First rule. Current mission,
+WOP, receipt, repository-baseline, authority, provider/session, lifecycle, and
+next-action values are resolved from the canonical live projection first,
+receipt-backed derived projection second, authoritative persisted source third,
+and an explicitly documented compatibility fallback only afterward. A
+hardcoded current-state value is never primary authority when a live
+projection exists.
+
+This applies to submission, admission, bootstrap, provider evaluation,
+dispatch, provider/session binding, execution, monitoring,
+recovery/checkpointing, qualification, publication, EOS synchronization,
+closeout, and Zeus status/verification. Immutable constants, schema values,
+historical evidence literals, test vectors, and bounded legacy fallbacks are
+distinct from current authority. Fallbacks are tested and fail closed on
+conflict.
+
+Admission and bootstrap receipts preserve their original provenance baseline.
+When a legitimate synchronized publication advances the repository, the
+canonical reconciliation projection proves descendant lineage to the current
+published baseline without mutating those immutable receipts. A missing,
+non-descendant, repository-mismatched, forged, or ambiguous lineage remains
+blocked.
+
 ## Purpose and boundary
 
 ### Runtime storage boundary

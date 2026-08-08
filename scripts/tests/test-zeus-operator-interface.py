@@ -110,18 +110,19 @@ class CliTests(unittest.TestCase):
             self.assertEqual(help_result.returncode, 0, help_result.stderr)
             self.assertIn("intro", help_result.stdout)
 
-    def test_status_json_preserves_mission_fields_and_adds_authority_fields(self):
+    def test_status_json_uses_live_beta_and_canonical_lifecycle_fields(self):
         with tempfile.TemporaryDirectory() as temporary:
             state = Path(temporary) / "state.json"
             result = run_zeus(state, "status", "--json", suppress=True)
             self.assertEqual(result.returncode, 0, result.stderr)
             value = json.loads(result.stdout)
             for key in (
-                "active_execution", "staged_missions", "eligible_missions",
-                "blocked_missions", "outstanding_approvals", "completed_missions",
-                "repository", "authority", "pmct", "operational_state",
+                "active_operation", "authority_source", "next_authorized_action",
+                "current_platform_mission", "current_executable_mission",
+                "canonical_lifecycle", "current_state_authority",
             ):
                 self.assertIn(key, value)
+            self.assertEqual(value["current_state_authority"], "RECEIPT_BACKED_CANONICAL_LIFECYCLE_CHAIN")
 
     def test_status_human_surface_contains_required_sections(self):
         result = subprocess.run(
@@ -135,18 +136,18 @@ class CliTests(unittest.TestCase):
             },
         )
         self.assertEqual(result.returncode, 0, result.stderr)
-        for section in (
-            "Repository", "Authority", "PMCT", "Operational Gates",
-            "Mission Engine",
-        ):
+        for section in ("Operation Beta authority", "Active gate:", "Next authorized action:"):
             self.assertIn(section, result.stdout)
 
     def test_orientation_is_explicit_and_stderr_separated(self):
         with tempfile.TemporaryDirectory() as temporary:
             state = Path(temporary) / "state.json"
             first = run_zeus(state, "status")
-            self.assertEqual(first.stderr, "")
-            json.loads(first.stdout)
+            self.assertEqual(first.returncode, 0, first.stderr)
+            self.assertEqual(
+                json.loads(first.stdout)["current_state_authority"],
+                "RECEIPT_BACKED_CANONICAL_LIFECYCLE_CHAIN",
+            )
             value = initial_state()
             value["invocation_count"] = 99
             state.write_text(json.dumps(value))

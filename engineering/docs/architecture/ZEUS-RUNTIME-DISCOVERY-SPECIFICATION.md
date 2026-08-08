@@ -23,6 +23,41 @@ legacy operational `active-publication.json` pointer is not a prerequisite for
 canonical P2/P3/P4 submission, admission, or mission discovery. An explicit
 `--state` orchestration override is an isolated engineering/test surface and
 must remain independent of that historical OA pointer.
+
+## Live Projection First
+
+Zeus current-state identity, lifecycle state, receipt operands, repository
+baseline, mission/WOP binding, provider/session identity, next action, and
+verification output MUST be resolved from the authoritative live projection
+when one exists. Resolution priority is:
+
+1. canonical live projection;
+2. receipt-backed derived projection;
+3. authoritative persisted source record;
+4. explicitly bounded compatibility fallback;
+5. hardcoded value only as a last-resort compatibility mechanism.
+
+This rule applies across submission, admission, bootstrap, provider
+evaluation, dispatch, provider/session binding, execution, monitoring,
+recovery/checkpointing, qualification, publication, EOS synchronization,
+closeout, and Zeus-native status/verification surfaces. Hardcoded current
+authority is prohibited when the same value can be resolved live.
+
+Immutable protocol constants, schema enumerations, historical evidence
+literals, test vectors, and explicitly bounded compatibility fallbacks are not
+current-state authority. A retained fallback MUST be documented, MUST fail
+closed when it conflicts with live state, MUST have focused tests, and SHOULD
+be removed when a canonical projection becomes available.
+
+Current-valid reconciliation receipts resolve repository identity, HEAD,
+`origin/main`, EOS published baseline, immutable receipt-provenance baseline,
+Mission/WOP and predecessor receipt identities, publication lineage, and
+lifecycle state from live projections. The receipt records those resolved
+operands so an independent verifier can reproduce the result. Receipt
+provenance baseline and current published baseline are distinct: a
+synchronized descendant publication may reconcile without rewriting the
+historical receipt; unrelated, rewritten, mismatched, forged, or ambiguous
+lineage fails closed.
 ## Legacy runtime adoption
 
 An existing valid Zeus runtime is adopted or migrated only through the native

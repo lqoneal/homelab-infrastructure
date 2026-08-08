@@ -24,7 +24,6 @@ from scripts.lib.emp import codex_adapter
 
 
 SCHEMA_VERSION = 1
-PUBLISHED_BASELINE = "05167c58b5b95342734d4bf5c77f5e4c8eb77cb4"
 
 
 class MissionVerificationError(ValueError):
@@ -165,7 +164,10 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
     try:
         repository_data, _ = _repository(root, runtime)
     except Exception as error:
-        repository_data = {"current_baseline": _git(root, "rev-parse", "HEAD"), "published_baseline": PUBLISHED_BASELINE}
+        repository_data = {
+            "current_baseline": _git(root, "rev-parse", "HEAD"),
+            "published_baseline": _git(root, "rev-parse", "origin/main"),
+        }
         blockers.append({"code": getattr(error, "code", "REPOSITORY_IDENTITY_MISMATCH"), "message": str(error)})
     try:
         authority = _authority(root)
@@ -402,6 +404,8 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         next_action = blockers[0].get("message", "Resolve blockers")
     else:
         next_action = (execution_start_stage.get("next_authorized_action") if execution_start_stage.get("execution_started") else (provider_invocation_stage.get("next_authorized_action") if provider_invocation_stage.get("provider_invoked") else (provider_session_stage.get("next_authorized_action") if provider_session_stage.get("provider_session_created") else ("ESTABLISH_PROVIDER_SESSION" if dispatch_stage else ("EVALUATE_PROVIDER_DISPATCH" if provider_stage else "EVALUATE_EXECUTION_PROVIDER")))))
+    if codex_stage.get("state") == "RECONCILED_HISTORICAL":
+        next_action = codex_stage.get("next_authorized_action")
     return {
         "schema_version": SCHEMA_VERSION, "result": result, "mission_verification": result, "read_only": True,
         "mission_id": mission_id, "wop_id": chain.get("submission", {}).get("wop_id"),
@@ -415,6 +419,7 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
             "mission_baseline_relationship": baseline_resolution.get("mission_baseline_relationship"),
         }},
         "runtime": runtime_data, "checks": checks,
+        "legacy_reconciliation": codex_stage.get("legacy_reconciliation"),
         "provider_invocation_verification": provider_invocation_stage.get("result", "PASS"),
         "execution_start_verification": execution_start_stage.get("result", "NOT_STARTED"),
         "execution_id": execution_start_stage.get("execution_id"),

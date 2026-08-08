@@ -9,6 +9,7 @@ from scripts.lib.emp.mission_admission_boundary import _digest as _canonical_dig
 from scripts.lib.emp.mission_admission_boundary import _load as _canonical_load
 from scripts.lib.emp.bootstrap_boundary import _scoped_admission_cardinality
 from scripts.lib.emp.repository_identity import resolve
+from scripts.lib.eos.canonical_baseline import resolve_provenance_lineage
 from scripts.lib.emp.wop_verification import verify_artifact
 
 
@@ -134,6 +135,11 @@ def verify_admission_replay(first: Mapping[str, Any], replay: Mapping[str, Any],
     identity = resolve(repository)
     if artifact_values["package"].get("repository", {}).get("canonical_repository_identity") != identity["canonical_repository_identity"]:
         raise MissionAdmissionVerificationError("canonical repository identity mismatch")
+    lineage = resolve_provenance_lineage(repository, first.get("repository_baseline", ""))
+    if lineage.get("result") != "PASS" or lineage.get("baseline_relationship") not in {"IDENTICAL", "ANCESTOR"}:
+        raise MissionAdmissionVerificationError(
+            "admission repository provenance is not an authorized descendant"
+        )
     if artifact_values["package"].get("repository_baseline") != first.get("repository_baseline"):
         raise MissionAdmissionVerificationError("repository baseline evidence mismatch")
     provenance = artifact_values["package"].get("immutable_provenance")
@@ -213,6 +219,7 @@ def verify_admission_replay(first: Mapping[str, Any], replay: Mapping[str, Any],
             "mission_admission_transaction": "PASS",
             "submission_admission_identity_parity": "PASS", "operation_beta": "PASS",
             "repository_identity": "PASS", "immutable_provenance": "PASS",
+            "repository_lineage": lineage,
             "no_operational_alpha_fallback": "PASS", "artifact_counts": counts,
             "historical_artifact_counts": cardinality["historical"],
             "downstream_artifacts": "NONE",

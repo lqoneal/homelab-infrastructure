@@ -18,6 +18,7 @@ from scripts.lib.emp.bootstrap_verification import verify_bootstrap_replay
 from scripts.lib.emp.canonical_authority_receipt import AuthorityReceiptError, resolve as resolve_authority_receipts
 from scripts.lib.emp.submission_boundary import SubmissionError, mission_view as p2_mission_view
 from scripts.lib.emp.runtime_paths import resolve_runtime
+from scripts.lib.emp.lifecycle_baseline_reconciliation import verify_current, LifecycleBaselineReconciliationError
 
 
 class CanonicalLifecycleResolutionError(ValueError):
@@ -265,6 +266,7 @@ def resolve(repository: Path | str, mission_id: str, *, runtime_root: Path | str
         "next_action": "EVALUATE_BOOTSTRAP_ELIGIBILITY",
         "canonical_state_source": "P3_ADMISSION_RECEIPT",
         "admission_transaction": {"path": str(admission_path), "digest": admission.get("transaction_digest")},
+        "repository_lineage": admission_facts.get("repository_lineage"),
     })
     chain.append({
         "stage": "ADMITTED",
@@ -293,6 +295,29 @@ def resolve(repository: Path | str, mission_id: str, *, runtime_root: Path | str
             raise CanonicalLifecycleResolutionError("CANONICAL_IDENTITY_CHAIN_MISMATCH", "P4 bootstrap admission identity differs from P3 admission")
     except (BootstrapBoundaryError, CanonicalLifecycleResolutionError, ValueError) as error:
         return _fail(mission, getattr(error, "code", "CANONICAL_P4_CHAIN_INVALID"), str(error), chain=chain)
+
+    lineage = admission_facts.get("repository_lineage") or {}
+    if lineage.get("baseline_relationship") == "ANCESTOR":
+        try:
+            if not (runtime / "reconciliations").is_dir():
+                raise LifecycleBaselineReconciliationError(
+                    "RECONCILIATION_REQUIRED",
+                    "current publication is a descendant of lifecycle provenance but no durable reconciliation receipt exists",
+                )
+            base["postpublication_reconciliation"] = verify_current(
+                root,
+                runtime,
+                expected={
+                    "mission_id": canonical_identity.get("mission_id"),
+                    "wop_id": canonical_identity.get("wop_id"),
+                    "submission_id": canonical_identity.get("submission_id"),
+                    "admission_id": admission.get("admission_id"),
+                    "bootstrap_id": bootstrap.get("bootstrap_id"),
+                },
+                current_published_baseline=str(lineage.get("current_published_baseline")),
+            )
+        except LifecycleBaselineReconciliationError as error:
+            return _fail(mission, error.code, str(error), chain=chain)
 
     base.update({
         "bootstrap_id": bootstrap.get("bootstrap_id"),

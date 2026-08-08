@@ -1,5 +1,15 @@
 # Zeus Operational Runtime
 
+> **Current lifecycle projection rule:** Zeus resolves current lifecycle
+> identity, receipt operands, repository baseline, mission/WOP binding,
+> provider/session identity, next action, and verification state from live
+> canonical projections first, receipt-backed derived projections second,
+> authoritative persisted records third, and explicitly bounded compatibility
+> fallbacks only thereafter. Hardcoded current-state authority is prohibited
+> when the value is available live. Immutable constants, historical literals,
+> test vectors, and documented legacy fallbacks are separate categories and
+> cannot override a live projection.
+
 ## Architecture and ownership
 
 The authoritative production ownership model is
@@ -11,14 +21,22 @@ The submitted WOP is the normal operational source of work authority. Zeus
 resolves, validates, reconciles, and executes within that authority;
 it is not an independent authority.
 
-The repository root discovered from `scripts/zeus` defines the Zeus runtime.
-Its only authoritative orchestration store is:
+For the current receipt-backed P2/P3/P4 lifecycle, the repository-bound
+user-state runtime resolved by `runtime_paths.py` is the authoritative mutable
+runtime. The repository is the immutable source/control plane and EOS is the
+published-baseline projection. The older repository-local orchestration store
+described below remains an explicit OA/engineering compatibility surface; it
+does not own current canonical mission discovery.
+
+For that legacy orchestration surface, the repository root discovered from
+`scripts/zeus` defines the compatibility runtime. Its orchestration store is:
 
 `<repository>/.zeus/runtime/orchestration-state.json`
 
 The Zeus operator owns the file and its lifecycle. The runtime is local,
 mutable operational data and is intentionally excluded from Git. It is not an
-authority source: it records orchestration state consumed by the existing
+authority source for the current P2/P3/P4 lifecycle: it records orchestration
+state consumed by the existing
 admission, selection, approval, dispatch, qualification, reconciliation, and
 closeout services. Schema version 1 is owned by
 `scripts/lib/emp/orchestration.py`.
@@ -32,6 +50,13 @@ controller commands never create or lock runtime files. `submit`, `admit`,
 `execute`, `publish`, and `synchronize` are the only runtime mutation classes
 and fail closed when the selected root is unavailable or read-only. Published
 evidence remains append-only and is never repaired in place.
+
+Current-valid reconciliation receipts are generated from live repository,
+origin, EOS, runtime, mission, WOP, and predecessor-receipt projections. The
+receipt records both the immutable receipt-provenance baseline and the current
+published baseline. Legitimate descendant publication is reconciled through a
+durable lineage receipt; historical receipts are not rewritten. Non-descendant,
+forged, mismatched, or ambiguous lineage fails closed.
 
 `--state` and `ZEUS_STATE` are retained only as explicit engineering and test
 overrides. Bootstrap refuses to initialize either override unless it resolves

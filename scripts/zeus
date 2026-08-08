@@ -84,7 +84,7 @@ from scripts.lib.emp.canonical_mission_lifecycle import (
     view as canonical_mission_view,
 )
 from scripts.lib.emp.canonical_runtime_mission import CanonicalRuntimeMissionError, view as canonical_runtime_mission_view
-from scripts.lib.emp.canonical_lifecycle_resolver import view as canonical_lifecycle_view
+from scripts.lib.emp.canonical_lifecycle_resolver import submitted_missions as canonical_submitted_missions, view as canonical_lifecycle_view
 from scripts.lib.emp.canonical_mission_aggregate import view as canonical_mission_aggregate_view
 from scripts.lib.emp.mission_verification_controller import verify as verify_mission, render as render_mission
 from scripts.lib.emp import provider_selection
@@ -99,6 +99,7 @@ from scripts.lib.emp import codex_adapter
 from scripts.lib.emp import codex_interactive
 from scripts.lib.emp import codex_reconciliation
 from scripts.lib.emp import managed_handoff
+from scripts.lib.emp import lifecycle_baseline_reconciliation
 
 CODEX_CONTROLLER_ROUTING = {
     "status": "managed.status", "logs": "managed.logs", "artifacts": "managed.artifacts",
@@ -417,6 +418,57 @@ def authority_status(mission_status):
         },
     }
 
+
+def live_status_projection():
+    """Return the current status from live Beta and canonical lifecycle views.
+
+    The historical OA status assembler is intentionally not part of this
+    current path.  Its active-publication pointer and OA selectors remain
+    available only to explicit compatibility consumers.  Current mission
+    identity, state, authority, and next action come from the same live
+    receipt-backed resolver used by ``zeus mission`` surfaces.
+    """
+    value = operational_beta.authority(ROOT)
+    stage1 = Stage1Runtime(
+        ROOT,
+        Path(os.environ.get("ZEUS_STAGE1_STATE", runtime_path(ROOT, "stage1"))),
+        execution_executor=automatic_executor(ROOT),
+    )
+    value["mission_admission"] = stage1.status()
+    operation_view = operational_beta.operation(ROOT)
+    value["current_platform_mission"] = operation_view["current_platform_mission"]
+    value["current_executable_mission"] = operation_view["current_executable_mission"]
+    try:
+        value["canonical_lifecycle"] = canonical_submitted_missions(ROOT)
+    except Exception as error:  # fail closed in the projection, not via OA fallback
+        value["canonical_lifecycle"] = {
+            "result": "FAIL",
+            "missions": [],
+            "resolution": "BLOCKED",
+            "blockers": [{"code": "CANONICAL_LIFECYCLE_PROJECTION_UNAVAILABLE", "message": str(error)}],
+            "read_only": True,
+        }
+    canonical_entries = [
+        item for item in value["canonical_lifecycle"].get("missions", [])
+        if item.get("lifecycle_state") not in {None, "UNRESOLVED"}
+    ]
+    if len(canonical_entries) == 1:
+        canonical = canonical_entries[0]
+        value["canonical_lifecycle_mission"] = canonical.get("mission_id")
+        value["canonical_lifecycle_state"] = canonical.get("lifecycle_state")
+        value["canonical_lifecycle_next_action"] = canonical.get("next_authorized_action")
+    elif len(canonical_entries) == 0:
+        value["canonical_lifecycle_mission"] = None
+        value["canonical_lifecycle_state"] = "UNRESOLVED"
+        value["canonical_lifecycle_next_action"] = None
+    else:
+        value["canonical_lifecycle_mission"] = None
+        value["canonical_lifecycle_state"] = "AMBIGUOUS"
+        value["canonical_lifecycle_next_action"] = None
+    value["current_state_authority"] = "RECEIPT_BACKED_CANONICAL_LIFECYCLE_CHAIN"
+    value["historical_oa_projection"] = "COMPATIBILITY_ONLY"
+    return value
+
 def status_text(value):
     repo, authority, pmct, gates = (
         value["repository"], value["authority"], value["pmct"],
@@ -610,8 +662,8 @@ def main(argv=None):
     config_admin = sub.add_parser("config", help="Inspect repository-controlled Zeus configuration."); config_admin.add_argument("action", choices=("show",), nargs="?", default="show"); config_admin.add_argument("--json", action="store_true")
     sync_admin = sub.add_parser("synchronize", help="Report synchronization readiness; mutation requires explicit engctl authority."); sync_admin.add_argument("--json", action="store_true")
     platform_admin = sub.add_parser("platform", help="Read-only integrated platform verification."); platform_admin.add_argument("action", choices=("verify",)); platform_admin.add_argument("--json", action="store_true"); platform_admin.add_argument("--verbose", action="store_true")
-    publication_admin = sub.add_parser("publication", help="Read-only publication and reconciliation verification; publication mutation remains governed by the publication procedure.")
-    publication_admin.add_argument("action", choices=("status", "verify"))
+    publication_admin = sub.add_parser("publication", help="Publication verification and bounded lifecycle baseline reconciliation.")
+    publication_admin.add_argument("action", choices=("status", "verify", "reconcile"))
     publication_admin.add_argument("mission_id", nargs="?", help="canonical mission ID for mission/stage verification")
     publication_admin.add_argument("--json", action="store_true")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
@@ -863,7 +915,20 @@ def main(argv=None):
                 print(f"Next action : {value['next_action']}")
             return 0 if value["result"] == "PASS" else 1
         if a.command == "publication":
+            if a.action == "reconcile" and not a.mission_id:
+                raise OrchestrationError("publication reconcile requires a canonical mission ID")
             mission_id = a.mission_id or "MISSION-BETA-562F443E16C69401"
+            if a.action == "reconcile":
+                runtime = resolve_runtime(ROOT, require_writable=True)["root"]
+                value = lifecycle_baseline_reconciliation.reconcile_mission(ROOT, runtime, mission_id)
+                emit(value) if a.json else print(
+                    f"Reconciliation : {value['reconciliation_id']}\n"
+                    f"Result         : {value['result']}\n"
+                    f"Disposition    : {value['reconciliation']}\n"
+                    f"Receipt        : {value['receipt_path']}\n"
+                    f"Next action    : verify the canonical mission projection"
+                )
+                return 0
             if a.action == "verify" or a.mission_id:
                 value = publication_workflow.verify(ROOT, mission_id)
             else:
@@ -1952,15 +2017,11 @@ def main(argv=None):
         if not state.exists() and a.command == "status" and not (testing or override):
             # Status is a read-only projection and must remain useful before a
             # mutable orchestration runtime has ever been initialized.
-            value = operational_beta.authority(ROOT)
-            value["mission_admission"] = stage1.status()
-            operation_view = operational_beta.operation(ROOT)
-            value["current_platform_mission"] = operation_view["current_platform_mission"]
-            value["current_executable_mission"] = operation_view["current_executable_mission"]
+            value = live_status_projection()
             if a.json:
                 emit(value)
             else:
-                print(f"Operation Beta authority: PASS\nActive gate: {value['active_gate']}\nNext authorized action: {value['next_authorized_action']}\n", end="")
+                print(f"Operation Beta authority: PASS\nActive gate: {value['active_gate']}\nNext authorized action: {value['next_authorized_action']}\nCanonical lifecycle mission: {value['canonical_lifecycle_mission'] or 'UNRESOLVED'}\nCanonical lifecycle state: {value['canonical_lifecycle_state']}\nCanonical lifecycle next action: {value['canonical_lifecycle_next_action'] or 'NONE'}\n", end="")
             return 0
         if requested_state is None and not state.exists():
             raise OrchestrationError(
@@ -1968,20 +2029,22 @@ def main(argv=None):
             )
         o=MissionOrchestrator(OrchestrationStore(state))
         if a.command=="status":
+            # An explicit --state is an isolated engineering/test orchestration
+            # override. It must not enter the historical OA publication
+            # projection, whose active-publication pointer is not required by
+            # the canonical P2/P3/P4 lifecycle and may not exist in a clean
+            # repository-bound user-state runtime.
+            if override:
+                emit(o.status())
+                return 0
             if not (testing or override):
-                value = operational_beta.authority(ROOT)
-                value["mission_admission"] = stage1.status()
-                value["current_platform_mission"] = operational_beta.operation(ROOT)["current_platform_mission"]
-                value["current_executable_mission"] = operational_beta.operation(ROOT)["current_executable_mission"]
+                value = live_status_projection()
                 if a.json:
                     emit(value)
                 else:
-                    print(f"Operation Beta authority: PASS\nActive gate: {value['active_gate']}\nNext authorized action: {value['next_authorized_action']}\n", end="")
+                    print(f"Operation Beta authority: PASS\nActive gate: {value['active_gate']}\nNext authorized action: {value['next_authorized_action']}\nCanonical lifecycle mission: {value['canonical_lifecycle_mission'] or 'UNRESOLVED'}\nCanonical lifecycle state: {value['canonical_lifecycle_state']}\nCanonical lifecycle next action: {value['canonical_lifecycle_next_action'] or 'NONE'}\n", end="")
                 return 0
-            value = authority_status(o.status())
-            value["mission_admission"] = stage1.status()
-            value["current_platform_mission"] = operational_beta.operation(ROOT)["current_platform_mission"]
-            value["current_executable_mission"] = operational_beta.operation(ROOT)["current_executable_mission"]
+            value = live_status_projection()
             if a.json or testing or override:
                 emit(value)
             else:

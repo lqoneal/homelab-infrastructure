@@ -7,6 +7,7 @@ import subprocess
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+from types import SimpleNamespace
 
 from scripts.lib.eos import canonical_baseline
 from scripts.lib.eos.canonical_baseline import resolve
@@ -67,6 +68,41 @@ class CanonicalBaselineResolutionTests(unittest.TestCase):
         value = resolve(ROOT, EOS, runtime_identity={"repository": "/other", "repository_id": "other", "repository_fingerprint": "x", "repository_identity": "other"})
         self.assertEqual(value["result"], "FAIL")
         self.assertIn("RUNTIME_REPOSITORY_BINDING_MISMATCH", {e["code"] for e in value["errors"]})
+
+    def test_lineage_accepts_a_live_descendant(self):
+        value = canonical_baseline.resolve_provenance_lineage(
+            ROOT,
+            "7f77dfdc4eb98d7eb8cbcb4a837a6cf0b3505a5c",
+            current_published_baseline=commit("HEAD"),
+        )
+        self.assertEqual(value["result"], "PASS")
+        self.assertEqual(value["baseline_relationship"], "ANCESTOR")
+
+    def test_lineage_rejects_a_non_descendant_even_when_refs_match(self):
+        head = "a" * 40
+        published = head
+
+        def fake_git(_root, *args):
+            if args == ("rev-parse", "HEAD"):
+                return head, None
+            if args == ("rev-parse", "origin/main"):
+                return published, None
+            raise AssertionError(args)
+
+        def fake_run(command, **_kwargs):
+            if "cat-file" in command:
+                return SimpleNamespace(returncode=0)
+            if "merge-base" in command:
+                return SimpleNamespace(returncode=1)
+            raise AssertionError(command)
+
+        with patch.object(canonical_baseline, "_git", side_effect=fake_git), patch.object(canonical_baseline.subprocess, "run", side_effect=fake_run):
+            value = canonical_baseline.resolve_provenance_lineage(
+                ROOT, "b" * 40, current_published_baseline=published
+            )
+        self.assertEqual(value["result"], "FAIL")
+        self.assertEqual(value["baseline_relationship"], "UNRELATED")
+        self.assertIn("MISSION_PROVENANCE_NOT_ANCESTOR", {e["code"] for e in value["errors"]})
 
 
 if __name__ == "__main__":

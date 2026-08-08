@@ -35,6 +35,94 @@ def _commit(value: Any, code: str, label: str) -> str:
     return text
 
 
+def resolve_provenance_lineage(
+    root: Path | str,
+    provenance_baseline: str,
+    *,
+    current_published_baseline: str | None = None,
+) -> dict[str, Any]:
+    """Validate immutable receipt provenance against the current publication.
+
+    A lifecycle receipt records the repository commit against which its
+    transition was created.  That commit is immutable provenance, not a
+    requirement that the repository remain frozen forever.  A later
+    publication is valid when it is the synchronized ``origin/main`` head and
+    is a commit descendant of the receipt baseline.  This helper deliberately
+    does not rewrite receipts or consult timestamps, filesystem ordering, or
+    legacy runtime projections.
+    """
+    repository = Path(root).resolve()
+    errors: list[dict[str, str]] = []
+    try:
+        provenance = _commit(
+            provenance_baseline,
+            "MISSION_PROVENANCE_BASELINE_MISSING",
+            "mission provenance baseline",
+        )
+    except BaselineResolutionError as error:
+        return {
+            "result": "FAIL",
+            "provenance_baseline": None,
+            "current_published_baseline": None,
+            "baseline_relationship": "INVALID",
+            "errors": [{"code": error.code, "message": str(error)}],
+        }
+
+    head, head_error = _git(repository, "rev-parse", "HEAD")
+    published, published_error = _git(repository, "rev-parse", "origin/main")
+    target = current_published_baseline or published
+    try:
+        target = _commit(target, "CURRENT_PUBLISHED_BASELINE_MISSING", "current published baseline")
+    except BaselineResolutionError as error:
+        return {
+            "result": "FAIL",
+            "provenance_baseline": provenance,
+            "current_published_baseline": None,
+            "baseline_relationship": "INVALID",
+            "errors": [{"code": error.code, "message": str(error)}],
+        }
+
+    if head_error or published_error or head != published or target != published:
+        errors.append({
+            "code": "PUBLICATION_PARITY_FAILURE",
+            "message": "current repository HEAD, origin/main, and published baseline are not equal",
+        })
+
+    reachable = subprocess.run(
+        ["git", "-C", str(repository), "cat-file", "-e", f"{provenance}^{{commit}}"],
+        capture_output=True,
+        check=False,
+    ).returncode == 0
+    if not reachable:
+        errors.append({
+            "code": "MISSION_PROVENANCE_BASELINE_MISSING",
+            "message": "receipt provenance baseline is not a reachable commit",
+        })
+        relationship = "UNREACHABLE"
+    elif provenance == target:
+        relationship = "IDENTICAL"
+    elif subprocess.run(
+        ["git", "-C", str(repository), "merge-base", "--is-ancestor", provenance, target],
+        capture_output=True,
+        check=False,
+    ).returncode == 0:
+        relationship = "ANCESTOR"
+    else:
+        relationship = "UNRELATED"
+        errors.append({
+            "code": "MISSION_PROVENANCE_NOT_ANCESTOR",
+            "message": "receipt provenance baseline is not an ancestor of the current publication",
+        })
+
+    return {
+        "result": "PASS" if not errors else "FAIL",
+        "provenance_baseline": provenance,
+        "current_published_baseline": target,
+        "baseline_relationship": relationship,
+        "errors": errors,
+    }
+
+
 def resolve(
     root: Path | str,
     eos_workspace: Path | str,

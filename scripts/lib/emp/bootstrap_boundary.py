@@ -19,6 +19,7 @@ from scripts.lib.emp.mission_admission_boundary import (
     _write_immutable,
 )
 from scripts.lib.emp.repository_identity import resolve
+from scripts.lib.eos.canonical_baseline import resolve_provenance_lineage
 
 
 class BootstrapBoundaryError(ValueError):
@@ -211,10 +212,11 @@ def _verify_admission(path: Path, runtime: Path, repository: Path) -> dict[str, 
             transaction_digest != _digest(unsigned)):
         raise BootstrapBoundaryError("admission transaction is not valid for bootstrap")
     identity = resolve(repository)
-    if value.get("operation") != "BETA" or value.get("repository_baseline") != _git(repository, "rev-parse", "HEAD"):
+    lineage = resolve_provenance_lineage(repository, value.get("repository_baseline", ""))
+    if value.get("operation") != "BETA" or lineage.get("result") != "PASS":
         raise BootstrapBoundaryError("admission Operation or repository baseline is invalid")
-    if _git(repository, "rev-parse", "HEAD") != _git(repository, "rev-parse", "origin/main"):
-        raise BootstrapBoundaryError("repository is not at published origin/main")
+    if lineage.get("baseline_relationship") not in {"IDENTICAL", "ANCESTOR"}:
+        raise BootstrapBoundaryError("admission repository provenance is not an authorized descendant")
     artifacts: dict[str, dict[str, Any]] = {}
     for directory, (field, artifact_class) in ADMISSION_CLASSES.items():
         descriptor = value.get(field)
@@ -247,7 +249,12 @@ def _verify_admission(path: Path, runtime: Path, repository: Path) -> dict[str, 
             "current admission artifact cardinality is invalid: "
             f"{counts}; historical artifacts preserved: {cardinality['historical']}"
         )
-    return {"transaction": value, "artifacts": artifacts, "cardinality": cardinality}
+    return {
+        "transaction": value,
+        "artifacts": artifacts,
+        "cardinality": cardinality,
+        "repository_lineage": lineage,
+    }
 
 
 def _transaction_digest(value: Mapping[str, Any]) -> str:
