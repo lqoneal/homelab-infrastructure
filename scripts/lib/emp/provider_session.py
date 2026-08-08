@@ -117,19 +117,16 @@ def _verify_set(runtime: Path, found: dict[str, list[tuple[Path, dict[str, Any]]
     }
 
 
-def _cross_mission_dispatch(runtime: Path) -> bool:
-    for directory in ("dispatches", "dispatch-packages", "dispatch-authorizations", "dispatch-receipts", "dispatch-journals", "provider-session-readiness"):
-        location = runtime / directory
-        if location.is_dir() and any(location.glob("*.json")):
-            return True
-    return False
-
-
 def _validate_inputs(root: Path, mission_id: str, runtime: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     dispatch = _verify_dispatch_set(runtime, _dispatch_found(runtime, mission_id))
     if not dispatch or dispatch.get("result") != "PASS" or not dispatch.get("dispatch_id"):
-        if _cross_mission_dispatch(runtime):
-            raise ProviderSessionError("DISPATCH_CROSS_MISSION", "published dispatch does not belong to the requested mission")
+        # Dispatch discovery is mission-scoped.  Preserved dispatches for
+        # other missions are historical/subordinate evidence and cannot make
+        # this target mission invalid.  A target mission with session records
+        # but no valid dispatch is different: it is an orphaned current
+        # projection and must fail closed.
+        if any(_found(runtime, mission_id).values()):
+            raise ProviderSessionError("PROVIDER_SESSION_ORPHANED", "target mission has provider-session artifacts without a valid dispatch")
         raise ProviderSessionError("DISPATCH_NOT_READY", "published dispatch is not valid for provider-session creation")
     provider = _verify_provider_set(runtime, _mission_artifacts(runtime, mission_id))
     if not provider or provider.get("result") != "PASS":

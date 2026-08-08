@@ -1813,8 +1813,14 @@ def main(argv=None):
             emit(value)
             return 0
         if a.command == "provider":
-            if not str(a.mission_id).upper().startswith("MISSION-BETA-"):
-                raise provider_selection.ProviderSelectionError("MISSION_NOT_CANONICAL", "provider selection requires a canonical Beta mission")
+            # Provider selection is a canonical lifecycle transition for any
+            # live Operation Beta mission resolved by the receipt-backed
+            # mission chain.  Historical MISSION-BETA identifiers remain
+            # compatible because the shared controller validates their own
+            # receipts; the CLI must not impose a prefix-based current-state
+            # authority before that projection is consulted.
+            if not a.mission_id:
+                raise provider_selection.ProviderSelectionError("MISSION_ID_REQUIRED", "provider selection requires a mission identity")
             if a.action == "select":
                 value = provider_selection.select(ROOT, a.mission_id)
             else:

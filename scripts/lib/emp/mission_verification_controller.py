@@ -284,9 +284,20 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         # are therefore not downstream effects.  The provider controller
         # remains the authoritative validator; this projection only exposes
         # its validated terminal state in mission views.
-        from scripts.lib.emp.provider_selection import _mission_artifacts, _verify_set
-        provider_stage = _verify_set(runtime, _mission_artifacts(runtime, mission_id)) or {}
-        if provider_stage.get("result") != "PASS" and any(_mission_artifacts(runtime, mission_id).values()):
+        from scripts.lib.emp.provider_selection import _mission_artifacts, _scoped_mission_artifacts, _verify_set
+        provider_expected = {
+            "mission_id": mission_id,
+            "wop_id": expected.get("wop_id"),
+            "submission_id": expected.get("submission_id"),
+            "admission_id": expected.get("admission_id"),
+            "bootstrap_id": expected.get("bootstrap_id"),
+            "repository_identity": str(root),
+            "mission_provenance_baseline": repository_data.get("baseline_resolution", {}).get("mission_provenance_baseline"),
+            "current_published_baseline": repository_data.get("published_baseline"),
+        }
+        provider_found = _scoped_mission_artifacts(_mission_artifacts(runtime, mission_id), provider_expected)
+        provider_stage = _verify_set(runtime, provider_found) or {}
+        if provider_stage.get("result") != "PASS" and any(provider_found.values()):
             raise MissionVerificationError("PROVIDER_SELECTION_ARTIFACT_MISMATCH", "provider-selection artifacts are invalid")
     except Exception as error:
         if any((runtime / directory).glob("*.json") for directory in ("provider-selection", "selected-providers", "provider-qualifications", "provider-selection-receipts", "provider-selection-journals", "dispatch-readiness") if (runtime / directory).is_dir()):
@@ -310,8 +321,27 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         from scripts.lib.emp import provider_session
         provider_session_stage = provider_session.verify(root, mission_id, runtime_root=runtime)
         if provider_session_stage.get("result") != "PASS":
-            checks["provider_session"] = "FAIL"
-            blockers.extend(provider_session_stage.get("blockers", []))
+            provider_session_codes = {item.get("code") for item in provider_session_stage.get("blockers", [])}
+            # At the canonical provider-selection boundary, absence of a
+            # target-mission dispatch/session is the expected precondition.
+            # Other-mission historical dispatches are excluded by the
+            # provider-session controller and therefore cannot turn that
+            # expected absence into a current mission failure.  A target
+            # orphan, malformed receipt, or any other provider-session error
+            # remains fail-closed.
+            if provider_session_codes == {"DISPATCH_NOT_READY"}:
+                provider_session_stage = {
+                    "result": "PASS",
+                    "provider_session_created": False,
+                    "provider_invoked": False,
+                    "execution_started": False,
+                    "read_only": True,
+                    "precondition": "DISPATCH_NOT_READY",
+                    "blockers": [],
+                }
+            else:
+                checks["provider_session"] = "FAIL"
+                blockers.extend(provider_session_stage.get("blockers", []))
         elif provider_session_stage.get("provider_session_created"):
             artifacts.update(provider_session_stage.get("artifacts", {}))
     except Exception as error:

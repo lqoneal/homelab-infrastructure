@@ -294,8 +294,10 @@ Platform and mission verification consume this same read-only resolver.
 
 The supporting mission views `status`, `authority`, `lifecycle`, `evidence`,
 `artifacts`, `replay`, `blockers`, `next`, and `snapshot` use the same
-canonical projection for `MISSION-BETA-*` IDs. Capability or roadmap checks
-are not substitutes for authoritative mission verification.
+canonical projection for every currently discoverable Operation Beta mission.
+Historical `MISSION-BETA-*` records remain compatibility evidence and cannot
+override a current mission projection. Capability or roadmap checks are not
+substitutes for authoritative mission verification.
 
 ## Production agent qualification
 
@@ -406,6 +408,16 @@ provider, qualification, receipt, journal, and dispatch-readiness projection.
 Replay reuses those records and reports `IDEMPOTENT`.  A partial or conflicting
 chain fails closed.  `provider verify` is read-only and never creates a
 provider session, invokes a provider, creates dispatch, or starts execution.
+
+Provider evaluation is mission-scoped. The requested Mission/WOP/submission/
+admission/bootstrap chain, repository identity, immutable provenance baseline,
+and current published baseline must bind to one current provider-selection
+set. Preserved historical or cross-mission dispatch/session/provider records
+are subordinate evidence and do not create ambiguity for the requested
+mission. Two current target sets, a missing binding, a digest contradiction,
+or an invalid provider registry fails closed. Provider identity is derived
+from the live execution-agent registry; a fixed historical mission identifier
+must not govern the current provider path.
 
 The selection terminal state is `READY_FOR_PROVIDER_DISPATCH`; the next action
 is `EVALUATE_PROVIDER_DISPATCH`.  Provider dispatch is a later gate and is not
@@ -886,9 +898,10 @@ performed, and the next action reflects the current disposition (for example
 
 ### P5-G5 canonical projection reconciliation
 
-For the authoritative `MISSION-BETA-*` runtime, `mission verify`, `status`,
-`state`, `readiness`, `next`, `snapshot`, `lifecycle`, `health`, `brief`, and
-`roadmap` consume the same read-only canonical runtime discovery. Execution
+For an authoritative current Operation Beta runtime, `mission verify`,
+`status`, `state`, `readiness`, `next`, `snapshot`, `lifecycle`, `health`,
+`brief`, and `roadmap` consume the same read-only canonical runtime discovery.
+Execution
 start owns `execution_id`, `execution_session_id`,
 `execution_start_provenance_baseline`, `current_published_baseline`,
 `execution_start_baseline_relationship`, integrity, replay, and the mission

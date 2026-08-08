@@ -100,6 +100,33 @@ def _mission_artifacts(runtime: Path, mission_id: str) -> dict[str, list[tuple[P
     return found
 
 
+def _scoped_mission_artifacts(
+    found: dict[str, list[tuple[Path, dict[str, Any]]]],
+    expected: Mapping[str, Any],
+) -> dict[str, list[tuple[Path, dict[str, Any]]]]:
+    """Exclude preserved non-current sets without weakening target checks.
+
+    Provider artifacts are append-only.  A same-mission artifact with a
+    different WOP, receipt, admission/bootstrap chain, repository, or
+    baseline is historical/subordinate evidence.  A target artifact that is
+    missing one of those bindings remains in the current candidate set so
+    ``_verify_set`` fails closed instead of silently accepting malformed
+    state.
+    """
+    fields = (
+        "mission_id", "wop_id", "submission_id", "admission_id", "bootstrap_id",
+        "repository_identity", "mission_provenance_baseline", "current_published_baseline",
+    )
+    scoped: dict[str, list[tuple[Path, dict[str, Any]]]] = {key: [] for key in found}
+    for key, items in found.items():
+        for path, value in items:
+            missing = any(field not in value for field in fields)
+            exact = not missing and all(value.get(field) == expected.get(field) for field in fields)
+            if exact or missing:
+                scoped[key].append((path, value))
+    return scoped
+
+
 def _baseline(root: Path, runtime: Path, provenance: str) -> dict[str, Any]:
     marker = _load(runtime / "runtime-identity.json")
     result = resolve_baseline(root, Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")),
@@ -252,7 +279,17 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         lifecycle = base.get("lifecycle", {})
         if lifecycle.get("bootstrap_state") != "READY_FOR_EXECUTION_PROVIDER" or lifecycle.get("provider_ready") is not True:
             raise ProviderSelectionError("PROVIDER_READINESS_INVALID", "mission is not ready for provider selection")
-        found = _mission_artifacts(runtime, mission_id)
+        expected = {
+            "mission_id": mission_id,
+            "wop_id": base.get("wop_id"),
+            "submission_id": base.get("submission_id"),
+            "admission_id": base.get("admission_id"),
+            "bootstrap_id": base.get("bootstrap_id"),
+            "repository_identity": str(root),
+            "mission_provenance_baseline": base.get("repository", {}).get("mission_provenance_baseline"),
+            "current_published_baseline": base.get("repository", {}).get("published_baseline"),
+        }
+        found = _scoped_mission_artifacts(_mission_artifacts(runtime, mission_id), expected)
         existing = _verify_set(runtime, found)
         if existing:
             return {**existing, "schema_version": 1, "mission_id": mission_id, "read_only": True, "result": "PASS", "blockers": [], "next_authorized_action": "EVALUATE_PROVIDER_DISPATCH"}
@@ -283,11 +320,21 @@ def select(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
     preview = verify(root, mission_id, runtime_root=runtime)
     if preview.get("result") != "PASS":
         return preview
-    found = _mission_artifacts(runtime, mission_id)
+    base = verify_mission(root, mission_id, runtime_root=runtime)
+    expected = {
+        "mission_id": mission_id,
+        "wop_id": base.get("wop_id"),
+        "submission_id": base.get("submission_id"),
+        "admission_id": base.get("admission_id"),
+        "bootstrap_id": base.get("bootstrap_id"),
+        "repository_identity": str(root),
+        "mission_provenance_baseline": base.get("repository", {}).get("mission_provenance_baseline"),
+        "current_published_baseline": base.get("repository", {}).get("published_baseline"),
+    }
+    found = _scoped_mission_artifacts(_mission_artifacts(runtime, mission_id), expected)
     existing = _verify_set(runtime, found)
     if existing:
         return {**existing, "read_only": False, "duplicate_provider_selection": "IDEMPOTENT", "next_authorized_action": "EVALUATE_PROVIDER_DISPATCH"}
-    base = verify_mission(root, mission_id, runtime_root=runtime)
     baseline = _baseline(root, runtime, base["repository"]["mission_provenance_baseline"])
     registry_digest, candidates = _inventory(root, baseline)
     eligible = sorted((item for item in candidates if item["eligible"]), key=lambda item: (str(item["provider_id"]), str(item["provider_type"])))
@@ -296,7 +343,7 @@ def select(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
     selected = eligible[0]
     mission = {key: base[key] for key in ("mission_id", "wop_id", "submission_id", "admission_id", "bootstrap_id")}
     values = _expected(runtime, mission, baseline, registry_digest, candidates, selected)
-    found = _mission_artifacts(runtime, mission_id)
+    found = _scoped_mission_artifacts(_mission_artifacts(runtime, mission_id), expected)
     if any(found.values()):
         _verify_set(runtime, found)
     for key, value in values.items():
@@ -305,7 +352,7 @@ def select(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
             raise ProviderSelectionError("CONFLICTING_PROVIDER_SELECTION", f"existing artifact conflicts: {path}")
         if not path.exists():
             _write_immutable(path, value)
-    result = _verify_set(runtime, _mission_artifacts(runtime, mission_id))
+    result = _verify_set(runtime, _scoped_mission_artifacts(_mission_artifacts(runtime, mission_id), expected))
     if not result:
         raise ProviderSelectionError("PARTIAL_PROVIDER_SELECTION", "provider-selection artifact set is incomplete")
     return {**result, "read_only": False, "duplicate_provider_selection": "NO", "next_authorized_action": "EVALUATE_PROVIDER_DISPATCH"}

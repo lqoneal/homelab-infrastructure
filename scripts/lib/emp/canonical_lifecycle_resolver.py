@@ -343,6 +343,78 @@ def resolve(repository: Path | str, mission_id: str, *, runtime_root: Path | str
         "receipt": {"path": str(bootstrap_path), "digest": bootstrap.get("transaction_digest")},
         "next_action": "EVALUATE_EXECUTION_PROVIDER",
     })
+
+    # Provider selection is the first canonical boundary after P4.  Consume
+    # the shared provider-selection verifier here so every mission-native
+    # surface projects the same receipt-backed position.  Other-mission and
+    # historical artifacts are already excluded by the provider controller's
+    # mission-scoped discovery; a malformed or ambiguous target set remains
+    # fail-closed.  This stage never creates dispatch/session/execution state.
+    try:
+        from scripts.lib.emp import provider_selection
+
+        provider_expected = {
+            **canonical_identity,
+            "admission_id": admission.get("admission_id"),
+            "bootstrap_id": bootstrap.get("bootstrap_id"),
+            "repository_identity": str(root),
+            "mission_provenance_baseline": admission.get("repository_baseline"),
+            "current_published_baseline": (lineage or {}).get("current_published_baseline"),
+        }
+        provider_found = provider_selection._scoped_mission_artifacts(
+            provider_selection._mission_artifacts(runtime, mission), provider_expected
+        )
+        provider_stage = provider_selection._verify_set(runtime, provider_found)
+        if provider_stage:
+            provider_path = Path(provider_stage["artifacts"]["provider_selection"]["path"])
+            provider_anchor = _load(provider_path)
+            _identity_matches(
+                {**canonical_identity, "admission_id": admission.get("admission_id"), "bootstrap_id": bootstrap.get("bootstrap_id")},
+                provider_anchor,
+                ("mission_id", "wop_id", "submission_id", "admission_id", "bootstrap_id"),
+                "P5 provider selection",
+            )
+            if provider_anchor.get("repository_identity") != str(root):
+                raise CanonicalLifecycleResolutionError(
+                    "PROVIDER_REPOSITORY_BINDING_MISMATCH",
+                    "provider selection is bound to a different repository",
+                )
+            if provider_anchor.get("mission_provenance_baseline") != admission.get("repository_baseline"):
+                raise CanonicalLifecycleResolutionError(
+                    "PROVIDER_PROVENANCE_MISMATCH",
+                    "provider selection provenance differs from the admitted lifecycle baseline",
+                )
+            current_baseline = str((lineage or {}).get("current_published_baseline") or "")
+            if provider_anchor.get("current_published_baseline") != current_baseline:
+                raise CanonicalLifecycleResolutionError(
+                    "PROVIDER_BASELINE_MISMATCH",
+                    "provider selection current baseline differs from the canonical live baseline",
+                )
+            base.update({
+                "provider_selected": True,
+                "provider_qualified": bool(provider_stage.get("provider_qualified")),
+                "provider_id": provider_stage.get("provider_id"),
+                "provider_selection_id": provider_stage.get("provider_selection_id"),
+                "dispatch_eligible": bool(provider_stage.get("dispatch_eligible")),
+                "provider_selection_state": provider_stage.get("provider_selection_state"),
+                "provider_selection_result": provider_stage.get("provider_selection_result"),
+                "provider_selection": provider_stage,
+                "lifecycle_state": "AWAITING_EXECUTION_DISPATCH",
+                "readiness": "READY_FOR_PROVIDER_DISPATCH",
+                "eligibility": "PROVIDER_DISPATCH_PENDING",
+                "next_authorized_action": "EVALUATE_PROVIDER_DISPATCH",
+                "next_action": "EVALUATE_PROVIDER_DISPATCH",
+                "canonical_state_source": "P5_PROVIDER_SELECTION_RECEIPT",
+            })
+            chain.append({
+                "stage": "READY_FOR_PROVIDER_DISPATCH",
+                "state": "READY_FOR_PROVIDER_DISPATCH",
+                "receipt": {"path": provider_path.__str__(), "digest": provider_anchor.get("artifact_digest")},
+                "provider_id": provider_stage.get("provider_id"),
+                "next_action": "EVALUATE_PROVIDER_DISPATCH",
+            })
+    except (provider_selection.ProviderSelectionError, CanonicalLifecycleResolutionError, OSError) as error:
+        return _fail(mission, getattr(error, "code", "CANONICAL_PROVIDER_SELECTION_INVALID"), str(error), chain=chain)
     base["lifecycle_chain"] = chain
     return base
 

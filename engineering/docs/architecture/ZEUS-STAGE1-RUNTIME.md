@@ -251,6 +251,12 @@ WOP/package identity, repository and protected baselines, Development effect
 profile, governance resolution, and provider-qualification requirement. The
 snapshot digest is bound into provider-selection and dispatch receipts;
 providers cannot re-resolve mutable authority or advance lifecycle state.
+Current provider selection is resolved against the requested mission's live
+canonical identity and provider registry. Preserved dispatch/session/provider
+records for other missions, or historical same-mission records with a
+different provenance chain, remain subordinate and do not invalidate the
+current target. Ambiguous current target artifacts fail closed; a historical
+mission identifier must not act as a current selector.
 `zeus mission status|authority|contract|snapshot ZDCL-02` projects the same
 Stage 1 transaction identity and receipt-integrity result without mutating the
 runtime. An incomplete dispatch receipt is recovered to

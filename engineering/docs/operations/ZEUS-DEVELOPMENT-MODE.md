@@ -139,6 +139,16 @@ current artifact, identity or digest contradiction, or current-chain
 downstream artifact fails closed; an exact replay returns `IDEMPOTENT` without
 creating a new bootstrap.
 
+Provider evaluation is a current, mission-scoped boundary. Zeus resolves the
+provider identity from the live execution-agent registry and verifies one
+current provider-selection set against the Mission/WOP, submission, admission,
+bootstrap, repository, and provenance chain. Historical or cross-mission
+dispatch/session/provider records remain preserved but subordinate; their
+existence alone is not a current ambiguity. Conflicting current target
+artifacts or identity/digest mismatches fail closed. The historical
+`MISSION-BETA-*` identifier is compatibility evidence only and is not a
+current-path selector.
+
 Zeus is also responsible for automatic WOP packaging. The operator may submit
 an existing canonical package directory, a repository-resolved WOP identity, or
 a Markdown/DOCX source document. Zeus preserves the source document, resolves
