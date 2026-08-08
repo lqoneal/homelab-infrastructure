@@ -219,9 +219,17 @@ def activate(root: Path | str, transaction: Mapping[str, Any], *, publication_ap
 
 def mission_list(root: Path | str) -> dict[str, Any]:
     from scripts.lib.eos import operational_beta
+    from scripts.lib.emp.canonical_lifecycle_resolver import submitted_missions
     base = operational_beta.active_missions(Path(root))
     discovery = discover(root)
     if discovery.get("result") == "PASS":
         base.setdefault("missions", []).append({"mission_id": TARGET_MISSION, "lifecycle": "ACTIVE", "classification": "disposable-operational-qualification", "package": discovery.get("package_locator"), "contract_id": discovery.get("contract_id")})
+    canonical = submitted_missions(root)
+    existing = {str(item.get("mission_id", "")).upper() for item in base.get("missions", [])}
+    for mission in canonical.get("missions", []):
+        if str(mission.get("mission_id", "")).upper() not in existing:
+            base.setdefault("missions", []).append(mission)
+    base["active_mission_count"] = len(base.get("missions", []))
+    base["canonical_submission_discovery"] = canonical
     base["canonical_mission_reconciliation"] = discovery
     return base

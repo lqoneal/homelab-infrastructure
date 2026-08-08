@@ -1,0 +1,44 @@
+schema_version: 1
+title: Zeus Canonical Recovery Contract
+description: >-
+  Immutable checkpoint, interruption, and resume envelopes subordinate to the
+  receipt-backed canonical mission lifecycle. Recovery records never own
+  mission state or create a second execution identity.
+type: object
+required:
+  - contract
+  - record_type
+additionalProperties: true
+properties:
+  contract:
+    type: object
+    required: [id, version]
+    properties:
+      id: {type: string, const: ZEUS-CANONICAL-RECOVERY}
+      version: {type: string, const: '1'}
+  record_type:
+    type: string
+    enum: [RECOVERY_CHECKPOINT, RECOVERY_INTERRUPTION_RECEIPT, RECOVERY_RESUME_REQUEST]
+  mission_id: {type: string, minLength: 1}
+  wop_id: {type: string, minLength: 1}
+  execution_id: {type: string, minLength: 1}
+  provider_id: {type: string, minLength: 1}
+  session_id: {type: string, minLength: 1}
+  repository_identity: {type: string, minLength: 1}
+  repository_baseline: {type: string, minLength: 1}
+  source_digest: {type: string, minLength: 1}
+  checkpoint_id: {type: string, minLength: 1}
+  checkpoint_digest: {type: string, minLength: 1}
+  interruption_id: {type: string, minLength: 1}
+  interruption_digest: {type: string, minLength: 1}
+  resume_id: {type: string, minLength: 1}
+  resume_digest: {type: string, minLength: 1}
+  lifecycle_position: {type: object}
+  evidence_position: {type: object}
+  completed_work_units: {type: array, uniqueItems: true}
+  current_work_units: {type: array, uniqueItems: true}
+  checkpoint_status: {type: string}
+  interruption_state: {type: string}
+  resume_state: {type: string}
+  duplicate_execution_prevented: {type: boolean}
+  execution_identity_preserved: {type: boolean}

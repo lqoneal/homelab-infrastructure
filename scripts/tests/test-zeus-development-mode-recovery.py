@@ -4,6 +4,7 @@
 import copy
 import json
 import shutil
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -24,6 +25,15 @@ FIXTURE = ROOT / "engineering/evidence/operation-beta/zeus-development-mode-reco
 class DevelopmentModeRecoveryTests(unittest.TestCase):
     def runtime(self, directory):
         return Stage1Runtime(ROOT, directory, operator_resolver=lambda: "loneal")
+
+    def clean_repository(self, directory: Path) -> Path:
+        """Clone the tracked fixture so recovery is not masked by this checkout's dirt."""
+        repository = directory / "repository"
+        subprocess.run(
+            ["git", "clone", "--no-local", str(ROOT), str(repository)],
+            check=True, capture_output=True, text=True,
+        )
+        return repository
 
     def test_valid_submission_stops_before_unsubstantiated_execution(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -161,18 +171,20 @@ class DevelopmentModeRecoveryTests(unittest.TestCase):
 
     def test_receiptless_dispatched_state_rolls_back_on_resume(self):
         with tempfile.TemporaryDirectory() as temporary:
+            repository = self.clean_repository(Path(temporary))
+            fixture = repository / FIXTURE.relative_to(ROOT)
             registry = Path(temporary) / "agents.json"
             registry.write_text(json.dumps({"agents": [{
                 "agent_id": "provider-a", "active": True,
                 "qualification_status": "QUALIFIED",
                 "qualification_evidence": ["QUAL-provider-a"],
-                "repository_access_scope": [str(ROOT)]
+                "repository_access_scope": [str(repository)]
             }], "registry_digest": "registry-digest"}), encoding="utf-8")
             runtime = Stage1Runtime(
-                ROOT, Path(temporary) / "stage1", operator_resolver=lambda: "loneal",
-                execution_executor=automatic_executor(ROOT, registry_path=registry),
+                repository, Path(temporary) / "stage1", operator_resolver=lambda: "loneal",
+                execution_executor=automatic_executor(repository, registry_path=registry),
             )
-            result = runtime.submit_development(FIXTURE)
+            result = runtime.submit_development(fixture)
             forged = copy.deepcopy(result)
             forged["receipts"]["dispatch"].pop("authority_snapshot_digest")
             runtime.store.save(forged)

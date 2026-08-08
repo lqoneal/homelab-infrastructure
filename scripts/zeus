@@ -39,7 +39,7 @@ from scripts.lib.eos.platform_sync_verification import verify as verify_platform
 from scripts.lib.emp import progressive_oa  # noqa: E402
 from scripts.lib.emp.progressive_gate import ProgressiveGateError, ProgressiveGateService  # noqa: E402
 from scripts.lib.emp.stage1_runtime import Stage1Error, Stage1Runtime  # noqa: E402
-from scripts.lib.emp.submission_boundary import SubmissionError, submit as submit_wop_boundary  # noqa: E402
+from scripts.lib.emp.submission_boundary import SubmissionError, mission_view as p2_mission_view, submit as submit_wop_boundary  # noqa: E402
 from scripts.lib.emp.mission_admission_boundary import MissionAdmissionBoundaryError, admit as admit_mission_boundary  # noqa: E402
 from scripts.lib.emp.bootstrap_boundary import BootstrapBoundaryError, bootstrap as bootstrap_admission  # noqa: E402
 from scripts.lib.emp.bootstrap_verification import BootstrapVerificationError, verify_bootstrap_replay  # noqa: E402
@@ -73,9 +73,10 @@ from scripts.lib.emp.admission_supersession import (  # noqa: E402
 )
 from scripts.lib.emp.wop_schema import format_description
 from scripts.lib.emp.wop_validation import validate_source, require_valid_source
-from scripts.lib.emp.repository_identity import RepositoryIdentityError, resolve as resolve_repository_identity
+from scripts.lib.emp.repository_identity import RepositoryIdentityError, resolve as resolve_repository_identity, resolve_declared as resolve_declared_repository
 from scripts.lib.emp.wop_authoring import AuthoringError, author as author_wop, inspect as inspect_authored_wop
 from scripts.lib.emp.wop_verification import verify_artifact, verify_replay
+from scripts.lib.emp.wop_canonicalization import CanonicalizationError, canonicalize as canonicalize_wop, classify as classify_wop
 from scripts.lib.emp.development_dispatch import automatic_executor
 from scripts.lib.emp.canonical_mission_lifecycle import (
     CanonicalMissionLifecycleError,
@@ -83,6 +84,8 @@ from scripts.lib.emp.canonical_mission_lifecycle import (
     view as canonical_mission_view,
 )
 from scripts.lib.emp.canonical_runtime_mission import CanonicalRuntimeMissionError, view as canonical_runtime_mission_view
+from scripts.lib.emp.canonical_lifecycle_resolver import view as canonical_lifecycle_view
+from scripts.lib.emp.canonical_mission_aggregate import view as canonical_mission_aggregate_view
 from scripts.lib.emp.mission_verification_controller import verify as verify_mission, render as render_mission
 from scripts.lib.emp import provider_selection
 from scripts.lib.emp import publication_workflow
@@ -95,6 +98,7 @@ from scripts.lib.emp import legacy_lifecycle_reconciliation
 from scripts.lib.emp import codex_adapter
 from scripts.lib.emp import codex_interactive
 from scripts.lib.emp import codex_reconciliation
+from scripts.lib.emp import managed_handoff
 
 CODEX_CONTROLLER_ROUTING = {
     "status": "managed.status", "logs": "managed.logs", "artifacts": "managed.artifacts",
@@ -611,7 +615,7 @@ def main(argv=None):
     publication_admin.add_argument("mission_id", nargs="?", help="canonical mission ID for mission/stage verification")
     publication_admin.add_argument("--json", action="store_true")
     missions = sub.add_parser("missions"); missions.add_argument("action", choices=("list", "select")); missions.add_argument("--repository"); missions.add_argument("--baseline"); missions.add_argument("--completed", action="append", default=[]); missions.add_argument("--policy"); missions.add_argument("--at")
-    show = sub.add_parser("mission", help="Resolve, inspect, and submit authoritative missions. `mission verify` is the comprehensive read-only acceptance controller."); show.add_argument("action", choices=("list","completed","history","archive","submit","show","state","status","readiness","eligibility","blockers","contract","authority","next","snapshot","lifecycle","evidence","artifacts","replay","qualify","acceptance-summary","accept","close","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependencies","dependency-graph","metrics","portfolio","queue","health","roadmap","brief","legacy-reconciliation")); show.add_argument("mission_id", nargs="?", help="canonical mission ID, for example MISSION-BETA-..."); show.add_argument("--package", type=Path, help="optional explicit authoritative WOP package"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true"); show.add_argument("--yes", action="store_true"); show.add_argument("--rationale", default="")
+    show = sub.add_parser("mission", help="Resolve, inspect, and submit authoritative missions. `mission verify` is the comprehensive read-only acceptance controller."); show.add_argument("action", choices=("list","completed","history","archive","submit","show","state","status","readiness","eligibility","blockers","contract","authority","next","snapshot","lifecycle","aggregate","recovery","evidence","artifacts","replay","qualify","acceptance-summary","accept","close","requirements","preflight","verify","synchronization","recommend","explain","prerequisites","dependencies","dependency-graph","metrics","portfolio","queue","health","roadmap","brief","legacy-reconciliation")); show.add_argument("mission_id", nargs="?", help="canonical mission ID, for example MISSION-BETA-..."); show.add_argument("--package", type=Path, help="optional explicit authoritative WOP package"); show.add_argument("--verify", action="store_true"); show.add_argument("--json", action="store_true"); show.add_argument("--yes", action="store_true"); show.add_argument("--rationale", default="")
     operation = sub.add_parser("operation"); operation.add_argument("action", choices=("show", "status", "roadmap", "metrics", "health", "verify", "next-action")); operation.add_argument("operation_id", nargs="?", default="BETA"); operation.add_argument("--json", action="store_true"); operation.add_argument("--verify", action="store_true")
     assurance = sub.add_parser("assurance"); assurance.add_argument("action", choices=("capabilities",))
     approve=sub.add_parser("approve"); approve.add_argument("approval_id"); approve.add_argument("--operator"); approve.add_argument("--at"); approve.add_argument("--yes", action="store_true")
@@ -645,7 +649,7 @@ def main(argv=None):
     provider_session_parser=sub.add_parser("provider-session", help="Create or verify the canonical provider session; never invokes a provider or starts execution."); provider_session_parser.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization")); provider_session_parser.add_argument("mission_id", nargs="?"); provider_session_parser.add_argument("--json", action="store_true")
     provider_invocation_parser=sub.add_parser("provider-invocation", help="Create or verify one bounded provider acknowledgement; never starts execution or mission work."); provider_invocation_parser.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization", "package", "acknowledgement")); provider_invocation_parser.add_argument("mission_id", nargs="?"); provider_invocation_parser.add_argument("--json", action="store_true")
     execution_start_parser=sub.add_parser("execution-start", help="Create, verify, or begin one bound execution-start lifecycle."); execution_start_parser.add_argument("action", choices=("create", "verify", "begin", "status", "authorization", "package", "session", "artifacts")); execution_start_parser.add_argument("mission_id", nargs="?"); execution_start_parser.add_argument("--approve", action="store_true", help="required for BEGIN_CONTROLLED_MISSION_WORK"); execution_start_parser.add_argument("--prompt"); execution_start_parser.add_argument("--codex-bin", default="codex", help=argparse.SUPPRESS); execution_start_parser.add_argument("--json", action="store_true")
-    codex_parser=sub.add_parser("codex", help="Operate the Zeus-owned Codex session (managed or operator-interactive).", add_help=False); codex_parser.add_argument("action", choices=("shell", "interactive", "attach", "reconcile", "supersede", "start", "resume", "stop", "status", "logs", "artifacts")); codex_parser.add_argument("mission_id", nargs="?"); codex_parser.add_argument("--approve", action="store_true", help="required for mission-bound shell, start, resume, stop, or reconciliation mutation"); codex_parser.add_argument("--dry-run", action="store_true", help="force read-only reconciliation"); codex_parser.add_argument("--plan-digest", help="require this reviewed reconciliation plan digest before mutation"); codex_parser.add_argument("--diagnose", action="store_true", help="probe a remote endpoint without opening Codex"); codex_parser.add_argument("--preflight", action="store_true", help="validate direct launch without opening Codex"); codex_parser.add_argument("--remote", action="store_true", help="explicitly select REMOTE_INTERACTIVE; shell defaults to DIRECT_INTERACTIVE"); codex_parser.add_argument("--prompt", help="bounded initial prompt for managed start"); codex_parser.add_argument("--reason", default="NON_AUTHORITATIVE_RECONCILED_HISTORY", help=argparse.SUPPRESS); codex_parser.add_argument("--codex-bin", default="codex", help=argparse.SUPPRESS); codex_parser.add_argument("--session"); codex_parser.add_argument("--mode", choices=("DIRECT_INTERACTIVE", "REMOTE_INTERACTIVE", "OPERATOR_INTERACTIVE", "ZEUS_MANAGED")); codex_parser.add_argument("--latest", action="store_true"); codex_parser.add_argument("--active", action="store_true"); codex_parser.add_argument("--json", action="store_true"); codex_parser.add_argument("--help", action="store_true", dest="codex_help", help="show help for this Codex command")
+    codex_parser=sub.add_parser("codex", help="Operate the Zeus-owned Codex session (managed or operator-interactive).", add_help=False); codex_parser.add_argument("action", choices=("handoff", "shell", "interactive", "attach", "reconcile", "supersede", "start", "resume", "stop", "status", "logs", "artifacts")); codex_parser.add_argument("mission_id", nargs="?", help="mission identity or HANDOFF.md for `codex handoff`"); codex_parser.add_argument("--approve", action="store_true", help="required for mission-bound shell, start, resume, stop, or reconciliation mutation"); codex_parser.add_argument("--dry-run", action="store_true", help="force read-only reconciliation"); codex_parser.add_argument("--plan-digest", help="require this reviewed reconciliation plan digest before mutation"); codex_parser.add_argument("--diagnose", action="store_true", help="probe a remote endpoint without opening Codex"); codex_parser.add_argument("--preflight", action="store_true", help="validate direct launch without opening Codex"); codex_parser.add_argument("--remote", action="store_true", help="explicitly select REMOTE_INTERACTIVE; shell defaults to DIRECT_INTERACTIVE"); codex_parser.add_argument("--prompt", help="bounded initial prompt for managed start"); codex_parser.add_argument("--reason", default="NON_AUTHORITATIVE_RECONCILED_HISTORY", help=argparse.SUPPRESS); codex_parser.add_argument("--codex-bin", default="codex", help=argparse.SUPPRESS); codex_parser.add_argument("--session"); codex_parser.add_argument("--mode", choices=("DIRECT_INTERACTIVE", "REMOTE_INTERACTIVE", "OPERATOR_INTERACTIVE", "ZEUS_MANAGED")); codex_parser.add_argument("--latest", action="store_true"); codex_parser.add_argument("--active", action="store_true"); codex_parser.add_argument("--json", action="store_true"); codex_parser.add_argument("--help", action="store_true", dest="codex_help", help="show help for this Codex command")
     orchestrate=sub.add_parser("orchestrate"); orchestrate.add_argument("action", choices=("status", "verify")); orchestrate.add_argument("--json", action="store_true")
     agent=sub.add_parser("agent"); agent.add_argument("action", choices=("list","registry","status","qualify","revoke","select")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--mission-class", default="engineering"); agent.add_argument("--tool", action="append", default=["zeus-cli", "bounded-artifact-handler"]); agent.add_argument("--profile", action="append", default=["controlled-wop-only", "exact-repository-baseline", "no-unreviewed-external-effects"]); agent.add_argument("--json", action="store_true")
     provider=sub.add_parser("provider", help="Select or verify the canonical provider for one Beta mission without dispatch."); provider.add_argument("action", choices=("select", "verify", "candidates", "status", "qualification", "artifacts")); provider.add_argument("mission_id"); provider.add_argument("--json", action="store_true")
@@ -883,7 +887,7 @@ def main(argv=None):
             if a.action == "adopt":
                 value = adopt_runtime(ROOT, source=a.source, dry_run=a.dry_run)
                 if a.json or a.verbose:
-                    emit({"result": value["result"], "action": value["action"], "runtime": value["destination"], "repository": value["identity"]["repository"], "adoption_id": value["adoption_id"], "dry_run": value["dry_run"], "source": value["source"]})
+                    emit({"result": value["result"], "action": value["action"], "runtime": value["destination"], "repository": value["identity"]["repository"], "adoption_id": value["adoption_id"], "dry_run": value["dry_run"], "source": value["source"], "adoption_type": value.get("manifest", "").split("/")[-1] if value.get("manifest") else "LEGACY_RUNTIME", "manifest": value.get("manifest"), "missions": value.get("missions", []), "submission_ids": value.get("submission_ids", [])})
                 else:
                     print(f"Result     : {value['result']}\nAction     : {value['action']}\nRuntime    : {value['destination']}\nRepository : {value['identity']['repository']}\nAdoption ID: {value['adoption_id']}")
                 return 0
@@ -918,8 +922,68 @@ def main(argv=None):
                 f"Next action     : {value['next_action']}"
             )
             return 0
-        if a.command == "submit" and not a.repository:
+        if a.command == "submit":
             source = resolve_wop_source(a.wop_package)
+            # Markdown/TXT Development sources are classified from their
+            # authoritative contract before any CLI option can select the
+            # legacy admission-record path.  In particular, --repository is
+            # repository context, not a legacy discriminator.
+            if source.is_file() and source.suffix.lower() in {".md", ".markdown", ".txt"}:
+                if a.approval:
+                    raise CanonicalizationError(
+                        "generic --approval is not a submission authority for a current Development WOP",
+                        reason_code="GENERIC_APPROVAL_NOT_VALID_FOR_CURRENT_SOURCE",
+                    )
+                if a.repository:
+                    declared_repository = resolve_declared_repository(a.repository, ROOT)
+                    actual_repository = resolve_repository_identity(ROOT)
+                    if declared_repository["canonical_repository_identity"] != actual_repository["canonical_repository_identity"]:
+                        raise CanonicalizationError(
+                            "--repository does not resolve to the current authoritative repository",
+                            reason_code="REPOSITORY_IDENTITY_MISMATCH",
+                        )
+                for affected in a.affected_repository or []:
+                    declared_repository = resolve_declared_repository(affected, ROOT)
+                    actual_repository = resolve_repository_identity(ROOT)
+                    if declared_repository["canonical_repository_identity"] != actual_repository["canonical_repository_identity"]:
+                        raise CanonicalizationError(
+                            "--affected-repository does not resolve to the current authoritative repository",
+                            reason_code="AFFECTED_REPOSITORY_IDENTITY_MISMATCH",
+                        )
+                classification = classify_wop(source, ROOT)
+                canonicalization = canonicalize_wop(source, ROOT)
+                runtime = initialize_runtime(ROOT, explicit=getattr(a, "runtime_root", None))
+                value = submit_wop_boundary(
+                    source, repository=ROOT,
+                    store_directory=runtime["root"] / "submissions",
+                    submission_context={
+                        "baseline": a.baseline,
+                        "impact": a.impact,
+                        "affected_repositories": a.affected_repository or [],
+                        "resources_available": a.resources_available,
+                    },
+                )
+                value["classification"] = classification.get("classification", canonicalization.get("classification"))
+                value["canonicalization"] = "VERIFIED" if canonicalization.get("replayed") else "PASS"
+                value["authored_provenance"] = "VERIFIED" if canonicalization.get("replayed") else "DERIVED"
+                value["wop_source_unchanged"] = True
+                value["source_digest"] = source_digest(source)
+                value["authority"] = value.get("authority") or canonicalization["traceability"].get("authority")
+                if getattr(a, "json", False) or getattr(a, "verbose", False):
+                    emit(value)
+                else:
+                    print("WOP submission requested")
+                    print("-----------------------")
+                    print(f"Submission      : {value['submission_id']}")
+                    print(f"Mission         : {value['mission_id']}")
+                    print(f"WOP             : {value['wop_id']}")
+                    print(f"Classification  : {value['classification']}")
+                    print(f"Canonicalization: {value['canonicalization']}")
+                    print(f"State           : {value['submission_state']}")
+                    print(f"Result          : {value['submission_result']}")
+                    print(f"Duplicate       : {value['duplicate_submission']}")
+                    print(f"Next action     : {value['next_action']}")
+                return 0
             # Authored Phase 1 outputs cross the bounded P2 submission
             # boundary.  Legacy package submissions retain their existing
             # Stage 1 path and lifecycle semantics.
@@ -1132,6 +1196,44 @@ def main(argv=None):
             return 0 if value.get("result") == "PASS" else 77
         beta_subject = str(getattr(a, "mission_id", "") or "").upper()
         beta_action = getattr(a, "action", "")
+        # P2 submission is itself a native mission lifecycle checkpoint.  It
+        # is intentionally checked before the older Beta/P4 projections so a
+        # newly submitted Development mission is discoverable without
+        # manufacturing admission, bootstrap, or execution artifacts.
+        if a.command == "mission" and beta_subject and beta_action in {
+            "show", "state", "status", "lifecycle", "readiness", "eligibility", "authority", "blockers", "next", "snapshot", "verify",
+        }:
+            resolved_runtime = resolve_runtime(ROOT, explicit=getattr(a, "runtime_root", None), require_writable=False)
+            value = canonical_lifecycle_view(ROOT, beta_action, beta_subject, runtime_root=resolved_runtime["root"])
+            if value.get("result") != "MISSION_NOT_FOUND":
+                emit(value) if a.json else print(json.dumps(value, indent=2, sort_keys=True))
+                return 0 if value.get("result") == "PASS" else 78
+            # A current mission identifier that is not a recognized legacy
+            # projection must remain on the canonical resolver path.  Do not
+            # let a missing P2 receipt fall through to OA-01 Mission Knowledge
+            # selectors, which obscures the actual fail-closed result.
+            if not beta_subject.startswith(("MISSION-BETA-", "OA-", "CAGF-", "EPE-", "ZDCL-")):
+                emit(value) if a.json else print(json.dumps(value, indent=2, sort_keys=True))
+                return 78
+        if a.command == "mission" and beta_subject and beta_action == "aggregate":
+            resolved_runtime = resolve_runtime(ROOT, explicit=getattr(a, "runtime_root", None), require_writable=False)
+            value = canonical_mission_aggregate_view(ROOT, beta_subject, runtime_root=resolved_runtime["root"])
+            emit(value) if a.json else print(json.dumps(value, indent=2, sort_keys=True))
+            return 0 if value.get("result") == "PASS" else 78
+        if a.command == "mission" and beta_subject and beta_action == "recovery":
+            resolved_runtime = resolve_runtime(ROOT, explicit=getattr(a, "runtime_root", None), require_writable=False)
+            value = canonical_mission_aggregate_view(ROOT, beta_subject, runtime_root=resolved_runtime["root"])
+            if value.get("result") == "PASS":
+                recovery = value.get("aggregate", {}).get("recovery", {})
+                value = {**recovery, "interface": "zeus mission recovery",
+                         "mission_id": beta_subject, "wop_id": value.get("wop_id"),
+                         "lifecycle_state": value.get("lifecycle_state"),
+                         "authority": value.get("authority"),
+                         "blockers": value.get("blockers", []),
+                         "next_authorized_action": value.get("next_authorized_action"),
+                         "read_only": True}
+            emit(value) if a.json else print(json.dumps(value, indent=2, sort_keys=True))
+            return 0 if value.get("result") == "PASS" else 78
         # MISSION-BETA records are the P4 canonical runtime chain.  All
         # mission inspection surfaces converge on the same read-only
         # verification projection so status, evidence, replay, and verify
@@ -1418,7 +1520,11 @@ def main(argv=None):
             return 0 if value.get("result") == "PASS" else 78
         if a.command == "codex":
             if a.codex_help:
-                print(f"Usage: scripts/zeus codex {a.action} [MISSION_ID] [options]")
+                print(f"Usage: scripts/zeus codex {a.action} [MISSION_ID|HANDOFF] [options]")
+                if a.action == "handoff":
+                    print("Resolve a handoff against authoritative Zeus state without creating authority or starting execution.")
+                    print("Use `zeus codex handoff HANDOFF.md` or pipe the handoff with `zeus codex handoff -`.")
+                    return 0
                 if a.action in {"shell", "interactive"}:
                     print("Open native Codex directly under Zeus; use --remote for the explicit remote app-server path.")
                     print("Use --remote --diagnose to establish and probe the loopback endpoint without opening Codex.")
@@ -1441,6 +1547,13 @@ def main(argv=None):
                 return 0
             mission_id = str(a.mission_id).upper() if a.mission_id else None
             try:
+                if a.action == "handoff":
+                    value = managed_handoff.resolve_source(ROOT, a.mission_id or "-", runtime_root=a.runtime_root)
+                    if a.json:
+                        emit(value)
+                    else:
+                        print(managed_handoff.render(value))
+                    return 0 if value.get("result") == "PASS" else 78
                 if a.diagnose and not a.remote:
                     raise codex_interactive.InteractiveCodexError("REMOTE_MODE_REQUIRED",
                         "--diagnose is only valid with explicit --remote", next_action="SELECT_REMOTE_INTERACTIVE")
@@ -2181,7 +2294,7 @@ def main(argv=None):
                 emit(ConvergenceRuntime(Path(a.repository)).operational_wop(intent=a.intent,flow=flow))
         else: emit({"interface":a.command, "identifier":a.identifier, "status":"delegated_to_existing_emp_service"})
         return 0
-    except (PackagingError, RuntimeAdoptionError, RuntimeDiscoveryError, OrchestrationError, Stage1Error, SubmissionError, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, mission_knowledge.MissionKnowledgeError, operational_beta.OperationalBetaError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, provider_selection.ProviderSelectionError, provider_session.ProviderSessionError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+    except (PackagingError, CanonicalizationError, RuntimeAdoptionError, RuntimeDiscoveryError, OrchestrationError, Stage1Error, SubmissionError, MissionEligibilityError, OA01VerificationError, OA01ImplementationError, OA01GateVerificationError, OA02ImplementationError, OA02GateVerificationError, OA03ImplementationError, OA03GateVerificationError, OA04ImplementationError, OA04GateVerificationError, OA05ImplementationError, OA05GateVerificationError, ContextReconstructionError, ReasoningError, AuthorityResolutionError, MissionAdmissionError, MissionExecutionError, NextActionError, GateApprovalError, GateCarryForwardError, AgentQualificationError, ExecutionInterfaceError, MissionAssuranceError, mission_knowledge.MissionKnowledgeError, operational_beta.OperationalBetaError, OperationalAlphaStatusError, ProgressiveGateError, progressive_oa.ProgressiveOAError, provider_selection.ProviderSelectionError, provider_session.ProviderSessionError, KeyError, OSError, json.JSONDecodeError, ValueError) as error:
         print(f"FAIL: {error}", file=sys.stderr)
         if isinstance(error, PackagingError):
             if getattr(locals().get("a", None), "json", False):

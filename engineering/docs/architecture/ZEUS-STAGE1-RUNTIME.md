@@ -40,6 +40,18 @@ The runtime does not dispatch agents, interpret execution files, or publish
 execution lifecycle events. Existing later-stage and qualification commands
 remain separate.
 
+New Development source submission is normalized before Stage 1 selection by
+the canonical `zeus submit` interface. A schema-valid Markdown/TXT source is
+classified as promotable when its identity, Operation Beta context, repository
+binding, scope, gates, validation, and completion contract resolve without
+ambiguity. Zeus then derives an immutable Phase-1 provenance sidecar while
+preserving the source bytes and declared WOP/Mission identities and sends the
+source to the P2 boundary. Stage 1 remains the explicit compatibility owner
+for package directories and historical admission-record inputs. The absence
+of a sidecar or the presence of `--repository` no longer selects Stage 1 by
+itself. Stage 1 approval metadata is not generic execution authority for new
+canonical submissions; WOP-declared approval gates remain enforced.
+
 ### Canonical package source adaptation
 
 `canonical-wop-package/1` YAML is an explicit source type. Zeus validates it
@@ -145,7 +157,35 @@ execution publication.
 2. Run `zeus submit PATH`.
 3. Inspect `zeus show MISSION-ID` if validation or authority fails.
 4. Use `zeus list` to see the staged queue.
-5. Use `zeus status` to see aggregate admission state.
+5. Use `zeus status` to see aggregate admission state. For a canonical
+   mission's current receipt-backed lifecycle and subordinate provider/session
+  observations, use `zeus mission aggregate <MISSION_ID> --json`.
+
+For monitoring and recovery, use `zeus mission recovery <MISSION_ID> --json`.
+This is a read-only projection owned by the canonical lifecycle chain. The
+`ZEUS-CANONICAL-RECOVERY/1` contract records immutable checkpoints,
+interruption receipts, and idempotent resume requests only after an execution
+identity exists. Before execution the truthful result is
+`recovery_state=NOT_STARTED`; provider/session/process liveness is
+observational and cannot advance lifecycle state. Stale, missing, conflicting,
+digest-invalid, or ambiguous checkpoints fail closed, and historical or
+reconciled sessions are never reusable.
+
+Stage 1 authority snapshots remain an explicit compatibility receipt contract.
+The canonical mission projection adapts them read-only and validates their
+snapshot digest, mission/WOP identity, and authority semantics. A legacy
+snapshot cannot override a canonical P2/P3/P4 state; missing or contradictory
+authority evidence is fail-closed. Provider, session, process, monitoring,
+and evidence records are subordinate observations and do not authorize
+execution.
+
+Stage 1 is not the owner of generic current mission discovery. The live
+`zeus mission list` surface merges its planning entries with the canonical P2
+submission index, and mission-specific read surfaces resolve the same
+receipt-backed chain before considering compatibility projections. An
+unresolved current mission does not fall through to an OA-01 selector; it is
+reported as `MISSION_NOT_FOUND` or a canonical fail-closed result. Historical
+Stage 1 records remain immutable compatibility evidence.
 
 After admission, Zeus resolves the controlled execution-agent registry and
 dispatches automatically when an active, qualified, repository-compatible

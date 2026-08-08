@@ -40,6 +40,31 @@ replay is `IDEMPOTENT`; it does not invoke Mission Admission or execution.
 The authoritative next action is `EVALUATE_MISSION_ADMISSION`. Legacy package
 submissions retain the Stage 1 lifecycle described below.
 
+When submission is intentionally performed with an explicit temporary runtime,
+that runtime is only the canonicalization transaction workspace. Before live
+mission discovery, the operator must use `zeus runtime adopt --source
+<TEMP_RUNTIME>` to promote the validated P2 submission receipt and its
+admission-request projection into the repository-bound user-state runtime.
+Adoption verifies repository identity, source/WOP/package digests, Mission/WOP
+binding, and the immutable receipt chain, then installs the selected artifacts
+atomically. It is content-bound and idempotent; replay from the same or an
+equivalent temporary path cannot create a second mission or receipt. Temporary
+workspace cleanup therefore cannot remove authoritative state, while legacy
+Stage 1 runtime adoption remains a separate compatibility path.
+
+`zeus submit` classifies the resolved input before considering optional
+repository, baseline, impact, resource, or affected-repository arguments. A
+valid Development Markdown/TXT source without a sidecar is an
+`DEVELOPMENT_SOURCE_PROMOTABLE` input: Zeus derives the Phase-1 provenance
+envelope deterministically, preserves the source bytes, WOP ID, Mission ID,
+and source digest, then uses the same P2 boundary. Existing provenance is
+verified rather than regenerated. A current source cannot be diverted to the
+legacy path by `--repository`, and generic `--approval` is not a substitute
+for submitted-WOP authority. An approval gate declared inside the WOP remains
+enforced downstream. Existing package directories and other explicitly
+classified historical inputs retain the compatibility route; ambiguous or
+conflicting inputs fail closed.
+
 For an accepted published submission, the bounded P3-G1 admission command is:
 
 ```text
@@ -132,6 +157,15 @@ Invalid packages fail before runtime state is written. Repository drift,
 protected-baseline drift, publication failure, and synchronization failure are
 recorded as blocked states. Repeated submission resolves the deterministic
 instance identity and resumes or returns the existing result.
+
+If a stored `DISPATCHED` projection has no valid dispatch receipt or its
+authority binding is incomplete, recovery does not treat process presence as
+proof of dispatch. In an isolated, baseline-valid repository it preserves the
+historical invalid dispatch as evidence, removes it from the current receipt
+chain, returns the transaction to `AWAITING_EXECUTION_DISPATCH`, and requires a
+fresh authority snapshot before redispatch. A dirty repository, baseline
+drift, or conflicting identity is reported first as its own fail-closed
+recovery blocker; it must not be classified as receiptless-dispatch behavior.
 The canonical operator execution entry points are:
 
 ```text

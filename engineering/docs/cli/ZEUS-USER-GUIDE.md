@@ -58,6 +58,16 @@ implementation evidence and changes the existing Progressive runtime to
 marker, accept OA-01, or enable OA-02. Follow the admitted OA-01 verification
 guide for those separately controlled steps.
 
+The generic mission list is not an OA-01 selector. `zeus mission list --json`
+merges the Operation Beta planning view with missions whose immutable P2
+submission receipt and admission-request projection resolve through the
+canonical lifecycle chain. A submitted mission retains its WOP identity,
+authority source, lifecycle state, blockers, and next action in that list.
+If a requested current mission has no canonical receipt, Zeus returns an
+explicit fail-closed result rather than falling through to OA-01 Mission
+Knowledge or a planning selector. Historical OA records remain available only
+through their historical/compatibility surfaces.
+
 ## Architecture and lifecycle role
 
 `zeus` is the operator interface to the Zeus engineering platform. Its launcher
@@ -110,18 +120,19 @@ Mission Contract.
 
 ## Execution status and recovery
 
-For one active execution, the execution identifier is resolved automatically
-by the canonical recovery command:
+For one active execution, inspect the canonical recovery contract with:
 
 ```text
-scripts/zeus resume <mission>
+scripts/zeus mission recovery <mission> --json
 ```
 
-Resume continues the existing checkpoint and never creates a duplicate
-execution. Execution status and administrative controls are internal or
-read-only compatibility interfaces; operators do not use them as mandatory
-reconciliation steps. Ambiguous or unsafe state fails closed with the exact
-diagnostic and next authorized action.
+The recovery projection resolves monitoring, interruption, checkpoint, and
+resume eligibility without mutating state. A later authorized resume request
+continues the existing checkpoint and never creates a duplicate execution;
+the GAP-008 recovery contract does not itself invoke a provider or begin
+mission work. Execution status and administrative controls are internal or
+read-only compatibility interfaces. Ambiguous or unsafe state fails closed
+with the exact diagnostic and next authorized action.
 Submitting identical mission and package content again returns the existing
 instance with `idempotent_replay: true`; it never creates a second active
 mission. State is stored under `.zeus/runtime/stage1/missions/` with an
@@ -352,6 +363,24 @@ zeus runtime adopt
 
 The second invocation is idempotent. Do not edit runtime JSON or copy runtime
 directories manually.
+
+For a canonical P2 submission created in an explicitly selected temporary
+transaction runtime, adoption is the durable boundary:
+
+```text
+scripts/zeus runtime adopt --source <TEMP_RUNTIME> --dry-run --json
+scripts/zeus runtime adopt --source <TEMP_RUNTIME> --json
+```
+
+The command verifies the immutable submission receipt and admission-request
+pair, repository binding, Mission/WOP identity, and receipt digests before
+atomically promoting only those canonical submission artifacts into the
+repository-bound user-state runtime. Temporary canonicalization directories
+are transaction workspaces, not authoritative stores. Repeating adoption—or
+replaying from an equivalent temporary directory—returns the same deterministic
+adoption identity without creating a second receipt or mission. Historical
+runtime records remain preserved and cannot override the current canonical P2
+chain.
 ## P5-G1 provider selection
 
 For a verified Operation Beta mission whose bootstrap state is
@@ -470,6 +499,42 @@ repository root is on Python's import path. Use:
 
 ```text
 python3 -m pytest -q scripts/tests/test-zeus-p5-g3-provider-session.py scripts/tests/test-zeus-mission-verification-controller.py
+
+## Mission-native provider/session aggregate
+
+For a canonical submitted mission, inspect the one receipt-backed lifecycle
+position and its subordinate provider/session/process/monitor/evidence
+observations with:
+
+```bash
+scripts/zeus mission aggregate <MISSION_ID> --json
+```
+
+This surface is read-only. It reports missing downstream records as
+`NOT_STARTED` or `NOT_AVAILABLE`, preserves historical sessions as history,
+and cannot advance the mission or override the canonical next action.
+
+### GAP-008 monitoring and recovery
+
+Inspect monitoring and recovery state with:
+
+```bash
+scripts/zeus mission recovery <MISSION_ID> --json
+```
+
+This is a read-only projection owned by the canonical lifecycle chain. Before
+execution it reports `recovery_state=NOT_STARTED` and does not create provider,
+session, process, heartbeat, checkpoint, or evidence records. After an
+execution interruption, the `ZEUS-CANONICAL-RECOVERY/1` contract binds one
+checkpoint and interruption receipt to the mission, WOP, execution, provider,
+session, repository baseline, source digest, lifecycle position, and evidence
+position. Process/session liveness is observational only.
+
+Resume is permitted only from exactly one current, identity-valid, non-stale
+checkpoint. Missing, conflicting, stale, forged, or digest-invalid recovery
+evidence fails closed. A resume request preserves the existing execution ID,
+skips completed work, and replays idempotently; it never creates a second
+execution or invokes a provider from a read-only inspection surface.
 ```
 
 Running `pytest -q scripts/tests/...` directly is not the supported publication

@@ -1,0 +1,29 @@
+# Zeus-Native Verification
+
+Using the existing isolated canonical submission runtime, all ten applicable
+mission surfaces returned exit code 0 and `result=PASS`:
+
+```text
+zeus mission show ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+zeus mission state ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+zeus mission status ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+zeus mission readiness ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+zeus mission eligibility ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+zeus mission authority ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+zeus mission blockers ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+zeus mission next ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+zeus mission snapshot ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+zeus mission verify ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+```
+
+Common result:
+
+```text
+MISSION_ID=ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01
+WOP_ID=WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001
+LIFECYCLE_STATE=ADMISSION_REQUESTED
+BLOCKERS=[]
+NEXT_AUTHORIZED_ACTION=EVALUATE_MISSION_ADMISSION
+CANONICAL_LIFECYCLE_OWNER=RECEIPT_BACKED_CANONICAL_LIFECYCLE_CHAIN
+READ_ONLY=YES
+```

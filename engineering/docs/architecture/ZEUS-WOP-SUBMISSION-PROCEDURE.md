@@ -24,19 +24,50 @@ The canonical operator-facing execution entry point is:
 scripts/zeus submit <wop>
 ```
 
-The supported `<wop>` source set includes authored Markdown/DOCX, an existing
-Stage 1 package directory, and a validated `canonical-wop-package/1` YAML
-source. Canonical YAML is adapted deterministically into the existing Stage 1
-package-directory model before the same submission, registration, authority,
-and admission interfaces are used. Its canonical package digest is preserved
-as source provenance and is not replaced by the raw-file or Stage 1 tree
-digest. Validation, inspection, and verification of canonical YAML are
-read-only and never create submission or authority state.
+When a machine-readable `canonical-wop-package/1` package is available, it is
+the preferred CLI submission artifact because its identity, package digest,
+requirements, and provenance are already explicit and independently
+verifiable. The human-readable/source WOP remains the authoring and review
+representation. Zeus may automatically canonicalize a valid supported source
+WOP during submission when the package form is not supplied; that convenience
+path preserves source bytes, WOP/Mission identity, and source digest and does
+not create a second authority grant.
 
-Zeus resolves the authorized WOP, verifies it through the existing Stage 1
-validator, and records the submission. It does not infer approval or generate
-a package without an authoritative contract. If no package exists, it returns
-`WOP_PACKAGE_UNAVAILABLE` with the required publication action.
+The supported `<wop>` source set includes authored Markdown/DOCX, a valid
+promotable Development source, an existing Stage 1 package directory, and a
+validated `canonical-wop-package/1` YAML source. Canonical authored and
+promotable Development sources are classified first and enter the common P2
+submission boundary. For a promotable source, automatic canonicalization
+derives the required Phase-1 provenance while preserving source bytes, source
+digest, WOP ID, and Mission ID; an existing sidecar is verified, never blindly
+regenerated. Canonical YAML is adapted deterministically into the existing
+Stage 1 package-directory model before the same compatibility interfaces are
+used. Its canonical package digest is preserved as source provenance and is
+not replaced by the raw-file or Stage 1 tree digest. Validation, inspection,
+and verification remain read-only unless the operator invokes `submit`.
+
+Zeus resolves and classifies the WOP before considering optional CLI context.
+`--repository` is repository binding, not a legacy-route selector. A current
+source with generic `--approval` fails closed rather than entering the legacy
+admission-record contract. Submission authority is the operator-submitted
+WOP; only an approval gate declared in that WOP requires approval. Existing
+Stage 1 package directories and historical admission records remain an
+explicit compatibility class and are not silently reinterpreted. If no
+package or promotable source exists, Zeus returns a fail-closed result with
+the required corrective action.
+
+For canonical P2 submission, the receipt state is `ADMISSION_REQUESTED`, the
+next action is `EVALUATE_MISSION_ADMISSION`, and no admission, provider,
+session, or execution identity is created. Replay is deterministic and
+idempotent.
+
+Read-only mission views use the same receipt-backed resolver after submission:
+when a verified P3 admission transaction exists it projects `ADMITTED`, and
+when a verified P4 bootstrap transaction exists it projects
+`AWAITING_EXECUTION_DISPATCH`. Each projection is subordinate to the
+contiguous P2 identity chain; duplicate, orphaned, or conflicting canonical
+transactions fail closed. Stage 1 and historical/provider projections remain
+compatibility evidence and do not advance current state.
 
 Mission-oriented selection and projection commands are compatibility views;
 they are not additional mandatory execution lifecycle steps. The historical

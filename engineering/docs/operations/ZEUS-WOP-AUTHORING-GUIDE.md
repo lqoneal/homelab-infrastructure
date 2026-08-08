@@ -10,6 +10,14 @@ scripts/zeus submit WOP-EXAMPLE-001.md
 # if interrupted: scripts/zeus resume EXAMPLE-01
 ```
 
+For CLI submission, prefer the machine-readable
+`canonical-wop-package/1` representation when it has been generated and
+qualified. The source WOP remains the authoritative human-readable authoring
+and review representation. If only a valid supported source WOP is supplied,
+Zeus may derive the canonical package/provenance during `zeus submit` without
+rewriting source bytes or changing the WOP/Mission identity; this is a
+compatibility/convenience path, not a second authority grant.
+
 `zeus wop format` is generated from the canonical schema and lists all required
  metadata. `zeus wop template` supports Markdown and DOCX. `zeus wop inspect`
 is read-only and reports every unresolved field. `inspect`, `explain`, and
@@ -40,6 +48,16 @@ placeholder, lint, validation, and traceability checks pass. The emitted next
 submission command is informational; this authoring boundary never submits or
 admits the output.
 
+Hand-authored, schema-valid Development sources are also accepted by the
+canonical `zeus submit` interface. When no sidecar exists, Zeus performs
+identity-preserving automatic canonicalization: it records the existing WOP
+and Mission IDs, source/output digest, repository identity, template/context
+provenance, validation, and replay data without rewriting the source. A
+matching existing sidecar is verified; a conflicting sidecar, identity, or
+digest fails closed. This promotion path does not derive replacement hash
+identities and does not require a generic second approval. Explicit approval
+gates declared in the WOP remain separate downstream controls.
+
 `zeus wop verify` is read-only. It checks the output digest, traceability,
 readiness, and unresolved marker-shaped tokens. Replay verification compares
 canonical content and preserves repository identity, Mission/WOP IDs, source,
@@ -47,10 +65,13 @@ template/context digests, output digest, blockers, and readiness while ignoring
 only filesystem-location fields. Ordinary prose containing “placeholder” is
 not treated as an unresolved token.
 
-Submission validates and packages in isolation, preserves the source, and
-atomically promotes only a complete immutable package. Failed authoring or
-packaging creates no package or runtime state. Only DEVELOPMENT execution and
-non-production effect profiles are accepted by this workflow.
+Submission classifies the source before routing. Canonical authored sources
+and promotable Development sources enter the common P2 boundary and stop at
+`ADMISSION_REQUESTED`; explicit legacy package inputs retain compatibility
+Stage 1 behavior. Submission validates and packages in isolation, preserves
+the source, and atomically promotes only a complete immutable package. Failed
+authoring or packaging creates no package or runtime state. Only DEVELOPMENT
+execution and non-production effect profiles are accepted by this workflow.
 ## Public workflow
 
 ```text
