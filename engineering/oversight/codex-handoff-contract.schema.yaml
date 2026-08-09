@@ -1,0 +1,85 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: Zeus/Codex bounded engineering handoff payload
+type: object
+additionalProperties: false
+required:
+  - schema_version
+  - contract_type
+  - request_id
+  - request_type
+  - instruction_contract
+  - mission_id
+  - wop_id
+  - gate_id
+  - operation
+  - mode
+  - mutation_policy
+  - objective
+  - authoritative_inputs
+  - preconditions
+  - allowed_actions
+  - prohibited_actions
+  - required_checks
+  - acceptance_criteria
+  - evidence_requirements
+  - stop_boundary
+  - next_action_policy
+properties:
+  schema_version: {type: integer, const: 1}
+  contract_type: {type: string, const: ZEUS_CODEX_HANDOFF}
+  request_id: {type: string, minLength: 1}
+  request_type:
+    type: string
+    enum: [ENGINEERING_HANDOFF, GATE_CORRECTIVE, GATE_SPECIFICATION, READ_ONLY_AUDIT, QUALIFICATION]
+  instruction_contract: {type: string, minLength: 1}
+  mission_id: {type: string, minLength: 1}
+  wop_id: {type: string, minLength: 1}
+  gate_id: {type: string, minLength: 1}
+  operation: {type: string, const: OPERATION-BETA}
+  mode:
+    type: string
+    enum: [READ_ONLY, DEVELOPMENT, QUALIFICATION]
+  mutation_policy:
+    type: string
+    enum: [READ_ONLY, WORKSPACE_BOUNDED, CONTROLLED_RUNTIME_TRANSITION]
+  objective: {type: string, minLength: 1}
+  authoritative_inputs:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required: [locator, role]
+      properties:
+        locator: {type: string, minLength: 1}
+        role: {type: string, minLength: 1}
+        required: {type: boolean}
+  preconditions: {$ref: "#/$defs/string_list"}
+  allowed_actions: {$ref: "#/$defs/string_list"}
+  prohibited_actions: {$ref: "#/$defs/string_list"}
+  required_checks: {$ref: "#/$defs/string_list"}
+  acceptance_criteria: {$ref: "#/$defs/string_list"}
+  evidence_requirements: {$ref: "#/$defs/string_list"}
+  stop_boundary: {type: string, minLength: 1}
+  next_action_policy:
+    type: object
+    additionalProperties: false
+    required: [on_success, on_blocked]
+    properties:
+      on_success: {type: string, minLength: 1}
+      on_blocked: {type: string, minLength: 1}
+  provider_metadata:
+    type: object
+    additionalProperties: false
+    properties:
+      provider: {type: string}
+      model: {type: string}
+      execution_id: {type: string}
+      provider_session_id: {type: string}
+      codex_session_id: {type: string}
+  natural_language_context: {type: string}
+$defs:
+  string_list:
+    type: array
+    minItems: 1
+    items: {type: string, minLength: 1}

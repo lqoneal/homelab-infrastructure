@@ -9,6 +9,7 @@ publication authority by itself.
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 from pathlib import Path
 from typing import Any, Mapping
@@ -21,6 +22,8 @@ from scripts.lib.emp.repository_projection import project as project_repository
 
 
 MANIFEST_NAME = "PUBLICATION-CANDIDATE-MANIFEST.md"
+STATE_RECORD_NAME = "QUALIFICATION-PUBLICATION-STATE.json"
+STATE_RECORD_TYPE = "zeus-publication-candidate-state"
 MANIFEST_SUFFIXES = {".json", ".yaml", ".yml", ".md"}
 PATH_RE = re.compile(r"(?<![A-Za-z0-9_./-])((?:engineering|scripts|docs|services|\.zeus)/[^\s`|,)]+)")
 MISSION_RE = re.compile(r"(?:mission[_ ]id|primary[_ ]mission|mission)\s*[:=]\s*([A-Za-z0-9._-]+)", re.I)
@@ -166,6 +169,39 @@ def _publication_state(text: str) -> tuple[str, str]:
     return "UNKNOWN", "publication state is not recorded"
 
 
+def _state_record(root: Path, manifest: Path, mission: str, wop: str) -> tuple[dict[str, Any] | None, str | None]:
+    """Load the package-owned machine-readable qualification/publication state."""
+    path = manifest.parent / STATE_RECORD_NAME
+    if not path.is_file():
+        return None, None
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        return None, f"state record is unreadable: {error}"
+    if not isinstance(value, dict):
+        return None, "state record must be a JSON object"
+    errors: list[str] = []
+    if value.get("schema_version") != 1:
+        errors.append("schema_version must be 1")
+    if value.get("record_type") != STATE_RECORD_TYPE:
+        errors.append(f"record_type must be {STATE_RECORD_TYPE}")
+    if str(value.get("mission_id") or "").upper() != mission:
+        errors.append("mission_id does not match the live mission")
+    if str(value.get("wop_id") or "").upper() != wop:
+        errors.append("wop_id does not match the live WOP")
+    if str(value.get("candidate_manifest") or "") != _display_path(manifest, root):
+        errors.append("candidate_manifest does not bind the manifest")
+    if value.get("result") != "PASS":
+        errors.append("result must be PASS")
+    if value.get("qualification_state") not in {"QUALIFIED", "BLOCKED", "HISTORICAL_ONLY"}:
+        errors.append("qualification_state is not canonical")
+    if value.get("publication_state") not in {"NOT_PERFORMED", "QUALIFIED_UNPUBLISHED", "ALREADY_PUBLISHED", "HISTORICAL_ONLY"}:
+        errors.append("publication_state is not canonical")
+    if errors:
+        return None, "; ".join(errors)
+    return {**value, "path": path}, None
+
+
 def _source_records(root: Path, mission_id: str, wop_id: str, explicit_manifest: Path | str | None) -> list[dict[str, Any]]:
     manifests: list[Path] = []
     if explicit_manifest:
@@ -203,22 +239,36 @@ def _source_records(root: Path, mission_id: str, wop_id: str, explicit_manifest:
             continue
         if declared_wop and declared_wop != wop_id:
             continue
-        qualification, qualification_reason = _qualification(context + "\n" + text)
-        publication_state, publication_reason = _publication_state(context + "\n" + text)
+        state_record, state_error = _state_record(root, manifest, mission_id, wop_id)
+        if state_error:
+            qualification, qualification_reason = "BLOCKED", f"qualification/publication state record invalid: {state_error}"
+            publication_state, publication_reason = "BLOCKED", state_error
+        elif state_record:
+            qualification = state_record["qualification_state"]
+            qualification_reason = "canonical machine-readable state record declares qualified source" if qualification == "QUALIFIED" else "canonical machine-readable state record declares non-qualified source"
+            publication_state = (
+                "QUALIFIED_UNPUBLISHED"
+                if state_record["publication_state"] in {"NOT_PERFORMED", "QUALIFIED_UNPUBLISHED"}
+                else state_record["publication_state"]
+            )
+            publication_reason = "canonical machine-readable state record declares unpublished source" if publication_state == "QUALIFIED_UNPUBLISHED" else "canonical machine-readable state record declares publication disposition"
+        else:
+            qualification, qualification_reason = _qualification(context + "\n" + text)
+            publication_state, publication_reason = _publication_state(context + "\n" + text)
         declared_qualification = str(structured.get("qualification_state") or "").upper()
         declared_publication = str(structured.get("publication_state") or "").upper()
-        if declared_qualification in {"QUALIFIED", "PASS", "IMPLEMENTED"}:
+        if not state_record and not state_error and declared_qualification in {"QUALIFIED", "PASS", "IMPLEMENTED"}:
             qualification, qualification_reason = "QUALIFIED", "manifest declares qualified source"
-        elif declared_qualification in {"HISTORICAL_ONLY", "HISTORICAL"}:
+        elif not state_record and not state_error and declared_qualification in {"HISTORICAL_ONLY", "HISTORICAL"}:
             qualification, qualification_reason = "HISTORICAL_ONLY", "manifest declares historical source"
-        elif declared_qualification in {"BLOCKED", "FAIL", "UNQUALIFIED"}:
+        elif not state_record and not state_error and declared_qualification in {"BLOCKED", "FAIL", "UNQUALIFIED"}:
             qualification, qualification_reason = "BLOCKED", "manifest declares unqualified source"
-        if declared_publication in {"NOT_PERFORMED", "NO", "UNPUBLISHED", "QUALIFIED_UNPUBLISHED"}:
+        if not state_record and not state_error and declared_publication in {"NOT_PERFORMED", "NO", "UNPUBLISHED", "QUALIFIED_UNPUBLISHED"}:
             publication_state, publication_reason = "QUALIFIED_UNPUBLISHED", "manifest declares unpublished source"
-        elif declared_publication in {"HISTORICAL_ONLY", "HISTORICAL"}:
+        elif not state_record and not state_error and declared_publication in {"HISTORICAL_ONLY", "HISTORICAL"}:
             publication_state, publication_reason = "HISTORICAL_ONLY", "manifest declares historical source"
             qualification, qualification_reason = "HISTORICAL_ONLY", "manifest declares historical source"
-        elif declared_publication in {"PUBLISHED", "YES", "COMPLETE", "ALREADY_PUBLISHED"}:
+        elif not state_record and not state_error and declared_publication in {"PUBLISHED", "YES", "COMPLETE", "ALREADY_PUBLISHED"}:
             publication_state, publication_reason = "ALREADY_PUBLISHED", "manifest declares published source"
         paths = _manifest_paths(root, manifest, structured, text)
         source_id = hashlib.sha256(f"{manifest}:{hashlib.sha256(text.encode()).hexdigest()}".encode()).hexdigest()
@@ -243,6 +293,7 @@ def _source_records(root: Path, mission_id: str, wop_id: str, explicit_manifest:
             "publication_state": classification,
             "publication_reason": publication_reason,
             "publication_manifest": _display_path(manifest, root),
+            "qualification_publication_state_record": _display_path(state_record["path"], root) if state_record else None,
             "authority": {"type": "QUALIFIED_MISSION_EVIDENCE", "source": _display_path(manifest, root), "source_id": source_id},
             "dependency_relationship": structured.get("dependency_relationship", "DIRECT"),
             "dependencies": [str(item) for item in (structured.get("dependencies") or structured.get("required_dependencies") or []) if isinstance(item, (str, Path))],
@@ -265,7 +316,7 @@ def _source_records(root: Path, mission_id: str, wop_id: str, explicit_manifest:
                 "text": text + "\n" + "\n".join(
                     _text(path) for path in sorted(manifest.parent.glob("*.md"))
                     if path.name not in {"COMPLETION-REPORT.md", MANIFEST_NAME}
-                ),
+                ) + ("\n" + _text(state_record["path"]) if state_record else ""),
             }),
         })
     return records
@@ -329,7 +380,12 @@ def resolve(root: Path | str, mission_id: str, *, runtime_root: Path | str | Non
     wop_id = str(live.get("wop_id") or "").upper()
     if not wop_id:
         return {"result": "FAIL", "mission_id": mission, "candidate_sources": [], "candidate_paths": [], "blocked": [{"code": "WOP_PROJECTION_MISSING", "reason": "live mission projection has no WOP identity"}], "next_authorized_action": "RESOLVE_PUBLICATION_CANDIDATE_AUTHORITY", "read_only": True}
-    projection = project_repository(repository)
+    projection = project_repository(
+        repository,
+        runtime_root=runtime_root,
+        mission_id=mission,
+        wop_id=wop_id,
+    )
     if projection.get("result") != "PASS":
         return {"result": "FAIL", "mission_id": mission, "wop_id": wop_id, "candidate_sources": [], "candidate_paths": [], "blocked": [{"code": "REPOSITORY_PROJECTION_INVALID", "reason": projection.get("errors")}], "next_authorized_action": "RESOLVE_REPOSITORY_PROJECTION", "read_only": True}
     records = _source_records(repository, mission, wop_id, manifest)

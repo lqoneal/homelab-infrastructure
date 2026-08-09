@@ -713,7 +713,7 @@ def main(argv=None):
     platform_admin = sub.add_parser("platform", help="Read-only integrated platform verification."); platform_admin.add_argument("action", choices=("verify",)); platform_admin.add_argument("--json", action="store_true"); platform_admin.add_argument("--verbose", action="store_true")
     repository_admin = sub.add_parser("repository", help="Read-only live repository/EOS projection for automation."); repository_admin.add_argument("action", choices=("projection",)); repository_admin.add_argument("--json", action="store_true")
     publication_admin = sub.add_parser("publication", help="Canonical Zeus publication transaction controller.")
-    publication_admin.add_argument("action", choices=("inspect", "classify", "prepare", "verify", "verify-pre", "stage", "commit", "push", "synchronize", "qualify", "status", "resume", "abort", "run", "reconcile", "cohort"))
+    publication_admin.add_argument("action", choices=("inspect", "classify", "prepare", "verify", "verify-pre", "verify-post", "stage", "verify-staged", "commit", "push", "synchronize", "qualify", "status", "resume", "abort", "run", "reconcile", "cohort"))
     publication_admin.add_argument("mission_id", nargs="?", help="canonical mission ID or publication identity")
     publication_admin.add_argument("--manifest", type=Path, help="explicit qualified publication manifest")
     publication_admin.add_argument("--approve", action="store_true", help="cross the configured publication approval boundary")
@@ -757,7 +757,7 @@ def main(argv=None):
     provider_session_parser=sub.add_parser("provider-session", help="Create or verify the canonical provider session; never invokes a provider or starts execution."); provider_session_parser.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization")); provider_session_parser.add_argument("mission_id", nargs="?"); provider_session_parser.add_argument("--json", action="store_true")
     provider_invocation_parser=sub.add_parser("provider-invocation", help="Create or verify one bounded provider acknowledgement; never starts execution or mission work."); provider_invocation_parser.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization", "package", "acknowledgement")); provider_invocation_parser.add_argument("mission_id", nargs="?"); provider_invocation_parser.add_argument("--json", action="store_true")
     execution_start_parser=sub.add_parser("execution-start", help="Create, verify, or begin one bound execution-start lifecycle."); execution_start_parser.add_argument("action", choices=("create", "verify", "begin", "status", "authorization", "package", "session", "artifacts")); execution_start_parser.add_argument("mission_id", nargs="?"); execution_start_parser.add_argument("--approve", action="store_true", help="required for BEGIN_CONTROLLED_MISSION_WORK"); execution_start_parser.add_argument("--prompt"); execution_start_parser.add_argument("--codex-bin", default="codex", help=argparse.SUPPRESS); execution_start_parser.add_argument("--json", action="store_true")
-    codex_parser=sub.add_parser("codex", help="Operate the Zeus-owned Codex session (managed or operator-interactive).", add_help=False); codex_parser.add_argument("action", choices=("handoff", "shell", "interactive", "attach", "reconcile", "accept-reconciliation", "supersede", "start", "resume", "stop", "status", "logs", "artifacts", "timed", "timing")); codex_parser.add_argument("mission_id", nargs="?", help="mission identity or HANDOFF.md for `codex handoff`"); codex_parser.add_argument("--approve", action="store_true", help="required for mission-bound shell, start, resume, stop, or reconciliation mutation"); codex_parser.add_argument("--work-contract", type=Path, help="structured Zeus managed-work continuation contract for resume"); codex_parser.add_argument("--dry-run", action="store_true", help="force read-only reconciliation"); codex_parser.add_argument("--reject", action="store_true", help="record an explicit rejection of a safe non-authoritative history"); codex_parser.add_argument("--plan-digest", help="require this reviewed reconciliation plan digest before mutation"); codex_parser.add_argument("--diagnose", action="store_true", help="probe a remote endpoint without opening Codex"); codex_parser.add_argument("--preflight", action="store_true", help="validate direct launch without opening Codex"); codex_parser.add_argument("--remote", action="store_true", help="explicitly select REMOTE_INTERACTIVE; shell defaults to DIRECT_INTERACTIVE"); codex_parser.add_argument("--prompt", help="bounded initial prompt for managed start"); codex_parser.add_argument("--reason", default="NON_AUTHORITATIVE_RECONCILED_HISTORY", help=argparse.SUPPRESS); codex_parser.add_argument("--codex-bin", default="codex", help=argparse.SUPPRESS); codex_parser.add_argument("--session"); codex_parser.add_argument("--mode", choices=("DIRECT_INTERACTIVE", "REMOTE_INTERACTIVE", "OPERATOR_INTERACTIVE", "ZEUS_MANAGED")); codex_parser.add_argument("--latest", action="store_true"); codex_parser.add_argument("--active", action="store_true"); codex_parser.add_argument("--json", action="store_true"); codex_parser.add_argument("--help", action="store_true", dest="codex_help", help="show help for this Codex command")
+    codex_parser=sub.add_parser("codex", help="Operate the Zeus-owned Codex session (managed or operator-interactive).", add_help=False); codex_parser.add_argument("action", choices=("handoff", "shell", "interactive", "attach", "reconcile", "accept-reconciliation", "supersede", "start", "resume", "stop", "status", "logs", "artifacts", "timed", "timing")); codex_parser.add_argument("mission_id", nargs="?", help="mission identity or HANDOFF.md for `codex handoff`"); codex_parser.add_argument("--approve", action="store_true", help="required for mission-bound shell, start, resume, stop, or reconciliation mutation"); codex_parser.add_argument("--work-contract", type=Path, help="structured Zeus managed-work continuation contract for resume"); codex_parser.add_argument("--fork-thread", action="store_true", help="use native Codex thread/fork only when explicit fork recovery is authorized"); codex_parser.add_argument("--dry-run", action="store_true", help="force read-only reconciliation"); codex_parser.add_argument("--reject", action="store_true", help="record an explicit rejection of a safe non-authoritative history"); codex_parser.add_argument("--plan-digest", help="require this reviewed reconciliation plan digest before mutation"); codex_parser.add_argument("--diagnose", action="store_true", help="probe a remote endpoint without opening Codex"); codex_parser.add_argument("--preflight", action="store_true", help="validate direct launch without opening Codex"); codex_parser.add_argument("--remote", action="store_true", help="explicitly select REMOTE_INTERACTIVE; shell defaults to DIRECT_INTERACTIVE"); codex_parser.add_argument("--prompt", help="bounded initial prompt for managed start"); codex_parser.add_argument("--reason", default="NON_AUTHORITATIVE_RECONCILED_HISTORY", help=argparse.SUPPRESS); codex_parser.add_argument("--codex-bin", default="codex", help=argparse.SUPPRESS); codex_parser.add_argument("--session"); codex_parser.add_argument("--mode", choices=("DIRECT_INTERACTIVE", "REMOTE_INTERACTIVE", "OPERATOR_INTERACTIVE", "ZEUS_MANAGED")); codex_parser.add_argument("--latest", action="store_true"); codex_parser.add_argument("--active", action="store_true"); codex_parser.add_argument("--json", action="store_true"); codex_parser.add_argument("--help", action="store_true", dest="codex_help", help="show help for this Codex command")
     orchestrate=sub.add_parser("orchestrate"); orchestrate.add_argument("action", choices=("status", "verify")); orchestrate.add_argument("--json", action="store_true")
     agent=sub.add_parser("agent"); agent.add_argument("action", choices=("list","registry","status","qualify","revoke","select")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--mission-class", default="engineering"); agent.add_argument("--tool", action="append", default=["zeus-cli", "bounded-artifact-handler"]); agent.add_argument("--profile", action="append", default=["controlled-wop-only", "exact-repository-baseline", "no-unreviewed-external-effects"]); agent.add_argument("--json", action="store_true")
     provider=sub.add_parser("provider", help="Select or verify the canonical provider for one Beta mission without dispatch."); provider.add_argument("action", choices=("select", "verify", "candidates", "status", "qualification", "artifacts")); provider.add_argument("mission_id"); provider.add_argument("--json", action="store_true")
@@ -1011,7 +1011,9 @@ def main(argv=None):
             elif a.action == "classify": value = publication_transaction.classify(ROOT, mission_id, runtime_root=runtime_root, manifest=a.manifest, persist=True)
             elif a.action == "prepare": value = publication_transaction.prepare(ROOT, mission_id, runtime_root=runtime_root, manifest=a.manifest)
             elif a.action in {"verify", "verify-pre"}: value = publication_transaction.verify(ROOT, target, runtime_root=runtime_root, run_validators=not a.skip_validation)
+            elif a.action == "verify-post": value = publication_transaction.verify(ROOT, target, runtime_root=runtime_root, postpublication=True)
             elif a.action == "stage": value = publication_transaction.stage(ROOT, target, runtime_root=runtime_root)
+            elif a.action == "verify-staged": value = publication_transaction.verify_staged(ROOT, target, runtime_root=runtime_root)
             elif a.action == "commit": value = publication_transaction.commit(ROOT, target, runtime_root=runtime_root)
             elif a.action == "push": value = publication_transaction.push(ROOT, target, runtime_root=runtime_root)
             elif a.action == "synchronize": value = publication_transaction.synchronize(ROOT, target, runtime_root=runtime_root)
@@ -1388,6 +1390,8 @@ def main(argv=None):
                     "repository_work_started": canonical_position.get("repository_work_started", False),
                     "next_authorized_action": canonical_position.get("next_authorized_action"),
                     "next_action": canonical_position.get("next_action"),
+                    "blockers": canonical_position.get("blockers", []),
+                    "codex_recovery": canonical_position.get("codex_recovery"),
                     "canonical_state_source": canonical_position.get("canonical_state_source"),
                 }
             if value.get("result") == "PASS":
@@ -1734,12 +1738,16 @@ def main(argv=None):
                 elif a.action in {"start", "resume"}:
                     print("Start or resume the managed Zeus app-server session; --approve is required.")
                     if a.action == "resume":
+                        print("Canonical recovery: replace a stopped transport and call native thread/resume for the same persisted thread.")
+                        print("Resume fails closed and never creates a replacement thread when native recovery fails.")
+                        print("Use --fork-thread only for an explicitly authorized native thread/fork recovery.")
                         print("Use --work-contract PATH for a structured, identity-bound continuation transaction.")
                 elif a.action == "stop":
                     print("Stop a Zeus Codex session; --approve is required and no work is started by stop.")
                 elif a.action == "reconcile":
                     print("Usage: scripts/zeus codex reconcile [MISSION_ID] [--mode REMOTE_INTERACTIVE] [--dry-run|--approve] [--plan-digest DIGEST] [--json]")
-                    print("Inventory Codex remote sessions/listeners; default is read-only dry-run.")
+                    print("With MISSION_ID, report managed transport/thread recovery read-only; use codex resume for mutation.")
+                    print("Without a mission, inventory Codex remote sessions/listeners; default is read-only dry-run.")
                     print("Use --mode REMOTE_INTERACTIVE and --dry-run for explicit read-only review.")
                     print("Use --approve for ownership-verified Zeus listener mutation and receipts.")
                 elif a.action == "accept-reconciliation":
@@ -1747,7 +1755,8 @@ def main(argv=None):
                     print("Record the mission-bound history decision for a safe EVENTS_NON_AUTHORITATIVE reconciliation.")
                     print("NO_WORK_EVENTS is automatically satisfied by verified false work projections; this command is not used for it.")
                 elif a.action == "supersede":
-                    print("Supersede one reconciled stale managed session; --session accepts a Codex-managed session ID or its uniquely bound execution/provider session ID, with --approve.")
+                    print("Supersede only a reconciled historical Zeus wrapper that never acquired native thread identity; this is not transport recovery.")
+                    print("Wrappers with native thread identity fail closed pending separate canonical new-thread authority.")
                 else:
                     print("Read-only inspection of the managed or interactive Zeus Codex session.")
                 return 0
@@ -1766,6 +1775,10 @@ def main(argv=None):
                 if a.preflight and (a.action not in {"shell", "interactive"} or a.remote):
                     raise codex_interactive.InteractiveCodexError("DIRECT_PREFLIGHT_ONLY",
                         "--preflight is only valid for direct interactive shell", next_action="SELECT_DIRECT_INTERACTIVE")
+                if a.fork_thread and a.action != "resume":
+                    raise codex_adapter.CodexAdapterError(
+                        "THREAD_FORK_ACTION_INVALID", "--fork-thread is only valid with codex resume",
+                        next_action="SELECT_CODEX_RESUME")
                 # Keep this table explicit.  In particular, read-only actions
                 # must not probe the interactive controller as a fallback:
                 # probing was the original status -> shell defect.
@@ -1789,9 +1802,18 @@ def main(argv=None):
                              if (a.active or a.latest) and not interactive_read else codex_interactive.artifacts(ROOT, mission_id, session_id=a.session, latest=a.latest, active=a.active, runtime_root=a.runtime_root)
                              if interactive_read else codex_adapter.artifacts(ROOT, managed_id, runtime_root=a.runtime_root))
                 elif a.action == "reconcile":
-                    value = codex_reconciliation.reconcile(ROOT, runtime_root=a.runtime_root, approve=a.approve,
-                                                            mode=a.mode, dry_run=True if a.dry_run else None,
-                                                            expected_plan_digest=a.plan_digest)
+                    if mission_id and a.mode not in {"REMOTE_INTERACTIVE"}:
+                        if a.approve:
+                            raise codex_adapter.CodexAdapterError(
+                                "MANAGED_RECOVERY_COMMAND_REQUIRED",
+                                "managed transport/thread recovery mutates only through codex resume",
+                                next_action="USE_CODEX_RESUME")
+                        value = codex_adapter.status(ROOT, managed_id, runtime_root=a.runtime_root)
+                        value["interface"] = "zeus codex reconcile"
+                    else:
+                        value = codex_reconciliation.reconcile(ROOT, runtime_root=a.runtime_root, approve=a.approve,
+                                                                mode=a.mode, dry_run=True if a.dry_run else None,
+                                                                expected_plan_digest=a.plan_digest)
                 elif a.action == "accept-reconciliation":
                     if not a.approve:
                         raise codex_adapter.CodexAdapterError(
@@ -1835,7 +1857,7 @@ def main(argv=None):
                     value = codex_adapter.start(ROOT, managed_id, approval=a.approve, prompt=a.prompt, codex_bin=a.codex_bin, runtime_root=a.runtime_root)
                 elif a.action == "resume":
                     value = codex_adapter.resume(ROOT, managed_id, approval=a.approve, codex_bin=a.codex_bin, runtime_root=a.runtime_root,
-                                                  work_contract=a.work_contract)
+                                                  work_contract=a.work_contract, fork_thread=a.fork_thread)
                 elif a.action == "stop":
                     value = (codex_interactive.stop(ROOT, mission_id, session_id=a.session, approval=a.approve, runtime_root=a.runtime_root)
                              if interactive_read else codex_adapter.stop(ROOT, managed_id, approval=a.approve, runtime_root=a.runtime_root))

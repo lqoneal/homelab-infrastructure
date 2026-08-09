@@ -135,7 +135,13 @@ def verify_admission_replay(first: Mapping[str, Any], replay: Mapping[str, Any],
     identity = resolve(repository)
     if artifact_values["package"].get("repository", {}).get("canonical_repository_identity") != identity["canonical_repository_identity"]:
         raise MissionAdmissionVerificationError("canonical repository identity mismatch")
-    lineage = resolve_provenance_lineage(repository, first.get("repository_baseline", ""))
+    lineage = resolve_provenance_lineage(
+        repository,
+        first.get("repository_baseline", ""),
+        runtime_root=runtime,
+        mission_id=str(first.get("mission_id") or ""),
+        wop_id=str(first.get("wop_id") or ""),
+    )
     if lineage.get("result") != "PASS" or lineage.get("baseline_relationship") not in {"IDENTICAL", "ANCESTOR"}:
         raise MissionAdmissionVerificationError(
             "admission repository provenance is not an authorized descendant"

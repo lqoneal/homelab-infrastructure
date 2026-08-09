@@ -1,0 +1,131 @@
+# Zeus Publication Candidate Scope Qualification
+
+## Determination
+
+`AUTHORITY_AMBIGUOUS`
+
+The frozen transaction is intact and was not staged or mutated. Zeus resolves 19
+qualified-unpublished manifests for the active Mission/WOP and unions their path
+claims. The union contains 113 paths, but 14 paths are claimed by multiple
+qualified manifests from different lifecycle waves or corrective units. Those
+manifests explicitly limit shared files to selected hunks, while the frozen
+transaction has only path-level membership and no publication cohort, gate,
+intent, inclusion authority, or hunk digest. It is therefore not safe to infer
+that the whole path belongs to the intended Wave 2/publication-controller
+boundary.
+
+## Frozen transaction
+
+| Field | Value |
+|---|---|
+| Publication ID | `PUBLICATION-dc25314f-b916-544b-bc3c-7f3da4f53140` |
+| State | `PREPUBLICATION_VERIFIED` |
+| Candidate paths | `113` |
+| Candidate digest | `23eeb657dff6b6f44d4f3f282798f06e3a882406bf7995ee74bd5d8566c10383` |
+| Authority digest | `68ad4c1ee6cb5bbca476fb22e9807944bae724c7ef63af8e6020c5cda999fc2e` |
+| Classification digest | `9518295ec1e59b7f0bd6942a92a31e28d6d1affe4b6607ec49c9eb27a9f65460` |
+| Next authorized publication action | `STAGE_PUBLICATION_CANDIDATE` |
+| Blockers reported by controller | `[]` |
+| Index | clean |
+| HEAD/origin/EOS | `e7e48ab6b523d94e73d40fb4311f86bc7118b0b1` / `e7e48ab6b523d94e73d40fb4311f86bc7118b0b1` / `e7e48ab6b523d94e73d40fb4311f86bc7118b0b1` |
+
+## Classification counts
+
+| Class | Count |
+|---|---:|
+| Wave 1 | 0 frozen paths; unique Wave 1 evidence is already published or shared |
+| Wave 2 | 23 |
+| Publication infrastructure/associated correctives | 75 |
+| Historical qualified-unpublished (explicitly marked historical) | 0 |
+| Wave 3 or later (unshared path) | 0 |
+| Direct divergent managed-runtime artifacts | 0 |
+| Divergence evidence record | 1 |
+| Authority ambiguous | 14 |
+| Total | 113 |
+
+The zero Wave 1/Wave 3 unique-path counts do not mean those waves have no
+qualified evidence. Their unique evidence is already in the published baseline;
+their remaining shared paths are classified ambiguous rather than assigned by
+filename or chronology.
+
+## Ambiguous paths
+
+- `engineering/docs/architecture/OPERATION-BETA-ROADMAP.md`
+- `engineering/docs/architecture/ZEUS-MISSION-PROJECTION-SPECIFICATION.md`
+- `engineering/docs/cli/ZEUS-USER-GUIDE.md`
+- `engineering/docs/operations/ZEUS-CANONICAL-MISSION-PUBLICATION-PROCEDURE.md`
+- `engineering/docs/operations/ZEUS-DEVELOPMENT-MODE.md`
+- `engineering/planning/ZEUS-LIFECYCLE-GAP-REMEDIATION-PLAN-001.md`
+- `scripts/lib/emp/bootstrap_verification.py`
+- `scripts/lib/emp/canonical_lifecycle_resolver.py`
+- `scripts/lib/emp/mission_verification_controller.py`
+- `scripts/lib/emp/provider_selection.py`
+- `scripts/lib/emp/publication_transaction.py`
+- `scripts/tests/test-zeus-provider-boundary-canonicalization.py`
+- `scripts/tests/test-zeus-publication-transaction.py`
+- `scripts/zeus`
+
+These are not rejected because historical evidence exists. They are rejected
+because independent qualified claims overlap at path granularity and the
+current authority model cannot prove which hunks belong to this transaction.
+
+## Selection-policy assessment
+
+The current resolver's effective rule is:
+
+`same Mission ID + same WOP ID + QUALIFIED_UNPUBLISHED source`
+→ include the source paths in the union.
+
+That rule is adequate for disjoint evidence-package paths but insufficient for
+shared runtime, CLI, documentation, and planning files. A safe future
+correction needs to integrate a canonical publication unit/cohort or equivalent
+hunk-level inclusion authority into the existing Mission/WOP/publication model.
+It must fail closed when that authority is absent; it must not guess a Wave,
+choose newest files, or use operator path lists.
+
+A bounded corrective was implemented in the shared candidate-authority and
+publication-transaction projection paths. Overlapping current claims now fail
+closed unless they carry one explicit shared `publication_cohort` (or an
+equivalent existing publication-unit field); the resolver does not choose a
+Wave, newest claim, filesystem order, or operator path list. The existing
+immutable transaction was not mutated, and no replacement transaction was
+created because no authoritative cohort or hunk boundary exists in the live
+records.
+
+Focused qualification passed: candidate-authority tests `7/7`, publication
+transaction tests `5/5`, and Python compilation passed. Native re-resolution
+now reports the 14 ambiguous paths and next action
+`RECONCILE_PUBLICATION_CANDIDATE_AUTHORITY`.
+
+## Provenance and divergence
+
+All 19 source manifests bind to:
+- Mission: `ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01`
+- WOP: `WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001`
+- publication state: `QUALIFIED_UNPUBLISHED`
+
+The repository contains no candidate path whose authoritative record proves it
+was generated by the hung managed Codex process. The bounded divergence
+evidence record is included and is classified separately; external runtime
+receipts/process state are not repository candidate paths.
+
+## Native commands used
+
+```
+scripts/zeus publication status ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+scripts/zeus publication inspect ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+scripts/zeus mission show ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+scripts/zeus mission state ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+scripts/zeus mission authority ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+scripts/zeus mission blockers ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+scripts/zeus mission readiness ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+scripts/zeus mission eligibility ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+scripts/zeus mission next ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+scripts/zeus mission snapshot ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01 --json
+scripts/zeus platform verify --json
+scripts/engctl eos sync-validate homelab
+```
+
+The full per-path machine-readable audit is in
+`CANDIDATE-PROVENANCE-AUDIT.json`. No stage/commit/push/synchronization
+operation was executed.

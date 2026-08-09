@@ -26,7 +26,7 @@ subject to reconciliation before the next transition is accepted.
 
 ## Canonical command path
 
-`submit`, `execute-mission start`, `status`, `session`, `resume`, `suspend`, `cancel`, qualification, publication preparation, synchronization, and closeout resolve the exact requested transaction through the shared reconciliation transaction before consuming derived runtime state. No command resubmits a WOP or creates authority.
+`submit`, `execute-mission start`, `status`, `session`, `resume`, `suspend`, `cancel`, qualification, publication preparation, synchronization, and closeout resolve the exact requested transaction through the shared reconciliation transaction before consuming derived runtime state. The canonical publication verification commands are `zeus publication verify-pre <PUBLICATION_ID>` before staging and `zeus publication verify-post <PUBLICATION_ID>` after `EOS_SYNCHRONIZED`; the latter persists `POSTPUBLICATION_VERIFIED` and is required before qualification. No command resubmits a WOP or creates authority.
 
 ## Recovery and closeout
 

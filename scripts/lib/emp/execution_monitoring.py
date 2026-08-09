@@ -233,6 +233,18 @@ def _projection(root: Path, runtime: Path, path: Path, transaction: Mapping[str,
         "replay": "IDEMPOTENT", "roadmap_id": "ZEUS-CANONICAL-DEVELOPMENT-ROADMAP", "roadmap_revision": "CURRENT",
         "roadmap_source": roadmap["path"], "roadmap_digest": roadmap["digest"], "eens_events": events,
     }
+    # A legacy pre-Mission-Contract execution may have a stale active record
+    # even though its accepted/published historical disposition is complete.
+    # Keep the normal monitor authoritative for all other executions and use
+    # the bounded, identity-checked reconciliation owner only here.
+    try:
+        from scripts.lib.emp.legacy_lifecycle_reconciliation import inspect as inspect_legacy, overlay
+        legacy = inspect_legacy(root, runtime, transaction=transaction, monitoring=record)
+        projection = overlay(projection, legacy)
+    except Exception:
+        # Historical reconciliation is deliberately opt-in and fail-closed;
+        # an unverifiable legacy record must retain its ordinary projection.
+        pass
     return projection
 
 

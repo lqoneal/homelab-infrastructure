@@ -116,7 +116,7 @@ def _scope(root: Path) -> dict[str, Any]:
 def _authority(root: Path) -> dict[str, Any]:
     """Resolve the published authority chain, never session-local authority."""
     try:
-        value = operational_beta.authority(root)
+        value = operational_beta.authority(root, include_current_execution=False)
     except Exception as error:  # authority service projects typed failures variably across generations
         return {"result": "FAIL", "authority_integrity": "FAIL", "authority_resolution": "FAIL", "reason": str(error)}
     valid = (
@@ -204,7 +204,14 @@ def verify(root: Path | str, mission_id: str) -> dict[str, Any]:
     try:
         runtime = resolve_runtime(root, require_writable=False)
         runtime_check = {"result": "PASS", "root": str(runtime["root"]), "identity": runtime["identity"]}
-        baseline = resolve_baseline(root, Path("/data/engineering"), "homelab", runtime_identity=runtime["identity"])
+        baseline = resolve_baseline(
+            root,
+            Path("/data/engineering"),
+            "homelab",
+            runtime_identity=runtime["identity"],
+            runtime_root=runtime["root"],
+            mission_id=mission_id,
+        )
     except Exception as error:
         runtime_check = {"result": "FAIL", "reason": str(error)}
         baseline = {"result": "FAIL", "errors": [{"code": "RUNTIME_REPOSITORY_BINDING_MISMATCH", "message": str(error)}], "current_head": None, "published_head": None, "eos_baseline": None, "publication_parity": "FAIL", "eos_parity": "FAIL", "runtime_binding": "FAIL"}

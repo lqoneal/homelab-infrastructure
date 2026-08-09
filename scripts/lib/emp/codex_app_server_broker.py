@@ -25,6 +25,30 @@ from typing import Any
 UNIX_SOCKET_PATH_MAX = 107
 
 
+def _process_identity(pid: int) -> dict[str, Any]:
+    """Return a compact identity receipt for broker/provider ownership checks."""
+    proc = Path("/proc") / str(pid)
+    try:
+        stat = (proc / "stat").read_text(encoding="utf-8")
+        fields = stat.rsplit(")", 1)[1].split()
+        start_ticks = int(fields[19])
+        process_group = int(fields[2])
+        executable = os.readlink(proc / "exe")
+        command = (proc / "cmdline").read_bytes().replace(b"\x00", b" ").decode("utf-8", "replace").strip()
+        boot_id = Path("/proc/sys/kernel/random/boot_id").read_text(encoding="utf-8").strip()
+    except (OSError, IndexError, ValueError):
+        return {"pid": pid, "alive": False}
+    command_digest = hashlib.sha256(command.encode()).hexdigest()
+    material = {"boot_id": boot_id, "pid": pid, "process_start_ticks": start_ticks,
+                "executable": executable, "command_digest": command_digest,
+                "process_group": process_group}
+    material["identity_digest"] = hashlib.sha256(json.dumps(material, sort_keys=True).encode("utf-8")).hexdigest()
+    material["process_identity_digest"] = material["identity_digest"]
+    material["command"] = command
+    material["alive"] = True
+    return material
+
+
 def _validate_control_socket(path: Path) -> None:
     if len(os.fsencode(str(path))) > UNIX_SOCKET_PATH_MAX:
         raise OSError("AF_UNIX_PATH_TOO_LONG")
@@ -166,60 +190,113 @@ def _run_stdio(args: argparse.Namespace) -> int:
     command = [args.codex_bin, "app-server", "--stdio"]
     provider: subprocess.Popen[bytes] | None = None
     server: socket.socket | None = None
+    phase = "BROKER_STARTING"
+    last_provider_output = bytearray()
+
+    def failure(error: BaseException, *, error_code: str) -> int:
+        provider_pid = provider.pid if provider is not None else None
+        value = {"result": "FAIL", "command": command, "error_type": type(error).__name__,
+                 "error": str(error), "error_code": error_code,
+                 "failure_phase": phase, "provider_mode": "MANAGED_STDIO", "transport": "STDIO",
+                 "broker_pid": os.getpid(), "broker_identity": _process_identity(os.getpid()),
+                 "provider_pid": provider_pid,
+                 "provider_identity": _process_identity(provider_pid) if provider_pid else None,
+                 "provider_exit_code": provider.poll() if provider is not None else None,
+                 "control_socket": str(control_path), "session_id": args.session_id,
+                 "log_path": str(log_path)}
+        if last_provider_output:
+            value["provider_output_tail"] = bytes(last_provider_output)[-4096:].decode("utf-8", "replace")
+        _write(ready_path, value)
+        return 1
     try:
         with log_path.open("ab") as log:
+            phase = "PROVIDER_STARTING"
             provider = subprocess.Popen(command, cwd=root, env=environment, stdin=subprocess.PIPE,
                                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                         start_new_session=False, bufsize=0)
             assert provider.stdin is not None and provider.stdout is not None
+            phase = "PROVIDER_INITIALIZE_SEND"
             request = {"jsonrpc":"2.0", "id":1, "method":"initialize",
                        "params":{"clientInfo":{"name":"zeus","version":"P5-G6"},"capabilities":{}}}
             provider.stdin.write((json.dumps(request, separators=(",", ":")) + "\n").encode()); provider.stdin.flush()
+            phase = "PROVIDER_INITIALIZE_WAIT"
             response = None; deadline = time.monotonic() + args.timeout
             while time.monotonic() < deadline:
                 line = provider.stdout.readline()
                 if not line: break
                 log.write(line); log.flush()
+                last_provider_output.extend(line)
+                del last_provider_output[:-4096]
                 try: value = json.loads(line.decode("utf-8"))
                 except json.JSONDecodeError: continue
                 if value.get("id") == 1: response = value; break
             if not response or "result" not in response:
-                _write(ready_path, {"result":"FAIL", "provider_pid":provider.pid, "command":command,
-                                    "provider_mode":"MANAGED_STDIO", "transport":"STDIO",
-                                    "error":"APP_SERVER_HANDSHAKE_FAILED", "exit_code":provider.poll()})
-                return 1
+                phase = "PROVIDER_INITIALIZE_REJECTED"
+                return failure(ConnectionResetError("provider did not acknowledge initialize"),
+                               error_code="APP_SERVER_HANDSHAKE_FAILED")
+            phase = "CONTROL_SOCKET_BIND"
             if control_path.exists(): control_path.unlink()
             server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM); server.bind(str(control_path)); server.listen(4)
             server.setblocking(False)
-            _write(ready_path, {"result":"PASS", "provider_pid":provider.pid, "command":command,
+            _write(ready_path, {"result":"PASS", "provider_pid":provider.pid,
+                                "provider_identity":_process_identity(provider.pid),
+                                "broker_pid":os.getpid(), "broker_identity":_process_identity(os.getpid()),
+                                "session_id":args.session_id, "command":command,
                                 "provider_mode":"MANAGED_STDIO",
                                 "transport":"STDIO", "remote_capable":False, "control_socket":str(control_path),
-                                "environment":_environment(root, codex_home), "handshake":"PASS"})
+                                "environment":_environment(root, codex_home), "handshake":"PASS",
+                                "provider_initialize":"PASS"})
+            phase = "CONTROL_TRANSPORT_SERVING"
             clients: list[socket.socket] = []
+            buffers: dict[socket.socket, bytearray] = {}
             while provider.poll() is None:
                 readable, _, _ = select.select([server, provider.stdout] + clients, [], [], .25)
                 if server in readable:
-                    client, _ = server.accept(); client.setblocking(False); clients.append(client)
+                    client, _ = server.accept(); client.setblocking(False); clients.append(client); buffers[client] = bytearray()
                 for client in list(clients):
                     if client in readable:
                         data = client.recv(65536)
-                        if not data: clients.remove(client); client.close()
-                        else: provider.stdin.write(data); provider.stdin.flush()
+                        if not data:
+                            clients.remove(client); buffers.pop(client, None); client.close()
+                        else:
+                            buffers[client].extend(data)
+                            while b"\n" in buffers[client]:
+                                line, _, remainder = buffers[client].partition(b"\n")
+                                buffers[client] = bytearray(remainder)
+                                try:
+                                    request_value = json.loads(line.decode("utf-8"))
+                                except (UnicodeDecodeError, json.JSONDecodeError):
+                                    continue
+                                if request_value.get("method") == "zeus/transport/probe":
+                                    probe = {"jsonrpc":"2.0", "id":request_value.get("id"),
+                                             "result":{"result":"PASS", "transport":"STDIO",
+                                                       "session_id":args.session_id, "broker_pid":os.getpid(),
+                                                       "provider_pid":provider.pid,
+                                                       "provider_alive":provider.poll() is None,
+                                                       "control_socket":str(control_path),
+                                                       "control_socket_owner_pid":os.getpid(),
+                                                       "control_socket_owner_identity":_process_identity(os.getpid())["identity_digest"]}}
+                                    client.sendall((json.dumps(probe, separators=(",", ":")) + "\n").encode())
+                                else:
+                                    phase = "PROVIDER_REQUEST_FORWARD"
+                                    provider.stdin.write((line + b"\n")); provider.stdin.flush()
                 if provider.stdout in readable:
                     data = os.read(provider.stdout.fileno(), 65536)
                     if not data: break
                     log.write(data); log.flush()
+                    last_provider_output.extend(data); del last_provider_output[:-4096]
                     for client in list(clients):
                         try: client.sendall(data)
                         except OSError: clients.remove(client); client.close()
             for client in clients: client.close()
             code = provider.wait(); _write(exit_path, {"result":"PASS", "provider_pid":provider.pid, "exit_code":code})
             return code
+    except ConnectionResetError as error:
+        return failure(error, error_code="PROVIDER_TRANSPORT_RESET")
+    except BrokenPipeError as error:
+        return failure(error, error_code="PROVIDER_TRANSPORT_CLOSED")
     except Exception as error:
-        _write(ready_path, {"result":"FAIL", "command":command, "error_type":type(error).__name__, "error":str(error),
-                            "error_code":"AF_UNIX_PATH_TOO_LONG" if "AF_UNIX_PATH_TOO_LONG" in str(error) else "BROKER_START_FAILED",
-                            "provider_mode":"MANAGED_STDIO", "transport":"STDIO"})
-        return 1
+        return failure(error, error_code="AF_UNIX_PATH_TOO_LONG" if "AF_UNIX_PATH_TOO_LONG" in str(error) else "BROKER_START_FAILED")
     finally:
         if server is not None: server.close()
         if control_path.exists(): control_path.unlink()
@@ -276,7 +353,7 @@ def main() -> int:
     parser.add_argument("--root", required=True); parser.add_argument("--codex-home", required=True)
     parser.add_argument("--log", required=True); parser.add_argument("--ready", required=True)
     parser.add_argument("--exited", required=True); parser.add_argument("--listen")
-    parser.add_argument("--control"); parser.add_argument("--codex-bin", default="codex")
+    parser.add_argument("--control"); parser.add_argument("--session-id"); parser.add_argument("--codex-bin", default="codex")
     parser.add_argument("--timeout", type=float, default=15.0)
     return run(parser.parse_args())
 

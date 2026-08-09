@@ -1,0 +1,21 @@
+schema_version: 1
+manifest_id: WOP-OB-CAGF-G01-CANONICAL-001-CANONICAL-ADAPTER-MANIFEST
+mission_id: CAGF-01
+wop_id: WOP-OB-CAGF-G01-CANONICAL-001
+execution_mode: DEVELOPMENT
+governance_authority: independent mission authority and separately resolved WOP authority
+repository_identity: /data/engineering/repositories/homelab
+effect_profile: DEVELOPMENT-NONPRODUCTION-READONLY-ADAPTER
+protected_baselines:
+- 32796dffb43a47f4f9516a0936fe89f0bec0ee80
+source_document_digest: e49058f4a4134477ff7700e024da42bdb53ea2a5fe637a764b4b29923ba27d4d
+canonical_package_schema: canonical-wop-package/1
+canonical_package_id: OB-CAGF-G01-CANONICAL-PACKAGE-002
+canonical_package_digest: 79a9fb9ce9017eb66322bbdcb30be26cdcc014fd295517ed028a04a97b67f7b0
+canonical_source_digest: e49058f4a4134477ff7700e024da42bdb53ea2a5fe637a764b4b29923ba27d4d
+canonical_gate_id: OB-CAGF-G01
+canonical_baseline_commit: 32796dffb43a47f4f9516a0936fe89f0bec0ee80
+canonical_authority_classification: EXTERNAL_ONLY_NON_AUTHORITATIVE_SOURCE
+canonical_revision: 2
+revision_state: CORRECTED
+stage1_tree_digest: 7cf63343589b481170323f60deb8603aa6aa7b87ace6397fda90592d190f1703

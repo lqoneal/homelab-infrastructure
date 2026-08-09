@@ -1,0 +1,402 @@
+schema_version: 1
+gates:
+- requirement_id: CAGF-G01-R01
+  objective: declare canonical ownership for every input
+  expected_initial_condition: owner records exist but bounded source contract is not
+    frozen
+  canonical_sources:
+  - MKM
+  - Capability Registry
+  - EMM
+  - PMCT
+  - Engineering Governance
+  - EOS
+  - repository identity
+  existing_capability: owner map and resolvers
+  technical_prerequisites:
+  - qualified Beta baseline
+  - unique owner records
+  implementation_action_if_unmet: create one owner inventory with canonical locators
+    and revisions
+  expected_output: immutable owner inventory
+  verification: resolve each owner uniquely and reject ambiguity
+  evidence: engineering/evidence/operation-beta/ob-cagf-g01/requirements/CAGF-G01-R01.yaml
+  evidence_contract:
+  - owner
+  - locator
+  - revision
+  - digest
+  - result
+  replay_behavior: reuse identical owner evidence and mark PREVIOUSLY_SATISFIED
+  failure_behavior: fail closed on missing/conflicting owner
+  acceptance: exactly one canonical owner per input and no generated owner
+  resulting_capability: declared_canonical_owner_records
+  technical_dependencies: []
+- requirement_id: CAGF-G01-R02
+  objective: normalize source-bound inputs
+  expected_initial_condition: canonical records resolve individually but no normalized
+    set is bound
+  canonical_sources:
+  - declared owner inventory
+  - qualified Beta baseline
+  - repository identity
+  existing_capability: canonical resolvers and baseline checks
+  technical_prerequisites:
+  - CAGF-G01-R01
+  - source schemas
+  - stable locators
+  implementation_action_if_unmet: define stable normalized mission/gate/capability/authority/repository/baseline/EOS
+    records
+  expected_output: digestable normalized input set
+  verification: schema
+  locator: null
+  binding: null
+  freshness and reproducibility checks: null
+  evidence: engineering/evidence/operation-beta/ob-cagf-g01/requirements/CAGF-G01-R02.yaml
+  evidence_contract:
+  - normalized_inputs
+  - source_refs
+  - baseline
+  - digest
+  - result
+  replay_behavior: same identity is PREVIOUSLY_SATISFIED; changed inputs require new
+    identity
+  failure_behavior: fail closed on missing/malformed/stale input
+  acceptance: identical qualified records normalize identically
+  resulting_capability: stable_source_contract_inputs
+  technical_dependencies:
+  - kind: TECHNICAL_CAPABILITY
+    requirement_id: CAGF-G01-R01
+- requirement_id: CAGF-G01-R03
+  objective: establish stable source and aggregate digests
+  expected_initial_condition: normalized inputs exist but digest set is unqualified
+  canonical_sources:
+  - normalized inputs
+  - canonical bytes
+  - repository/EOS provenance utilities
+  existing_capability: digest and provenance utilities
+  technical_prerequisites:
+  - CAGF-G01-R02
+  - canonical serialization
+  - SHA-256
+  implementation_action_if_unmet: calculate per-source and aggregate digests
+  expected_output: immutable source digest set
+  verification: recompute from canonical bytes in independent runs
+  evidence: engineering/evidence/operation-beta/ob-cagf-g01/requirements/CAGF-G01-R03.yaml
+  evidence_contract:
+  - source_digest_set
+  - aggregate_digest
+  - canonicalization
+  - result
+  replay_behavior: same digest set preserves identity without rewrite
+  failure_behavior: fail closed on unavailable bytes or mismatch
+  acceptance: every input has reproducible digest
+  resulting_capability: canonical_source_digest_set
+  technical_dependencies:
+  - kind: DATA
+    requirement_id: CAGF-G01-R02
+- requirement_id: CAGF-G01-R04
+  objective: reject invalid identity/dependency/cycle/stale/conflicting/malformed
+    inputs
+  expected_initial_condition: digest-bound normalized inputs await relationship validation
+  canonical_sources:
+  - MKM
+  - Capability Registry
+  - EMM
+  - PMCT records
+  - normalized set
+  existing_capability: identity
+  dependency: null
+  drift: null
+  freshness validators: null
+  technical_prerequisites:
+  - CAGF-G01-R03
+  - relationship schemas
+  implementation_action_if_unmet: run one bounded fail-closed relationship validation
+  expected_output: pass result or immutable diagnostics and no projection on failure
+  verification: positive fixture plus one negative fixture per invalid class
+  evidence: engineering/evidence/operation-beta/ob-cagf-g01/requirements/CAGF-G01-R04.yaml
+  evidence_contract:
+  - cases
+  - diagnostics
+  - blocked_before_generation
+  - result
+  replay_behavior: rejected inputs remain rejected without mutation
+  failure_behavior: fail closed without repair or substitution
+  acceptance: each invalid class blocks generation/publication
+  resulting_capability: validated_source_relationships
+  technical_dependencies:
+  - kind: QUALIFICATION
+    requirement_id: CAGF-G01-R03
+- requirement_id: CAGF-G01-R05
+  objective: generate one deterministic Operation Beta mission/readiness projection
+  expected_initial_condition: validated normalized input set is qualified
+  canonical_sources:
+  - qualified input set
+  - projection contract
+  existing_capability: Beta/Zeus projection shape and canonical serialization
+  technical_prerequisites:
+  - CAGF-G01-R04
+  - versioned generator
+  - output schema
+  implementation_action_if_unmet: implement bounded generator only
+  expected_output: disposable stable projection artifact
+  verification: independent repeat generation and golden comparison
+  evidence: engineering/evidence/operation-beta/ob-cagf-g01/requirements/CAGF-G01-R05.yaml
+  evidence_contract:
+  - generator_identity
+  - input_digest
+  - output_locator
+  - output_digest
+  - result
+  replay_behavior: same identity returns same output and no rewrite
+  failure_behavior: generation/schema failure creates no partial output
+  acceptance: qualified inputs produce only declared family and identical bytes
+  resulting_capability: bounded_mission_readiness_projection
+  technical_dependencies:
+  - kind: TECHNICAL_CAPABILITY
+    requirement_id: CAGF-G01-R04
+- requirement_id: CAGF-G01-R06
+  objective: preserve source/projection separation
+  expected_initial_condition: projection exists but authority classification is unqualified
+  canonical_sources:
+  - owner inventory
+  - projection
+  - authority model
+  existing_capability: projection-purity and independent authority resolution
+  technical_prerequisites:
+  - CAGF-G01-R05
+  - authority classification rules
+  implementation_action_if_unmet: mark output disposable/non-authoritative and reject
+    authority consumption
+  expected_output: non-authoritative projection contract
+  verification: metadata inspection and negative authority-consumption test
+  evidence: engineering/evidence/operation-beta/ob-cagf-g01/requirements/CAGF-G01-R06.yaml
+  evidence_contract:
+  - source_refs
+  - authority
+  - disposable
+  - negative_case
+  - result
+  replay_behavior: regeneration never alters source authority
+  failure_behavior: authority ambiguity blocks qualification
+  acceptance: output cannot create mission/WOP/selection/admission/execution authority
+  resulting_capability: non_authoritative_projection_contract
+  technical_dependencies:
+  - kind: INTEGRATION
+    requirement_id: CAGF-G01-R05
+- requirement_id: CAGF-G01-R07
+  objective: emit immutable provenance and bounded publication manifest
+  expected_initial_condition: projection and digests exist but attribution is incomplete
+  canonical_sources:
+  - owners
+  - normalized inputs
+  - digests
+  - generator
+  - output
+  existing_capability: evidence provenance and immutable receipt patterns
+  technical_prerequisites:
+  - CAGF-G01-R05
+  - CAGF-G01-R06
+  - manifest schema
+  implementation_action_if_unmet: bind gate/owners/input-generator-output digests/baseline/qualification/scope
+  expected_output: immutable non-authoritative manifest
+  verification: completeness
+  digest binding: null
+  immutability and receipt association: null
+  evidence: engineering/evidence/operation-beta/ob-cagf-g01/requirements/CAGF-G01-R07.yaml
+  evidence_contract:
+  - owner_refs
+  - input_digests
+  - generator_digest
+  - output_digest
+  - baseline
+  - result
+  replay_behavior: same inputs produce same manifest identity
+  failure_behavior: incomplete/altered provenance blocks publication
+  acceptance: all facts attributable and digest-bound
+  resulting_capability: immutable_provenance_manifest
+  technical_dependencies:
+  - kind: ARTIFACT
+    requirement_id: CAGF-G01-R05
+- requirement_id: CAGF-G01-R08
+  objective: qualify byte stability
+  expected_initial_condition: generator and manifest exist but repeat stability is
+    unproven
+  canonical_sources:
+  - source contract
+  - generator identity
+  - projection
+  existing_capability: controlled qualification and deterministic serialization tests
+  technical_prerequisites:
+  - CAGF-G01-R07
+  - independent repeat environment
+  implementation_action_if_unmet: run identical-input generation twice and compare
+    bytes/digests
+  expected_output: immutable byte-stability record
+  verification: independent byte and digest comparison
+  evidence: engineering/evidence/operation-beta/ob-cagf-g01/requirements/CAGF-G01-R08.yaml
+  evidence_contract:
+  - run_ids
+  - input_digest
+  - byte_equal
+  - output_digests
+  - result
+  replay_behavior: qualified artifact is not rewritten
+  failure_behavior: nondeterminism blocks qualification/publication
+  acceptance: identical qualified inputs are byte-identical
+  resulting_capability: byte_stable_projection
+  technical_dependencies:
+  - kind: QUALIFICATION
+    requirement_id: CAGF-G01-R07
+- requirement_id: CAGF-G01-R09
+  objective: qualify replay idempotency without duplicates
+  expected_initial_condition: byte-stable output is qualified
+  canonical_sources:
+  - source identity
+  - manifest identity
+  - replay infrastructure
+  existing_capability: receipt-backed replay and duplicate prevention
+  technical_prerequisites:
+  - CAGF-G01-R08
+  - artifact cardinality inspection
+  implementation_action_if_unmet: replay validation/generation/publication preparation
+    for same identity
+  expected_output: IDEMPOTENT replay record
+  verification: first/replay comparison and duplicate scan
+  evidence: engineering/evidence/operation-beta/ob-cagf-g01/requirements/CAGF-G01-R09.yaml
+  evidence_contract:
+  - original_identity
+  - replay_identity
+  - duplicate_count
+  - state_changes
+  - result
+  replay_behavior: retain original identity and report IDEMPOTENT
+  failure_behavior: mismatch blocks qualification
+  acceptance: no duplicate authority/WOP/Mission Contract/execution/receipt/artifact
+  resulting_capability: idempotent_projection_replay
+  technical_dependencies:
+  - kind: QUALIFICATION
+    requirement_id: CAGF-G01-R08
+- requirement_id: CAGF-G01-R10
+  objective: enforce bounded publication only after qualification
+  expected_initial_condition: all qualification records exist but publication is unauthorized
+  canonical_sources:
+  - qualification records
+  - publication boundary
+  - repository/EOS checks
+  existing_capability: governance publication and consistency boundaries
+  technical_prerequisites:
+  - CAGF-G01-R09
+  - current baseline
+  - operator review
+  implementation_action_if_unmet: define derived-only eligibility check with all mutations
+    disabled
+  expected_output: eligibility record
+  verification: positive eligibility and negative missing/stale/failing qualification
+    checks
+  evidence: engineering/evidence/operation-beta/ob-cagf-g01/requirements/CAGF-G01-R10.yaml
+  evidence_contract:
+  - qualification_refs
+  - scope
+  - authorized
+  - mutation_effects
+  - result
+  replay_behavior: same preparation is a no-op
+  failure_behavior: fail closed with no mutation
+  acceptance: only qualified bounded projection is eligible
+  resulting_capability: bounded_publication_boundary
+  technical_dependencies:
+  - kind: SAFETY
+    requirement_id: CAGF-G01-R09
+- requirement_id: CAGF-G01-R11
+  objective: expose identity/status/readiness/blockers/provenance/snapshot/next action
+    through Zeus
+  expected_initial_condition: read-only Zeus surfaces exist but bounded projection
+    mapping is absent
+  canonical_sources:
+  - manifest
+  - projection
+  - qualification records
+  - Zeus verification surfaces
+  existing_capability: native status/readiness/dependency/evidence/snapshot/next-action
+    views
+  technical_prerequisites:
+  - CAGF-G01-R10
+  - supported read-only interfaces
+  implementation_action_if_unmet: define read-only gate verification query and evidence
+    map
+  expected_output: independently discoverable Zeus-native contract
+  verification: reconstruct all required fields without generator internals
+  evidence: engineering/evidence/operation-beta/ob-cagf-g01/requirements/CAGF-G01-R11.yaml
+  evidence_contract:
+  - surface
+  - identity
+  - status
+  - blockers
+  - provenance
+  - snapshot
+  - next_action
+  - result
+  replay_behavior: same snapshot identity and no mutation
+  failure_behavior: native visibility gap blocks qualification
+  acceptance: derived/non-authoritative status is independently exposed
+  resulting_capability: zeus_native_cagf_verification
+  technical_dependencies:
+  - kind: INTERFACE
+    requirement_id: CAGF-G01-R10
+- requirement_id: CAGF-G01-R12
+  objective: provide stable qualified technical input to downstream consumers
+  expected_initial_condition: bounded qualification and Zeus evidence are complete
+  canonical_sources:
+  - qualified manifest
+  - EPE/CM/EMP/ARCH contracts
+  - repository/EOS
+  existing_capability: consumer dependency resolution and reconciliation
+  technical_prerequisites:
+  - CAGF-G01-R11
+  - compatibility fixtures
+  implementation_action_if_unmet: expose capability locator/digest and compatibility
+    contract without authority
+  expected_output: QUALIFIED_CANONICAL_SOURCE_PROJECTION capability
+  verification: consumer contract and repository/EOS consistency checks
+  evidence: engineering/evidence/operation-beta/ob-cagf-g01/requirements/CAGF-G01-R12.yaml
+  evidence_contract:
+  - capability_id
+  - projection_digest
+  - manifest_locator
+  - consumers
+  - authority_classification
+  - result
+  replay_behavior: stable consumer resolution and no duplicate authority
+  failure_behavior: unresolved authority-bearing consumer blocks completion
+  acceptance: consumers resolve technical capability by digest/manifest
+  resulting_capability: QUALIFIED_CANONICAL_SOURCE_PROJECTION
+  technical_dependencies:
+  - kind: INTEGRATION
+    requirement_id: CAGF-G01-R11
+canonical_execution_graph:
+  model: HYBRID
+  verification_first: true
+  sequential_requirements:
+  - CAGF-G01-R01
+  - CAGF-G01-R02
+  - CAGF-G01-R03
+  - CAGF-G01-R04
+  - CAGF-G01-R05
+  - CAGF-G01-R06
+  - CAGF-G01-R07
+  - CAGF-G01-R08
+  - CAGF-G01-R09
+  - CAGF-G01-R10
+  - CAGF-G01-R11
+  - CAGF-G01-R12
+  parallel_safe_requirements:
+  - CAGF-G01-R01
+  convergence_points:
+  - CAGF-G01-R04
+  - CAGF-G01-R07
+  - CAGF-G01-R10
+  - CAGF-G01-R12
+  qualification_barrier: CAGF-G01-R10
+  publication_boundary: after R12 and operator review; not authorized by candidate

@@ -75,6 +75,22 @@ class CandidateAuthorityTests(unittest.TestCase):
     def _resolve(self):
         return authority.resolve(self.root, MISSION, lifecycle_projection=self.live)
 
+    def _state_record(self, manifest: Path, **changes) -> Path:
+        value = {
+            "schema_version": 1,
+            "record_type": authority.STATE_RECORD_TYPE,
+            "result": "PASS",
+            "mission_id": MISSION,
+            "wop_id": WOP,
+            "candidate_manifest": str(manifest.relative_to(self.root)),
+            "qualification_state": "QUALIFIED",
+            "publication_state": "NOT_PERFORMED",
+        }
+        value.update(changes)
+        path = manifest.parent / authority.STATE_RECORD_NAME
+        path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        return path
+
     def test_one_qualified_manifest_and_replay_are_deterministic(self):
         self._manifest("one", ["scripts/one.py"])
         with patch.object(authority, "project_repository", return_value=self.projection):
@@ -144,6 +160,32 @@ class CandidateAuthorityTests(unittest.TestCase):
             result = self._resolve()
         self.assertEqual(result["result"], "FAIL")
         self.assertIn("scripts/does-not-exist.py", result["missing"])
+
+    def test_machine_readable_state_record_is_authoritative_and_deterministic(self):
+        manifest = self._manifest("machine-state", ["scripts/machine-state.py"])
+        manifest.write_text(
+            manifest.read_text(encoding="utf-8")
+            .replace("qualification_state: QUALIFIED\n", "")
+            .replace("publication_state: NOT_PERFORMED\n", ""),
+            encoding="utf-8",
+        )
+        state_path = self._state_record(manifest)
+        with patch.object(authority, "project_repository", return_value=self.projection):
+            result = self._resolve()
+        self.assertEqual(result["result"], "PASS")
+        source = next(item for item in result["candidate_sources"] if item["source_path"] == str(manifest.relative_to(self.root)))
+        self.assertEqual(source["qualification_state"], "QUALIFIED")
+        self.assertEqual(source["publication_state"], "QUALIFIED_UNPUBLISHED")
+        self.assertEqual(source["qualification_publication_state_record"], str(state_path.relative_to(self.root)))
+
+    def test_invalid_machine_readable_state_record_fails_closed(self):
+        manifest = self._manifest("invalid-machine-state", ["scripts/invalid-machine-state.py"])
+        self._state_record(manifest, mission_id="OTHER-MISSION")
+        with patch.object(authority, "project_repository", return_value=self.projection):
+            result = self._resolve()
+        self.assertEqual(result["result"], "FAIL")
+        self.assertEqual(result["blocked"][0]["code"], "QUALIFICATION_OR_PUBLICATION_STATE_UNRESOLVED")
+        self.assertIn("state record invalid", result["blocked"][0]["reason"])
 
 
 if __name__ == "__main__":

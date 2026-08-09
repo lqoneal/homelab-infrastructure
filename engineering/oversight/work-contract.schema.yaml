@@ -1,0 +1,38 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: Zeus managed work continuation contract
+type: object
+additionalProperties: false
+required:
+  - schema_version
+  - contract_type
+  - contract_id
+  - mission_id
+  - execution_id
+  - execution_session_id
+  - provider_id
+  - provider_session_id
+  - requested_action
+  - actions
+properties:
+  schema_version: {type: integer, const: 1}
+  contract_type: {type: string, const: ZEUS_MANAGED_WORK_CONTRACT}
+  contract_id: {type: string, minLength: 1}
+  mission_id: {type: string, minLength: 1}
+  execution_id: {type: string, minLength: 1}
+  execution_session_id: {type: string, minLength: 1}
+  provider_id: {type: string, minLength: 1}
+  provider_session_id: {type: string, minLength: 1}
+  requested_action:
+    type: string
+    enum: [CONTINUE_CONTROLLED_MISSION_WORK, RECONCILE_EXECUTION_STATE]
+  actions:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required: [action]
+      properties:
+        action:
+          type: string
+          enum: [CONTINUE_CONTROLLED_MISSION_WORK, RECONCILE_EXECUTION_STATE]

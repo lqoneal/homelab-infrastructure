@@ -660,10 +660,10 @@ scripts/zeus execution-start begin <MISSION_ID> --approve --json
 `begin` does not create a second execution lifecycle. It verifies the existing
 execution-start record, preserves its mission/WOP/provider/invocation and
 execution-session bindings, and asks the bound provider broker for one
-controlled thread/turn. If reconciliation says the current Codex history is
-not authoritative, Zeus first supersedes that Codex session through the
-receipt-backed replacement path, preserving the old record and all execution
-identity bindings; it never resumes that non-authoritative session in place.
+controlled thread/turn. If the broker stopped but the native Codex thread is
+valid, the operator must first use `codex resume`; Zeus replaces the transport
+and resumes that same persisted thread. It does not supersede the wrapper or
+create a new conversation merely because a process stopped.
 Zeus records an active-execution and monitoring projection only after the
 provider returns both thread and turn identities as controlled-work evidence.
 A provider/session startup or acknowledgement failure is fail-closed before
@@ -809,16 +809,26 @@ active transition.
 command-specific guidance. `--approve` is required for mission-bound shell,
 managed start/resume, and stop.
 
-For a stopped or non-authoritative managed session, `execution-start begin`
-keeps the lifecycle action `BEGIN_CONTROLLED_MISSION_WORK` separate from the
-runtime repair action. Zeus first proves the predecessor process group and
-control endpoint are stopped, preserves its session/events, creates at most
-one identity-bound successor, and verifies that successor's broker endpoint
-with a session/process ownership probe after launch and immediately before
-`thread/start` and `turn/start`. A missing handshake, dead provider, stale or
-foreign socket, or missing thread/turn identity fails closed. The failure JSON
-reports `runtime_recovery_action`; it never sets `mission_work_started` without
-both authoritative provider acknowledgements.
+`codex resume <MISSION_ID> --approve` is the single managed recovery mutation.
+It distinguishes the Zeus wrapper (`CODEX-SESSION-*`), the ephemeral transport
+(broker/provider PID, socket, or remote endpoint), and the native persisted
+Codex thread ID. For a stopped transport with a valid thread, it starts one
+replacement transport, calls native `thread/read` and `thread/resume`, and
+requires the returned thread ID and repository binding to match. Repeating the
+command against the authoritative live transport is idempotent. A missing,
+corrupt, mismatched, provider-rejected, or concurrently owned thread fails
+closed before work; Zeus never substitutes `thread/start`. `--fork-thread`
+selects native `thread/fork` only when explicit fork recovery is authorized and
+requires preserved native lineage. New-thread creation requires separate
+canonical authority. Remote disconnects replace the remote transport without
+invalidating a persisted thread. Mission and repository work remain false
+until the later bound turn acknowledgement.
+
+For a mission-qualified wrapper, `codex reconcile` is the matching read-only
+projection and directs mutations to `codex resume`; `codex attach` refuses a
+stopped managed transport and reports that same recovery action. Remote
+listener inventory remains available through explicit `REMOTE_INTERACTIVE`
+reconciliation.
 
 History reconciliation is separate from gate acceptance and from
 `codex reconcile` listener inventory. A verified `NO_WORK_EVENTS` result with
@@ -1037,15 +1047,42 @@ scripts/zeus publication classify <MISSION_ID> --json
 scripts/zeus publication prepare <MISSION_ID> --json
 scripts/zeus publication verify-pre <PUBLICATION_ID> --json
 scripts/zeus publication stage <PUBLICATION_ID> --json
+scripts/zeus publication verify-staged <PUBLICATION_ID> --json
 scripts/zeus publication commit <PUBLICATION_ID> --json
 scripts/zeus publication push <PUBLICATION_ID> --json
 scripts/zeus publication synchronize <PUBLICATION_ID> --json
+scripts/zeus publication verify-post <PUBLICATION_ID> --json
 scripts/zeus publication qualify <PUBLICATION_ID> --json
 scripts/zeus publication status <PUBLICATION_ID> --json
 scripts/zeus publication resume <PUBLICATION_ID> --json
 scripts/zeus publication abort <PUBLICATION_ID> --json
 scripts/zeus publication run <MISSION_ID> --json
 ```
+
+Successful `publication stage` stops at `CANDIDATE_STAGED` with
+`VERIFY_STAGED_SET` as the next authorized action. The staged digest is the
+SHA-256 of canonical JSON records containing each sorted candidate path and
+the SHA-256 of its stage-zero index blob; it is not the Git tree object ID.
+Use `publication verify-staged` for the distinct transition to
+`STAGED_SET_VERIFIED`. Exact-index interruption replay is permitted only when
+the complete frozen candidate and digest reproduce without extras, omissions,
+content drift, receipt conflict, or transaction-integrity failure.
+
+`publication status` also accepts a Mission ID. Mission-scoped status resolves
+the one receipt-integral current transaction from immutable supersession
+lineage and reports `publication_disposition`, `current_publication`, and the
+persisted next action. Direct Publication-ID status remains available for
+historical records and performs transaction-bound candidate/cohort
+revalidation. A superseded record is therefore readable directly but cannot
+compete in Mission-ID lookup.
+
+Qualified transactions are terminal history while an open reprepare exists;
+otherwise the qualified lineage tip is the completed-publication fallback.
+Resolution never uses timestamps. Missing or cross-Mission/WOP supersession,
+cycles, duplicate identities, incompatible open successors, invalid receipt
+bindings, or multiple unrelated open tips return a fail-closed lineage error.
+Exact `prepare` replay returns the same identity with
+`publication_replay=IDEMPOTENT`; it never creates another competing tip.
 
 `run` stops at `APPROVE_PUBLICATION` unless `--approve` is supplied. Candidate
 membership comes from a qualified publication manifest; dirty files are not
@@ -1062,6 +1099,12 @@ reference/digest, completed and pending milestone updates, and
 `current_state=PREPUBLICATION_VERIFIED`. Only a fresh validated reload of that
 transaction can expose `STAGE_PUBLICATION_CANDIDATE`. `publication verify` is
 retained as a compatibility spelling for `publication verify-pre`.
+
+Postpublication verification is a separate canonical command:
+`publication verify-post` consumes only a transaction in `EOS_SYNCHRONIZED`,
+persists the `POSTPUBLICATION_VERIFIED` receipt, and advances the transaction
+to `QUALIFY_PUBLICATION`. `verify` and `verify-pre` never perform this
+postpublication transition.
 
 Status and mission read models consume the transaction-owned next-action
 resolver. Cohort revalidation success and transient validator output are not

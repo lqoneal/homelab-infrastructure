@@ -397,6 +397,8 @@ def _dimensions(value: Mapping[str, Any], listener: Mapping[str, Any] | None,
     client_alive = bool(process_identity(client_pid).get("alive")) if isinstance(client_pid, int) else False
     diagnostic = bool(endpoint and value.get("remote_client_pid") is None and
                       (value.get("endpoint_receipt") or {}).get("readiness_probe", {}).get("initialize") == "PASS")
+    thread_id = value.get("native_thread_id") or value.get("thread_id")
+    thread_persisted = value.get("thread_persisted") is True
     if diagnostic:
         session_state, client_state, attachment_state, provider_state = "COMPLETED_DIAGNOSTIC", "NOT_LAUNCHED", "NOT_APPLICABLE", "READY" if listener_alive else "STOPPED"
         recommended = "STOP_DIAGNOSTIC" if listener_alive else "NONE"
@@ -406,13 +408,29 @@ def _dimensions(value: Mapping[str, Any], listener: Mapping[str, Any] | None,
         session_state, client_state, attachment_state, provider_state, recommended = "DETACHED", "EXITED", "DETACHED", "READY", "ATTACH_OR_STOP"
     else:
         session_state, client_state, attachment_state, provider_state, recommended = "STOPPED", "EXITED_OR_STOPPED", "NOT_APPLICABLE", "STOPPED", "NONE"
+    if diagnostic:
+        lifecycle_action = "STOP_DIAGNOSTIC" if listener_alive else "NONE"
+    elif listener_alive and not client_alive:
+        lifecycle_action = "ATTACH_OR_STOP"
+    elif listener_alive:
+        lifecycle_action = "ATTACH_OR_CONTINUE" if thread_id else "BEGIN_CONTROLLED_MISSION_WORK"
+    elif thread_id and thread_persisted:
+        lifecycle_action = "RESTART_REMOTE_TRANSPORT_AND_RESUME_THREAD"
+    elif thread_id:
+        lifecycle_action = "RECONCILE_CODEX_THREAD_RECOVERY"
+    else:
+        lifecycle_action = "RESTART_REMOTE_TRANSPORT"
     return {"session_state": session_state, "client_state": client_state,
             "listener_state": "READY" if listener_alive else "STOPPED",
             "attachment_state": attachment_state, "provider_state": provider_state,
             "listener_alive": listener_alive, "socket_listening": socket_listening,
-            "recommended_disposition": recommended, "session_next_authorized_action":
-            "ATTACH_OR_STOP" if session_state == "DETACHED" else
-            ("STOP_DIAGNOSTIC" if recommended == "STOP_DIAGNOSTIC" else "BEGIN_CONTROLLED_MISSION_WORK"),
+            "recommended_disposition": recommended, "session_next_authorized_action": lifecycle_action,
+            "transport_liveness": "ALIVE" if listener_alive else "STOPPED",
+            "transport_replacement_required": not listener_alive,
+            "transport_replacement_safe": ownership.get("result") == "PASS",
+            "thread_identity": thread_id, "thread_persisted": thread_persisted,
+            "thread_resume_eligible": bool(thread_id and thread_persisted),
+            "thread_replacement_required": False,
             "ownership_result": ownership.get("result"), "endpoint_uri": endpoint,
             "remote_client_pid": client_pid}
 
@@ -525,6 +543,13 @@ def _inventory_v2(runtime: Path, repository: Path) -> dict[str, Any]:
                       "ownership_result": owner["result"], "ownership": owner,
                       "recommended_disposition": dimensions["recommended_disposition"],
                       "session_next_authorized_action": dimensions["session_next_authorized_action"],
+                      "transport_liveness": dimensions["transport_liveness"],
+                      "transport_replacement_required": dimensions["transport_replacement_required"],
+                      "transport_replacement_safe": dimensions["transport_replacement_safe"],
+                      "thread_identity": dimensions["thread_identity"],
+                      "thread_persisted": dimensions["thread_persisted"],
+                      "thread_resume_eligible": dimensions["thread_resume_eligible"],
+                      "thread_replacement_required": dimensions["thread_replacement_required"],
                       "process_group": (endpoint_listener or {}).get("process_group") or value.get("process_group"),
                       "process_groups": (endpoint_listener or {}).get("process_groups", []),
                       "member_pids": (endpoint_listener or {}).get("member_pids", [listener_pid]),

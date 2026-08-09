@@ -160,7 +160,7 @@ def _baseline_for_invocation(root: Path, runtime: Path, provenance_baseline: str
 
 
 def _resolve_package(root: Path, mission_id: str, runtime: Path, *, existing: Mapping[str, Any] | None = None) -> dict[str, Any]:
-    authority = operational_beta.authority(root)
+    authority = operational_beta.authority(root, include_current_execution=False)
     if not (authority.get("result") == "PASS" and authority.get("authority_framework") == "OPERATION_BETA" and authority.get("authority_integrity") == "PASS" and authority.get("authority_resolution") == "PASS" and authority.get("oa_authority") == "SUPERSEDED"):
         raise ProviderInvocationError("AUTHORITY_FAILURE", "published Operation Beta authority chain failed")
     session = verify_provider_session(root, mission_id, runtime_root=runtime)

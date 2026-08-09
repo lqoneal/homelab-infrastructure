@@ -608,6 +608,32 @@ def resolve(repository: Path | str, mission_id: str, *, runtime_root: Path | str
             "execution_session_id": execution_stage.get("execution_session_id"),
             "next_action": "BEGIN_CONTROLLED_MISSION_WORK",
         })
+        # Execution readiness and Codex runtime readiness are separate axes.
+        # A stopped transport must be recovered (or a broken persisted thread
+        # reconciled) before the controlled-work boundary is operator-actionable.
+        from scripts.lib.emp import codex_adapter
+        codex_session = codex_adapter.current_session(root, mission, runtime_root=runtime)
+        if codex_session:
+            # Use the bounded runtime/thread projection directly.  The richer
+            # status surface also reconciles execution history and would
+            # recurse into this canonical resolver.
+            codex = codex_adapter._result(
+                codex_session, repository=root, runtime_root=runtime)
+            recovery_action = codex.get("runtime_recovery_action")
+            if recovery_action not in {"BEGIN_CONTROLLED_MISSION_WORK", "ATTACH_OR_CONTINUE"}:
+                base.update({
+                    "readiness": "CODEX_RECOVERY_REQUIRED",
+                    "eligibility": "CONTROLLED_MISSION_WORK_BLOCKED_PENDING_CODEX_RECOVERY",
+                    "next_authorized_action": recovery_action,
+                    "next_action": recovery_action,
+                    "codex_recovery": {key: codex.get(key) for key in (
+                        "session_id", "native_codex_thread_id", "runtime_classification",
+                        "transport_liveness", "transport_replacement_required",
+                        "thread_persisted", "thread_resume_eligible", "runtime_recovery_action",
+                    )},
+                })
+                base["blockers"] = list(base.get("blockers") or []) + list(codex.get("blockers") or [])
+                chain[-1]["next_action"] = recovery_action
     except (dispatch_foundation.DispatchFoundationError, provider_session.ProviderSessionError,
             provider_invocation.ProviderInvocationError, execution_start.ExecutionStartError,
             CanonicalLifecycleResolutionError, OSError) as error:

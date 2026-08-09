@@ -9,7 +9,6 @@ required:
   - repository_identity
   - wop_id
   - mission_id
-  - submitter_identity
   - submission_digest
   - validation_summary
   - validation_failures

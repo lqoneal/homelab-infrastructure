@@ -10,6 +10,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import yaml
+
 from scripts.lib.emp import codex_adapter, managed_handoff
 from scripts.lib.emp.production_execution import digest
 
@@ -74,6 +76,24 @@ class ManagedCodexHandoffTests(unittest.TestCase):
 
     def _resolve(self, text: str) -> dict:
         return managed_handoff.resolve_handoff(ROOT, text, runtime_root=self.runtime)
+
+    def _structured(self) -> dict:
+        return {
+            "schema_version": 1, "contract_type": "ZEUS_CODEX_HANDOFF",
+            "request_id": "HANDOFF-REQUEST-001", "request_type": "GATE_CORRECTIVE",
+            "instruction_contract": "docs/procedures/PROC-0004-ENGINEERING_HANDOFF_CONSTRUCTION_PROCEDURE.md",
+            "mission_id": self.execution["mission_id"], "wop_id": self.execution["wop_id"],
+            "gate_id": self.execution["gate_id"], "operation": "OPERATION-BETA",
+            "mode": "DEVELOPMENT", "mutation_policy": "WORKSPACE_BOUNDED",
+            "objective": "Perform the bounded corrective.",
+            "authoritative_inputs": [{"locator": "mission", "role": "authority", "required": True}],
+            "preconditions": ["Resolve current state."], "allowed_actions": ["Inspect and edit bounded files."],
+            "prohibited_actions": ["Start execution."], "required_checks": ["Verify projection."],
+            "acceptance_criteria": ["Projection converges."], "evidence_requirements": ["Record results."],
+            "stop_boundary": "OPERATOR_REVIEW",
+            "next_action_policy": {"on_success": "SPECIFY_NEXT_GATE", "on_blocked": "OPERATOR_REVIEW"},
+            "natural_language_context": "Only novel reasoning belongs here.",
+        }
 
     def test_handoff_only_resolves_repository_operation_mission_wop_gate_and_baseline(self):
         value = self._resolve("""# bounded handoff\n\nThis is a read-only handoff.\n""")
@@ -178,6 +198,25 @@ class ManagedCodexHandoffTests(unittest.TestCase):
         self.assertEqual("PRESERVED", value["execution"]["execution_authority"])
         self.assertFalse(value["delivery"]["execution_started"])
         self.assertNotIn("publication_authority", value)
+
+    def test_structured_handoff_is_schema_validated_and_non_authoritative(self):
+        value = self._resolve(yaml.safe_dump(self._structured(), sort_keys=False))
+        self.assertEqual("PASS", value["result"])
+        self.assertEqual("PASS", value["handoff_contract"]["validation"])
+        self.assertEqual("NONE", value["handoff_contract"]["execution_authority"])
+        self.assertEqual("NO", value["handoff_authority_source"])
+        self.assertFalse(value["mutation_applied"])
+
+    def test_structured_handoff_missing_required_field_fails_closed(self):
+        contract = self._structured()
+        contract.pop("stop_boundary")
+        value = self._resolve(yaml.safe_dump(contract, sort_keys=False))
+        self.assertEqual("BLOCKED", value["result"])
+        self.assertEqual("HANDOFF_CONTRACT_SCHEMA_INVALID", value["blocker"])
+
+    def test_structured_handoff_replay_is_deterministic(self):
+        text = yaml.safe_dump(self._structured(), sort_keys=False)
+        self.assertEqual(self._resolve(text), self._resolve(text))
 
     def test_multiple_execution_candidates_block(self):
         second = dict(self.execution, execution_id="EXECUTION-CODEX-HANDOFF-002")

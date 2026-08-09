@@ -221,8 +221,10 @@ provider process or begin mission work. The subsequent
 idle execution session and stops at `READY_FOR_CONTROLLED_EXECUTION` with
 `BEGIN_CONTROLLED_MISSION_WORK` as the next action. `execution-start begin`
 remains a separate operator-reviewed work boundary. Before controlled work it
-reconciles the bound Codex history; a required supersession creates one
-preserved successor rather than resuming a non-authoritative session in place.
+reconciles the bound Codex history and the independently modeled Codex
+transport and persisted thread. A stopped transport is replaced and the same
+native thread is resumed; it is not a reason to supersede the Zeus session or
+create another conversation.
 Only a bound provider thread/turn acknowledgement can set
 `mission_work_started`; repository work remains false until repository-specific
 evidence exists. Both transitions are mission-scoped, receipt-backed, and
@@ -240,17 +242,21 @@ do not satisfy this contract. Missing, rejected, conflicting, and
 indeterminate histories remain fail-closed.
 
 The managed provider recovery contract is deliberately distinct from that
-lifecycle action. Before replacing a stopped session, Zeus proves the old
-broker/control endpoint is no longer live and preserves its record and event
-journal. The successor receives a new Codex-session identity while retaining
-the immutable mission, WOP, execution, execution-session, provider-session,
-and provider identities. Its STDIO broker publishes a handshake and endpoint
-ownership receipt; Zeus probes that endpoint after launch and again immediately
-before each bounded thread/turn request. Provider death, transport reset,
-foreign/stale socket ownership, missing handshake, or missing thread/turn IDs
-fails closed and reports runtime recovery separately from the lifecycle next
-action. A pending thread receipt may be resumed, but it is not mission-work
-evidence until the bound turn acknowledgement is received.
+lifecycle action. Zeus preserves three identities: durable Zeus execution and
+session IDs; ephemeral transport IDs such as broker/provider PIDs, sockets, and
+remote endpoints; and the native persisted Codex thread ID. Before replacing a
+stopped transport, Zeus proves that no authoritative live owner exists and that
+the persisted thread is readable under its bound `CODEX_HOME`. The replacement
+broker publishes an ownership receipt, after which Zeus calls native
+`thread/read` and `thread/resume` and verifies that Codex returned the same
+thread ID and repository binding. Native `thread/fork` is used only for an
+explicit fork-required decision and must preserve `forkedFromId` lineage.
+Missing, corrupt, mismatched, ambiguously owned, or provider-rejected threads
+fail closed; failed resume never falls back to `thread/start`. New-thread
+creation requires explicit canonical authority. Local STDIO and remote
+transport disconnects follow the same thread rules, and replay detects an
+already authoritative transport instead of launching a duplicate. Transport
+recovery alone never sets mission or repository work flags.
 
 `stop` is exceptional execution control for an active or plausibly hung WOP,
 not a routine lifecycle step. Zeus targets only the exact recorded execution

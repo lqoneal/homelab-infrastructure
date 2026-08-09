@@ -1,0 +1,39 @@
+schema_version: 1
+contract_type: ZEUS_CODEX_HANDOFF
+request_id: ZEUS-EXECUTION-LIFECYCLE-GATE1-CONVERGENCE-001
+request_type: GATE_CORRECTIVE
+instruction_contract: docs/procedures/PROC-0004-ENGINEERING_HANDOFF_CONSTRUCTION_PROCEDURE.md
+mission_id: ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01
+wop_id: WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001
+gate_id: LIFECYCLE-AUTHORITY-CONVERGENCE
+operation: OPERATION-BETA
+mode: DEVELOPMENT
+mutation_policy: WORKSPACE_BOUNDED
+objective: Converge Operation Beta and mission-native current execution projections without advancing controlled mission work.
+authoritative_inputs:
+  - locator: engineering/work-orders/WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001/source-wop.md
+    role: mission_work_order
+    required: true
+  - locator: engineering/docs/architecture/ZEUS-MISSION-PROJECTION-SPECIFICATION.md
+    role: projection_contract
+    required: true
+preconditions:
+  - Verify repository identity and HEAD/origin/EOS parity.
+allowed_actions:
+  - Modify repository projection code, tests, controlled documents, and evidence within WOP Gate 1.
+prohibited_actions:
+  - BEGIN_CONTROLLED_MISSION_WORK
+  - Supersede or create a provider/Codex session.
+required_checks:
+  - Verify mission and operation JSON projections converge.
+acceptance_criteria:
+  - Current executable mission, WOP, lifecycle state, gate mapping, and lifecycle next action agree.
+evidence_requirements:
+  - Record before/after projections, root cause, tests, replay, and remaining Gate 4 work.
+stop_boundary: OPERATOR_REVIEW
+next_action_policy:
+  on_success: QUALIFY_GATE_4_SPECIFICATION
+  on_blocked: OPERATOR_REVIEW
+provider_metadata:
+  provider: zeus-local-loneal-01
+natural_language_context: Current execution and future recommendation are separate coordinates.

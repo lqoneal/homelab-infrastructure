@@ -14,6 +14,7 @@ from typing import Any
 
 from scripts.lib.eos import operational_beta
 from scripts.lib.emp.stage1_runtime import Stage1Error, Stage1Runtime
+from scripts.lib.wop.canonical_package import canonical_identity_records
 
 
 PACKAGE_ROOTS = (
@@ -29,6 +30,15 @@ def _package_candidates(root: Path, mission_id: str) -> list[Path]:
     expected_wop = f"WOP-{mission_id}-FOUNDATION-001"
     names = (expected_wop, mission_id)
     candidates: list[Path] = []
+    # Canonical WOP packages are the identity owner for native Beta missions.
+    # The current published revision is submitted through the existing Stage 1
+    # runtime; this resolver does not create a second package index or state.
+    catalog = canonical_identity_records(root)
+    for item in catalog["records"]:
+        if str(item.get("mission_id", "")).upper() == card["mission_id"]:
+            candidate = Path(str(item["source"])).resolve()
+            if candidate.is_file():
+                candidates.append(candidate)
     for relative_root in PACKAGE_ROOTS:
         directory = root / relative_root
         for name in names:

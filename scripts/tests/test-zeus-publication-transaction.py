@@ -83,10 +83,15 @@ class PublicationTransactionTests(unittest.TestCase):
         verified = controller.verify(self.repo, record["publication_id"], runtime_root=self.runtime, run_validators=False)
         self.assertEqual(verified["result"], "PASS")
         staged = controller.stage(self.repo, record["publication_id"], runtime_root=self.runtime)
-        self.assertEqual(staged["current_state"], "STAGED_SET_VERIFIED")
+        self.assertEqual(staged["current_state"], "CANDIDATE_STAGED")
+        self.assertEqual(staged["next_authorized_action"], "VERIFY_STAGED_SET")
+        self.assertNotIn("STAGED_SET_VERIFIED", staged["milestones"])
         replay = controller.stage(self.repo, record["publication_id"], runtime_root=self.runtime)
         self.assertEqual(replay["publication_id"], staged["publication_id"])
         self.assertEqual(run(self.repo, "git", "diff", "--cached", "--name-only").stdout.splitlines(), ["candidate.txt"])
+        verified_staged = controller.verify_staged(self.repo, record["publication_id"], runtime_root=self.runtime)
+        self.assertEqual(verified_staged["current_state"], "STAGED_SET_VERIFIED")
+        self.assertEqual(verified_staged["next_authorized_action"], "COMMIT_PUBLICATION")
         committed = controller.commit(self.repo, record["publication_id"], runtime_root=self.runtime)
         commit_replay = controller.commit(self.repo, record["publication_id"], runtime_root=self.runtime)
         self.assertEqual(committed["commit_id"], commit_replay["commit_id"])
@@ -227,6 +232,81 @@ class PublicationTransactionTests(unittest.TestCase):
             controller.stage(self.repo, record["publication_id"], runtime_root=self.runtime)
         self.assertEqual(error.exception.code, "UNEXPECTED_STAGED_PATH")
 
+    def test_stage_recovers_exact_index_after_transaction_persistence_failure(self) -> None:
+        record = controller.prepare(self.repo, self.mission, runtime_root=self.runtime, manifest=self.manifest)
+        controller.verify(self.repo, record["publication_id"], runtime_root=self.runtime, run_validators=False)
+        with patch.object(controller, "_save", side_effect=OSError("simulated persistence failure")):
+            with self.assertRaises(controller.PublicationTransactionError) as error:
+                controller.stage(self.repo, record["publication_id"], runtime_root=self.runtime)
+        self.assertEqual(error.exception.code, "PUBLICATION_TRANSACTION_PERSISTENCE_FAILED")
+        persisted = controller._load_transaction(self.runtime, record["publication_id"])
+        self.assertEqual(persisted["current_state"], "PREPUBLICATION_VERIFIED")
+        self.assertEqual(run(self.repo, "git", "diff", "--cached", "--name-only").stdout.splitlines(), ["candidate.txt"])
+        recovered = controller.stage(self.repo, record["publication_id"], runtime_root=self.runtime)
+        self.assertEqual(recovered["current_state"], "CANDIDATE_STAGED")
+        self.assertEqual(recovered["next_authorized_action"], "VERIFY_STAGED_SET")
+        receipt = json.loads(Path(recovered["milestones"]["CANDIDATE_STAGED"]["receipt_path"]).read_text(encoding="utf-8"))
+        self.assertEqual(receipt["staged_tree_digest"], recovered["candidate_digest"])
+
+    def test_stage_recovery_rejects_changed_staged_content(self) -> None:
+        record = controller.prepare(self.repo, self.mission, runtime_root=self.runtime, manifest=self.manifest)
+        controller.verify(self.repo, record["publication_id"], runtime_root=self.runtime, run_validators=False)
+        (self.repo / "candidate.txt").write_text("changed-index-content\n", encoding="utf-8")
+        run(self.repo, "git", "add", "--", "candidate.txt")
+        (self.repo / "candidate.txt").write_text("candidate\n", encoding="utf-8")
+        with self.assertRaises(controller.PublicationTransactionError) as error:
+            controller.stage(self.repo, record["publication_id"], runtime_root=self.runtime)
+        self.assertEqual(error.exception.code, "STAGED_CONTENT_MISMATCH")
+        persisted = controller._load_transaction(self.runtime, record["publication_id"])
+        self.assertEqual(persisted["current_state"], "PREPUBLICATION_VERIFIED")
+
+    def test_stage_recovery_rejects_missing_candidate_path(self) -> None:
+        (self.repo / "second.txt").write_text("second\n", encoding="utf-8")
+        manifest = json.loads(self.manifest.read_text(encoding="utf-8"))
+        manifest["candidate_paths"] = ["candidate.txt", "second.txt"]
+        self.manifest.write_text(json.dumps(manifest), encoding="utf-8")
+        record = controller.prepare(self.repo, self.mission, runtime_root=self.runtime, manifest=self.manifest)
+        controller.verify(self.repo, record["publication_id"], runtime_root=self.runtime, run_validators=False)
+        run(self.repo, "git", "add", "--", "candidate.txt")
+        with self.assertRaises(controller.PublicationTransactionError) as error:
+            controller.stage(self.repo, record["publication_id"], runtime_root=self.runtime)
+        self.assertEqual(error.exception.code, "STAGED_CANDIDATE_PATH_MISSING")
+
+    def test_stage_rejects_ambiguous_persistence_without_index_mutation(self) -> None:
+        record = controller.prepare(self.repo, self.mission, runtime_root=self.runtime, manifest=self.manifest)
+        controller.verify(self.repo, record["publication_id"], runtime_root=self.runtime, run_validators=False)
+        persisted = controller._load_transaction(self.runtime, record["publication_id"])
+        persisted["staged_tree_digest"] = persisted["candidate_digest"]
+        controller._save(self.runtime, persisted)
+        with self.assertRaises(controller.PublicationTransactionError) as error:
+            controller.stage(self.repo, record["publication_id"], runtime_root=self.runtime)
+        self.assertEqual(error.exception.code, "AMBIGUOUS_STAGE_RECOVERY_STATE")
+        self.assertEqual(run(self.repo, "git", "diff", "--cached", "--name-only").stdout, "")
+
+    def test_status_rejects_persisted_staged_digest_mismatch(self) -> None:
+        record = controller.prepare(self.repo, self.mission, runtime_root=self.runtime, manifest=self.manifest)
+        controller.verify(self.repo, record["publication_id"], runtime_root=self.runtime, run_validators=False)
+        staged = controller.stage(self.repo, record["publication_id"], runtime_root=self.runtime)
+        staged["staged_tree_digest"] = "0" * 64
+        controller._save(self.runtime, staged)
+        failed = controller.status(self.repo, record["publication_id"], runtime_root=self.runtime)
+        self.assertEqual(failed["result"], "FAIL")
+        self.assertEqual(failed["candidate_authority_revalidation"]["blocked"][0]["code"], "STAGED_TREE_DIGEST_MISMATCH")
+
+    def test_staged_digest_uses_index_bytes_and_detects_poststage_tamper(self) -> None:
+        record = controller.prepare(self.repo, self.mission, runtime_root=self.runtime, manifest=self.manifest)
+        controller.verify(self.repo, record["publication_id"], runtime_root=self.runtime, run_validators=False)
+        staged = controller.stage(self.repo, record["publication_id"], runtime_root=self.runtime)
+        (self.repo / "candidate.txt").write_text("worktree-only-change\n", encoding="utf-8")
+        status = controller.status(self.repo, record["publication_id"], runtime_root=self.runtime)
+        self.assertEqual(status["result"], "PASS")
+        self.assertEqual(status["staged_tree_digest"], staged["candidate_digest"])
+        run(self.repo, "git", "add", "--", "candidate.txt")
+        failed = controller.status(self.repo, record["publication_id"], runtime_root=self.runtime)
+        self.assertEqual(failed["result"], "FAIL")
+        self.assertEqual(failed["blockers"][0]["code"], "STALE_CLASSIFICATION")
+        self.assertEqual(failed["candidate_authority_revalidation"]["blocked"][0]["code"], "STAGED_CONTENT_MISMATCH")
+
     def test_mission_projection_ignores_stale_transaction(self) -> None:
         first = controller.prepare(self.repo, self.mission, runtime_root=self.runtime, manifest=self.manifest)
         (self.repo / "candidate.txt").write_text("candidate-v2\n", encoding="utf-8")
@@ -241,6 +321,7 @@ class PublicationTransactionTests(unittest.TestCase):
         record = controller.prepare(self.repo, self.mission, runtime_root=self.runtime, manifest=self.manifest)
         controller.verify(self.repo, record["publication_id"], runtime_root=self.runtime, run_validators=False)
         controller.stage(self.repo, record["publication_id"], runtime_root=self.runtime)
+        controller.verify_staged(self.repo, record["publication_id"], runtime_root=self.runtime)
         committed = controller.commit(self.repo, record["publication_id"], runtime_root=self.runtime)
         pushed = controller.push(self.repo, record["publication_id"], runtime_root=self.runtime)
         replay = controller.push(self.repo, record["publication_id"], runtime_root=self.runtime)

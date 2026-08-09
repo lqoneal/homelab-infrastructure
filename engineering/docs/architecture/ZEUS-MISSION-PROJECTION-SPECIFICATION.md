@@ -273,6 +273,26 @@ selectors. A reconciled historical record cannot supersede a live binding due
 to timestamp, sequence, filesystem order, or discovery order. Equal-authority
 ambiguity fails closed.
 
+Managed Codex lifecycle state has three non-interchangeable identities:
+
+1. Zeus execution identity: mission, WOP, execution, execution-session,
+   provider, provider-session, and `CODEX-SESSION-*` wrapper IDs.
+2. Codex transport identity: the replaceable local broker/app-server process,
+   STDIO connection, websocket listener, socket, endpoint, and related PIDs.
+3. Codex persisted-thread identity: the native thread ID and its rollout/index
+   state under the bound `CODEX_HOME`.
+
+Transport liveness never proves thread validity or invalidity. A dead transport
+plus a valid persisted thread resolves to
+`RESTART_CODEX_TRANSPORT_AND_RESUME_THREAD`; native `thread/resume` must return
+the same thread ID. A valid thread is forked only under an explicit
+fork-required decision using native `thread/fork`, and the new thread must name
+its native parent. Missing, corrupt, incompatible, cross-boundary, or
+concurrently owned threads resolve to `THREAD_RECOVERY_BLOCKED`. Resume failure
+cannot silently create a thread, and new-thread creation requires explicit
+canonical recovery authority. These rules are transport-neutral for local
+STDIO and remote app-server connections and replay-safe.
+
 Machine continuation uses the structured contract at
 `engineering/oversight/work-contract.schema.yaml`:
 

@@ -1,0 +1,38 @@
+{
+  "authority": "EXTERNAL_ONLY_NON_AUTHORITATIVE_SOURCE",
+  "canonical": {
+    "gate_id": "OB-CAGF-G01",
+    "mission_id": "CAGF-01",
+    "package_digest": "79a9fb9ce9017eb66322bbdcb30be26cdcc014fd295517ed028a04a97b67f7b0",
+    "package_id": "OB-CAGF-G01-CANONICAL-PACKAGE-002",
+    "revision": 2,
+    "source_digest": "e49058f4a4134477ff7700e024da42bdb53ea2a5fe637a764b4b29923ba27d4d",
+    "wop_id": "WOP-OB-CAGF-G01-CANONICAL-001"
+  },
+  "identity_mapping": {
+    "gate_id": "mission.yaml:canonical_gate_id",
+    "mission_id": "mission.yaml:mission_id",
+    "revision": "mission.yaml:revision",
+    "wop_id": "mission.yaml:wop_id"
+  },
+  "publication_boundary": "preserved; no submission, admission, execution, or publication mutation",
+  "requirements": [
+    "CAGF-G01-R01",
+    "CAGF-G01-R02",
+    "CAGF-G01-R03",
+    "CAGF-G01-R04",
+    "CAGF-G01-R05",
+    "CAGF-G01-R06",
+    "CAGF-G01-R07",
+    "CAGF-G01-R08",
+    "CAGF-G01-R09",
+    "CAGF-G01-R10",
+    "CAGF-G01-R11",
+    "CAGF-G01-R12"
+  ],
+  "schema_version": 1,
+  "stage1": {
+    "package_id": "canonical-79a9fb9ce9017eb66322bbdc",
+    "tree_digest": "7cf63343589b481170323f60deb8603aa6aa7b87ace6397fda90592d190f1703"
+  }
+}

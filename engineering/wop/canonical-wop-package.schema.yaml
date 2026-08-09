@@ -20,6 +20,20 @@ properties:
   package_identity:
     type: object
     required: [package_id, wop_id, mission_id, gate_id, revision, baseline_commit]
+    properties:
+      revision: {type: integer, minimum: 1}
+      lifecycle: {type: string}
+      submission: {type: string}
+  revision_lineage:
+    type: object
+    required: [revision_state, previous_revision, previous_package_digest, historical_revision_1_preserved]
+    properties:
+      previous_revision: {type: integer, minimum: 1}
+      previous_package_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+      historical_revision_1_preserved: {const: true}
+  lifecycle_binding:
+    type: object
+    required: [operation_id, mission_id, wop_id, gate_id, wop_published, wop_submitted, next_authorized_action]
   authority_binding:
     type: object
     required: [authority_source]

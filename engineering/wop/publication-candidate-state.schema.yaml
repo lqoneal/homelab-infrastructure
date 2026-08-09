@@ -1,0 +1,22 @@
+schema_version: 1
+title: Zeus Publication Candidate Qualification and Publication State
+type: object
+required:
+  - schema_version
+  - record_type
+  - result
+  - mission_id
+  - wop_id
+  - candidate_manifest
+  - qualification_state
+  - publication_state
+properties:
+  schema_version: {type: integer, const: 1}
+  record_type: {type: string, const: zeus-publication-candidate-state}
+  result: {type: string, const: PASS}
+  mission_id: {type: string, minLength: 1}
+  wop_id: {type: string, pattern: '^WOP-.+'}
+  candidate_manifest: {type: string, minLength: 1}
+  qualification_state: {type: string, enum: [QUALIFIED, BLOCKED, HISTORICAL_ONLY]}
+  publication_state: {type: string, enum: [NOT_PERFORMED, QUALIFIED_UNPUBLISHED, ALREADY_PUBLISHED, HISTORICAL_ONLY]}
+additionalProperties: false

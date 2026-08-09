@@ -212,7 +212,13 @@ def _verify_admission(path: Path, runtime: Path, repository: Path) -> dict[str, 
             transaction_digest != _digest(unsigned)):
         raise BootstrapBoundaryError("admission transaction is not valid for bootstrap")
     identity = resolve(repository)
-    lineage = resolve_provenance_lineage(repository, value.get("repository_baseline", ""))
+    lineage = resolve_provenance_lineage(
+        repository,
+        value.get("repository_baseline", ""),
+        runtime_root=runtime,
+        mission_id=str(value.get("mission_id") or ""),
+        wop_id=str(value.get("wop_id") or ""),
+    )
     if value.get("operation") != "BETA" or lineage.get("result") != "PASS":
         raise BootstrapBoundaryError("admission Operation or repository baseline is invalid")
     if lineage.get("baseline_relationship") not in {"IDENTICAL", "ANCESTOR"}:

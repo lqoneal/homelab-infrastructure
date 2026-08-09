@@ -472,6 +472,12 @@ def _result(session: Mapping[str, Any], *, read_only: bool) -> dict[str, Any]:
             "logs": session.get("log_path"), "artifacts": {"session": session.get("path"),
             "events": session.get("event_directory")}, "blockers": [], "read_only": read_only,
             "thread_id": session.get("thread_id"), "turn_state": session.get("turn_state", "IDLE"),
+            "thread_identity": session.get("native_thread_id") or session.get("thread_id"),
+            "thread_persisted": session.get("thread_persisted"),
+            "thread_resume_eligible": session.get("thread_resume_eligible"),
+            "thread_replacement_required": session.get("thread_replacement_required", False),
+            "transport_liveness": session.get("transport_liveness") or ("ALIVE" if listener_alive else "STOPPED"),
+            "transport_replacement_required": session.get("transport_replacement_required", not listener_alive),
             "attached": bool(alive and state in ACTIVE_STATES), "session_mode": "OPERATOR_INTERACTIVE",
             "mission_bound": bool(session.get("mission_id")), "execution_bound": bool(session.get("execution_id")),
             "repository_bound": True, "authority_mode": session.get("authority_mode"),
@@ -1233,6 +1239,19 @@ def attach(repository: Path | str, mission_id: str | None = None, *, session_id:
         managed = codex_adapter._existing(_runtime(Path(repository).resolve(), runtime_root), str(mission_id).upper())
         if managed and managed.get("state") == "READY" and _alive(managed.get("provider_pid")) and managed.get("control_socket"):
             return shell(repository, str(mission_id).upper(), approval=True, runtime_root=runtime_root)
+        if managed:
+            lifecycle = codex_adapter.thread_lifecycle(
+                repository, managed, runtime_root=runtime_root)
+            raise InteractiveCodexError(
+                "MANAGED_TRANSPORT_NOT_ATTACHABLE",
+                "managed Codex transport must be recovered before attach",
+                next_action=str(lifecycle["runtime_recovery_action"]),
+                details={key: lifecycle.get(key) for key in (
+                    "runtime_classification", "transport_liveness",
+                    "transport_replacement_required", "thread_identity",
+                    "thread_persisted", "thread_resume_eligible",
+                )},
+            )
     if not session.get("process_alive"):
         raise InteractiveCodexError("SESSION_NOT_ATTACHABLE", "no live interactive session is attachable",
                                     next_action="START_INTERACTIVE_SESSION")

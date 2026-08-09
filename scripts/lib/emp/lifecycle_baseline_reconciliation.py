@@ -132,6 +132,9 @@ def reconcile(repository: Path | str, runtime: Path | str, mission: Mapping[str,
         root,
         Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")),
         mission_provenance_baseline=str(mission["receipt_provenance_baseline"]),
+        runtime_root=runtime_root,
+        mission_id=str(mission["mission_id"]),
+        wop_id=str(mission["wop_id"]),
     )
     if eos.get("result") != "PASS" or eos.get("published_head") != origin or eos.get("current_head") != head:
         raise LifecycleBaselineReconciliationError("RECONCILIATION_PUBLICATION_NOT_VERIFIED", "live repository/EOS publication projection is not synchronized")
@@ -269,6 +272,9 @@ def verify_current(
         Path(repository),
         str(expected.get("receipt_provenance_baseline", expected.get("repository_baseline", ""))),
         current_published_baseline=current_published_baseline,
+        runtime_root=runtime,
+        mission_id=str(expected.get("mission_id") or ""),
+        wop_id=str(expected.get("wop_id") or ""),
     )
     if live.get("result") != "PASS" or live.get("baseline_relationship") not in {"IDENTICAL", "ANCESTOR"}:
         raise LifecycleBaselineReconciliationError(
@@ -279,12 +285,18 @@ def verify_current(
         Path(repository),
         Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")),
         mission_provenance_baseline=str(expected.get("receipt_provenance_baseline", expected.get("repository_baseline", ""))),
+        runtime_root=runtime,
+        mission_id=str(expected.get("mission_id") or ""),
+        wop_id=str(expected.get("wop_id") or ""),
     )
-    if eos.get("result") != "PASS" or eos.get("eos_baseline") != current_published_baseline:
+    if eos.get("result") != "PASS":
         raise LifecycleBaselineReconciliationError(
             "RECONCILIATION_EOS_PROJECTION_MISMATCH",
-            "live EOS baseline does not match the current published repository projection",
+            "live repository/EOS baseline is neither converged nor an authorized publication transition",
         )
+    live_published_baseline = str(
+        eos.get("published_head") or eos.get("eos_baseline") or current_published_baseline
+    )
     current: list[tuple[Path, dict[str, Any], dict[str, Any]]] = []
     historical: list[tuple[Path, dict[str, Any], dict[str, Any]]] = []
     for path, record in _current_records(Path(runtime).resolve(), str(expected["mission_id"]).upper()):
@@ -292,7 +304,7 @@ def verify_current(
             record,
             repository=Path(repository).resolve(),
             expected=expected,
-            current_published_baseline=current_published_baseline,
+            current_published_baseline=live_published_baseline,
         )
         item = (path, record, result)
         if result["classification"] == "CURRENT_CANONICAL":
@@ -311,6 +323,10 @@ def verify_current(
         "current_receipt_count": len(current),
         "historical_receipt_count": len(historical),
         "current_baseline_source": "LIVE_GIT_ORIGIN_EOS_PROJECTION",
+        "current_authorized_baseline": eos.get("current_authorized_baseline"),
+        "current_published_baseline": live_published_baseline,
+        "baseline_state_classification": eos.get("baseline_state_classification"),
+        "authorized_publication_transition": eos.get("authorized_publication_transition", False),
     }
     if current:
         path, record, result = current[0]

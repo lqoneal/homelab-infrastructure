@@ -154,7 +154,7 @@ def _verify_set(runtime: Path, found: dict[str, list[tuple[Path, dict[str, Any]]
 
 
 def _resolve(root: Path, mission_id: str, runtime: Path, existing: Mapping[str, Any] | None = None) -> dict[str, Any]:
-    authority = operational_beta.authority(root)
+    authority = operational_beta.authority(root, include_current_execution=False)
     if not (authority.get("result") == "PASS" and authority.get("authority_framework") == "OPERATION_BETA"
             and authority.get("authority_integrity") == "PASS" and authority.get("authority_resolution") == "PASS"
             and authority.get("oa_authority") == "SUPERSEDED"):

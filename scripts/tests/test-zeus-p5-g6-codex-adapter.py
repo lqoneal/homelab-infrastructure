@@ -10,6 +10,7 @@ import socket
 import subprocess
 import tempfile
 import time
+import threading
 import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -38,7 +39,8 @@ class CodexAdapterTests(unittest.TestCase):
             "status": "managed.status", "logs": "managed.logs", "artifacts": "managed.artifacts",
             "start": "managed.start", "resume": "managed.resume", "stop": "managed.stop",
             "shell": "interactive.shell", "interactive": "interactive.shell", "attach": "interactive.attach",
-            "reconcile": "reconciliation.reconcile", "supersede": "managed.supersede",
+            "reconcile": "reconciliation.reconcile", "accept-reconciliation": "managed.accept-reconciliation",
+            "supersede": "managed.supersede",
         })
 
     def test_status_is_read_only_and_not_started_before_operator_action(self):
@@ -96,7 +98,8 @@ class CodexAdapterTests(unittest.TestCase):
             value = codex_adapter.reconcile_session_history(ROOT, MISSION, runtime_root=self.runtime, session=session)
         self.assertEqual(value["history_disposition"], "EVENTS_NON_AUTHORITATIVE")
         self.assertEqual(value["mission_work_actually_occurred"], "NO")
-        self.assertTrue(value["session_replacement_safe"])
+        self.assertTrue(value["history_safe_for_thread_recovery"])
+        self.assertNotIn("session_replacement_safe", value)
         self.assertTrue(value["read_only"])
 
     def test_reconcile_history_confirms_work_only_with_authoritative_execution_evidence(self):
@@ -112,7 +115,7 @@ class CodexAdapterTests(unittest.TestCase):
             value = codex_adapter.reconcile_session_history(ROOT, MISSION, runtime_root=self.runtime, session=session)
         self.assertEqual(value["history_disposition"], "HISTORICAL_WORK_CONFIRMED")
         self.assertEqual(value["mission_work_actually_occurred"], "YES")
-        self.assertFalse(value["session_replacement_safe"])
+        self.assertFalse(value["history_safe_for_thread_recovery"])
 
     def test_reconcile_history_is_read_only_and_preserves_projection(self):
         session = dict(self._session_fixture(), event_directory=str(self.runtime / "codex-events/CODEX-SESSION-BOUND"))
@@ -190,15 +193,17 @@ for line in sys.stdin:
             "artifacts": {"execution_start_transaction": {"path": str(self.runtime / "execution-start-transactions/EXECUTION-BOUND.json")}},
         }
 
-    def _session_fixture(self):
+    def _session_fixture(self, *, session_id="CODEX-SESSION-BOUND", pid=None, provider_pid=None, **extra):
         control_socket = self.runtime / "control.sock"
         control_socket.touch()
+        pid = os.getpid() if pid is None else pid
+        provider_pid = os.getpid() if provider_pid is None else provider_pid
         return {
-            "session_id": "CODEX-SESSION-BOUND", "mission_id": MISSION, "execution_id": "EXECUTION-BOUND",
-            "provider_id": codex_adapter.PROVIDER_ID, "provider_pid": os.getpid(), "pid": os.getpid(),
+            "session_id": session_id, "mission_id": MISSION, "execution_id": "EXECUTION-BOUND",
+            "provider_id": codex_adapter.PROVIDER_ID, "provider_pid": provider_pid, "pid": pid,
             "execution_session_id": "EXECUTION-SESSION-BOUND", "provider_session_id": "PROVIDER-SESSION-BOUND",
             "control_socket": str(control_socket), "mission_work_started": False,
-            "repository_work_started": False, "state": "READY", "path": str(self.runtime / "codex-sessions/CODEX-SESSION-BOUND.json"),
+            "repository_work_started": False, "state": "READY", "path": str(self.runtime / "codex-sessions/CODEX-SESSION-BOUND.json"), **extra,
         }
 
     def test_missing_control_socket_is_not_a_live_provider_session(self):
@@ -207,6 +212,57 @@ for line in sys.stdin:
         value = codex_adapter.runtime_liveness(session)
         self.assertEqual(value["session_liveness"], "ALIVE")
         self.assertFalse(codex_adapter._provider_control_ready(session))
+
+    def test_control_probe_rejects_foreign_socket_owner(self):
+        with tempfile.TemporaryDirectory(prefix="zeus-owner-probe-") as temporary:
+            control = Path(temporary) / "control.sock"
+            server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            try:
+                server.bind(str(control)); server.listen(1)
+            except PermissionError:
+                server.close()
+                self.skipTest("sandbox does not permit Unix-domain socket bind")
+
+            def serve():
+                client, _ = server.accept()
+                try:
+                    client.recv(4096)
+                    client.sendall((json.dumps({"jsonrpc": "2.0", "id": "zeus-transport-probe-CODEX-SESSION-BOUND",
+                                                "result": {"result": "PASS", "session_id": "UNRELATED-SESSION",
+                                                           "broker_pid": os.getpid(), "provider_pid": os.getpid(),
+                                                           "provider_alive": True}}) + "\n").encode())
+                finally:
+                    client.close()
+
+            thread = threading.Thread(target=serve, daemon=True); thread.start()
+            try:
+                with self.assertRaises(codex_adapter.CodexAdapterError) as raised:
+                    codex_adapter._probe_control_transport(str(control), "CODEX-SESSION-BOUND",
+                                                            expected_broker_pid=os.getpid(), expected_provider_pid=os.getpid())
+                self.assertEqual(raised.exception.code, "CONTROL_SOCKET_OWNERSHIP_MISMATCH")
+            finally:
+                server.close(); thread.join(timeout=1)
+
+    def test_pending_thread_is_reused_before_turn_start(self):
+        execution = self._execution_fixture()
+        session = self._session_fixture(pending_controlled_work={
+            "request_id": "zeus-controlled-work-EXECUTION-BOUND", "thread_id": "THREAD-PENDING",
+            "thread_response": {"jsonrpc": "2.0", "id": "zeus-controlled-work-EXECUTION-BOUND",
+                                 "result": {"thread": {"id": "THREAD-PENDING"}}},
+        })
+        requests = []
+        with patch("scripts.lib.emp.execution_start.verify", return_value=execution), \
+             patch.object(codex_adapter, "_authority", return_value={"integrity": "PASS"}), \
+             patch.object(codex_adapter, "_existing", return_value=session), \
+             patch.object(codex_adapter, "_provider_control_ready", return_value=True), \
+             patch.object(codex_adapter, "_control_request", side_effect=lambda _socket, request, **_: (
+                 requests.append(request) or {"jsonrpc": "2.0", "id": request["id"],
+                                               "result": {"turn": {"id": "TURN-PENDING"}}})), \
+             patch.object(codex_adapter, "_process_alive", return_value=True):
+            value = codex_adapter.begin_controlled_mission_work(ROOT, MISSION, approval=True, runtime_root=self.runtime)
+        self.assertEqual(["turn/start"], [request["method"] for request in requests])
+        self.assertEqual("THREAD-PENDING", value["execution_evidence"]["thread_id"])
+        self.assertEqual("TURN-PENDING", value["execution_evidence"]["turn_id"])
 
     def test_start_rematerializes_runtime_when_pids_exist_but_control_socket_is_missing(self):
         package = dict(self._package_execution_fixture(), package_digest="package-digest")
@@ -228,6 +284,30 @@ for line in sys.stdin:
             value = codex_adapter.start(ROOT, MISSION, approval=True, runtime_root=self.runtime, _resume=True)
         self.assertEqual(value["duplicate_codex_session"], "RESUMED")
         self.assertEqual(value["provider_session_id"], "PROVIDER-SESSION-BOUND")
+
+    def test_resume_preserves_authoritative_work_flags_after_interruption(self):
+        package = dict(self._package_execution_fixture(), package_digest="package-digest")
+        session = dict(self._session_fixture(), session_disposition="CURRENT", package_digest="package-digest",
+                       log_path=str(self.runtime / "codex.log"), mission_work_started=True,
+                       repository_work_started=False, execution_monitoring_active=True)
+        Path(session["control_socket"]).unlink()
+        diagnostics = {
+            "provider_pid": os.getpid(), "command": ["disposable-broker"],
+            "environment": {"digest": "environment-digest"},
+            "control_socket": str(self.runtime / "rematerialized-control.sock"),
+            "remote_endpoint": None,
+        }
+        Path(diagnostics["control_socket"]).touch()
+        with patch.object(codex_adapter, "_package", return_value=package), \
+             patch.object(codex_adapter, "_existing", return_value=session), \
+             patch.object(codex_adapter, "_launch_handshake", return_value=(type("P", (), {"pid": os.getpid()})(), diagnostics)), \
+             patch.object(codex_adapter, "_append_event"), \
+             patch.object(codex_adapter, "_process_alive", return_value=True):
+            value = codex_adapter.start(ROOT, MISSION, approval=True, runtime_root=self.runtime, _resume=True)
+        self.assertEqual(value["duplicate_codex_session"], "RESUMED")
+        self.assertEqual(value["state"], "ACTIVE")
+        self.assertTrue(value["mission_work_started"])
+        self.assertFalse(value["repository_work_started"])
 
     def _package_execution_fixture(self, **overrides):
         value = self._execution_fixture()
@@ -305,10 +385,68 @@ for line in sys.stdin:
         self.assertEqual(value["session_id"], "CODEX-SESSION-BOUND")
         self.assertEqual(value["execution_state"], "EXECUTING")
         self.assertTrue(value["mission_work_started"])
+        self.assertTrue(value["execution_evidence"]["provider_acknowledged"])
+        self.assertEqual(value["execution_evidence"]["turn_id"], "TURN-BOUND")
         self.assertEqual(value["replay"], "APPLIED")
         self.assertEqual(replay["replay"], "IDEMPOTENT")
         self.assertFalse(replay["mutation_applied"])
         self.assertEqual(len(requests), 2)
+
+    def test_controlled_work_requires_approval_before_any_provider_mutation(self):
+        execution = self._execution_fixture()
+        with patch("scripts.lib.emp.execution_start.verify", return_value=execution), \
+             patch.object(codex_adapter, "_existing", return_value=self._session_fixture()), \
+             patch.object(codex_adapter, "_authority") as authority:
+            with self.assertRaises(codex_adapter.CodexAdapterError) as raised:
+                codex_adapter.begin_controlled_mission_work(ROOT, MISSION, runtime_root=self.runtime)
+        self.assertEqual(raised.exception.code, "OPERATOR_APPROVAL_REQUIRED")
+        authority.assert_not_called()
+
+    def test_controlled_work_does_not_supersede_wrapper_for_stopped_transport(self):
+        execution = self._execution_fixture()
+        old = self._session_fixture(pid=999999991, provider_pid=999999992)
+        replacement = self._session_fixture(session_id="CODEX-SESSION-REPLACEMENT",
+                                             pid=os.getpid(), provider_pid=os.getpid(),
+                                             supersedes_session=old["session_id"])
+        requests = []
+
+        def control(_socket, request, **_kwargs):
+            requests.append(request)
+            if request["method"] == "thread/start":
+                return {"jsonrpc": "2.0", "id": request["id"], "result": {"thread": {"id": "THREAD-REPLACEMENT"}}}
+            return {"jsonrpc": "2.0", "id": request["id"], "result": {"turn": {"id": "TURN-REPLACEMENT"}}}
+
+        with patch("scripts.lib.emp.execution_start.verify", return_value=execution), \
+             patch.object(codex_adapter, "_authority", return_value={"integrity": "PASS"}), \
+             patch.object(codex_adapter, "_existing", side_effect=[old, replacement]), \
+             patch.object(codex_adapter, "_provider_control_ready", side_effect=[False, True, True, True, True]), \
+             patch.object(codex_adapter, "reconcile_session_history", return_value={
+                 "history_safe_for_thread_recovery": True,
+                 "history_disposition": "EVENTS_NON_AUTHORITATIVE"}), \
+             patch.object(codex_adapter, "supersede_session") as supersede, \
+             patch.object(codex_adapter, "_control_request", side_effect=control):
+            value = codex_adapter.begin_controlled_mission_work(ROOT, MISSION, approval=True, runtime_root=self.runtime)
+
+        supersede.assert_not_called()
+        self.assertEqual(value["session_id"], old["session_id"])
+        self.assertNotIn("session_supersession", value)
+        self.assertEqual(value["execution_evidence"]["codex_session_id"], old["session_id"])
+        self.assertEqual(len(requests), 2)
+
+    def test_provider_turn_without_identity_cannot_start_mission_work(self):
+        execution = self._execution_fixture(); session = self._session_fixture()
+        with patch("scripts.lib.emp.execution_start.verify", return_value=execution), \
+             patch.object(codex_adapter, "_authority", return_value={"integrity": "PASS"}), \
+             patch.object(codex_adapter, "_existing", return_value=session), \
+             patch.object(codex_adapter, "_control_request", side_effect=lambda _socket, request, **_: {
+                 "jsonrpc": "2.0", "id": request["id"],
+                 "result": {"thread": {"id": "THREAD-BOUND"}} if request["method"] == "thread/start" else {"turn": {}},
+             }), \
+             patch.object(codex_adapter, "_process_alive", return_value=True):
+            with self.assertRaises(codex_adapter.CodexAdapterError) as raised:
+                codex_adapter.begin_controlled_mission_work(ROOT, MISSION, approval=True, runtime_root=self.runtime)
+        self.assertEqual(raised.exception.code, "TURN_ID_MISSING")
+        self.assertFalse((self.runtime / codex_adapter.ACTIVE_TRANSITION_DIR / "EXECUTION-BOUND.json").exists())
 
     def test_bound_active_transition_rejects_mismatched_provider(self):
         execution = self._execution_fixture(); session = dict(self._session_fixture(), provider_id="OTHER")
@@ -318,6 +456,16 @@ for line in sys.stdin:
             with self.assertRaises(codex_adapter.CodexAdapterError) as raised:
                 codex_adapter.begin_controlled_mission_work(ROOT, MISSION, approval=True, runtime_root=self.runtime)
         self.assertEqual(raised.exception.code, "PROVIDER_BINDING_MISMATCH")
+
+    def test_bound_active_transition_does_not_clear_preexisting_repository_work(self):
+        execution = self._execution_fixture()
+        session = self._session_fixture(repository_work_started=True)
+        with patch("scripts.lib.emp.execution_start.verify", return_value=execution), \
+             patch.object(codex_adapter, "_authority", return_value={"integrity": "PASS"}), \
+             patch.object(codex_adapter, "_existing", return_value=session):
+            with self.assertRaises(codex_adapter.CodexAdapterError) as raised:
+                codex_adapter.begin_controlled_mission_work(ROOT, MISSION, approval=True, runtime_root=self.runtime)
+        self.assertEqual(raised.exception.code, "REPOSITORY_WORK_STATE_CONFLICT")
 
     def test_bound_active_transition_rejects_wrong_state_bindings_and_blockers(self):
         cases = (

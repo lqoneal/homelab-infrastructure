@@ -21,7 +21,7 @@ class BetaControllerTests(unittest.TestCase):
                                   text=True, capture_output=True, check=False)
 
     def test_operation_verify_is_integrity_bound(self):
-        result = self.run_zeus("operation", "verify", "BETA")
+        result = self.run_zeus("operation", "verify", "OPERATION-BETA")
         self.assertEqual(result.returncode, 0, result.stderr)
         value = json.loads(result.stdout)
         self.assertEqual(value["result"], "PASS")
@@ -39,14 +39,18 @@ class BetaControllerTests(unittest.TestCase):
             self.assertEqual(json.loads(state.stdout)["family"], family)
 
     def test_beta_next_action_advances_after_zdcl_closeout(self):
-        result = self.run_zeus("operation", "next-action", "BETA", "--json")
+        result = self.run_zeus("operation", "next-action", "OPERATION-BETA", "--json")
         self.assertEqual(result.returncode, 0, result.stderr)
         value = json.loads(result.stdout)
         self.assertEqual(value["current_platform_mission"]["mission_id"], "BETA-04")
-        self.assertIsNone(value["current_executable_mission"])
+        self.assertEqual(value["current_executable_mission"], "ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01")
+        self.assertEqual(value["current_wop"], "WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001")
+        self.assertEqual(value["current_lifecycle_state"], "READY_FOR_CONTROLLED_EXECUTION")
+        self.assertEqual(value["current_gate_mapping"]["operation_gate_id"], "OB-ZEUS-G01")
         self.assertEqual(value["recommended_mission"], "CAGF-01")
-        self.assertIn("CAGF-01", value["next_authorized_action"])
-        self.assertIn("separately authorized WOP", value["next_authorized_action"])
+        self.assertEqual(value["future_recommended_mission"], "CAGF-01")
+        self.assertEqual(value["next_authorized_action"], "BEGIN_CONTROLLED_MISSION_WORK")
+        self.assertEqual(value["runtime_recovery_action"], "SUPERSEDE_CODEX_SESSION")
 
     def test_human_and_json_share_mission_terms(self):
         structured = self.run_zeus("next-action", "--json")
@@ -55,7 +59,7 @@ class BetaControllerTests(unittest.TestCase):
         self.assertEqual(human.returncode, 0, human.stderr)
         value = json.loads(structured.stdout)
         self.assertIn(f"Current Platform Mission: {value['current_platform_mission']['mission_id']}", human.stdout)
-        self.assertIn("Current Executable Mission: NONE", human.stdout)
+        self.assertIn(f"Current Executable Mission: {value['current_executable_mission']}", human.stdout)
         self.assertIn(f"Recommended Mission: {value['recommended_mission']}", human.stdout)
         self.assertIn(f"Next Authorized Action: {value['next_authorized_action']}", human.stdout)
         self.assertEqual(human.stderr, "")

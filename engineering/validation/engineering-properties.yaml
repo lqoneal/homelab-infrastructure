@@ -154,7 +154,7 @@ properties:
     validation_strategy: [Evidence Traceability Analysis, Static Inspection]
     checks:
       - {kind: contains, locator: scripts/lib/emp/orchestration.py, pattern: "progress|state", result_group: invariant_results}
-      - {kind: contains, locator: scripts/lib/emp/reasoning.py, pattern: "deviation|branch", result_group: evidence_sufficiency_results}
+      - {kind: contains, locator: scripts/lib/emp/reasoning.py, pattern: "recommendation|unsupported|normalized", result_group: evidence_sufficiency_results}
 
   - <<: *defaults
     property_id: EP-EMP-SYNCHRONIZATION-RECOVERY-CLOSEOUT

@@ -1,0 +1,10 @@
+{
+  "candidate_manifest": "engineering/evidence/operation-beta/zeus-publication-candidate-qualification-state-authority-corrective-001/PUBLICATION-CANDIDATE-MANIFEST.md",
+  "mission_id": "ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01",
+  "publication_state": "NOT_PERFORMED",
+  "qualification_state": "QUALIFIED",
+  "record_type": "zeus-publication-candidate-state",
+  "result": "PASS",
+  "schema_version": 1,
+  "wop_id": "WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001"
+}

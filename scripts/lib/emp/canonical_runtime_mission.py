@@ -139,6 +139,8 @@ def discover(repository: Path | str, mission_id: str) -> dict[str, Any]:
     mission_work_started = bool(codex_stage.get("mission_work_started", execution_stage.get("mission_work_started", False)))
     repository_work_started = bool(codex_stage.get("repository_work_started", execution_stage.get("repository_work_started", False)))
     execution_monitoring_active = codex_stage.get("execution_monitoring") == "ACTIVE"
+    if codex_stage.get("state") == "RECONCILED_HISTORICAL":
+        next_action = codex_stage.get("next_authorized_action")
     return {
         "result": "PASS", "mission": "DISCOVERABLE", "mission_id": mission_id,
         "wop_id": submission.get("wop_id"), "operation": "BETA",
@@ -163,6 +165,7 @@ def discover(repository: Path | str, mission_id: str) -> dict[str, Any]:
         "provider_session": session_stage,
         "provider_invocation": invocation_stage,
         "execution_start": execution_stage, "codex": codex_stage,
+        "legacy_reconciliation": codex_stage.get("legacy_reconciliation"),
         "artifacts": {name: {"path": str(path), "digest": (value.get("transaction_digest") if name == "bootstrap_transaction" else value.get("artifact_digest"))} for name, (path, value) in artifacts.items()},
     }
 

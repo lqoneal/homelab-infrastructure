@@ -13,25 +13,32 @@ coordinates. They are not native Operation Beta mission identifiers and do not
 independently select, authorize, admit, or execute work. `P5-G6` remains an
 historical execution/qualification evidence coordinate with accepted capability
 traceability; no native Beta mission binding is established by that identifier.
-The unfinished P5 coordinates remain unbound pending a separately authorized
-capability and mission disposition. Native Beta mission selection continues
-through the published Operation Beta mission model.
+The unfinished `P5-G9` and `P5-G10` coordinates remain unbound pending a
+separately authorized capability and mission disposition. `P5-G7` and
+`P5-G8` now have qualified capability traceability through the current Zeus
+lifecycle mission, without making the P5 labels execution authorities. Native
+Beta mission selection continues through the published Operation Beta mission
+model.
 
 ## Current Operation Beta development position
 
 The current native development context is `OPERATION-BETA` with platform
 context `BETA-04` (`Runtime readiness and controller activation`). `BETA-04`
-is the current platform context, not a currently executable mission. The
-current native recommended mission is `CAGF-01`; it is eligible after
-`ZDCL-01`, but it has no WOP, is not selected, and is not executable. A
-recommendation remains advisory and does not create mission or execution
-authority. The current executable mission is `NONE`.
+is the current platform context, not the receipt-backed executable mission.
+The current executable mission is
+`ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01`, bound to
+`WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001` at
+`READY_FOR_CONTROLLED_EXECUTION`. Mission and repository work remain held;
+the lifecycle next action is `BEGIN_CONTROLLED_MISSION_WORK`. The future
+native recommended mission is `CAGF-01`; its recommendation is advisory and
+does not create mission or execution authority.
 
 The P5 labels below preserve Zeus maturity-phase capability traceability. They
-are not an active required continuation of `P5-G6` and do not override the
-Operation Beta mission model. `P5-G6` is historical accepted/published
-evidence with no native Beta binding. `P5-G7` through `P5-G10` remain unbound
-planning coordinates; numbering does not create a Beta mission dependency.
+do not override the Operation Beta mission model. `P5-G6` is historical
+accepted/published evidence with no native Beta binding. `P5-G7` and `P5-G8`
+are satisfied by qualified lifecycle recovery work under the current native
+mission/WOP; `P5-G9` and `P5-G10` remain unbound planning coordinates.
+Numbering does not create a Beta mission dependency.
 
 Operation Beta ordering permits multiple available missions and multiple
 eligible missions where individual prerequisites pass. Roadmap order alone
@@ -63,7 +70,7 @@ The distinction is normative:
 - **A mission** is an independently authoritative bounded increment. Operation
   membership, roadmap position, recommendation, selection, or completion of
   another mission does not grant it authority.
-- **A planning coordinate** such as `P5-G7` is non-authoritative until a
+- **A planning coordinate** such as `P5-G9` is non-authoritative until a
   separately governed mission disposition exists.
 - **A WOP** is executable only under its own mission authority, admission, and
   execution controls.
@@ -81,8 +88,8 @@ the family list does not create a mission hierarchy.
 The recommended development model is capability-converged and technically
 dependency-driven:
 
-0. Preserve and reuse the qualified Zeus/ZDCL foundation and historical P5-G6
-   evidence; do not rerun accepted P5-G6 work.
+0. Preserve and reuse the qualified Zeus/ZDCL foundation and P5-G6 through
+   P5-G8 evidence; do not rerun accepted or qualified G01 work.
 1. Qualify canonical source ownership and deterministic projection capability.
    `CAGF-01` is the current preferred producer, not the source of another
    mission's authority.
@@ -288,7 +295,7 @@ Capabilities:
 
 Current reconciled disposition:
 
-PARTIALLY_SATISFIED
+SATISFIED
 
 Historical roadmap gate reference; not the current native Beta position:
 
@@ -316,7 +323,7 @@ Capabilities:
 
 Current reconciled disposition:
 
-PARTIALLY_SATISFIED
+SATISFIED
 
 ---
 
@@ -340,7 +347,7 @@ Capabilities:
 
 Current reconciled disposition:
 
-PARTIALLY_SATISFIED
+SATISFIED
 
 ---
 
@@ -572,9 +579,15 @@ PHASE_TOTAL=12
 NATIVE_OPERATION_CURRENT=OPERATION-BETA
 CURRENT_PLATFORM_CONTEXT=BETA-04
 CURRENT_CANONICAL_DEVELOPMENT_POSITION=OPERATION-BETA_UNIFIED_CAPABILITY_ARCHITECTURE
-CURRENT_RECOMMENDED_MISSION=CAGF-01
-CURRENT_EXECUTABLE_MISSION=NONE
-CANONICAL_GATE_CURRENT=NONE_NATIVE_BETA_GATE
+FUTURE_RECOMMENDED_MISSION=CAGF-01
+CURRENT_EXECUTABLE_MISSION=ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01
+CURRENT_WOP=WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001
+CURRENT_LIFECYCLE_STATE=READY_FOR_CONTROLLED_EXECUTION
+CURRENT_GATE_MAPPING=WOP_GATE_4_CONTROLLED-EXECUTION-AND-RECOVERY/OB-ZEUS-G01
+MISSION_WORK_STARTED=false
+REPOSITORY_WORK_STARTED=false
+LIFECYCLE_NEXT_ACTION=BEGIN_CONTROLLED_MISSION_WORK
+CANONICAL_GATE_CURRENT=OB-ZEUS-G01
 CANONICAL_GATE_TOTAL=10
 
 P5_G1=SATISFIED
@@ -582,26 +595,27 @@ P5_G2=SATISFIED
 P5_G3=SATISFIED
 P5_G4=SATISFIED
 P5_G5=SATISFIED
-P5_G6=PARTIALLY_SATISFIED
-P5_G7=PARTIALLY_SATISFIED
-P5_G8=PARTIALLY_SATISFIED
+P5_G6=SATISFIED
+P5_G7=SATISFIED
+P5_G8=SATISFIED
 P5_G9=UNSATISFIED
 P5_G10=UNSATISFIED
 
-NEXT_CANONICAL_DEVELOPMENT_WORK=CAGF-01
-NEXT_CANONICAL_GATE=NONE_UNBOUND_P5_NAMESPACE
+NEXT_CANONICAL_DEVELOPMENT_WORK=BEGIN_CONTROLLED_MISSION_WORK
+NEXT_FUTURE_ROADMAP_MISSION=CAGF-01
+NEXT_CANONICAL_GATE=OB-ZEUS-G02_AFTER_FORMAL_G01_CLOSE
 
 P5_G6_DISPOSITION=HISTORICAL_ACCEPTED_PUBLISHED_EVIDENCE_NO_NATIVE_BETA_BINDING
-P5_G7_DISPOSITION=UNBOUND_PLANNING_COORDINATE
-P5_G8_DISPOSITION=UNBOUND_PLANNING_COORDINATE
+P5_G7_DISPOSITION=QUALIFIED_LIFECYCLE_RECOVERY_CAPABILITY_CURRENT_NATIVE_MISSION
+P5_G8_DISPOSITION=QUALIFIED_PROVIDER_RECOVERY_CAPABILITY_CURRENT_NATIVE_MISSION
 P5_G9_DISPOSITION=UNBOUND_PLANNING_COORDINATE
 P5_G10_DISPOSITION=UNBOUND_PLANNING_COORDINATE
 
 ## Native mission integration points
 
-`CAGF-01` is an eligible and recommended native Beta mission with dependency
-`ZDCL-01`, which is complete. No WOP exists, it is not selected, and it is not
-executable. `EPE-01` is planned and currently blocked by the missing qualified
+`CAGF-01` is the future recommended native Beta mission with dependency
+`ZDCL-01`, which is complete. Its canonical WOP candidate exists but remains
+unsubmitted, deferred, and non-executable. `EPE-01` is planned and currently blocked by the missing qualified
 canonical source/projection capability. `CAGF-01` is the preferred/current
 producer in the native planning projection, but its mission authority is
 independent and does not authorize EPE-01. An equivalent qualified producer

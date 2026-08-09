@@ -97,6 +97,42 @@ WOP before execution; conversation text is not a substitute authority record.
 `engctl execution validate-handoff <file>` validates this concise form and
 proves that the repository supplies the remaining execution context.
 
+## Canonical Zeus/Codex Structured Handoff
+
+Future Zeus/Codex engineering handoffs use the schema at
+`engineering/oversight/codex-handoff-contract.schema.yaml`. This is the
+machine-readable form of the repository-driven handoff model; it is not an
+Engineering Work Order, Mission Contract, admission, execution authorization,
+provider binding, session binding, approval, or recovery decision.
+
+The construction rule is:
+
+```text
+STABLE INSTRUCTIONS -> reference this controlled procedure and the governing WOP/Mission Contract
+TASK-SPECIFIC FACTS -> schema-valid YAML or JSON handoff payload
+NOVEL REASONING -> concise natural_language_context only when required
+```
+
+The payload carries identifiers, bounded objective, policy, inputs,
+preconditions, permitted/prohibited actions, checks, acceptance and evidence
+requirements, stop boundary, and next-action policy. Zeus must re-resolve all
+authority and current-state assertions from canonical repository/runtime
+sources. The payload cannot grant missing authority or change provider,
+transport, execution, session, approval, recovery, or supersession semantics.
+
+The canonical direct CLI-safe inspection path is file or stdin:
+
+```text
+scripts/zeus codex handoff HANDOFF.yaml --json
+scripts/zeus codex handoff - --json < HANDOFF.yaml
+```
+
+For long payloads use a repository file, stdin, or a shell heredoc feeding
+stdin. Do not place the payload in a fragile shell-quoted prompt. The current
+Codex/Zeus interface does not define a prompt-file option; unsupported syntax
+must not be invented. Historical handoff evidence is preserved in its original
+format and is not mechanically rewritten.
+
 ## Scope
 
 This procedure governs:

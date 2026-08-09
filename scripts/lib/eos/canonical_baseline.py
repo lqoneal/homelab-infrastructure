@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from scripts.lib.emp.repository_identity import resolve as resolve_repository_identity
+from scripts.lib.emp.repository_projection import project as project_repository
 from scripts.lib.eos.state_sync import SynchronizationError, frontmatter, render, validate
 
 
@@ -120,6 +121,9 @@ def resolve_provenance_lineage(
     provenance_baseline: str,
     *,
     current_published_baseline: str | None = None,
+    runtime_root: Path | str | None = None,
+    mission_id: str | None = None,
+    wop_id: str | None = None,
 ) -> dict[str, Any]:
     """Validate immutable receipt provenance against the current publication.
 
@@ -148,9 +152,15 @@ def resolve_provenance_lineage(
             "errors": [{"code": error.code, "message": str(error)}],
         }
 
-    head, head_error = _git(repository, "rev-parse", "HEAD")
-    published, published_error = _git(repository, "rev-parse", "origin/main")
-    target = current_published_baseline or published
+    projection = project_repository(
+        repository,
+        runtime_root=runtime_root,
+        mission_id=mission_id,
+        wop_id=wop_id,
+    )
+    head = projection.get("head")
+    published = projection.get("origin_main")
+    target = current_published_baseline or head
     try:
         target = _commit(target, "CURRENT_PUBLISHED_BASELINE_MISSING", "current published baseline")
     except BaselineResolutionError as error:
@@ -162,10 +172,10 @@ def resolve_provenance_lineage(
             "errors": [{"code": error.code, "message": str(error)}],
         }
 
-    if head_error or published_error or head != published or target != published:
+    if projection.get("result") != "PASS" or target != head:
         errors.append({
             "code": "PUBLICATION_PARITY_FAILURE",
-            "message": "current repository HEAD, origin/main, and published baseline are not equal",
+            "message": "current repository baseline is neither converged nor an authorized publication transition",
         })
 
     commit_lineage = resolve_commit_lineage(repository, provenance, target)
@@ -176,6 +186,10 @@ def resolve_provenance_lineage(
         "result": "PASS" if not errors else "FAIL",
         "provenance_baseline": provenance,
         "current_published_baseline": target,
+        "published_head": published,
+        "current_authorized_baseline": head,
+        "baseline_state_classification": projection.get("baseline_state_classification"),
+        "authorized_publication_transition": projection.get("authorized_publication_transition", False),
         "baseline_relationship": relationship,
         "errors": errors,
     }
@@ -188,41 +202,29 @@ def resolve(
     *,
     mission_provenance_baseline: str | None = None,
     runtime_identity: Mapping[str, Any] | None = None,
+    runtime_root: Path | str | None = None,
+    mission_id: str | None = None,
+    wop_id: str | None = None,
 ) -> dict[str, Any]:
     """Resolve one read-only baseline contract for platform and mission views."""
     root, workspace = Path(root).resolve(), Path(eos_workspace).resolve()
     identity = resolve_repository_identity(root)
-    head, head_error = _git(root, "rev-parse", "HEAD")
-    published, published_error = _git(root, "rev-parse", "origin/main")
-    branch, branch_error = _git(root, "branch", "--show-current")
+    projection = project_repository(
+        root,
+        workspace,
+        project,
+        runtime_root=runtime_root,
+        mission_id=mission_id,
+        wop_id=wop_id,
+    )
+    head = projection.get("head")
+    published = projection.get("origin_main")
+    branch = projection.get("branch")
     errors: list[dict[str, str]] = []
-    if head_error or published_error or branch_error or branch != "main" or head != published:
-        errors.append({"code": "PUBLICATION_PARITY_FAILURE", "message": "HEAD, origin/main, and published main are not equal"})
-
-    eos_baseline = ""
-    eos_identity_ok = False
-    manifest_ok = False
-    try:
-        eos_id = frontmatter(workspace / "eos/state/EOS-ID.md")
-        eos_state = frontmatter(workspace / "eos/state/EOS-STATE.md")
-        eos_manifest = frontmatter(workspace / "eos/state/EOS-MANIFEST.md")
-        eos_baseline = _commit(eos_state.get("repository_commit"), "EOS_BASELINE_MISMATCH", "EOS baseline")
-        eos_identity_ok = (
-            eos_id.get("repository_root") == identity["repository_path"]
-            and eos_id.get("repository_remote") == identity["repository_identity"]
-            and eos_state.get("project") == project
-            and eos_manifest.get("project") == project
-        )
-        manifest_ok = not validate(render(root, workspace, project))
-    except (OSError, UnicodeError, SynchronizationError, BaselineResolutionError) as error:
-        errors.append({"code": getattr(error, "code", "EOS_BASELINE_MISMATCH"), "message": str(error)})
-
-    if eos_baseline and eos_baseline != head:
-        errors.append({"code": "EOS_BASELINE_MISMATCH", "message": "EOS baseline does not equal current repository HEAD"})
-    if not eos_identity_ok:
-        errors.append({"code": "REPOSITORY_IDENTITY_MISMATCH", "message": "EOS repository identity does not match canonical repository"})
-    if not manifest_ok:
-        errors.append({"code": "EOS_BASELINE_MISMATCH", "message": "EOS projection is not consistent with the repository"})
+    if projection.get("result") != "PASS":
+        errors.extend({"code": "PUBLICATION_PARITY_FAILURE", "message": message}
+                      for message in projection.get("errors", ["repository baseline is invalid"]))
+    eos_baseline = projection.get("eos_baseline") or ""
 
     runtime_ok = True
     if runtime_identity is not None:
@@ -235,24 +237,15 @@ def resolve(
     provenance = None
     relationship = "NOT_PROVIDED"
     if mission_provenance_baseline is not None:
-        try:
-            provenance = _commit(mission_provenance_baseline, "MISSION_PROVENANCE_BASELINE_MISSING", "mission provenance baseline")
-            reachable = subprocess.run(["git", "-C", str(root), "cat-file", "-e", f"{provenance}^{{commit}}"], capture_output=True, check=False).returncode == 0
-            if not reachable:
-                errors.append({"code": "MISSION_PROVENANCE_BASELINE_MISSING", "message": "mission provenance commit is not reachable in repository history"})
-                relationship = "UNREACHABLE"
-            elif not head or subprocess.run(["git", "-C", str(root), "merge-base", "--is-ancestor", provenance, published], capture_output=True, check=False).returncode != 0:
-                errors.append({"code": "MISSION_PROVENANCE_NOT_ANCESTOR", "message": "mission provenance baseline is not an ancestor of current publication"})
-                relationship = "UNRELATED"
-            else:
-                relationship = "IDENTICAL" if provenance == published else "ANCESTOR"
-        except BaselineResolutionError as error:
-            errors.append({"code": error.code, "message": str(error)})
+        lineage = resolve_commit_lineage(root, mission_provenance_baseline, str(head or ""))
+        provenance = lineage.get("provenance_baseline")
+        relationship = lineage.get("baseline_relationship", "INVALID")
+        errors.extend(lineage.get("errors", []))
 
     checks = {
         "repository_identity": "PASS" if identity else "FAIL",
-        "publication_parity": "PASS" if head and head == published and branch == "main" else "FAIL",
-        "eos_parity": "PASS" if eos_baseline and eos_baseline == head else "FAIL",
+        "publication_parity": "PASS" if projection.get("result") == "PASS" else "FAIL",
+        "eos_parity": "PASS" if projection.get("eos_parity") is True else "FAIL",
         "runtime_binding": "PASS" if runtime_ok else "FAIL",
         "mission_provenance": "PASS" if mission_provenance_baseline is None or relationship in {"IDENTICAL", "ANCESTOR"} else "FAIL",
     }
@@ -260,6 +253,11 @@ def resolve(
         "result": "PASS" if not errors else "FAIL", "repository_identity": "PASS" if identity else "FAIL",
         "identity": identity,
         "current_head": head, "published_head": published, "eos_baseline": eos_baseline,
+        "current_authorized_baseline": head,
+        "head_origin_parity": projection.get("head_origin_parity"),
+        "baseline_state_classification": projection.get("baseline_state_classification"),
+        "authorized_publication_transition": projection.get("authorized_publication_transition", False),
+        "publication_transition": projection.get("publication_transition"),
         "mission_provenance_baseline": provenance,
         "provenance_baseline": provenance,
         "mission_baseline_relationship": "EQUAL" if relationship == "IDENTICAL" else relationship,

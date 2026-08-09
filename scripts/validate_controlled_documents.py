@@ -207,10 +207,18 @@ def semantic_profile_for(path: Path, metadata: dict[str, Any] | None = None) -> 
         or name == "zeus-canonical-development-roadmap.md"
     ):
         return "Roadmap"
+    if relative in {
+        "engineering/docs/architecture/zeus-wop-submission-procedure.md",
+        "engineering/docs/operations/zeus-development-mode.md",
+        "engineering/docs/operations/zeus-execution-lifecycle-procedure.md",
+    }:
+        return "Procedure"
     if name == "gate-specification.yaml":
         return "Gate Specification"
     if name == "immutable-wop.yaml":
         return "WOP"
+    if name == "canonical-wop-package.yaml":
+        return "Canonical WOP"
     if name == "verification.md" and "/gates/" in relative:
         return "Operator Verification Guide"
     if "completion-report" in name:
@@ -220,6 +228,22 @@ def semantic_profile_for(path: Path, metadata: dict[str, Any] | None = None) -> 
         if profile.lower() in classification.lower():
             return profile
     return None
+
+
+def is_generated_or_historical_domain_artifact(path: Path) -> bool:
+    """Exclude generated fixtures and immutable historical records from the current scan."""
+    try:
+        relative = str(path.relative_to(ROOT)).lower()
+    except ValueError:
+        relative = str(path).lower()
+    return (
+        relative.startswith("engineering/evidence/")
+        or relative.startswith("engineering/work-orders/gh-zeus-oa-certification-001/")
+        or (
+            relative.startswith("engineering/work-orders/")
+            and Path(relative).name in {"immutable-wop.yaml", "roadmap.md"}
+        )
+    )
 
 
 CONCEPT_ALIASES = {
@@ -1133,9 +1157,12 @@ def main() -> int:
                                 metadata = loaded
                         relative = str(path.relative_to(ROOT)).lower()
                         registered_domain_path = (
-                            path.name.lower()
-                            in {"roadmap.md", "gate-specification.yaml", "immutable-wop.yaml"}
-                            or (path.name.lower() == "verification.md" and "/gates/" in relative)
+                            not is_generated_or_historical_domain_artifact(path)
+                            and (
+                                path.name.lower()
+                                in {"roadmap.md", "gate-specification.yaml", "immutable-wop.yaml"}
+                                or (path.name.lower() == "verification.md" and "/gates/" in relative)
+                            )
                         )
                         if metadata.get("semantic_validation_profile") or registered_domain_path:
                             targets.append(path)

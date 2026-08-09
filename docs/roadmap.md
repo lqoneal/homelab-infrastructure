@@ -16,6 +16,21 @@ The Beta charter, authority model, and mission roadmap are:
 
 The remaining content in this document is historical or subsystem-specific roadmap material. It does not supersede the frozen Alpha milestone or the published Beta authority chain.
 
+## Current roadmap traceability
+
+The current planning authority is the Operation Beta roadmap and its governing
+charter and authority model. This document is a repository index and
+historical continuity record; it does not independently authorize execution.
+Current planning references are:
+
+- `engineering/docs/architecture/OPERATION-BETA-ROADMAP.md`
+- `engineering/docs/operations/OPERATION-BETA-CHARTER.md`
+- `engineering/docs/architecture/OPERATION-BETA-AUTHORITY-MODEL.md`
+- `engineering/operations/operation-beta-transition.md`
+
+Historical mission and WOP records below remain immutable evidence and are not
+current execution authority.
+
 ## Historical Mission — Zeus Operational Alpha
 
 Zeus Operational Alpha is the current authoritative Homelab engineering

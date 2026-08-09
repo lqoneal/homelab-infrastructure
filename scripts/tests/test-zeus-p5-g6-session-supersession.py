@@ -49,9 +49,11 @@ class SessionSupersessionTests(unittest.TestCase):
         self.temp.cleanup()
 
     def reconciliation(self, **changes):
-        value = {"result": "PASS", "history_disposition": "EVENTS_NON_AUTHORITATIVE",
+        value = {"result": "PASS", "history_disposition": "NO_WORK_EVENTS",
                  "mission_work_actually_occurred": "NO", "repository_work_actually_occurred": "NO",
-                 "session_replacement_safe": True, "session_supersession_required": True}
+                 "history_safe_for_thread_recovery": True,
+                 "reconciliation_required": False,
+                 "reconciled_projection": {"mission_work_started": False, "repository_work_started": False}}
         value.update(changes)
         return value
 
@@ -102,11 +104,11 @@ class SessionSupersessionTests(unittest.TestCase):
 
     def test_liveness_change_between_checks_fails_closed_with_evidence(self):
         stopped = {"runtime_process_present": False, "provider_process_present": False,
-                   "runtime_classification": "STALE_ORPHANED_RUNTIME",
+                   "runtime_classification": "TRANSPORT_STOPPED",
                    "runtime_process_identity": {"process_identity_digest": None},
                    "provider_process_identity": {"process_identity_digest": None}}
         live = {"runtime_process_present": True, "provider_process_present": True,
-                "runtime_classification": "LIVE_PROVIDER_SESSION",
+                "runtime_classification": "TRANSPORT_LIVE_IDLE",
                 "runtime_process_identity": {"process_identity_digest": "runtime-live"},
                 "provider_process_identity": {"process_identity_digest": "provider-live"}}
         with patch.object(codex_adapter, "reconcile_session_history", return_value=self.reconciliation()), \
@@ -120,7 +122,7 @@ class SessionSupersessionTests(unittest.TestCase):
 
     def test_stable_live_runtime_remains_protected(self):
         live = {"runtime_process_present": True, "provider_process_present": True,
-                "runtime_classification": "LIVE_PROVIDER_SESSION",
+                "runtime_classification": "TRANSPORT_LIVE_IDLE",
                 "runtime_process_identity": {"process_identity_digest": "runtime-live"},
                 "provider_process_identity": {"process_identity_digest": "provider-live"}}
         with patch.object(codex_adapter, "reconcile_session_history", return_value=self.reconciliation()), \
@@ -140,7 +142,7 @@ class SessionSupersessionTests(unittest.TestCase):
                     with self.assertRaises(codex_adapter.CodexAdapterError) as raised:
                         codex_adapter.supersede_session(ROOT, MISSION, OLD, runtime_root=self.runtime)
                     self.assertEqual(raised.exception.code, expected)
-        with patch.object(codex_adapter, "reconcile_session_history", return_value=self.reconciliation(history_disposition="INDETERMINATE", session_replacement_safe=False)):
+        with patch.object(codex_adapter, "reconcile_session_history", return_value=self.reconciliation(history_disposition="INDETERMINATE", history_safe_for_thread_recovery=False)):
             with self.assertRaises(codex_adapter.CodexAdapterError) as raised:
                 codex_adapter.supersede_session(ROOT, MISSION, OLD, runtime_root=self.runtime)
             self.assertEqual(raised.exception.code, "AMBIGUOUS_HISTORY")
@@ -252,6 +254,21 @@ class ZeusSupersessionCliTests(unittest.TestCase):
             zeus.ROOT, MISSION, OLD, reason="NON_AUTHORITATIVE_RECONCILED_HISTORY",
             runtime_root=Path(self.temp.name),
         )
+
+    def test_history_reconciliation_acceptance_has_distinct_cli_contract(self):
+        result = {"result": "PASS", "decision": "ACCEPTED", "receipt": {"replay": "APPLIED"}}
+        with patch.object(zeus.codex_adapter, "accept_reconciliation", return_value=result) as accept:
+            code, value = self.invoke("accept-reconciliation", MISSION, "--session", OLD, "--approve")
+        self.assertEqual(code, 0)
+        self.assertEqual(value, result)
+        accept.assert_called_once_with(
+            zeus.ROOT, MISSION, OLD, runtime_root=Path(self.temp.name), decision="ACCEPTED"
+        )
+
+    def test_history_reconciliation_acceptance_requires_operator_approval(self):
+        code, value = self.invoke("accept-reconciliation", MISSION, "--session", OLD)
+        self.assertEqual(code, 78)
+        self.assertEqual(value["blockers"][0]["code"], "OPERATOR_APPROVAL_REQUIRED")
 
     def test_missing_approval_and_session_fail_at_cli_boundary(self):
         code, value = self.invoke("supersede", MISSION, "--session", OLD)

@@ -35,6 +35,7 @@ class SemanticValidationTests(unittest.TestCase):
             "Gate Specification",
             "Operator Verification Guide",
             "Completion Report",
+            "Canonical WOP",
         }
         self.assertEqual(expected, set(catalog["profiles"]))
         criteria = catalog["criteria"]
@@ -165,6 +166,18 @@ class SemanticValidationTests(unittest.TestCase):
             )
             self.assertNotEqual(0, result.returncode)
             self.assertIn("Controlled-document checks failed:", result.stdout)
+
+    def test_generated_and_historical_domain_artifacts_are_not_current_scan_targets(self) -> None:
+        fixture = ROOT / "engineering/evidence/operation-beta/zeus-development-mode-recovery-001/fixtures/VALID-DEVELOPMENT-WOP/roadmap.md"
+        historical = ROOT / "engineering/work-orders/GH-ZEUS-OA-CERTIFICATION-001/immutable-wop.yaml"
+        legacy = ROOT / "engineering/work-orders/OA-10-EXECUTION-001/immutable-wop.yaml"
+        generated = ROOT / "engineering/work-orders/WOP-ZDCL-02-ZEUS-PROVIDER-NEUTRAL-EXECUTION-CONTROL-001/ebeec97412e405e26b721c09/roadmap.md"
+        current = ROOT / "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/ROADMAP.md"
+        self.assertTrue(validator.is_generated_or_historical_domain_artifact(fixture))
+        self.assertTrue(validator.is_generated_or_historical_domain_artifact(historical))
+        self.assertTrue(validator.is_generated_or_historical_domain_artifact(legacy))
+        self.assertTrue(validator.is_generated_or_historical_domain_artifact(generated))
+        self.assertFalse(validator.is_generated_or_historical_domain_artifact(current))
 
     def test_gate_commands_are_inspected_without_execution(self) -> None:
         self.assertTrue(validator.command_exists("python3 --help"))

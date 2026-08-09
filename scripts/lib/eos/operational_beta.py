@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 import yaml
 from scripts.lib.emp.runtime_paths import runtime_path
+from scripts.lib.wop.canonical_package import canonical_identity_records
 
 ROADMAP = "engineering/docs/architecture/OPERATION-BETA-ROADMAP.md"
 CHARTER = "engineering/docs/operations/OPERATION-BETA-CHARTER.md"
@@ -21,12 +22,18 @@ AUTHORITY = "engineering/docs/architecture/OPERATION-BETA-AUTHORITY-MODEL.md"
 TRANSITION = "engineering/operations/operation-beta-transition.md"
 DESIGN = "engineering/docs/architecture/ENGINEERING-PLATFORM-DESIGN-PRINCIPLES.md"
 CURRENT_MISSION = "engineering/missions/operation-beta-current.yaml"
+GATE_CATALOG = "engineering/evidence/operation-beta/OPERATION-BETA-CANONICAL-GATE-CATALOG.yaml"
+
+_NON_CURRENT_LIFECYCLE_STATES = {
+    "", "UNRESOLVED", "MISSION_NOT_FOUND", "COMPLETED", "CLOSED",
+    "CANCELLED", "FAILED", "SUPERSEDED", "REJECTED",
+}
 
 class OperationalBetaError(ValueError):
     pass
 
 
-def authority(root: Path | str) -> dict[str, Any]:
+def authority(root: Path | str, *, include_current_execution: bool = True) -> dict[str, Any]:
     """Resolve the published Operation Beta authority projection.
 
     This is the current operator-facing authority source.  The historical
@@ -52,8 +59,13 @@ def authority(root: Path | str) -> dict[str, Any]:
         ("publication_state", "PUBLISHED_ACTIVE"),
     )):
         raise OperationalBetaError("BETA_AUTHORITY_RECORD_BINDING_INVALID")
-    operation_data = operation(root)
-    next_data = next_action(root)
+    # Lifecycle receipt verifiers call this with current execution disabled:
+    # authority validation is upstream of receipt resolution and must not
+    # recurse through the downstream current-execution projection.  Public
+    # authority views use the default and therefore expose the same live
+    # current gate and next action as the operation and mission projections.
+    operation_data = operation(root, include_current_execution=include_current_execution)
+    next_data = next_action(root, include_current_execution=include_current_execution)
     source_digests = operation_data["integrity"]["source_digests"]
     authority_digest = hashlib.sha256(
         json.dumps({
@@ -71,7 +83,8 @@ def authority(root: Path | str) -> dict[str, Any]:
         "active_operation": "BETA",
         "authority_source": "Operation Beta",
         "authority_digest": authority_digest,
-        "active_gate": operation_data["recommended_mission"],
+        "active_gate": ((operation_data.get("current_gate_mapping") or {}).get("operation_gate_id")
+                        or operation_data["recommended_mission"]),
         "current_platform_mission": current,
         "operation_id": operation_data["operation_id"],
         "mission_id": current["mission_id"],
@@ -342,11 +355,27 @@ def _integrity(root: Path) -> dict[str, Any]:
 def _cards_with_dependencies(root: Path) -> list[dict[str, Any]]:
     cards = _mission_cards(root)
     by_id = {card["mission_id"]: card for card in cards}
+    canonical = canonical_identity_records(root)
+    bindings = {str(item.get("mission_id", "")).upper(): item for item in canonical["records"]}
     for card in cards:
         card["missing_dependencies"] = [dep for dep in card["dependencies"] if by_id[dep]["lifecycle"] != "COMPLETED"]
         if card["lifecycle"] == "RECOMMENDED" and card["missing_dependencies"]:
             card["classification"] = "BLOCKED"
         card["readiness"] = "ELIGIBLE" if card["lifecycle"] == "RECOMMENDED" and not card["missing_dependencies"] else card["classification"]
+        binding = bindings.get(card["mission_id"])
+        if binding:
+            card["canonical_binding"] = {
+                "mission_id": binding["mission_id"],
+                "wop_id": binding["wop_id"],
+                "gate_id": binding["gate_id"],
+                "canonical_revision": binding["canonical_revision"],
+                "revision_state": binding["revision_state"],
+                "wop_published": binding["wop_published"],
+                "wop_submitted": binding["wop_submitted"],
+                "separate_wop_authorization_required": binding["separate_wop_authorization_required"],
+                "historical_revision_1_preserved": binding["historical_revision_1_preserved"],
+                "next_authorized_action": binding["next_authorized_action"],
+            }
     return cards
 
 
@@ -374,30 +403,179 @@ def _metrics(cards: list[dict[str, Any]]) -> dict[str, Any]:
             "production_development_divergence": "DEVELOPMENT_AHEAD_OF_PRODUCTION"}
 
 
+def _gate_crosswalk(root: Path, wop_id: str, lifecycle_state: str) -> dict[str, Any]:
+    """Resolve the WOP/Operation gate relationship from the controlled catalog."""
+    try:
+        catalog = yaml.safe_load(_read(root, GATE_CATALOG))
+    except yaml.YAMLError as error:
+        raise OperationalBetaError(f"BETA_GATE_CROSSWALK_INVALID: {error}") from error
+    rows = catalog.get("wop_gate_crosswalk") if isinstance(catalog, dict) else None
+    if not isinstance(rows, list):
+        raise OperationalBetaError("BETA_GATE_CROSSWALK_MISSING")
+    matches = [
+        row for row in rows
+        if isinstance(row, dict)
+        and row.get("wop_id") == wop_id
+        and lifecycle_state in (row.get("lifecycle_states") or [])
+    ]
+    if len(matches) != 1:
+        raise OperationalBetaError(
+            "BETA_GATE_CROSSWALK_AMBIGUOUS" if matches else "BETA_GATE_CROSSWALK_UNRESOLVED"
+        )
+    row = matches[0]
+    return {
+        "wop_gate": row.get("wop_gate"),
+        "wop_gate_id": row.get("wop_gate_id"),
+        "operation_gate_id": row.get("operation_gate_id"),
+        "relationship": row.get("relationship"),
+        "source": GATE_CATALOG,
+    }
+
+
+def _canonical_current_execution(root: Path) -> dict[str, Any]:
+    """Project the one receipt-backed current mission without selecting a plan.
+
+    The canonical lifecycle resolver remains the state owner.  This adapter
+    performs operation-wide cardinality and adds the controlled gate crosswalk;
+    it does not create a second mission lifecycle or infer authority from the
+    roadmap.
+    """
+    from scripts.lib.emp.canonical_lifecycle_resolver import (
+        resolve as resolve_lifecycle,
+        submitted_missions,
+    )
+
+    index = submitted_missions(root)
+    if index.get("result") != "PASS":
+        return {"result": "FAIL", "current_execution": None,
+                "blockers": index.get("blockers") or [{
+                    "code": "BETA_LIFECYCLE_INDEX_INVALID",
+                    "message": "canonical submitted-mission index failed",
+                }]}
+    active = [
+        item for item in index.get("missions", [])
+        if item.get("lifecycle_state") not in _NON_CURRENT_LIFECYCLE_STATES
+    ]
+    if len(active) > 1:
+        return {
+            "result": "FAIL", "current_execution": None,
+            "blockers": [{
+                "code": "MULTIPLE_CURRENT_EXECUTABLE_MISSIONS",
+                "message": "more than one receipt-backed lifecycle mission claims current execution",
+                "mission_ids": sorted(item.get("mission_id") for item in active),
+            }],
+            "canonical_lifecycle_index": index,
+        }
+    if not active:
+        return {"result": "PASS", "current_execution": None, "blockers": [],
+                "canonical_lifecycle_index": index}
+
+    listed = active[0]
+    resolved = resolve_lifecycle(root, listed["mission_id"])
+    if resolved.get("result") != "PASS":
+        return {"result": "FAIL", "current_execution": None,
+                "blockers": resolved.get("blockers") or [{
+                    "code": "BETA_CURRENT_LIFECYCLE_UNRESOLVED",
+                    "message": "current lifecycle mission failed canonical resolution",
+                }], "canonical_lifecycle_index": index}
+    for field in ("mission_id", "wop_id", "lifecycle_state", "next_authorized_action"):
+        if listed.get(field) != resolved.get(field):
+            return {"result": "FAIL", "current_execution": None,
+                    "blockers": [{
+                        "code": "BETA_CURRENT_LIFECYCLE_CONTRADICTION",
+                        "message": f"canonical lifecycle index and resolver disagree on {field}",
+                    }], "canonical_lifecycle_index": index}
+    try:
+        gate_mapping = _gate_crosswalk(root, str(resolved.get("wop_id")),
+                                       str(resolved.get("lifecycle_state")))
+    except OperationalBetaError as error:
+        return {"result": "FAIL", "current_execution": None,
+                "blockers": [{"code": str(error), "message": str(error)}],
+                "canonical_lifecycle_index": index}
+
+    recovery_action = None
+    if resolved.get("execution_started") is True:
+        try:
+            from scripts.lib.emp.codex_adapter import (
+                _result as codex_result,
+                current_session,
+            )
+            session = current_session(root, listed["mission_id"])
+            if session:
+                runtime = codex_result(session, repository=root)
+                recovery_action = runtime.get("runtime_recovery_action")
+        except Exception:
+            # Runtime recovery is an observational, subordinate projection.
+            # Its absence cannot replace or advance the lifecycle owner.
+            recovery_action = None
+
+    current = {
+        "mission_id": resolved.get("mission_id"),
+        "wop_id": resolved.get("wop_id"),
+        "submission_id": resolved.get("submission_id"),
+        "admission_id": resolved.get("admission_id"),
+        "bootstrap_id": resolved.get("bootstrap_id"),
+        "dispatch_id": resolved.get("dispatch_id"),
+        "provider_id": resolved.get("provider_id"),
+        "provider_session_id": resolved.get("provider_session_id"),
+        "provider_invocation_id": resolved.get("provider_invocation_id"),
+        "execution_id": resolved.get("execution_id"),
+        "execution_session_id": resolved.get("execution_session_id"),
+        "lifecycle_state": resolved.get("lifecycle_state"),
+        "current_gate_mapping": gate_mapping,
+        "mission_work_started": resolved.get("mission_work_started", False),
+        "repository_work_started": resolved.get("repository_work_started", False),
+        "lifecycle_next_action": resolved.get("next_authorized_action"),
+        "next_authorized_action": resolved.get("next_authorized_action"),
+        "runtime_recovery_action": recovery_action,
+        "canonical_lifecycle_owner": resolved.get("canonical_lifecycle_owner"),
+        "canonical_state_source": resolved.get("canonical_state_source"),
+        "read_only": True,
+    }
+    return {"result": "PASS", "current_execution": current, "blockers": [],
+            "canonical_lifecycle_index": index}
+
+
 def _selected_card(cards: list[dict[str, Any]]) -> dict[str, Any] | None:
     """Canonical Beta selection used by every list, queue, and inspection view."""
     return next((card for card in cards if card["classification"] == "ELIGIBLE"), None)
 
 
-def operation(root: Path | str) -> dict[str, Any]:
+def operation(root: Path | str, *, include_current_execution: bool = True) -> dict[str, Any]:
     root = Path(root)
     current = _current_mission(root)
     integrity = _integrity(root)
     cards = _cards_with_dependencies(root)
     metrics = _metrics(cards)
     selected = _selected_card(cards)
-    result = "PASS" if integrity["result"] == "PASS" else "FAIL"
-    executable = next((card["mission_id"] for card in cards
-                       if _mission_projection(root, card["mission_id"])["current_admission"]), None)
+    execution_projection = (_canonical_current_execution(root) if include_current_execution else
+                            {"result": "PASS", "current_execution": None, "blockers": [],
+                             "canonical_lifecycle_index": None})
+    current_execution = execution_projection["current_execution"]
+    result = "PASS" if integrity["result"] == "PASS" and execution_projection["result"] == "PASS" else "FAIL"
+    metrics["current_executable"] = 1 if current_execution else 0
     return {"result": result, "operation_id": "OPERATION-BETA", "operation": "BETA",
             "status": "ACTIVE_DEVELOPMENT", "production_baseline": "OA-v1.0.0",
             "development_baseline": "OB-PLAN-v1.0.0", "mission_families": ["ZDCL", "CAGF", "EPE"],
             "current_platform_mission": current,
-            "current_executable_mission": executable,
+            "current_executable_mission": (current_execution or {}).get("mission_id"),
+            "current_execution": current_execution,
+            "current_wop": (current_execution or {}).get("wop_id"),
+            "current_lifecycle_state": (current_execution or {}).get("lifecycle_state"),
+            "current_gate_mapping": (current_execution or {}).get("current_gate_mapping"),
+            "lifecycle_next_action": (current_execution or {}).get("lifecycle_next_action"),
+            "mission_work_started": (current_execution or {}).get("mission_work_started", False),
+            "repository_work_started": (current_execution or {}).get("repository_work_started", False),
+            "runtime_recovery_action": (current_execution or {}).get("runtime_recovery_action"),
             "recommended_mission": selected["mission_id"] if selected else None,
+            "future_recommended_mission": selected["mission_id"] if selected else None,
             "selection_source": "operational_beta._selected_card",
+            "current_execution_source": "canonical_lifecycle_resolver.submitted_missions/resolve",
             "missions": cards, "metrics": metrics, "integrity": integrity,
-            "authoritative_sources": [ROADMAP, CHARTER, AUTHORITY, TRANSITION, DESIGN]}
+            "blockers": execution_projection.get("blockers", []),
+            "canonical_lifecycle_index": execution_projection.get("canonical_lifecycle_index"),
+            "authoritative_sources": [ROADMAP, CHARTER, AUTHORITY, TRANSITION, DESIGN],
+            "projection_sources": [GATE_CATALOG]}
 
 
 def active_missions(root: Path | str) -> dict[str, Any]:
@@ -410,7 +588,13 @@ def active_missions(root: Path | str) -> dict[str, Any]:
         "development_baseline": value["development_baseline"],
         "current_platform_mission": value["current_platform_mission"],
         "current_executable_mission": value["current_executable_mission"],
+        "current_execution": value.get("current_execution"),
+        "current_wop": value.get("current_wop"),
+        "current_lifecycle_state": value.get("current_lifecycle_state"),
+        "current_gate_mapping": value.get("current_gate_mapping"),
+        "lifecycle_next_action": value.get("lifecycle_next_action"),
         "recommended_mission": value["recommended_mission"],
+        "future_recommended_mission": value.get("future_recommended_mission"),
         "selection_source": value["selection_source"],
         "missions": active, "active_mission_count": len(active),
         "authoritative_sources": value["authoritative_sources"],
@@ -451,7 +635,13 @@ def queue(root: Path | str, view: str = "list") -> dict[str, Any]:
         "execution_environment": "ADMITTED_MISSION_ATTRIBUTE",
         "current_platform_mission": value["current_platform_mission"],
         "current_executable_mission": value["current_executable_mission"],
+        "current_execution": value.get("current_execution"),
+        "current_wop": value.get("current_wop"),
+        "current_lifecycle_state": value.get("current_lifecycle_state"),
+        "current_gate_mapping": value.get("current_gate_mapping"),
+        "lifecycle_next_action": value.get("lifecycle_next_action"),
         "recommended_mission": value["recommended_mission"],
+        "future_recommended_mission": value.get("future_recommended_mission"),
         "selection_source": value["selection_source"],
         "missions": cards, "metrics": value["metrics"],
         "executions": executions,
@@ -582,25 +772,40 @@ def mission_view(root: Path | str, action: str, mission_id: str) -> dict[str, An
     raise OperationalBetaError("BETA_UNSUPPORTED_MISSION_VIEW")
 
 
-def next_action(root: Path | str, subject: str | None = None) -> dict[str, Any]:
-    value = operation(root)
+def next_action(root: Path | str, subject: str | None = None, *,
+                include_current_execution: bool = True) -> dict[str, Any]:
+    value = operation(root, include_current_execution=include_current_execution)
     cards = value["missions"]
     if subject and subject.upper() in value["mission_families"]:
         cards = [card for card in cards if card["family"] == subject.upper()]
     candidate = _selected_card(cards)
     projection = _mission_projection(Path(root), candidate["mission_id"]) if candidate else {}
     completed_operational = next((item for item in reversed(projection.get("historical_executions", [])) if item.get("state") == "Completed" and (item.get("current_session") or {}).get("lifecycle_state") == "COMPLETED"), None)
-    resolved_next = ((projection.get("current_execution") or {}).get("next_authorized_action")
+    binding = (candidate or {}).get("canonical_binding", {})
+    resolved_next = ((value.get("current_execution") or {}).get("lifecycle_next_action")
+                     or (projection.get("current_execution") or {}).get("next_authorized_action")
+                     or ((binding.get("next_authorized_action") + " (CAGF-01)") if binding.get("next_authorized_action") == "SUBMIT_EXISTING_CAGF01_WOP_THROUGH_ZEUS" else binding.get("next_authorized_action"))
                      or ("Qualify, accept, synchronize, and close ZDCL-01 through the normal lifecycle process." if completed_operational
                          else (f"Publish a separately authorized WOP for {candidate['mission_id']}, then submit and admit it through Zeus." if candidate else "Await authoritative predecessor completion")))
-    return {"result": value["result"], "operation": "BETA", "scope": subject.upper() if subject else "BETA",
+    return {"result": value["result"], "operation_id": value.get("operation_id", "OPERATION-BETA"),
+            "operation": "BETA", "scope": subject.upper() if subject else "BETA",
             "current_platform_mission": value["current_platform_mission"],
             "current_executable_mission": value["current_executable_mission"],
+            "current_execution": value.get("current_execution"),
+            "current_wop": value.get("current_wop"),
+            "current_lifecycle_state": value.get("current_lifecycle_state"),
+            "current_gate_mapping": value.get("current_gate_mapping"),
+            "mission_work_started": value.get("mission_work_started", False),
+            "repository_work_started": value.get("repository_work_started", False),
+            "lifecycle_next_action": value.get("lifecycle_next_action"),
+            "runtime_recovery_action": value.get("runtime_recovery_action"),
             "recommended_mission": candidate["mission_id"] if candidate else None,
+            "future_recommended_mission": candidate["mission_id"] if candidate else None,
             "selection_source": "operational_beta._selected_card",
             "next_authorized_action": resolved_next,
-            "current_admission": projection.get("current_admission"),
-            "current_execution": projection.get("current_execution"),
+            "future_candidate_admission": projection.get("current_admission"),
+            "future_candidate_execution": projection.get("current_execution"),
             "historical_admissions": projection.get("historical_admissions", []),
             "historical_executions": projection.get("historical_executions", []),
+            "blockers": value.get("blockers", []),
             "metrics": value["metrics"], "authoritative_sources": value["authoritative_sources"]}

@@ -37,6 +37,7 @@ class ExecutionStartFoundationTests(unittest.TestCase):
         self.assertTrue(value["execution_started"])
         self.assertTrue(value["provider_process_bound"])
         self.assertEqual(value["provider_invocation_id"], INVOCATION)
+        self.assertEqual(value["wop_id"], "WOP-BETA-562F443E16C69401")
         self.assertEqual(value["execution_adapter_mode"], "QUALIFICATION_ADAPTER")
         self.assertFalse(value["mission_work_started"])
         self.assertFalse(value["repository_work_started"])
@@ -58,6 +59,20 @@ class ExecutionStartFoundationTests(unittest.TestCase):
         self.assertEqual(first["current_published_baseline"], current)
         self.assertEqual(first["execution_start_baseline_relationship"], "ANCESTOR")
         self.assertEqual(first["execution_start_integrity"], "PASS")
+
+    def test_wop_binding_is_exposed_by_execution_start_verification(self):
+        first = execution_start.verify(ROOT, MISSION)
+        self.assertEqual(first["wop_id"], "WOP-BETA-562F443E16C69401")
+
+    def test_wop_binding_resolver_rejects_missing_and_divergent_artifacts(self):
+        values = {"transaction": {"wop_id": "WOP-1"}, "package": {"wop_id": "WOP-1"}}
+        self.assertEqual(execution_start._canonical_wop_binding(values), "WOP-1")
+        with self.assertRaises(execution_start.ExecutionStartError) as missing:
+            execution_start._canonical_wop_binding({"transaction": {"wop_id": None}})
+        self.assertEqual(missing.exception.code, "WOP_BINDING_MISSING")
+        with self.assertRaises(execution_start.ExecutionStartError) as mismatch:
+            execution_start._canonical_wop_binding({"transaction": {"wop_id": "WOP-1"}, "package": {"wop_id": "WOP-2"}})
+        self.assertEqual(mismatch.exception.code, "WOP_BINDING_MISMATCH")
 
     def test_invocation_and_execution_start_provenance_are_distinct(self):
         value = execution_start.verify(ROOT, MISSION)

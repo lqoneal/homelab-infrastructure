@@ -73,6 +73,21 @@ def source_digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _stage1_tree_digest(root: Path) -> str:
+    """Digest the derived Stage-1 payload, excluding self-referential files."""
+    digest = hashlib.sha256()
+    excluded = {Path("manifests/immutable-manifest.yaml"), Path("traceability.json")}
+    for path in sorted(item for item in root.rglob("*") if item.is_file()):
+        relative = path.relative_to(root)
+        if relative in excluded:
+            continue
+        digest.update(relative.as_posix().encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
 def _docx_text(path: Path) -> str:
     try:
         with ZipFile(path) as archive:
@@ -390,7 +405,7 @@ def _canonical_stage1_metadata(package_value: Mapping[str, Any], canonical_diges
         "governance_authority": str(authority.get("authority_source", "External mission authority")),
         "repository_identity": str(reconciliation.get("repository_identity", "")),
         "effect_profile": "DEVELOPMENT-NONPRODUCTION-READONLY-ADAPTER",
-        "required_execution_files": ["bootstrap.md", "roadmap.md", "mission.yaml", "gates.yaml", "manifests/immutable-manifest.yaml", "source-wop.yaml"],
+        "required_execution_files": ["bootstrap.md", "roadmap.md", "mission.yaml", "gates.yaml", "manifests/immutable-manifest.yaml", "source-wop.yaml", "traceability.json"],
         "source_document_digest": source_digest_value,
         "canonical_package_schema": str(package_value["schema_version"]),
         "canonical_package_id": str(identity["package_id"]),
@@ -440,7 +455,20 @@ def adapt_canonical_package(source: Path, destination_root: Path, repository_roo
         (temporary / "mission.yaml").write_text(yaml.safe_dump(metadata, sort_keys=False), encoding="utf-8")
         bootstrap = package_value["bootstrap"]
         (temporary / "bootstrap.md").write_text("# Canonical WOP bootstrap\n\n" + "\n".join(f"- {step}" for step in bootstrap["steps"]) + "\n", encoding="utf-8")
-        (temporary / "roadmap.md").write_text("# Canonical WOP requirements\n\n" + "\n".join(f"- {item['requirement_id']}: {item['objective']}" for item in package_value["requirements"]) + "\n", encoding="utf-8")
+        (temporary / "roadmap.md").write_text(
+            "# Canonical WOP requirements\n\n"
+            "## Objective\n\n"
+            "Adapt the validated canonical package without creating authority.\n\n"
+            "## Sequencing\n\n"
+            "Requirements execute in the canonical dependency order.\n\n"
+            "## Dependencies\n\n"
+            "Technical prerequisites are resolved before dependent requirements.\n\n"
+            "## Completion\n\n"
+            "Completion requires all declared requirements and operator review.\n\n"
+            "## Traceability\n\n"
+            "Each requirement remains bound to the canonical package, mission, WOP, gate, and evidence locator.\n\n"
+            + "\n".join(f"- {item['requirement_id']}: {item['objective']}" for item in package_value["requirements"])
+            + "\n", encoding="utf-8")
         (temporary / "gates.yaml").write_text(yaml.safe_dump({"schema_version": 1, "gates": package_value["requirements"], "canonical_execution_graph": package_value["execution_graph"]}, sort_keys=False), encoding="utf-8")
         manifests = temporary / "manifests"
         manifests.mkdir()
@@ -462,15 +490,32 @@ def adapt_canonical_package(source: Path, destination_root: Path, repository_roo
             "canonical_gate_id": str(identity["gate_id"]),
             "canonical_baseline_commit": str(identity["baseline_commit"]),
             "canonical_authority_classification": "EXTERNAL_ONLY_NON_AUTHORITATIVE_SOURCE",
+            "canonical_revision": int(identity["revision"]),
+            "revision_state": package_value.get("revision_lineage", {}).get("revision_state", "ORIGINAL"),
         }
         (manifests / "immutable-manifest.yaml").write_text(yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8")
+        tree_digest = _stage1_tree_digest(temporary)
+        manifest["stage1_tree_digest"] = tree_digest
+        (manifests / "immutable-manifest.yaml").write_text(yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8")
+        traceability = {
+            "schema_version": 1,
+            "canonical": {"package_id": str(identity["package_id"]), "package_digest": digest, "source_digest": raw_digest,
+                           "mission_id": str(identity["mission_id"]), "wop_id": str(identity["wop_id"]),
+                           "gate_id": str(identity["gate_id"]), "revision": int(identity["revision"])},
+            "stage1": {"package_id": package_id, "tree_digest": tree_digest},
+            "requirements": [str(item["requirement_id"]) for item in package_value["requirements"]],
+            "identity_mapping": {"mission_id": "mission.yaml:mission_id", "wop_id": "mission.yaml:wop_id", "gate_id": "mission.yaml:canonical_gate_id", "revision": "mission.yaml:revision"},
+            "authority": "EXTERNAL_ONLY_NON_AUTHORITATIVE_SOURCE",
+            "publication_boundary": "preserved; no submission, admission, execution, or publication mutation",
+        }
+        (temporary / "traceability.json").write_text(json.dumps(traceability, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         validate_generated_package(temporary)
         destination_root.mkdir(parents=True, exist_ok=True)
         destination.parent.mkdir(parents=True, exist_ok=True)
         os.replace(temporary, destination)
         staging.rmdir()
         return destination, {"packaged": True, "adapted": True, "replayed": False, "package_id": package_id,
-                             "canonical_package_digest": digest, "source_digest": raw_digest, "stage1_package": str(destination)}
+                             "canonical_package_digest": digest, "source_digest": raw_digest, "stage1_tree_digest": _stage1_tree_digest(destination), "stage1_package": str(destination)}
     except Exception:
         shutil.rmtree(staging, ignore_errors=True)
         raise

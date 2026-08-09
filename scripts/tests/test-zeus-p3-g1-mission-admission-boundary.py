@@ -10,6 +10,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
@@ -22,6 +23,22 @@ from scripts.lib.emp.mission_admission_verification import verify_admission_repl
 
 
 class MissionAdmissionBoundaryTests(unittest.TestCase):
+    def setUp(self) -> None:
+        head = subprocess.check_output(
+            ["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True
+        ).strip()
+        self.enterContext(patch(
+            "scripts.lib.eos.canonical_baseline.project_repository",
+            return_value={
+                "result": "PASS", "head": head, "origin_main": head,
+                "eos_baseline": head, "branch": "main", "eos_parity": True,
+                "head_origin_parity": True,
+                "baseline_state_classification": "STEADY_STATE_CONVERGED",
+                "authorized_publication_transition": False,
+                "publication_transition": None, "errors": [],
+            },
+        ))
+
     def authored_and_submitted(self, directory: Path):
         source = directory / "mission.yaml"
         source.write_text(

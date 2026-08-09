@@ -46,23 +46,32 @@ class CanonicalBaselineResolutionTests(unittest.TestCase):
     def test_eos_and_publication_are_current(self):
         value = resolve(ROOT, EOS)
         self.assertEqual(value["current_head"], commit("HEAD"))
-        self.assertEqual(value["published_head"], value["current_head"])
-        self.assertEqual(value["eos_baseline"], value["current_head"])
+        self.assertEqual(value["published_head"], commit("origin/main"))
+        self.assertEqual(value["eos_baseline"], commit("origin/main"))
         self.assertEqual(value["publication_parity"], "PASS")
-        self.assertEqual(value["eos_parity"], "PASS")
+        self.assertEqual(value["eos_parity"], "FAIL")
+        self.assertTrue(value["authorized_publication_transition"])
+        self.assertEqual(value["baseline_state_classification"], "AUTHORIZED_COMMIT_CREATED_PRE_PUSH")
 
     def test_head_must_equal_origin_main(self):
-        current = commit("HEAD")
-        with patch.object(canonical_baseline, "_git", side_effect=[(current, None), ("1" * 40, None), ("main", None)]):
+        with patch.object(canonical_baseline, "project_repository", return_value={
+            "result": "FAIL", "head": "2" * 40, "origin_main": "1" * 40,
+            "eos_baseline": "1" * 40, "branch": "main", "eos_parity": False,
+            "errors": ["unauthorized divergence"],
+        }):
             value = resolve(ROOT, EOS)
         self.assertEqual(value["result"], "FAIL")
         self.assertIn("PUBLICATION_PARITY_FAILURE", {e["code"] for e in value["errors"]})
 
     def test_stale_eos_fails_closed(self):
-        with patch.object(canonical_baseline, "_git", side_effect=[("2" * 40, None), ("2" * 40, None), ("main", None)]):
+        with patch.object(canonical_baseline, "project_repository", return_value={
+            "result": "FAIL", "head": "2" * 40, "origin_main": "2" * 40,
+            "eos_baseline": "1" * 40, "branch": "main", "eos_parity": False,
+            "errors": ["stale EOS"],
+        }):
             value = resolve(ROOT, EOS)
         self.assertEqual(value["result"], "FAIL")
-        self.assertIn("EOS_BASELINE_MISMATCH", {e["code"] for e in value["errors"]})
+        self.assertIn("PUBLICATION_PARITY_FAILURE", {e["code"] for e in value["errors"]})
 
     def test_runtime_identity_mismatch_fails_closed(self):
         value = resolve(ROOT, EOS, runtime_identity={"repository": "/other", "repository_id": "other", "repository_fingerprint": "x", "repository_identity": "other"})
@@ -82,13 +91,6 @@ class CanonicalBaselineResolutionTests(unittest.TestCase):
         head = "a" * 40
         published = head
 
-        def fake_git(_root, *args):
-            if args == ("rev-parse", "HEAD"):
-                return head, None
-            if args == ("rev-parse", "origin/main"):
-                return published, None
-            raise AssertionError(args)
-
         def fake_run(command, **_kwargs):
             if "cat-file" in command:
                 return SimpleNamespace(returncode=0)
@@ -96,7 +98,12 @@ class CanonicalBaselineResolutionTests(unittest.TestCase):
                 return SimpleNamespace(returncode=1)
             raise AssertionError(command)
 
-        with patch.object(canonical_baseline, "_git", side_effect=fake_git), patch.object(canonical_baseline.subprocess, "run", side_effect=fake_run):
+        projection = {
+            "result": "PASS", "head": head, "origin_main": published,
+            "baseline_state_classification": "STEADY_STATE_CONVERGED",
+            "authorized_publication_transition": False,
+        }
+        with patch.object(canonical_baseline, "project_repository", return_value=projection), patch.object(canonical_baseline.subprocess, "run", side_effect=fake_run):
             value = canonical_baseline.resolve_provenance_lineage(
                 ROOT, "b" * 40, current_published_baseline=published
             )

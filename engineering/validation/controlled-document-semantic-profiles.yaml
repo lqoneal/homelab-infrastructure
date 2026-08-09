@@ -270,6 +270,15 @@ profiles:
     required_command_documentation: required for declared execution commands
     required_validation_criteria: admission, verification, and completion checks
     required_acceptance_criteria: explicit acceptance boundary
+  Canonical WOP:
+    criteria: [DOC-COMP-001, DOC-COMP-002, DOC-COMP-003, DOC-COMP-004, DOC-COMP-005, DOC-COMP-006, DOC-COMP-007, DOC-COMP-008, DOC-COMP-009, DOC-COMP-010, DOC-COMP-012, DOC-COMP-017]
+    required_yaml: [schema_version, package_identity, authority_binding, bootstrap, requirements, execution_graph, evidence_contract, recovery_contract, failure_model, publication_boundary, reconciliation_contract, closeout_contract, extensions, integrity]
+    required_engineering_content: canonical objectives, prerequisites, verification, recovery, and completion
+    required_traceability: package identity, revision lineage, mission/WOP/gate binding, and baseline
+    required_evidence: requirement evidence, provenance manifest, and qualification contract
+    required_command_documentation: required for declared Zeus lifecycle commands
+    required_validation_criteria: integrity, identity, dependency, replay, and publication-boundary checks
+    required_acceptance_criteria: immutable revision boundary and exact native binding
   Roadmap:
     criteria: [DOC-COMP-001, DOC-COMP-002, DOC-COMP-003, DOC-COMP-004, DOC-COMP-005, DOC-COMP-006, DOC-COMP-007, DOC-COMP-008, DOC-COMP-010, DOC-COMP-014]
     required_concepts: [objective, sequencing, dependencies, completion, traceability]

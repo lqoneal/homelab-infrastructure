@@ -19,10 +19,40 @@ The current published mission is `BETA-04`. Its activation record is
 mission projection is `engineering/missions/operation-beta-current.yaml`.
 This record does not grant capability implementation authority.
 
-`BETA-04` is the Current Platform Mission. `CAGF-01` is the Recommended
-Mission and is eligible for separate submission. Current Executable Mission
-remains `NONE` until a fresh governed admission exists; recommendation never
-substitutes for selection, admission, or execution authority.
+`BETA-04` is the Current Platform Mission. The receipt-backed canonical
+lifecycle chain, not the planning catalog, owns Current Executable Mission.
+The current value is `ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01`, bound to
+`WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001` at
+`READY_FOR_CONTROLLED_EXECUTION`. `CAGF-01` remains the Future Recommended
+Mission and is deferred until lifecycle completion is independently qualified
+and closed. Recommendation never substitutes for selection, admission, or
+execution authority.
+
+Current execution and future recommendation are distinct coordinates:
+
+```text
+CURRENT_EXECUTION != FUTURE_RECOMMENDATION
+```
+
+The lifecycle resolver owns mission/WOP identity, lifecycle state, work-start
+flags, and lifecycle next action. The gate catalog owns only the deterministic
+WOP/Operation capability crosswalk. Managed Codex status owns runtime liveness
+and recovery disposition; its recovery action cannot replace the lifecycle
+next action.
+
+Repository baseline validity has one canonical resolver. It distinguishes
+steady-state convergence from a receipt-backed publication transition without
+changing authority ownership. During `COMMIT_CREATED`, the local publication
+commit may be ahead of the equal remote/EOS starting baseline. During
+`REMOTE_PUBLISHED`, the local and remote commit may be ahead of EOS. Both are
+valid only when the authoritative Zeus transaction, current milestone receipt,
+repository/runtime identity, mission/WOP, branch, ancestry, and transaction
+integrity all match. Final `EOS_SYNCHRONIZED` restores full parity.
+
+P3 admission validity remains provenance-based across those transitions. The
+admission receipt is immutable; the current authorized transition is validated
+separately for the same mission/WOP. Arbitrary divergence and receipt-less or
+contradictory state fail closed and cannot be promoted by ancestry alone.
 
 Controller governance is normative in `ENGINEERING-PLATFORM-INVARIANTS.md` and
 `ZEUS-CONTROLLER-GOVERNANCE.md`. These documents constrain projections and

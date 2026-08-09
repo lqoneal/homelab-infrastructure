@@ -22,6 +22,7 @@ zeus publication classify <MISSION_ID> --json
 zeus publication prepare <MISSION_ID> --json
 zeus publication verify-pre <PUBLICATION_ID> --json
 zeus publication stage <PUBLICATION_ID> --json
+zeus publication verify-staged <PUBLICATION_ID> --json
 zeus publication commit <PUBLICATION_ID> --json
 zeus publication push <PUBLICATION_ID> --json
 zeus publication synchronize <PUBLICATION_ID> --json
@@ -54,6 +55,16 @@ persistence failure is fail-closed. A receipt left without a valid persisted
 transaction reference grants no authority. Replaying successful `verify-pre`
 revalidates the frozen inputs, reuses the same receipt lineage, leaves the Git
 index unchanged, and cannot advance beyond staging readiness.
+
+`publication stage` is one receipt boundary. It derives
+`staged_tree_digest` from the sorted authorized path set and the SHA-256 of
+each stage-zero index blob, persists `CANDIDATE_STAGED=PASS`, and stops with
+`VERIFY_STAGED_SET`. It does not create `STAGED_SET_VERIFIED`. If interruption
+occurs after the exact index mutation but before receipt/state persistence, a
+stage replay may recover only when the index path set and canonical digest
+exactly reproduce the frozen candidate. Extra, missing, changed, conflicting,
+or otherwise ambiguous staged state fails closed. `publication verify-staged`
+owns the separate transition to `STAGED_SET_VERIFIED`.
 
 Candidate membership comes from a qualified publication manifest or equivalent
 authoritative traceability source. Dirty status alone is never publication
@@ -102,6 +113,12 @@ state, publication state, dependency relationship, and selection reason.  A
 path without non-null authority is not eligible.  Historical, already-published,
 unrelated, superseded, ambiguous, blocked, and invalid sources remain visible
 as exclusions; they are never silently folded into the current candidate.
+Every completed corrective that emits a Markdown candidate manifest also emits
+the package-owned `QUALIFICATION-PUBLICATION-STATE.json` sidecar. Its schema is
+`engineering/wop/publication-candidate-state.schema.yaml`; the sidecar binds
+the exact manifest, mission, and WOP and declares canonical qualification and
+publication state. Invalid or mismatched sidecars fail closed. Legacy manifests
+remain readable only through their existing bounded compatibility fields.
 Multiple qualified manifests may contribute to one transaction.  Conflicting
 current claims, missing dependencies, missing manifest paths, or an unresolved
 mission/WOP relationship fail closed.  Exact replay produces the same source
@@ -162,3 +179,48 @@ qualified source outside the cohort is therefore not transaction drift; a
 changed or missing cohort member, qualification, manifest/path, or candidate
 content remains `STALE_CLASSIFICATION` and fails closed. Missing or mismatched
 cohort identity also fails closed.
+
+## Current publication cardinality and supersession
+
+For one repository-bound Mission/WOP, the canonical transaction-lineage
+resolver returns zero or one current publication transaction. It never selects
+a winner by `created_at`, `updated_at`, filesystem order, or another timestamp.
+Two unrelated nonterminal tips, multiple nonterminal successors of one
+predecessor, duplicate identities, a missing target, a cross-Mission/WOP or
+cross-repository target, a cycle, malformed state, or invalid receipt binding
+is ambiguous authority and stops fail closed.
+
+Supersession is a derived relationship over immutable successor records. If B
+records `supersedes_publication_id=A`, A remains byte-stable and directly
+queryable, but its mission-scoped disposition is `SUPERSEDED` and it cannot
+compete with B. The resolver validates every authoritative node in the lineage
+against its immutable milestone receipts, including the receipt-bound
+supersession field. Runtime transaction JSON and historical receipts are never
+rewritten merely to mark a predecessor historical.
+
+`PUBLICATION_QUALIFIED` is terminal publication history. When no open
+transaction exists, the unsuperseded qualified tip remains the mission-status
+fallback so completed publication remains observable. Once an authorized
+reprepare creates an integral nonterminal transaction, qualified transactions
+are `HISTORICAL_QUALIFIED` and do not compete with it. A qualified historical
+sibling and a single open recovery successor may therefore coexist; two open
+sibling successors remain incompatible and fail closed.
+
+Reprepare first resolves the same canonical current lineage used by status,
+then binds the deterministic replacement to that predecessor before returning
+success. Exact replay returns the same publication identity as `IDEMPOTENT`.
+If persistence is interrupted, a partial or receipt-inconsistent successor
+does not authorize a transition: later resolution detects invalid transaction
+integrity and stops fail closed. This supplies logical atomicity without
+editing A and without creating a second lifecycle mechanism.
+
+Mission-scoped `publication status <MISSION_ID>` answers current-transaction
+identity, cardinality, disposition, persisted state, and the receipt-backed
+next verification action. It is read-only and does not turn candidate-content
+drift into an arbitrary lineage winner. Direct `publication status
+<PUBLICATION_ID>` remains available for current or historical provenance and
+revalidates that transaction's bound cohort/candidate content. The subsequent
+`verify-pre` boundary independently revalidates those live inputs before any
+staging authority can exist. Thus mission lookup can remain stable during a
+resolver corrective while changed candidate content still fails closed at the
+proper prepublication gate.

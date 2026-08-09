@@ -14,6 +14,7 @@ import yaml
 from scripts.lib.emp.authority_resolution import authoritative_source_path
 from scripts.lib.emp.gate_approval import GateApprovalError, GateApprovalService
 from scripts.lib.emp.oa02_lifecycle import resolve as resolve_oa02
+from scripts.lib.emp.repository_projection import project as project_repository
 
 
 class NextActionError(ValueError):
@@ -123,9 +124,15 @@ def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
         "result": "READY",
             "decision_digest": digest(projection),
         }
-    discovered = Path(_git(root, "rev-parse", "--show-toplevel")).resolve()
-    head = _git(root, "rev-parse", "HEAD")
-    branch = _git(root, "branch", "--show-current")
+    repository_projection = project_repository(root)
+    if repository_projection.get("result") != "PASS":
+        raise NextActionError(
+            "; ".join(repository_projection.get("errors", []))
+            or "canonical repository projection failed"
+        )
+    discovered = Path(repository_projection["repository_root"]).resolve()
+    head = repository_projection["head"]
+    branch = repository_projection.get("branch") or ""
     authority = _mapping(
         authoritative_source_path(root),
         "operational authority state",
@@ -157,7 +164,7 @@ def resolve_next_action(repository_root: Path | str) -> dict[str, Any]:
         root / "engineering/registry/work-registry.yaml", "work registry"
     )
 
-    published = _published_baseline(authority, root)
+    published = repository_projection["origin_main"]
     oa01 = _oa01_lifecycle(root)
     gate = pmct.get("last_evaluated_gate") or "OA-01"
     qualified = [

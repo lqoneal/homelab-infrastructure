@@ -81,7 +81,7 @@ def inspect(root: Path | str, runtime: Path | str, *, transaction: Mapping[str, 
     if contracts.get("applicable_candidate_count") != 0:
         raise LegacyReconciliationError("LEGACY_CONTRACT_CARDINALITY_NOT_ZERO")
     from scripts.lib.eos import operational_beta
-    authority = operational_beta.authority(root)
+    authority = operational_beta.authority(root, include_current_execution=False)
     if authority.get("operation_id") != "OPERATION-BETA" or authority.get("current_platform_mission", {}).get("mission_id") != "BETA-04":
         raise LegacyReconciliationError("CURRENT_BETA_AUTHORITY_UNRESOLVED")
     if transaction and transaction.get("execution_id") != EXECUTION:

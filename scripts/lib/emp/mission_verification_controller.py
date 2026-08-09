@@ -89,7 +89,11 @@ def _git(root: Path, *args: str) -> str:
 
 def _repository(root: Path, runtime: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     identity = resolve(root)
-    projection = project_repository(root, Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")))
+    projection = project_repository(
+        root,
+        Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")),
+        runtime_root=runtime,
+    )
     if projection.get("result") != "PASS":
         raise MissionVerificationError(
             "REPOSITORY_PROJECTION_INVALID",
@@ -102,7 +106,12 @@ def _repository(root: Path, runtime: Path) -> tuple[dict[str, Any], dict[str, An
                 "repository_id": identity["repository_id"], "repository_identity": identity["repository_identity"]}
     if any(marker.get(key) != value for key, value in expected.items()):
         raise MissionVerificationError("RUNTIME_IDENTITY_MISMATCH", "runtime identity does not bind to repository")
-    baseline = resolve_baseline(root, Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")), runtime_identity=marker)
+    baseline = resolve_baseline(
+        root,
+        Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")),
+        runtime_identity=marker,
+        runtime_root=runtime,
+    )
     repository = {**identity, "branch": branch, "current_baseline": projection["head"],
                  "published_baseline": baseline["published_head"], "eos_baseline": baseline["eos_baseline"],
                  "head_origin_parity": projection["head_origin_parity"],
@@ -230,6 +239,9 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
             root, Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")),
             mission_provenance_baseline=provenance,
             runtime_identity=_load(runtime / "runtime-identity.json"),
+            runtime_root=runtime,
+            mission_id=mission_id,
+            wop_id=expected.get("wop_id"),
         )
         repository_data["baseline_resolution"] = baseline
         repository_data["mission_provenance_baseline"] = baseline.get("mission_provenance_baseline")

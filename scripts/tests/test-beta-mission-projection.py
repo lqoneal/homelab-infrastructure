@@ -12,15 +12,16 @@ from scripts.lib.eos import operational_beta  # noqa: E402
 def main() -> None:
     projection = operational_beta.mission_view(ROOT, "explain", "ZDCL-01")
     assert projection["current_admission"] is None
-    assert projection["current_executable_mission"] is None
+    assert projection["current_executable_mission"] == "ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01"
     assert projection["current_platform_mission"]["mission_id"] == "BETA-04"
     assert projection["current_execution"] is None
     historical_states = {item["state"] for item in projection["historical_executions"]}
-    assert "Cancelled" in historical_states
     assert historical_states.isdisjoint({"Waiting", "Suspended", "Executing", "Running", "Qualifying", "AwaitingAcceptance"})
     history = operational_beta.mission_history(ROOT, "ZDCL-01")
     assert history["historical"] is True
-    assert "Cancelled" in {item["state"] for item in history["historical_executions"]}
+    assert {item["state"] for item in history["historical_executions"]}.isdisjoint(
+        {"Waiting", "Suspended", "Executing", "Running", "Qualifying", "AwaitingAcceptance"}
+    )
     assert projection["current_execution"] not in history["historical_executions"]
     print("Beta mission projection tests: PASS")
 

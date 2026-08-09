@@ -146,6 +146,15 @@ def validate(package: Mapping[str, Any]) -> dict[str, Any]:
         raise CanonicalPackageError("package revision must be a positive integer")
     if not isinstance(identity["baseline_commit"], str) or len(identity["baseline_commit"]) != 40:
         raise CanonicalPackageError("baseline_commit must be a full Git SHA")
+    lineage = package.get("revision_lineage")
+    if identity["revision"] > 1:
+        lineage = _require_mapping(lineage, "revision_lineage")
+        if lineage.get("previous_revision") != identity["revision"] - 1:
+            raise CanonicalPackageError("revision_lineage.previous_revision must immediately precede the package revision")
+        if not isinstance(lineage.get("previous_package_digest"), str) or len(lineage["previous_package_digest"]) != 64:
+            raise CanonicalPackageError("revision_lineage.previous_package_digest must be a SHA-256 digest")
+        if lineage.get("historical_revision_1_preserved") is not True:
+            raise CanonicalPackageError("revision_lineage must preserve historical revision 1")
     authority = _require_mapping(package["authority_binding"], "authority_binding")
     if authority.get("authority_source") in (None, ""):
         raise CanonicalPackageError("authority_binding.authority_source is required")
@@ -201,3 +210,75 @@ def load(path: Path | str) -> dict[str, Any]:
         raise CanonicalPackageError("canonical package root must be a mapping")
     validate(value)
     return dict(value)
+
+
+def canonical_identity_records(repository: Path | str) -> dict[str, Any]:
+    """Resolve the current published identity for each canonical WOP.
+
+    Canonical package files are the lifecycle identity source.  Derived Stage-1
+    trees are intentionally not consulted here, so an adapter cannot create a
+    competing mission/WOP/gate binding.  Older revisions remain visible in the
+    returned history but never become current candidates.
+    """
+    root = Path(repository).resolve()
+    package_root = root / "engineering" / "work-orders"
+    candidates: list[dict[str, Any]] = []
+    if package_root.is_dir():
+        for path in sorted(package_root.rglob("canonical-wop-package.yaml")):
+            try:
+                package = load(path)
+            except CanonicalPackageError as error:
+                candidates.append({"source": str(path), "validation_error": str(error)})
+                continue
+            identity = dict(package["package_identity"])
+            binding = package.get("lifecycle_binding", {})
+            candidates.append({
+                **identity,
+                "source": str(path),
+                "canonical_package_digest": package_digest(package),
+                "canonical_source_digest": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "canonical_revision": identity["revision"],
+                "revision_state": binding.get("revision_state", "CURRENT"),
+                "wop_published": binding.get("wop_published", "YES" if identity.get("lifecycle") == "PUBLISHED" else "NO"),
+                "wop_submitted": binding.get("wop_submitted", "NO"),
+                "separate_wop_authorization_required": binding.get("separate_wop_authorization_required", "NO"),
+                "native_beta_binding": binding.get("native_beta_binding", "CANONICAL"),
+                "next_authorized_action": binding.get("next_authorized_action"),
+                "historical_revision_1_preserved": package.get("revision_lineage", {}).get("historical_revision_1_preserved", identity["revision"] == 1),
+            })
+
+    invalid = [item for item in candidates if item.get("validation_error")]
+    valid = [item for item in candidates if not item.get("validation_error")]
+    by_wop: dict[str, list[dict[str, Any]]] = {}
+    for item in valid:
+        by_wop.setdefault(str(item["wop_id"]), []).append(item)
+    current: list[dict[str, Any]] = []
+    historical: list[dict[str, Any]] = []
+    ambiguities: list[dict[str, Any]] = []
+    for wop_id, items in sorted(by_wop.items()):
+        highest = max(int(item["revision"]) for item in items)
+        latest = [item for item in items if int(item["revision"]) == highest]
+        if len({item["canonical_package_digest"] for item in latest}) != 1:
+            ambiguities.append({"wop_id": wop_id, "candidates": latest})
+            continue
+        selected = sorted(latest, key=lambda item: item["source"])[0]
+        selected = dict(selected)
+        selected["revision_state"] = "CURRENT"
+        current.append(selected)
+        for item in items:
+            if item in latest:
+                continue
+            preserved = dict(item)
+            preserved["revision_state"] = "HISTORICAL"
+            preserved["native_beta_binding"] = "NONE"
+            preserved["wop_published"] = "NO"
+            preserved["wop_submitted"] = "NO"
+            preserved["separate_wop_authorization_required"] = "NO"
+            historical.append(preserved)
+    return {
+        "result": "FAIL" if invalid or ambiguities else "PASS",
+        "records": current,
+        "historical_records": historical,
+        "invalid_records": invalid,
+        "ambiguities": ambiguities,
+    }

@@ -1,0 +1,210 @@
+schema_version: 1
+document_type: EngineeringWorkOrder
+mission_id: CAGF-01
+wop_id: WOP-OB-CAGF-G01-CANONICAL-001
+phase_id: CAGF-01-DEVELOPMENT
+revision: 2
+status: Active
+title: Canonical package adapter for OB-CAGF-G01
+objective: Adapt validated canonical-wop-package/1 package OB-CAGF-G01-CANONICAL-PACKAGE-002
+  into the existing Zeus Stage 1 package model.
+scope: &id002
+- declare canonical ownership for every input
+- normalize source-bound inputs
+- establish stable source and aggregate digests
+- reject invalid identity/dependency/cycle/stale/conflicting/malformed inputs
+- generate one deterministic Operation Beta mission/readiness projection
+- preserve source/projection separation
+- emit immutable provenance and bounded publication manifest
+- qualify byte stability
+- qualify replay idempotency without duplicates
+- enforce bounded publication only after qualification
+- expose identity/status/readiness/blockers/provenance/snapshot/next action through
+  Zeus
+- provide stable qualified technical input to downstream consumers
+dependencies:
+- qualified_Beta_baseline
+- declared_canonical_owner_records
+- stable_source_contract_inputs
+- qualified_projection
+priority: 0
+candidate_state: CANDIDATE
+qualification_requirements:
+- exactly one canonical owner per input and no generated owner
+- identical qualified records normalize identically
+- every input has reproducible digest
+- each invalid class blocks generation/publication
+- qualified inputs produce only declared family and identical bytes
+- output cannot create mission/WOP/selection/admission/execution authority
+- all facts attributable and digest-bound
+- identical qualified inputs are byte-identical
+- no duplicate authority/WOP/Mission Contract/execution/receipt/artifact
+- only qualified bounded projection is eligible
+- derived/non-authoritative status is independently exposed
+- consumers resolve technical capability by digest/manifest
+completion_requirements:
+- canonical package provenance preserved
+- Stage 1 package validation passes
+- operator review before submission
+approval: {}
+authoritative_references:
+- PROC-0001@1.11
+- TPL-0001@1.7
+- STD-0000
+- STD-0001
+- STD-0002
+- STD-0003
+- STD-0004
+execution_package_references:
+  immutable_wop: WOP-OB-CAGF-G01-CANONICAL-001
+sections:
+  completion_report_requirement: Record canonical and Stage 1 identities, validation
+    evidence, and the next governed lifecycle action.
+  deliverables:
+  - validated canonical package
+  - deterministic Stage 1 representation
+  - provenance mapping
+  execution_sequence:
+  - verify package integrity
+  - verify repository identity and qualified baseline provenance
+  - resolve package/mission/gate and independent authority binding
+  - resolve technical prerequisites
+  - inspect initial conditions and adopt satisfied work as PREVIOUSLY_SATISFIED
+  - execute only unmet requirements in DAG order
+  - collect requirement evidence and provenance
+  - qualify positive/negative/byte/replay/publication/reconciliation checks
+  - stop before submission/admission/selection/dispatch/execution/publication/commit/push/EOS
+    synchronization
+  dependencies_and_entry_criteria:
+    mission_authority_dependencies: 0
+    declarations:
+    - id: qualified_Beta_baseline
+      kind: PUBLICATION_BASELINE
+      source: repository identity and Beta records
+    - id: declared_canonical_owner_records
+      kind: TECHNICAL_CAPABILITY
+      source: CAGF-G01-R01
+    - id: stable_source_contract_inputs
+      kind: DATA
+      source: CAGF-G01-R02
+    - id: qualified_projection
+      kind: ARTIFACT
+      source: CAGF-G01-R05
+    prohibited_dependencies:
+    - mission selection
+    - another mission authorization
+    - roadmap order
+    - synthetic Mission Contract
+    - synthetic WOP
+    - execution state
+  explicit_authority:
+    authority_source: independent mission authority and separately resolved WOP authority
+    mission_to_mission: false
+    package_authority: external_only
+  governing_references:
+  - canonical package schema
+  - published WOP architecture
+  - existing Stage 1 runtime
+  mission_classification: Development WOP source adapter; non-authoritative until
+    existing lifecycle authority is resolved.
+  prohibited_activities: &id001
+  - mission_state_mutation
+  - execution_state_mutation
+  - authority_mutation
+  - EOS_mutation
+  - commit
+  - push
+  - publication
+  - synchronization
+  publication_and_synchronization:
+    implementation_complete: false
+    qualification_complete: false
+    publication_authorized: false
+    published: false
+    repository_reconciled: false
+    eos_synchronized: false
+    closed: false
+    candidate_state: NOT_SUBMITTED
+    prohibited_effects: *id001
+  scope: *id002
+  stop_resume_and_escalation:
+    checkpoint_fields:
+    - package_digest
+    - requirement_state
+    - evidence_refs
+    - input_digest
+    - output_digest
+    - failure_state
+    - next_authorized_action
+    interruption_behavior: resume from last verified requirement after integrity/prerequisite
+      recheck; never blind replay
+    failed_requirement: preserve diagnostic and block dependents
+    no_mutation_recovery: true
+  success_and_acceptance_criteria:
+  - exactly one canonical owner per input and no generated owner
+  - identical qualified records normalize identically
+  - every input has reproducible digest
+  - each invalid class blocks generation/publication
+  - qualified inputs produce only declared family and identical bytes
+  - output cannot create mission/WOP/selection/admission/execution authority
+  - all facts attributable and digest-bound
+  - identical qualified inputs are byte-identical
+  - no duplicate authority/WOP/Mission Contract/execution/receipt/artifact
+  - only qualified bounded projection is eligible
+  - derived/non-authoritative status is independently exposed
+  - consumers resolve technical capability by digest/manifest
+  validation_profile:
+    implementation_and_qualification_separate: true
+    discoverability: machine-readable evidence under engineering/evidence/operation-beta/ob-cagf-g01/
+    attribution:
+    - package_id
+    - wop_id
+    - mission_id
+    - gate_id
+    - requirement_id
+    - execution_id
+    - repository
+    - baseline
+    - verification_action
+    required_per_requirement:
+    - initial_condition
+    - source_refs
+    - capability_reuse
+    - prerequisite_resolution
+    - action
+    - output
+    - verification
+    - result
+    - failure_diagnostic
+    - replay_identity
+    final_qualification_evidence:
+    - owner_inventory
+    - normalized_inputs
+    - source_digests
+    - negative_validation
+    - projection
+    - provenance_manifest
+    - byte_stability
+    - replay
+    - publication_boundary
+    - zeus_native_verification
+    - repository_eos
+execution_mode: DEVELOPMENT
+governance_authority: independent mission authority and separately resolved WOP authority
+repository_identity: /data/engineering/repositories/homelab
+effect_profile: DEVELOPMENT-NONPRODUCTION-READONLY-ADAPTER
+required_execution_files:
+- bootstrap.md
+- roadmap.md
+- mission.yaml
+- gates.yaml
+- manifests/immutable-manifest.yaml
+- source-wop.yaml
+- traceability.json
+source_document_digest: e49058f4a4134477ff7700e024da42bdb53ea2a5fe637a764b4b29923ba27d4d
+canonical_package_schema: canonical-wop-package/1
+canonical_package_id: OB-CAGF-G01-CANONICAL-PACKAGE-002
+canonical_package_digest: 79a9fb9ce9017eb66322bbdcb30be26cdcc014fd295517ed028a04a97b67f7b0
+canonical_gate_id: OB-CAGF-G01
+canonical_baseline_commit: 32796dffb43a47f4f9516a0936fe89f0bec0ee80
+canonical_authority_classification: EXTERNAL_ONLY_NON_AUTHORITATIVE_SOURCE

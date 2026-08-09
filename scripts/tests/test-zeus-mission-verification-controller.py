@@ -6,6 +6,7 @@ from __future__ import annotations
 import copy
 import json
 import shutil
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -34,7 +35,21 @@ class MissionVerificationControllerTests(unittest.TestCase):
         return holder
 
     def test_authoritative_mission_passes(self) -> None:
-        value = verify(ROOT, MISSION)
+        head = subprocess.check_output(
+            ["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True
+        ).strip()
+        steady = {
+            "result": "PASS", "head": head, "origin_main": head,
+            "eos_baseline": head, "branch": "main", "eos_parity": True,
+            "head_origin_parity": True, "index_clean": True,
+            "worktree_clean": False,
+            "baseline_state_classification": "STEADY_STATE_CONVERGED",
+            "authorized_publication_transition": False,
+            "publication_transition": None, "errors": [],
+        }
+        with patch("scripts.lib.emp.mission_verification_controller.project_repository", return_value=steady), \
+             patch("scripts.lib.eos.canonical_baseline.project_repository", return_value=steady):
+            value = verify(ROOT, MISSION)
         self.assertEqual(value["result"], "PASS")
         self.assertTrue(value["read_only"])
         self.assertEqual(value["replay"], {"submission": "IDEMPOTENT", "admission": "IDEMPOTENT", "bootstrap": "IDEMPOTENT", "provider_session": "IDEMPOTENT", "provider_invocation": "IDEMPOTENT", "execution_start": "IDEMPOTENT"})

@@ -12,6 +12,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "engineering/work-orders/WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001/source-wop.md"
@@ -34,6 +35,24 @@ class CanonicalLifecycleResolverTests(unittest.TestCase):
         shutil.copy2(SOURCE, self.source)
         canonicalize(self.source, ROOT)
         self.runtime = self.holder / "runtime"
+        head = subprocess.check_output(
+            ["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True
+        ).strip()
+        steady_projection = {
+                "result": "PASS", "head": head, "origin_main": head,
+                "eos_baseline": head, "branch": "main", "head_origin_parity": True,
+                "eos_parity": True, "baseline_state_classification": "STEADY_STATE_CONVERGED",
+                "authorized_publication_transition": False, "publication_transition": None,
+                "errors": [], "index_clean": True, "worktree_clean": True,
+        }
+        self.enterContext(patch(
+            "scripts.lib.eos.canonical_baseline.project_repository",
+            return_value=steady_projection,
+        ))
+        self.enterContext(patch(
+            "scripts.lib.emp.mission_verification_controller.project_repository",
+            return_value=steady_projection,
+        ))
         self.environment = {
             **os.environ,
             "ZEUS_RUNTIME_ROOT": str(self.runtime),

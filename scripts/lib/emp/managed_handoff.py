@@ -19,6 +19,7 @@ import yaml
 from scripts.lib.emp import codex_adapter
 from scripts.lib.emp.repository_identity import RepositoryIdentityError, resolve as resolve_repository, resolve_declared
 from scripts.lib.emp.runtime_paths import resolve_runtime
+from scripts.lib.wop.canonical_package import canonical_identity_records
 
 
 BLOCKERS = {
@@ -27,6 +28,11 @@ BLOCKERS = {
     "HANDOFF_AUTHORITY_UNRESOLVED",
     "HANDOFF_EXECUTION_UNAVAILABLE",
 }
+
+HANDOFF_CONTRACT_TYPE = "ZEUS_CODEX_HANDOFF"
+HANDOFF_SCHEMA_VERSION = 1
+HANDOFF_SCHEMA = "engineering/oversight/codex-handoff-contract.schema.yaml"
+GATE_CROSSWALK = "engineering/evidence/operation-beta/OPERATION-BETA-CANONICAL-GATE-CATALOG.yaml"
 
 _LABELS = {
     "mission_id": ("mission_id", "mission"),
@@ -94,6 +100,66 @@ def _frontmatter(text: str) -> Mapping[str, Any]:
     return value if isinstance(value, Mapping) else {}
 
 
+def _structured_contract(text: str) -> dict[str, Any] | None:
+    """Validate the canonical structured handoff shape when one is supplied."""
+    try:
+        value = yaml.safe_load(text)
+    except yaml.YAMLError as error:
+        raise ManagedHandoffError("HANDOFF_CONTRACT_SYNTAX_INVALID", str(error)) from error
+    if not isinstance(value, Mapping) or value.get("contract_type") != HANDOFF_CONTRACT_TYPE:
+        return None
+    required = {
+        "schema_version", "contract_type", "request_id", "request_type",
+        "instruction_contract", "mission_id", "wop_id", "gate_id", "operation",
+        "mode", "mutation_policy", "objective", "authoritative_inputs",
+        "preconditions", "allowed_actions", "prohibited_actions", "required_checks",
+        "acceptance_criteria", "evidence_requirements", "stop_boundary",
+        "next_action_policy",
+    }
+    optional = {"provider_metadata", "natural_language_context"}
+    missing = sorted(required - set(value))
+    unknown = sorted(set(value) - required - optional)
+    if missing or unknown:
+        raise ManagedHandoffError(
+            "HANDOFF_CONTRACT_SCHEMA_INVALID",
+            f"missing={missing}; unsupported={unknown}",
+        )
+    if value.get("schema_version") != HANDOFF_SCHEMA_VERSION:
+        raise ManagedHandoffError("HANDOFF_CONTRACT_SCHEMA_INVALID", "unsupported schema_version")
+    if value.get("operation") != "OPERATION-BETA":
+        raise ManagedHandoffError("HANDOFF_CONTRACT_SCHEMA_INVALID", "operation must be OPERATION-BETA")
+    if value.get("request_type") not in {
+        "ENGINEERING_HANDOFF", "GATE_CORRECTIVE", "GATE_SPECIFICATION",
+        "READ_ONLY_AUDIT", "QUALIFICATION",
+    }:
+        raise ManagedHandoffError("HANDOFF_CONTRACT_SCHEMA_INVALID", "unsupported request_type")
+    if value.get("mode") not in {"READ_ONLY", "DEVELOPMENT", "QUALIFICATION"}:
+        raise ManagedHandoffError("HANDOFF_CONTRACT_SCHEMA_INVALID", "unsupported mode")
+    if value.get("mutation_policy") not in {
+        "READ_ONLY", "WORKSPACE_BOUNDED", "CONTROLLED_RUNTIME_TRANSITION",
+    }:
+        raise ManagedHandoffError("HANDOFF_CONTRACT_SCHEMA_INVALID", "unsupported mutation_policy")
+    for field in ("preconditions", "allowed_actions", "prohibited_actions", "required_checks",
+                  "acceptance_criteria", "evidence_requirements"):
+        items = value.get(field)
+        if not isinstance(items, list) or not items or any(not isinstance(item, str) or not item.strip() for item in items):
+            raise ManagedHandoffError("HANDOFF_CONTRACT_SCHEMA_INVALID", f"{field} must be a non-empty string list")
+    inputs = value.get("authoritative_inputs")
+    if not isinstance(inputs, list) or not inputs or any(
+        not isinstance(item, Mapping) or not item.get("locator") or not item.get("role")
+        or set(item) - {"locator", "role", "required"} for item in inputs
+    ):
+        raise ManagedHandoffError("HANDOFF_CONTRACT_SCHEMA_INVALID", "authoritative_inputs are invalid")
+    policy = value.get("next_action_policy")
+    if not isinstance(policy, Mapping) or set(policy) != {"on_success", "on_blocked"} or not all(policy.values()):
+        raise ManagedHandoffError("HANDOFF_CONTRACT_SCHEMA_INVALID", "next_action_policy is invalid")
+    for field in ("request_id", "instruction_contract", "mission_id", "wop_id", "gate_id",
+                  "objective", "stop_boundary"):
+        if not isinstance(value.get(field), str) or not value[field].strip():
+            raise ManagedHandoffError("HANDOFF_CONTRACT_SCHEMA_INVALID", f"{field} must be non-empty")
+    return dict(value)
+
+
 def extract_semantic_references(text: str) -> dict[str, list[str]]:
     """Extract assertions without treating prose as authority."""
     metadata = _flatten_metadata(_frontmatter(text))
@@ -143,6 +209,10 @@ def _records(runtime: Path, root: Path) -> list[dict[str, Any]]:
                 value = _load_json(path)
                 if value:
                     records.append({"source": str(path), "authority_class": "RUNTIME", **value})
+    canonical = canonical_identity_records(root)
+    current_canonical = {str(item["wop_id"]).upper(): item for item in canonical["records"]}
+    for item in canonical["records"]:
+        records.append({"authority_class": "CANONICAL_PACKAGE", **item})
     work_orders = root / "engineering" / "work-orders"
     if work_orders.is_dir():
         names = {"mission.yaml", "immutable-wop.yaml", "source-wop.yaml", "submission.yaml", "WOP.yaml", "canonical-wop-package.yaml"}
@@ -150,7 +220,27 @@ def _records(runtime: Path, root: Path) -> list[dict[str, Any]]:
             if path.is_file() and path.name in names:
                 value = _load_yaml(path)
                 if value:
+                    package_identity = value.get("package_identity") if isinstance(value.get("package_identity"), Mapping) else {}
+                    package_wop = str(package_identity.get("wop_id") or value.get("wop_id") or "").upper()
+                    # The canonical package is the identity owner.  Its
+                    # digest-addressed Stage-1 adapter is provenance, not a
+                    # second mission/WOP/gate registration.
+                    if path.name == "canonical-wop-package.yaml":
+                        continue
+                    if package_wop in current_canonical:
+                        continue
                     records.append({"source": str(path), "authority_class": "REPOSITORY_ARTIFACT", **value})
+    crosswalk = _load_yaml(root / GATE_CROSSWALK)
+    for row in (crosswalk or {}).get("wop_gate_crosswalk", []):
+        if isinstance(row, Mapping):
+            records.append({
+                "source": str(root / GATE_CROSSWALK),
+                "authority_class": "CONTROLLED_CROSSWALK",
+                "mission_id": row.get("mission_id"), "wop_id": row.get("wop_id"),
+                "gate_id": row.get("wop_gate_id"),
+                "operation_id": "OPERATION-BETA",
+                "authority_effect": "NONE",
+            })
     return records
 
 
@@ -245,6 +335,10 @@ def resolve_handoff(repository: Path | str, text: str, *, runtime_root: Path | s
                     source: str = "-") -> dict[str, Any]:
     """Resolve a handoff against repository and runtime state, read-only."""
     root = Path(repository).resolve()
+    try:
+        structured = _structured_contract(text)
+    except ManagedHandoffError as error:
+        return _blocked(error.code, error.message)
     hints = extract_semantic_references(text)
     try:
         identity = resolve_repository(root)
@@ -320,9 +414,33 @@ def resolve_handoff(repository: Path | str, text: str, *, runtime_root: Path | s
         if not execution_candidates:
             return _blocked("HANDOFF_BINDING_CONTRADICTION", "handoff execution assertion is not bound to the mission/WOP", candidates=execution_values, hints=hints)
     if len(execution_candidates) != 1:
-        return _blocked("HANDOFF_EXECUTION_UNAVAILABLE" if not execution_candidates else "HANDOFF_RESOLUTION_AMBIGUOUS",
-                        "execution is not uniquely available for handoff delivery",
-                        candidates=[str(record.get("execution_id")) for record in execution_candidates], hints=hints)
+        blocker = "HANDOFF_EXECUTION_UNAVAILABLE" if not execution_candidates else "HANDOFF_RESOLUTION_AMBIGUOUS"
+        message = (
+            "WOP identity binding is resolved, but no submitted/admitted execution exists"
+            if not execution_candidates else "execution is not uniquely available for handoff delivery"
+        )
+        result = _blocked(
+            blocker, message,
+            candidates=[str(record.get("execution_id")) for record in execution_candidates], hints=hints,
+        )
+        identity_record = bound_records[0] if len(bound_records) == 1 else {}
+        next_action = identity_record.get("next_authorized_action") or "SUBMIT_EXISTING_WOP_THROUGH_ZEUS"
+        result.update({
+            "operation_id": operation_id,
+            "mission_id": mission_id,
+            "wop_id": wop_id,
+            "gate_id": gate_id,
+            "binding": {"mission": "PASS", "wop": "PASS", "gate": "PASS"},
+            "wop_published": identity_record.get("wop_published", "NO"),
+            "wop_submitted": identity_record.get("wop_submitted", "NO"),
+            "separate_wop_authorization_required": identity_record.get("separate_wop_authorization_required", "NO"),
+            "canonical_revision": identity_record.get("canonical_revision", identity_record.get("revision")),
+            "canonical_revision_state": identity_record.get("revision_state", "CURRENT"),
+            "historical_revision_1_preserved": identity_record.get("historical_revision_1_preserved", "NO"),
+            "lifecycle": {"submission": "NOT_SUBMITTED", "admission": "NOT_ADMITTED", "execution": "NOT_EXECUTING"},
+            "next_authorized_action": next_action,
+        })
+        return result
     execution = execution_candidates[0]
     provider_values = hints["provider_id"]
     if len(provider_values) > 1:
@@ -365,6 +483,13 @@ def resolve_handoff(repository: Path | str, text: str, *, runtime_root: Path | s
             return _blocked("HANDOFF_BINDING_CONTRADICTION", "handoff session assertion is incompatible with the resolved execution", candidates=[asserted_session], hints=hints)
     return {
         "result": "PASS", "handoff_resolution": "PASS", "source": source,
+        "handoff_contract": ({"schema": HANDOFF_SCHEMA, "validation": "PASS",
+                              "request_id": structured.get("request_id"),
+                              "request_type": structured.get("request_type"),
+                              "instruction_contract": structured.get("instruction_contract"),
+                              "mutation_policy": structured.get("mutation_policy"),
+                              "stop_boundary": structured.get("stop_boundary"),
+                              "execution_authority": "NONE"} if structured else None),
         "semantic_references": hints, "repository": identity,
         "operation_id": operation_id, "mission_id": mission_id, "wop_id": wop_id,
         "gate_id": gate_id, "baseline": baseline or authoritative_baseline,

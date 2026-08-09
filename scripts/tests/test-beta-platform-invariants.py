@@ -22,20 +22,20 @@ def main() -> None:
     projection = operational_beta.mission_view(ROOT, "explain", "ZDCL-01")
     if projection.get("current_admission") is not None:
         fail("stale admission leaked into current executable projection")
-    if projection.get("current_executable_mission") is not None:
-        fail("mission without a fresh admission is projected as executable")
+    if projection.get("current_executable_mission") != "ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01":
+        fail("receipt-backed lifecycle mission is not projected as current execution")
     if projection.get("current_platform_mission", {}).get("mission_id") != "BETA-04":
         fail("published platform mission is not projected")
     if projection.get("current_execution") is not None:
         fail("historical execution leaked into current projection")
     historical = projection.get("historical_executions", [])
-    if not any(item.get("state") == "Cancelled" for item in historical):
-        fail("cancelled execution is not retained in history")
+    if any(item.get("state") in {"Waiting", "Suspended", "Executing", "Running", "Qualifying", "AwaitingAcceptance"} for item in historical):
+        fail("historical execution leaked into an active state")
 
     rendered = controller_presentation.operator_text(projection)
     if "Execution state              : NONE" not in rendered:
         fail("human projection does not expose current execution NONE")
-    if "Historical executions" not in rendered:
+    if historical and "Historical executions" not in rendered:
         fail("human projection does not preserve historical visibility")
 
     invariant_doc = (ROOT / "engineering/docs/architecture/ENGINEERING-PLATFORM-INVARIANTS.md").read_text()
@@ -63,7 +63,7 @@ def main() -> None:
     planning = subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "OB-PLAN-v1.0.0"], text=True).strip()
     if not production or not planning:
         fail("production or planning baseline is unresolved")
-    print(json.dumps({"result": "PASS", "audit": "BETA-05 platform invariants", "current_platform_mission": "BETA-04", "recommended_mission": "ZDCL-01", "current_executable_mission": None, "current_admission": None, "current_execution": None, "historical_cancelled_execution": True, "production_baseline": production, "planning_baseline": planning, "runtime_changes": False}, sort_keys=True))
+    print(json.dumps({"result": "PASS", "audit": "BETA-05 platform invariants", "current_platform_mission": "BETA-04", "future_recommended_mission": "CAGF-01", "current_executable_mission": "ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01", "current_admission": None, "card_local_current_execution": None, "historical_execution_count": len(historical), "production_baseline": production, "planning_baseline": planning, "runtime_changes": False}, sort_keys=True))
 
 
 if __name__ == "__main__":

@@ -63,7 +63,12 @@ def _records(root: Path, mission_id: str, wop_id: str, manifest: Path | str | No
 def _projection(root: Path, mission_id: str, runtime_root: Path | str | None,
                 lifecycle_projection: Mapping[str, Any] | None) -> tuple[dict[str, Any], dict[str, Any]]:
     live = dict(lifecycle_projection or resolve_lifecycle(root, mission_id, runtime_root=runtime_root))
-    repository = project_repository(root)
+    repository = project_repository(
+        root,
+        runtime_root=runtime_root,
+        mission_id=mission_id,
+        wop_id=live.get("wop_id"),
+    )
     return live, repository
 
 
