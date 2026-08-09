@@ -289,7 +289,13 @@ def resolve(repository: Path | str, mission_id: str, *, runtime_root: Path | str
     try:
         replay = dict(bootstrap)
         replay["duplicate_bootstrap"] = "IDEMPOTENT"
-        verification = verify_bootstrap_replay(bootstrap, replay, runtime_root=runtime, repository=root)
+        verification = verify_bootstrap_replay(
+            bootstrap,
+            replay,
+            runtime_root=runtime,
+            repository=root,
+            allow_current_wave2_downstream=True,
+        )
         _identity_matches(canonical_identity, bootstrap, ("mission_id", "wop_id", "submission_id"), "P4 bootstrap")
         if bootstrap.get("admission_id") != admission.get("admission_id"):
             raise CanonicalLifecycleResolutionError("CANONICAL_IDENTITY_CHAIN_MISMATCH", "P4 bootstrap admission identity differs from P3 admission")
@@ -384,12 +390,15 @@ def resolve(repository: Path | str, mission_id: str, *, runtime_root: Path | str
                     "PROVIDER_PROVENANCE_MISMATCH",
                     "provider selection provenance differs from the admitted lifecycle baseline",
                 )
-            current_baseline = str((lineage or {}).get("current_published_baseline") or "")
-            if provider_anchor.get("current_published_baseline") != current_baseline:
-                raise CanonicalLifecycleResolutionError(
-                    "PROVIDER_BASELINE_MISMATCH",
-                    "provider selection current baseline differs from the canonical live baseline",
+            try:
+                provider_lineage = provider_selection._validate_live_lineage(
+                    root, provider_anchor, live_lineage=lineage
                 )
+            except provider_selection.ProviderSelectionError as error:
+                raise CanonicalLifecycleResolutionError(
+                    error.code,
+                    str(error),
+                ) from error
             base.update({
                 "provider_selected": True,
                 "provider_qualified": bool(provider_stage.get("provider_qualified")),
@@ -399,6 +408,7 @@ def resolve(repository: Path | str, mission_id: str, *, runtime_root: Path | str
                 "provider_selection_state": provider_stage.get("provider_selection_state"),
                 "provider_selection_result": provider_stage.get("provider_selection_result"),
                 "provider_selection": provider_stage,
+                "provider_selection_lineage": provider_lineage,
                 "lifecycle_state": "AWAITING_EXECUTION_DISPATCH",
                 "readiness": "READY_FOR_PROVIDER_DISPATCH",
                 "eligibility": "PROVIDER_DISPATCH_PENDING",
@@ -415,6 +425,194 @@ def resolve(repository: Path | str, mission_id: str, *, runtime_root: Path | str
             })
     except (provider_selection.ProviderSelectionError, CanonicalLifecycleResolutionError, OSError) as error:
         return _fail(mission, getattr(error, "code", "CANONICAL_PROVIDER_SELECTION_INVALID"), str(error), chain=chain)
+    # The provider-selection record is not the end of the canonical chain.
+    # Later P5 records are immutable, receipt-backed transitions too; when
+    # they exist, validate each set in order and project the furthest
+    # contiguous position.  Do not use directory presence as evidence: every
+    # stage below is accepted only after its own cardinality, digest, path,
+    # identity, binding, and boundary verifier succeeds.
+    from scripts.lib.emp import dispatch_foundation, execution_start, provider_invocation, provider_session
+
+    def _anchor(stage: Mapping[str, Any], key: str, label: str) -> dict[str, Any]:
+        descriptor = (stage.get("artifacts") or {}).get(key)
+        if not isinstance(descriptor, Mapping) or not descriptor.get("path"):
+            raise CanonicalLifecycleResolutionError("CANONICAL_DOWNSTREAM_RECEIPT_MISSING", f"{label} receipt descriptor is missing")
+        return _load(Path(str(descriptor["path"])))
+
+    def _bind(stage: Mapping[str, Any], key: str, expected: Mapping[str, Any], fields: tuple[str, ...], label: str) -> dict[str, Any]:
+        observed = _anchor(stage, key, label)
+        _identity_matches(expected, observed, fields, label)
+        return observed
+
+    def _has_artifacts(found: Mapping[str, list[Any]]) -> bool:
+        return any(found.values())
+
+    dispatch_found = dispatch_foundation._found(runtime, mission)
+    session_found = provider_session._found(runtime, mission)
+    invocation_found = provider_invocation._found(runtime, mission)
+    execution_found = execution_start._found(runtime, mission)
+    later_found = _has_artifacts(session_found) or _has_artifacts(invocation_found) or _has_artifacts(execution_found)
+
+    try:
+        dispatch_stage = dispatch_foundation._verify_set(runtime, dispatch_found)
+        if dispatch_stage is None:
+            if later_found:
+                raise CanonicalLifecycleResolutionError(
+                    "CANONICAL_DOWNSTREAM_CHAIN_GAP",
+                    "provider-session, invocation, or execution-start evidence exists without a verified dispatch",
+                )
+            base["lifecycle_chain"] = chain
+            return base
+        dispatch_anchor = _bind(
+            dispatch_stage,
+            "dispatch_transaction",
+            {**canonical_identity, "admission_id": admission.get("admission_id"), "bootstrap_id": bootstrap.get("bootstrap_id"),
+             "provider_selection_id": provider_stage.get("provider_selection_id"), "provider_id": provider_stage.get("provider_id")},
+            ("mission_id", "wop_id", "submission_id", "admission_id", "bootstrap_id", "provider_selection_id", "provider_id"),
+            "P5 dispatch",
+        )
+        base.update({
+            "dispatch_id": dispatch_stage.get("dispatch_id"),
+            "dispatch_state": dispatch_stage.get("dispatch_state"),
+            "dispatch_result": dispatch_stage.get("dispatch_result"),
+            "dispatch_authorized": dispatch_stage.get("dispatch_authorized"),
+            "dispatch": dispatch_stage,
+            "lifecycle_state": "DISPATCHED",
+            "readiness": "READY_FOR_PROVIDER_SESSION",
+            "eligibility": "PROVIDER_SESSION_PENDING",
+            "next_authorized_action": "ESTABLISH_PROVIDER_SESSION",
+            "next_action": "ESTABLISH_PROVIDER_SESSION",
+            "canonical_state_source": "P5_DISPATCH_RECEIPT",
+        })
+        chain.append({
+            "stage": "DISPATCHED", "state": dispatch_stage.get("dispatch_state"),
+            "receipt": (dispatch_stage.get("artifacts") or {}).get("dispatch_receipt"),
+            "dispatch_id": dispatch_stage.get("dispatch_id"), "next_action": "ESTABLISH_PROVIDER_SESSION",
+        })
+
+        dispatch_fields = {**canonical_identity, "admission_id": admission.get("admission_id"), "bootstrap_id": bootstrap.get("bootstrap_id"),
+                           "dispatch_id": dispatch_stage.get("dispatch_id"), "provider_selection_id": provider_stage.get("provider_selection_id"),
+                           "provider_id": provider_stage.get("provider_id")}
+        session_stage = provider_session._verify_set(runtime, session_found)
+        if session_stage is None:
+            if _has_artifacts(invocation_found) or _has_artifacts(execution_found):
+                raise CanonicalLifecycleResolutionError(
+                    "CANONICAL_DOWNSTREAM_CHAIN_GAP",
+                    "provider invocation or execution-start evidence exists without a verified provider session",
+                )
+            base["lifecycle_chain"] = chain
+            return base
+        session_anchor = _bind(
+            session_stage, "provider_session", dispatch_fields,
+            ("mission_id", "wop_id", "submission_id", "admission_id", "bootstrap_id", "dispatch_id", "provider_selection_id", "provider_id"),
+            "P5 provider session",
+        )
+        if session_stage.get("provider_session_id") != session_anchor.get("provider_session_id"):
+            raise CanonicalLifecycleResolutionError("CANONICAL_DOWNSTREAM_BINDING_MISMATCH", "provider session projection differs from its receipt")
+        base.update({
+            "provider_session_id": session_stage.get("provider_session_id"),
+            "provider_session_state": session_stage.get("session_state"),
+            "provider_session_authorized": session_stage.get("provider_session_authorized"),
+            "provider_session_created": session_stage.get("provider_session_created"),
+            "provider_session": session_stage,
+            "lifecycle_state": "PROVIDER_BOUND",
+            "readiness": "READY_FOR_PROVIDER_INVOCATION",
+            "eligibility": "PROVIDER_INVOCATION_PENDING",
+            "next_authorized_action": "INVOKE_PROVIDER",
+            "next_action": "INVOKE_PROVIDER",
+            "canonical_state_source": "P5_PROVIDER_SESSION_RECEIPT",
+        })
+        chain.append({
+            "stage": "PROVIDER_BOUND", "state": session_stage.get("session_state"),
+            "receipt": (session_stage.get("artifacts") or {}).get("provider_session_receipt"),
+            "provider_session_id": session_stage.get("provider_session_id"), "next_action": "INVOKE_PROVIDER",
+        })
+
+        session_fields = {**dispatch_fields, "provider_session_id": session_stage.get("provider_session_id")}
+        invocation_stage = provider_invocation._verify_set(runtime, invocation_found)
+        if invocation_stage is None:
+            if _has_artifacts(execution_found):
+                raise CanonicalLifecycleResolutionError(
+                    "CANONICAL_DOWNSTREAM_CHAIN_GAP",
+                    "execution-start evidence exists without a verified provider invocation",
+                )
+            base["lifecycle_chain"] = chain
+            return base
+        invocation_anchor = _bind(
+            invocation_stage, "provider_invocation_transaction", session_fields,
+            ("mission_id", "wop_id", "submission_id", "admission_id", "bootstrap_id", "dispatch_id", "provider_session_id", "provider_id"),
+            "P5 provider invocation",
+        )
+        if invocation_stage.get("provider_invocation_id") != invocation_anchor.get("provider_invocation_id"):
+            raise CanonicalLifecycleResolutionError("CANONICAL_DOWNSTREAM_BINDING_MISMATCH", "provider invocation projection differs from its receipt")
+        base.update({
+            "provider_invocation_id": invocation_stage.get("provider_invocation_id"),
+            "provider_invocation_state": invocation_stage.get("provider_invocation_state"),
+            "provider_invocation_authorized": invocation_stage.get("provider_invocation_authorized"),
+            "provider_invoked": invocation_stage.get("provider_invoked"),
+            "provider_acknowledged": invocation_stage.get("provider_acknowledged"),
+            "provider_invocation": invocation_stage,
+            "lifecycle_state": "PROVIDER_INVOKED",
+            "readiness": "READY_FOR_EXECUTION_START",
+            "eligibility": "EXECUTION_START_PENDING",
+            "next_authorized_action": "START_EXECUTION",
+            "next_action": "START_EXECUTION",
+            "canonical_state_source": "P5_PROVIDER_INVOCATION_RECEIPT",
+        })
+        chain.append({
+            "stage": "PROVIDER_INVOKED", "state": invocation_stage.get("provider_invocation_state"),
+            "receipt": (invocation_stage.get("artifacts") or {}).get("provider_invocation_receipt"),
+            "provider_invocation_id": invocation_stage.get("provider_invocation_id"), "next_action": "START_EXECUTION",
+        })
+
+        invocation_fields = {**session_fields, "provider_invocation_id": invocation_stage.get("provider_invocation_id")}
+        execution_stage = execution_start._verify_set(runtime, execution_found)
+        if execution_stage is None:
+            base["lifecycle_chain"] = chain
+            return base
+        execution_anchor = _bind(
+            execution_stage, "execution_start_transaction", invocation_fields,
+            ("mission_id", "wop_id", "provider_invocation_id", "provider_session_id", "provider_id", "dispatch_id"),
+            "P5 execution start",
+        )
+        if execution_stage.get("execution_id") != execution_anchor.get("execution_id"):
+            raise CanonicalLifecycleResolutionError("CANONICAL_DOWNSTREAM_BINDING_MISMATCH", "execution-start projection differs from its receipt")
+        if execution_stage.get("mission_work_started") is not False or execution_stage.get("repository_work_started") is not False:
+            raise CanonicalLifecycleResolutionError("CANONICAL_EXECUTION_BOUNDARY_FAILURE", "execution-start evidence crosses the controlled mission-work boundary")
+        base.update({
+            "execution_id": execution_stage.get("execution_id"),
+            "execution_session_id": execution_stage.get("execution_session_id"),
+            "execution_start_state": execution_stage.get("execution_start_state"),
+            "execution_state": execution_stage.get("execution_start_state"),
+            "execution_start_result": execution_stage.get("execution_start_result"),
+            "execution_start_authorized": execution_stage.get("execution_start_authorized"),
+            "execution_session_created": execution_stage.get("execution_session_created"),
+            "execution_started": execution_stage.get("execution_started"),
+            "provider_process_bound": execution_stage.get("provider_process_bound"),
+            "mission_work_started": execution_stage.get("mission_work_started"),
+            "repository_work_started": execution_stage.get("repository_work_started"),
+            "execution_monitoring_active": execution_stage.get("execution_monitoring_active"),
+            "completion_reported": execution_stage.get("completion_reported"),
+            "execution_start": execution_stage,
+            "lifecycle_state": "READY_FOR_CONTROLLED_EXECUTION",
+            "readiness": "READY_FOR_CONTROLLED_EXECUTION",
+            "eligibility": "CONTROLLED_MISSION_WORK_READY",
+            "next_authorized_action": "BEGIN_CONTROLLED_MISSION_WORK",
+            "next_action": "BEGIN_CONTROLLED_MISSION_WORK",
+            "canonical_state_source": "P5_EXECUTION_START_RECEIPT",
+        })
+        chain.append({
+            "stage": "READY_FOR_CONTROLLED_EXECUTION", "state": execution_stage.get("execution_start_state"),
+            "receipt": (execution_stage.get("artifacts") or {}).get("execution_start_receipt"),
+            "execution_id": execution_stage.get("execution_id"),
+            "execution_session_id": execution_stage.get("execution_session_id"),
+            "next_action": "BEGIN_CONTROLLED_MISSION_WORK",
+        })
+    except (dispatch_foundation.DispatchFoundationError, provider_session.ProviderSessionError,
+            provider_invocation.ProviderInvocationError, execution_start.ExecutionStartError,
+            CanonicalLifecycleResolutionError, OSError) as error:
+        return _fail(mission, getattr(error, "code", "CANONICAL_DOWNSTREAM_CHAIN_INVALID"), str(error), chain=chain)
+
     base["lifecycle_chain"] = chain
     return base
 

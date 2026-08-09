@@ -20,6 +20,8 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, Mapping
 
+from scripts.lib.emp.canonical_authority_receipt import AuthorityReceiptError, normalize as normalize_authority
+
 
 class AutonomousLifecycleError(ValueError):
     """The lifecycle cannot be resolved to one lawful state."""
@@ -135,6 +137,10 @@ class AutonomousLifecycleController:
         receipts = authoritative.get("receipts") or {}
         if "authorization" not in receipts and authoritative.get("state") not in {"VALIDATED", "REJECTED"}:
             raise AutonomousLifecycleError("authorization receipt is absent")
+        try:
+            normalize_authority(authoritative, source="AUTONOMOUS_LIFECYCLE")
+        except AuthorityReceiptError as error:
+            raise AutonomousLifecycleError(f"canonical authority receipt rejected: {error.code}: {error}") from error
 
     def plan(self, authoritative: Mapping[str, Any], derived: Mapping[str, Any] | None = None, *, policy: Mapping[str, Any] | None = None) -> dict[str, Any]:
         self._validate_authority(authoritative)

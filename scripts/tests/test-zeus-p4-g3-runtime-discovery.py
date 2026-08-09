@@ -25,7 +25,11 @@ class P4G3RuntimeDiscoveryTests(unittest.TestCase):
             self.assertEqual(value["bootstrap_state"], "READY_FOR_EXECUTION_PROVIDER")
             self.assertTrue(value["provider_ready"])
             self.assertTrue(value["provider_selected"])
-            self.assertEqual(value["next_action"], "BEGIN_CONTROLLED_MISSION_WORK")
+            # This historical Beta runtime has a completed downstream chain;
+            # current canonical status deliberately stops at the legacy
+            # reconciliation boundary rather than exposing a stale work
+            # action as current authority.
+            self.assertEqual(value["next_action"], "OPERATOR_REVIEW_LEGACY_LIFECYCLE_RECONCILIATION")
         after = {p: p.read_bytes() for p in Path("/home/loneal/.local/state/zeus-runtime/homelab-6bd83f9079d6fc57").rglob("*.json")}
         self.assertEqual(before, after)
 

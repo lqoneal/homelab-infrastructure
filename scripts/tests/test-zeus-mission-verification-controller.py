@@ -22,7 +22,15 @@ RUNTIME = Path.home() / ".local/state/zeus-runtime/homelab-6bd83f9079d6fc57"
 class MissionVerificationControllerTests(unittest.TestCase):
     def isolated_runtime(self) -> tempfile.TemporaryDirectory:
         holder = tempfile.TemporaryDirectory(prefix="zeus-mission-verify-")
-        shutil.copytree(RUNTIME, Path(holder.name) / "runtime", dirs_exist_ok=True)
+        # Mission verification consumes receipt/runtime artifacts, not the
+        # provider's multi-gigabyte Codex installation/cache.  Excluding that
+        # non-authoritative directory keeps the relocation fixture bounded.
+        shutil.copytree(
+            RUNTIME,
+            Path(holder.name) / "runtime",
+            dirs_exist_ok=True,
+            ignore=shutil.ignore_patterns("codex-home"),
+        )
         return holder
 
     def test_authoritative_mission_passes(self) -> None:
@@ -30,7 +38,10 @@ class MissionVerificationControllerTests(unittest.TestCase):
         self.assertEqual(value["result"], "PASS")
         self.assertTrue(value["read_only"])
         self.assertEqual(value["replay"], {"submission": "IDEMPOTENT", "admission": "IDEMPOTENT", "bootstrap": "IDEMPOTENT", "provider_session": "IDEMPOTENT", "provider_invocation": "IDEMPOTENT", "execution_start": "IDEMPOTENT"})
-        self.assertEqual(value["next_authorized_action"], "BEGIN_CONTROLLED_MISSION_WORK")
+        # This fixture is the historical Beta execution chain.  Its current
+        # canonical projection stops at the explicit legacy reconciliation
+        # boundary rather than exposing the obsolete work selector.
+        self.assertEqual(value["next_authorized_action"], "OPERATOR_REVIEW_LEGACY_LIFECYCLE_RECONCILIATION")
         self.assertEqual(value["checks"]["provider_session"], "PASS")
         self.assertEqual(value["replay"]["provider_session"], "IDEMPOTENT")
         self.assertTrue(value["lifecycle"]["provider_session_created"])

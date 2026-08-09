@@ -17,7 +17,11 @@ from typing import Any, Mapping
 from scripts.lib.emp.production_execution import ProductionExecutionError, validate_agent
 from scripts.lib.emp.mission_verification_controller import verify as verify_mission
 from scripts.lib.emp.repository_identity import resolve as repository_identity
-from scripts.lib.eos.canonical_baseline import resolve as resolve_baseline
+from scripts.lib.eos.canonical_baseline import (
+    resolve as resolve_baseline,
+    resolve_commit_lineage,
+    resolve_provenance_lineage,
+)
 from scripts.lib.eos import operational_beta
 from scripts.lib.emp.runtime_paths import resolve_runtime
 
@@ -108,14 +112,17 @@ def _scoped_mission_artifacts(
 
     Provider artifacts are append-only.  A same-mission artifact with a
     different WOP, receipt, admission/bootstrap chain, repository, or
-    baseline is historical/subordinate evidence.  A target artifact that is
-    missing one of those bindings remains in the current candidate set so
-    ``_verify_set`` fails closed instead of silently accepting malformed
+    provenance baseline is historical/subordinate evidence.  The recorded
+    current baseline is deliberately not a scoping key: it is immutable
+    transition provenance and may be an ancestor of the live published
+    baseline after later legitimate publications.  A target artifact that is
+    missing one of the stable bindings remains in the current candidate set
+    so ``_verify_set`` fails closed instead of silently accepting malformed
     state.
     """
     fields = (
         "mission_id", "wop_id", "submission_id", "admission_id", "bootstrap_id",
-        "repository_identity", "mission_provenance_baseline", "current_published_baseline",
+        "repository_identity", "mission_provenance_baseline",
     )
     scoped: dict[str, list[tuple[Path, dict[str, Any]]]] = {key: [] for key in found}
     for key, items in found.items():
@@ -125,6 +132,58 @@ def _scoped_mission_artifacts(
             if exact or missing:
                 scoped[key].append((path, value))
     return scoped
+
+
+def _validate_live_lineage(
+    root: Path,
+    anchor: Mapping[str, Any],
+    *,
+    live_lineage: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Validate provider-selection provenance against the live publication.
+
+    ``current_published_baseline`` in a provider-selection artifact records
+    the publication observed when that transition was created.  It is not a
+    frozen current-state authority.  The live projection is resolved from
+    HEAD/origin/EOS and the artifact's recorded baseline must be a reachable
+    ancestor of that live projection.  This preserves immutable provider
+    evidence while allowing ordinary descendant publications.
+    """
+    provenance = str(anchor.get("mission_provenance_baseline") or "")
+    recorded = str(anchor.get("current_published_baseline") or "")
+    if not provenance or not recorded:
+        raise ProviderSelectionError(
+            "PROVIDER_PROVENANCE_MISSING",
+            "provider selection is missing immutable provenance or recorded publication baseline",
+        )
+
+    live = dict(live_lineage or resolve_provenance_lineage(root, provenance))
+    if live.get("result") != "PASS":
+        raise ProviderSelectionError(
+            "PROVIDER_LIVE_LINEAGE_INVALID",
+            "current repository/EOS lineage is not valid for provider selection",
+        )
+    current = str(live.get("current_published_baseline") or "")
+    recorded_lineage = resolve_commit_lineage(root, recorded, current)
+    if recorded_lineage.get("result") != "PASS":
+        raise ProviderSelectionError(
+            "PROVIDER_RECORDED_BASELINE_INVALID",
+            "provider-selection recorded baseline is not an ancestor of the live publication",
+        )
+    provenance_lineage = resolve_commit_lineage(root, provenance, recorded)
+    if provenance_lineage.get("result") != "PASS":
+        raise ProviderSelectionError(
+            "PROVIDER_PROVENANCE_BASELINE_INVALID",
+            "provider-selection provenance baseline does not validate to its recorded publication",
+        )
+    return {
+        "result": "PASS",
+        "provenance_baseline": provenance,
+        "recorded_published_baseline": recorded,
+        "current_published_baseline": current,
+        "recorded_baseline_relationship": recorded_lineage.get("baseline_relationship"),
+        "live_baseline_relationship": resolve_commit_lineage(root, provenance, current).get("baseline_relationship"),
+    }
 
 
 def _baseline(root: Path, runtime: Path, provenance: str) -> dict[str, Any]:
@@ -181,7 +240,7 @@ def _inventory(root: Path, baseline: dict[str, Any]) -> tuple[str, list[dict[str
 
 
 def _authority(root: Path) -> dict[str, Any]:
-    value = operational_beta.authority(root)
+    value = operational_beta.authority(root, include_current_execution=False)
     if any(value.get(key) != expected for key, expected in {
         "authority_framework": "OPERATION_BETA", "active_operation": "BETA",
         "authority_integrity": "PASS", "authority_resolution": "PASS",
@@ -292,7 +351,10 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         found = _scoped_mission_artifacts(_mission_artifacts(runtime, mission_id), expected)
         existing = _verify_set(runtime, found)
         if existing:
-            return {**existing, "schema_version": 1, "mission_id": mission_id, "read_only": True, "result": "PASS", "blockers": [], "next_authorized_action": "EVALUATE_PROVIDER_DISPATCH"}
+            provider_path = Path(existing["artifacts"]["provider_selection"]["path"])
+            provider_anchor = _load(provider_path)
+            lineage = _validate_live_lineage(root, provider_anchor)
+            return {**existing, "schema_version": 1, "mission_id": mission_id, "read_only": True, "result": "PASS", "blockers": [], "next_authorized_action": "EVALUATE_PROVIDER_DISPATCH", "provider_selection_lineage": lineage}
         provenance = base.get("repository", {}).get("mission_provenance_baseline")
         baseline = _baseline(root, runtime, provenance)
         registry_digest, candidates = _inventory(root, baseline)
@@ -334,7 +396,10 @@ def select(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
     found = _scoped_mission_artifacts(_mission_artifacts(runtime, mission_id), expected)
     existing = _verify_set(runtime, found)
     if existing:
-        return {**existing, "read_only": False, "duplicate_provider_selection": "IDEMPOTENT", "next_authorized_action": "EVALUATE_PROVIDER_DISPATCH"}
+        provider_path = Path(existing["artifacts"]["provider_selection"]["path"])
+        provider_anchor = _load(provider_path)
+        lineage = _validate_live_lineage(root, provider_anchor)
+        return {**existing, "read_only": False, "duplicate_provider_selection": "IDEMPOTENT", "next_authorized_action": "EVALUATE_PROVIDER_DISPATCH", "provider_selection_lineage": lineage}
     baseline = _baseline(root, runtime, base["repository"]["mission_provenance_baseline"])
     registry_digest, candidates = _inventory(root, baseline)
     eligible = sorted((item for item in candidates if item["eligible"]), key=lambda item: (str(item["provider_id"]), str(item["provider_type"])))
@@ -355,4 +420,6 @@ def select(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
     result = _verify_set(runtime, _scoped_mission_artifacts(_mission_artifacts(runtime, mission_id), expected))
     if not result:
         raise ProviderSelectionError("PARTIAL_PROVIDER_SELECTION", "provider-selection artifact set is incomplete")
-    return {**result, "read_only": False, "duplicate_provider_selection": "NO", "next_authorized_action": "EVALUATE_PROVIDER_DISPATCH"}
+    provider_path = Path(result["artifacts"]["provider_selection"]["path"])
+    lineage = _validate_live_lineage(root, _load(provider_path))
+    return {**result, "read_only": False, "duplicate_provider_selection": "NO", "next_authorized_action": "EVALUATE_PROVIDER_DISPATCH", "provider_selection_lineage": lineage}

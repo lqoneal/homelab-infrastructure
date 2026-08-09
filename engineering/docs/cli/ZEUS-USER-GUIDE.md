@@ -118,6 +118,26 @@ execution, qualification, publication, synchronization, or closeout without
 the corresponding receipts. This Development boundary does not require a
 Mission Contract.
 
+The provider boundary is advanced only through the canonical, mission-scoped
+commands:
+
+```text
+scripts/zeus dispatch create <MISSION_ID> --json
+scripts/zeus dispatch verify <MISSION_ID> --json
+scripts/zeus provider-session create <MISSION_ID> --json
+scripts/zeus provider-session verify <MISSION_ID> --json
+```
+
+Dispatch creates one receipt-backed provider-bound dispatch and stops at
+`READY_FOR_PROVIDER_SESSION`. Provider-session creation creates one dispatch-
+bound session and stops at `READY_FOR_PROVIDER_INVOCATION`. Neither command
+invokes a provider or starts execution. Replays return the existing identity
+idempotently. Currentness is scoped to the requested Mission/WOP/provenance
+chain; preserved historical or cross-mission records do not block it, while
+ambiguous current records fail closed. The mission-native surfaces and
+`zeus status` expose the same lifecycle position plus subordinate provider,
+dispatch, and session identities.
+
 ## Execution status and recovery
 
 For one active execution, inspect the canonical recovery contract with:
@@ -410,14 +430,18 @@ chain fails closed.  `provider verify` is read-only and never creates a
 provider session, invokes a provider, creates dispatch, or starts execution.
 
 Provider evaluation is mission-scoped. The requested Mission/WOP/submission/
-admission/bootstrap chain, repository identity, immutable provenance baseline,
-and current published baseline must bind to one current provider-selection
-set. Preserved historical or cross-mission dispatch/session/provider records
-are subordinate evidence and do not create ambiguity for the requested
-mission. Two current target sets, a missing binding, a digest contradiction,
-or an invalid provider registry fails closed. Provider identity is derived
-from the live execution-agent registry; a fixed historical mission identifier
-must not govern the current provider path.
+admission/bootstrap chain, repository identity, and immutable provenance
+baseline must bind to one current provider-selection set. The selection's
+recorded publication baseline is immutable transition provenance, not a
+permanent current-baseline equality requirement. After a legitimate
+publication, Zeus resolves current validity from live HEAD=origin/main=EOS
+and verifies that the recorded baseline is an ancestor. Non-descendant
+history, identity mismatch, digest contradiction, or live provider-registry
+ambiguity fails closed. Preserved historical or cross-mission
+dispatch/session/provider records remain subordinate and do not create
+ambiguity for the requested mission. Provider identity is derived from the
+live execution-agent registry. Selection preserves point-in-time evidence;
+dispatch separately revalidates live provider availability and qualification.
 
 The selection terminal state is `READY_FOR_PROVIDER_DISPATCH`; the next action
 is `EVALUATE_PROVIDER_DISPATCH`.  Provider dispatch is a later gate and is not
@@ -620,6 +644,12 @@ orphaned, forged, stale, duplicate, or conflicting execution-start state
 fails closed. Execution start is not mission work; the next boundary is
 `BEGIN_CONTROLLED_MISSION_WORK`.
 
+The live Wave 2 boundary is proven by one provider acknowledgement and one
+idle execution session. The canonical next action is
+`BEGIN_CONTROLLED_MISSION_WORK`; do not use it as part of provider/session
+qualification. It is a separate operator-reviewed work transition. The
+foundation transitions remain mission-scoped, receipt-backed, and replay-safe.
+
 After operator review of the bound authority, the canonical consumer of that
 boundary is:
 
@@ -628,13 +658,19 @@ scripts/zeus execution-start begin <MISSION_ID> --approve --json
 ```
 
 `begin` does not create a second execution lifecycle. It verifies the existing
-execution-start record, reuses its mission/WOP/provider/invocation/session
-bindings, asks the same provider broker for one controlled thread/turn, and
-then records an identity-preserving active-execution and monitoring
-projection. A provider/session startup or acknowledgement failure is
-fail-closed before active projection commit. Repeating `begin` against the
-same active transition returns `REPLAY=IDEMPOTENT`; it does not start another
-execution, provider process, session, or turn.
+execution-start record, preserves its mission/WOP/provider/invocation and
+execution-session bindings, and asks the bound provider broker for one
+controlled thread/turn. If reconciliation says the current Codex history is
+not authoritative, Zeus first supersedes that Codex session through the
+receipt-backed replacement path, preserving the old record and all execution
+identity bindings; it never resumes that non-authoritative session in place.
+Zeus records an active-execution and monitoring projection only after the
+provider returns both thread and turn identities as controlled-work evidence.
+A provider/session startup or acknowledgement failure is fail-closed before
+active projection commit, and repository work remains false until repository
+evidence exists. Repeating `begin` against the same active transition returns
+`REPLAY=IDEMPOTENT`; it does not start another execution, provider process,
+session, or turn.
 
 ### P5-G6 controlled Codex sessions
 
@@ -772,6 +808,33 @@ active transition.
 `stop --help`, `status --help`, `logs --help`, and `artifacts --help` provide
 command-specific guidance. `--approve` is required for mission-bound shell,
 managed start/resume, and stop.
+
+For a stopped or non-authoritative managed session, `execution-start begin`
+keeps the lifecycle action `BEGIN_CONTROLLED_MISSION_WORK` separate from the
+runtime repair action. Zeus first proves the predecessor process group and
+control endpoint are stopped, preserves its session/events, creates at most
+one identity-bound successor, and verifies that successor's broker endpoint
+with a session/process ownership probe after launch and immediately before
+`thread/start` and `turn/start`. A missing handshake, dead provider, stale or
+foreign socket, or missing thread/turn identity fails closed. The failure JSON
+reports `runtime_recovery_action`; it never sets `mission_work_started` without
+both authoritative provider acknowledgements.
+
+History reconciliation is separate from gate acceptance and from
+`codex reconcile` listener inventory. A verified `NO_WORK_EVENTS` result with
+false authoritative mission and repository work projections is automatically
+satisfied and recorded in the supersession receipt. A safe
+`EVENTS_NON_AUTHORITATIVE` result requires an explicit identity-bound decision
+receipt:
+
+```bash
+scripts/zeus codex accept-reconciliation <MISSION_ID> \
+  --session <CODEX_SESSION_ID> --approve --json
+```
+
+Use `--reject` to record rejection. Missing, rejected, conflicting, or
+indeterminate histories remain fail-closed; generic `scripts/zeus accept` and
+`codex reconcile --approve` are not substitutes for this decision.
 
 Zeus records structured request decisions supplied by a provider request
 surface as `ALREADY_AUTHORIZED`, `OPERATOR_DECISION_REQUIRED`, or
@@ -963,3 +1026,112 @@ bound to the active execution projection, execution verification, and the
 completion report digest. P5-G6 acceptance does not authorize publication or
 P5-G7 execution. The manual shell acceptance block is therefore redundant for
 future gates; use the canonical Zeus path and retain the report as evidence.
+# Native publication transactions
+
+Zeus owns the normal publication transaction through the `publication`
+namespace. Use `--json` for automation:
+
+```text
+scripts/zeus publication inspect <MISSION_ID> --json
+scripts/zeus publication classify <MISSION_ID> --json
+scripts/zeus publication prepare <MISSION_ID> --json
+scripts/zeus publication verify-pre <PUBLICATION_ID> --json
+scripts/zeus publication stage <PUBLICATION_ID> --json
+scripts/zeus publication commit <PUBLICATION_ID> --json
+scripts/zeus publication push <PUBLICATION_ID> --json
+scripts/zeus publication synchronize <PUBLICATION_ID> --json
+scripts/zeus publication qualify <PUBLICATION_ID> --json
+scripts/zeus publication status <PUBLICATION_ID> --json
+scripts/zeus publication resume <PUBLICATION_ID> --json
+scripts/zeus publication abort <PUBLICATION_ID> --json
+scripts/zeus publication run <MISSION_ID> --json
+```
+
+`run` stops at `APPROVE_PUBLICATION` unless `--approve` is supplied. Candidate
+membership comes from a qualified publication manifest; dirty files are not
+publication authority. The controller persists one publication identity,
+classification, frozen candidate digest, milestone receipts, blockers, and
+next action in the repository-bound Zeus runtime. It consumes the canonical
+repository projection and uses explicit refs plus `GIT_TERMINAL_PROMPT=0` for
+unattended network operations.
+
+Prepublication verification is a mutating transaction command even though it
+does not stage files. On PASS it must durably record
+`PREPUBLICATION_VERIFIED`, `prepublication_result=PASS`, the immutable receipt
+reference/digest, completed and pending milestone updates, and
+`current_state=PREPUBLICATION_VERIFIED`. Only a fresh validated reload of that
+transaction can expose `STAGE_PUBLICATION_CANDIDATE`. `publication verify` is
+retained as a compatibility spelling for `publication verify-pre`.
+
+Status and mission read models consume the transaction-owned next-action
+resolver. Cohort revalidation success and transient validator output are not
+publication authority. Verification failure, receipt conflict, persistence
+failure, reload failure, or an orphan receipt remains verification/recovery
+oriented and cannot stage. Replaying `verify-pre` with unchanged inputs
+returns PASS idempotently, reuses one receipt, and leaves the index untouched.
+
+Publication replay resumes from the latest durable milestone and never repeats
+a valid commit, push, or EOS synchronization. A failure after remote
+publication remains visible as incomplete publication; Zeus does not rewrite
+Git history automatically. Postpublication mission verification uses live
+repository/EOS lineage, while immutable transition receipts retain their
+original provenance.
+
+Candidate resolution is mission-scoped. Zeus first resolves the live Mission
+and WOP, then follows qualified work/evidence records to all authorized
+publication manifests. It returns the deterministic union of their exact
+paths, source-to-path authority, dependencies, already-published exclusions,
+and blockers. Historical or unrelated manifests are preserved but subordinate;
+conflicting current claims, missing dependencies, missing paths, and stale
+qualification fail closed. `prepare` freezes the successful result and replay
+with unchanged inputs resolves the same publication transaction.
+
+# Managed runtime selectors and work contracts
+
+Future engineering handoffs use
+`engineering/oversight/codex-handoff-contract.schema.yaml` and the existing
+read-only resolver:
+
+```text
+scripts/zeus codex handoff HANDOFF.yaml --json
+scripts/zeus codex handoff - --json < HANDOFF.yaml
+```
+
+Stable instructions are referenced from controlled repository contracts,
+task-specific facts are structured YAML/JSON, and only novel reasoning belongs
+in the optional `natural_language_context`. File/stdin transport is the
+canonical safe pattern for long content; there is no invented prompt-file
+option. Handoff validation never starts execution or creates authority.
+
+This handoff payload is distinct from the managed continuation work contract
+below. The former carries bounded instructions for resolution; the latter is a
+Zeus transaction bound to an already authorized execution/session.
+
+Managed Codex status accepts a mission identity or a global selector:
+
+```text
+scripts/zeus codex status <MISSION_ID> --json
+scripts/zeus codex status --active --json
+scripts/zeus codex status --latest --json
+```
+
+All three use the same runtime policy: a mission-qualified live authoritative
+binding outranks live execution/provider/session state, which outranks
+historical or reconciled records. Historical records are retained for audit
+and cannot win merely because they are newer in a timestamp or directory.
+
+Continuation is machine-contract based:
+
+```text
+scripts/zeus codex resume <MISSION_ID> \
+  --approve --work-contract PATH --json
+```
+
+`PATH` points to a JSON (or YAML) contract conforming to
+`engineering/oversight/work-contract.schema.yaml`. The contract must provide
+the exact mission, execution, execution-session, provider, and provider-session
+identities plus structured Zeus-managed actions. Zeus validates it before
+continuation, persists its source and payload digests with an append-only
+provenance event, and returns a structured JSON result. Replaying the same
+contract is idempotent; changed, stale, superseded, or cross-mission bindings
+fail closed. Free-form prompts are not a continuation interface.

@@ -17,6 +17,7 @@ from typing import Any
 from scripts.lib.emp.bootstrap_boundary import _transaction_digest
 from scripts.lib.emp.mission_admission_boundary import _digest
 from scripts.lib.emp.repository_identity import resolve
+from scripts.lib.emp.repository_projection import project as project_repository
 from scripts.lib.eos.canonical_baseline import resolve as resolve_baseline
 from scripts.lib.emp.runtime_paths import resolve_runtime
 from scripts.lib.eos import operational_beta
@@ -88,22 +89,31 @@ def _git(root: Path, *args: str) -> str:
 
 def _repository(root: Path, runtime: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     identity = resolve(root)
-    head = _git(root, "rev-parse", "HEAD")
-    branch = _git(root, "branch", "--show-current")
+    projection = project_repository(root, Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")))
+    if projection.get("result") != "PASS":
+        raise MissionVerificationError(
+            "REPOSITORY_PROJECTION_INVALID",
+            "; ".join(projection.get("errors", [])) or "canonical repository projection failed",
+        )
+    head = projection["head"]
+    branch = projection.get("branch") or ""
     marker = _load(runtime / "runtime-identity.json")
     expected = {"repository": str(root), "repository_fingerprint": identity["repository_fingerprint"],
                 "repository_id": identity["repository_id"], "repository_identity": identity["repository_identity"]}
     if any(marker.get(key) != value for key, value in expected.items()):
         raise MissionVerificationError("RUNTIME_IDENTITY_MISMATCH", "runtime identity does not bind to repository")
     baseline = resolve_baseline(root, Path(os.environ.get("EOS_WORKSPACE", "/data/engineering")), runtime_identity=marker)
-    repository = {**identity, "branch": branch, "current_baseline": baseline["current_head"],
+    repository = {**identity, "branch": branch, "current_baseline": projection["head"],
                  "published_baseline": baseline["published_head"], "eos_baseline": baseline["eos_baseline"],
-                 "baseline_resolution": baseline}
+                 "head_origin_parity": projection["head_origin_parity"],
+                 "index_clean": projection["index_clean"],
+                 "worktree_clean": projection["worktree_clean"],
+                 "baseline_resolution": baseline, "canonical_projection": projection}
     return repository, marker
 
 
 def _authority(root: Path) -> dict[str, Any]:
-    value = operational_beta.authority(root)
+    value = operational_beta.authority(root, include_current_execution=False)
     required = {
         "authority_framework": "OPERATION_BETA", "active_operation": "BETA",
         "authority_integrity": "PASS", "authority_resolution": "PASS",
@@ -359,7 +369,15 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
                 # missing invocation is a valid pre-G4 projection; malformed
                 # or partial invocation state remains fail-closed.
                 codes = {item.get("code") for item in provider_invocation_stage.get("blockers", [])}
-                if codes and not codes.issubset({"PROVIDER_SESSION_NOT_READY", "INVOCATION_PACKAGE_INCOMPLETE"}):
+                # A provider session that is correctly established but has
+                # not crossed the invocation boundary is the intentional
+                # Wave 2 stop state.  Keep actual malformed/partial
+                # invocation artifacts fail-closed while projecting this
+                # expected pre-invocation condition as a valid next action.
+                if codes and not codes.issubset({
+                    "PROVIDER_SESSION_NOT_READY", "INVOCATION_PACKAGE_INCOMPLETE",
+                    "INVOCATION_NOT_READY",
+                }):
                     checks["provider_invocation"] = "FAIL"
                     blockers.extend(provider_invocation_stage.get("blockers", []))
         except Exception as error:
@@ -369,7 +387,11 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
         checks["provider_invocation"] = "PASS"
 
     execution_start_stage: dict[str, Any] = {}
-    if include_execution_start and provider_invocation_stage.get("result") == "PASS":
+    if (
+        include_execution_start
+        and provider_invocation_stage.get("result") == "PASS"
+        and provider_invocation_stage.get("provider_invocation_created") is not False
+    ):
         try:
             from scripts.lib.emp import execution_start
             execution_start_stage = execution_start.verify(root, mission_id, runtime_root=runtime)

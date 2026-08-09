@@ -7,7 +7,7 @@
 | `STATUS` | `RECORDED_PENDING_OPERATOR_REVIEW` |
 | `PARENT_MISSION` | `ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01` |
 | `ASSOCIATED_WOP` | `WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001` |
-| `LIFECYCLE_STATE` | `ADMISSION_REQUESTED; EXECUTION_HELD` |
+| `LIFECYCLE_STATE` | `READY_FOR_CONTROLLED_EXECUTION; WORK_HELD` |
 | `SOURCE_EVIDENCE` | `engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/LIFECYCLE-GAP-REGISTER.md` |
 | `ROADMAP_EVIDENCE` | `engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/RECOMMENDED-LIFECYCLE-REMEDIATION-ROADMAP.md` |
 | `CURRENT_OPERATION` | `OPERATION-BETA` |
@@ -45,10 +45,10 @@ needed for implementation control.
 | `GAP-001` | `HIGH / BLOCKS_INDEPENDENT_VERIFICATION` | P2 target discovery depends on selected runtime root; default surfaces do not expose it when the contract is absent. Implement a canonical runtime resolver and explicit P2/P3/P4 discovery tests. | `QUALIFIED` | 1 | P2 submission receipt and mission identity contract | Canonical P2 read model; receipt/mission CLI/projection tests |
 | `GAP-002` | `HIGH / BLOCKS_LIFECYCLE_EXECUTION, BLOCKS_INDEPENDENT_VERIFICATION` | P2/P3/P4/Stage1/provider chain lacks one integrated mission-native transition resolver. Make the receipt chain canonical and projections subordinate only. | `QUALIFIED` | 1–2 | `GAP-001`, `GAP-006` | Lifecycle transition owner; submission/admission/bootstrap/Stage1/provider boundaries |
 | `GAP-003` | `HIGH / BLOCKS_PUBLICATION` | Publication/EOS mutation and mission receipts are not proven as one authoritative chain. Add a bounded publication/sync receipt bridge with external mutation authority. | `DEFERRED_BY_DEPENDENCY` | 5 | `GAP-002`, `GAP-009`, `GAP-011` | Publication workflow and EOS integration; no direct mutation in this plan |
-| `GAP-004` | `HIGH / BLOCKS_SAFE_RECOVERY` | Autonomous resolver and Stage1 fixtures require incompatible authority receipt contracts. Define a canonical adapter or unified receipt contract and fail closed on ambiguity. | `QUALIFIED_WAVE2_BOUNDARY` | 2 | `GAP-001`, `GAP-002` | Authority receipt adapter; autonomous lifecycle and Stage1 compatibility |
+| `GAP-004` | `HIGH / BLOCKS_SAFE_RECOVERY` | Autonomous resolver and Stage1 fixtures require incompatible authority receipt contracts. Define a canonical adapter or unified receipt contract and fail closed on ambiguity. | `OPERATIONALLY_PROVEN_WAVE2_BOUNDARY` | 2 | `GAP-001`, `GAP-002` | Authority receipt adapter; autonomous lifecycle and Stage1 compatibility |
 | `GAP-005` | `HIGH / BLOCKS_CLOSEOUT` | Canonical reconciliation closeout and legacy Beta closeout are duplicative. Retain legacy read-only compatibility and unify the terminal predicate. | `DEFERRED_BY_DEPENDENCY` | 6 | `GAP-002`, `GAP-003`, `GAP-009` | Canonical closeout owner; `beta_closeout.py` compatibility boundary |
 | `GAP-006` | `HIGH / BLOCKS_INDEPENDENT_VERIFICATION` | Mission verification controller and current projection disagree on next action. Provide one canonical next-action resolver and migration tests. | `QUALIFIED` | 1 | P2/P3 lifecycle receipts; no admission advancement required for resolver tests | Canonical P2 next-action projection; command-surface tests |
-| `GAP-007` | `MEDIUM / BLOCKS_INDEPENDENT_VERIFICATION` | No single native surface covers provider/session/process/monitor/evidence lifecycle. Add a mission-native read-only aggregate view. | `QUALIFIED_WAVE2_BOUNDARY` | 2 (Wave 7 acceptance expansion remains) | `GAP-002` and provider/session identity contracts | Zeus mission verification surfaces; provider/session/monitor projections |
+| `GAP-007` | `MEDIUM / BLOCKS_INDEPENDENT_VERIFICATION` | No single native surface covers provider/session/process/monitor/evidence lifecycle. Add a mission-native read-only aggregate view. | `OPERATIONALLY_PROVEN_WAVE2_BOUNDARY` | 2 (Wave 7 acceptance expansion remains) | `GAP-002` and provider/session identity contracts | Zeus mission verification surfaces; provider/session/monitor projections |
 | `GAP-008` | `MEDIUM / BLOCKS_SAFE_RECOVERY` | Recovery failure modes lack end-to-end proof. Add deterministic interruption/checkpoint/resume scenarios. | `QUALIFIED_WAVE3_BOUNDARY` | 3 | `GAP-002`, `GAP-004`, provider/session contract | Canonical recovery contract; monitoring, checkpoint, resume, and failure-ordering tests |
 | `GAP-009` | `MEDIUM / BLOCKS_INDEPENDENT_VERIFICATION` | Qualification chain is component-tested, not real-mission independently proven. Bind qualification to receipt/evidence manifest chain. | `DEFERRED_BY_DEPENDENCY` | 4 | `GAP-002`, `GAP-008` | Evidence and qualification owner; requirement-level traceability |
 | `GAP-010` | `LOW / TECHNICAL_DEBT` | Historical default mission identity remains in generic Codex compatibility fallback. Make the fallback explicitly legacy-only. | `DEFERRED_BY_DEPENDENCY` | 1 or compatibility maintenance | No execution dependency; preserve historical records | Legacy compatibility owner; default Codex fallback |
@@ -135,6 +135,35 @@ Wave 3 implementation does not admit or execute the parent mission and does
 not claim final end-to-end recovery proof; later lifecycle waves remain
 deferred.
 
+The Wave 2 operational gate subsequently exercised the real lifecycle mission
+through provider dispatch and provider-session establishment. It reused the
+existing provider-selection receipt, created exactly one current dispatch
+(`DISPATCH-18865edc-5878-57c0-ae43-c697f01e3325`) and exactly one current
+provider session
+(`PROVIDER-SESSION-309031db-d38a-5bf9-8db3-b871ed2ddfd1`), and replayed both
+idempotently. The canonical lifecycle position is receipt-backed through the
+dispatch and provider-session boundary; the next action is `INVOKE_PROVIDER`.
+Provider invocation, execution-session creation, mission work, qualification,
+publication, synchronization, closeout, and CAGF-01 remain outside this gate.
+This is `OPERATIONALLY_PROVEN` through the provider-session boundary, not full
+end-to-end lifecycle completion.
+
+The subsequent provider-invocation/execution-session gate exercised the same
+mission through the canonical P5-G4 and P5-G5 foundation transitions. It
+created exactly one provider-bound acknowledgement
+(`PROVIDER-INVOCATION-ccbf4655-b0f4-57b2-8a1a-3fea9a3d88f9`) and exactly one
+idle execution session (`EXECUTION-SESSION-13637768-524b-5587-8d01-1cce5f301b80`)
+with execution identity `EXECUTION-START-03e0a183-23a4-5dc7-b6dc-bc62c1a9a1ae`.
+Both transitions replayed idempotently. The adapter mode is
+`QUALIFICATION_ADAPTER`: it records provider acknowledgement and execution
+session binding but does not launch Codex, begin mission work, or mutate the
+repository. The canonical lifecycle projection is
+`READY_FOR_CONTROLLED_EXECUTION` and its next action is
+`BEGIN_CONTROLLED_MISSION_WORK`. This proves the Wave 2 chain through the
+execution-session boundary; Wave 7 aggregate expansion, mission work,
+qualification, publication, synchronization, closeout, and CAGF-01 remain
+deferred.
+
 ## 5. WOP relationship
 
 The existing seven-gate lifecycle WOP encompasses all twelve gaps. No source
@@ -147,11 +176,19 @@ not expand the WOP scope.
 Gate mapping is maintained in
 `engineering/evidence/operation-beta/zeus-lifecycle-gap-roadmap-persistence-001/WOP-GAP-TRACEABILITY.md`.
 
+The current operation-level crosswalk is maintained in
+`engineering/evidence/operation-beta/OPERATION-BETA-CANONICAL-GATE-CATALOG.yaml`.
+WOP Gate 1 (`LIFECYCLE-AUTHORITY-CONVERGENCE`) maps to `OB-ARCH-G01` for this
+bounded projection corrective and stops at operator review. The receipt-backed
+mission position remains WOP Gate 4
+(`CONTROLLED-EXECUTION-AND-RECOVERY`) mapped to `OB-ZEUS-G01`; this plan does
+not authorize `BEGIN_CONTROLLED_MISSION_WORK`.
+
 ## 6. Required end state
 
 All twelve gaps must independently reach `CLOSED` only after their evidence,
 publication, and verification predicates are met. The parent lifecycle
 mission must reach `CLOSED` only after the final end-to-end qualification,
 repository/origin parity, EOS synchronization, and canonical closeout. Until
-then, `ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01` remains
-`ADMISSION_REQUESTED`, and `CAGF-01` remains deferred.
+then, `ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01` remains held at its current
+receipt-backed execution boundary, and `CAGF-01` remains deferred.

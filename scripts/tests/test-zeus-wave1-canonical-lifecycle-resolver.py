@@ -22,6 +22,7 @@ sys.path.insert(0, str(ROOT))
 
 from scripts.lib.emp.bootstrap_boundary import bootstrap  # noqa: E402
 from scripts.lib.emp.canonical_lifecycle_resolver import resolve  # noqa: E402
+from scripts.lib.emp import dispatch_foundation, execution_start, provider_invocation, provider_selection, provider_session  # noqa: E402
 from scripts.lib.emp.mission_admission_boundary import admit  # noqa: E402
 from scripts.lib.emp.wop_canonicalization import canonicalize  # noqa: E402
 
@@ -128,6 +129,77 @@ class CanonicalLifecycleResolverTests(unittest.TestCase):
         value = resolve(ROOT, MISSION, runtime_root=runtime)
         self.assertEqual(value["result"], "FAIL")
         self.assertEqual(value["blockers"][0]["code"], "CANONICAL_SUBMISSION_MISSING")
+
+    def _establish_full_idle_chain(self) -> dict[str, str]:
+        admission = admit(
+            self.submission["receipt_path"], wop=self.source, repository=ROOT, runtime_root=self.runtime,
+        )
+        bootstrap_result = bootstrap(admission["admission_receipt"]["path"], repository=ROOT, runtime_root=self.runtime)
+        selection = provider_selection.select(ROOT, MISSION, runtime_root=self.runtime)
+        dispatch = dispatch_foundation.create(ROOT, MISSION, runtime_root=self.runtime)
+        session = provider_session.create(ROOT, MISSION, runtime_root=self.runtime)
+        invocation = provider_invocation.create(ROOT, MISSION, runtime_root=self.runtime)
+        execution = execution_start.create(ROOT, MISSION, runtime_root=self.runtime)
+        self.assertEqual(selection["result"], "PASS", selection)
+        self.assertEqual(dispatch["result"], "PASS", dispatch)
+        self.assertEqual(session["result"], "PASS", session)
+        self.assertEqual(invocation["result"], "PASS", invocation)
+        self.assertEqual(execution["result"], "PASS", execution)
+        return {"admission_id": bootstrap_result["admission_id"], "dispatch_id": dispatch["dispatch_id"],
+                "provider_session_id": session["provider_session_id"], "provider_invocation_id": invocation["provider_invocation_id"],
+                "execution_id": execution["execution_id"], "execution_session_id": execution["execution_session_id"]}
+
+    def test_valid_downstream_receipts_correct_stale_awaiting_projection(self) -> None:
+        identities = self._establish_full_idle_chain()
+        before = resolve(ROOT, MISSION, runtime_root=self.runtime)
+        self.assertEqual(before["result"], "PASS")
+        self.assertEqual(before["lifecycle_state"], "READY_FOR_CONTROLLED_EXECUTION")
+        self.assertEqual(before["canonical_state_source"], "P5_EXECUTION_START_RECEIPT")
+        self.assertEqual(before["next_authorized_action"], "BEGIN_CONTROLLED_MISSION_WORK")
+        self.assertEqual(before["execution_state"], "READY_FOR_CONTROLLED_EXECUTION")
+        for key, expected in identities.items():
+            self.assertEqual(before[key], expected)
+        self.assertFalse(before["mission_work_started"])
+        self.assertFalse(before["repository_work_started"])
+
+        replay = resolve(ROOT, MISSION, runtime_root=self.runtime)
+        self.assertEqual(before, replay)
+        self.assertEqual(before["lifecycle_chain"][-1]["next_action"], "BEGIN_CONTROLLED_MISSION_WORK")
+
+    def test_downstream_digest_binding_and_cardinality_fail_closed(self) -> None:
+        self._establish_full_idle_chain()
+        dispatch_path = next((self.runtime / "dispatch-receipts").glob("*.json"))
+        original = json.loads(dispatch_path.read_text(encoding="utf-8"))
+        dispatch_path.write_text(json.dumps({**original, "provider_id": "forged-provider"}, sort_keys=True) + "\n", encoding="utf-8")
+        invalid = resolve(ROOT, MISSION, runtime_root=self.runtime)
+        self.assertEqual(invalid["result"], "FAIL")
+        self.assertIn(invalid["blockers"][0]["code"], {"DISPATCH_DIGEST_MISMATCH", "DISPATCH_IDENTITY_MISMATCH"})
+
+        dispatch_path.write_text(json.dumps(original, sort_keys=True) + "\n", encoding="utf-8")
+        execution_path = self.runtime / "execution-start-receipts" / "EXECUTION-START-5a6fec74-3c4b-5271-8c96-4cc89fe8855e.json"
+        if not execution_path.exists():
+            execution_path = next((self.runtime / "execution-start-receipts").glob("*.json"))
+        duplicate = execution_path.with_name("duplicate-execution-start.json")
+        shutil.copy2(execution_path, duplicate)
+        conflict = resolve(ROOT, MISSION, runtime_root=self.runtime)
+        self.assertEqual(conflict["result"], "FAIL")
+        self.assertEqual(conflict["blockers"][0]["code"], "EXECUTION_CARDINALITY_CONFLICT")
+
+    def test_historical_and_planning_projections_cannot_override_execution_authority(self) -> None:
+        self._establish_full_idle_chain()
+        historical = self.runtime / "stage1" / "historical-closed.json"
+        historical.parent.mkdir(parents=True, exist_ok=True)
+        historical.write_text(json.dumps({"mission_id": MISSION, "state": "CLOSED"}) + "\n", encoding="utf-8")
+        unrelated = self.runtime / "dispatches" / "other-mission.json"
+        unrelated.parent.mkdir(parents=True, exist_ok=True)
+        unrelated.write_text(json.dumps({"mission_id": "OTHER-MISSION", "dispatch_id": "DISPATCH-OTHER"}) + "\n", encoding="utf-8")
+        value = resolve(ROOT, MISSION, runtime_root=self.runtime)
+        self.assertEqual(value["result"], "PASS")
+        self.assertEqual(value["lifecycle_state"], "READY_FOR_CONTROLLED_EXECUTION")
+        self.assertEqual(value["next_authorized_action"], "BEGIN_CONTROLLED_MISSION_WORK")
+        self.assertEqual(value["legacy_stage1_projection"]["current_state_authority"], "EXCLUDED_FROM_CANONICAL_CHAIN")
+        self.assertFalse(value["mission_work_started"])
+        self.assertFalse(value["repository_work_started"])
 
 
 if __name__ == "__main__":

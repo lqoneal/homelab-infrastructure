@@ -16,8 +16,11 @@ capability implementation.
 `ZDCL-01` completed independent qualification and explicit operator acceptance;
 its sealed completion record is `engineering/mission-completions/ZDCL-01.yaml`.
 It remains discoverable through completed and history views. `CAGF-01` is the
-next eligible roadmap mission, but requires its own separately published and
-authorized WOP before submission or admission.
+native Beta catalog recommendation, but the current primary cross-cutting
+engineering mission is lifecycle completion as recorded below. CAGF-01's
+recommendation remains advisory and its submission/admission is deferred
+until lifecycle completion is independently qualified and closed. CAGF-01
+still requires its own separately published and authorized WOP.
 
 | Order | Mission | Scope | Depends on | Exit boundary |
 | ---: | --- | --- | --- | --- |
@@ -28,6 +31,59 @@ authorized WOP before submission or admission.
 | 4 | `CAGF-02..n` | Identity validation, generation, reconciliation, qualification, and publication integration | Prior qualified CAGF increment | Each separately qualified |
 | 5 | `EPE-01` | Executable mission contracts and task/state execution foundation | BETA-00; applicable ZDCL/CAGF outputs | Phase 1 contract qualified |
 | 6 | `EPE-02..n` | Transactions, ledger, dependency-aware validation, recommendations, EMP/EENS, and distributed evolution | Prior qualified EPE increment | Each separately qualified |
+
+## Current Zeus lifecycle-completion track
+
+The current primary engineering mission is
+`ZEUS_EXECUTION_LIFECYCLE_COMPLETION`, represented by
+`ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01` and
+`WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001`. Its submitted lifecycle
+state is `READY_FOR_CONTROLLED_EXECUTION`; the receipt-backed dispatch,
+provider-session, provider-invocation, and execution-start chain is current,
+and mission work remains
+intentionally held. The mission's authoritative investigation identified twelve active
+lifecycle gaps. Their durable implementation plan is recorded in
+`engineering/planning/ZEUS-LIFECYCLE-GAP-REMEDIATION-PLAN-001.md` and the
+supporting evidence package
+`engineering/evidence/operation-beta/zeus-lifecycle-gap-roadmap-persistence-001/`.
+
+The lifecycle remediation is dependency-ordered through canonical state
+ownership, dispatch/provider/session convergence, monitoring and recovery,
+independent evidence and qualification, publication/EOS synchronization,
+closeout, and final end-to-end proof. The planning record does not authorize
+runtime implementation or lifecycle advancement. `CAGF-01` remains deferred
+behind independently qualified and closed lifecycle completion; its identity
+binding corrective remains preserved as separate candidate work.
+
+| Planning item | Status | Dependency / boundary |
+| --- | --- | --- |
+| `ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01` | `READY_FOR_CONTROLLED_EXECUTION / WORK_HELD` | Submitted WOP; receipt-backed dispatch, provider session, provider invocation, and idle execution session established; stop before `BEGIN_CONTROLLED_MISSION_WORK` |
+| `GAP-001..GAP-003, GAP-005, GAP-008..GAP-012` | `OPEN / IMPLEMENTATION_PLANNED` | See the durable plan and dependency graph; later gaps remain incomplete |
+| `GAP-004, GAP-007` | `OPERATIONALLY_PROVEN_THROUGH_EXECUTION_SESSION` | One current dispatch, provider session, provider acknowledgement, and idle execution session verified and replayed idempotently; Wave 7 aggregate expansion remains separate |
+| `CAGF-01` | `DEFERRED` | Must not advance from its separate identity-binding candidate until lifecycle completion is qualified and closed |
+
+This section records current planning state and does not replace mission,
+WOP, admission, execution, publication, or EOS authority.
+
+The live Operation Beta projection consumes the canonical submitted-mission
+index and resolver. Its current coordinates are:
+
+```text
+CURRENT_OPERATION=OPERATION-BETA
+CURRENT_EXECUTABLE_MISSION=ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01
+CURRENT_WOP=WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001
+CURRENT_LIFECYCLE_STATE=READY_FOR_CONTROLLED_EXECUTION
+CURRENT_GATE_MAPPING=WOP_GATE_4_CONTROLLED-EXECUTION-AND-RECOVERY/OB-ZEUS-G01
+MISSION_WORK_STARTED=false
+REPOSITORY_WORK_STARTED=false
+LIFECYCLE_NEXT_ACTION=BEGIN_CONTROLLED_MISSION_WORK
+FUTURE_RECOMMENDED_MISSION=CAGF-01
+```
+
+Any older statement that reports no current executable mission, or treats
+`CAGF-01` as current execution, is a superseded point-in-time planning
+projection. It remains historical evidence and cannot override the live
+receipt chain.
 
 The rows express recommended order, not implementation authority. Parallel work is allowed only where a future mission contract proves that its inputs are published, qualified, and independent.
 

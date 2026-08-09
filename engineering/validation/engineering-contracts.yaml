@@ -29,7 +29,7 @@ contracts:
       known_command_names: [zeus]
     expectations:
       command_names: [zeus]
-      options: [--help, --state, --verbose, -h]
+      options: [--help, --runtime-root, --state, --verbose, -h]
       file_locations: [scripts/zeus]
   - contract_id: CONTRACT-EMP-ORCHESTRATION
     category: Workflow

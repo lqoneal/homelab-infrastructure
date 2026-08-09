@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 MISSION = "MISSION-BETA-562F443E16C69401"
+CURRENT_LIFECYCLE_MISSION = "ZEUS-EXECUTION-LIFECYCLE-COMPLETION-01"
 RUNTIME = Path("/home/loneal/.local/state/zeus-runtime/homelab-6bd83f9079d6fc57")
 STAGE_DIRS = (
     "provider-selection", "selected-providers", "provider-qualifications",
@@ -39,12 +40,18 @@ class ProviderSelectionQualification(unittest.TestCase):
         self.assertEqual(value["result"], "PASS")
         self.assertEqual(len(value["artifacts"]), 6)
         for directory in STAGE_DIRS:
-            self.assertEqual(len(list((RUNTIME / directory).glob("*.json"))), 1)
-        # P5-G3 provider sessions are controlled pre-invocation artifacts;
-        # only provider invocation and execution stores remain downstream.
+            mission_records = [
+                json.loads(path.read_text())
+                for path in (RUNTIME / directory).glob("*.json")
+                if json.loads(path.read_text()).get("mission_id") == MISSION
+            ]
+            self.assertEqual(len(mission_records), 1)
+        # Historical Beta downstream records are preserved.  The current
+        # lifecycle mission remains before dispatch and must not be counted
+        # against this historical fixture's boundary.
         for directory in ("dispatch", "executions", "execution-sessions"):
             paths = RUNTIME / directory
-            self.assertFalse(any(json.loads(path.read_text()).get("mission_id") == MISSION for path in paths.glob("*.json")) if paths.is_dir() else False)
+            self.assertFalse(any(json.loads(path.read_text()).get("mission_id") == CURRENT_LIFECYCLE_MISSION for path in paths.glob("*.json")) if paths.is_dir() else False)
 
     def test_mission_projection_and_read_only_verification(self) -> None:
         before = {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in RUNTIME.rglob("*") if path.is_file()}

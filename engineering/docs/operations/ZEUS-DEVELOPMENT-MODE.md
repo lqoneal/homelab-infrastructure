@@ -142,7 +142,11 @@ creating a new bootstrap.
 Provider evaluation is a current, mission-scoped boundary. Zeus resolves the
 provider identity from the live execution-agent registry and verifies one
 current provider-selection set against the Mission/WOP, submission, admission,
-bootstrap, repository, and provenance chain. Historical or cross-mission
+bootstrap, repository, and provenance chain. The provider-selection receipt's
+recorded published baseline is immutable provenance. It remains valid across
+legitimate descendant publications when live HEAD, origin/main, and EOS agree
+and Git ancestry proves the recorded baseline is an ancestor of the current
+projection. Historical or cross-mission
 dispatch/session/provider records remain preserved but subordinate; their
 existence alone is not a current ambiguity. Conflicting current target
 artifacts or identity/digest mismatches fail closed. The historical
@@ -177,6 +181,13 @@ protected-baseline drift, publication failure, and synchronization failure are
 recorded as blocked states. Repeated submission resolves the deterministic
 instance identity and resumes or returns the existing result.
 
+Publication preverification follows the same durable boundary:
+`PREPUBLICATION_VERIFIED` and its passing receipt must be persisted and
+validated after reload before staging becomes an authorized next action.
+Transient validator success, an orphan receipt, or a status projection cannot
+advance publication state. Verification and persistence failures fail closed;
+unchanged verify-pre replay is idempotent and does not mutate the Git index.
+
 If a stored `DISPATCHED` projection has no valid dispatch receipt or its
 authority binding is incomplete, recovery does not treat process presence as
 proof of dispatch. In an isolated, baseline-valid repository it preserves the
@@ -192,6 +203,54 @@ scripts/zeus submit <wop>
 scripts/zeus resume <mission>
 scripts/zeus stop <mission>
 ```
+
+Wave 2 provider dispatch and session establishment are bounded transitions,
+not execution. They consume the live provider-selection projection and create
+one mission/WOP/provider-bound dispatch, then one dispatch-bound provider
+session. Replays are idempotent; provider invocation, execution-session
+creation, and mission work remain prohibited until their separately authorized
+next actions. Current native status is receipt-backed and mission-scoped;
+historical or cross-mission dispatch/session records remain preserved
+compatibility evidence and cannot override current state.
+
+The provider-invocation foundation may then record one provider-bound
+acknowledgement through `scripts/zeus provider-invocation create <MISSION_ID>
+--json`. The bounded adapter is `QUALIFICATION_ADAPTER`; it does not launch a
+provider process or begin mission work. The subsequent
+`scripts/zeus execution-start create <MISSION_ID> --json` establishes one
+idle execution session and stops at `READY_FOR_CONTROLLED_EXECUTION` with
+`BEGIN_CONTROLLED_MISSION_WORK` as the next action. `execution-start begin`
+remains a separate operator-reviewed work boundary. Before controlled work it
+reconciles the bound Codex history; a required supersession creates one
+preserved successor rather than resuming a non-authoritative session in place.
+Only a bound provider thread/turn acknowledgement can set
+`mission_work_started`; repository work remains false until repository-specific
+evidence exists. Both transitions are mission-scoped, receipt-backed, and
+replay-idempotent.
+
+Codex history reconciliation has its own acceptance boundary. `NO_WORK_EVENTS`
+with verified false mission/repository work projections is an automatically
+satisfied condition and is recorded in the supersession receipt. Safe
+`EVENTS_NON_AUTHORITATIVE` histories require the distinct Zeus command
+`scripts/zeus codex accept-reconciliation <MISSION_ID> --session
+<CODEX_SESSION_ID> --approve --json`, which persists a mission, execution,
+execution-session, provider-session, provider, Codex-session, and history
+digest-bound decision. `codex reconcile --approve` and generic gate acceptance
+do not satisfy this contract. Missing, rejected, conflicting, and
+indeterminate histories remain fail-closed.
+
+The managed provider recovery contract is deliberately distinct from that
+lifecycle action. Before replacing a stopped session, Zeus proves the old
+broker/control endpoint is no longer live and preserves its record and event
+journal. The successor receives a new Codex-session identity while retaining
+the immutable mission, WOP, execution, execution-session, provider-session,
+and provider identities. Its STDIO broker publishes a handshake and endpoint
+ownership receipt; Zeus probes that endpoint after launch and again immediately
+before each bounded thread/turn request. Provider death, transport reset,
+foreign/stale socket ownership, missing handshake, or missing thread/turn IDs
+fails closed and reports runtime recovery separately from the lifecycle next
+action. A pending thread receipt may be resumed, but it is not mission-work
+evidence until the bound turn acknowledgement is received.
 
 `stop` is exceptional execution control for an active or plausibly hung WOP,
 not a routine lifecycle step. Zeus targets only the exact recorded execution

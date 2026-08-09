@@ -20,6 +20,8 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
+from scripts.lib.emp.canonical_authority_receipt import AuthorityReceiptError, normalize as normalize_authority
+
 
 class AutonomousDispatchError(ValueError):
     """Dispatch cannot be reconciled to one lawful provider/session state."""
@@ -116,6 +118,12 @@ class AutonomousDispatchController:
         snapshot = (authoritative.get("authority_snapshot") or {}).get("authority_snapshot_digest")
         if dispatch.get("authority_snapshot_digest") != snapshot:
             raise AutonomousDispatchError("DIVERGENT_AUTHORITY_BINDING")
+        try:
+            normalized = normalize_authority(authoritative, source="AUTONOMOUS_DISPATCH")
+        except AuthorityReceiptError as error:
+            raise AutonomousDispatchError(f"AUTHORITY_RECEIPT_REJECTED:{error.code}") from error
+        if normalized.get("authority_snapshot_digest") != snapshot:
+            raise AutonomousDispatchError("DIVERGENT_AUTHORITY_RECEIPT")
         if authoritative.get("execution_mode") == "DEVELOPMENT" and authoritative.get("effect_profile", "").startswith("PRODUCTION"):
             raise AutonomousDispatchError("UNAUTHORIZED_EFFECT_PROFILE")
         return str(transaction_id), dispatch, selection

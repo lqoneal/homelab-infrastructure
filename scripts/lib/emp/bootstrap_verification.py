@@ -23,7 +23,8 @@ class BootstrapVerificationError(ValueError):
 
 
 def verify_bootstrap_replay(first: Mapping[str, Any], replay: Mapping[str, Any], *,
-                            runtime_root: Path | str, repository: Path | str) -> dict[str, Any]:
+                            runtime_root: Path | str, repository: Path | str,
+                            allow_current_wave2_downstream: bool = False) -> dict[str, Any]:
     required = ("bootstrap_id", "transaction_type", "transaction_digest", "bootstrap_state",
                 "bootstrap_result", "execution_record", "bootstrap_receipt",
                 "bootstrap_journal", "provider_readiness")
@@ -133,11 +134,28 @@ def verify_bootstrap_replay(first: Mapping[str, Any], replay: Mapping[str, Any],
             downstream.append(str(path))
         else:
             historical_downstream.append(str(path))
-    if downstream:
+    if downstream and allow_current_wave2_downstream:
+        allowed = {
+            "dispatches", "dispatch-packages", "dispatch-authorizations",
+            "dispatch-receipts", "dispatch-journals", "provider-session-readiness",
+            "provider-sessions", "provider-session-receipts",
+            "provider-session-journals", "provider-session-authorizations",
+            "provider-session-readiness-records",
+        }
+        unsupported = [path for path in downstream
+                       if not any(part in allowed for part in Path(path).parts)]
+        if unsupported:
+            raise BootstrapVerificationError(
+                "current downstream artifacts cross the Wave 2 boundary: "
+                f"{unsupported}"
+            )
+    elif downstream:
         raise BootstrapVerificationError(f"current downstream artifacts exist: {downstream}")
     return {"result": "PASS", "bootstrap_state": first["bootstrap_state"],
             "bootstrap_result": first["bootstrap_result"], "provider_ready": True,
             "provider_selected": False, "dispatch_created": False, "execution_started": False,
             "next_action": first["next_action"], "duplicate_bootstrap": "IDEMPOTENT",
             "artifact_counts": counts, "artifact_classification": scoped["counts"],
-            "downstream_artifacts": "NONE", "historical_downstream_artifacts": historical_downstream}
+            "downstream_artifacts": ("CURRENT_WAVE2_ALLOWED" if downstream else "NONE"),
+            "historical_downstream_artifacts": historical_downstream,
+            "current_wave2_downstream_artifacts": downstream}

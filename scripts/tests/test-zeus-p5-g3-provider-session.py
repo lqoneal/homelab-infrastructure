@@ -16,6 +16,15 @@ MISSION = "MISSION-BETA-562F443E16C69401"
 RUNTIME = Path("/home/loneal/.local/state/zeus-runtime/homelab-6bd83f9079d6fc57")
 
 
+def lifecycle_artifact_snapshot() -> dict[str, str]:
+    """Ignore unrelated Codex transcript SQLite activity in the shared runtime."""
+    snapshot: dict[str, str] = {}
+    for stage in STAGE_DIRS.values():
+        for path in sorted((RUNTIME / stage).glob("*.json")):
+            snapshot[str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
+    return snapshot
+
+
 def run(*args: str) -> dict:
     result = subprocess.run([str(ROOT / "scripts/zeus"), *args, "--json"], cwd=ROOT, text=True, capture_output=True, check=True)
     return json.loads(result.stdout)
@@ -36,9 +45,9 @@ class P5G3ProviderSessionTests(unittest.TestCase):
         self.assertEqual(first["next_authorized_action"], "INVOKE_PROVIDER")
 
     def test_read_only_verify_does_not_change_runtime(self) -> None:
-        before = {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in RUNTIME.rglob("*") if path.is_file()}
+        before = lifecycle_artifact_snapshot()
         value = run("provider-session", "verify", MISSION)
-        after = {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in RUNTIME.rglob("*") if path.is_file()}
+        after = lifecycle_artifact_snapshot()
         self.assertEqual(value["result"], "PASS")
         self.assertTrue(value["read_only"])
         self.assertEqual(before, after)

@@ -1,9 +1,10 @@
 """Mission-native, read-only aggregate over the canonical lifecycle chain.
 
-The aggregate is a view, not a lifecycle controller.  Canonical P2/P3/P4
-receipts own mission identity, state, authority, blockers, and next action.
-Provider, session, process, monitoring, and evidence records are subordinate
-observations and are never allowed to advance or override that chain.
+The aggregate is a view, not a lifecycle controller.  The canonical
+receipt-backed P2/P3/P4/P5 chain owns mission identity, state, authority,
+blockers, and next action.  Provider, session, process, monitoring, and
+evidence records are subordinate observations and are never allowed to invent
+or override a verified lifecycle position.
 """
 
 from __future__ import annotations
@@ -153,7 +154,10 @@ def aggregate(repository: Path | str, mission_id: str, *, runtime_root: Path | s
                     "next_authorized_action": recovery.get("next_authorized_action", "STOP_FAIL_CLOSED")}
         historical = _historical_sessions(runtime, mission)
         execution_started = lifecycle.get("execution_started") is True
-        current_ready = lifecycle.get("lifecycle_state") in {"AWAITING_EXECUTION_DISPATCH", "DISPATCHED", "EXECUTING"}
+        current_ready = lifecycle.get("lifecycle_state") in {
+            "AWAITING_EXECUTION_DISPATCH", "DISPATCHED", "PROVIDER_BOUND",
+            "PROVIDER_INVOKED", "READY_FOR_CONTROLLED_EXECUTION", "EXECUTING",
+        }
         if not execution_started:
             process_state = "NOT_STARTED" if not families["process"]["record_count"] else "UNAVAILABLE_UNTIL_EXECUTION_START"
             monitor_state = "NOT_STARTED" if not families["monitoring"]["record_count"] else "UNAVAILABLE_UNTIL_EXECUTION_START"

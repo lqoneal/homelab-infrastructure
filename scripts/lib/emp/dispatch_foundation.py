@@ -120,7 +120,10 @@ def _verify_set(runtime: Path, found: dict[str, list[tuple[Path, dict[str, Any]]
     if anchor.get("dispatch_authorized") is not True or anchor.get("provider_session_eligible") is not True:
         raise DispatchFoundationError("DISPATCH_AUTHORIZATION_INVALID", "dispatch is not authorized and provider-session-ready")
     return {
-        "result": "PASS", "replay": "IDEMPOTENT", "dispatch_id": dispatch_id,
+        "result": "PASS", "replay": "IDEMPOTENT", "mission_id": anchor.get("mission_id"),
+        "wop_id": anchor.get("wop_id"), "submission_id": anchor.get("submission_id"),
+        "admission_id": anchor.get("admission_id"), "bootstrap_id": anchor.get("bootstrap_id"),
+        "dispatch_id": dispatch_id,
         "dispatch_state": anchor["dispatch_state"], "dispatch_result": anchor.get("dispatch_result"),
         "dispatch_authorized": True, "provider_id": anchor["provider_id"],
         "provider_session_eligible": True, "provider_session_created": False,
