@@ -1,0 +1,88 @@
+schema_version: 1
+roadmap_id: ESC-ROADMAP-001
+roadmap_version: 2.0.0
+evaluation_standard:
+  standard: STD-0006@1.0
+  procedure: PROC-0009@1.0
+  playbook_contract: ESC-EXECUTION-PLAYBOOKS-001@2.0.0
+evaluated_at: '2026-08-10T01:05:55Z'
+structural_result: PASS
+procedural_result: PASS
+discovery_result: PASS
+coverage_result: PASS
+classification_result: PASS
+artifact_contract_result: PASS
+evidence_result: PASS
+result_determinism_result: PASS
+authority_boundary_result: PASS
+fail_closed_result: PASS
+review_boundary_result: PASS
+state_transition_result: PASS
+persistence_result: PASS
+cold_resume_result: PASS
+gate_results:
+  - gate_id: C00
+    result: NOT_APPLICABLE
+    contract_generation: HISTORICAL_FROZEN
+    standard_applicability: NOT_APPLICABLE
+    criteria: &not_applicable_gate_criteria
+      procedural_sufficiency: NOT_APPLICABLE
+      discovery_sufficiency: NOT_APPLICABLE
+      coverage_determinism: NOT_APPLICABLE
+      classification_determinism: NOT_APPLICABLE
+      artifact_determinism: NOT_APPLICABLE
+      evidence_sufficiency: NOT_APPLICABLE
+      result_determinism: NOT_APPLICABLE
+      authority_boundaries: NOT_APPLICABLE
+      fail_closed_behavior: NOT_APPLICABLE
+      review_boundary: NOT_APPLICABLE
+      state_transition_determinism: NOT_APPLICABLE
+      persistence: NOT_APPLICABLE
+      cold_resume: NOT_APPLICABLE
+      terminal_semantics: NOT_APPLICABLE
+    warnings: []
+    blockers: []
+  - {gate_id: C01, result: NOT_APPLICABLE, contract_generation: HISTORICAL_FROZEN, standard_applicability: NOT_APPLICABLE, criteria: *not_applicable_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C02, result: NOT_APPLICABLE, contract_generation: ACTIVATION_FROZEN, standard_applicability: NOT_APPLICABLE, criteria: *not_applicable_gate_criteria, warnings: [], blockers: []}
+  - gate_id: C03
+    result: PASS
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    standard_applicability: STD-0006@1.0
+    criteria: &passing_gate_criteria
+      procedural_sufficiency: PASS
+      discovery_sufficiency: PASS
+      coverage_determinism: PASS
+      classification_determinism: PASS
+      artifact_determinism: PASS
+      evidence_sufficiency: PASS
+      result_determinism: PASS
+      authority_boundaries: PASS
+      fail_closed_behavior: PASS
+      review_boundary: PASS
+      state_transition_determinism: PASS
+      persistence: PASS
+      cold_resume: PASS
+      terminal_semantics: PASS
+    warnings: []
+    blockers: []
+  - {gate_id: C04, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C05, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C06, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C07, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C08, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C09, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C10, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C11, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C12, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C13, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C14, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C15, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C16, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C17, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C18, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C19, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+  - {gate_id: C20, result: PASS, contract_generation: PROSPECTIVE_EXECUTABLE, standard_applicability: STD-0006@1.0, criteria: *passing_gate_criteria, warnings: [], blockers: []}
+warnings: []
+blockers: []
+overall_result: PASS
+executable: true

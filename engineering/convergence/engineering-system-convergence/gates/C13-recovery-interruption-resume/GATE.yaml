@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C13
 title: Recovery / Interruption / Resume Assessment
 status: PENDING
+gate_type: ASSESSMENT
 purpose: Establish deterministic recovery boundaries across every engineering layer.
 problem_statement: Repository, EOS, mission, WOP, provider, Codex, publication, and session recovery mechanisms overlap and can resume from incompatible state.
 objective: Assess interruption recovery at repository, EOS, mission, WOP, provider, Codex, publication, and engineering-session levels; define deterministic recovery boundaries and identify duplicate mechanisms.
@@ -15,6 +16,9 @@ entry_conditions:
   - C03-C12 state, execution, proof, and publication boundaries are available and C13 is selected.
 authoritative_inputs:
   - PROC-0003, EOS checkpoints, runtime recovery modules, mission/WOP/provider/Codex/publication recovery records, and prior findings.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C13
 assessment_or_execution_procedure:
   - Inventory recovery state, commands, triggers, stores, ownership, and invariants at each layer.
   - Trace planned and unplanned interruption paths and determine exact resumable boundaries.
@@ -38,6 +42,10 @@ stop_boundary: Stop after assessment; no recovery action or runtime continuation
 result_location: engineering/convergence/engineering-system-convergence/gates/C13-recovery-interruption-resume/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C13-recovery-interruption-resume/evidence
 next_gate: C14
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Compare recovery mechanisms using prior ownership/dataflow maps without restoring state.
   validate_first: engctl roadmap validate

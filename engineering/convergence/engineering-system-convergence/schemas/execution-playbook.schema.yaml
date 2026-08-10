@@ -1,0 +1,128 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Executable Roadmap Playbook Catalog
+type: object
+additionalProperties: false
+required: [schema_version, contract_id, contract_version, standard, procedure, shared_contracts, playbooks]
+properties:
+  schema_version: {const: 1}
+  contract_id: {type: string, minLength: 1}
+  contract_version: {type: string, minLength: 1}
+  standard: {type: string, minLength: 1}
+  procedure: {type: string, minLength: 1}
+  shared_contracts:
+    type: object
+    additionalProperties: false
+    required: [result_contract, review_contract, state_transition_contract, persistence_contract, cold_resume_contract]
+    properties:
+      result_contract: {$ref: '#/$defs/sharedContract'}
+      review_contract: {$ref: '#/$defs/sharedContract'}
+      state_transition_contract: {$ref: '#/$defs/sharedContract'}
+      persistence_contract: {$ref: '#/$defs/sharedContract'}
+      cold_resume_contract: {$ref: '#/$defs/sharedContract'}
+  playbooks:
+    type: object
+    minProperties: 1
+    additionalProperties: {$ref: '#/$defs/playbook'}
+$defs:
+  nonemptyStrings:
+    type: array
+    minItems: 1
+    items: {type: string, minLength: 1}
+  sharedContract:
+    type: object
+    additionalProperties: false
+    required: [contract_id, steps]
+    properties:
+      contract_id: {type: string, minLength: 1}
+      steps: {$ref: '#/$defs/nonemptyStrings'}
+  surface:
+    type: object
+    additionalProperties: false
+    required: [location, kind, existence, purpose]
+    properties:
+      location: {type: string, minLength: 1}
+      kind: {enum: [PATH, GLOB, COMMAND, REFERENCE, DYNAMIC]}
+      existence: {enum: [REQUIRED, OPTIONAL, DYNAMIC, REFERENCE_ONLY]}
+      purpose: {type: string, minLength: 1}
+  rule:
+    type: object
+    additionalProperties: false
+    required: [rule_id, requirement, evidence]
+    properties:
+      rule_id: {type: string, minLength: 1}
+      requirement: {type: string, minLength: 1}
+      evidence: {type: string, minLength: 1}
+  artifact:
+    type: object
+    additionalProperties: false
+    required: [artifact_id, title, format, minimum_record_fields, completeness_key, purpose]
+    properties:
+      artifact_id: {type: string, minLength: 1}
+      title: {type: string, minLength: 1}
+      format: {enum: [YAML, JSON, CSV, MARKDOWN_TABLE, MARKDOWN]}
+      minimum_record_fields: {$ref: '#/$defs/nonemptyStrings'}
+      completeness_key: {$ref: '#/$defs/nonemptyStrings'}
+      purpose: {type: string, minLength: 1}
+  resultRules:
+    type: object
+    additionalProperties: false
+    required: [COMPLETE, COMPLETE_WITH_FINDINGS, BLOCKED, FAILED]
+    properties:
+      COMPLETE: {$ref: '#/$defs/nonemptyStrings'}
+      COMPLETE_WITH_FINDINGS: {$ref: '#/$defs/nonemptyStrings'}
+      BLOCKED: {$ref: '#/$defs/nonemptyStrings'}
+      FAILED: {$ref: '#/$defs/nonemptyStrings'}
+  playbook:
+    type: object
+    additionalProperties: false
+    required:
+      - gate_id
+      - discovery_surfaces
+      - inventory_method
+      - safe_operations
+      - prohibited_operations
+      - coverage_rules
+      - classification_required
+      - classification_vocabulary
+      - artifact_contracts
+      - cross_checks
+      - completeness_tests
+      - result_rules
+      - result_contract
+      - review_contract
+      - state_transition_contract
+      - persistence_contract
+      - cold_resume_contract
+    properties:
+      gate_id: {type: string, minLength: 1}
+      discovery_surfaces:
+        type: array
+        minItems: 1
+        items: {$ref: '#/$defs/surface'}
+      inventory_method: {$ref: '#/$defs/nonemptyStrings'}
+      safe_operations: {$ref: '#/$defs/nonemptyStrings'}
+      prohibited_operations: {$ref: '#/$defs/nonemptyStrings'}
+      coverage_rules:
+        type: array
+        minItems: 1
+        items: {$ref: '#/$defs/rule'}
+      classification_required: {type: boolean}
+      classification_vocabulary:
+        type: object
+        additionalProperties: false
+        required: [finding_classes, severity]
+        properties:
+          finding_classes: {type: array, items: {type: string, minLength: 1}, uniqueItems: true}
+          severity: {type: array, items: {type: string, minLength: 1}, uniqueItems: true}
+      artifact_contracts:
+        type: array
+        minItems: 1
+        items: {$ref: '#/$defs/artifact'}
+      cross_checks: {$ref: '#/$defs/nonemptyStrings'}
+      completeness_tests: {$ref: '#/$defs/nonemptyStrings'}
+      result_rules: {$ref: '#/$defs/resultRules'}
+      result_contract: {type: string, minLength: 1}
+      review_contract: {type: string, minLength: 1}
+      state_transition_contract: {type: string, minLength: 1}
+      persistence_contract: {type: string, minLength: 1}
+      cold_resume_contract: {type: string, minLength: 1}

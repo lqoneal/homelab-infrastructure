@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C16
 title: Redundancy / Simplification Analysis
 status: PENDING
+gate_type: ANALYSIS
 purpose: Convert the reconciled system model into evidence-backed simplification dispositions.
 problem_statement: Duplicate components, stores, commands, schemas, procedures, projections, controllers, and lifecycle stages impose operational and recovery complexity.
 objective: Identify components, state stores, commands, schemas, procedures, projections, controllers, and lifecycle stages that can be consolidated, removed, deprecated, or simplified.
@@ -16,6 +17,9 @@ entry_conditions:
   - C15 provides a complete single-owner/dependency/dataflow model and C16 is selected.
 authoritative_inputs:
   - C15 models and all source-linked C02-C14 findings.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C16
 assessment_or_execution_procedure:
   - Evaluate each component against canonical ownership, necessary capability, consumers, evidence, risk, migration cost, and recovery impact.
   - Assign one disposition with rationale, dependencies, prerequisites, rollback needs, and retained-history treatment.
@@ -39,6 +43,10 @@ stop_boundary: Stop after simplification analysis; perform no consolidation, dep
 result_location: engineering/convergence/engineering-system-convergence/gates/C16-redundancy-simplification/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C16-redundancy-simplification/evidence
 next_gate: C17
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Evaluate every C15 component against the controlled disposition vocabulary.
   validate_first: engctl roadmap validate

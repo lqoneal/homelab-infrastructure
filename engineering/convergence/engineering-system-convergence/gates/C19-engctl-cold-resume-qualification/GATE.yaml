@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C19
 title: engctl Resume Contract and Cold-Resume Qualification
 status: PENDING
+gate_type: QUALIFICATION
 purpose: Establish and qualify deterministic engineering resume before convergence implementation begins.
 problem_statement: Implementation cannot safely start unless a fresh engineer or agent can reconstruct exact authority, state, blockers, evidence, and next action without conversation history.
 objective: Establish and qualify deterministic engineering resume from repository-controlled records, EOS, controlled documentation, and engctl.
@@ -17,6 +18,9 @@ entry_conditions:
   - C19 has a separately reviewed implementation/qualification authority.
 authoritative_inputs:
   - Approved target resume model, roadmap/state/results, Project State, EOS, controlled docs, registry sources, and qualification procedure.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C19
 assessment_or_execution_procedure:
   - Implement only the approved deterministic context/resume contract and source bindings.
   - From a fresh shell with no conversation state, resolve repository provenance, health, program, roadmap, completed/current gate, first incomplete objective, blockers, evidence, next action, and exact resume instructions.
@@ -42,6 +46,10 @@ stop_boundary: Stop after cold-resume qualification and operator review; C20 is 
 result_location: engineering/convergence/engineering-system-convergence/gates/C19-engctl-cold-resume-qualification/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C19-engctl-cold-resume-qualification/evidence
 next_gate: C20
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Implement only the C17-C18 approved resume contract, then qualify it from a fresh shell.
   validate_first: engctl roadmap validate

@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C12
 title: Git / Publication / Synchronization Assessment
 status: PENDING
+gate_type: ASSESSMENT
 purpose: Establish the actual transaction and authority boundaries from working tree through published repository and EOS projection.
 problem_statement: Staging, commit, push, publication candidates/cohorts/transactions, baseline authority, EOS synchronization, and closeout contain self-referential and overlapping state.
 objective: Assess repository publication, staging, commit, push, baseline authority, publication transactions, EOS synchronization, candidate/cohort mechanisms, and closeout; explicitly analyze Operation Beta self-referential publication complexity.
@@ -15,6 +16,9 @@ entry_conditions:
   - C11 proof/acceptance boundaries are documented and C12 is selected.
 authoritative_inputs:
   - Git repository, PROC-0005, publication/synchronization docs and modules, baseline records, historical Operation Beta evidence, and prior findings.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C12
 assessment_or_execution_procedure:
   - Inventory all Git and publication commands, stores, schemas, identities, authority checks, and boundaries.
   - Trace working tree through candidate, transaction, commit, push, baseline, synchronization, and closeout.
@@ -38,6 +42,10 @@ stop_boundary: Stop after assessment; no Git publication or EOS synchronization.
 result_location: engineering/convergence/engineering-system-convergence/gates/C12-git-publication-synchronization/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C12-git-publication-synchronization/evidence
 next_gate: C13
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Preserve current Git state and analyze publication paths without invoking any mutation.
   validate_first: engctl roadmap validate

@@ -29,7 +29,7 @@ usage() {
     cat <<'EOF'
 Usage:
   engctl resume [project]
-  engctl roadmap {status|show|gate CXX|results|validate}
+  engctl roadmap {status|show|gate CXX|results|validate|evaluate}
   engctl status [project]
   engctl doctor
   engctl ssh {status|environment|load [key ...]}
@@ -138,7 +138,7 @@ PY
         action="${1:-status}"
         shift || true
         case "$action" in
-            status|show|results|validate)
+            status|show|results|validate|evaluate)
                 python3 "$CONVERGENCE_ROADMAP" --repository-root "$(eos_project_root homelab)" "$action" "$@"
                 ;;
             gate)

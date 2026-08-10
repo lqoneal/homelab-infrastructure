@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C04
 title: engctl and Resume Assessment
 status: PENDING
+gate_type: ASSESSMENT
 purpose: Define the factual controller and context-reconstruction boundary before later convergence design.
 problem_statement: engctl combines many controller surfaces, resume historically performs operational work, and its inputs can disagree or become stale.
 objective: Determine the intended and actual role of engctl, especially resume/context reconstruction; identify divergence, duplicate controller capabilities, stale inputs, and missing deterministic resume contracts.
@@ -16,6 +17,9 @@ entry_conditions:
   - C03 result identifies EOS/state owners and C04 is selected by reviewed roadmap state.
 authoritative_inputs:
   - scripts/engctl, scripts/lib/eos, scripts/lib/emp, wrapper CLIs, SPEC-0004, PROC-0001, and prior results.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C04
 assessment_or_execution_procedure:
   - Enumerate every command and classify read, write, authority, projection, validation, and side effects.
   - Trace resume and context call graphs from fresh-shell entry to every source and renderer.
@@ -41,6 +45,10 @@ stop_boundary: Stop after recommendation; do not consolidate controllers or impl
 result_location: engineering/convergence/engineering-system-convergence/gates/C04-engctl-and-resume/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C04-engctl-and-resume/evidence
 next_gate: C05
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Review C03 ownership findings, then trace engctl and resume without mutating runtime state.
   validate_first: engctl roadmap validate

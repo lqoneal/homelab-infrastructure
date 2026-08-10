@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C09
 title: EENS Assessment
 status: PENDING
+gate_type: ASSESSMENT
 purpose: Separate qualified EENS operational capability from speculative or deferred notification architecture.
 problem_statement: EENS Operational Alpha exists, while advanced HNS concepts are deferred and documentation/runtime boundaries can obscure that distinction.
 objective: Inventory EENS code, deployment, runtime, event contracts, persistence, producer/consumer interfaces, notification authority, and deferred HNS concepts.
@@ -16,6 +17,9 @@ entry_conditions:
   - C08 Zeus interactions are mapped and C09 is explicitly selected.
 authoritative_inputs:
   - services/eens, EENS policies/specifications, deployment/service records, tests, evidence, producers, and consumers.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C09
 assessment_or_execution_procedure:
   - Inventory code, deployment topology, services, stores, schemas, events, interfaces, producers, and consumers.
   - Trace notification authority and delivery/persistence semantics.
@@ -39,6 +43,10 @@ stop_boundary: Stop after assessment; do not modify EENS or implement HNS.
 result_location: engineering/convergence/engineering-system-convergence/gates/C09-eens/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C09-eens/evidence
 next_gate: C10
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Review C08 event consumers and assess EENS/HNS boundaries read-only.
   validate_first: engctl roadmap validate

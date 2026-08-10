@@ -1,5 +1,5 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-title: Engineering System Convergence Gate
+title: Engineering System Convergence Historical Gate
 type: object
 additionalProperties: false
 required:
@@ -7,7 +7,6 @@ required:
   - gate_id
   - title
   - status
-  - gate_type
   - purpose
   - problem_statement
   - objective
@@ -17,7 +16,6 @@ required:
   - dependencies
   - entry_conditions
   - authoritative_inputs
-  - execution_playbook
   - assessment_or_execution_procedure
   - required_outputs
   - required_evidence
@@ -27,37 +25,55 @@ required:
   - result_location
   - evidence_location
   - next_gate
-  - terminal
   - resume_instructions
 properties:
-  schema_version: {const: 2}
+  schema_version: {const: 1}
   gate_id: {type: string, pattern: '^C[0-9]{2}(?:-[A-Z0-9-]+)?$'}
   title: {type: string, minLength: 1}
   status: {enum: [COMPLETE, COMPLETE_WITH_FINDINGS, CURRENT, PENDING, BLOCKED]}
-  gate_type: {enum: [HISTORICAL, ASSESSMENT, ANALYSIS, DESIGN, PLANNING, QUALIFICATION, IMPLEMENTATION_ENTRY]}
   purpose: {type: string, minLength: 1}
   problem_statement: {type: string, minLength: 1}
   objective: {type: string, minLength: 1}
   rationale: {type: string, minLength: 1}
-  scope_in: {$ref: '#/$defs/nonemptyStrings'}
-  scope_out: {$ref: '#/$defs/nonemptyStrings'}
+  scope_in:
+    type: array
+    minItems: 1
+    items: {type: string, minLength: 1}
+  scope_out:
+    type: array
+    minItems: 1
+    items: {type: string, minLength: 1}
   dependencies:
     type: array
     items: {type: string, pattern: '^C[0-9]{2}(?:-[A-Z0-9-]+)?$'}
-  entry_conditions: {$ref: '#/$defs/nonemptyStrings'}
-  authoritative_inputs: {$ref: '#/$defs/nonemptyStrings'}
-  execution_playbook:
-    type: object
-    additionalProperties: false
-    required: [catalog, playbook_id]
-    properties:
-      catalog: {type: string, minLength: 1}
-      playbook_id: {type: string, minLength: 1}
-  assessment_or_execution_procedure: {$ref: '#/$defs/nonemptyStrings'}
-  required_outputs: {$ref: '#/$defs/nonemptyStrings'}
-  required_evidence: {$ref: '#/$defs/nonemptyStrings'}
-  acceptance_criteria: {$ref: '#/$defs/nonemptyStrings'}
-  fail_closed_conditions: {$ref: '#/$defs/nonemptyStrings'}
+  entry_conditions:
+    type: array
+    minItems: 1
+    items: {type: string, minLength: 1}
+  authoritative_inputs:
+    type: array
+    minItems: 1
+    items: {type: string, minLength: 1}
+  assessment_or_execution_procedure:
+    type: array
+    minItems: 1
+    items: {type: string, minLength: 1}
+  required_outputs:
+    type: array
+    minItems: 1
+    items: {type: string, minLength: 1}
+  required_evidence:
+    type: array
+    minItems: 1
+    items: {type: string, minLength: 1}
+  acceptance_criteria:
+    type: array
+    minItems: 1
+    items: {type: string, minLength: 1}
+  fail_closed_conditions:
+    type: array
+    minItems: 1
+    items: {type: string, minLength: 1}
   stop_boundary: {type: string, minLength: 1}
   result_location: {type: string, minLength: 1}
   evidence_location: {type: string, minLength: 1}
@@ -65,20 +81,6 @@ properties:
     oneOf:
       - {type: string, pattern: '^C[0-9]{2}(?:-[A-Z0-9-]+)?$'}
       - {type: 'null'}
-  terminal:
-    type: object
-    additionalProperties: false
-    required: [is_terminal, continuation_authority, continuation_action]
-    properties:
-      is_terminal: {type: boolean}
-      continuation_authority:
-        oneOf:
-          - {type: string, minLength: 1}
-          - {type: 'null'}
-      continuation_action:
-        oneOf:
-          - {type: string, minLength: 1}
-          - {type: 'null'}
   resume_instructions:
     type: object
     additionalProperties: false
@@ -88,8 +90,3 @@ properties:
       validate_first: {type: string, minLength: 1}
       next_authorized_action: {type: string, minLength: 1}
       execution_authority: {enum: [AUTHORIZED_BY_PROGRAM_DIRECTIVE, SEPARATE_AUTHORITY_REQUIRED, NOT_AUTHORIZED]}
-$defs:
-  nonemptyStrings:
-    type: array
-    minItems: 1
-    items: {type: string, minLength: 1}

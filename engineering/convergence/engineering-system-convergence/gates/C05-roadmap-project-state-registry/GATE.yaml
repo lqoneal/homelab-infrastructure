@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C05
 title: Roadmap / Project State / Registry Assessment
 status: PENDING
+gate_type: ASSESSMENT
 purpose: Reconcile the intended ownership boundaries among planning, project resume state, and EMP coordination state.
 problem_statement: Roadmaps, Project State, Work Registry, portfolio, milestones, dependencies, queues, phases, and active work can assert overlapping current position.
 objective: Reconcile roadmap authority, Project State, Work Registry, portfolio, milestones, dependencies, queue state, phase/gate position, and current work identification.
@@ -16,6 +17,9 @@ entry_conditions:
   - C04 has documented resume consumers and C05 is selected through reviewed state.
 authoritative_inputs:
   - This roadmap, PROJ-0001, Work Registry/schema, SPEC-0006, EMP services, milestones, queues, and C02-C04 findings.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C05
 assessment_or_execution_procedure:
   - Inventory every duplicated planning/current-position field and its writer and consumer.
   - Trace roadmap-to-project-to-registry relationships and lifecycle semantics.
@@ -39,6 +43,10 @@ stop_boundary: Stop after ownership proposal; defer adoption to C17-C18 and impl
 result_location: engineering/convergence/engineering-system-convergence/gates/C05-roadmap-project-state-registry/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C05-roadmap-project-state-registry/evidence
 next_gate: C06
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Review C04 resume inputs and compare planning/project/registry facts read-only.
   validate_first: engctl roadmap validate

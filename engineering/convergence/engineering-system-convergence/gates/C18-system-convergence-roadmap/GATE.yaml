@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C18
 title: System Convergence Roadmap
 status: PENDING
+gate_type: PLANNING
 purpose: Convert the approved target architecture into a safe, executable migration sequence.
 problem_statement: An architecture alone does not define dependency order, acceptance gates, compatibility periods, rollback boundaries, or authorization packages.
 objective: Convert the approved target architecture into an executable implementation roadmap with dependency-ordered migration gates and safe rollback boundaries.
@@ -16,6 +17,9 @@ entry_conditions:
   - C18 is explicitly selected and unresolved architecture blockers are absent.
 authoritative_inputs:
   - Approved C17 architecture, C16 dispositions, subsystem evidence, governing lifecycle/publication/recovery contracts.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C18
 assessment_or_execution_procedure:
   - Decompose target adoption into dependency-ordered, reversible migration gates.
   - Define entry, procedure, outputs, proof, acceptance, compatibility, stop, rollback, and next authorization for each gate.
@@ -40,6 +44,10 @@ stop_boundary: Stop after implementation-roadmap approval; do not implement any 
 result_location: engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/evidence
 next_gate: C19
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Decompose only the approved C17 target into bounded migration gates with rollback.
   validate_first: engctl roadmap validate

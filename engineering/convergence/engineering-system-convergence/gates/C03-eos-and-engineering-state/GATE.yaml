@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C03
 title: EOS and Engineering State Assessment
 status: PENDING
+gate_type: ASSESSMENT
 purpose: Establish the actual ownership and persistence model for engineering state and EOS projections.
 problem_statement: Checkpoints, operational state, project records, synchronization, caches, and recovery surfaces make overlapping or stale state claims.
 objective: Determine the actual architecture and authority of EOS state, checkpoints, operational-state, repository synchronization, Project State, persistence, recovery, and lifecycle projections.
@@ -19,6 +20,9 @@ entry_conditions:
 authoritative_inputs:
   - EOS-0001 through EOS-0003, STD-0004, SPEC-0004, Project State, and repository-EOS authority records.
   - scripts/lib/eos, scripts/engctl, EOS runtime/checkpoint observations, and prior gate findings.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C03
 assessment_or_execution_procedure:
   - Inventory every EOS component, durable store, cache, checkpoint, pointer, projection, and consumer.
   - Trace ownership, write paths, read paths, refresh/synchronization triggers, recovery precedence, and failure modes.
@@ -45,6 +49,10 @@ stop_boundary: Stop after assessment and operator review; do not redesign or rep
 result_location: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/evidence
 next_gate: C04
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Review C02 result and validate roadmap state before read-only EOS tracing.
   validate_first: engctl roadmap validate

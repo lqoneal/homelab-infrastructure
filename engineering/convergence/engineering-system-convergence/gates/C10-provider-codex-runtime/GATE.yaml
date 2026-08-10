@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C10
 title: Provider / Codex / Execution Runtime Assessment
 status: PENDING
+gate_type: ASSESSMENT
 purpose: Establish one factual execution-provider contract across selection, invocation, monitoring, handoff, and resume.
 problem_statement: Provider, transport, thread, execution, Codex, monitoring, and recovery layers can duplicate identity and lifecycle responsibilities.
 objective: Determine the canonical execution-provider contract and simplify provider, session, transport, thread, resume, monitoring, and handoff responsibilities.
@@ -16,6 +17,9 @@ entry_conditions:
   - C08-C09 execution/event interactions are mapped and C10 is selected.
 authoritative_inputs:
   - Provider/Codex/runtime modules, schemas, controlled docs, WOP execution contracts, runtime evidence, and prior findings.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C10
 assessment_or_execution_procedure:
   - Inventory provider, session, transport, thread, invocation, monitoring, handoff, and recovery components.
   - Trace identities, state transitions, persistence, authority, and failure handling end to end.
@@ -39,6 +43,10 @@ stop_boundary: Stop after contract recommendation; no provider or Codex executio
 result_location: engineering/convergence/engineering-system-convergence/gates/C10-provider-codex-runtime/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C10-provider-codex-runtime/evidence
 next_gate: C11
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Trace provider and Codex lifecycles from repository sources and preserved evidence only.
   validate_first: engctl roadmap validate

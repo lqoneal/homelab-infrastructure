@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C15
 title: Cross-System Dependency and Authority Reconciliation
 status: PENDING
+gate_type: ASSESSMENT
 purpose: Produce the complete factual dependency, dataflow, and authority model across the engineering system.
 problem_statement: C02-C14 findings describe individual systems, but cross-system facts still require one canonical owner and explicit projections.
 objective: Build the complete dependency/dataflow/authority model across controlled documentation, repository/Git, EOS, engctl, Project State, Work Registry/EMP, WOP, Zeus, EENS, provider/Codex, evidence/qualification, publication, synchronization, and recovery.
@@ -16,6 +17,9 @@ entry_conditions:
   - C15 is explicitly selected after operator review.
 authoritative_inputs:
   - All prior gate results, evidence, controlled sources, implementation maps, and observed state.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C15
 assessment_or_execution_procedure:
   - Normalize subsystem components, facts, interfaces, stores, producers, consumers, and authority claims from all results.
   - Build end-to-end dependency and dataflow models with direction, lifecycle, persistence, and failure semantics.
@@ -40,6 +44,10 @@ stop_boundary: Stop after reconciliation model and review; do not simplify or im
 result_location: engineering/convergence/engineering-system-convergence/gates/C15-cross-system-authority-reconciliation/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C15-cross-system-authority-reconciliation/evidence
 next_gate: C16
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Verify C02-C14 completeness, then reconcile their findings into one cross-system model.
   validate_first: engctl roadmap validate

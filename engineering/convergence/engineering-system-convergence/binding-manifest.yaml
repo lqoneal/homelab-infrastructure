@@ -1,31 +1,49 @@
 schema_version: 1
 roadmap_id: ESC-ROADMAP-001
+roadmap_version: 2.0.0
+evaluation_standard: STD-0006@1.0
+evaluation_procedure: PROC-0009@1.0
 binding_owner: EMM
 binding_policy: Exact SHA-256 source binding; any drift fails closed until an authorized coherent successor is recorded.
 sources:
-  - {path: engineering/convergence/engineering-system-convergence/roadmap.yaml, sha256: 1254279180fbf4f34c076663b4bda95f83ffcaf65aeae6564f7fea2a62ade019}
-  - {path: engineering/convergence/engineering-system-convergence/STATE.yaml, sha256: 0ac45abd9f3e26b9fefa27426dd24d5c277910acab0b30fd7bc57c03f1016dba}
-  - {path: docs/project/PROJ-0001-PROJECT_STATE.md, sha256: d43638acfb6342f7ccf953ca64cff1ff24fc2503088f2fe363e83771688ac53b}
+  - {path: engineering/convergence/engineering-system-convergence/roadmap.yaml, sha256: ba831d4ecafdbfb4582559a5b81de7327a38463ed7e53d9185e074d512f6d167}
+  - {path: engineering/convergence/engineering-system-convergence/STATE.yaml, sha256: d32e901c0396824b25086e588201577a5b66a38d292edce228865ac6a6207d9e}
+  - {path: docs/project/PROJ-0001-PROJECT_STATE.md, sha256: c40f044a7ecdb51216b4591dc59c5784e5727e2a2b0b2f5448297d5b5e36c143}
   - {path: engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/GATE.yaml, sha256: 1cde92b85a6ddee4520d56e3d020450da29c367226ffabe9b53c739372fc4902}
   - {path: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/GATE.yaml, sha256: 807157e630584f325bc0412af424f630b8c202ec89bb83d1939388074b4e4272}
   - {path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/GATE.yaml, sha256: 96885178a7f0c13714b9f60fc9f1486a3cf6b1306d114ee4d2089d30bd8837fc}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/GATE.yaml, sha256: d9b59fb72cd1b7db7d0a1867bc3ab3f052daf59dc43b3c67fec7ab64b026708a}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C04-engctl-and-resume/GATE.yaml, sha256: 038620681dd0b97d8402f2a09da2b60b2e656cb873be52273c9ab574a1a116fd}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C05-roadmap-project-state-registry/GATE.yaml, sha256: 7f6c0c73c103fd988d8e6bb501e0f698aba4b242b76cb827bdcd6cbe6597dadb}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C06-wop-and-execution-contract/GATE.yaml, sha256: 770bfc15c8d386f4ee245faee451156c01a36f9671f9ed95f495c76a28a64931}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C07-emp/GATE.yaml, sha256: 048fefab5c6b497a9a7fb062ba79a0912ec2f0e776fc68c85774c5c77cbbd1f3}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C08-zeus/GATE.yaml, sha256: ea9e16960c43d2dc123e3bd497f0184ef4df81e85d6ae4aac652b50fe8ab3f19}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C09-eens/GATE.yaml, sha256: 940bc838543851aeacc763ada830f0ccfba592937939c13519c670a72c4e61d5}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C10-provider-codex-runtime/GATE.yaml, sha256: 34afbc7f13fc268c46423deab4c18ff5816b3d82ec593603e1b0cae813c90aa9}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C11-evidence-qualification-acceptance/GATE.yaml, sha256: 3c62435d579c79c69f3c7a5c00cd460bed4693512cfd24e910d5e9fe8c553513}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C12-git-publication-synchronization/GATE.yaml, sha256: 0396a0c20563a4a9de7f2eb4cb1113b0f90f5220c92aa55461ff727ad08b8a33}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C13-recovery-interruption-resume/GATE.yaml, sha256: 3670834909b0b7e5d8233d196e8fde2285e881984d0530e5321d3489b6714da2}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C14-validation-tests-observability/GATE.yaml, sha256: 89af5d8d2f78c80963419722a9e0990a6b89c2012131175f9953fbba14869642}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C15-cross-system-authority-reconciliation/GATE.yaml, sha256: 4748a6a103043a5be75596844670e23fae82859e38fd56a2ae24340b53a529cd}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C16-redundancy-simplification/GATE.yaml, sha256: cdfad81126b40dced7e88f77390dab96903d8e6b8ae99b63dbd3ddc42c0b8114}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C17-canonical-target-architecture/GATE.yaml, sha256: e60c33e5f191d7dc27be81b5ade19eac730bc19a3a8c8dbf20a6c16533160a6b}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/GATE.yaml, sha256: 079739feac956bb2c135cdf1c7de43ed80f9962aa0c93c8658ceba0d0725ab74}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C19-engctl-cold-resume-qualification/GATE.yaml, sha256: ba35882444d162f9f5ff5a279d5d5484ec8e7dfe5af3f57797639c3156ee3d6a}
-  - {path: engineering/convergence/engineering-system-convergence/gates/C20-controlled-convergence-implementation/GATE.yaml, sha256: c7a98ed7dab5610e66baf28143054eaee90d62655c26761729a6c9bd61ac1cfb}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/GATE.yaml, sha256: 3979883fc1a62c9cc718df07e53bd3ad619bbcc17df9b4fc7ba33ef24cfa7590}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C04-engctl-and-resume/GATE.yaml, sha256: 0aebc914e3e19d5c7bf847f9bd404af887e19f39da32bbb7d5d9b1133fea8081}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C05-roadmap-project-state-registry/GATE.yaml, sha256: 140e074c280d75f2cf2769a5f48a5c8670f4382a9dd7eaed218049ac8334bdf1}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C06-wop-and-execution-contract/GATE.yaml, sha256: 7d4e5efc4ab206101958b0ca8fccdf21b9dedf3fb469ca28eb1f8dacb38542cc}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C07-emp/GATE.yaml, sha256: 7258d97329c88452dc46dfbaeeba673966f999d5cb864dd599180da6cd8fc4be}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C08-zeus/GATE.yaml, sha256: f3a18fbe416b6f5b6be96bcdb4b16470c75c23a6efa6b44c886b2c3461fee94a}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C09-eens/GATE.yaml, sha256: bb17a097e3884961c1c63150d33dc74a676b3ca5faf7e2238e793402b35b3886}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C10-provider-codex-runtime/GATE.yaml, sha256: a3a1ea21ef98c95fd101c374e00a078114d58bd33e200776ad06312db8f8134d}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C11-evidence-qualification-acceptance/GATE.yaml, sha256: 3b65fb296537c23703ef769927276ffbd33f65d5caf91e08ee27ec070e67184d}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C12-git-publication-synchronization/GATE.yaml, sha256: 639c26a7e7990b92569a00996e629fe999389ad3054ceae79e07eec7811f28da}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C13-recovery-interruption-resume/GATE.yaml, sha256: 14104497131984d251d1c2b43bd3363a8fee80a9373026dfe90f49605c39dac1}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C14-validation-tests-observability/GATE.yaml, sha256: a465c3dfdee06406fa275f1cddfae3aed42dbb05af614af48bc182262e968005}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C15-cross-system-authority-reconciliation/GATE.yaml, sha256: 560e4a3fcc4d5fb10718ebb1d1e85a45347fde9560996ae6ebbc759425a3b95a}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C16-redundancy-simplification/GATE.yaml, sha256: 1964f41a97062a7d97a0ae123551bbdd43bedcc0287dde6008db7ee5d575cb87}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C17-canonical-target-architecture/GATE.yaml, sha256: 4905dda898a036bc1d11e942e41257badf237cdfbcdc3366a9117aa3aa5d44f7}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/GATE.yaml, sha256: 1160c86937ffcdf0466d1f1163cc6028a781b796292824803287bcac75c6976d}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C19-engctl-cold-resume-qualification/GATE.yaml, sha256: 7d977280acb8e31295bd366a2650779d13bbb0501a17c29f83ca65e3502a9255}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C20-controlled-convergence-implementation/GATE.yaml, sha256: 90c57f5d88d0c32ca8da5c132a15d41177307cdd8542d6509589a7ed605d0f07}
   - {path: engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/RESULT.yaml, sha256: 9933656a90f54c6c9541df2f1ad393b2512c628b3475e390ab6a5078acb5795c}
   - {path: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml, sha256: d592a8d161b0f619950be7bfc7e2860dfcef11750c761d38678f04e580bb622f}
+  - {path: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml, sha256: 2cd46f05058f9c79dcb6c1157cc73c0221076cb6dbd9af15311d70d8ddaec537}
+  - {path: engineering/convergence/engineering-system-convergence/schemas/roadmap.schema.yaml, sha256: e98d46b2a2a31d3acf2ffced97557a1f4f68ab625e0127b18f205da641cf7166}
+  - {path: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml, sha256: 7729520db60057c3adbb4e051105c6861cc78a06aa931a06f490b6c907bd1be9}
+  - {path: engineering/convergence/engineering-system-convergence/schemas/state.schema.yaml, sha256: 2e0ec7a3a8dcf2c2d13de05b19bcfdede1f7a5e46bb1641da02a64b64dd777cc}
+  - {path: engineering/convergence/engineering-system-convergence/schemas/result.schema.yaml, sha256: 41fa8fa79d14364d815fe28dff3560e9b7e69700ec312aa479168415b96402fe}
+  - {path: engineering/convergence/engineering-system-convergence/schemas/execution-playbook.schema.yaml, sha256: 55b0cb9a1b3569e73622863e31b6b7eda16ef48f68c6cc1661955ecedb916b29}
+  - {path: engineering/convergence/engineering-system-convergence/schemas/roadmap-evaluation.schema.yaml, sha256: b8d344042bcc4fa8d37f39f557ab8ae96e97ea1aee45880c9e72ad7452706a58}
+  - {path: engineering/convergence/engineering-system-convergence/schemas/gate-historical-v1.schema.yaml, sha256: 482b4aaf68bb866dc229ef32a8143e80a5cd47fc91941112be0c5672b742de07}
+  - {path: engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml, sha256: dde3c5319c9cd556eda78ae4462d181c0c99b78ff19f1f00d3a07e062450d3cd}
+  - {path: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md, sha256: 2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a}
+  - {path: docs/standards/STD-0006-ENGINEERING_EXECUTABLE_ROADMAP_STANDARD.md, sha256: 9ff83a35d304c2209032c8ec8d93d6458e0fef80f96478a6a929c90be4487bd6}
+  - {path: docs/procedures/PROC-0009-EXECUTABLE_ROADMAP_EVALUATION_PROCEDURE.md, sha256: 000586025bb964349ba86e6d7531aaae4c58f16ee2609301345dd08c40706f97}
+  - {path: scripts/lib/eos/convergence_roadmap.py, sha256: adc340c4b3f30aeeb724a973c033bfcf6838e509fcf68c6fb708a2bcfd76395c}
+  - {path: scripts/engctl, sha256: f6a8dbd3743370821eb719a19a9a09c44ace1d103e77fb762e4a92f6de17f1c4}
+  - {path: engineering/validation/controlled-document-semantic-profiles.yaml, sha256: e548823522c910744da44ec823e763656e2f8170930cde4d8f450de95a4b3b11}

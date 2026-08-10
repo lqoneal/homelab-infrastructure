@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C14
 title: Validation / Tests / Observability Assessment
 status: PENDING
+gate_type: ASSESSMENT
 purpose: Determine the checks and signals that prove Engineering Platform health and convergence safety.
 problem_statement: Validators, semantic checks, tests, health commands, logs, telemetry, PMCT, and observability overlap and do not share one qualification boundary.
 objective: Inventory platform validation, semantic document validation, tests, regression suites, health commands, telemetry, logs, PMCT, observability, and test duplication; determine which checks constitute platform qualification.
@@ -15,6 +16,9 @@ entry_conditions:
   - C13 recovery boundaries are documented and C14 is selected.
 authoritative_inputs:
   - Test suites, validators, health commands, PMCT, telemetry/log contracts, qualification procedures, evidence, and prior findings.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C14
 assessment_or_execution_procedure:
   - Inventory checks, suites, commands, fixtures, signals, owners, consumers, costs, and side effects.
   - Map coverage to architecture responsibilities, authority claims, failure/recovery boundaries, and qualification decisions.
@@ -38,6 +42,10 @@ stop_boundary: Stop after assessment; do not repair failures or declare converge
 result_location: engineering/convergence/engineering-system-convergence/gates/C14-validation-tests-observability/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C14-validation-tests-observability/evidence
 next_gate: C15
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Build the check inventory from source and bounded isolated validation only.
   validate_first: engctl roadmap validate

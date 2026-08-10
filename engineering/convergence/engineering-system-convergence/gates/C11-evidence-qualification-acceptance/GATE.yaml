@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C11
 title: Evidence / Qualification / Acceptance Assessment
 status: PENDING
+gate_type: ASSESSMENT
 purpose: Identify the canonical proof and decision chain for engineering completion.
 problem_statement: Evidence packages, reports, validators, qualifications, acceptance receipts, authorization decisions, and lifecycle proofs overlap and can imply completion inconsistently.
 objective: Inventory evidence generation, completion reports, validation, qualification, acceptance, authorization decisions, receipts, and lifecycle proof; identify duplicate proof models and define canonical evidence authority.
@@ -16,6 +17,9 @@ entry_conditions:
   - C10 runtime evidence producers are mapped and C11 is explicitly selected.
 authoritative_inputs:
   - PROC-0006, evidence/qualification/authorization schemas and records, completion reports, receipts, validators, and prior results.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C11
 assessment_or_execution_procedure:
   - Inventory proof artifacts, producers, owners, consumers, schemas, immutability, and retention.
   - Trace observation through validation, qualification, approval, acceptance, authorization, and lifecycle advancement.
@@ -39,6 +43,10 @@ stop_boundary: Stop after recommendation; do not qualify or accept any subsystem
 result_location: engineering/convergence/engineering-system-convergence/gates/C11-evidence-qualification-acceptance/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C11-evidence-qualification-acceptance/evidence
 next_gate: C12
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Use C06 and C10 proof producers to trace completion through acceptance read-only.
   validate_first: engctl roadmap validate

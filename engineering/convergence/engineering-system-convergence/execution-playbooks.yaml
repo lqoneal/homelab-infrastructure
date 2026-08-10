@@ -1,0 +1,748 @@
+schema_version: 1
+contract_id: ESC-EXECUTION-PLAYBOOKS-001
+contract_version: 2.0.0
+standard: STD-0006@1.0
+procedure: PROC-0009@1.0
+shared_contracts:
+  result_contract:
+    contract_id: ESC-RESULT-001
+    steps:
+      - Use COMPLETE only when exhaustive work is complete and no material finding affects the gate purpose.
+      - Use COMPLETE_WITH_FINDINGS when exhaustive work is complete and findings are controlled inputs to later gates rather than coverage blockers.
+      - Use BLOCKED when required coverage, authority, integrity, or safe inspection cannot be established.
+      - Use FAILED when the procedure or evidence integrity failed; a discovered subject finding alone is not failure.
+      - Persist one schema-valid RESULT.yaml and never infer completion from artifact presence.
+  review_contract:
+    contract_id: ESC-REVIEW-001
+    steps:
+      - A qualified engineer performs a row-count, key-uniqueness, unresolved-gap, evidence-link, and acceptance-criterion review.
+      - The operator reviews the executive result, findings, blockers, scope boundary, and proposed successor action.
+      - No gate status, STATE.yaml, Project State, binding manifest, or successor authority changes before operator acceptance.
+  state_transition_contract:
+    contract_id: ESC-STATE-TRANSITION-001
+    steps:
+      - Validate the current roadmap, state, gate, result, evidence, and current-gate identity.
+      - Record operator review where required and require a terminal COMPLETE or COMPLETE_WITH_FINDINGS result.
+      - Update the completed gate status, STATE.yaml sets and pointers, and successor gate status as one coherent revision.
+      - Update Project State roadmap binding and version when required without changing unrelated historical meaning.
+      - Update the EMM binding manifest digests for every bound changed source.
+      - Validate the complete roadmap and persist only through separately authorized governed repository publication.
+      - Verify published HEAD and origin plus any required EOS relationship under then-current authority.
+      - Perform cold resume and expose only the reviewed successor action after every check passes.
+  persistence_contract:
+    contract_id: ESC-PERSISTENCE-001
+    steps:
+      - Store gate outputs, evidence, coverage proof, and RESULT.yaml below the gate's declared locations.
+      - Validate artifact schemas, evidence locators, digests where declared, and EMM source bindings.
+      - Treat working-tree records as persistence pending until separately authorized commit and push complete.
+      - Never synchronize EOS, Registry, or another state store merely to make repository evidence appear current.
+  cold_resume_contract:
+    contract_id: ESC-COLD-RESUME-001
+    steps:
+      - Start a fresh shell with repository-controlled PATH and no conversation, provider session, thread, or transport identity.
+      - Run engctl roadmap validate and engctl roadmap evaluate; both must agree on structure, execution sufficiency, and current state.
+      - Run engctl roadmap gate for the resolved current gate and verify its playbook, inputs, evidence locations, stop boundary, and next action.
+      - Run engctl resume read-only and require the same program, roadmap version, completed gates, current gate, blockers, and next authorized action.
+      - Any missing, malformed, stale, conflicting, or unbound input fails closed without changing state.
+playbooks:
+  ESC-C00:
+    gate_id: C00
+    discovery_surfaces:
+      - {location: .git, kind: PATH, existence: REQUIRED, purpose: Resolve preserved Git identity and history.}
+      - {location: engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/evidence, kind: PATH, existence: REQUIRED, purpose: Resolve historical preservation proof.}
+    inventory_method:
+      - Resolve the historical result, evidence, preservation ref, commit, and baseline without replaying rollback.
+      - Account for each historical acceptance criterion and retain the result meaning unchanged.
+    safe_operations: [Read repository objects and existing evidence, Validate hashes and references without ref mutation]
+    prohibited_operations: [Create move or delete refs, Reset merge cherry-pick or rewrite history]
+    coverage_rules:
+      - {rule_id: C00-COV-001, requirement: Every result and evidence locator resolves and every declared digest matches., evidence: Resolver and Git reference validation output.}
+    classification_required: false
+    classification_vocabulary: &assessment_vocabulary
+      finding_classes: [CONSISTENT, STALE, CONFLICTING, DUPLICATE, OVERLAPPING, OBSOLETE, UNCONSUMED, UNDOCUMENTED_IMPLEMENTATION, UNRESOLVED]
+      severity: [INFORMATIONAL, LOW, MEDIUM, HIGH, CRITICAL]
+    artifact_contracts:
+      - {artifact_id: C00-HISTORICAL-RESULT, title: Preservation historical result, format: YAML, minimum_record_fields: [gate_id, result, evidence, disposition], completeness_key: [gate_id], purpose: Preserve historical completion semantics.}
+    cross_checks: [Compare preservation ref target with the immutable commit recorded by roadmap.yaml and RESULT.yaml.]
+    completeness_tests: [All C00 result and evidence references resolve without replay or mutation.]
+    result_rules: &assessment_result_rules
+      COMPLETE: [All coverage and completeness tests pass, no material finding affects the gate purpose, no blocker exists, and the gate scope was preserved.]
+      COMPLETE_WITH_FINDINGS: [All coverage and completeness tests pass, findings exist as later-gate inputs, no finding prevents gate completeness, and the gate scope was preserved.]
+      BLOCKED: [A required surface cannot be inspected safely, exhaustive coverage cannot be proven, authority or identity cannot be resolved enough to classify a gap, or a prerequisite binding fails.]
+      FAILED: [The procedure mutated a prohibited surface, evidence integrity failed, required artifacts are corrupt, or a result was asserted contrary to objective checks.]
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C03:
+    gate_id: C03
+    discovery_surfaces:
+      - {location: docs/eos, kind: PATH, existence: REQUIRED, purpose: Resolve controlled EOS ownership and persistence claims.}
+      - {location: scripts/lib/eos, kind: PATH, existence: REQUIRED, purpose: Inventory EOS stores readers writers projections and recovery paths.}
+      - {location: .eos, kind: PATH, existence: OPTIONAL, purpose: Observe repository-local EOS state only when present and read-only.}
+      - {location: docs/project/PROJ-0001-PROJECT_STATE.md, kind: PATH, existence: REQUIRED, purpose: Map Project State consumption and projection.}
+      - {location: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/RESULT.yaml, kind: PATH, existence: DYNAMIC, purpose: Consume reviewed C02 authority findings.}
+    inventory_method:
+      - Enumerate every EOS module store cache checkpoint pointer projection command schema writer reader and consumer from source and controlled records.
+      - Trace each state fact from writer to durable store projections readers synchronization recovery and loss/rebuild behavior.
+    safe_operations: [Static source and schema inspection, Read-only status validation and isolated fixture tests]
+    prohibited_operations: [Synchronize refresh restore select or create checkpoints, Modify EOS runtime operational or repository state]
+    coverage_rules:
+      - {rule_id: C03-COV-001, requirement: Every EOS source module store command and schema is represented exactly once., evidence: Filesystem-to-component inventory anti-join.}
+      - {rule_id: C03-COV-002, requirement: Every state fact has claimant writer reader persistence projection and recovery semantics or an explicit gap., evidence: State ownership matrix null-field checks.}
+      - {rule_id: C03-COV-003, requirement: Every synchronization and recovery edge resolves at both ends., evidence: Dataflow endpoint reconciliation.}
+    classification_required: true
+    classification_vocabulary: *assessment_vocabulary
+    artifact_contracts:
+      - {artifact_id: C03-COMPONENT-INVENTORY, title: EOS component inventory, format: YAML, minimum_record_fields: [component_id, path, type, owner, reads, writes, store, consumers, evidence], completeness_key: [component_id], purpose: Account for EOS implementation and controlled components.}
+      - {artifact_id: C03-STATE-OWNERSHIP, title: State ownership matrix, format: YAML, minimum_record_fields: [fact_id, claimant, writer, reader, durable_store, cache, projection, freshness, recovery, conflict, evidence], completeness_key: [fact_id], purpose: Assign observed ownership semantics to every state fact.}
+      - {artifact_id: C03-PERSISTENCE-SYNC, title: Checkpoint synchronization and persistence model, format: YAML, minimum_record_fields: [edge_id, source, destination, trigger, direction, integrity_check, failure_mode, recovery_precedence, evidence], completeness_key: [edge_id], purpose: Model checkpoint persistence synchronization and recovery.}
+      - {artifact_id: C03-DIVERGENCE, title: EOS divergence and simplification register, format: YAML, minimum_record_fields: [finding_id, subject, classification, severity, current_claims, impact, candidate_disposition, evidence], completeness_key: [finding_id], purpose: Record contradictions and candidates without repair.}
+    cross_checks: [Reconcile source writers/readers with store files and documentation claims, Compare observed state only through read-only interfaces, Prove pre/post hashes for EOS mutable surfaces are unchanged.]
+    completeness_tests: [Filesystem inventory anti-join is empty, Every ownership row has complete write/read/persistence/recovery fields or UNRESOLVED, Every edge endpoint resolves, All required artifacts validate and mutation proof passes.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C04:
+    gate_id: C04
+    discovery_surfaces:
+      - {location: scripts/engctl, kind: PATH, existence: REQUIRED, purpose: Resolve command routing and top-level behavior.}
+      - {location: scripts/lib/eos, kind: PATH, existence: REQUIRED, purpose: Trace resume context and EOS consumers.}
+      - {location: scripts/lib/emp, kind: PATH, existence: REQUIRED, purpose: Trace management and registry consumers.}
+      - {location: docs/specifications/SPEC-0004-ENGINEERING_CONTEXT_RECONSTRUCTION_SERVICE.md, kind: PATH, existence: REQUIRED, purpose: Compare controlled resume contract.}
+    inventory_method: [Enumerate every engctl command route sourced library read write external effect and exit behavior., Trace resume from fresh-shell invocation through every source conflict rule renderer and fallback.]
+    safe_operations: [Static shell and Python call tracing, Help output and isolated read-only command tests]
+    prohibited_operations: [Invoke mutating routes refresh synchronize or recovery, Permit a command with unknown side effects to run]
+    coverage_rules:
+      - {rule_id: C04-COV-001, requirement: Every engctl command and subcommand is classified by reads writes authority projections side effects and exit behavior., evidence: Router-to-command inventory reconciliation.}
+      - {rule_id: C04-COV-002, requirement: Every resume output fact maps to an owner freshness rule conflict rule and fallback., evidence: Resume input-authority matrix completeness.}
+    classification_required: true
+    classification_vocabulary: *assessment_vocabulary
+    artifact_contracts:
+      - {artifact_id: C04-COMMAND-INVENTORY, title: engctl command inventory, format: YAML, minimum_record_fields: [command_id, syntax, route, implementation, reads, writes, side_effect_class, authority_effect, exit_behavior, evidence], completeness_key: [command_id], purpose: Classify every controller surface.}
+      - {artifact_id: C04-RESUME-CALL-GRAPH, title: Resume call graph, format: YAML, minimum_record_fields: [edge_id, caller, callee, input, output, mutation_class, failure_behavior, evidence], completeness_key: [edge_id], purpose: Trace fresh-shell context reconstruction.}
+      - {artifact_id: C04-INPUT-AUTHORITY, title: Resume input authority matrix, format: YAML, minimum_record_fields: [fact_id, displayed_field, source, owner, freshness_rule, conflict_rule, fallback, consumer, evidence], completeness_key: [fact_id], purpose: Bind every rendered fact to authority.}
+      - {artifact_id: C04-DIVERGENCE, title: CLI duplication and resume divergence register, format: YAML, minimum_record_fields: [finding_id, interfaces, overlapping_behavior, classification, severity, risk, recommendation, evidence], completeness_key: [finding_id], purpose: Record duplicate controllers and missing deterministic behavior.}
+    cross_checks: [Reconcile help-discovered commands to router branches, Reconcile rendered resume fields to traced inputs, Compare pre/post hashes for all possible mutable stores.]
+    completeness_tests: [No command or rendered fact remains unclassified, Every call-graph edge resolves, Unknown mutation class causes BLOCKED, Artifacts validate and read-only proof passes.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C05:
+    gate_id: C05
+    discovery_surfaces:
+      - {location: engineering/convergence, kind: PATH, existence: REQUIRED, purpose: Inventory roadmap and gate-position facts.}
+      - {location: docs/project/PROJ-0001-PROJECT_STATE.md, kind: PATH, existence: REQUIRED, purpose: Inventory project resume facts.}
+      - {location: engineering/registry, kind: PATH, existence: REQUIRED, purpose: Inventory Work Registry portfolio milestone dependency and queue facts.}
+      - {location: docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md, kind: PATH, existence: REQUIRED, purpose: Resolve intended Registry ownership.}
+      - {location: scripts/lib/emp, kind: PATH, existence: REQUIRED, purpose: Identify fact writers consumers and lifecycle transitions.}
+    inventory_method: [Enumerate every planning position phase gate milestone dependency queue current-work and lifecycle field across roadmap Project State and Registry., Trace each field's writer consumer persistence history and precedence claim then propose one owner and projections without mutation.]
+    safe_operations: [Read schemas records source and status projections, Use isolated parsing and comparison fixtures]
+    prohibited_operations: [Mutate registry Project State roadmap status queue milestone or lifecycle, Infer precedence when sources conflict]
+    coverage_rules:
+      - {rule_id: C05-COV-001, requirement: Every duplicated planning or current-position field is represented with all claimants writers and consumers., evidence: Field inventory anti-join across three source families.}
+      - {rule_id: C05-COV-002, requirement: Every proposed owner preserves history and identifies every projection and migration implication., evidence: Ownership matrix completeness and history review.}
+    classification_required: true
+    classification_vocabulary: *assessment_vocabulary
+    artifact_contracts:
+      - {artifact_id: C05-OWNERSHIP-MATRIX, title: Planning state ownership matrix, format: YAML, minimum_record_fields: [fact_id, roadmap_claim, project_state_claim, registry_claim, writers, consumers, current_conflict, proposed_owner, projections, evidence], completeness_key: [fact_id], purpose: Reconcile overlapping planning facts.}
+      - {artifact_id: C05-LIFECYCLE-MAP, title: Lifecycle and duplicate-state map, format: YAML, minimum_record_fields: [state_id, source, vocabulary, transitions, predecessor, successor, persistence, authority, mismatch, evidence], completeness_key: [state_id], purpose: Map lifecycle relationships without transition.}
+      - {artifact_id: C05-AUTHORITY-CONFLICTS, title: Current authority conflict register, format: YAML, minimum_record_fields: [finding_id, fact_id, competing_sources, classification, severity, consumer_impact, proposed_resolution_owner, migration_implication, evidence], completeness_key: [finding_id], purpose: Record conflicts and migration constraints.}
+    cross_checks: [Compare same-named and semantically equivalent fields across all stores, Reconcile proposed owners to every writer and consumer, Verify no operational state changed.]
+    completeness_tests: [All source schema fields are accounted for, Every overlap has one proposed owner or UNRESOLVED, Every projection and history implication is explicit, Artifact key and coverage checks pass.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C06:
+    gate_id: C06
+    discovery_surfaces:
+      - {location: engineering/wop, kind: PATH, existence: REQUIRED, purpose: Inventory canonical WOP schemas and lifecycle contracts.}
+      - {location: engineering/work-orders, kind: PATH, existence: REQUIRED, purpose: Inventory persisted source and canonical packages.}
+      - {location: engineering/admission, kind: PATH, existence: REQUIRED, purpose: Trace admission contracts.}
+      - {location: engineering/execution, kind: PATH, existence: REQUIRED, purpose: Trace execution and handoff interfaces.}
+      - {location: scripts/lib/emp, kind: PATH, existence: REQUIRED, purpose: Inventory packaging admission execution and evidence consumers.}
+    inventory_method: [Enumerate every WOP representation schema identity revision store validator and controller., Trace source through packaging validation submission admission handoff execution evidence and closeout with inputs outputs authority and transformations.]
+    safe_operations: [Static source schema and package inspection, Existing validators against copied isolated fixtures]
+    prohibited_operations: [Create revise submit admit activate dispatch or execute a package, Mutate mission WOP admission or execution state]
+    coverage_rules:
+      - {rule_id: C06-COV-001, requirement: Every WOP form schema validator and transition is represented with owner input output and consumer., evidence: Artifact/schema filesystem reconciliation and dataflow endpoint checks.}
+      - {rule_id: C06-COV-002, requirement: Every identity transformation and authority edge is deterministic or explicitly unresolved., evidence: Contract map identity and authority null checks.}
+    classification_required: true
+    classification_vocabulary: *assessment_vocabulary
+    artifact_contracts:
+      - {artifact_id: C06-WOP-INVENTORY, title: WOP artifact and schema inventory, format: YAML, minimum_record_fields: [artifact_id, path, form, schema, identity_rule, revision_rule, owner, store, validators, consumers, evidence], completeness_key: [artifact_id], purpose: Account for every WOP representation.}
+      - {artifact_id: C06-CONTRACT-DATAFLOW, title: End-to-end WOP contract dataflow, format: YAML, minimum_record_fields: [edge_id, stage, input_form, output_form, transformation, authority_check, state_effect, consumer, failure_behavior, evidence], completeness_key: [edge_id], purpose: Trace the complete WOP lifecycle.}
+      - {artifact_id: C06-AUTHORITY-LIFECYCLE, title: WOP authority and lifecycle matrix, format: YAML, minimum_record_fields: [fact_id, owner, lifecycle_state, transition, authority_source, decision_owner, evidence_owner, conflict, evidence], completeness_key: [fact_id], purpose: Separate authority lifecycle and evidence semantics.}
+      - {artifact_id: C06-DUPLICATION, title: Representation validator handoff and evidence register, format: YAML, minimum_record_fields: [finding_id, subject, classification, severity, duplicate_or_gap, affected_stages, compatibility_effect, candidate_disposition, evidence], completeness_key: [finding_id], purpose: Record redundancy and contract gaps.}
+    cross_checks: [Reconcile packages to declared schemas and validators, Follow one representative identity across all stages without executing it, Verify every controller edge resolves and no state changes.]
+    completeness_tests: [All discovered forms and validators are inventoried, Every transition has input output owner and failure behavior, Every identity and authority edge resolves or blocks, Artifact contracts pass.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C07:
+    gate_id: C07
+    discovery_surfaces:
+      - {location: scripts/lib/emp, kind: PATH, existence: REQUIRED, purpose: Inventory EMP components commands stores and controllers.}
+      - {location: engineering/registry, kind: PATH, existence: REQUIRED, purpose: Inspect schemas and operational management records read-only.}
+      - {location: docs/emp, kind: PATH, existence: REQUIRED, purpose: Resolve controlled EMP architecture.}
+      - {location: docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md, kind: PATH, existence: REQUIRED, purpose: Resolve Registry model ownership.}
+      - {location: scripts/tests, kind: PATH, existence: REQUIRED, purpose: Map EMP behavior and validation coverage.}
+    inventory_method: [Enumerate every EMP module command capability schema store write projection fixture and test., Map each responsibility and overlap to EOS engctl Zeus WOP Project State and roadmap facts then classify maturity.]
+    safe_operations: [Static source schema record and test discovery, Read-only commands and tests against temporary copied registries]
+    prohibited_operations: [Modify Work Registry queue portfolio dependency milestone or deferral state, Adopt or implement a target management boundary]
+    coverage_rules:
+      - {rule_id: C07-COV-001, requirement: Every EMP component command store schema and test is represented exactly once., evidence: Source and router inventory anti-join.}
+      - {rule_id: C07-COV-002, requirement: Every capability and overlap has owner maturity consumers and state effects., evidence: Capability matrix required-field checks.}
+    classification_required: true
+    classification_vocabulary:
+      finding_classes: [CONSISTENT, IMPLEMENTED, INCOMPLETE, SPECULATIVE, STALE, CONFLICTING, DUPLICATE, OVERLAPPING, OBSOLETE, UNRESOLVED]
+      severity: [INFORMATIONAL, LOW, MEDIUM, HIGH, CRITICAL]
+    artifact_contracts:
+      - {artifact_id: C07-COMPONENT-CAPABILITY, title: EMP component and capability inventory, format: YAML, minimum_record_fields: [component_id, path, capability, owner, maturity, commands, stores, writes, projections, consumers, tests, evidence], completeness_key: [component_id], purpose: Account for implemented management capability.}
+      - {artifact_id: C07-RESPONSIBILITY-OVERLAP, title: EMP responsibility and overlap matrix, format: YAML, minimum_record_fields: [fact_id, emp_role, overlapping_system, overlapping_role, authority_boundary, state_effect, classification, severity, evidence], completeness_key: [fact_id], purpose: Bound EMP overlap with other systems.}
+      - {artifact_id: C07-ABSTRACTION-REGISTER, title: Incomplete obsolete and duplicate abstraction register, format: YAML, minimum_record_fields: [finding_id, abstraction, classification, consumers, risk, retained_history, recommendation, resolution_owner, evidence], completeness_key: [finding_id], purpose: Record maturity gaps and simplification candidates.}
+      - {artifact_id: C07-TARGET-BOUNDARY, title: Management-layer boundary recommendation, format: YAML, minimum_record_fields: [recommendation_id, retained_responsibilities, excluded_responsibilities, input_interfaces, output_projections, migration_constraints, unresolved_items, evidence], completeness_key: [recommendation_id], purpose: Recommend without implementing EMP boundaries.}
+    cross_checks: [Reconcile engctl EMP routes to components and schemas, Compare controlled responsibilities to actual writes and consumers, Prove copied-fixture tests did not mutate live Registry.]
+    completeness_tests: [All modules commands and stores are inventoried, Every overlap and maturity classification is bounded, Every recommendation preserves authority and history, Artifacts and mutation proof pass.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C08:
+    gate_id: C08
+    discovery_surfaces:
+      - {location: scripts/zeus, kind: PATH, existence: REQUIRED, purpose: Resolve Zeus operator command surface.}
+      - {location: scripts/lib, kind: PATH, existence: REQUIRED, purpose: Inventory Zeus mission authority lifecycle provider publication and recovery code.}
+      - {location: engineering/docs, kind: PATH, existence: REQUIRED, purpose: Resolve Zeus architecture operations and CLI documentation.}
+      - {location: engineering, kind: PATH, existence: REQUIRED, purpose: Inventory Zeus schemas stores evidence and tests.}
+      - {location: preservation/ob-lifecycle-pre-rebuild-20260809T235039Z, kind: REFERENCE, existence: REFERENCE_ONLY, purpose: Compare preserved experiments without importing them.}
+    inventory_method: [Enumerate Zeus modules commands stores schemas state machines consumers tests and documentation from current main., Trace mission projection through authority admission lifecycle provider execution evidence publication and recovery while keeping preserved behavior separately classified.]
+    safe_operations: [Static source import graph and schema inspection, Help and bounded read-only diagnostics that do not import broken runtime paths]
+    prohibited_operations: [Execute a mission invoke a provider repair repository_projection or mutate Zeus state, Import merge cherry-pick or backport preservation content]
+    coverage_rules:
+      - {rule_id: C08-COV-001, requirement: Every Zeus command module store schema state machine test and document is represented., evidence: Multi-surface inventory anti-joins.}
+      - {rule_id: C08-COV-002, requirement: Every state transition and authority/dataflow edge has source destination controller and failure semantics., evidence: State-machine and dataflow endpoint checks.}
+      - {rule_id: C08-COV-003, requirement: Every preservation-only observation is visibly separated from current baseline behavior., evidence: Provenance classification check.}
+    classification_required: true
+    classification_vocabulary: *assessment_vocabulary
+    artifact_contracts:
+      - {artifact_id: C08-ARCH-COMMAND-INVENTORY, title: Zeus architecture and command inventory, format: YAML, minimum_record_fields: [component_id, path, responsibility, command, inputs, outputs, stores, consumers, tests, provenance, evidence], completeness_key: [component_id], purpose: Account for Zeus implementation and control surfaces.}
+      - {artifact_id: C08-STATE-STORE-MATRIX, title: Zeus state-machine and store matrix, format: YAML, minimum_record_fields: [state_id, machine, store, owner, writer, readers, transitions, invariants, recovery, provenance, evidence], completeness_key: [state_id], purpose: Model state and persistence complexity.}
+      - {artifact_id: C08-AUTHORITY-DATAFLOW, title: Zeus authority and dataflow map, format: YAML, minimum_record_fields: [edge_id, producer, consumer, fact, authority_check, lifecycle_effect, failure_behavior, provenance, evidence], completeness_key: [edge_id], purpose: Trace control from projection to recovery.}
+      - {artifact_id: C08-DIVERGENCE-COMPLEXITY, title: Zeus runtime test document divergence and complexity register, format: YAML, minimum_record_fields: [finding_id, subject, classification, severity, current_behavior, documented_behavior, preserved_behavior, consumer_impact, candidate_disposition, evidence], completeness_key: [finding_id], purpose: Record divergence and simplification candidates.}
+    cross_checks: [Reconcile CLI routes to modules and state transitions, Reconcile stores to all writers and readers, Compare main and preservation with explicit provenance, Preserve missing repository_projection as a finding.]
+    completeness_tests: [All current Zeus surfaces are inventoried, Every state and authority edge resolves, Preservation records never count as current implementation, Broken dependencies are findings not repairs, Artifacts validate and no runtime mutation occurred.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C09:
+    gate_id: C09
+    discovery_surfaces:
+      - {location: services/eens, kind: PATH, existence: REQUIRED, purpose: Inventory canonical EENS source and configuration.}
+      - {location: engineering/docs/operations, kind: PATH, existence: REQUIRED, purpose: Resolve operational service procedures and deployment claims.}
+      - {location: docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md, kind: PATH, existence: REQUIRED, purpose: Separate current EENS from deferred HNS architecture.}
+      - {location: scripts/lib/notifications, kind: PATH, existence: REQUIRED, purpose: Trace producer and consumer integrations.}
+      - {location: scripts/tests, kind: PATH, existence: REQUIRED, purpose: Inventory EENS qualification and regression coverage.}
+    inventory_method: [Enumerate EENS source deployment units configurations stores schemas events interfaces producers consumers documents tests and evidence., Trace event authority acceptance persistence delivery acknowledgement and failure behavior then classify operational versus deferred capability.]
+    safe_operations: [Static source configuration unit-file and evidence inspection, Read-only service metadata only when it cannot change state]
+    prohibited_operations: [Start stop restart reload deploy or requalify EENS, Send a notification or implement deferred HNS capability]
+    coverage_rules:
+      - {rule_id: C09-COV-001, requirement: Every EENS source deployment event store interface producer consumer document and test is represented., evidence: Source-to-inventory reconciliation.}
+      - {rule_id: C09-COV-002, requirement: Every capability is classified as operational deferred divergent overlapping or unresolved with evidence., evidence: Capability register vocabulary and evidence checks.}
+    classification_required: true
+    classification_vocabulary:
+      finding_classes: [CONSISTENT, OPERATIONAL, DEFERRED, STALE, CONFLICTING, DUPLICATE, OVERLAPPING, OBSOLETE, UNDOCUMENTED_IMPLEMENTATION, UNRESOLVED]
+      severity: [INFORMATIONAL, LOW, MEDIUM, HIGH, CRITICAL]
+    artifact_contracts:
+      - {artifact_id: C09-COMPONENT-DEPLOYMENT, title: EENS component and deployment inventory, format: YAML, minimum_record_fields: [component_id, source_path, deployment_path, service_unit, configuration, store, owner, status_source, tests, evidence], completeness_key: [component_id], purpose: Account for qualified operational implementation.}
+      - {artifact_id: C09-EVENT-PERSISTENCE, title: Event and persistence contract map, format: YAML, minimum_record_fields: [event_id, producer, authority_owner, schema, acceptance_rule, store, delivery, acknowledgement, retention, failure_behavior, evidence], completeness_key: [event_id], purpose: Trace event ownership and delivery semantics.}
+      - {artifact_id: C09-PRODUCER-CONSUMER, title: Producer consumer and authority matrix, format: YAML, minimum_record_fields: [interface_id, producer, consumer, fact_owner, transport, authentication, side_effect, compatibility, evidence], completeness_key: [interface_id], purpose: Bound interfaces and authority.}
+      - {artifact_id: C09-CAPABILITY-DIVERGENCE, title: Operational deferred and divergence register, format: YAML, minimum_record_fields: [finding_id, capability, classification, current_evidence, deferred_source, overlap, severity, recommendation, evidence], completeness_key: [finding_id], purpose: Separate EENS reality from future HNS concepts.}
+    cross_checks: [Reconcile deployed-unit claims to source and configuration without service calls that mutate, Reconcile every producer and consumer to an event contract, Compare documentation features to tests and evidence.]
+    completeness_tests: [All EENS surfaces and event endpoints resolve, Every capability has bounded classification, Operational and deferred counts reconcile to full capability inventory, Artifact contracts pass and no notification was sent.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C10:
+    gate_id: C10
+    discovery_surfaces:
+      - {location: scripts/lib/providers, kind: PATH, existence: OPTIONAL, purpose: Inventory provider adapters when present.}
+      - {location: scripts/lib/emp, kind: PATH, existence: REQUIRED, purpose: Trace provider selection launch monitor handoff and recovery.}
+      - {location: engineering/execution, kind: PATH, existence: REQUIRED, purpose: Resolve durable execution contracts and schemas.}
+      - {location: engineering/oversight, kind: PATH, existence: REQUIRED, purpose: Inventory session event and recovery contracts.}
+      - {location: engineering/docs, kind: PATH, existence: REQUIRED, purpose: Compare controlled runtime and provider documentation.}
+    inventory_method: [Enumerate provider adapter selection session transport thread invocation monitoring handoff recovery store schema and controller components., Trace every identity and lifecycle fact from durable authority through volatile runtime and back to durable evidence.]
+    safe_operations: [Static source schema fixture and historical evidence inspection, Non-launching parser and isolated simulation tests]
+    prohibited_operations: [Invoke reconnect resume or terminate any provider or Codex execution, Persist provider session thread or transport IDs in roadmap state]
+    coverage_rules:
+      - {rule_id: C10-COV-001, requirement: Every runtime component identity store state transition and controller is represented., evidence: Source/schema inventory anti-join.}
+      - {rule_id: C10-COV-002, requirement: Every durable and volatile identity has one claimant owner lifetime persistence and recovery rule., evidence: Identity matrix completeness.}
+    classification_required: true
+    classification_vocabulary: *assessment_vocabulary
+    artifact_contracts:
+      - {artifact_id: C10-RUNTIME-INVENTORY, title: Provider and runtime component inventory, format: YAML, minimum_record_fields: [component_id, path, role, identity_types, lifecycle, stores, controller, inputs, outputs, evidence], completeness_key: [component_id], purpose: Account for runtime control layers.}
+      - {artifact_id: C10-IDENTITY-LIFECYCLE, title: Identity and lifecycle matrix, format: YAML, minimum_record_fields: [identity_id, type, owner, scope, durable_or_volatile, creator, consumers, persistence, expiry, recovery_rule, conflict, evidence], completeness_key: [identity_id], purpose: Separate durable engineering position from volatile execution identity.}
+      - {artifact_id: C10-RUNTIME-DATAFLOW, title: Invocation monitoring and handoff dataflow, format: YAML, minimum_record_fields: [edge_id, stage, source, destination, authority_input, state_input, output, monitor, failure_behavior, evidence], completeness_key: [edge_id], purpose: Trace provider execution without invocation.}
+      - {artifact_id: C10-CONTRACT-RECOMMENDATION, title: Duplicate responsibility register and canonical contract recommendation, format: YAML, minimum_record_fields: [finding_id, responsibility, claimants, classification, severity, recommended_owner, interface, migration_constraint, evidence], completeness_key: [finding_id], purpose: Recommend one provider contract.}
+    cross_checks: [Reconcile every runtime identity to schemas stores producers and consumers, Ensure no volatile ID appears in durable roadmap records, Compare monitoring and recovery edges end to end.]
+    completeness_tests: [All runtime surfaces and identities are inventoried, Every identity has owner/lifetime/recovery, Every dataflow edge resolves, No provider invocation occurred, Artifact contracts pass.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C11:
+    gate_id: C11
+    discovery_surfaces:
+      - {location: engineering/evidence, kind: PATH, existence: REQUIRED, purpose: Inventory evidence packages manifests and historical proof.}
+      - {location: engineering/qualification, kind: PATH, existence: REQUIRED, purpose: Inventory qualification schemas and reports.}
+      - {location: engineering/authorization, kind: PATH, existence: REQUIRED, purpose: Inventory authorization decisions and bundles.}
+      - {location: engineering/acceptance, kind: PATH, existence: OPTIONAL, purpose: Inventory acceptance stores if present.}
+      - {location: docs/procedures/PROC-0006-GOVERNANCE-QUALIFICATION-PROCEDURE.md, kind: PATH, existence: REQUIRED, purpose: Resolve controlled qualification procedure.}
+      - {location: scripts/lib, kind: PATH, existence: REQUIRED, purpose: Trace proof producers validators and consumers.}
+    inventory_method: [Enumerate every evidence report validation qualification acceptance decision receipt marker schema store producer and consumer., Trace an observation through validation qualification governance decision acceptance authorization and lifecycle effect while preserving distinct semantics.]
+    safe_operations: [Static schema source and immutable evidence inspection, Validators against existing records or isolated copies]
+    prohibited_operations: [Create accept approve qualify authorize revoke or alter any decision or result, Treat file presence as proof of completion]
+    coverage_rules:
+      - {rule_id: C11-COV-001, requirement: Every proof artifact type schema store producer and consumer is represented., evidence: Schema/store/source reconciliation.}
+      - {rule_id: C11-COV-002, requirement: Every proof chain binds subject baseline authority criterion decision and lifecycle effect or records a gap., evidence: Proof-chain required-field checks.}
+    classification_required: true
+    classification_vocabulary: *assessment_vocabulary
+    artifact_contracts:
+      - {artifact_id: C11-PROOF-INVENTORY, title: Evidence and proof artifact inventory, format: YAML, minimum_record_fields: [artifact_type_id, path_pattern, schema, producer, owner, consumer, immutability, retention, decision_effect, evidence], completeness_key: [artifact_type_id], purpose: Account for every proof representation.}
+      - {artifact_id: C11-DECISION-AUTHORITY, title: Decision and authority matrix, format: YAML, minimum_record_fields: [decision_type_id, subject, decision_owner, input_proof, disposition_vocabulary, receipt, lifecycle_effect, authority_effect, evidence], completeness_key: [decision_type_id], purpose: Separate observation qualification approval acceptance and authorization.}
+      - {artifact_id: C11-PROOF-CHAIN, title: Proof-chain dataflow, format: YAML, minimum_record_fields: [edge_id, source_artifact, destination_decision, subject_binding, baseline_binding, criterion_binding, integrity_check, failure_behavior, evidence], completeness_key: [edge_id], purpose: Trace proof consumption end to end.}
+      - {artifact_id: C11-DUPLICATE-GAP, title: Proof duplication gap and ownership recommendation register, format: YAML, minimum_record_fields: [finding_id, subject, classification, severity, circularity, duplicate_fact, missing_binding, recommended_owner, evidence], completeness_key: [finding_id], purpose: Record proof-model conflicts and canonical ownership recommendation.}
+    cross_checks: [Reconcile schemas to artifact instances and producers, Verify representative chains bind exact subject baseline authority and criteria, Detect circular proof and completion inferred from presence.]
+    completeness_tests: [All proof types and decisions are inventoried, Every chain has complete bindings or blocks, Every decision vocabulary is bounded, Artifact contracts pass and no decision was issued.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C12:
+    gate_id: C12
+    discovery_surfaces:
+      - {location: .git, kind: PATH, existence: REQUIRED, purpose: Observe repository refs objects index and current worktree read-only.}
+      - {location: scripts/lib/emp, kind: PATH, existence: REQUIRED, purpose: Inventory publication candidate cohort and transaction controllers.}
+      - {location: scripts/lib/eos, kind: PATH, existence: REQUIRED, purpose: Trace repository synchronization and baseline projection.}
+      - {location: engineering/authority, kind: PATH, existence: REQUIRED, purpose: Resolve publication envelopes manifests and authority records.}
+      - {location: docs/procedures/PROC-0005-CONTROLLED_DOCUMENT_PUBLICATION_PROCEDURE.md, kind: PATH, existence: REQUIRED, purpose: Resolve controlled publication boundaries.}
+    inventory_method: [Enumerate every Git publication baseline candidate cohort transaction synchronization closeout command schema store identity and authority check., Trace a proposed change from working tree through staging commit push baseline synchronization and closeout including rollback replay fixed points and self-reference.]
+    safe_operations: [Git status diff log show rev-parse and fsck modes that do not change refs or index, Static source schema and historical transaction inspection]
+    prohibited_operations: [Stage commit push publish synchronize refresh or create a publication transaction, Change refs index baseline or EOS state]
+    coverage_rules:
+      - {rule_id: C12-COV-001, requirement: Every Git publication synchronization state command schema store and authority check is represented., evidence: Source/router/schema inventory reconciliation.}
+      - {rule_id: C12-COV-002, requirement: Every transaction edge defines identity authority rollback replay and failure behavior., evidence: Transaction dataflow completeness.}
+      - {rule_id: C12-COV-003, requirement: Every self-reference or fixed-point dependency has an explicit root cause and safe boundary., evidence: Fixed-point analysis coverage.}
+    classification_required: true
+    classification_vocabulary: *assessment_vocabulary
+    artifact_contracts:
+      - {artifact_id: C12-PUBLICATION-INVENTORY, title: Git publication and synchronization inventory, format: YAML, minimum_record_fields: [component_id, command_or_store, state, schema, owner, authority_check, writes, consumers, rollback, evidence], completeness_key: [component_id], purpose: Account for publication control surfaces.}
+      - {artifact_id: C12-TRANSACTION-DATAFLOW, title: Transaction and authority dataflow, format: YAML, minimum_record_fields: [edge_id, source_state, destination_state, controller, authority, input_identity, output_identity, rollback, replay, failure_behavior, evidence], completeness_key: [edge_id], purpose: Trace exact publication transitions.}
+      - {artifact_id: C12-BASELINE-MATRIX, title: Baseline ownership and state matrix, format: YAML, minimum_record_fields: [baseline_fact_id, claimant, writer, store, activation_rule, projection, consumer, conflict, recovery, evidence], completeness_key: [baseline_fact_id], purpose: Reconcile baseline claims.}
+      - {artifact_id: C12-FIXED-POINT, title: Self-reference fixed-point and failure analysis, format: YAML, minimum_record_fields: [finding_id, cycle_nodes, initiating_input, self_reference, root_cause, integrity_risk, rollback_boundary, candidate_simplification, evidence], completeness_key: [finding_id], purpose: Explain Operation Beta publication complexity.}
+    cross_checks: [Reconcile CLI and controller routes to states and schemas, Walk every transition edge and rollback edge, Compare pre/post HEAD index refs and mutable state hashes.]
+    completeness_tests: [All publication and sync surfaces are inventoried, Every state and edge has exact identity/authority/rollback, Every cycle is analyzed, Git and EOS mutation proof passes, Artifact contracts pass.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C13:
+    gate_id: C13
+    discovery_surfaces:
+      - {location: docs/procedures/PROC-0003-ENGINEERING_RECOVERY_RUNBOOK.md, kind: PATH, existence: REQUIRED, purpose: Resolve controlled recovery method.}
+      - {location: engineering/oversight, kind: PATH, existence: REQUIRED, purpose: Inventory recovery session and interruption schemas.}
+      - {location: scripts/lib/eos, kind: PATH, existence: REQUIRED, purpose: Trace checkpoint repository and context recovery.}
+      - {location: scripts/lib/emp, kind: PATH, existence: REQUIRED, purpose: Trace mission WOP provider and publication recovery.}
+      - {location: engineering/evidence, kind: PATH, existence: REQUIRED, purpose: Consume historical interruption and recovery proof.}
+    inventory_method: [Enumerate every recovery pause checkpoint continuation rollback replay and resume command store trigger owner invariant and precedence rule., Model planned and unplanned interruption paths at repository EOS mission WOP provider Codex publication and session layers.]
+    safe_operations: [Static source schema and historical evidence inspection, Deterministic simulations against disposable fixtures]
+    prohibited_operations: [Restore select create or delete live checkpoints, Resume reconnect retry or mutate any live execution or publication]
+    coverage_rules:
+      - {rule_id: C13-COV-001, requirement: Every assessed layer has all recovery mechanisms stores commands owners and invariants represented., evidence: Layer-to-mechanism reconciliation.}
+      - {rule_id: C13-COV-002, requirement: Every interruption scenario has durable inputs exact resume point validation precedence stop condition and failure result., evidence: Scenario matrix required-field checks.}
+    classification_required: true
+    classification_vocabulary: *assessment_vocabulary
+    artifact_contracts:
+      - {artifact_id: C13-RECOVERY-INVENTORY, title: Recovery mechanism inventory, format: YAML, minimum_record_fields: [mechanism_id, layer, command_or_trigger, store, owner, inputs, checkpoint, invariant, side_effect, evidence], completeness_key: [mechanism_id], purpose: Account for all recovery controls.}
+      - {artifact_id: C13-INTERRUPTION-MATRIX, title: Cross-layer interruption and resume matrix, format: YAML, minimum_record_fields: [scenario_id, layer, interruption_type, durable_inputs, resume_point, validation, precedence, stop_condition, expected_result, evidence], completeness_key: [scenario_id], purpose: Establish deterministic scenarios.}
+      - {artifact_id: C13-PRECEDENCE-MODEL, title: Recovery precedence and boundary model, format: YAML, minimum_record_fields: [boundary_id, competing_sources, canonical_source, selection_rule, integrity_rule, stale_behavior, conflict_behavior, evidence], completeness_key: [boundary_id], purpose: Prevent timestamp or guess-based recovery.}
+      - {artifact_id: C13-GAP-REGISTER, title: Recovery duplicate gap and failure register, format: YAML, minimum_record_fields: [finding_id, mechanism_or_boundary, classification, severity, duplicate_or_gap, irreversible_effect, recommendation, evidence], completeness_key: [finding_id], purpose: Record recovery risks and recommendations.}
+    cross_checks: [Reconcile each command to store and invariants, Simulate every scenario with copied fixtures, Detect any selection by recency or ambiguous precedence, Verify live hashes unchanged.]
+    completeness_tests: [Every layer and scenario is represented, All recovery points and precedence rules are deterministic, Ambiguity causes BLOCKED, Artifacts pass and no live recovery occurred.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C14:
+    gate_id: C14
+    discovery_surfaces:
+      - {location: scripts/tests, kind: PATH, existence: REQUIRED, purpose: Inventory regression qualification and negative tests.}
+      - {location: scripts/verify.sh, kind: PATH, existence: REQUIRED, purpose: Resolve aggregate test selection.}
+      - {location: scripts/validate_controlled_documents.py, kind: PATH, existence: REQUIRED, purpose: Resolve controlled-document validation.}
+      - {location: engineering/validation, kind: PATH, existence: REQUIRED, purpose: Inventory schemas profiles contracts and property catalogs.}
+      - {location: engineering/tests, kind: PATH, existence: REQUIRED, purpose: Inventory PMCT fixtures and capability tests.}
+    inventory_method: [Enumerate every validator test suite fixture health command signal log metric PMCT owner consumer cost side effect and qualification use., Map each check to subsystem invariant authority claim failure boundary recovery behavior and decision consumer.]
+    safe_operations: [Static test and validator discovery, Bounded isolated tests with declared read-only or disposable-fixture effects]
+    prohibited_operations: [Run checks with unknown external or mutating effects, Repair failures or declare platform qualification]
+    coverage_rules:
+      - {rule_id: C14-COV-001, requirement: Every check suite fixture signal and observable is represented with owner side effects cost and consumer., evidence: Test/command filesystem reconciliation.}
+      - {rule_id: C14-COV-002, requirement: Every material subsystem and invariant maps to an owned deterministic check or explicit gap., evidence: Coverage matrix anti-join.}
+    classification_required: true
+    classification_vocabulary:
+      finding_classes: [CONSISTENT, COVERED, MISSING, DUPLICATE, STALE, FLAKY, NONDETERMINISTIC, MUTATING, NON_AUTHORITATIVE, UNRESOLVED]
+      severity: [INFORMATIONAL, LOW, MEDIUM, HIGH, CRITICAL]
+    artifact_contracts:
+      - {artifact_id: C14-CHECK-INVENTORY, title: Validation test and observability inventory, format: YAML, minimum_record_fields: [check_id, path_or_command, type, owner, inputs, side_effects, cost, determinism, outputs, consumers, evidence], completeness_key: [check_id], purpose: Account for checks and signals.}
+      - {artifact_id: C14-COVERAGE-MATRIX, title: Coverage and ownership matrix, format: YAML, minimum_record_fields: [requirement_id, subsystem, invariant, check_ids, owner, positive_case, negative_case, recovery_case, gap, evidence], completeness_key: [requirement_id], purpose: Prove architecture and invariant coverage.}
+      - {artifact_id: C14-GAP-FLAKINESS, title: Duplicate gap and flakiness register, format: YAML, minimum_record_fields: [finding_id, check_or_requirement, classification, severity, observed_behavior, decision_risk, recommended_disposition, evidence], completeness_key: [finding_id], purpose: Record unreliable or missing proof.}
+      - {artifact_id: C14-QUALIFICATION-RECOMMENDATION, title: Platform qualification check recommendation, format: YAML, minimum_record_fields: [suite_id, required_checks, ordering, environment, side_effect_boundary, pass_rule, fail_rule, evidence_outputs, exclusions, evidence], completeness_key: [suite_id], purpose: Recommend the minimal authoritative suite.}
+    cross_checks: [Reconcile verify.sh selection to test inventory, Reconcile every architecture invariant to coverage rows, Validate declared side effects through source inspection before any run.]
+    completeness_tests: [All checks and signals are inventoried, Every material invariant is covered or explicitly gapped, No unknown or mutating check is treated as PASS evidence, Artifacts validate.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C15:
+    gate_id: C15
+    discovery_surfaces:
+      - {location: engineering/convergence/engineering-system-convergence/gates, kind: PATH, existence: REQUIRED, purpose: Resolve every C02-C14 gate result and evidence contract.}
+      - {location: engineering/convergence/engineering-system-convergence/findings, kind: PATH, existence: REQUIRED, purpose: Reconcile normalized findings when populated.}
+      - {location: docs, kind: PATH, existence: REQUIRED, purpose: Verify controlled owners referenced by prior findings.}
+      - {location: engineering, kind: PATH, existence: REQUIRED, purpose: Verify implementation interfaces stores schemas and consumers.}
+    inventory_method: [Normalize every C02-C14 component fact store interface producer consumer owner conflict and dataflow row into stable identities., Build end-to-end dependencies and assign exactly one proposed canonical owner or explicit blocking conflict to every material engineering fact.]
+    safe_operations: [Read and normalize prior reviewed results and evidence, Static verification of referenced repository sources]
+    prohibited_operations: [Implement an ownership change or remove a system, Select an owner by recency convenience or unsupported judgment]
+    coverage_rules:
+      - {rule_id: C15-COV-001, requirement: Every material C02-C14 result artifact row is represented in the normalized cross-system model., evidence: Prior-artifact-to-normalized-row traceability anti-join.}
+      - {rule_id: C15-COV-002, requirement: Every material fact has exactly one proposed canonical owner or one explicit blocking conflict., evidence: Fact-owner cardinality check.}
+      - {rule_id: C15-COV-003, requirement: Every producer consumer interface and projection direction resolves at both endpoints., evidence: Graph endpoint and direction checks.}
+    classification_required: true
+    classification_vocabulary: *assessment_vocabulary
+    artifact_contracts:
+      - {artifact_id: C15-COMPONENT-GRAPH, title: Cross-system component and dependency graph, format: YAML, minimum_record_fields: [node_or_edge_id, record_type, subsystem, source, destination, dependency_type, lifecycle, failure_semantics, evidence], completeness_key: [node_or_edge_id], purpose: Model all subsystem dependencies.}
+      - {artifact_id: C15-DATAFLOW, title: End-to-end dataflow model, format: YAML, minimum_record_fields: [flow_id, fact_id, producer, source_store, projection, consumer, direction, persistence, integrity_rule, failure_behavior, evidence], completeness_key: [flow_id], purpose: Trace every material fact end to end.}
+      - {artifact_id: C15-FACT-OWNERSHIP, title: Canonical fact ownership matrix, format: YAML, minimum_record_fields: [fact_id, fact_definition, current_claimants, proposed_owner, projections, writers, consumers, unresolved_conflict, evidence], completeness_key: [fact_id], purpose: Establish single proposed information owners.}
+      - {artifact_id: C15-INTERFACE-CONFLICT, title: Interface projection and authority conflict register, format: YAML, minimum_record_fields: [record_id, fact_or_interface, claimants, classification, severity, proposed_resolution, resolution_owner, blocker, evidence], completeness_key: [record_id], purpose: Preserve unresolved authority and projection decisions.}
+    cross_checks: [Anti-join every prior artifact row against traceability rows, Validate graph endpoints and cycles, Enforce owner cardinality equals one unless blocker is true.]
+    completeness_tests: [All prior reviewed artifacts are consumed, Every material fact meets owner cardinality rule, All graph and flow endpoints resolve, Any missing subsystem or unresolved ownership conflict causes BLOCKED, Artifacts validate.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C16:
+    gate_id: C16
+    discovery_surfaces:
+      - {location: engineering/convergence/engineering-system-convergence/gates/C15-cross-system-authority-reconciliation, kind: PATH, existence: DYNAMIC, purpose: Consume the reviewed complete cross-system model.}
+      - {location: engineering/convergence/engineering-system-convergence/gates, kind: PATH, existence: REQUIRED, purpose: Resolve original source-linked C02-C14 evidence.}
+    inventory_method: [Enumerate every C15 component store command schema procedure projection controller lifecycle stage and overlap., Evaluate necessary capability owner consumers evidence risk migration recovery rollback and retained history then assign exactly one controlled disposition.]
+    safe_operations: [Read and score reviewed assessment models, Model migration and rollback without applying changes]
+    prohibited_operations: [Consolidate replace deprecate remove or rebuild any component, Hide uncertainty behind a non-investigative disposition]
+    coverage_rules:
+      - {rule_id: C16-COV-001, requirement: Every C15 component and overlap has exactly one disposition., evidence: C15 component anti-join and disposition cardinality check.}
+      - {rule_id: C16-COV-002, requirement: Every disposition includes owner consumer capability migration rollback evidence and retained-history analysis., evidence: Required-field completeness check.}
+    classification_required: true
+    classification_vocabulary:
+      finding_classes: [KEEP, CONSOLIDATE, REPLACE, DEPRECATE, REMOVE, REBUILD, INVESTIGATE]
+      severity: [INFORMATIONAL, LOW, MEDIUM, HIGH, CRITICAL]
+    artifact_contracts:
+      - {artifact_id: C16-DISPOSITION, title: Complete component disposition register, format: YAML, minimum_record_fields: [component_id, current_owner, capability, consumers, disposition, rationale, dependencies, prerequisites, migration, rollback, retained_history, risk, evidence], completeness_key: [component_id], purpose: Assign one evidence-backed simplification disposition.}
+      - {artifact_id: C16-CONSOLIDATION, title: Consolidation removal and reduction model, format: YAML, minimum_record_fields: [group_id, members, retained_owner, retained_capability, removed_duplication, state_reduction, command_reduction, schema_reduction, lifecycle_reduction, evidence], completeness_key: [group_id], purpose: Quantify simplification candidates.}
+      - {artifact_id: C16-ORDER-RISK, title: Simplification order risk migration rollback and history matrix, format: YAML, minimum_record_fields: [action_id, disposition, predecessors, consumers_at_risk, migration_step, compatibility, rollback_boundary, retained_history, blocker, evidence], completeness_key: [action_id], purpose: Establish safe dependency order without execution.}
+    cross_checks: [Anti-join C15 components against disposition keys, Ensure every REMOVE or REPLACE preserves unique capability authority evidence and history, Validate ordering graph has no unresolved unsafe cycle.]
+    completeness_tests: [Every C15 component has exactly one bounded disposition, Every disposition has complete migration/rollback/history analysis, INVESTIGATE is used for uncertainty, Reduction totals reconcile to groups, Artifacts validate.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C17:
+    gate_id: C17
+    discovery_surfaces:
+      - {location: engineering/convergence/engineering-system-convergence/gates/C15-cross-system-authority-reconciliation, kind: PATH, existence: DYNAMIC, purpose: Consume approved ownership and dataflow models.}
+      - {location: engineering/convergence/engineering-system-convergence/gates/C16-redundancy-simplification, kind: PATH, existence: DYNAMIC, purpose: Consume reviewed dispositions and migration constraints.}
+      - {location: docs/architecture, kind: PATH, existence: REQUIRED, purpose: Reconcile existing controlled architecture decisions and constraints.}
+      - {location: engineering/docs/architecture, kind: PATH, existence: REQUIRED, purpose: Reconcile operational and planning architecture inputs.}
+    inventory_method: [Derive candidate subsystem authority state interface execution publication evidence resume failure and recovery boundaries strictly from C15-C16 evidence., Select and specify a coherent target only after every requirement disposition constraint and conflict traces to an architectural decision.]
+    safe_operations: [Architecture modeling traceability and scenario analysis, Independent read-only review]
+    prohibited_operations: [Implement migrate deprecate publish synchronize or remove target components, Approve architecture with blocking INVESTIGATE or ownership ambiguity]
+    coverage_rules:
+      - {rule_id: C17-COV-001, requirement: Every C15 fact and C16 disposition maps to a target component interface decision or explicit blocker., evidence: Requirement-to-finding-to-architecture traceability anti-join.}
+      - {rule_id: C17-COV-002, requirement: Every target fact has one owner and every state/interface has source projection failure and recovery semantics., evidence: Target model owner and endpoint checks.}
+    classification_required: true
+    classification_vocabulary:
+      finding_classes: [SATISFIED, DEFERRED, CONFLICTING, INVESTIGATE, BLOCKING]
+      severity: [INFORMATIONAL, LOW, MEDIUM, HIGH, CRITICAL]
+    artifact_contracts:
+      - {artifact_id: C17-BOUNDARY-OWNERSHIP, title: Target subsystem boundary authority and state ownership model, format: YAML, minimum_record_fields: [component_id, boundary, responsibilities, authority_owner, information_owners, durable_state, volatile_state, excluded_responsibilities, evidence], completeness_key: [component_id], purpose: Define target owners and boundaries.}
+      - {artifact_id: C17-DATAFLOW-INTERFACE, title: Target dataflow and interface architecture, format: YAML, minimum_record_fields: [interface_id, producer, consumer, fact, source, projection, contract, integrity, failure_behavior, recovery, evidence], completeness_key: [interface_id], purpose: Define target flows and public interfaces.}
+      - {artifact_id: C17-LIFECYCLE-MODELS, title: Target execution publication resume evidence and recovery models, format: YAML, minimum_record_fields: [model_id, concern, states, transitions, authority_checks, evidence_outputs, stop_conditions, rollback, cold_resume, evidence], completeness_key: [model_id], purpose: Define end-to-end operational semantics without implementation.}
+      - {artifact_id: C17-DECISION-RISK, title: Architecture decision risk and traceability record, format: YAML, minimum_record_fields: [decision_id, requirement_ids, finding_ids, alternatives, selected_design, rationale, risk, unresolved_item, approval_required, evidence], completeness_key: [decision_id], purpose: Preserve evidence-backed design decisions.}
+    cross_checks: [Anti-join C15 facts and C16 dispositions against target traceability, Validate exactly one owner per target fact, Walk end-to-end execution/publication/resume/failure scenarios.]
+    completeness_tests: [All prior facts and dispositions trace to architecture or blockers, All model endpoints and owners resolve, No blocking INVESTIGATE remains for approval, Independent review evidence exists, No implementation occurred.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C18:
+    gate_id: C18
+    discovery_surfaces:
+      - {location: engineering/convergence/engineering-system-convergence/gates/C17-canonical-target-architecture, kind: PATH, existence: DYNAMIC, purpose: Consume the approved target architecture and traceability.}
+      - {location: engineering/convergence/engineering-system-convergence/gates/C16-redundancy-simplification, kind: PATH, existence: DYNAMIC, purpose: Consume reviewed dispositions and ordering constraints.}
+      - {location: docs/standards/STD-0006-ENGINEERING_EXECUTABLE_ROADMAP_STANDARD.md, kind: PATH, existence: REQUIRED, purpose: Apply executable-roadmap requirements to the migration roadmap.}
+      - {location: docs/procedures/PROC-0009-EXECUTABLE_ROADMAP_EVALUATION_PROCEDURE.md, kind: PATH, existence: REQUIRED, purpose: Qualify the produced implementation roadmap.}
+    inventory_method: [Enumerate every approved target change state migration consumer compatibility need deprecation removal publication recovery and authorization boundary., Decompose changes into dependency-ordered reversible gates and apply the full executable gate/playbook/artifact contract to each generated gate.]
+    safe_operations: [Create planning and qualification artifacts only within separately authorized C18 scope, Model scenarios rollback and dependency order without migration]
+    prohibited_operations: [Execute a migration or begin C20, Create automatic or roadmap-wide implementation authority]
+    coverage_rules:
+      - {rule_id: C18-COV-001, requirement: Every C17 target change and C16 disposition maps to exactly one implementation gate or explicit non-implementation disposition., evidence: Architecture-to-migration traceability anti-join.}
+      - {rule_id: C18-COV-002, requirement: Every generated gate meets STD-0006 execution sufficiency including rollback evidence acceptance state transition and cold resume., evidence: Generic roadmap evaluation gate results.}
+      - {rule_id: C18-COV-003, requirement: Dependency ordering strands no consumer splits no authority loses no history and preserves rollback at every boundary., evidence: Scenario and graph validation.}
+    classification_required: true
+    classification_vocabulary:
+      finding_classes: [MAPPED, DEFERRED, COMPATIBILITY_REQUIRED, DEPRECATION_REQUIRED, SEPARATE_AUTHORITY_REQUIRED, BLOCKING]
+      severity: [INFORMATIONAL, LOW, MEDIUM, HIGH, CRITICAL]
+    artifact_contracts:
+      - {artifact_id: C18-IMPLEMENTATION-ROADMAP, title: Executable implementation and migration roadmap, format: YAML, minimum_record_fields: [roadmap_id, roadmap_version, roadmap_class, authority_model, evaluation_contract, gates, state_path, binding_manifest], completeness_key: [roadmap_id], purpose: Persist the bounded implementation execution contract.}
+      - {artifact_id: C18-DEPENDENCY-MODEL, title: Dependency critical-path and traceability model, format: YAML, minimum_record_fields: [change_id, architecture_source, disposition_source, gate_id, predecessors, consumers, criticality, compatibility, evidence], completeness_key: [change_id], purpose: Prove complete safe ordering.}
+      - {artifact_id: C18-COMPATIBILITY-PLAN, title: Compatibility deprecation and removal plan, format: YAML, minimum_record_fields: [transition_id, old_interface, new_interface, parallel_limit, consumer_migration, deprecation_criteria, removal_gate, rollback, evidence], completeness_key: [transition_id], purpose: Prevent orphan consumers and split authority.}
+      - {artifact_id: C18-BOUNDARY-MAP, title: Rollback publication recovery and authorization boundary map, format: YAML, minimum_record_fields: [gate_id, authority_package, publication_boundary, rollback_point, recovery_point, evidence_contract, acceptance_boundary, stop_boundary], completeness_key: [gate_id], purpose: Bound each future implementation unit.}
+      - {artifact_id: C18-EVALUATION, title: Implementation-roadmap executable qualification, format: YAML, minimum_record_fields: [roadmap_id, roadmap_version, evaluation_standard, gate_results, blockers, overall_result, executable], completeness_key: [roadmap_id], purpose: Prove the produced roadmap is executable before approval.}
+    cross_checks: [Anti-join architecture changes and dispositions against gate assignments, Validate dependency graph and consumer continuity scenarios, Run generic structural and executable evaluation including negative cases.]
+    completeness_tests: [All target changes are mapped exactly once, Every generated gate evaluates executable, Terminal semantics and external continuation are explicit, Rollback and authorization are bounded at each gate, No migration occurred.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C19:
+    gate_id: C19
+    discovery_surfaces:
+      - {location: engineering/convergence/engineering-system-convergence/gates/C17-canonical-target-architecture, kind: PATH, existence: DYNAMIC, purpose: Resolve the approved target resume model.}
+      - {location: engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap, kind: PATH, existence: DYNAMIC, purpose: Resolve approved implementation-roadmap resume requirements.}
+      - {location: scripts/engctl, kind: PATH, existence: REQUIRED, purpose: Implement and qualify the approved controller surface.}
+      - {location: scripts/lib/eos, kind: PATH, existence: REQUIRED, purpose: Implement only approved context reconstruction sources and bindings.}
+      - {location: scripts/tests, kind: PATH, existence: REQUIRED, purpose: Extend deterministic fresh-shell and negative qualification tests.}
+    inventory_method: [Enumerate every approved resume output source owner binding conflict rule fallback and failure scenario before implementation., Implement only the approved contract then execute positive missing malformed stale conflicting contradictory replay and read-only scenarios from fresh shells.]
+    safe_operations: [Separately authorized bounded source test and documentation changes, Disposable fixture and read-only fresh-shell qualification]
+    prohibited_operations: [Begin any convergence migration gate, Depend on provider conversation session thread transport or recency, Treat resume output as execution authority]
+    coverage_rules:
+      - {rule_id: C19-COV-001, requirement: Every required resume fact maps to one authoritative source owner freshness rule conflict behavior and displayed field., evidence: Source-authority matrix anti-join.}
+      - {rule_id: C19-COV-002, requirement: Positive and every defined negative scenario execute with expected semantic output and exit status., evidence: Scenario manifest and transcripts.}
+      - {rule_id: C19-COV-003, requirement: Repeated identical inputs produce identical semantic output and read-only invocation changes no authoritative source., evidence: Normalized output comparison and pre/post hashes.}
+    classification_required: true
+    classification_vocabulary:
+      finding_classes: [PASS, EXPECTED_FAIL_CLOSED, NONDETERMINISTIC, MUTATING, MISSING_SOURCE, CONFLICTING_SOURCE, MALFORMED_SOURCE, STALE_SOURCE, UNRESOLVED]
+      severity: [INFORMATIONAL, LOW, MEDIUM, HIGH, CRITICAL]
+    artifact_contracts:
+      - {artifact_id: C19-RESUME-CONTRACT, title: Implemented resume contract and source authority matrix, format: YAML, minimum_record_fields: [fact_id, display_field, source, owner, binding, freshness_rule, conflict_rule, missing_rule, renderer, evidence], completeness_key: [fact_id], purpose: Bind every cold-resume fact.}
+      - {artifact_id: C19-SCENARIO-SUITE, title: Cold-resume scenario suite, format: YAML, minimum_record_fields: [scenario_id, fixture, changed_input, expected_result, expected_exit, expected_fields, prohibited_mutation, transcript, evidence], completeness_key: [scenario_id], purpose: Define positive and fail-closed qualification.}
+      - {artifact_id: C19-QUALIFICATION-EVIDENCE, title: Cold-resume qualification evidence, format: YAML, minimum_record_fields: [run_id, clean_environment, command, input_fingerprints, semantic_output_digest, exit_status, mutation_check, result, evidence], completeness_key: [run_id], purpose: Persist reproducible qualification proof.}
+      - {artifact_id: C19-OPERATOR-INSTRUCTIONS, title: Cold-resume operator instructions, format: MARKDOWN, minimum_record_fields: [purpose, prerequisites, commands, expected_output, pass_criteria, fail_criteria, evidence_inspection, stop_boundary], completeness_key: [purpose], purpose: Enable conversation-independent operator verification.}
+    cross_checks: [Compare every displayed field to source matrix and exact binding, Run every scenario twice and compare normalized semantic output, Compare pre/post hashes and Git state, Confirm no provider or conversation identity is referenced.]
+    completeness_tests: [All required resume facts are mapped and displayed, Every positive and negative scenario passes its expected result, Replays are semantically identical, Mutation diff is empty, Independent review and artifact validation pass.]
+    result_rules:
+      COMPLETE: [All positive negative replay mutation and independent-review tests pass with no material finding.]
+      COMPLETE_WITH_FINDINGS: [All execution-significant tests pass and only documented non-determinism-neutral informational findings remain for later implementation.]
+      BLOCKED: [An authoritative source binding approval prerequisite or safe qualification environment cannot be established.]
+      FAILED: [Any required fact is guessed any conflict permits continuation output is nondeterministic invocation mutates state or qualification evidence loses integrity.]
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C20:
+    gate_id: C20
+    discovery_surfaces:
+      - {location: engineering/convergence/engineering-system-convergence/gates/C17-canonical-target-architecture, kind: PATH, existence: DYNAMIC, purpose: Resolve approved target architecture.}
+      - {location: engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap, kind: PATH, existence: DYNAMIC, purpose: Resolve exactly one first external implementation gate.}
+      - {location: engineering/convergence/engineering-system-convergence/gates/C19-engctl-cold-resume-qualification, kind: PATH, existence: DYNAMIC, purpose: Verify current cold-resume qualification.}
+      - {location: engineering/convergence/engineering-system-convergence/STATE.yaml, kind: PATH, existence: REQUIRED, purpose: Verify C01-C19 reviewed completion and no blockers.}
+    inventory_method: [Resolve all predecessor results approvals and blockers then enumerate eligible first gates from the approved C18 roadmap., Select exactly one separately authorized gate and verify scope prerequisites evidence acceptance rollback publication and stop boundaries before entry.]
+    safe_operations: [Read-only prerequisite and authority verification, Begin only the separately authorized external gate after C20 entry acceptance]
+    prohibited_operations: [Treat C20 or roadmap completion as authority for the full implementation roadmap, Select or begin more than one external gate or skip prerequisites]
+    coverage_rules:
+      - {rule_id: C20-COV-001, requirement: Every C01-C19 predecessor result approval and blocker is verified current and bound., evidence: Predecessor qualification matrix.}
+      - {rule_id: C20-COV-002, requirement: Exactly one first C18 gate is eligible and separately authorized with complete rollback and evidence contracts., evidence: Candidate cardinality and authority-package validation.}
+    classification_required: true
+    classification_vocabulary:
+      finding_classes: [ELIGIBLE, INELIGIBLE, AUTHORIZED, NOT_AUTHORIZED, BLOCKED, UNRESOLVED]
+      severity: [INFORMATIONAL, LOW, MEDIUM, HIGH, CRITICAL]
+    artifact_contracts:
+      - {artifact_id: C20-ENTRY-DECISION, title: Controlled implementation entry decision, format: YAML, minimum_record_fields: [gate_id, result, predecessor_validation, selected_external_gate, authority_package, prerequisites, blockers, disposition, evidence], completeness_key: [gate_id], purpose: Record bounded entry rather than whole-program completion.}
+      - {artifact_id: C20-FIRST-GATE-BOUNDARY, title: First implementation gate authority and boundary record, format: YAML, minimum_record_fields: [external_gate_id, authority, scope, prohibited_scope, baseline, evidence_contract, acceptance, rollback, stop_boundary, successor_authority, evidence], completeness_key: [external_gate_id], purpose: Prove exactly one external gate is bounded.}
+    cross_checks: [Re-run structural executable and cold-resume qualification, Enforce eligible and selected gate cardinality equals one, Verify external authority identity and rollback evidence.]
+    completeness_tests: [All predecessors and approvals validate, One and only one external gate is selected and separately authorized, No full-roadmap authority is inferred, Entry artifacts validate.]
+    result_rules:
+      COMPLETE: [All predecessor and entry checks pass and exactly one separately authorized external gate is selected.]
+      COMPLETE_WITH_FINDINGS: [All entry checks pass and nonblocking findings are explicitly routed without broadening authority.]
+      BLOCKED: [Any predecessor blocker approval authority baseline evidence resume rollback or candidate identity is unresolved.]
+      FAILED: [More than one gate begins authority is broadened a prerequisite is bypassed or evidence integrity fails.]
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C01:
+    gate_id: C01
+    discovery_surfaces:
+      - {location: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml, kind: PATH, existence: REQUIRED, purpose: Resolve historical assessment result.}
+      - {location: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence/EVIDENCE-MANIFEST.yaml, kind: PATH, existence: REQUIRED, purpose: Resolve the canonical evidence manifest.}
+    inventory_method:
+      - Validate the exact captured discovery inventory and manifest without rerunning historical commands.
+      - Account for each historical criterion, finding, and evidence entry without changing its interpretation.
+    safe_operations: [Read captured evidence, Validate captured evidence digests]
+    prohibited_operations: [Normalize or regenerate captured evidence, Repair any observed infrastructure or system finding]
+    coverage_rules:
+      - {rule_id: C01-COV-001, requirement: Every manifest entry resolves exactly once and matches its recorded SHA-256., evidence: EVIDENCE-MANIFEST validation.}
+    classification_required: false
+    classification_vocabulary: {finding_classes: [], severity: []}
+    artifact_contracts:
+      - {artifact_id: C01-EVIDENCE-MANIFEST, title: Canonical baseline evidence manifest, format: YAML, minimum_record_fields: [gate_id, canonical_location, files], completeness_key: [gate_id], purpose: Preserve historical captured coverage.}
+    cross_checks: [Compare RESULT.yaml evidence locators with the canonical manifest and C01 canonicalization report.]
+    completeness_tests: [Every manifested file exists and digest-validates; no historical file is whitespace-normalized.]
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001
+  ESC-C02:
+    gate_id: C02
+    discovery_surfaces:
+      - {location: docs, kind: PATH, existence: REQUIRED, purpose: Enumerate canonical controlled and legacy-published document families.}
+      - {location: engineering/docs, kind: PATH, existence: REQUIRED, purpose: Enumerate engineering architecture operations and CLI documentation candidates.}
+      - {location: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md, kind: PATH, existence: REQUIRED, purpose: Reconcile authoritative registrations and discovery rules.}
+      - {location: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md, kind: PATH, existence: REQUIRED, purpose: Resolve document metadata relationship and whole-document requirements.}
+      - {location: engineering/validation, kind: PATH, existence: REQUIRED, purpose: Resolve document schemas profiles and validation catalogs.}
+      - {location: docs/project/PROJ-0001-PROJECT_STATE.md, kind: PATH, existence: REQUIRED, purpose: Map current Project State authority claims and roadmap binding.}
+      - {location: engineering/registry, kind: PATH, existence: REQUIRED, purpose: Inspect Work Registry authority references without reconciliation.}
+      - {location: docs/eos, kind: PATH, existence: REQUIRED, purpose: Enumerate EOS-related controlled claims.}
+      - {location: scripts/engctl, kind: PATH, existence: REQUIRED, purpose: Identify controlled-document and authority consumers.}
+      - {location: scripts/lib, kind: PATH, existence: REQUIRED, purpose: Discover code consumers of document IDs authority and lifecycle facts.}
+      - {location: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence, kind: PATH, existence: REQUIRED, purpose: Consume the C01 controlled and architecture inventory.}
+      - {location: preservation/ob-lifecycle-pre-rebuild-20260809T235039Z, kind: REFERENCE, existence: REFERENCE_ONLY, purpose: Compare documentary architecture only where a C01 or current-source discrepancy requires history.}
+    inventory_method:
+      - Enumerate every file under docs and engineering/docs; classify each as controlled, legacy-published, evidence, runtime, planning, historical, or non-document support.
+      - Parse front matter from every controlled-looking file and capture identifier, family, title, version, lifecycle, owner, approval, persistence, source-of-truth, deferrals, and relationships.
+      - Parse every DOC-0001 registration and account for it as resolved, duplicate, missing, or explicitly classified; separately account for controlled-looking unindexed files including PROC-0008.
+      - Extract normative and current-state authority claims and map claim owner, competing source, consumers, code/schema path, downstream effect, and evidence.
+      - Search repository consumers for every document identifier and authority vocabulary; distinguish direct runtime consumption, validation, projection, documentation reference, and no consumer.
+      - Compare material documented facts to C01 observations and current read-only implementation; use preservation only as reference evidence and never as current authority.
+    safe_operations:
+      - Use find rg sed YAML parsing hashing Git show and validator help or read-only validation modes.
+      - Capture deterministic repository-relative paths line references digests and command transcripts under the C02 evidence directory.
+      - Use temporary output outside controlled stores for probes and copy only reviewed evidence into the gate evidence tree.
+    prohibited_operations:
+      - Edit approve publish supersede archive delete or correct assessed controlled documents.
+      - Mutate Work Registry EOS Zeus EENS EMP services runtime state checkpoints refs or preservation content.
+      - Stage commit push synchronize refresh restore execute providers or start a publication transaction.
+    coverage_rules:
+      - {rule_id: C02-COV-001, requirement: Every file under docs and engineering/docs is represented exactly once in the document inventory or an explicit non-document exclusion list., evidence: Path enumeration count reconciled to unique inventory paths plus exclusions.}
+      - {rule_id: C02-COV-002, requirement: Every DOC-0001 controlled-document row resolves to exactly one file or an explicit classification., evidence: Index reconciliation totals and unresolved-entry register.}
+      - {rule_id: C02-COV-003, requirement: Every controlled-looking unindexed document is classified with owner and disposition route., evidence: Metadata-pattern discovery reconciled against DOC-0001 rows.}
+      - {rule_id: C02-COV-004, requirement: Every discovered authority claim maps to one owner or an explicit UNRESOLVED gap., evidence: Authority-claim matrix key and owner-null checks.}
+      - {rule_id: C02-COV-005, requirement: Every material runtime or code mismatch is represented in the divergence report., evidence: Consumer-map mismatches anti-joined against divergence records.}
+      - {rule_id: C02-COV-006, requirement: Every C01 controlled or architecture candidate is reconciled to the current inventory., evidence: C01-to-C02 candidate reconciliation table.}
+    classification_required: true
+    classification_vocabulary: *assessment_vocabulary
+    artifact_contracts:
+      - artifact_id: C02-DOCUMENT-INVENTORY
+        title: Controlled-document inventory
+        format: YAML
+        minimum_record_fields: [path, document_id, family, title, version, lifecycle, owner, approval_status, persistence_status, index_status, document_class, authority_claims, relationships, consumers, conflicts, disposition, evidence]
+        completeness_key: [path]
+        purpose: Account for every documentary discovery object and its controlled status.
+      - artifact_id: C02-AUTHORITY-CLAIM-MATRIX
+        title: Authority-claim matrix
+        format: YAML
+        minimum_record_fields: [claim_id, engineering_fact, claiming_source, claim_type, claimed_owner, consumer, competing_source, conflict_class, severity, resolution_owner, evidence]
+        completeness_key: [claim_id]
+        purpose: Reconcile every normative or current-state authority claim.
+      - artifact_id: C02-STALE-DOCUMENT-REGISTER
+        title: Stale-document register
+        format: YAML
+        minimum_record_fields: [finding_id, document_path, fact, documented_value, observed_value, classification, severity, consumer_impact, resolution_owner, evidence]
+        completeness_key: [finding_id]
+        purpose: Record stale documentary facts without correction.
+      - artifact_id: C02-DUPLICATE-OVERLAP-REGISTER
+        title: Duplicate and overlap register
+        format: YAML
+        minimum_record_fields: [finding_id, source_a, source_b, overlapping_scope, classification, authoritative_owner, consumers, severity, disposition, evidence]
+        completeness_key: [finding_id]
+        purpose: Bound duplicate and overlapping procedural or authority content.
+      - artifact_id: C02-IMPLEMENTATION-CONSUMER-MAP
+        title: Implementation-consumer map
+        format: YAML
+        minimum_record_fields: [consumer_id, source_path, interface, consumed_document_id, consumed_fact, access_mode, validation_behavior, mismatch, evidence]
+        completeness_key: [consumer_id]
+        purpose: Identify runtime and code consumption of documentary facts and IDs.
+      - artifact_id: C02-DOCUMENT-RUNTIME-DIVERGENCE
+        title: Document and runtime divergence report
+        format: YAML
+        minimum_record_fields: [divergence_id, documented_source, implementation_source, fact, documented_behavior, implemented_behavior, classification, severity, affected_consumers, resolution_owner, evidence]
+        completeness_key: [divergence_id]
+        purpose: Account for every material documentation and implementation mismatch.
+      - artifact_id: C02-EXECUTIVE-RESULT
+        title: C02 executive findings and result
+        format: YAML
+        minimum_record_fields: [gate_id, result, inventory_counts, coverage_results, classification_counts, material_findings, blockers, acceptance_criteria_results, artifacts, evidence, disposition, next_authorized_action]
+        completeness_key: [gate_id]
+        purpose: Persist the gate result without performing a document decision or correction.
+    cross_checks:
+      - Anti-join filesystem enumeration against inventory paths and explicit exclusions; the result must be empty.
+      - Anti-join DOC-0001 rows against resolved inventory document IDs and explicit missing or duplicate classifications; the result must be empty.
+      - Anti-join controlled-looking unindexed paths against classified records; the result must be empty.
+      - Join every authority claim to an owner or UNRESOLVED record and every consumer mismatch to a divergence record.
+      - Compare C01 document candidates and preservation-only references to current rows without treating either as current authority.
+      - Re-run Git status and read-only state hashes to prove assessed sources and runtime stores were not mutated.
+    completeness_tests:
+      - Unique inventory path count plus explicit exclusion count equals the deterministic docs and engineering/docs discovery count.
+      - DOC-0001 row count equals resolved plus missing plus duplicate-classified index records with zero unaccounted rows.
+      - Every classification and severity value belongs to the bounded vocabulary and every non-CONSISTENT record has source-linked evidence and a resolution owner or explicit gap.
+      - Every required artifact passes its record contract and has no duplicate completeness key.
+      - Every material consumer mismatch has exactly one divergence record and every divergence resolves to inventory and consumer-map rows.
+      - Every coverage rule records PASS or causes BLOCKED; no issue-free assertion substitutes for coverage evidence.
+      - RESULT.yaml acceptance criteria link to the artifact and evidence locations and Git mutation proof is clean except authorized C02 output paths.
+    result_rules: *assessment_result_rules
+    result_contract: ESC-RESULT-001
+    review_contract: ESC-REVIEW-001
+    state_transition_contract: ESC-STATE-TRANSITION-001
+    persistence_contract: ESC-PERSISTENCE-001
+    cold_resume_contract: ESC-COLD-RESUME-001

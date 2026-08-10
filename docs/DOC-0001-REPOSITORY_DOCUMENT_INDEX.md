@@ -1,20 +1,20 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.78
+version: 2.79
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-07-31
-phase: Zeus Operational Alpha
+last_updated: 2026-08-09
+phase: Engineering System Convergence C02 Corrective
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.77
+predecessor_revision: DOC-0001@2.78
 successor_revision: null
 approval_status: Approved
-approval_authority: Engineering Governance
-approval_reference: Mission B - Authority Establishment and Portfolio Reconciliation
-approval_date: 2026-07-25
+approval_authority: Homelab Operator
+approval_reference: EXECUTABLE ROADMAP STANDARDIZATION AND ESC-ROADMAP-001 HARDENING directive
+approval_date: 2026-08-09
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -44,9 +44,13 @@ relationships:
   - type: indexes
     target: PROC-0007
   - type: indexes
+    target: PROC-0009
+  - type: indexes
     target: STD-0004
   - type: indexes
     target: STD-0005
+  - type: indexes
+    target: STD-0006
   - type: indexes
     target: TPL-0004
   - type: indexes
@@ -392,6 +396,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | STD-0003 | Operational Alpha Work Authorization Standard | Active | Engineering Governance | `docs/standards/STD-0003-ENGINEERING_WORK_ORDER_STANDARD.md` |
 | STD-0004 | Engineering State Freshness Standard | Active | Engineering Governance | `docs/standards/STD-0004-ENGINEERING_STATE_FRESHNESS_STANDARD.md` |
 | STD-0005 | Engineering Hardware Lifecycle Standard | Active | Engineering Governance | `docs/standards/STD-0005-ENGINEERING_HARDWARE_LIFECYCLE_STANDARD.md` |
+| STD-0006 | Engineering Executable Roadmap Standard | Active | Engineering Governance | `docs/standards/STD-0006-ENGINEERING_EXECUTABLE_ROADMAP_STANDARD.md` |
 | PROC-0001 | Operational Alpha Work Initiation and Execution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md` |
 | PROC-0002 | Engineering Governance Resolution Procedure | Active | Engineering Governance | `docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md` |
 | PROC-0003 | Engineering Recovery Runbook | Active | Engineering Governance | `docs/procedures/PROC-0003-ENGINEERING_RECOVERY_RUNBOOK.md` |
@@ -399,6 +404,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | PROC-0005 | Controlled Document Publication Procedure | Draft | Engineering Governance | `docs/procedures/PROC-0005-CONTROLLED_DOCUMENT_PUBLICATION_PROCEDURE.md` |
 | PROC-0006 | Governance Qualification Procedure | Active | Engineering Governance | `docs/procedures/PROC-0006-GOVERNANCE-QUALIFICATION-PROCEDURE.md` |
 | PROC-0007 | Governance Stabilization Procedure | Active | Engineering Governance | `docs/procedures/PROC-0007-GOVERNANCE-STABILIZATION-PROCEDURE.md` |
+| PROC-0009 | Executable Roadmap Evaluation Procedure | Active | Engineering Governance | `docs/procedures/PROC-0009-EXECUTABLE_ROADMAP_EVALUATION_PROCEDURE.md` |
 | TPL-0001 | Operational Alpha Implementation WOP Template | Active | Engineering Governance | `docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md` |
 | TPL-0002 | Completion Report Template | Active | Engineering Governance | `docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md` |
 | TPL-0003 | Engineering Evidence Package Template | Active | Engineering Governance | `docs/templates/TPL-0003-ENGINEERING_EVIDENCE_PACKAGE_TEMPLATE.md` |
@@ -898,3 +904,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.76 | 2026-07-30 | Registered SPEC-0014 and synchronized the controlled Operational Alpha authority migration across STD-0003, PROC-0001, SPEC-0005, PROC-0006, TPL-0001, and TPL-0002. |
 | 2.77 | 2026-07-30 | Registered MILESTONE-0011 and the certified `ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0` registry trace; Operational Alpha remains blocked at OA-01 until its separately controlled execution prerequisites exist. |
 | 2.78 | 2026-07-31 | Reconciled Operational Alpha initiation to the published WOP and convergence-authority model; historical EWOs no longer gate repository-governed Operational Alpha execution. |
+| 2.79 | 2026-08-09 | Registered STD-0006 and PROC-0009 as the reusable executable-roadmap construction and evaluation authorities, with ESC-ROADMAP-001 as the first bound executable qualification. |

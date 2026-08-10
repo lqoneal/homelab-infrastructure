@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C20
 title: Begin Controlled Convergence Implementation
 status: PENDING
+gate_type: IMPLEMENTATION_ENTRY
 purpose: Mark controlled entry into the approved implementation roadmap after assessment, architecture, planning, and cold resume qualify.
 problem_statement: Implementation must not start from findings alone or expand into automatic execution of the entire convergence program.
 objective: Begin implementation only after C01-C19 establish a coherent architecture and deterministic resume capability.
@@ -19,6 +20,9 @@ entry_conditions:
   - The first implementation gate has explicit separate authority and rollback evidence.
 authoritative_inputs:
   - Approved C17 target architecture, C18 implementation roadmap, C19 qualification, and first-gate authority package.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C20
 assessment_or_execution_procedure:
   - Revalidate repository, roadmap, state, results, architecture, migration dependencies, resume, and blockers.
   - Resolve exactly one first implementation gate and its authority, scope, evidence, acceptance, rollback, and stop conditions.
@@ -40,6 +44,10 @@ stop_boundary: Stop at the first approved implementation gate's own boundary; C2
 result_location: engineering/convergence/engineering-system-convergence/gates/C20-controlled-convergence-implementation/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C20-controlled-convergence-implementation/evidence
 next_gate: null
+terminal:
+  is_terminal: true
+  continuation_authority: C18 approved implementation roadmap and its separately authorized first implementation gate
+  continuation_action: Resolve and execute only the separately authorized external implementation gate
 resume_instructions:
   start_here: Verify all predecessor results and resolve one separately authorized first C18 implementation gate.
   validate_first: engctl roadmap validate

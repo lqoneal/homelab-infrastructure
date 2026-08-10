@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C07
 title: EMP Assessment
 status: PENDING
+gate_type: ASSESSMENT
 purpose: Establish EMP's implemented management boundary and its overlaps with execution and state systems.
 problem_statement: EMP includes registry, portfolio, queue, lifecycle, controller, and execution-adjacent capabilities whose current ownership and maturity are unclear.
 objective: Determine EMP's actual implemented management responsibilities, overlaps with EOS/engctl/Zeus, incomplete capabilities, obsolete abstractions, and target management-layer boundary.
@@ -16,6 +17,9 @@ entry_conditions:
   - C06 contract findings are complete and C07 is explicitly selected.
 authoritative_inputs:
   - EMP specifications, Work Registry/schema, scripts/lib/emp, engctl routing, evidence, and prior gate results.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C07
 assessment_or_execution_procedure:
   - Inventory implemented EMP components, commands, stores, schemas, writes, projections, and tests.
   - Map responsibilities and overlaps with EOS, engctl, Zeus, WOP, Project State, and roadmap facts.
@@ -39,6 +43,10 @@ stop_boundary: Stop after assessment; no EMP functionality or state changes.
 result_location: engineering/convergence/engineering-system-convergence/gates/C07-emp/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C07-emp/evidence
 next_gate: C08
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Review C05-C06 ownership and contract maps, then inventory EMP read-only.
   validate_first: engctl roadmap validate

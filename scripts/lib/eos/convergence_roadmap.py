@@ -30,6 +30,17 @@ EXPECTED_GATE_IDS = [f"C{number:02d}" for number in range(21)]
 TERMINAL_RESULTS = {"COMPLETE", "COMPLETE_WITH_FINDINGS"}
 GATE_STATUSES = {"COMPLETE", "COMPLETE_WITH_FINDINGS", "CURRENT", "PENDING", "BLOCKED"}
 PROHIBITED_DURABLE_KEYS = {"provider_session_id", "session_id", "thread_id", "transport_id"}
+EXECUTABLE_CLASSES = {"EXECUTABLE", "IMPLEMENTATION", "RECOVERY_RESUME"}
+HISTORICAL_GATE_IDS = {"C00", "C01"}
+ACTIVATION_GATE_IDS = {"C02"}
+PROSPECTIVE_GATE_IDS = set(EXPECTED_GATE_IDS) - HISTORICAL_GATE_IDS - ACTIVATION_GATE_IDS
+EVALUATION_CRITERIA = (
+    "procedural_sufficiency", "discovery_sufficiency", "coverage_determinism",
+    "classification_determinism", "artifact_determinism", "evidence_sufficiency",
+    "result_determinism", "authority_boundaries", "fail_closed_behavior",
+    "review_boundary", "state_transition_determinism", "persistence",
+    "cold_resume", "terminal_semantics",
+)
 
 
 class RoadmapError(ValueError):
@@ -171,8 +182,14 @@ class ConvergenceRoadmap:
 
         gate_refs = roadmap["gates"]
         gate_ids = [item.get("gate_id") for item in gate_refs]
-        if gate_ids != EXPECTED_GATE_IDS or len(set(gate_ids)) != len(gate_ids):
-            raise RoadmapError("gate sequence must contain unique C00 through C20 in order")
+        if not set(EXPECTED_GATE_IDS).issubset(gate_ids) or len(set(gate_ids)) != len(gate_ids):
+            raise RoadmapError("gate sequence must contain unique required C00 through C20 identities")
+        gate_orders = {item["gate_id"]: item["roadmap_order"] for item in gate_refs}
+        if len(gate_orders) != len(gate_refs) or gate_orders != dict(sorted(gate_orders.items(), key=lambda pair: pair[1])):
+            raise RoadmapError("roadmap gate ordering must be unique and monotonically recorded")
+        gate_identities = [item["gate_identity"] for item in gate_refs]
+        if len(set(gate_identities)) != len(gate_identities):
+            raise RoadmapError("roadmap gate identities must be unique")
 
         gates: dict[str, dict[str, Any]] = {}
         for item in gate_refs:
@@ -182,7 +199,14 @@ class ConvergenceRoadmap:
             if expected_parent not in gate_path.parents:
                 raise RoadmapError(f"{gate_id} definition is outside canonical gate tree")
             gate = _load_yaml(gate_path, f"{gate_id} definition")
-            _schema_validate(gate, self.roadmap_root / "schemas/gate.schema.yaml", f"{gate_id} definition")
+            provenance = item["contract_provenance"]
+            schema_path = _safe_repository_path(
+                self.repository_root, provenance["validation_schema"],
+                f"{gate_id} validation schema",
+            )
+            if schema_path.parent != self.roadmap_root / "schemas":
+                raise RoadmapError(f"{gate_id} validation schema is outside canonical schema tree")
+            _schema_validate(gate, schema_path, f"{gate_id} definition")
             _reject_runtime_identifiers(gate, f"gate.{gate_id}")
             if gate["gate_id"] != gate_id:
                 raise RoadmapError(f"{gate_id} definition identity mismatch")
@@ -196,11 +220,27 @@ class ConvergenceRoadmap:
             for dependency in gate["dependencies"]:
                 if dependency not in gates:
                     raise RoadmapError(f"{gate_id} dependency does not resolve: {dependency}")
-                if EXPECTED_GATE_IDS.index(dependency) >= EXPECTED_GATE_IDS.index(gate_id):
+                if gate_orders[dependency] >= gate_orders[gate_id]:
                     raise RoadmapError(f"{gate_id} dependency is not a predecessor: {dependency}")
-            expected_next = None if gate_id == "C20" else EXPECTED_GATE_IDS[EXPECTED_GATE_IDS.index(gate_id) + 1]
-            if gate["next_gate"] != expected_next:
-                raise RoadmapError(f"{gate_id} next_gate is not deterministic")
+            if gate_id not in HISTORICAL_GATE_IDS and gate_id not in ACTIVATION_GATE_IDS:
+                terminal = gate["terminal"]
+                if terminal["is_terminal"]:
+                    if gate["next_gate"] is not None:
+                        raise RoadmapError(f"{gate_id} terminal gate must set next_gate to null")
+                    if not terminal["continuation_authority"] or not terminal["continuation_action"]:
+                        raise RoadmapError(f"{gate_id} terminal continuation is ambiguous")
+                else:
+                    if gate["next_gate"] not in gates:
+                        raise RoadmapError(f"{gate_id} next_gate does not resolve")
+                    if gate_orders[gate["next_gate"]] <= gate_orders[gate_id]:
+                        raise RoadmapError(f"{gate_id} next_gate does not advance roadmap order")
+                    if gate_id == EXPECTED_GATE_IDS[-1] and gate["next_gate"] is None:
+                        raise RoadmapError(f"{gate_id} final gate must declare terminal semantics")
+                    if terminal["continuation_authority"] is not None or terminal["continuation_action"] is not None:
+                        raise RoadmapError(f"{gate_id} non-terminal gate declares external continuation")
+            else:
+                if gate["next_gate"] not in gates or gate_orders[gate["next_gate"]] <= gate_orders[gate_id]:
+                    raise RoadmapError(f"{gate_id} historical next_gate is not deterministic")
 
         completed = state["completed_gates"]
         blocked = state["blocked_gates"]
@@ -220,6 +260,35 @@ class ConvergenceRoadmap:
             raise RoadmapError("gate state sets overlap")
         if set(completed + blocked + pending) != set(gates):
             raise RoadmapError("gate state sets do not cover the roadmap")
+
+        for item in gate_refs:
+            gate_id = item["gate_id"]
+            provenance = item["contract_provenance"]
+            expected_lifecycle = (
+                "COMPLETE" if gate_id in completed else
+                "BLOCKED" if gate_id in blocked else
+                "CURRENT" if gate_id == current else
+                "PENDING"
+            )
+            if provenance["lifecycle"] != expected_lifecycle:
+                raise RoadmapError(f"{gate_id} roadmap provenance lifecycle disagrees with state")
+            expected_generation = (
+                "HISTORICAL_FROZEN" if gate_id in HISTORICAL_GATE_IDS else
+                "ACTIVATION_FROZEN" if gate_id in ACTIVATION_GATE_IDS else
+                "PROSPECTIVE_EXECUTABLE"
+            )
+            if provenance["contract_generation"] != expected_generation:
+                raise RoadmapError(f"{gate_id} roadmap provenance generation is not canonical")
+            expected_applicability = "STD-0006@1.0" if gate_id in PROSPECTIVE_GATE_IDS else "NOT_APPLICABLE"
+            if provenance["standard_applicability"] != expected_applicability:
+                raise RoadmapError(f"{gate_id} STD-0006 applicability is not canonical")
+            expected_schema = (
+                self.roadmap_root / "schemas/gate.schema.yaml"
+                if gate_id not in HISTORICAL_GATE_IDS and gate_id not in ACTIVATION_GATE_IDS
+                else self.roadmap_root / "schemas/gate-historical-v1.schema.yaml"
+            )
+            if _safe_repository_path(self.repository_root, provenance["validation_schema"], f"{gate_id} validation schema") != expected_schema:
+                raise RoadmapError(f"{gate_id} selects the wrong generation validation schema")
 
         results: dict[str, dict[str, Any]] = {}
         for gate_id, gate in gates.items():
@@ -292,6 +361,235 @@ class ConvergenceRoadmap:
             "read_only": True,
         }
 
+    def evaluate(self, resolved: dict[str, Any] | None = None, *, compare_persisted: bool = True) -> dict[str, Any]:
+        """Evaluate execution sufficiency without adding roadmap-specific methodology."""
+        resolved = resolved or self.validate()
+        roadmap = resolved["roadmap"]
+        gates = resolved["gates"]
+        contract = roadmap["evaluation_contract"]
+        catalog_path = _safe_repository_path(
+            self.repository_root, contract["playbook_catalog"], "execution playbook catalog"
+        )
+        schema_path = _safe_repository_path(
+            self.repository_root, contract["playbook_schema"], "execution playbook schema"
+        )
+        evaluation_schema_path = _safe_repository_path(
+            self.repository_root, contract["evaluation_schema"], "roadmap evaluation schema"
+        )
+        catalog = _load_yaml(catalog_path, "execution playbook catalog")
+        _schema_validate(catalog, schema_path, "execution playbook catalog")
+        _reject_runtime_identifiers(catalog, "execution_playbook_catalog")
+        shared = catalog["shared_contracts"]
+        shared_ids = {
+            name: definition["contract_id"] for name, definition in shared.items()
+        }
+
+        gate_results: list[dict[str, Any]] = []
+        all_blockers: list[str] = []
+        all_warnings: list[str] = []
+        for gate_id, gate in gates.items():
+            provenance = next(item["contract_provenance"] for item in roadmap["gates"] if item["gate_id"] == gate_id)
+            if provenance["standard_applicability"] == "NOT_APPLICABLE":
+                gate_results.append({
+                    "gate_id": gate_id,
+                    "result": "NOT_APPLICABLE",
+                    "contract_generation": provenance["contract_generation"],
+                    "standard_applicability": provenance["standard_applicability"],
+                    "criteria": {name: "NOT_APPLICABLE" for name in EVALUATION_CRITERIA},
+                    "warnings": [],
+                    "blockers": [],
+                })
+                continue
+            criteria = {name: "PASS" for name in EVALUATION_CRITERIA}
+            blockers: list[str] = []
+            warnings: list[str] = []
+
+            reference = gate.get("execution_playbook") or {}
+            if reference.get("catalog") != contract["playbook_catalog"]:
+                blockers.append("execution playbook catalog does not match roadmap evaluation contract")
+            playbook = catalog["playbooks"].get(reference.get("playbook_id"))
+            if not isinstance(playbook, dict):
+                blockers.append("execution playbook does not resolve")
+                for criterion in EVALUATION_CRITERIA:
+                    criteria[criterion] = "FAIL"
+            else:
+                if playbook.get("gate_id") != gate_id:
+                    blockers.append("execution playbook gate identity mismatch")
+
+                procedure = gate.get("assessment_or_execution_procedure")
+                if not isinstance(procedure, list) or not procedure or not playbook.get("inventory_method"):
+                    criteria["procedural_sufficiency"] = "FAIL"
+                    blockers.append("procedure or inventory method is missing")
+
+                surfaces = playbook.get("discovery_surfaces") or []
+                if not surfaces:
+                    criteria["discovery_sufficiency"] = "FAIL"
+                    blockers.append("discovery surfaces are missing")
+                for surface in surfaces:
+                    if surface.get("existence") != "REQUIRED" or surface.get("kind") not in {"PATH", "GLOB"}:
+                        continue
+                    location = surface.get("location")
+                    try:
+                        path = _safe_repository_path(
+                            self.repository_root, location, f"{gate_id} discovery surface"
+                        )
+                    except RoadmapError as error:
+                        criteria["discovery_sufficiency"] = "FAIL"
+                        blockers.append(str(error))
+                        continue
+                    if surface.get("kind") == "PATH" and not path.exists():
+                        criteria["discovery_sufficiency"] = "FAIL"
+                        blockers.append(f"required discovery surface missing: {location}")
+
+                coverage = playbook.get("coverage_rules") or []
+                if not coverage or any(not rule.get("requirement") or not rule.get("evidence") for rule in coverage):
+                    criteria["coverage_determinism"] = "FAIL"
+                    blockers.append("coverage rules are missing or incomplete")
+
+                vocabulary = playbook.get("classification_vocabulary") or {}
+                if playbook.get("classification_required") and (
+                    not vocabulary.get("finding_classes") or not vocabulary.get("severity")
+                ):
+                    criteria["classification_determinism"] = "FAIL"
+                    blockers.append("required classification vocabulary is missing")
+
+                artifacts = playbook.get("artifact_contracts") or []
+                artifact_ids = [artifact.get("artifact_id") for artifact in artifacts]
+                if (
+                    not artifacts or len(artifact_ids) != len(set(artifact_ids))
+                    or any(
+                        not artifact.get("minimum_record_fields")
+                        or not artifact.get("completeness_key")
+                        or not artifact.get("purpose")
+                        for artifact in artifacts
+                    )
+                ):
+                    criteria["artifact_determinism"] = "FAIL"
+                    blockers.append("artifact contracts are missing, duplicate, or incomplete")
+
+                if not gate.get("required_evidence") or not gate.get("evidence_location"):
+                    criteria["evidence_sufficiency"] = "FAIL"
+                    blockers.append("required evidence contract or location is missing")
+
+                required_results = {"COMPLETE", "COMPLETE_WITH_FINDINGS", "BLOCKED", "FAILED"}
+                if set((playbook.get("result_rules") or {}).keys()) != required_results:
+                    criteria["result_determinism"] = "FAIL"
+                    blockers.append("result rules are incomplete or ambiguous")
+                if playbook.get("result_contract") != shared_ids["result_contract"]:
+                    criteria["result_determinism"] = "FAIL"
+                    blockers.append("result contract does not resolve")
+
+                if not gate.get("scope_out") or not playbook.get("prohibited_operations"):
+                    criteria["authority_boundaries"] = "FAIL"
+                    blockers.append("scope-out or prohibited-operation boundary is missing")
+                if not gate.get("fail_closed_conditions") or not gate.get("stop_boundary"):
+                    criteria["fail_closed_behavior"] = "FAIL"
+                    blockers.append("fail-closed or stop boundary is missing")
+
+                shared_references = {
+                    "review_boundary": ("review_contract", "review_contract"),
+                    "state_transition_determinism": ("state_transition_contract", "state_transition_contract"),
+                    "persistence": ("persistence_contract", "persistence_contract"),
+                    "cold_resume": ("cold_resume_contract", "cold_resume_contract"),
+                }
+                for criterion, (field, shared_name) in shared_references.items():
+                    if playbook.get(field) != shared_ids[shared_name]:
+                        criteria[criterion] = "FAIL"
+                        blockers.append(f"{field.replace('_', ' ')} does not resolve")
+
+                if not playbook.get("cross_checks") or not playbook.get("completeness_tests"):
+                    criteria["coverage_determinism"] = "FAIL"
+                    blockers.append("cross-checks or completeness tests are missing")
+
+                terminal = gate.get("terminal") or {}
+                if terminal.get("is_terminal"):
+                    if gate.get("next_gate") is not None or not terminal.get("continuation_authority") or not terminal.get("continuation_action"):
+                        criteria["terminal_semantics"] = "FAIL"
+                        blockers.append("terminal continuation is ambiguous")
+                elif gate.get("next_gate") is None:
+                    criteria["terminal_semantics"] = "FAIL"
+                    blockers.append("non-terminal gate has no successor")
+
+            result = "FAIL" if blockers else "PASS"
+            all_blockers.extend(f"{gate_id}: {blocker}" for blocker in blockers)
+            all_warnings.extend(f"{gate_id}: {warning}" for warning in warnings)
+            gate_results.append({
+                "gate_id": gate_id,
+                "result": result,
+                "contract_generation": provenance["contract_generation"],
+                "standard_applicability": provenance["standard_applicability"],
+                "criteria": criteria,
+                "warnings": warnings,
+                "blockers": blockers,
+            })
+
+        criterion_dimensions = {
+            "procedural_result": "procedural_sufficiency",
+            "discovery_result": "discovery_sufficiency",
+            "coverage_result": "coverage_determinism",
+            "classification_result": "classification_determinism",
+            "artifact_contract_result": "artifact_determinism",
+            "evidence_result": "evidence_sufficiency",
+            "result_determinism_result": "result_determinism",
+            "authority_boundary_result": "authority_boundaries",
+            "fail_closed_result": "fail_closed_behavior",
+            "review_boundary_result": "review_boundary",
+            "state_transition_result": "state_transition_determinism",
+            "persistence_result": "persistence",
+            "cold_resume_result": "cold_resume",
+        }
+        evaluated_gate_results = [item for item in gate_results if item["standard_applicability"] != "NOT_APPLICABLE"]
+        dimension_results = {
+            dimension: "PASS" if all(
+                gate_result["criteria"][criterion] == "PASS" for gate_result in evaluated_gate_results
+            ) else "FAIL"
+            for dimension, criterion in criterion_dimensions.items()
+        }
+
+        persisted_path = _safe_repository_path(
+            self.repository_root, contract["persisted_evaluation"], "persisted roadmap evaluation"
+        )
+        persisted = _load_yaml(persisted_path, "persisted roadmap evaluation") if persisted_path.is_file() else None
+        evaluated_at = (
+            persisted.get("evaluated_at") if persisted else resolved["state"]["updated_at"]
+        )
+        executable_claim = roadmap["roadmap_class"] in EXECUTABLE_CLASSES
+        if roadmap["roadmap_class"] == "PLANNING_ONLY":
+            all_warnings.append("Roadmap class PLANNING_ONLY is structurally valid but cannot be executable.")
+        executable = executable_claim and not all_blockers
+        result: dict[str, Any] = {
+            "schema_version": 1,
+            "roadmap_id": roadmap["roadmap_id"],
+            "roadmap_version": str(roadmap["roadmap_version"]),
+            "evaluation_standard": {
+                "standard": contract["standard"],
+                "procedure": contract["procedure"],
+                "playbook_contract": f"{catalog['contract_id']}@{catalog['contract_version']}",
+            },
+            "evaluated_at": evaluated_at,
+            "structural_result": "PASS",
+            **dimension_results,
+            "gate_results": gate_results,
+            "warnings": all_warnings,
+            "blockers": all_blockers,
+            "overall_result": "PASS" if executable else "NOT_EXECUTABLE",
+            "executable": executable,
+        }
+
+        if persisted and compare_persisted:
+            comparable_keys = [
+                "roadmap_id", "roadmap_version", "evaluation_standard", "structural_result",
+                *dimension_results.keys(), "gate_results", "warnings", "blockers",
+                "overall_result", "executable",
+            ]
+            if any(persisted.get(key) != result.get(key) for key in comparable_keys):
+                result["blockers"].append("Persisted evaluation does not match live execution-sufficiency result.")
+                result["overall_result"] = "NOT_EXECUTABLE"
+                result["executable"] = False
+
+        _schema_validate(result, evaluation_schema_path, "live roadmap evaluation")
+        return result
+
     def _validate_project_state(self, roadmap: dict[str, Any], state: dict[str, Any]) -> None:
         project_state_path = _safe_repository_path(
             self.repository_root, roadmap["project_state_path"], "Project State path"
@@ -305,10 +603,15 @@ class ConvergenceRoadmap:
         expected = {
             "program_id": roadmap["program_id"],
             "roadmap_id": roadmap["roadmap_id"],
+            "roadmap_version": roadmap["roadmap_version"],
             "roadmap_path": str(ROADMAP_RELATIVE_ROOT / ROADMAP_FILE),
             "state_path": str(ROADMAP_RELATIVE_ROOT / STATE_FILE),
             "current_gate": state["current_gate"],
             "next_authorized_action": state["next_authorized_action"],
+            "executable_qualification": state["executable_qualification"]["result"],
+            "evaluation_standard": state["executable_qualification"]["standard"],
+            "evaluation_procedure": state["executable_qualification"]["procedure"],
+            "evaluation_result": state["executable_qualification"]["evaluation_result"],
         }
         if binding != expected:
             raise RoadmapError("Project State and convergence roadmap state disagree")
@@ -340,6 +643,12 @@ class ConvergenceRoadmap:
         }
         required.update(item["definition"] for item in roadmap["gates"])
         required.update(gates[gate_id]["result_location"] for gate_id in state["completed_gates"])
+        required.update((
+            roadmap["evaluation_contract"]["playbook_catalog"],
+            roadmap["evaluation_contract"]["playbook_schema"],
+            roadmap["evaluation_contract"]["evaluation_schema"],
+            roadmap["evaluation_contract"]["persisted_evaluation"],
+        ))
         missing = sorted(required - set(by_path))
         if missing:
             raise RoadmapError(f"EMM binding manifest missing required source(s): {', '.join(missing)}")
@@ -396,6 +705,8 @@ class ConvergenceRoadmap:
             "blocked_gates": state["blocked_gates"],
             "pending_gates": state["pending_gates"],
             "next_authorized_action": state["next_authorized_action"],
+            "execution_sufficiency": state["executable_qualification"]["result"],
+            "executable": state["executable_qualification"]["executable"],
             "gate_definition": str(_safe_repository_path(
                 self.repository_root,
                 next(item["definition"] for item in roadmap["gates"] if item["gate_id"] == state["current_gate"]),
@@ -414,6 +725,12 @@ class ConvergenceRoadmap:
                 self.repository_root, state["last_evidence"], "last evidence"
             )) if state["last_evidence"] else None,
             "repository_baseline": state["repository_baseline"],
+            "queue_authority": roadmap["authority_model"]["queue_model"]["current_authority"],
+            "queue_role": roadmap["authority_model"]["queue_model"]["current_role"],
+            "future_queue_authority": roadmap["authority_model"]["queue_model"]["future_authority"],
+            "future_queue_role": "NOT_YET_ACTIVE",
+            "history_model": roadmap["authority_model"]["mutation_policy"]["historical_model"],
+            "maturity_model": roadmap["authority_model"]["mutation_policy"]["maturity_model"],
             "read_only": True,
         }
 
@@ -434,6 +751,9 @@ def _format_status(value: dict[str, Any], heading: str = "ENGINEERING SYSTEM CON
         f"Program ID: {value['program_id']}",
         f"Program State: {value['program_state']}",
         f"Roadmap ID: {value['roadmap_id']}",
+        f"Roadmap Version: {value['roadmap_version']}",
+        f"Execution Sufficiency: {value['execution_sufficiency']}",
+        f"Executable: {'YES' if value['executable'] else 'NO'}",
         f"Roadmap: {value['roadmap']}",
         f"Roadmap State: {value['roadmap_state']}",
         f"Current Gate: {value['current_gate']} — {value['current_gate_title']}",
@@ -441,6 +761,10 @@ def _format_status(value: dict[str, Any], heading: str = "ENGINEERING SYSTEM CON
         f"Completed: {completed}",
         f"Blockers: {blocked}",
         f"Next Authorized Action: {value['next_authorized_action']}",
+        f"Queue Authority: {value['queue_authority']} ({value['queue_role']})",
+        f"Future Queue Authority: {value['future_queue_authority']} ({value['future_queue_role']})",
+        f"History Model: {value['history_model']}",
+        f"Maturity Model: {value['maturity_model']}",
         f"Gate Definition: {value['gate_definition']}",
         f"Gate Result: {result_display}",
         f"Gate Evidence: {value['gate_evidence']}",
@@ -458,6 +782,7 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     subparsers.add_parser("show")
     subparsers.add_parser("results")
     subparsers.add_parser("validate")
+    subparsers.add_parser("evaluate")
     subparsers.add_parser("resume")
     gate_parser = subparsers.add_parser("gate")
     gate_parser.add_argument("gate_id")
@@ -473,8 +798,19 @@ def main(argv: list[str] | None = None) -> int:
             heading = "ENGINEERING SYSTEM CONVERGENCE" if args.command == "resume" else "ENGINEERING SYSTEM CONVERGENCE ROADMAP"
             print(_format_status(resolver.projection(), heading))
         elif args.command == "validate":
+            evaluation = resolver.evaluate(resolved)
             print(f"PASS: {resolved['roadmap']['roadmap_id']} roadmap, state, gates, results, evidence, Project State, and EMM bindings are consistent")
+            print("STRUCTURAL_VALIDITY=PASS")
+            print(f"EXECUTION_SUFFICIENCY={evaluation['overall_result']}")
+            print(f"EXECUTABLE={'YES' if evaluation['executable'] else 'NO'}")
             print("Read-only: YES")
+            if resolved["roadmap"]["roadmap_class"] in EXECUTABLE_CLASSES and not evaluation["executable"]:
+                return 1
+        elif args.command == "evaluate":
+            evaluation = resolver.evaluate(resolved)
+            print(yaml.safe_dump(evaluation, sort_keys=False).rstrip())
+            if resolved["roadmap"]["roadmap_class"] in EXECUTABLE_CLASSES and not evaluation["executable"]:
+                return 1
         elif args.command == "show":
             print(yaml.safe_dump(resolved["roadmap"], sort_keys=False).rstrip())
         elif args.command == "gate":

@@ -1,7 +1,8 @@
-schema_version: 1
+schema_version: 2
 gate_id: C08
 title: Zeus Assessment
 status: PENDING
+gate_type: ASSESSMENT
 purpose: Establish Zeus's actual architecture, state machines, authority consumption, and operational complexity.
 problem_statement: Zeus spans mission projection, admission, lifecycle, provider control, execution, publication, recovery, and many overlapping controller surfaces.
 objective: Inventory Zeus architecture, CLI, mission projection, authority, lifecycle, execution, provider control, publication, recovery, runtime state, tests, and documentation; identify overlapping state machines and unnecessary complexity.
@@ -16,6 +17,9 @@ entry_conditions:
   - C07 management-boundary findings are complete and C08 is explicitly selected.
 authoritative_inputs:
   - scripts/zeus, scripts/lib/emp and eos Zeus consumers, Zeus controlled documentation, evidence, schemas, runtime observations, and preservation reference.
+execution_playbook:
+  catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_id: ESC-C08
 assessment_or_execution_procedure:
   - Inventory modules, commands, stores, schemas, state machines, consumers, tests, and documentation.
   - Trace mission projection through authority, admission, lifecycle, provider, execution, evidence, publication, and recovery.
@@ -40,6 +44,10 @@ stop_boundary: Stop after assessment; do not repair or redesign Zeus.
 result_location: engineering/convergence/engineering-system-convergence/gates/C08-zeus/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C08-zeus/evidence
 next_gate: C09
+terminal:
+  is_terminal: false
+  continuation_authority: null
+  continuation_action: null
 resume_instructions:
   start_here: Preserve the known broken import as evidence and inventory Zeus without runtime mutation.
   validate_first: engctl roadmap validate

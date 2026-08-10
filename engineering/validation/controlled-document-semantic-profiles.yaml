@@ -3,6 +3,7 @@ authority: SPEC-0001
 procedure_references:
   publication: PROC-0005
   qualification: PROC-0006
+  executable_roadmap_evaluation: PROC-0009
 coverage_states: [automated, manual, partially_automated, not_automated]
 synchronization_model:
   optional_for_profiles: [Standard, Specification, Procedure, Policy, Template, WOP, Roadmap, Gate Specification, Operator Verification Guide, Completion Report]
@@ -196,6 +197,15 @@ criteria:
     required_evidence: scope, validation, evidence, unresolved criteria, coverage, and disposition
     fail_condition: required closeout content is absent
     remediation_guidance: add the missing completion-report content
+  DOC-COMP-019:
+    identifier: DOC-COMP-019
+    description: Roadmap class and executable qualification are truthful under STD-0006.
+    applicability: roadmap
+    validation_method: resolve roadmap class, playbook/evaluation bindings, and live PROC-0009 result when executable status is claimed
+    automation: partially_automated
+    required_evidence: structural validity, execution-sufficiency result, per-gate criteria, and executable boolean
+    fail_condition: a planning-only roadmap claims executable status or an execution-significant criterion is missing or fails
+    remediation_guidance: complete the STD-0006 execution contract, advance the roadmap version, and reevaluate through PROC-0009
   DOC-SYNC-001:
     identifier: DOC-SYNC-001
     description: Declared implementation dependencies resolve and match qualified fingerprints.
@@ -271,7 +281,7 @@ profiles:
     required_validation_criteria: admission, verification, and completion checks
     required_acceptance_criteria: explicit acceptance boundary
   Roadmap:
-    criteria: [DOC-COMP-001, DOC-COMP-002, DOC-COMP-003, DOC-COMP-004, DOC-COMP-005, DOC-COMP-006, DOC-COMP-007, DOC-COMP-008, DOC-COMP-010, DOC-COMP-014]
+    criteria: [DOC-COMP-001, DOC-COMP-002, DOC-COMP-003, DOC-COMP-004, DOC-COMP-005, DOC-COMP-006, DOC-COMP-007, DOC-COMP-008, DOC-COMP-010, DOC-COMP-014, DOC-COMP-019]
     required_concepts: [objective, sequencing, dependencies, completion, traceability]
     required_engineering_content: objectives, sequencing, dependencies, and completion definition
     required_traceability: controlled identity and dependent gate or work references
