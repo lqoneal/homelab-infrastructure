@@ -1,0 +1,46 @@
+schema_version: 1
+gate_id: C05
+title: Roadmap / Project State / Registry Assessment
+status: PENDING
+purpose: Reconcile the intended ownership boundaries among planning, project resume state, and EMP coordination state.
+problem_statement: Roadmaps, Project State, Work Registry, portfolio, milestones, dependencies, queues, phases, and active work can assert overlapping current position.
+objective: Reconcile roadmap authority, Project State, Work Registry, portfolio, milestones, dependencies, queue state, phase/gate position, and current work identification.
+rationale: One engineering fact must have one owner before resume and planning can converge safely.
+scope_in:
+  - Planning, project resume, management coordination, gate position, milestone, dependency, queue, and current-work claims.
+scope_out:
+  - Mutate registry lifecycle, advance gates, or adopt final ownership boundaries.
+  - Repair unrelated Project State or Work Registry history.
+dependencies: [C04]
+entry_conditions:
+  - C04 has documented resume consumers and C05 is selected through reviewed state.
+authoritative_inputs:
+  - This roadmap, PROJ-0001, Work Registry/schema, SPEC-0006, EMP services, milestones, queues, and C02-C04 findings.
+assessment_or_execution_procedure:
+  - Inventory every duplicated planning/current-position field and its writer and consumer.
+  - Trace roadmap-to-project-to-registry relationships and lifecycle semantics.
+  - Compare current authority claims, historical transitions, milestones, dependencies, and queue selection.
+  - Propose one owner and projection boundary for each fact without applying it.
+required_outputs:
+  - Ownership matrix.
+  - Duplicate-state matrix.
+  - Current authority conflicts.
+  - Lifecycle state relationships.
+  - Proposed canonical ownership boundaries and RESULT.yaml.
+required_evidence:
+  - Source-linked field mappings and deterministic current-state comparisons.
+acceptance_criteria:
+  - Every overlapping fact is identified with current and proposed owners.
+  - Conflicts and migration implications are explicit and no state transition is performed.
+fail_closed_conditions:
+  - Current records cannot be compared without guessing precedence.
+  - Proposed ownership would erase history or silently broaden authority.
+stop_boundary: Stop after ownership proposal; defer adoption to C17-C18 and implementation to C20.
+result_location: engineering/convergence/engineering-system-convergence/gates/C05-roadmap-project-state-registry/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C05-roadmap-project-state-registry/evidence
+next_gate: C06
+resume_instructions:
+  start_here: Review C04 resume inputs and compare planning/project/registry facts read-only.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C05_ROADMAP_PROJECT_STATE_REGISTRY_ASSESSMENT
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED

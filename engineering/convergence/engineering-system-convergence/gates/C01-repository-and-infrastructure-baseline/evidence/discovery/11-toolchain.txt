@@ -1,0 +1,61 @@
+----- engctl -----
+/home/loneal/.local/bin/engctl
+Unknown command: --version
+Usage:
+  engctl resume [project]
+  engctl status [project]
+  engctl doctor
+
+----- scripts/zeus -----
+scripts/zeus
+
+----- git -----
+/usr/bin/git
+git version 2.47.3
+
+----- python3 -----
+/usr/bin/python3
+Python 3.13.5
+
+----- pip -----
+/usr/bin/pip
+pip 25.1.1 from /usr/lib/python3/dist-packages/pip (python 3.13)
+
+----- codex -----
+/home/loneal/.local/bin/codex
+codex-cli 0.147.0
+
+----- ssh -----
+/usr/bin/ssh
+
+----- rsync -----
+/usr/bin/rsync
+rsync  version 3.4.1  protocol version 32
+Copyright (C) 1996-2025 by Andrew Tridgell, Wayne Davison, and others.
+Web site: https://rsync.samba.org/
+Capabilities:
+    64-bit files, 64-bit inums, 64-bit timestamps, 64-bit long ints,
+
+----- tar -----
+/usr/bin/tar
+tar (GNU tar) 1.35
+Copyright (C) 2023 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+----- jq -----
+/home/loneal/.local/bin/jq
+jq-1.7
+
+----- sqlite3 -----
+/usr/bin/sqlite3
+3.46.1 2024-08-13 09:16:08 c9c2ab54ba1f5f46360f1b4f35d849cd3f080e6fc2b6c60e91b16c63f69aalt1 (64-bit)
+
+----- docker -----
+
+----- systemctl -----
+/usr/bin/systemctl
+systemd 257 (257.13-1~deb13u1)
++PAM +AUDIT +SELINUX +APPARMOR +IMA +IPE +SMACK +SECCOMP +GCRYPT -GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBCRYPTSETUP_PLUGINS +LIBFDISK +PCRE2 +PWQUALITY +P11KIT +QRENCODE +TPM2 +BZIP2 +LZ4 +XZ +ZLIB +ZSTD +BPF_FRAMEWORK +BTF -XKBCOMMON -UTMP +SYSVINIT +LIBARCHIVE
+

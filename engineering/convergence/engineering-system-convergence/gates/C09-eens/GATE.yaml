@@ -1,0 +1,46 @@
+schema_version: 1
+gate_id: C09
+title: EENS Assessment
+status: PENDING
+purpose: Separate qualified EENS operational capability from speculative or deferred notification architecture.
+problem_statement: EENS Operational Alpha exists, while advanced HNS concepts are deferred and documentation/runtime boundaries can obscure that distinction.
+objective: Inventory EENS code, deployment, runtime, event contracts, persistence, producer/consumer interfaces, notification authority, and deferred HNS concepts.
+rationale: Convergence must preserve qualified operational capability and avoid rebuilding deferred architecture as if it were current.
+scope_in:
+  - EENS sources, deployment, service state, events, persistence, interfaces, documentation, tests, and HNS deferrals.
+scope_out:
+  - Modify, deploy, restart, or requalify EENS.
+  - Implement HNS or speculative notification features.
+dependencies: [C08]
+entry_conditions:
+  - C08 Zeus interactions are mapped and C09 is explicitly selected.
+authoritative_inputs:
+  - services/eens, EENS policies/specifications, deployment/service records, tests, evidence, producers, and consumers.
+assessment_or_execution_procedure:
+  - Inventory code, deployment topology, services, stores, schemas, events, interfaces, producers, and consumers.
+  - Trace notification authority and delivery/persistence semantics.
+  - Compare qualified Operational Alpha behavior with documentation and deferred HNS concepts.
+  - Classify retained capability, divergence, overlap, and simplification candidates.
+required_outputs:
+  - EENS component and deployment inventory.
+  - Event and persistence contract map.
+  - Producer/consumer and authority matrix.
+  - Operational-versus-deferred capability register.
+  - Divergence and simplification findings with RESULT.yaml.
+required_evidence:
+  - Source/service/configuration observations gathered without service mutation.
+acceptance_criteria:
+  - EENS Operational Alpha is represented as existing qualified capability.
+  - Deferred HNS concepts are clearly separated from current behavior.
+fail_closed_conditions:
+  - Service inspection would change state or send production notifications.
+  - Deferred concepts are represented as implemented capability.
+stop_boundary: Stop after assessment; do not modify EENS or implement HNS.
+result_location: engineering/convergence/engineering-system-convergence/gates/C09-eens/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C09-eens/evidence
+next_gate: C10
+resume_instructions:
+  start_here: Review C08 event consumers and assess EENS/HNS boundaries read-only.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C09_EENS_ASSESSMENT
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED

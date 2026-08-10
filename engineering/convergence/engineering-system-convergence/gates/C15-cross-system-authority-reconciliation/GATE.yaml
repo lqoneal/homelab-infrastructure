@@ -1,0 +1,47 @@
+schema_version: 1
+gate_id: C15
+title: Cross-System Dependency and Authority Reconciliation
+status: PENDING
+purpose: Produce the complete factual dependency, dataflow, and authority model across the engineering system.
+problem_statement: C02-C14 findings describe individual systems, but cross-system facts still require one canonical owner and explicit projections.
+objective: Build the complete dependency/dataflow/authority model across controlled documentation, repository/Git, EOS, engctl, Project State, Work Registry/EMP, WOP, Zeus, EENS, provider/Codex, evidence/qualification, publication, synchronization, and recovery.
+rationale: Simplification and target architecture require a system-wide single-owner model grounded in all assessments.
+scope_in:
+  - Reconcile every C02-C14 ownership, interface, dependency, state, conflict, and dataflow finding.
+scope_out:
+  - Implement ownership changes, remove systems, or pre-commit to final architecture.
+dependencies: [C02, C03, C04, C05, C06, C07, C08, C09, C10, C11, C12, C13, C14]
+entry_conditions:
+  - C02 through C14 are evidence-backed complete and all unresolved conflicts are available.
+  - C15 is explicitly selected after operator review.
+authoritative_inputs:
+  - All prior gate results, evidence, controlled sources, implementation maps, and observed state.
+assessment_or_execution_procedure:
+  - Normalize subsystem components, facts, interfaces, stores, producers, consumers, and authority claims from all results.
+  - Build end-to-end dependency and dataflow models with direction, lifecycle, persistence, and failure semantics.
+  - Assign exactly one proposed canonical owner to every engineering fact and identify every projection.
+  - Preserve unresolved ownership as a blocker rather than choosing by recency or convenience.
+required_outputs:
+  - Cross-system component/dependency graph.
+  - End-to-end dataflow model.
+  - Canonical fact-ownership matrix.
+  - Interface and projection register.
+  - Authority-conflict resolution register.
+  - Findings and RESULT.yaml.
+required_evidence:
+  - Traceability from every model row to prior findings and repository sources.
+acceptance_criteria:
+  - Every material engineering fact has exactly one proposed canonical owner or an explicit blocking conflict.
+  - Every producer/consumer interface and projection direction is represented.
+fail_closed_conditions:
+  - Conflicting owners cannot be reconciled from evidence.
+  - A missing subsystem assessment would make the cross-system model incomplete.
+stop_boundary: Stop after reconciliation model and review; do not simplify or implement ownership changes.
+result_location: engineering/convergence/engineering-system-convergence/gates/C15-cross-system-authority-reconciliation/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C15-cross-system-authority-reconciliation/evidence
+next_gate: C16
+resume_instructions:
+  start_here: Verify C02-C14 completeness, then reconcile their findings into one cross-system model.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C15_CROSS_SYSTEM_AUTHORITY_RECONCILIATION
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED

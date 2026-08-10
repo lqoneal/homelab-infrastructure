@@ -1,0 +1,21 @@
+schema_version: 1
+roadmap_id: ESC-ROADMAP-001
+roadmap_version: 1.0.0
+program_state: ASSESSMENT
+current_gate: C02
+completed_gates: [C00, C01]
+blocked_gates: []
+pending_gates: [C02, C03, C04, C05, C06, C07, C08, C09, C10, C11, C12, C13, C14, C15, C16, C17, C18, C19, C20]
+last_completed_gate: C01
+last_result: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml
+last_evidence: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence/EVIDENCE-MANIFEST.yaml
+next_authorized_action: BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT
+repository_baseline: 6a26d2ea378248a4a9e9fe0d58b5df1c45a8c882
+updated_at: '2026-08-10T00:06:12Z'
+state_provenance:
+  authority: Operator directive establishing ENGINEERING-SYSTEM-CONVERGENCE
+  established_by: Engineering System Convergence Roadmap Foundation
+  source_records:
+    - engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/RESULT.yaml
+    - engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml
+    - docs/project/PROJ-0001-PROJECT_STATE.md

@@ -1,0 +1,34 @@
+schema_version: 1
+gate_id: C00
+result: COMPLETE
+completed_at: '2026-08-09T23:50:39Z'
+starting_state:
+  repository: /data/engineering/repositories/homelab
+  condition: Divergent Operation Beta lifecycle development required preservation before rollback.
+findings:
+  - Divergent development was preserved by named reference and immutable commit.
+  - main was restored to the selected Operation Beta baseline.
+issues: []
+authority_conflicts: []
+redundancies: []
+simplification_candidates: []
+artifacts:
+  - path: engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/evidence/PRESERVATION-AND-ROLLBACK.md
+    purpose: Durable preservation and rollback identity record.
+evidence:
+  - path: engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/evidence/PRESERVATION-AND-ROLLBACK.md
+    purpose: Preservation reference, commit, restored baseline, and reference-only boundary.
+    sha256: 3462807931179ae9c55bf63488cb996309ec880c641e4bb297b6c6852e027e7f
+acceptance_criteria_results:
+  - criterion: Divergent development is recoverable without merge.
+    result: PASS
+    evidence: preservation/ob-lifecycle-pre-rebuild-20260809T235039Z resolves to the recorded preservation commit.
+  - criterion: Selected baseline is exact.
+    result: PASS
+    evidence: Restored main baseline is 6a26d2ea378248a4a9e9fe0d58b5df1c45a8c882.
+  - criterion: Preservation remains reference-only.
+    result: PASS
+    evidence: Roadmap preservation mode is REFERENCE_ONLY and no preserved change was applied.
+blockers: []
+disposition: ADVANCE
+next_authorized_action: BEGIN_C01_REPOSITORY_AND_INFRASTRUCTURE_BASELINE_ASSESSMENT

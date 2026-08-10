@@ -1,0 +1,60 @@
+schema_version: 1
+gate_id: C02
+title: Controlled Documentation and Authority Assessment
+status: CURRENT
+purpose: Determine which controlled records claim authority and where their claims conflict with implementation or observed reality.
+problem_statement: Current documentation contains stale infrastructure facts, overlapping procedures, conflicting mission/phase claims, and uncertain consumer relationships.
+objective: Inventory every controlled-document family, lifecycle/version, claimed authority, implementation consumer, cross-reference, obsolete record, conflict, stale infrastructure fact, duplicate procedure, and document/runtime divergence.
+rationale: Architecture cannot be simplified until documentary authority and actual consumption are made explicit.
+scope_in:
+  - Controlled-document metadata, lifecycle, index, relationships, authority claims, and runtime consumers.
+  - Stale facts, duplicates, overlaps, obsolete records, and implementation divergence.
+scope_out:
+  - Correct, publish, approve, supersede, or delete controlled documents.
+  - Repair runtime behavior or execute later convergence gates.
+dependencies: [C01]
+entry_conditions:
+  - C01 is COMPLETE_WITH_FINDINGS and its evidence validates.
+  - engctl roadmap validate passes with C02 as current gate.
+  - Assessment remains read-only except for C02 findings, result, and evidence records.
+authoritative_inputs:
+  - DOC-0001 and every controlled-document family under docs/ and engineering/docs/.
+  - STD-0000 through STD-0004, SPEC-0001, PROC-0001, and directly related governance records.
+  - C01 inventories, observed runtime sources, Project State, Work Registry, EOS, engctl, and preservation reference.
+assessment_or_execution_procedure:
+  - Enumerate controlled documents, metadata, versions, lifecycle, approval, persistence, index status, and relationships.
+  - Extract authority claims and map each claim to owners, consumers, code paths, commands, schemas, and projections.
+  - Compare documented infrastructure and lifecycle facts with C01 observations and current implementation.
+  - Classify stale, conflicting, duplicate, overlapping, obsolete, unconsumed, and undocumented behavior without fixing it.
+  - Record source paths, line-level evidence where stable, severity, downstream impact, and the owner that must resolve each finding.
+  - Produce C02 RESULT.yaml only after every required output and criterion is evaluated.
+required_outputs:
+  - Controlled-document inventory.
+  - Authority-claim matrix.
+  - Stale-document register.
+  - Duplicate/overlap register.
+  - Implementation-consumer map.
+  - Document/runtime divergence report.
+  - Findings and executive result record.
+required_evidence:
+  - Reproducible inventory commands or scripts and captured output.
+  - Source-linked matrices and registers under this gate evidence directory.
+  - Validation showing no controlled source or runtime subsystem was mutated.
+acceptance_criteria:
+  - Every controlled-document family and authority claim has a recorded disposition or explicit investigation gap.
+  - Every material conflict identifies competing sources, consumer impact, and resolution owner.
+  - Required outputs are complete, linked by RESULT.yaml, and evidence-backed.
+  - No document correction, lifecycle transition, or later-gate work was performed.
+fail_closed_conditions:
+  - Controlled-document inventory is incomplete or a claimed authority cannot be traced.
+  - Roadmap, Project State binding, C01 evidence, or current gate disagree.
+  - Assessment would require mutation or an authority decision rather than observation.
+stop_boundary: Stop at C02 result and operator review; do not reconcile documents or begin C03 automatically.
+result_location: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence
+next_gate: C03
+resume_instructions:
+  start_here: Run engctl roadmap validate, then execute only the C02 procedure and write only C02 findings/result/evidence.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT
+  execution_authority: AUTHORIZED_BY_PROGRAM_DIRECTIVE

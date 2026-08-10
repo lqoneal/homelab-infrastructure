@@ -1,0 +1,45 @@
+schema_version: 1
+gate_id: C12
+title: Git / Publication / Synchronization Assessment
+status: PENDING
+purpose: Establish the actual transaction and authority boundaries from working tree through published repository and EOS projection.
+problem_statement: Staging, commit, push, publication candidates/cohorts/transactions, baseline authority, EOS synchronization, and closeout contain self-referential and overlapping state.
+objective: Assess repository publication, staging, commit, push, baseline authority, publication transactions, EOS synchronization, candidate/cohort mechanisms, and closeout; explicitly analyze Operation Beta self-referential publication complexity.
+rationale: Convergence implementation needs safe publication and rollback boundaries that do not require the publication result to authorize itself.
+scope_in:
+  - Git, publication, baseline, candidate, cohort, transaction, synchronization, and closeout contracts and code.
+scope_out:
+  - Stage, commit, push, publish, synchronize EOS, or create a publication transaction.
+dependencies: [C11]
+entry_conditions:
+  - C11 proof/acceptance boundaries are documented and C12 is selected.
+authoritative_inputs:
+  - Git repository, PROC-0005, publication/synchronization docs and modules, baseline records, historical Operation Beta evidence, and prior findings.
+assessment_or_execution_procedure:
+  - Inventory all Git and publication commands, stores, schemas, identities, authority checks, and boundaries.
+  - Trace working tree through candidate, transaction, commit, push, baseline, synchronization, and closeout.
+  - Analyze fixed points, self-reference, intermediate drift, rollback, replay, and failure recovery.
+  - Recommend simplification candidates without mutation.
+required_outputs:
+  - Git/publication/synchronization inventory.
+  - Transaction and authority dataflow.
+  - Baseline ownership and state matrix.
+  - Self-reference/fixed-point analysis.
+  - Rollback/failure-boundary and simplification findings with RESULT.yaml.
+required_evidence:
+  - Source-linked transaction traces and historical publication evidence.
+acceptance_criteria:
+  - Every publication state and authority check is mapped with rollback and failure semantics.
+  - Operation Beta self-referential complexity has an explicit root-cause analysis.
+fail_closed_conditions:
+  - Inspection would stage, commit, push, publish, or synchronize.
+  - A baseline or transaction identity cannot be resolved exactly.
+stop_boundary: Stop after assessment; no Git publication or EOS synchronization.
+result_location: engineering/convergence/engineering-system-convergence/gates/C12-git-publication-synchronization/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C12-git-publication-synchronization/evidence
+next_gate: C13
+resume_instructions:
+  start_here: Preserve current Git state and analyze publication paths without invoking any mutation.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C12_GIT_PUBLICATION_SYNCHRONIZATION_ASSESSMENT
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED

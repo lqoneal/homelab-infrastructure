@@ -1,0 +1,52 @@
+schema_version: 1
+gate_id: C03
+title: EOS and Engineering State Assessment
+status: PENDING
+purpose: Establish the actual ownership and persistence model for engineering state and EOS projections.
+problem_statement: Checkpoints, operational state, project records, synchronization, caches, and recovery surfaces make overlapping or stale state claims.
+objective: Determine the actual architecture and authority of EOS state, checkpoints, operational-state, repository synchronization, Project State, persistence, recovery, and lifecycle projections.
+rationale: Resume and recovery cannot be deterministic while state ownership and projection direction remain uncertain.
+scope_in:
+  - EOS repository sources, runtime state, checkpoints, projections, persistence, synchronization, and Project State relationships.
+  - Read-only call-path and dataflow tracing, including recovery behavior.
+scope_out:
+  - Synchronize EOS, refresh runtime state, restore checkpoints, or repair drift.
+  - Adopt a target state architecture before cross-system assessment.
+dependencies: [C02]
+entry_conditions:
+  - C02 is evidence-backed complete and C03 is selected through a reviewed state transition.
+  - Existing EOS drift is preserved as evidence and no mutation authority is inferred.
+authoritative_inputs:
+  - EOS-0001 through EOS-0003, STD-0004, SPEC-0004, Project State, and repository-EOS authority records.
+  - scripts/lib/eos, scripts/engctl, EOS runtime/checkpoint observations, and prior gate findings.
+assessment_or_execution_procedure:
+  - Inventory every EOS component, durable store, cache, checkpoint, pointer, projection, and consumer.
+  - Trace ownership, write paths, read paths, refresh/synchronization triggers, recovery precedence, and failure modes.
+  - Compare documented contracts with code and observed state without invoking mutating commands.
+  - Record divergences, duplicate owners, loss/rebuild semantics, and candidate simplifications.
+required_outputs:
+  - EOS component inventory.
+  - State ownership matrix.
+  - Checkpoint model.
+  - Synchronization model.
+  - Persistence model.
+  - Divergence register.
+  - Candidate simplifications and RESULT.yaml.
+required_evidence:
+  - Source-linked state/dataflow traces and read-only command results.
+  - Mutation-boundary proof showing EOS was not changed.
+acceptance_criteria:
+  - Every EOS and engineering-state fact has its current claimant, writer, consumer, persistence, and recovery semantics recorded.
+  - Drift and contradictions are explicit and no correction is performed.
+fail_closed_conditions:
+  - State or checkpoint identity cannot be resolved safely.
+  - Inspection would trigger synchronization, refresh, restoration, or lifecycle mutation.
+stop_boundary: Stop after assessment and operator review; do not redesign or repair EOS.
+result_location: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/evidence
+next_gate: C04
+resume_instructions:
+  start_here: Review C02 result and validate roadmap state before read-only EOS tracing.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED

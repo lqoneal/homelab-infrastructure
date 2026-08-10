@@ -1,11 +1,11 @@
 ---
 document_id: SPEC-0004
 title: Engineering Context Reconstruction Service
-version: 1.5
+version: 1.6
 status: Draft
 owner: EOS Program
 created: 2026-07-08
-last_updated: 2026-07-28
+last_updated: 2026-08-09
 governed_by: EOS-0001
 implements:
   - EDR-0002
@@ -65,6 +65,9 @@ The service consumes Authoritative Engineering Records, including:
 - Validation records
 - Persisted Qualification Reports and their current Engineering State references
 - Engineering checkpoints
+- a repository-authoritative current program roadmap, its single state record,
+  gate definitions, terminal results, evidence, and EMM source bindings when
+  the selected project declares such a program in Project State
 
 The service SHALL NOT depend upon derived views.
 
@@ -99,6 +102,12 @@ The service produces derived engineering views, including:
 - Mission Snapshots
 
 Outputs remain non-authoritative.
+
+For Homelab, `engctl resume` first renders the validated
+`ENGINEERING-SYSTEM-CONVERGENCE` roadmap projection. The projection is
+read-only and identifies roadmap, state, completed and current gates, blockers,
+next authorized action, gate definition, result, and evidence locations. It
+does not replace Project State, the roadmap, or a gate result.
 
 A Mission Snapshot is the standard execution and resume view. It includes
 repository identity, mission, phase, authority reference, objectives,
@@ -140,6 +149,14 @@ The service SHALL:
 7. Determine next approved action.
 8. Generate a derived engineering context view.
 
+When a Project State declares a current program roadmap, reconstruction SHALL
+validate the roadmap definition, state, every gate definition, terminal
+results, evidence existence, Project State binding, and EMM digest manifest as
+one consistency boundary. Missing or malformed records, unknown gates,
+unresolved dependencies, or any definition/state/result/evidence/Project-State
+disagreement SHALL fail closed. File presence and modification time SHALL NOT
+be used to infer completion or select authority.
+
 For a Mission Snapshot, resolution fails closed unless exactly one current
 repository Mission Contract matches the requested mission.
 
@@ -164,6 +181,10 @@ The service SHALL:
   freshness, integrity, applicability, or governing requirements do not
   resolve; and
 - refuse to present a known completed or superseded objective as current.
+- avoid repair, synchronization, refresh, or other mutation while producing a
+  read-only convergence-roadmap or resume projection; and
+- require no conversational, provider-session, transport-thread, or other
+  volatile runtime identity to reconstruct durable roadmap position.
 
 Qualification reports and qualification-state references are authoritative
 inputs only within the ownership boundaries defined by STD-0005, STD-0004, and
@@ -201,3 +222,4 @@ reconciliation triggers, and source precedence established by STD-0004.
 | 1.2 | 2026-07-15 | Defined repository-aware checkpoint identity, applicability, strict commit verification, and not-applicable resume semantics. |
 | 1.3 | 2026-07-19 | Recorded future consumption of persisted Qualification Reports and qualification state, with freshness and rediscovery gates, without changing current resume implementation. |
 | 1.4 | 2026-07-28 | Standardized the Mission Snapshot as the repository-only execution and resume view exposed through engctl. |
+| 1.6 | 2026-08-09 | Integrated the repository-authoritative Engineering System Convergence roadmap, EMM-bound fail-closed consistency validation, and read-only cold-resume inputs. |

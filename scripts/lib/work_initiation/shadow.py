@@ -36,7 +36,7 @@ SOFTWARE_VERSIONS = {
     "adr_schema": "1",
     "authority_engine": "1",
     "compatibility_layer": "1",
-    "engctl": "0.8.0",
+    "engctl": "0.9.0",
     "eos_platform": "shadow-1",
     "shadow_authorization": "1",
     "wop_contract": "1",

@@ -1,0 +1,61 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Engineering System Convergence Roadmap State
+type: object
+additionalProperties: false
+required:
+  - schema_version
+  - roadmap_id
+  - roadmap_version
+  - program_state
+  - current_gate
+  - completed_gates
+  - blocked_gates
+  - pending_gates
+  - last_completed_gate
+  - last_result
+  - last_evidence
+  - next_authorized_action
+  - repository_baseline
+  - updated_at
+  - state_provenance
+properties:
+  schema_version: {const: 1}
+  roadmap_id: {type: string, minLength: 1}
+  roadmap_version: {type: string, minLength: 1}
+  program_state: {enum: [ASSESSMENT, BLOCKED, IMPLEMENTATION_PLANNING, IMPLEMENTATION_ENTRY, COMPLETE]}
+  current_gate: {type: string, pattern: '^C[0-9]{2}$'}
+  completed_gates:
+    type: array
+    items: {type: string, pattern: '^C[0-9]{2}$'}
+  blocked_gates:
+    type: array
+    items: {type: string, pattern: '^C[0-9]{2}$'}
+  pending_gates:
+    type: array
+    items: {type: string, pattern: '^C[0-9]{2}$'}
+  last_completed_gate:
+    oneOf:
+      - {type: string, pattern: '^C[0-9]{2}$'}
+      - {type: 'null'}
+  last_result:
+    oneOf:
+      - {type: string, minLength: 1}
+      - {type: 'null'}
+  last_evidence:
+    oneOf:
+      - {type: string, minLength: 1}
+      - {type: 'null'}
+  next_authorized_action: {type: string, minLength: 1}
+  repository_baseline: {type: string, pattern: '^[0-9a-f]{40}$'}
+  updated_at: {type: string, format: date-time}
+  state_provenance:
+    type: object
+    additionalProperties: false
+    required: [authority, established_by, source_records]
+    properties:
+      authority: {type: string, minLength: 1}
+      established_by: {type: string, minLength: 1}
+      source_records:
+        type: array
+        minItems: 1
+        items: {type: string, minLength: 1}

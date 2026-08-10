@@ -1,0 +1,52 @@
+schema_version: 1
+gate_id: C01
+title: Repository and Infrastructure Baseline Assessment
+status: COMPLETE_WITH_FINDINGS
+purpose: Record the factual repository and infrastructure baseline before architecture assessment.
+problem_statement: Repository, EOS, host, service, toolchain, and preserved-development facts were distributed and contained known drift and broken dependencies.
+objective: Inventory repository identity, structure, hosts, filesystems, network, engineering workspace, EOS surfaces, toolchain, services, repository hygiene, preserved differences, broken dependencies, and infrastructure authority.
+rationale: Later assessments require a durable observed baseline and must not mistake stale documentation or preserved experiments for current truth.
+scope_in:
+  - Read-only repository, infrastructure, EOS, toolchain, service, and authority discovery.
+  - Read-only comparison with the preservation reference.
+  - Capture anomalies, conflicts, redundancy hints, and broken dependencies.
+scope_out:
+  - Repair EOS synchronization drift or Zeus imports.
+  - Modify EENS, EMP, controlled documents, services, infrastructure, or preserved artifacts.
+dependencies: [C00]
+entry_conditions:
+  - C00 has an evidence-backed terminal result.
+  - main and origin/main begin at the selected clean baseline.
+authoritative_inputs:
+  - Current repository and observed host/runtime facts.
+  - EOS state and checkpoint surfaces as read-only evidence.
+  - preservation/ob-lifecycle-pre-rebuild-20260809T235039Z as reference-only history.
+assessment_or_execution_procedure:
+  - Capture repository identity, layout, file counts, size, hygiene, and controlled/architecture candidates.
+  - Capture host, network, filesystem, EOS, toolchain, engctl, Zeus, EENS, and EMP observations.
+  - Compare main with preserved development without applying preserved changes.
+  - Record imports, references, authority conflicts, redundancy hints, and debt hints.
+  - Canonicalize exact discovery output and an executive result under this gate.
+required_outputs:
+  - Repository and infrastructure inventory.
+  - Preserved-branch comparison and broken-dependency register.
+  - Executive findings and canonical evidence manifest.
+required_evidence:
+  - Exact copied C01 discovery files with SHA-256 manifest.
+  - Canonicalization report proving the external recovery copy was not destroyed.
+acceptance_criteria:
+  - All required baseline surfaces are inventoried read-only.
+  - Known anomalies are preserved as findings rather than silently repaired.
+  - Evidence is repository-resident, deterministic, and linked by RESULT.yaml.
+fail_closed_conditions:
+  - Baseline or preservation identity cannot be verified.
+  - Evidence differs from its manifest or discovery meaning is altered.
+stop_boundary: Stop after recording findings; do not correct any observed system or begin C02.
+result_location: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence
+next_gate: C02
+resume_instructions:
+  start_here: Review RESULT.yaml, EVIDENCE-MANIFEST.yaml, and C01-CANONICALIZATION-REPORT.md before C02.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT
+  execution_authority: AUTHORIZED_BY_PROGRAM_DIRECTIVE

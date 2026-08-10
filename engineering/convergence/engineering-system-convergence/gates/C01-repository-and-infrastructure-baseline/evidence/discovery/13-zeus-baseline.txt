@@ -1,0 +1,40 @@
+scripts/zeus location:
+-rwxrwxr-x 1 loneal loneal 190513 Aug  9 16:57 scripts/zeus
+
+syntax/import check:
+
+help:
+Traceback (most recent call last):
+  File "/data/engineering/repositories/homelab/scripts/zeus", line 86, in <module>
+    from scripts.lib.emp.canonical_runtime_mission import CanonicalRuntimeMissionError, view as canonical_runtime_mission_view
+  File "/data/engineering/repositories/homelab/scripts/lib/emp/canonical_runtime_mission.py", line 14, in <module>
+    from scripts.lib.emp.provider_selection import _mission_artifacts, _verify_set
+  File "/data/engineering/repositories/homelab/scripts/lib/emp/provider_selection.py", line 18, in <module>
+    from scripts.lib.emp.mission_verification_controller import verify as verify_mission
+  File "/data/engineering/repositories/homelab/scripts/lib/emp/mission_verification_controller.py", line 20, in <module>
+    from scripts.lib.emp.repository_projection import project as project_repository
+ModuleNotFoundError: No module named 'scripts.lib.emp.repository_projection'
+
+platform verify:
+Traceback (most recent call last):
+  File "/data/engineering/repositories/homelab/scripts/zeus", line 86, in <module>
+    from scripts.lib.emp.canonical_runtime_mission import CanonicalRuntimeMissionError, view as canonical_runtime_mission_view
+  File "/data/engineering/repositories/homelab/scripts/lib/emp/canonical_runtime_mission.py", line 14, in <module>
+    from scripts.lib.emp.provider_selection import _mission_artifacts, _verify_set
+  File "/data/engineering/repositories/homelab/scripts/lib/emp/provider_selection.py", line 18, in <module>
+    from scripts.lib.emp.mission_verification_controller import verify as verify_mission
+  File "/data/engineering/repositories/homelab/scripts/lib/emp/mission_verification_controller.py", line 20, in <module>
+    from scripts.lib.emp.repository_projection import project as project_repository
+ModuleNotFoundError: No module named 'scripts.lib.emp.repository_projection'
+
+repository projection:
+Traceback (most recent call last):
+  File "/data/engineering/repositories/homelab/scripts/zeus", line 86, in <module>
+    from scripts.lib.emp.canonical_runtime_mission import CanonicalRuntimeMissionError, view as canonical_runtime_mission_view
+  File "/data/engineering/repositories/homelab/scripts/lib/emp/canonical_runtime_mission.py", line 14, in <module>
+    from scripts.lib.emp.provider_selection import _mission_artifacts, _verify_set
+  File "/data/engineering/repositories/homelab/scripts/lib/emp/provider_selection.py", line 18, in <module>
+    from scripts.lib.emp.mission_verification_controller import verify as verify_mission
+  File "/data/engineering/repositories/homelab/scripts/lib/emp/mission_verification_controller.py", line 20, in <module>
+    from scripts.lib.emp.repository_projection import project as project_repository
+ModuleNotFoundError: No module named 'scripts.lib.emp.repository_projection'

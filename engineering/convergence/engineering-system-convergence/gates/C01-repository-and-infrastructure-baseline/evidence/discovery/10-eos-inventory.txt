@@ -1,0 +1,17 @@
+EOS directories:
+/data/engineering/eos
+/data/engineering/eos/checkpoints
+/data/engineering/eos/runtime
+/data/engineering/eos/state
+
+EOS files:
+/data/engineering/eos/checkpoints/20260729T003829Z-repository-eos-integration-baseline.md
+/data/engineering/eos/checkpoints/20260729T005309Z-gh-eos-integration-published-baseline.md
+/data/engineering/eos/checkpoints/20260805T091135Z-zdcl-02-published-canonical-baseline-restoration.md
+/data/engineering/eos/runtime/operational-state.json
+/data/engineering/eos/runtime/repositories.tsv
+/data/engineering/eos/state/ACTIVE-CHECKPOINT
+/data/engineering/eos/state/CHECKPOINT-RETENTION
+/data/engineering/eos/state/EOS-ID.md
+/data/engineering/eos/state/EOS-MANIFEST.md
+/data/engineering/eos/state/EOS-STATE.md

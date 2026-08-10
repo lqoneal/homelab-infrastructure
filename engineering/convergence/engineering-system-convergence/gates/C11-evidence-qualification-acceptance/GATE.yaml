@@ -1,0 +1,46 @@
+schema_version: 1
+gate_id: C11
+title: Evidence / Qualification / Acceptance Assessment
+status: PENDING
+purpose: Identify the canonical proof and decision chain for engineering completion.
+problem_statement: Evidence packages, reports, validators, qualifications, acceptance receipts, authorization decisions, and lifecycle proofs overlap and can imply completion inconsistently.
+objective: Inventory evidence generation, completion reports, validation, qualification, acceptance, authorization decisions, receipts, and lifecycle proof; identify duplicate proof models and define canonical evidence authority.
+rationale: Gate completion and system convergence must be evidence-backed without conflating observation, qualification, approval, and acceptance.
+scope_in:
+  - Evidence, report, qualification, acceptance, decision, receipt, and proof schemas/stores/controllers.
+scope_out:
+  - Accept, approve, qualify, or alter any historical result.
+  - Implement the target evidence model.
+dependencies: [C10]
+entry_conditions:
+  - C10 runtime evidence producers are mapped and C11 is explicitly selected.
+authoritative_inputs:
+  - PROC-0006, evidence/qualification/authorization schemas and records, completion reports, receipts, validators, and prior results.
+assessment_or_execution_procedure:
+  - Inventory proof artifacts, producers, owners, consumers, schemas, immutability, and retention.
+  - Trace observation through validation, qualification, approval, acceptance, authorization, and lifecycle advancement.
+  - Identify duplicate facts, circular proof, inferred completion, and missing bindings.
+  - Recommend canonical evidence ownership and projection boundaries.
+required_outputs:
+  - Evidence/proof artifact inventory.
+  - Decision and authority matrix.
+  - Proof-chain dataflow.
+  - Duplicate/gap register.
+  - Canonical evidence-authority recommendation and RESULT.yaml.
+required_evidence:
+  - Representative source-linked proof chains and read-only schema/record validation.
+acceptance_criteria:
+  - Every proof type and decision has a distinct owner and semantics.
+  - Completion cannot be inferred solely from file presence.
+fail_closed_conditions:
+  - Evidence cannot be bound to subject, baseline, authority, and criterion.
+  - Assessment would create or change an acceptance/qualification decision.
+stop_boundary: Stop after recommendation; do not qualify or accept any subsystem.
+result_location: engineering/convergence/engineering-system-convergence/gates/C11-evidence-qualification-acceptance/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C11-evidence-qualification-acceptance/evidence
+next_gate: C12
+resume_instructions:
+  start_here: Use C06 and C10 proof producers to trace completion through acceptance read-only.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C11_EVIDENCE_QUALIFICATION_ACCEPTANCE_ASSESSMENT
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED

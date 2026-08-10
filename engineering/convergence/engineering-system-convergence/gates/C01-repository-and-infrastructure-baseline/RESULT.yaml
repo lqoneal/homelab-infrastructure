@@ -1,0 +1,56 @@
+schema_version: 1
+gate_id: C01
+result: COMPLETE_WITH_FINDINGS
+completed_at: '2026-08-10T00:06:12Z'
+starting_state:
+  repository: /data/engineering/repositories/homelab
+  branch: main
+  head: 6a26d2ea378248a4a9e9fe0d58b5df1c45a8c882
+  origin_main: 6a26d2ea378248a4a9e9fe0d58b5df1c45a8c882
+  worktree: clean
+findings:
+  - Main was restored to 6a26d2ea378248a4a9e9fe0d58b5df1c45a8c882 and was clean and aligned with origin/main at assessment start.
+  - EOS synchronization reported drift because the active checkpoint repository identity did not equal current repository HEAD.
+  - engctl reported Project State and Work Registry authority disagreement.
+  - engctl resume reported reconciliation required and platform health failure.
+  - Existing resume architecture included deterministic engineering-context reconstruction, EOS checkpoints, and registry-derived management context.
+  - Existing documentation contains conflicting or stale statements about host identity, current mission, primary phase, and engineering authority ownership.
+  - Numerous CLI and controller surfaces exist and require later redundancy analysis.
+  - EENS Operational Alpha exists as a qualified subsystem; deferred HNS work does not make EENS absent.
+  - Zeus at the restored baseline references repository_projection but the dependency is absent.
+  - The preservation branch contains substantial later reference implementation and assessment material and remains reference-only.
+issues:
+  - EOS checkpoint/repository synchronization is drifted.
+  - Zeus baseline contains a broken import/runtime dependency.
+authority_conflicts:
+  - Project State and Work Registry disagree about current mission/phase authority.
+  - Controlled infrastructure and lifecycle documentation contains stale or conflicting current-state claims.
+redundancies:
+  - Multiple CLI/controller, state, roadmap, lifecycle, and context surfaces require C02-C16 assessment.
+simplification_candidates:
+  - Consolidate controller and state ownership only after the dedicated assessment gates establish evidence.
+artifacts:
+  - path: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence/discovery/C01-SUMMARY.md
+    purpose: Original C01 discovery summary copied without semantic change.
+  - path: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence/EVIDENCE-MANIFEST.yaml
+    purpose: Byte-level provenance and integrity for the canonical discovery copy.
+evidence:
+  - path: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence/EVIDENCE-MANIFEST.yaml
+    purpose: Canonical manifest for all 20 copied discovery artifacts.
+    sha256: 9b0889af06c1e89417c30318c800e740c80b984804f1cf617f9acbf838bf20cc
+  - path: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence/discovery/C01-SUMMARY.md
+    purpose: Unaltered external assessment summary.
+    sha256: a302e58568fa6897fcff1de9a952e39a90d32eb9760525ac5a3fe2cc972c0a13
+acceptance_criteria_results:
+  - criterion: Required baseline surfaces were inventoried read-only.
+    result: PASS
+    evidence: EVIDENCE-MANIFEST.yaml enumerates 20 discovery artifacts.
+  - criterion: Known anomalies were recorded without correction.
+    result: PASS
+    evidence: RESULT.yaml records EOS drift, authority disagreement, stale documentation, and missing Zeus dependency.
+  - criterion: External discovery was canonicalized without destroying its recovery copy.
+    result: PASS
+    evidence: C01-CANONICALIZATION-REPORT.md and matching manifest digests.
+blockers: []
+disposition: ADVANCE_WITH_FINDINGS
+next_authorized_action: BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT

@@ -4,6 +4,25 @@ Status: Active
 
 ---
 
+## Current Convergence Program
+
+The canonical current rebuild/convergence planning authority is
+`ENGINEERING-SYSTEM-CONVERGENCE`, roadmap `ESC-ROADMAP-001`, under
+`engineering/convergence/engineering-system-convergence/`. Its machine-readable
+`STATE.yaml` records C00 complete, C01 complete with findings, and C02 current.
+The next authorized action is the read-only
+`BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT`.
+
+Use `engctl roadmap validate`, `engctl roadmap status`, or `engctl resume` to
+resolve the current position. Missing, malformed, drifted, or contradictory
+roadmap/state/gate/result/evidence/Project-State inputs fail closed. This
+planning roadmap does not authorize later implementation, publication, EOS
+synchronization, provider invocation, or automatic execution of C20.
+
+The Operation Beta and Operational Alpha material below is preserved as
+historical and assessment input. It does not supersede the current convergence
+program.
+
 ## Published Transition — Operation Beta
 
 Operational Alpha is complete and frozen at `OA-v1.0.0` under `OA-OPERATIONAL-MILESTONE-006`. The active post-Alpha planning authority is Operation Beta, beginning with `BETA-00` Engineering Platform Assessment.

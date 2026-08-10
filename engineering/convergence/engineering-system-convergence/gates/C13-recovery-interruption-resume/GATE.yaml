@@ -1,0 +1,45 @@
+schema_version: 1
+gate_id: C13
+title: Recovery / Interruption / Resume Assessment
+status: PENDING
+purpose: Establish deterministic recovery boundaries across every engineering layer.
+problem_statement: Repository, EOS, mission, WOP, provider, Codex, publication, and session recovery mechanisms overlap and can resume from incompatible state.
+objective: Assess interruption recovery at repository, EOS, mission, WOP, provider, Codex, publication, and engineering-session levels; define deterministic recovery boundaries and identify duplicate mechanisms.
+rationale: Indefinite stop/resume requires durable ownership, exact recovery points, and no guessed continuation.
+scope_in:
+  - Recovery, interruption, pause, checkpoint, continuation, rollback, replay, and resume contracts across all assessed systems.
+scope_out:
+  - Restore a checkpoint, resume an execution, repair runtime state, or implement recovery changes.
+dependencies: [C12]
+entry_conditions:
+  - C03-C12 state, execution, proof, and publication boundaries are available and C13 is selected.
+authoritative_inputs:
+  - PROC-0003, EOS checkpoints, runtime recovery modules, mission/WOP/provider/Codex/publication recovery records, and prior findings.
+assessment_or_execution_procedure:
+  - Inventory recovery state, commands, triggers, stores, ownership, and invariants at each layer.
+  - Trace planned and unplanned interruption paths and determine exact resumable boundaries.
+  - Identify duplicated checkpoints, incompatible precedence, stale recovery, and irreversible gaps.
+  - Recommend deterministic boundaries and fail-closed behavior.
+required_outputs:
+  - Recovery mechanism inventory.
+  - Cross-layer interruption/resume matrix.
+  - Recovery precedence and boundary model.
+  - Duplicate/gap/failure register.
+  - Deterministic recovery recommendations and RESULT.yaml.
+required_evidence:
+  - Source-linked recovery paths, isolated fixtures, and historical interruption evidence.
+acceptance_criteria:
+  - Every layer has explicit durable inputs, resume point, validation, owner, and stop condition.
+  - Conflicts never resolve by timestamp or guesswork.
+fail_closed_conditions:
+  - Recovery identity, integrity, or precedence is ambiguous.
+  - Inspection would restore or resume live state.
+stop_boundary: Stop after assessment; no recovery action or runtime continuation.
+result_location: engineering/convergence/engineering-system-convergence/gates/C13-recovery-interruption-resume/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C13-recovery-interruption-resume/evidence
+next_gate: C14
+resume_instructions:
+  start_here: Compare recovery mechanisms using prior ownership/dataflow maps without restoring state.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C13_RECOVERY_INTERRUPTION_RESUME_ASSESSMENT
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED

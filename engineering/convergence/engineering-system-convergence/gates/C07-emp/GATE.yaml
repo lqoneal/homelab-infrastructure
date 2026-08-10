@@ -1,0 +1,46 @@
+schema_version: 1
+gate_id: C07
+title: EMP Assessment
+status: PENDING
+purpose: Establish EMP's implemented management boundary and its overlaps with execution and state systems.
+problem_statement: EMP includes registry, portfolio, queue, lifecycle, controller, and execution-adjacent capabilities whose current ownership and maturity are unclear.
+objective: Determine EMP's actual implemented management responsibilities, overlaps with EOS/engctl/Zeus, incomplete capabilities, obsolete abstractions, and target management-layer boundary.
+rationale: Management coordination must remain distinct from governance, project truth, runtime execution, and derived presentation.
+scope_in:
+  - EMP registry, management, queue, dependency, milestone, deferral, mission, lifecycle, and controller code and records.
+scope_out:
+  - Modify EMP functionality or registry state.
+  - Adopt a target boundary before C15-C17.
+dependencies: [C06]
+entry_conditions:
+  - C06 contract findings are complete and C07 is explicitly selected.
+authoritative_inputs:
+  - EMP specifications, Work Registry/schema, scripts/lib/emp, engctl routing, evidence, and prior gate results.
+assessment_or_execution_procedure:
+  - Inventory implemented EMP components, commands, stores, schemas, writes, projections, and tests.
+  - Map responsibilities and overlaps with EOS, engctl, Zeus, WOP, Project State, and roadmap facts.
+  - Classify implemented, incomplete, obsolete, speculative, and duplicate capability.
+  - Recommend a bounded management-layer responsibility without implementation.
+required_outputs:
+  - EMP component and capability inventory.
+  - Responsibility and overlap matrix.
+  - State/store and command map.
+  - Incomplete/obsolete abstraction register.
+  - Target-boundary recommendation and RESULT.yaml.
+required_evidence:
+  - Source-linked component traces and read-only test/command observations.
+acceptance_criteria:
+  - EMP's actual responsibilities and every overlap are explicit.
+  - Recommendations preserve history and existing authority boundaries.
+fail_closed_conditions:
+  - Management state is confused with execution or governance authority.
+  - Inspection would mutate Work Registry or EMP runtime state.
+stop_boundary: Stop after assessment; no EMP functionality or state changes.
+result_location: engineering/convergence/engineering-system-convergence/gates/C07-emp/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C07-emp/evidence
+next_gate: C08
+resume_instructions:
+  start_here: Review C05-C06 ownership and contract maps, then inventory EMP read-only.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C07_EMP_ASSESSMENT
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED

@@ -1,0 +1,129 @@
+/data/engineering:
+total 60
+drwxr-x--- 10 loneal loneal  4096 Aug  3 11:58 .
+drwxr-xr-x  5 root   root    4096 Jul 22 16:30 ..
+drwxr-x---  5 loneal loneal  4096 Jul 28 17:38 eos
+drwxr-x---  2 loneal loneal  4096 Jul 19 02:14 logs
+drwxrwxr-x  7 loneal loneal  4096 Aug  9 17:06 recovery
+drwxr-x---  4 loneal loneal  4096 Jul 22 18:44 repositories
+drwxr-x---  3 loneal loneal  4096 Jul 19 02:14 shared
+drwxr-x---  6 loneal loneal  4096 Aug  5 14:48 staging
+drwxr-x---  2 loneal loneal  4096 Jul 22 20:01 state
+drwxrwxr-x  3 loneal loneal  4096 Jul 26 14:52 wops
+-rw-rw-r--  1 loneal loneal  1279 Jul 26 14:51 ZEUS-OA-PROGRESSIVE-CODEX-HANDOFF.md
+-rw-rw-r--  1 loneal loneal 12376 Jul 26 14:51 ZEUS-OA-PROGRESSIVE-WOP.tar.gz
+
+Tree depth 3:
+/data/engineering
+/data/engineering/eos
+/data/engineering/eos/checkpoints
+/data/engineering/eos/runtime
+/data/engineering/eos/state
+/data/engineering/logs
+/data/engineering/recovery
+/data/engineering/recovery/mission-contract-bootstrap-001
+/data/engineering/recovery/mission-contract-bootstrap-001/pre-bootstrap
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z
+/data/engineering/recovery/pre-20260721-rollback-20260725T051403Z
+/data/engineering/recovery/system-convergence-c01-20260810T000612Z
+/data/engineering/recovery/zeus-p0-p1-pre-reconciliation-20260726T054240Z
+/data/engineering/recovery/zeus-p0-p1-pre-reconciliation-20260726T054240Z/files
+/data/engineering/repositories
+/data/engineering/repositories/homelab
+/data/engineering/repositories/homelab/configs
+/data/engineering/repositories/homelab/docs
+/data/engineering/repositories/homelab/engineering
+/data/engineering/repositories/homelab/.git
+/data/engineering/repositories/homelab/inventory
+/data/engineering/repositories/homelab/.pytest_cache
+/data/engineering/repositories/homelab/runtime
+/data/engineering/repositories/homelab/scripts
+/data/engineering/repositories/homelab/services
+/data/engineering/repositories/homelab/.zeus
+/data/engineering/repositories/SprinterOS
+/data/engineering/repositories/SprinterOS/docs
+/data/engineering/repositories/SprinterOS/.git
+/data/engineering/repositories/SprinterOS/scripts
+/data/engineering/repositories/SprinterOS/tools
+/data/engineering/shared
+/data/engineering/shared/documents
+/data/engineering/shared/documents/engineering-mission-packages
+/data/engineering/shared/documents/generated
+/data/engineering/shared/documents/qualification
+/data/engineering/staging
+/data/engineering/staging/WOP002-mission-workspace
+/data/engineering/staging/WOP002-mission-workspace/execution-evidence
+/data/engineering/staging/WOP002-mission-workspace/WOP002-Engineering-Fabric-Synchronization
+/data/engineering/staging/WOP002-mission-workspace/WOP002-GATE-003-Controlled-Document-Review
+/data/engineering/staging/wop-zdcl-02-canonical-publication-and-live-recovery-execution-001
+/data/engineering/staging/WOP-ZDCL03-ZEUS-WOP-TEMPLATE-AUTHORING-PIPELINE-001
+/data/engineering/staging/WOP-ZDCL03-ZEUS-WOP-TEMPLATE-AUTHORING-PIPELINE-001/controlled-docs
+/data/engineering/staging/WOP-ZDCL03-ZEUS-WOP-TEMPLATE-AUTHORING-PIPELINE-001/evidence
+/data/engineering/staging/WOP-ZDCL03-ZEUS-WOP-TEMPLATE-AUTHORING-PIPELINE-001/patches
+/data/engineering/staging/WOP-ZDCL03-ZEUS-WOP-TEMPLATE-AUTHORING-PIPELINE-001/records
+/data/engineering/staging/WOP-ZDCL03-ZEUS-WOP-TEMPLATE-AUTHORING-PIPELINE-001/schemas
+/data/engineering/staging/WOP-ZDCL03-ZEUS-WOP-TEMPLATE-AUTHORING-PIPELINE-001/scripts
+/data/engineering/staging/WOP-ZDCL03-ZEUS-WOP-TEMPLATE-AUTHORING-PIPELINE-001/tests
+/data/engineering/staging/zdcl02-live-recovery-20260804T044539Z
+/data/engineering/state
+/data/engineering/wops
+/data/engineering/wops/ZEUS-OA-PROGRESSIVE-WOP
+/data/engineering/wops/ZEUS-OA-PROGRESSIVE-WOP/bin
+/data/engineering/wops/ZEUS-OA-PROGRESSIVE-WOP/evidence
+/data/engineering/wops/ZEUS-OA-PROGRESSIVE-WOP/gates
+/data/engineering/wops/ZEUS-OA-PROGRESSIVE-WOP/operator-approvals
+/data/engineering/wops/ZEUS-OA-PROGRESSIVE-WOP/operator-decisions
+/data/engineering/wops/ZEUS-OA-PROGRESSIVE-WOP/operator-verifications
+/data/engineering/wops/ZEUS-OA-PROGRESSIVE-WOP/state
+/data/engineering/wops/ZEUS-OA-PROGRESSIVE-WOP/templates
+
+Repositories:
+/data/engineering/repositories/homelab
+/data/engineering/repositories/SprinterOS
+
+Recovery:
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/git-index.bin
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/git-status-porcelain-v2.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/git-status.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/ob-lifecycle-pre-rebuild.bundle
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/ob-lifecycle-pre-rebuild.bundle.sha256
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/original-head.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/original-index-tree.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/original-origin-main.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/preservation-branch.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/preservation-commit.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/REBUILD-STARTING-POINT.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/recent-history.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/remote-preservation-branch.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/rollback-target.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/RUNTIME-CAPTURE-NOTE.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/staged-name-status.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/staged.patch
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/unstaged-name-status.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/unstaged.patch
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/untracked-files.txt
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/zeus-runtime-stable-records.tar.gz
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/zeus-runtime-stable-records.tar.gz.sha256
+/data/engineering/recovery/ob-lifecycle-pre-rebuild-20260809T235039Z/zeus-runtime.tar.gz
+/data/engineering/recovery/pre-20260721-rollback-20260725T051403Z/git-status.txt
+/data/engineering/recovery/pre-20260721-rollback-20260725T051403Z/original-branch.txt
+/data/engineering/recovery/pre-20260721-rollback-20260725T051403Z/original-head.txt
+/data/engineering/recovery/pre-20260721-rollback-20260725T051403Z/repository-history.bundle
+/data/engineering/recovery/pre-20260721-rollback-20260725T051403Z/SHA256SUMS
+/data/engineering/recovery/pre-20260721-rollback-20260725T051403Z/staged.patch
+/data/engineering/recovery/pre-20260721-rollback-20260725T051403Z/tracked-working-tree.patch
+/data/engineering/recovery/pre-20260721-rollback-20260725T051403Z/untracked-files.tar.gz
+/data/engineering/recovery/system-convergence-c01-20260810T000612Z/01-repository-identity.txt
+/data/engineering/recovery/system-convergence-c01-20260810T000612Z/02-directories.txt
+/data/engineering/recovery/system-convergence-c01-20260810T000612Z/03-files.txt
+/data/engineering/recovery/system-convergence-c01-20260810T000612Z/04-repository-size-inventory.txt
+/data/engineering/recovery/system-convergence-c01-20260810T000612Z/05-controlled-and-architecture-files.txt
+/data/engineering/recovery/system-convergence-c01-20260810T000612Z/06-infrastructure-document-candidates.txt
+/data/engineering/recovery/system-convergence-c01-20260810T000612Z/07-host-baseline.txt
+/data/engineering/recovery/system-convergence-c01-20260810T000612Z/08-network-baseline.txt
+/data/engineering/recovery/system-convergence-c01-20260810T000612Z/09-engineering-filesystem.txt
+/data/engineering/recovery/zeus-p0-p1-pre-reconciliation-20260726T054240Z/git-status.txt
+/data/engineering/recovery/zeus-p0-p1-pre-reconciliation-20260726T054240Z/local-head.txt
+/data/engineering/recovery/zeus-p0-p1-pre-reconciliation-20260726T054240Z/origin-main-head.txt
+/data/engineering/recovery/zeus-p0-p1-pre-reconciliation-20260726T054240Z.tar.gz
+/data/engineering/recovery/zeus-p0-p1-pre-reconciliation-20260726T054240Z/tracked-changes.patch

@@ -1,0 +1,48 @@
+schema_version: 1
+gate_id: C04
+title: engctl and Resume Assessment
+status: PENDING
+purpose: Define the factual controller and context-reconstruction boundary before later convergence design.
+problem_statement: engctl combines many controller surfaces, resume historically performs operational work, and its inputs can disagree or become stale.
+objective: Determine the intended and actual role of engctl, especially resume/context reconstruction; identify divergence, duplicate controller capabilities, stale inputs, and missing deterministic resume contracts.
+rationale: A canonical resume contract requires a verified call graph and unambiguous input ownership.
+scope_in:
+  - engctl command routing, sourced libraries, context generation, resume rendering, mutation behavior, errors, and overlapping CLIs.
+scope_out:
+  - Consolidate commands, redesign engctl, or qualify final cold resume.
+  - Change EOS, Zeus, EMP, provider, or publication behavior.
+dependencies: [C03]
+entry_conditions:
+  - C03 result identifies EOS/state owners and C04 is selected by reviewed roadmap state.
+authoritative_inputs:
+  - scripts/engctl, scripts/lib/eos, scripts/lib/emp, wrapper CLIs, SPEC-0004, PROC-0001, and prior results.
+assessment_or_execution_procedure:
+  - Enumerate every command and classify read, write, authority, projection, validation, and side effects.
+  - Trace resume and context call graphs from fresh-shell entry to every source and renderer.
+  - Map each displayed fact to its owner, freshness rule, conflict rule, and fallback.
+  - Compare overlapping controllers and identify stale inputs, hidden mutation, and missing fail-closed contracts.
+  - Recommend a bounded canonical engctl responsibility without implementing it.
+required_outputs:
+  - Command inventory.
+  - Resume call graph.
+  - Resume input-authority matrix.
+  - Duplicate CLI analysis.
+  - Resume divergence analysis.
+  - Canonical engctl responsibility recommendation and RESULT.yaml.
+required_evidence:
+  - Source-linked call trace, command help captures, and isolated read-only tests.
+acceptance_criteria:
+  - Every resume input/output and side effect is mapped to an owner and failure behavior.
+  - Duplicate controller behavior and recommendations are evidence-backed.
+fail_closed_conditions:
+  - A command cannot be classified as read-only or mutating.
+  - Assessment requires invoking an unbounded or mutating controller path.
+stop_boundary: Stop after recommendation; do not consolidate controllers or implement the C19 contract.
+result_location: engineering/convergence/engineering-system-convergence/gates/C04-engctl-and-resume/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C04-engctl-and-resume/evidence
+next_gate: C05
+resume_instructions:
+  start_here: Review C03 ownership findings, then trace engctl and resume without mutating runtime state.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C04_ENGCTL_AND_RESUME_ASSESSMENT
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED

@@ -1,0 +1,47 @@
+schema_version: 1
+gate_id: C20
+title: Begin Controlled Convergence Implementation
+status: PENDING
+purpose: Mark controlled entry into the approved implementation roadmap after assessment, architecture, planning, and cold resume qualify.
+problem_statement: Implementation must not start from findings alone or expand into automatic execution of the entire convergence program.
+objective: Begin implementation only after C01-C19 establish a coherent architecture and deterministic resume capability.
+rationale: Each implementation migration requires its own bounded authority, evidence, acceptance, rollback, and stop boundary.
+scope_in:
+  - Select and begin only the first separately authorized gate from the C18 implementation roadmap.
+  - Verify C19 cold-resume qualification and all first-gate prerequisites.
+scope_out:
+  - Automatically execute the entire convergence roadmap.
+  - Skip gates, broaden authority, or combine unrelated migrations.
+dependencies: [C19]
+entry_conditions:
+  - C01-C19 are evidence-backed complete with no blockers.
+  - C17 architecture, C18 implementation roadmap, and C19 cold resume are approved and current.
+  - The first implementation gate has explicit separate authority and rollback evidence.
+authoritative_inputs:
+  - Approved C17 target architecture, C18 implementation roadmap, C19 qualification, and first-gate authority package.
+assessment_or_execution_procedure:
+  - Revalidate repository, roadmap, state, results, architecture, migration dependencies, resume, and blockers.
+  - Resolve exactly one first implementation gate and its authority, scope, evidence, acceptance, rollback, and stop conditions.
+  - Begin only that bounded gate and preserve its own result/evidence contract.
+  - Stop at its defined boundary for review and separately authorized continuation.
+required_outputs:
+  - C20 entry decision and selected first implementation gate.
+  - Verified authority, prerequisite, rollback, evidence, and stop-boundary record.
+  - RESULT.yaml recording entry only, not whole-program completion.
+required_evidence:
+  - Current C01-C19 results, C19 cold-resume qualification, and first-gate authorization package.
+acceptance_criteria:
+  - Exactly one first implementation gate is selected and bounded.
+  - No automatic full-roadmap execution or implied successor authority exists.
+fail_closed_conditions:
+  - Any predecessor, blocker, authority, baseline, evidence, resume, or rollback condition is unresolved.
+  - More than one implementation gate would begin or authority scope is ambiguous.
+stop_boundary: Stop at the first approved implementation gate's own boundary; C20 never authorizes the entire convergence automatically.
+result_location: engineering/convergence/engineering-system-convergence/gates/C20-controlled-convergence-implementation/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C20-controlled-convergence-implementation/evidence
+next_gate: null
+resume_instructions:
+  start_here: Verify all predecessor results and resolve one separately authorized first C18 implementation gate.
+  validate_first: engctl roadmap validate
+  next_authorized_action: OBTAIN_FIRST_CONTROLLED_CONVERGENCE_IMPLEMENTATION_GATE_AUTHORITY
+  execution_authority: NOT_AUTHORIZED

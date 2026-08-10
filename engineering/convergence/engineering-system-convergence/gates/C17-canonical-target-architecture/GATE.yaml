@@ -1,0 +1,48 @@
+schema_version: 1
+gate_id: C17
+title: Canonical Target Architecture
+status: PENDING
+purpose: Define the simplified target architecture only after all assessment and simplification evidence exists.
+problem_statement: The current system has overlapping authority, state, control, evidence, publication, and recovery mechanisms with no approved unified target.
+objective: Define the simplified target architecture from C01-C16 findings without pre-committing before evidence is complete.
+rationale: Implementation gates need an approved architecture with exact ownership, interfaces, lifecycle, and failure semantics.
+scope_in:
+  - Subsystem boundaries, authority, dataflow, state, lifecycle, publication, resume, evidence, interfaces, and failure/recovery semantics.
+scope_out:
+  - Implement, migrate, deprecate, remove, publish, or synchronize target components.
+dependencies: [C16]
+entry_conditions:
+  - C01-C16 are evidence-backed complete and simplification dispositions are reviewed.
+  - All blocking authority conflicts are resolved or explicitly prevent architecture approval.
+authoritative_inputs:
+  - C15 cross-system model, C16 dispositions, every prior result, and governing constraints.
+assessment_or_execution_procedure:
+  - Derive candidate boundaries and select only designs supported by prior findings and constraints.
+  - Define single owners, durable and volatile state, source-to-projection dataflows, and public interfaces.
+  - Define end-to-end execution, evidence, publication, resume, failure, rollback, and recovery semantics.
+  - Validate traceability, completeness, simplicity, compatibility, migration feasibility, and unresolved risk.
+required_outputs:
+  - Subsystem boundary model.
+  - Authority and state ownership model.
+  - Dataflow and interface architecture.
+  - Execution, publication, resume, and evidence models.
+  - Failure/recovery semantics.
+  - Architecture decision/risk record and RESULT.yaml.
+required_evidence:
+  - Requirement-to-finding-to-architecture traceability and independent review evidence.
+acceptance_criteria:
+  - Every required model is coherent and every engineering fact has one owner.
+  - Architecture resolves or explicitly blocks all C15-C16 conflicts and dispositions.
+  - No implementation is implied by architecture approval.
+fail_closed_conditions:
+  - Target decision lacks prior evidence or leaves an execution-significant ownership ambiguity.
+  - A blocking INVESTIGATE disposition remains unresolved.
+stop_boundary: Stop at target-architecture review and approval; do not begin migration planning automatically.
+result_location: engineering/convergence/engineering-system-convergence/gates/C17-canonical-target-architecture/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C17-canonical-target-architecture/evidence
+next_gate: C18
+resume_instructions:
+  start_here: Derive the target strictly from approved C15-C16 evidence and record all unresolved blockers.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C17_CANONICAL_TARGET_ARCHITECTURE
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED

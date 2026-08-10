@@ -1,0 +1,49 @@
+schema_version: 1
+gate_id: C19
+title: engctl Resume Contract and Cold-Resume Qualification
+status: PENDING
+purpose: Establish and qualify deterministic engineering resume before convergence implementation begins.
+problem_statement: Implementation cannot safely start unless a fresh engineer or agent can reconstruct exact authority, state, blockers, evidence, and next action without conversation history.
+objective: Establish and qualify deterministic engineering resume from repository-controlled records, EOS, controlled documentation, and engctl.
+rationale: Cold resume is the operational proof that the roadmap and engineering-state architecture can support indefinite stop/resume.
+scope_in:
+  - Implement and qualify the approved resume contract required by C17-C18.
+  - Fresh-shell, no-conversation, conflict, corruption, missing-source, and interruption scenarios.
+scope_out:
+  - Begin convergence migration gates or treat resume output as execution authority.
+dependencies: [C18]
+entry_conditions:
+  - C18 implementation roadmap and C17 resume architecture are approved.
+  - C19 has a separately reviewed implementation/qualification authority.
+authoritative_inputs:
+  - Approved target resume model, roadmap/state/results, Project State, EOS, controlled docs, registry sources, and qualification procedure.
+assessment_or_execution_procedure:
+  - Implement only the approved deterministic context/resume contract and source bindings.
+  - From a fresh shell with no conversation state, resolve repository provenance, health, program, roadmap, completed/current gate, first incomplete objective, blockers, evidence, next action, and exact resume instructions.
+  - Test missing, malformed, stale, conflicting, unknown, and contradictory inputs and require fail-closed results.
+  - Prove identical authoritative inputs produce identical semantic output and no read-only invocation mutates state.
+required_outputs:
+  - Implemented resume contract and source/authority matrix.
+  - Cold-resume test suite and qualification evidence.
+  - Conflict/failure scenario results.
+  - Operator instructions and RESULT.yaml.
+required_evidence:
+  - Fresh-shell transcript with no provider/session/conversation dependency.
+  - Negative-test evidence for every fail-closed condition.
+  - Independent qualification and regression results.
+acceptance_criteria:
+  - Fresh resume determines repository identity/provenance, system health, current program/mission, governing roadmap, completed gates, current gate, first incomplete objective, blockers, evidence, next action, and exact resume location.
+  - Conflicting authority, missing definitions, malformed state, unknown gates, and state/evidence contradiction fail closed.
+  - Resume is conversation-independent and read-only.
+fail_closed_conditions:
+  - Any required fact is guessed, selected by recency, or depends on volatile provider/session state.
+  - Any conflict permits implementation continuation.
+stop_boundary: Stop after cold-resume qualification and operator review; C20 is not automatically authorized.
+result_location: engineering/convergence/engineering-system-convergence/gates/C19-engctl-cold-resume-qualification/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C19-engctl-cold-resume-qualification/evidence
+next_gate: C20
+resume_instructions:
+  start_here: Implement only the C17-C18 approved resume contract, then qualify it from a fresh shell.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C19_ENGCTL_COLD_RESUME_QUALIFICATION
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED

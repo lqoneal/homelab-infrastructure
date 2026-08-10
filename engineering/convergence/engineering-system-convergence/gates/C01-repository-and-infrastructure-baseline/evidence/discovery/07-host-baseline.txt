@@ -1,0 +1,138 @@
+HOSTNAME
+atreides
+ Static hostname: atreides
+       Icon name: computer
+      Machine ID: e60981c9b2d540c58aada731b9574766
+         Boot ID: 3d7dc46f64764cf9930fa3136af642ac
+Operating System: Debian GNU/Linux 13 (trixie)
+          Kernel: Linux 6.18.34+rpt-rpi-2712
+    Architecture: arm64
+
+OS
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+NAME="Debian GNU/Linux"
+VERSION_ID="13"
+VERSION="13 (trixie)"
+VERSION_CODENAME=trixie
+DEBIAN_VERSION_FULL=13.5
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+
+KERNEL
+Linux atreides 6.18.34+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.18.34-1+rpt1 (2026-06-09) aarch64 GNU/Linux
+
+CPU
+Architecture:                            aarch64
+CPU op-mode(s):                          32-bit, 64-bit
+Byte Order:                              Little Endian
+CPU(s):                                  4
+On-line CPU(s) list:                     0-3
+Vendor ID:                               ARM
+Model name:                              Cortex-A76
+Model:                                   1
+Thread(s) per core:                      1
+Core(s) per cluster:                     4
+Socket(s):                               -
+Cluster(s):                              1
+Stepping:                                r4p1
+Frequency boost:                         disabled
+CPU(s) scaling MHz:                      100%
+CPU max MHz:                             2400.0000
+CPU min MHz:                             1500.0000
+BogoMIPS:                                108.00
+Flags:                                   fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm lrcpc dcpop asimddp
+L1d cache:                               256 KiB (4 instances)
+L1i cache:                               256 KiB (4 instances)
+L2 cache:                                2 MiB (4 instances)
+L3 cache:                                2 MiB (1 instance)
+NUMA node(s):                            8
+NUMA node0 CPU(s):                       0-3
+NUMA node1 CPU(s):                       0-3
+NUMA node2 CPU(s):                       0-3
+NUMA node3 CPU(s):                       0-3
+NUMA node4 CPU(s):                       0-3
+NUMA node5 CPU(s):                       0-3
+NUMA node6 CPU(s):                       0-3
+NUMA node7 CPU(s):                       0-3
+Vulnerability Gather data sampling:      Not affected
+Vulnerability Ghostwrite:                Not affected
+Vulnerability Indirect target selection: Not affected
+Vulnerability Itlb multihit:             Not affected
+Vulnerability L1tf:                      Not affected
+Vulnerability Mds:                       Not affected
+Vulnerability Meltdown:                  Not affected
+Vulnerability Mmio stale data:           Not affected
+Vulnerability Old microcode:             Not affected
+Vulnerability Reg file data sampling:    Not affected
+Vulnerability Retbleed:                  Not affected
+Vulnerability Spec rstack overflow:      Not affected
+Vulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl
+Vulnerability Spectre v1:                Mitigation; __user pointer sanitization
+Vulnerability Spectre v2:                Mitigation; CSV2, BHB
+Vulnerability Srbds:                     Not affected
+Vulnerability Tsa:                       Not affected
+Vulnerability Tsx async abort:           Not affected
+Vulnerability Vmscape:                   Not affected
+
+MEMORY
+               total        used        free      shared  buff/cache   available
+Mem:           7.9Gi       849Mi       351Mi       201Mi       7.1Gi       7.0Gi
+Swap:          2.0Gi       215Mi       1.8Gi
+
+BLOCK DEVICES
+NAME        MODEL                    SIZE FSTYPE MOUNTPOINTS    UUID
+loop0                                  2G swap                  
+sda         WDC WD5000LUCT-62C26Y0 465.8G                       
+└─sda1                             465.8G exfat                 FAEF-AA4E
+sdb         BUP Ultra Touch          1.8T                       
+└─sdb1                               1.8T ext4   /data          9869447e-2c5c-4633-956f-e2dabb7699b4
+mmcblk0                            238.8G                       
+├─mmcblk0p1                          512M vfat   /boot/firmware B2F0-82D2
+└─mmcblk0p2                        238.2G ext4   /              15f4c6be-1102-4331-9904-f78e78afd1fd
+zram0                                  2G swap   [SWAP]         5e909e16-fe91-46e3-b65b-44a9fe410834
+
+FILESYSTEMS
+Filesystem     Type      Size  Used Avail Use% Mounted on
+udev           devtmpfs  3.9G     0  3.9G   0% /dev
+tmpfs          tmpfs     1.6G  4.7M  1.6G   1% /run
+/dev/mmcblk0p2 ext4      235G   46G  188G  20% /
+tmpfs          tmpfs     4.0G     0  4.0G   0% /dev/shm
+tmpfs          tmpfs     5.0M   48K  5.0M   1% /run/lock
+tmpfs          tmpfs     1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+tmpfs          tmpfs     4.0G  261M  3.7G   7% /tmp
+/dev/mmcblk0p1 vfat      505M   75M  430M  15% /boot/firmware
+/dev/sdb1      ext4      1.8T  2.8G  1.7T   1% /data
+tmpfs          tmpfs     1.0M     0  1.0M   0% /run/credentials/getty@tty1.service
+tmpfs          tmpfs     1.0M     0  1.0M   0% /run/credentials/serial-getty@ttyAMA10.service
+tmpfs          tmpfs     807M   32K  807M   1% /run/user/1000
+
+MOUNTS
+TARGET                                             SOURCE         FSTYPE      OPTIONS
+/                                                  /dev/mmcblk0p2 ext4        rw,noatime
+├─/sys                                             sysfs          sysfs       rw,nosuid,nodev,noexec,relatime
+│ ├─/sys/kernel/security                           securityfs     securityfs  rw,nosuid,nodev,noexec,relatime
+│ ├─/sys/fs/cgroup                                 cgroup2        cgroup2     rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot
+│ ├─/sys/fs/pstore                                 none           pstore      rw,nosuid,nodev,noexec,relatime
+│ ├─/sys/fs/bpf                                    bpf            bpf         rw,nosuid,nodev,noexec,relatime,mode=700
+│ ├─/sys/kernel/tracing                            tracefs        tracefs     rw,nosuid,nodev,noexec,relatime
+│ ├─/sys/kernel/debug                              debugfs        debugfs     rw,nosuid,nodev,noexec,relatime
+│ ├─/sys/kernel/config                             configfs       configfs    rw,nosuid,nodev,noexec,relatime
+│ └─/sys/fs/fuse/connections                       fusectl        fusectl     rw,nosuid,nodev,noexec,relatime
+├─/proc                                            proc           proc        rw,relatime
+│ └─/proc/sys/fs/binfmt_misc                       systemd-1      autofs      rw,relatime,fd=37,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=4662
+│   └─/proc/sys/fs/binfmt_misc                     binfmt_misc    binfmt_misc rw,nosuid,nodev,noexec,relatime
+├─/dev                                             udev           devtmpfs    rw,nosuid,relatime,size=4086080k,nr_inodes=255380,mode=755
+│ ├─/dev/pts                                       devpts         devpts      rw,nosuid,noexec,relatime,gid=5,mode=600,ptmxmode=000
+│ ├─/dev/shm                                       tmpfs          tmpfs       rw,nosuid,nodev
+│ └─/dev/mqueue                                    mqueue         mqueue      rw,nosuid,nodev,noexec,relatime
+├─/run                                             tmpfs          tmpfs       rw,nosuid,nodev,noexec,relatime,size=1651184k,mode=755
+│ ├─/run/lock                                      tmpfs          tmpfs       rw,nosuid,nodev,noexec,relatime,size=5120k
+│ ├─/run/credentials/systemd-journald.service      tmpfs          tmpfs       ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap
+│ ├─/run/user/1000                                 tmpfs          tmpfs       rw,nosuid,nodev,relatime,size=825584k,nr_inodes=206396,mode=700,uid=1000,gid=1000
+│ ├─/run/credentials/getty@tty1.service            tmpfs          tmpfs       ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap
+│ └─/run/credentials/serial-getty@ttyAMA10.service tmpfs          tmpfs       ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap
+├─/tmp                                             tmpfs          tmpfs       rw,nosuid,nodev,size=4127952k,nr_inodes=1048576
+├─/boot/firmware                                   /dev/mmcblk0p1 vfat        rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,errors=remount-ro
+└─/data                                            /dev/sdb1      ext4        rw,noatime

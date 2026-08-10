@@ -1,0 +1,49 @@
+schema_version: 1
+gate_id: C00
+title: Preservation and Rollback
+status: COMPLETE
+purpose: Establish a recoverable boundary before rebuilding the engineering system.
+problem_statement: Divergent Operation Beta lifecycle development could not safely remain on main while the selected baseline was reassessed.
+objective: Preserve divergent development, create independent recovery artifacts, and restore main to the selected Operation Beta baseline.
+rationale: Assessment and convergence must begin from a known baseline without losing later implementation history.
+scope_in:
+  - Preserve the divergent Git state by named reference and immutable commit.
+  - Preserve independent recovery material and verify the selected baseline.
+  - Restore main and origin/main alignment to the selected baseline.
+scope_out:
+  - Merge, cherry-pick, amend, delete, or otherwise alter the preservation reference.
+  - Adopt preserved implementation as current architecture.
+dependencies:
+  []
+entry_conditions:
+  - Divergent Operation Beta development exists and a rollback baseline has been selected.
+authoritative_inputs:
+  - Git repository object database and refs.
+  - Operator-selected baseline 6a26d2ea378248a4a9e9fe0d58b5df1c45a8c882.
+assessment_or_execution_procedure:
+  - Resolve repository, branch, HEAD, upstream, and worktree identity.
+  - Create and verify a named preservation reference at the divergent development commit.
+  - Preserve independent recovery artifacts without altering the referenced objects.
+  - Restore main to the selected baseline and verify exact origin/main parity.
+required_outputs:
+  - Named preservation reference and immutable preservation commit.
+  - Restored main baseline and starting-state evidence.
+required_evidence:
+  - Git reference resolves to 4f5626d39f0924d3551cdabfcb61788153706774.
+  - main and origin/main resolve to 6a26d2ea378248a4a9e9fe0d58b5df1c45a8c882 at closeout.
+acceptance_criteria:
+  - Divergent development is recoverable without merging it.
+  - Selected baseline is exact and the worktree is clean.
+  - Preservation material remains reference-only for later assessments.
+fail_closed_conditions:
+  - Preservation reference or commit cannot be resolved exactly.
+  - Selected baseline is ambiguous or recovery evidence is incomplete.
+stop_boundary: Stop after rollback verification; do not begin repository assessment or adopt preserved code.
+result_location: engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/evidence
+next_gate: C01
+resume_instructions:
+  start_here: Review RESULT.yaml and preservation evidence; treat the preservation branch as read-only.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C01_REPOSITORY_AND_INFRASTRUCTURE_BASELINE_ASSESSMENT
+  execution_authority: NOT_AUTHORIZED

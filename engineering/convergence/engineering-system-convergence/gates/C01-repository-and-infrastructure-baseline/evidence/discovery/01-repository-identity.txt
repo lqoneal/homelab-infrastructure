@@ -1,0 +1,68 @@
+Repository root:
+/data/engineering/repositories/homelab
+
+Remote:
+origin	git@github.com:lqoneal/homelab-infrastructure.git (fetch)
+origin	git@github.com:lqoneal/homelab-infrastructure.git (push)
+
+Current branch:
+main
+
+HEAD:
+6a26d2ea378248a4a9e9fe0d58b5df1c45a8c882
+
+origin/main:
+6a26d2ea378248a4a9e9fe0d58b5df1c45a8c882
+
+Preservation branch:
+4f5626d39f0924d3551cdabfcb61788153706774
+
+Top-level:
+/data/engineering/repositories/homelab
+
+Repository status:
+
+Recent history:
+* 6a26d2e (HEAD -> main, origin/main, origin/HEAD) Zeus publication PUBLICATION-9e51dd4c-15d2-540b-aad5-6ad8c4a92bda
+* e7e48ab zeus: canonicalize provider evaluation boundary
+* 107a915 zeus: support live multi-publication lifecycle lineage
+* 0e81380 zeus: reconcile lifecycle provenance across publication
+* 4305b95 zeus: publish P3/P4 lifecycle cardinality reconciliation
+* 7f77dfd zeus: publish execution lifecycle waves 1-3 foundation
+* 32796df chore: record working-tree provenance reconciliation
+* 264e108 zeus: publish submitted-WOP authority convergence
+* e7e77eb zeus: converge governance submission and managed Codex handoff
+* 91b0007 zeus: integrate canonical WOP packages with Stage 1
+* 73bd154 zeus: publish OB-CAGF-G01 canonical WOP
+* f8c44ce zeus: publish canonical WOP package architecture
+* c0ca862 zeus: publish Operation Beta canonical gate catalog
+* f65fa1b zeus: unify Operation Beta canonical development roadmap
+* 9f82637 zeus: reconcile legacy pre-contract lifecycle persistence
+* 15d06c6 zeus: reconcile Operation Beta controlled documentation
+* afac48a zeus: reconcile Beta mission ordering and P5 namespace
+* 70f6671 zeus: publish P5-G6 execution monitoring foundation
+* 6efa815 docs: establish Zeus personal engineering operating model
+* c2b572b P5-G6: reconcile Zeus-controlled Codex interactive execution
+* 07d7294 P5-G6: implement Zeus Codex reconciliation controller
+* 05167c5 P5-G5: canonical reconciliation
+* 738273c P5-G5: reconcile execution-start provenance projection
+* a16b3e3 P5-G5: establish controlled execution start foundation
+* 2507b44 P5-G4: reconcile invocation baseline provenance
+* ae0395e P5-G4: establish provider invocation foundation
+* b37a5fb P5-G3: establish provider session foundation
+* deadb83 P5-G2: establish provider dispatch and stable publication workflow
+* 6d58d16 Implement P5-G1 provider selection foundation
+* d2312ca Canonicalize published baseline resolution
+* 149252f P4-G3: establish authoritative mission verification baseline
+* df7fcd9 P4-G1: publish Bootstrap foundation
+* 1d911ce P3-G1: publish Mission Admission foundation
+* ed11b93 P2-G1: canonical submission foundation
+* b0e49c0 P1-G1: publish canonical WOP authoring foundation
+*   64394a5 Merge pull request #71 from lqoneal/prepublication/wop-zeus-autonomous-dispatch-and-provider-launch-001
+|\  
+| * 85d8865 (origin/prepublication/wop-zeus-autonomous-dispatch-and-provider-launch-001, prepublication/wop-zeus-autonomous-dispatch-and-provider-launch-001) Add autonomous dispatch and provider launch reconciliation
+|/  
+*   5a09817 Merge pull request #70 from lqoneal/prepublication/wop-zeus-canonical-mission-lifecycle-reconciliation-001
+|\  
+| * cea0c4b (origin/prepublication/wop-zeus-canonical-mission-lifecycle-reconciliation-001) Integrate autonomous controller with runtime reconciliation
+| * 27f4314 Add autonomous execution lifecycle reconciliation

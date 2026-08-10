@@ -1,0 +1,26 @@
+schema_version: 1
+gate_id: C01
+source_location: /data/engineering/recovery/system-convergence-c01-20260810T000612Z
+canonical_location: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence/discovery
+copy_policy: BYTE_FOR_BYTE_COPY_EXTERNAL_SOURCE_PRESERVED
+files:
+  - {path: 01-repository-identity.txt, sha256: 88363bad869d7e20950b1a23b509b3f43d42a41c3a11a98811769511fbbeeee5}
+  - {path: 02-directories.txt, sha256: c51c1cf9652e82da5fc30bd8601ff7643d9d875ddc972fa69fb25903c87bb5a2}
+  - {path: 03-files.txt, sha256: b68929fb751d50533e3b8136e09c656a2de765aee07818ad2f2d66b376627d90}
+  - {path: 04-repository-size-inventory.txt, sha256: a67f31ba43cc0c4e3784c25c3742ef8de5377553bd3db2cdda84808542a2287f}
+  - {path: 05-controlled-and-architecture-files.txt, sha256: 456aa7a35c915bf8f90e95515b88c55f2f120283e1898996efa15dcfeada8a11}
+  - {path: 06-infrastructure-document-candidates.txt, sha256: 489b90e62eac212cbed65ff3d204293a1e4e9f8d05414809a39ca0b6c6a4c7ac}
+  - {path: 07-host-baseline.txt, sha256: 5592a754d4bcc8232bc6a80b431d3cefd0734c6e38177adb69010573da1ada4b}
+  - {path: 08-network-baseline.txt, sha256: 9cdf17ee96dd33dcac82a1a33e2597e82a3c4465e5e6492671f7cce4798fc11f}
+  - {path: 09-engineering-filesystem.txt, sha256: 4bd8d5734be0c4abb7490da5017febe8de4932d54e1b074e57163fa4222bbda4}
+  - {path: 10-eos-inventory.txt, sha256: 22820878553e978b1622ff27bf60c009711151d9dcf5deb6fe548a6e9f301586}
+  - {path: 11-toolchain.txt, sha256: 9a37f50c1e1aa14f0907a1990e4483970e48160a39d4158d48e8451df86cea2d}
+  - {path: 12-engctl-baseline.txt, sha256: 85a863b805618152951013e017b18afede89ef0363dfe3670a979faeec8f0159}
+  - {path: 13-zeus-baseline.txt, sha256: 23b619cca725a672a6967f27fb73dcef27188523c4a7e2996a61b4ba26117bd9}
+  - {path: 14-services-eens-emp.txt, sha256: c082d691bea16b0b25ff024a88fb92e03b79ea1019f0b98a81d780ac07a11c7f}
+  - {path: 15-main-vs-preservation.txt, sha256: b9c7b807945926f5975bbd6733f50b26ea9487b89bbce4ab0de7599793f022d9}
+  - {path: 16-reference-and-import-baseline.txt, sha256: 4709789f2c37e95e1dfb1d89a7788eb5e2baac301ee07b1426c95c941a41eeb4}
+  - {path: 17-repository-hygiene.txt, sha256: da6aa796e36d00049036684fcab374b8b936cd02e965aeadf3828a8b0118b633}
+  - {path: 18-authority-redundancy-hints.txt, sha256: 7c2dac0ab83d24beb57ee63c9b30ee04a4925c3ac19754863f19c499c0f21a18}
+  - {path: 19-debt-hints.txt, sha256: 13f03498c6e05faac7f03a1cca028338ded58f30e7757237e888ece1db09f9a0}
+  - {path: C01-SUMMARY.md, sha256: a302e58568fa6897fcff1de9a952e39a90d32eb9760525ac5a3fe2cc972c0a13}

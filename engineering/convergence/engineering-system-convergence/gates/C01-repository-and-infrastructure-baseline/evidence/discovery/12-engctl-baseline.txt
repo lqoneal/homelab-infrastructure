@@ -1,29 +1,254 @@
+command:
+/home/loneal/.local/bin/engctl
+
+resolved path:
+/data/engineering/repositories/homelab/scripts/engctl
+
+help:
+Usage:
+  engctl resume [project]
+  engctl status [project]
+  engctl doctor
+  engctl ssh {status|environment|load [key ...]}
+  engctl checkpoint {latest|active|list|create <title>|restore [checkpoint]|validate|retention [count]}
+  engctl eos {status|validate|synchronize|sync-validate|sync-status|refresh|operational|persistence} [project]
+  engctl repository {discover|health|sync-status|readiness|refresh} [project]
+  engctl registry {path|validate|show|list|get|context|create|update|archive|transition}
+  engctl portfolio {summary|status|order}
+  engctl project {list|register|activate|suspend}
+  engctl queue {list|show|validate|enqueue|dequeue|reprioritize|reorder}
+  engctl milestone {list|get|status|qualify|complete}
+  engctl dependency {list|validate|check|blocked|satisfy}
+  engctl defer {list|validate|apply|resume|history}
+  engctl context [project]
+  engctl validate [project]
+  engctl platform {status|validate|qualify} [project]
+  engctl execution {inventory|snapshot [--mission ID]|validate-handoff FILE}
+  engctl mission contract {inspect|validate|resolve|admit|activate-request|recover|activate|suspend|resume|revoke|complete}
+  engctl codex [--wop WOP-ID] [--timeout SECONDS] [--] [codex arguments ...]
+  engctl version
+
+version:
+engctl version 0.8.0
+
+status:
+====================================
+ENGINEERING PLATFORM
+====================================
+
+Workspace:           /data/engineering
+Project:             homelab
+Branch:              main
+Commit:              6a26d2ea378248a4a9e9fe0d58b5df1c45a8c882
+Repository State:    clean
+EOS State:           /data/engineering/eos/state/EOS-STATE.md
+Latest Checkpoint:   /data/engineering/eos/checkpoints/20260805T091135Z-zdcl-02-published-canonical-baseline-restoration.md
+Synchronization:     drifted (checkpoint 64394a57015f, repository 6a26d2ea3782)
+Work Registry:       /data/engineering/repositories/homelab/engineering/registry/work-registry.yaml
+
+Repository Inventory:
+homelab                git    branch=main         commit=6a26d2e      state=clean
+SprinterOS             git    branch=main         commit=bdde334      state=clean
+
+Controller Capabilities:
+  resume status doctor ssh checkpoint eos repository registry portfolio project queue milestone dependency defer context validate platform
+
+Engineering Management Portfolio Status
+registry_revision: 86
+generated_at: '2026-08-01T00:00:00+00:00'
+scope: EMP-PROJECT-HOMELAB
+active_work:
+- EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001
+- EMP-WORK-OPERATION-BETA-BETA-04-RUNTIME-READINESS
+planned_work:
+- EMP-WORK-ENGINEERING-QUALIFICATION-AUTOMATION
+- EMP-WORK-ENGINEERING-QUALIFICATION-STATE-PERSISTENCE
+- EMP-WORK-RASPBERRY-PI-ENGINEERING-QUALIFICATION-PROCEDURE
+- EMP-WORK-ZEUS-CAPABILITY-DISCOVERY
+deferred_work:
+- EMP-WORK-APPROVAL-PACKAGE-GOVERNANCE-CONTROLS
+- EMP-WORK-CODEX-NTFY-STAGE-2
+- EMP-WORK-CODEX-NTFY-STAGE-3
+- EMP-WORK-ENGINEERING-LIFECYCLE-CLOSEOUT-CONTROLS
+- EMP-WORK-GOVERNANCE-PLANNING-INTEGRATION
+- EMP-WORK-GOVERNANCE-RECORD-TRANSACTION-ARCHITECTURE
+blocked_work:
+- EMP-WORK-ZEUS-P2-005-AUTHORITY-COMMISSIONING
+completed_work:
+- EMP-WORK-CODEX-NTFY-STAGE-1
+- EMP-WORK-CODEX-WRAPPER-ENFORCEMENT
+- EMP-WORK-ENGINEERING-HANDOFF-CONSTRUCTION-PROCEDURE
+- EMP-WORK-ENGINEERING-HANDOFF-TEMPLATE
+- EMP-WORK-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION
+- EMP-WORK-ENGINEERING-REPORTING-STANDARD
+- EMP-WORK-ENGINEERING-TRANSACTION-PROFILE
+- EMP-WORK-GH-EOS-INTEGRATION-001
+- EMP-WORK-GH-ZEUS-CLOSEOUT-001
+- EMP-WORK-GOVERNANCE-AUTHORITY-ARCHITECTURE
+- EMP-WORK-GOVERNANCE-FRAMEWORK-MODERNIZATION
+- EMP-WORK-P2-038-CORRECTIVE
+- EMP-WORK-P2-038-EXECUTION-INTERFACE
+- EMP-WORK-PHASE-1-3
+- EMP-WORK-REGISTRY-FOUNDATION
+- EMP-WORK-SPEC-0007-REVISION-15-PUBLICATION
+- EMP-WORK-ZEUS-OPERATIONAL-ALPHA-STAGE1
+- EMP-WORK-ZEUS-P2-003-AUTHORITY-RESOLUTION
+- EMP-WORK-ZEUS-P2-004-AUTHORITY-PUBLICATION
+- EMP-WORK-ZEUS-P2-006-OWNER-ENROLLMENT-TOOLKIT
+- EMP-WORK-ZEUS-P2-007-MISSION-ADMISSION-RUNTIME
+- EMP-WORK-ZEUS-P2-008-MISSION-EXECUTION-RUNTIME
+- EMP-WORK-ZEUS-P2-009-GATE-HANDLER-FRAMEWORK
+- EMP-WORK-ZEUS-P2-010-OPERATIONAL-GATE-HANDLER
+- EMP-WORK-ZEUS-P2-019-EXECUTION-FOUNDATION
+- EMP-WORK-ZEUS-P2-020-PMCT
+- EMP-WORK-ZEUS-P2-021-NEXT-ACTION
+- EMP-WORK-ZEUS-P2-022-RUNTIME-TELEMETRY
+- EMP-WORK-ZEUS-P2-023-OPERATOR-APPROVAL-UX
+- EMP-WORK-ZEUS-P2-025-PUBLICATION-RECEIPT-LIFECYCLE
+- EMP-WORK-ZEUS-P2-026-LIFECYCLE-RECONCILIATION
+- EMP-WORK-ZEUS-P2-027-OA01-VERIFICATION-DEADLOCK
+- EMP-WORK-ZEUS-P2-036-OA02-PMCT
+- EMP-WORK-ZEUS-P2-037-PRODUCTION-AGENT
+authority_note: Status is derived only from registry state and grants no authority.
+
+resume:
+REPOSITORY–EOS INTEGRATED VERIFICATION
+------------------------------------
+Repository–EOS synchronization validation passed.
+Integrated repository, synchronization, and EOS runtime verification passed.
+
+====================================
+ENGINEERING WORK INITIATION — RECONCILIATION REQUIRED
+====================================
+
+EXECUTIVE SUMMARY
+------------------------------------
+Project:                  Homelab Infrastructure (homelab)
+Mission:                  Operation Beta BETA-04 Runtime Readiness and Activation,Zeus Operational Alpha
+Phase:                    Zeus Operational Alpha
+Active Work:              EMP-WORK-OPERATION-BETA-BETA-04-RUNTIME-READINESS,EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001
+Current Authority:        AUTHORITY DISAGREEMENT: Project State and Work Registry do not agree
+Next Recommended Action:  Reconcile authoritative mission and phase records before engineering work
+Repository Status:        clean; aligned (origin/main)
+Platform Health:          FAIL
+
+ENGINEERING SESSION CONTRACT
+------------------------------------
+Objective:                Execute the active work within its recorded scope
+Authorized Work:          EMP-WORK-OPERATION-BETA-BETA-04-RUNTIME-READINESS,EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001
+Success Criteria:         Satisfy the criteria recorded for the authorized work
+Expected Closeout:        Complete the closeout required by the recorded authority
+
+------------------------------------
+OPERATIONAL STATUS
+------------------------------------
+SSH:               active
+SSH Agent:         running; no identities loaded (run: engctl ssh load)
+Host Firewall:     active
+Print Services:    inactive
+PDF Printing:      unknown (lpstat unavailable)
+Scanner Workflow:  incomplete
+Avahi:             active
+Scanner Tools:     missing
+
+Printer Health:
+  Queue:         Engineering_HP_OfficeJet_Pro_8020
+  Queue State:   unknown/unknown/unknown
+  Device State:  unknown
+  Pending Jobs:  unknown
+  Printer URI:   unknown
+  Warnings:      unavailable
+  Supplies:      unavailable
+  Supply Levels: unavailable
+  Media Ready:   unavailable
+
+------------------------------------
+ENGINEERING CONTEXT
+------------------------------------
+Active Checkpoint:     /data/engineering/eos/checkpoints/20260805T091135Z-zdcl-02-published-canonical-baseline-restoration.md
+Checkpoint Project:    homelab
+Checkpoint Repository: /data/engineering/repositories/homelab
+Checkpoint Applicability: applicable to homelab
+Checkpoint Sync:       drifted (checkpoint 64394a57015f, repository 6a26d2ea3782)
+Repository Upstream:   aligned (origin/main)
+Operational State:     /data/engineering/eos/runtime/operational-state.json
+Repository Inventory:  /data/engineering/eos/runtime/repositories.tsv
+
+------------------------------------
+EOS ENGINEERING RESUME — DETAILED
+------------------------------------
+
+Project:
+homelab
+
+Repository Root:
+/data/engineering/repositories/homelab
+
+Branch:
+main
+
+Current Commit:
+6a26d2e Zeus publication PUBLICATION-9e51dd4c-15d2-540b-aad5-6ad8c4a92bda
+
+Working Tree:
+
+------------------------------------
+ENGINEERING WORK REGISTRY
+------------------------------------
+Engineering Work Registry Context
+registry_path=/data/engineering/repositories/homelab/engineering/registry/work-registry.yaml
+registry_id=EMP-WORK-REGISTRY-0001
+registry_revision=86
+portfolio_id=EMP-PORTFOLIO-0001
+portfolio_title=Engineering Portfolio
+portfolio_state=active
+portfolio_project_count=3
+management_project_id=EMP-PROJECT-HOMELAB
+management_project_title=Homelab Infrastructure
+management_project_state=active
+management_project_order=1
+management_project_sources=PROJ-0001,INF-0001
+management_current_missions=EMP-MISSION-OPERATION-BETA-BETA-04,EMP-MISSION-ZEUS-OPERATIONAL-ALPHA
+management_current_mission_titles=Operation Beta BETA-04 Runtime Readiness and Activation,Zeus Operational Alpha
+management_current_phases=EMP-PHASE-ZEUS-OPERATIONAL-ALPHA
+management_current_phase_titles=Zeus Operational Alpha
+management_current_sprints=none
+management_open_work=EMP-WORK-OPERATION-BETA-BETA-04-RUNTIME-READINESS,EMP-WORK-ZEUS-P2-005-AUTHORITY-COMMISSIONING,EMP-WORK-ZEUS-CAPABILITY-DISCOVERY,EMP-WORK-CODEX-NTFY-STAGE-2,EMP-WORK-CODEX-NTFY-STAGE-3,EMP-WORK-APPROVAL-PACKAGE-GOVERNANCE-CONTROLS,EMP-WORK-GOVERNANCE-RECORD-TRANSACTION-ARCHITECTURE,EMP-WORK-ENGINEERING-LIFECYCLE-CLOSEOUT-CONTROLS,EMP-WORK-GOVERNANCE-PLANNING-INTEGRATION,EMP-WORK-RASPBERRY-PI-ENGINEERING-QUALIFICATION-PROCEDURE,EMP-WORK-ENGINEERING-QUALIFICATION-AUTOMATION,EMP-WORK-ENGINEERING-QUALIFICATION-STATE-PERSISTENCE,EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001
+management_active_work=EMP-WORK-OPERATION-BETA-BETA-04-RUNTIME-READINESS,EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001
+management_planned_work=EMP-WORK-ZEUS-CAPABILITY-DISCOVERY,EMP-WORK-RASPBERRY-PI-ENGINEERING-QUALIFICATION-PROCEDURE,EMP-WORK-ENGINEERING-QUALIFICATION-AUTOMATION,EMP-WORK-ENGINEERING-QUALIFICATION-STATE-PERSISTENCE
+management_deferred_work=EMP-WORK-CODEX-NTFY-STAGE-2,EMP-WORK-CODEX-NTFY-STAGE-3,EMP-WORK-APPROVAL-PACKAGE-GOVERNANCE-CONTROLS,EMP-WORK-GOVERNANCE-RECORD-TRANSACTION-ARCHITECTURE,EMP-WORK-ENGINEERING-LIFECYCLE-CLOSEOUT-CONTROLS,EMP-WORK-GOVERNANCE-PLANNING-INTEGRATION
+management_blocked_work=EMP-WORK-ZEUS-P2-005-AUTHORITY-COMMISSIONING
+management_completed_work=EMP-WORK-ZEUS-P2-010-OPERATIONAL-GATE-HANDLER,EMP-WORK-ZEUS-P2-009-GATE-HANDLER-FRAMEWORK,EMP-WORK-ZEUS-P2-008-MISSION-EXECUTION-RUNTIME,EMP-WORK-ZEUS-P2-007-MISSION-ADMISSION-RUNTIME,EMP-WORK-ZEUS-P2-006-OWNER-ENROLLMENT-TOOLKIT,EMP-WORK-ZEUS-P2-004-AUTHORITY-PUBLICATION,EMP-WORK-ZEUS-P2-003-AUTHORITY-RESOLUTION,EMP-WORK-REGISTRY-FOUNDATION,EMP-WORK-PHASE-1-3,EMP-WORK-CODEX-NTFY-STAGE-1,EMP-WORK-GOVERNANCE-FRAMEWORK-MODERNIZATION,EMP-WORK-CODEX-WRAPPER-ENFORCEMENT,EMP-WORK-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION,EMP-WORK-SPEC-0007-REVISION-15-PUBLICATION,EMP-WORK-GOVERNANCE-AUTHORITY-ARCHITECTURE,EMP-WORK-ENGINEERING-REPORTING-STANDARD,EMP-WORK-ENGINEERING-HANDOFF-TEMPLATE,EMP-WORK-ENGINEERING-HANDOFF-CONSTRUCTION-PROCEDURE,EMP-WORK-ENGINEERING-TRANSACTION-PROFILE,EMP-WORK-ZEUS-P2-019-EXECUTION-FOUNDATION,EMP-WORK-ZEUS-P2-020-PMCT,EMP-WORK-ZEUS-P2-021-NEXT-ACTION,EMP-WORK-ZEUS-P2-022-RUNTIME-TELEMETRY,EMP-WORK-ZEUS-P2-023-OPERATOR-APPROVAL-UX,EMP-WORK-ZEUS-P2-025-PUBLICATION-RECEIPT-LIFECYCLE,EMP-WORK-ZEUS-P2-026-LIFECYCLE-RECONCILIATION,EMP-WORK-ZEUS-P2-027-OA01-VERIFICATION-DEADLOCK,EMP-WORK-ZEUS-P2-036-OA02-PMCT,EMP-WORK-ZEUS-P2-037-PRODUCTION-AGENT,EMP-WORK-P2-038-EXECUTION-INTERFACE,EMP-WORK-P2-038-CORRECTIVE,EMP-WORK-GH-ZEUS-CLOSEOUT-001,EMP-WORK-GH-EOS-INTEGRATION-001,EMP-WORK-ZEUS-OPERATIONAL-ALPHA-STAGE1
+management_queues=EMP-QUEUE-PORTFOLIO-ROADMAP
+management_milestones=EMP-MILESTONE-REGISTRY-OPERATIONAL,EMP-MILESTONE-ROADMAP-COMPLETE,EMP-MILESTONE-ENGINEERING-PLATFORM-SELF-IMPLEMENTATION,EMP-MILESTONE-GOVERNANCE-AUTHORITY-TRANSACTION-QUALIFIED
+management_active_deferrals=EMP-DEFERRAL-CODEX-NTFY-STAGE-2,EMP-DEFERRAL-CODEX-NTFY-STAGE-3,EMP-DEFERRAL-APPROVAL-PACKAGE-GOVERNANCE-CONTROLS,EMP-DEFERRAL-GOVERNANCE-RECORD-TRANSACTION-ARCHITECTURE,EMP-DEFERRAL-ENGINEERING-LIFECYCLE-CLOSEOUT-CONTROLS,EMP-DEFERRAL-GOVERNANCE-PLANNING-INTEGRATION
+management_blocking_dependencies=none
+management_authority_boundary=registry-state-is-not-governance-or-controlled-document-lifecycle
+
+------------------------------------
+PROJECT STATE
+------------------------------------
+/data/engineering/repositories/homelab/docs/project/PROJ-0001-PROJECT_STATE.md
+
 ---
 document_id: PROJ-0001
 title: Project State
-version: 10.4
+version: 10.3
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-08-09
-mission: Engineering System Convergence
-phase: C02 Controlled Documentation and Authority Assessment
+last_updated: 2026-07-31
+mission: Zeus Operational Alpha
+phase: Zeus Operational Alpha
 classification: Project State
-predecessor_revision: PROJ-0001@10.3
+predecessor_revision: PROJ-0001@10.2
 successor_revision: null
 approval_status: Approved
-approval_authority: Homelab Operator
-approval_reference: ENGINEERING-SYSTEM-CONVERGENCE operator directive
-approval_date: 2026-08-09
+approval_authority: Homelab Infrastructure
+approval_reference: PHASE-0001
+approval_date: 2026-07-26
 persistence_status: Persisted
 source_of_truth: true
-convergence_program:
-  program_id: ENGINEERING-SYSTEM-CONVERGENCE
-  roadmap_id: ESC-ROADMAP-001
-  roadmap_path: engineering/convergence/engineering-system-convergence/roadmap.yaml
-  state_path: engineering/convergence/engineering-system-convergence/STATE.yaml
-  current_gate: C02
-  next_authorized_action: BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT
 declared_deferrals:
   - legacy-document-migration
   - repository-wide-persistence-remediation
@@ -98,23 +323,6 @@ tags:
 This document is the primary project resume point for Homelab Infrastructure.
 
 It summarizes the current project state and identifies the next approved engineering action.
-
-## Current Convergence Resume Point
-
-The current repository-authoritative planning program is
-`ENGINEERING-SYSTEM-CONVERGENCE`, roadmap `ESC-ROADMAP-001`, at
-`engineering/convergence/engineering-system-convergence/roadmap.yaml`.
-`STATE.yaml` records C00 and C01 complete, C02 current, and
-`BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT` as the next
-authorized action. C02 is assessment-only; it does not authorize document
-correction, EOS synchronization, Zeus repair, subsystem modification,
-publication, or later-gate implementation.
-
-The older material below is retained as historical engineering context and as
-input to C02-C16. Where it claims a different current mission or phase, it does
-not supersede the convergence binding in this document's frontmatter. Existing
-Work Registry disagreement remains an observed C01 finding for later assessment
-and must not be silently repaired by resume.
 
 ---
 
@@ -421,9 +629,9 @@ controlled predecessor-acceptance evidence for that successor projection.
 
 **Next Immediate Step:**
 
-Run `engctl roadmap validate`, review the C01 result/evidence, and begin only
-the read-only C02 Controlled Documentation and Authority Assessment. Do not
-correct the identified records or begin C03 automatically.
+Preserve OA-06 through OA-08 completion and acceptance evidence. OA-09 is eligible for a
+separately authorized mission WOP; this reconciliation does not initiate it.
+`GH-ZEUS-OA-CERTIFICATION-001` package remains suspended historical evidence.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -755,3 +963,242 @@ When resuming this project:
 - Execution-agent dispatch: deferred to Stage 2
 - Completion evidence:
   `engineering/evidence/2026-07-28-zeus-operational-alpha-stage1-completion-report.md`
+
+------------------------------------
+LATEST EOS CHECKPOINT
+------------------------------------
+/data/engineering/eos/checkpoints/20260805T091135Z-zdcl-02-published-canonical-baseline-restoration.md
+
+# EOS Checkpoint — ZDCL-02 Published Canonical Baseline Restoration
+
+Date: 2026-08-05
+
+## Status
+
+Captured
+
+## Project
+
+homelab
+
+## Repository
+
+Root: `/data/engineering/repositories/homelab`
+
+Branch: `main`
+
+Commit: `64394a57015fbab2f6f7b928dfbdc20fba027bc5`
+
+Working tree: clean
+
+```text
+clean
+```
+
+## Project State
+
+`/data/engineering/repositories/homelab/docs/project/PROJ-0001-PROJECT_STATE.md`
+
+------------------------------------
+WORKING TREE
+------------------------------------
+
+ENGINEERING EXECUTION MISSION SNAPSHOT
+------------------------------------
+{
+  "active_count": 1,
+  "authority_boundary": "Only one valid active attributable contract grants its explicit permissions.",
+  "candidate_count": 4,
+  "contract": {
+    "activation": {
+      "actor": "repository_owner",
+      "record": "engineering/mission-contracts/approvals/APPROVAL-MISSION-CONTRACT-PUBLICATION-001.yaml",
+      "request": "ACTIVATE-MISSION-CONTRACT-PUBLICATION-001",
+      "timestamp": "2026-07-29T06:11:33+00:00",
+      "transaction": "TX-ACTIVATE-MISSION-CONTRACT-PUBLICATION-001"
+    },
+    "approvals": {
+      "activation": "approved",
+      "publication": "approved"
+    },
+    "closeout": {
+      "requirements": [
+        "remote verification complete",
+        "published baseline reconciled",
+        "bootstrap completed and revoked",
+        "operational authority revalidated"
+      ]
+    },
+    "contract_digest": "1e8f58607b72b84898fb1486e0517bbdba36141679f8b3c1bda90c61fde7724f",
+    "contract_id": "MC-MISSION-CONTRACT-PUBLICATION-001",
+    "dirty_tree": {
+      "manifest": "engineering/evidence/worktree-classification-and-publication-001-manifest.json",
+      "policy": "CLASSIFIED_DIRTY_ALLOWED",
+      "recovery_locator": "/data/engineering/recovery/mission-contract-bootstrap-001/pre-bootstrap"
+    },
+    "document_type": "MissionContract",
+    "expiration": "on_closeout_or_revocation",
+    "interruption": {
+      "behavior": "Re-resolve contract, publication state, remote state, and reconciliation evidence before continuing."
+    },
+    "lifecycle": "active",
+    "mission_id": "MISSION-CONTRACT-PUBLICATION-001",
+    "permissions": {
+      "close_mission": true,
+      "commit": true,
+      "create_branch": false,
+      "generate_evidence": true,
+      "inspect": true,
+      "modify": true,
+      "publish": true,
+      "push": true,
+      "reconcile_metadata": true,
+      "reconcile_state": true,
+      "rollback": true,
+      "stage": true
+    },
+    "registry_id": "EMP-WORK-GH-ZEUS-OA-PROGRESSIVE-001",
+    "repository": {
+      "allowed_target_branches": [
+        "main"
+      ],
+      "baseline": "d25d144312b73fc8230113c99f5d0368037b4483",
+      "branch": "main",
+      "identity": "homelab",
+      "remote": "git@github.com:lqoneal/homelab-infrastructure.git",
+      "root": "/data/engineering/repositories/homelab"
+    },
+    "roles": {
+      "document_owner": "applicable_existing_document_owner",
+      "evidence_reviewer": "repository_owner",
+      "execution_agent": "Codex",
+      "human_authorizer": "repository_owner",
+      "implementation_owner": "Engineering Platform",
+      "orchestration_agent": "ChatGPT",
+      "publication_owner": "repository_owner",
+      "qualification_owner": "independent_verification",
+      "repository_operator": "repository_owner",
+      "review_owner": "repository_owner"
+    },
+    "schema_version": 1,
+    "scope": {
+      "classification_manifest": "engineering/evidence/worktree-classification-and-publication-001-manifest.json",
+      "classification_manifest_digest": "7dd3ef471d415afd92c80655f0a3d14fce817b33cdb22b4372b9a951f0e9a376",
+      "commit_units": [
+        "CU-01",
+        "CU-02",
+        "CU-03",
+        "CU-04",
+        "CU-05",
+        "CU-06",
+        "CU-07",
+        "bootstrap-closeout"
+      ],
+      "excluded": [
+        "architectural redesign",
+        "unrelated features",
+        "force push"
+      ],
+      "included": [
+        "classified publication candidate",
+        "Mission Contract architecture",
+        "activation evidence",
+        "publication reconciliation",
+        "bootstrap closeout"
+      ]
+    },
+    "wop": {
+      "digest": "278e15fc91c5df59c0ab4ccc62032df34bdc623871704e6f4ea6ce6218ae1752",
+      "id": "GH-ZEUS-OA-PROGRESSIVE-001",
+      "locator": "engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/immutable-wop.yaml"
+    }
+  },
+  "contract_path": "engineering/mission-contracts/contracts/MC-MISSION-CONTRACT-PUBLICATION-001.yaml",
+  "evidence_digest": "9020c24e526bed472743cbff40cbd5e7f292779a520befb5f0959bfc4f48275d",
+  "resolution": "INVALID_CONTRACT",
+  "transactional_authority": false,
+  "unresolved_conditions": [
+    "wop.digest: mismatch"
+  ]
+}
+No unique active repository Mission Contract is currently resolvable.
+
+MISSION CONTRACT AUTHORITY
+------------------------------------
+Authorized Work: None
+Mission Contract: None
+Resolution: INVALID_CONTRACT
+Transactional Authority: DENIED
+Contract State: ACTIVE
+Repository: homelab
+Baseline: d25d144312b73fc8230113c99f5d0368037b4483
+WOP: GH-ZEUS-OA-PROGRESSIVE-001
+Dirty Tree Policy: CLASSIFIED_DIRTY_ALLOWED
+Modify Authority: GRANTED
+Stage Authority: GRANTED
+Commit Authority: GRANTED
+Push Authority: GRANTED
+Publish Authority: GRANTED
+Unresolved Conditions: wop.digest: mismatch
+
+doctor:
+
+[0;34m========================================[0m
+[0;36mHomelab Doctor[0m
+[0;34m========================================[0m
+
+[0;34m========================================[0m
+[0;36mSystem[0m
+[0;34m========================================[0m
+[0;34m[INFO][0m Hostname: atreides
+[0;34m[INFO][0m User: loneal
+[0;34m[INFO][0m Kernel: 6.18.34+rpt-rpi-2712
+[0;34m[INFO][0m OS: Debian GNU/Linux 13 (trixie)
+
+[0;34m========================================[0m
+[0;36mStorage[0m
+[0;34m========================================[0m
+[0;32m[ OK ][0m /data mounted
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/mmcblk0p2  235G   46G  188G  20% /
+/dev/mmcblk0p2  235G   46G  188G  20% /
+/dev/sdb1       1.8T  2.8G  1.7T   1% /data
+
+[0;34m========================================[0m
+[0;36mDevelopment Tools[0m
+[0;34m========================================[0m
+[0;32m[ OK ][0m git installed
+[0;32m[ OK ][0m python3 installed
+[0;32m[ OK ][0m pip3 installed
+[0;32m[ OK ][0m gcc installed
+[0;32m[ OK ][0m make installed
+
+[0;34m========================================[0m
+[0;36mGit[0m
+[0;34m========================================[0m
+[0;32m[ OK ][0m Git Name: Lawrence O'Neal
+[0;32m[ OK ][0m Git Email: lqoneal@gmail.com
+
+[0;34m========================================[0m
+[0;36mSSH[0m
+[0;34m========================================[0m
+[0;32m[ OK ][0m SSH ed25519 key found
+
+[0;34m========================================[0m
+[0;36mEOS Workspace[0m
+[0;34m========================================[0m
+[0;32m[ OK ][0m /data/engineering exists
+[0;32m[ OK ][0m /data/engineering/eos exists
+[0;32m[ OK ][0m /data/engineering/eos/state exists
+[0;32m[ OK ][0m /data/engineering/repositories exists
+[0;32m[ OK ][0m /data/engineering/repositories/homelab exists
+[1;33m[WARN][0m /data/engineering/repositories/shared-libraries missing
+[0;32m[ OK ][0m /data/engineering/shared exists
+[1;33m[WARN][0m /data/engineering/backups missing
+[0;32m[ OK ][0m /data/engineering/staging exists
+[1;33m[WARN][0m /data/engineering/repositories/shared-libraries/shell/projectctl missing
+
+[0;34m========================================[0m
+[0;36mFuture Platform[0m
+[0;34m========================================[0m
+[0;31m[FAIL][0m docker not installed

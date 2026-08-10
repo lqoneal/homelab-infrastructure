@@ -1,0 +1,45 @@
+schema_version: 1
+gate_id: C14
+title: Validation / Tests / Observability Assessment
+status: PENDING
+purpose: Determine the checks and signals that prove Engineering Platform health and convergence safety.
+problem_statement: Validators, semantic checks, tests, health commands, logs, telemetry, PMCT, and observability overlap and do not share one qualification boundary.
+objective: Inventory platform validation, semantic document validation, tests, regression suites, health commands, telemetry, logs, PMCT, observability, and test duplication; determine which checks constitute platform qualification.
+rationale: A target architecture and migration plan need a minimal authoritative qualification suite and explicit diagnostic boundaries.
+scope_in:
+  - Validators, tests, fixtures, health checks, telemetry, logs, PMCT, observability, coverage, and qualification consumption.
+scope_out:
+  - Repair unrelated failures, expand observability, or declare final platform qualification.
+dependencies: [C13]
+entry_conditions:
+  - C13 recovery boundaries are documented and C14 is selected.
+authoritative_inputs:
+  - Test suites, validators, health commands, PMCT, telemetry/log contracts, qualification procedures, evidence, and prior findings.
+assessment_or_execution_procedure:
+  - Inventory checks, suites, commands, fixtures, signals, owners, consumers, costs, and side effects.
+  - Map coverage to architecture responsibilities, authority claims, failure/recovery boundaries, and qualification decisions.
+  - Identify duplicate, stale, missing, nondeterministic, mutating, and non-authoritative checks.
+  - Propose the checks that should constitute platform qualification.
+required_outputs:
+  - Validation/test/observability inventory.
+  - Coverage and ownership matrix.
+  - Duplicate/gap/flakiness register.
+  - Platform qualification check recommendation.
+  - Findings and RESULT.yaml.
+required_evidence:
+  - Source-linked test discovery, isolated executions where safe, and historical result comparison.
+acceptance_criteria:
+  - Every major subsystem and invariant maps to an owned check or explicit gap.
+  - Proposed qualification checks are deterministic, bounded, and authority-correct.
+fail_closed_conditions:
+  - A check has hidden mutation or uncontrolled external effects.
+  - Missing coverage is represented as PASS.
+stop_boundary: Stop after assessment; do not repair failures or declare convergence qualification.
+result_location: engineering/convergence/engineering-system-convergence/gates/C14-validation-tests-observability/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C14-validation-tests-observability/evidence
+next_gate: C15
+resume_instructions:
+  start_here: Build the check inventory from source and bounded isolated validation only.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C14_VALIDATION_TESTS_OBSERVABILITY_ASSESSMENT
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED

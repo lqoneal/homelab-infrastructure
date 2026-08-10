@@ -1,0 +1,46 @@
+schema_version: 1
+gate_id: C16
+title: Redundancy / Simplification Analysis
+status: PENDING
+purpose: Convert the reconciled system model into evidence-backed simplification dispositions.
+problem_statement: Duplicate components, stores, commands, schemas, procedures, projections, controllers, and lifecycle stages impose operational and recovery complexity.
+objective: Identify components, state stores, commands, schemas, procedures, projections, controllers, and lifecycle stages that can be consolidated, removed, deprecated, or simplified.
+rationale: Target architecture should retain required capability while minimizing owners, states, transitions, and recovery paths.
+scope_in:
+  - Every component and overlap identified through C15.
+  - Dispositions KEEP, CONSOLIDATE, REPLACE, DEPRECATE, REMOVE, REBUILD, and INVESTIGATE.
+scope_out:
+  - Apply a disposition, remove code, migrate state, or define final architecture.
+dependencies: [C15]
+entry_conditions:
+  - C15 provides a complete single-owner/dependency/dataflow model and C16 is selected.
+authoritative_inputs:
+  - C15 models and all source-linked C02-C14 findings.
+assessment_or_execution_procedure:
+  - Evaluate each component against canonical ownership, necessary capability, consumers, evidence, risk, migration cost, and recovery impact.
+  - Assign one disposition with rationale, dependencies, prerequisites, rollback needs, and retained-history treatment.
+  - Identify consolidation groups and quantify state/command/schema/lifecycle reduction.
+  - Route uncertain or evidence-incomplete items to INVESTIGATE.
+required_outputs:
+  - Complete disposition register.
+  - Consolidation and removal candidates.
+  - Simplification dependency/order matrix.
+  - Risk, migration, rollback, and retained-history analysis.
+  - Findings and RESULT.yaml.
+required_evidence:
+  - Each disposition links to C15 ownership/dataflow and original repository evidence.
+acceptance_criteria:
+  - Every assessed component has exactly one evidence-backed disposition.
+  - No disposition removes unique authority, capability, evidence, or recovery history without replacement.
+fail_closed_conditions:
+  - Disposition lacks owner, consumer, migration, rollback, or evidence analysis.
+  - Uncertainty is hidden instead of marked INVESTIGATE.
+stop_boundary: Stop after simplification analysis; perform no consolidation, deprecation, removal, or rebuild.
+result_location: engineering/convergence/engineering-system-convergence/gates/C16-redundancy-simplification/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C16-redundancy-simplification/evidence
+next_gate: C17
+resume_instructions:
+  start_here: Evaluate every C15 component against the controlled disposition vocabulary.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C16_REDUNDANCY_SIMPLIFICATION_ANALYSIS
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED

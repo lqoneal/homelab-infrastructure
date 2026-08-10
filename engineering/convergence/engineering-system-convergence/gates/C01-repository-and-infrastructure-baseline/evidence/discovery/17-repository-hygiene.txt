@@ -1,0 +1,119 @@
+Ignored files:
+!! .pytest_cache/
+!! .zeus/
+!! engineering/runtime/pmct/runs/
+!! engineering/tests/zeus-operational-alpha/lib/__pycache__/
+!! engineering/tests/zeus-operational-alpha/tests/__pycache__/
+!! engineering/tools/__pycache__/
+!! scripts/__pycache__/
+!! scripts/bootstrap/__pycache__/
+!! scripts/lib/__pycache__/
+!! scripts/lib/authority/__pycache__/
+!! scripts/lib/authority_pipeline/__pycache__/
+!! scripts/lib/authority_wop/__pycache__/
+!! scripts/lib/emp/__pycache__/
+!! scripts/lib/eos/__pycache__/
+!! scripts/lib/wop/__pycache__/
+!! scripts/lib/work_initiation/__pycache__/
+!! scripts/tests/__pycache__/
+!! services/eens/src/eens/__pycache__/
+!! services/eens/tests/__pycache__/
+
+Tracked large files >1 MiB:
+
+Symlinks:
+
+Executable files:
+./engineering/tests/zeus-operational-alpha/bin/pmct
+./engineering/tests/zeus-operational-alpha/bin/pmct-inspect
+./engineering/tests/zeus-operational-alpha/gates/OA-01.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-02.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-03.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-04.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-05.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-06.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-07.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-08.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-09.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-10.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-11.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-12.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-13.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-14.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-15.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-16.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-17.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-18.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-19.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-20.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-21.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-22.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-23.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-24.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-25.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-26.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-27.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-28.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-29.sh
+./engineering/tests/zeus-operational-alpha/gates/OA-30.sh
+./engineering/tests/zeus-operational-alpha/progressive-test.sh
+./engineering/tests/zeus-operational-alpha/tests/run-tests.sh
+./engineering/tests/zeus-operational-alpha/tools/generate-controlled-assets.py
+./engineering/tools/generate-progressive-oa-package.py
+./engineering/work-orders/GH-ZEUS-OA-CERTIFICATION-001/verify-package.sh
+./engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/controller
+./engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001/verify-package.sh
+./engineering/work-orders/ZH-AUTHORITY-PIPELINE-RESOLUTION-WOP-001/SCRIPTS/verify-package
+./scripts/authorityctl
+./scripts/authority-ownerctl
+./scripts/authority-pipeline-preflight
+./scripts/authority-publishctl
+./scripts/authority-wop-compatctl
+./scripts/backup.sh
+./scripts/bootstrap/repair_yaml_header.py
+./scripts/bootstrap.sh
+./scripts/bootstrap/verify_yaml_header.py
+./scripts/doctor.sh
+./scripts/engctl
+./scripts/engineering-executionctl
+./scripts/evidence-qualifyctl
+./scripts/execution-oversightctl
+./scripts/homelabctl
+./scripts/install-engineering-cli
+./scripts/install-zeus-launcher
+./scripts/inventory-external-wop
+./scripts/inventory.sh
+./scripts/lib/common.sh
+./scripts/lib/eos/codex-direct-launch.sh
+./scripts/lib/eos/codex.sh
+./scripts/lib/eos/repository.sh
+./scripts/lib/notifications/ntfy.sh
+./scripts/mission-admissionctl
+./scripts/mission-contractctl
+./scripts/mission-executionctl
+./scripts/reconcile-closeoutctl
+./scripts/test-common.sh
+./scripts/tests/test-authority-resolution.py
+./scripts/tests/test-authority-wop-compatibility.py
+./scripts/tests/test-codex-notifications.sh
+./scripts/tests/test-engineering-cli-standard.py
+./scripts/tests/test-eos-runtime.sh
+./scripts/tests/test-evidence-qualification.py
+./scripts/tests/test-execution-oversight.py
+./scripts/tests/test-reconciliation-closeout.py
+./scripts/tests/test-wop-contract.py
+./scripts/tests/test-wop-lifecycle-manager.py
+./scripts/tests/test-wop-supervised-dispatch.py
+./scripts/tests/test-work-initiation-shadow.py
+./scripts/tests/test-zeus-operator-interface.py
+./scripts/update.sh
+./scripts/validate_controlled_documents.py
+./scripts/verify.sh
+./scripts/wop-admissionctl
+./scripts/wopctl
+./scripts/wop-dispatchctl
+./scripts/wop-lifecyclectl
+./scripts/work-initiation-shadow
+./scripts/zeus
+./services/eens/scripts/install-user-service.sh
+./services/eens/scripts/uninstall-user-service.sh

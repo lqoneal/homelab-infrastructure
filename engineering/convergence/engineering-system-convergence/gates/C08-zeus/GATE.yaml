@@ -1,0 +1,47 @@
+schema_version: 1
+gate_id: C08
+title: Zeus Assessment
+status: PENDING
+purpose: Establish Zeus's actual architecture, state machines, authority consumption, and operational complexity.
+problem_statement: Zeus spans mission projection, admission, lifecycle, provider control, execution, publication, recovery, and many overlapping controller surfaces.
+objective: Inventory Zeus architecture, CLI, mission projection, authority, lifecycle, execution, provider control, publication, recovery, runtime state, tests, and documentation; identify overlapping state machines and unnecessary complexity.
+rationale: Zeus cannot be simplified safely without a complete source-to-runtime and authority inventory.
+scope_in:
+  - Zeus CLI/code, stores, state machines, schemas, services, documentation, tests, and preserved reference implementation.
+scope_out:
+  - Repair repository_projection, run missions, invoke providers, or modify Zeus runtime state.
+  - Adopt or backport preserved Zeus implementation.
+dependencies: [C07]
+entry_conditions:
+  - C07 management-boundary findings are complete and C08 is explicitly selected.
+authoritative_inputs:
+  - scripts/zeus, scripts/lib/emp and eos Zeus consumers, Zeus controlled documentation, evidence, schemas, runtime observations, and preservation reference.
+assessment_or_execution_procedure:
+  - Inventory modules, commands, stores, schemas, state machines, consumers, tests, and documentation.
+  - Trace mission projection through authority, admission, lifecycle, provider, execution, evidence, publication, and recovery.
+  - Map overlapping state and controller paths and identify broken or absent dependencies.
+  - Separate current baseline behavior from preserved experiments and recommendations.
+required_outputs:
+  - Zeus architecture and command inventory.
+  - State-machine and store matrix.
+  - Authority/dataflow map.
+  - Runtime/test/document divergence register.
+  - Complexity and simplification candidates.
+  - Findings and RESULT.yaml.
+required_evidence:
+  - Source-linked call graphs, read-only command results, import diagnostics, and preservation comparison.
+acceptance_criteria:
+  - Every Zeus responsibility, state store, controller, and major state transition is mapped.
+  - The missing repository_projection dependency is recorded, not repaired.
+fail_closed_conditions:
+  - Assessment would execute a mission, mutate runtime state, or import preserved code.
+  - Baseline and preservation behavior are conflated.
+stop_boundary: Stop after assessment; do not repair or redesign Zeus.
+result_location: engineering/convergence/engineering-system-convergence/gates/C08-zeus/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C08-zeus/evidence
+next_gate: C09
+resume_instructions:
+  start_here: Preserve the known broken import as evidence and inventory Zeus without runtime mutation.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C08_ZEUS_ASSESSMENT
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED

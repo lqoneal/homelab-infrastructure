@@ -1,0 +1,653 @@
+MAIN:
+6a26d2ea378248a4a9e9fe0d58b5df1c45a8c882
+
+PRESERVATION:
+4f5626d39f0924d3551cdabfcb61788153706774
+
+DIFF STAT:
+ ...4-ENGINEERING_HANDOFF_CONSTRUCTION_PROCEDURE.md |   36 +
+ ...OC-0009-ROADMAP_PLANNING_RECORDING_PROCEDURE.md |  948 ++++
+ docs/roadmap.md                                    |   15 +
+ engineering/admission/admission-record.schema.yaml |    1 -
+ .../architecture/OPERATION-BETA-AUTHORITY-MODEL.md |   38 +-
+ .../OPERATION-BETA-CANONICAL-GATE-CATALOG.md       |   70 +-
+ .../ZEUS-BETA-CONTROLLER-INTEGRATION.md            |   13 +-
+ .../ZEUS-CANONICAL-DEVELOPMENT-ROADMAP.md          |   76 +-
+ .../ZEUS-MISSION-PROJECTION-SPECIFICATION.md       |   20 +
+ .../ZEUS-ROADMAP-INTEGRATION-ROADMAP.md            |  436 ++
+ engineering/docs/cli/ZEUS-CODEX-TIMING.md          |   95 +
+ engineering/docs/cli/ZEUS-USER-GUIDE.md            |   71 +-
+ ...ZEUS-CANONICAL-MISSION-PUBLICATION-PROCEDURE.md |   62 +
+ .../docs/operations/ZEUS-DEVELOPMENT-MODE.md       |   32 +-
+ .../ZEUS-EXECUTION-LIFECYCLE-PROCEDURE.md          |    2 +-
+ .../ZEUS-GIT-PUBLICATION-BOUNDARY-PROCEDURE.md     |   48 +
+ .../COMPLETION-REPORT.md                           |   55 +
+ .../PUBLICATION-CANDIDATE-MANIFEST.md              |   39 +
+ .../ZEUS-NATIVE-VERIFICATION.md                    |   19 +
+ ...AL-WOP-ZEUS-LIFECYCLE-INTEGRATION-ASSESSMENT.md |  276 ++
+ ...ANONICAL-ZEUS-ROADMAP-INTEGRATION-ASSESSMENT.md |  403 ++
+ ...ENT-STATE-AND-DEVELOPMENT-ROADMAP-ASSESSMENT.md |  612 +++
+ ...D-ENGINEERING-MANAGEMENT-PLATFORM-ASSESSMENT.md |  629 +++
+ .../OB-CAGF-G01-IMPLEMENTATION-SPECIFICATION.md    |  198 +
+ .../OPERATION-BETA-CANONICAL-GATE-CATALOG.yaml     |   57 +-
+ ...ERGENCE-AUTHORITY-AND-ROADMAP-RECONCILIATION.md |  351 ++
+ ...ORITY-AND-CONTROLLED-DOCUMENT-RECONCILIATION.md |  300 ++
+ ...ON-CONVERGENCE-AND-EXECUTION-PATH-ASSESSMENT.md |  325 ++
+ ...IVE-POSITION-AND-MISSION-ORDERING-ASSESSMENT.md |  386 ++
+ .../WOP-MANAGED-HANDOFF-CONVERGENCE-ASSESSMENT.md  |  485 +++
+ ...INTEGRATED-ROADMAP-RECONCILIATION-ASSESSMENT.md |  411 ++
+ .../CORRECTIVE-RECORD.md                           |   69 +
+ .../AUTHORITY-MODEL-RECONCILIATION.md              |    8 +
+ .../CLOSEOUT-ASSESSMENT.md                         |    6 +
+ .../COMMAND-SURFACE-AUDIT.md                       |   15 +
+ .../CONFLICT-REGISTER.md                           |   11 +
+ .../CONTROLLED-DOCUMENT-INVENTORY.md               |   20 +
+ .../CROSS-REFERENCE-AUDIT.md                       |    6 +
+ .../DISPATCH-EXECUTION-START-ASSESSMENT.md         |    6 +
+ .../EVIDENCE-QUALIFICATION-ASSESSMENT.md           |    6 +
+ .../FINAL-QUALIFICATION-REPORT.md                  |   23 +
+ .../LIFECYCLE-DOCUMENTATION-RECONCILIATION.md      |    8 +
+ .../LIFECYCLE-GAP-REGISTER.md                      |   19 +
+ .../MONITORING-RECOVERY-ASSESSMENT.md              |    6 +
+ .../PROVIDER-SESSION-RUNTIME-ASSESSMENT.md         |    6 +
+ .../PUBLICATION-READINESS.md                       |   10 +
+ .../PUBLICATION-SYNCHRONIZATION-ASSESSMENT.md      |    6 +
+ .../RECOMMENDED-LIFECYCLE-REMEDIATION-ROADMAP.md   |   12 +
+ .../RECONCILIATION-MANIFEST.md                     |   20 +
+ .../REMEDIATION-OPTIONS.md                         |   16 +
+ .../RUNTIME-DOCUMENTATION-DIVERGENCE-MATRIX.md     |   15 +
+ .../RUNTIME-LIFECYCLE-MAP.md                       |   15 +
+ .../STARTING-STATE.md                              |   19 +
+ .../STATE-MACHINE-CONVERGENCE-ASSESSMENT.md        |    8 +
+ .../SUBMISSION-CONTRACT-RECONCILIATION.md          |   10 +
+ .../TEST-COVERAGE-ASSESSMENT.md                    |    8 +
+ .../VALIDATION-FAILURE-REGISTER.md                 |   20 +
+ .../VALIDATOR-PROFILE-RECONCILIATION.md            |    8 +
+ .../ZEUS-NATIVE-VERIFICATION-COVERAGE.md           |    6 +
+ .../AUTHORITATIVE-G01-CONTRACT.md                  |   62 +
+ .../COMPLETION-REPORT.md                           |   85 +
+ .../DIRTY-WORKTREE-CLASSIFICATION.md               |   26 +
+ .../G01-COMPLETION-DECISION.md                     |   29 +
+ .../G01-G02-BOUNDARY-ANALYSIS.md                   |   26 +
+ .../G01-REQUIREMENT-MATRIX.md                      |   59 +
+ .../NEXT-GATE-READINESS.md                         |   21 +
+ .../PUBLICATION-VS-TECHNICAL-COMPLETION.md         |   22 +
+ .../QUALIFIED-EVIDENCE-INVENTORY.md                |   38 +
+ .../RESIDUAL-GAP-REGISTER.md                       |   17 +
+ .../ROADMAP-CONVERGENCE-ANALYSIS.md                |   47 +
+ .../STARTING-STATE.md                              |   41 +
+ .../ZEUS-NATIVE-VERIFICATION.md                    |   27 +
+ .../PHASE-5-CAPABILITY-RECONCILIATION-REPORT.md    |  223 +
+ .../PROC-0009-REPOSITORY-RECONCILIATION-REPORT.md  |  272 ++
+ ...ATION-RECORDING-CORRECTIVE-COMPLETION-REPORT.md |  275 ++
+ ...ROADMAP-PROCEDURE-MATURITY-INSPECTION-REPORT.md |  442 ++
+ ...OADMAP-RECORDING-PROCEDURE-EVALUATION-REPORT.md |  196 +
+ ...NICAL-CONTRACT-CONVERGENCE-COMPLETION-REPORT.md |  339 ++
+ .../WOP-PACKAGE-MATURITY-ASSESSMENT.md             |  753 ++++
+ .../AUTHORIZED-PUBLICATION-TRANSITION-CONTRACT.md  |   21 +
+ .../BASELINE-STATE-MATRIX.md                       |   16 +
+ .../COMPLETION-REPORT.md                           |   17 +
+ .../CONTROLLED-DOCUMENT-RECONCILIATION.md          |   12 +
+ .../FAIL-CLOSED-VERIFICATION.md                    |   17 +
+ .../IMPLEMENTATION-REPORT.md                       |   22 +
+ .../PUBLICATION-CANDIDATE-MANIFEST.md              |   33 +
+ .../QUALIFICATION-PUBLICATION-STATE.json           |   10 +
+ .../ROOT-CAUSE-ANALYSIS.md                         |   25 +
+ .../STARTING-STATE.md                              |   24 +
+ .../TEST-RESULTS.md                                |   17 +
+ .../ZEUS-NATIVE-VERIFICATION.md                    |   18 +
+ .../CODEX-NATIVE-LIFECYCLE-VERIFICATION.md         |   23 +
+ .../COMPLETION-REPORT.md                           |   22 +
+ .../CONTROLLED-DOCUMENT-RECONCILIATION.md          |   17 +
+ .../FAIL-CLOSED-VERIFICATION.md                    |   20 +
+ .../IMPLEMENTATION-REPORT.md                       |   25 +
+ .../RECOVERY-STATE-MACHINE.md                      |   21 +
+ .../REMOTE-COMPATIBILITY-VERIFICATION.md           |   14 +
+ .../ROOT-CAUSE-ANALYSIS.md                         |   25 +
+ .../STARTING-STATE.md                              |   25 +
+ .../TEST-RESULTS.md                                |   32 +
+ .../TRANSPORT-THREAD-IDENTITY-MODEL.md             |   28 +
+ .../ZEUS-NATIVE-VERIFICATION.md                    |   23 +
+ .../ADMISSION-VERIFICATION.md                      |   28 +
+ .../COMPLETION-REPORT.md                           |   94 +
+ .../CONTROLLED-DOCUMENT-CONSISTENCY.md             |   11 +
+ .../DISPATCH-VERIFICATION.md                       |   17 +
+ .../EXECUTION-START-VERIFICATION.md                |    6 +
+ .../FIRST-REAL-WORK-UNIT.md                        |   15 +
+ .../MONITORING-CHECKPOINT-VERIFICATION.md          |    6 +
+ .../PROVIDER-BINDING-VERIFICATION.md               |    6 +
+ .../PROVIDER-INVOCATION-VERIFICATION.md            |    6 +
+ .../STARTING-STATE.md                              |   20 +
+ .../VALIDATION-REPORT.md                           |   22 +
+ .../ZEUS-NATIVE-VERIFICATION.md                    |   23 +
+ .../COMPLETION-EVIDENCE.md                         |   92 +
+ .../CONTROLLED-MISSION-WORK-TRANSITION-EVIDENCE.md |   56 +
+ ...TE-1-PROJECTION-ROADMAP-CONVERGENCE-EVIDENCE.md |  251 ++
+ ...CILIATION-ACCEPTANCE-CORRECTIVE-VERIFICATION.md |   62 +
+ ...CTION-RECONCILIATION-CORRECTIVE-VERIFICATION.md |  153 +
+ ...DER-CONTROL-RECOVERY-CORRECTIVE-VERIFICATION.md |   78 +
+ .../AUTHORITY-SEMANTICS-ANALYSIS.md                |   84 +
+ .../INVESTIGATION-REPORT.md                        |  155 +
+ .../PHASE1-VS-LIFECYCLE-WOP-COMPARISON.md          |   64 +
+ .../RECOMMENDED-REMEDIATION.md                     |  157 +
+ .../REMEDIATION-OPTIONS.md                         |   69 +
+ .../SUBMISSION-CALL-PATH.md                        |  104 +
+ .../COMPLETION-REPORT.md                           |   87 +
+ .../FINAL-OMISSION-AUDIT.md                        |   22 +
+ .../PROVIDER-EVALUATION-VERIFICATION.md            |   52 +
+ .../SESSION-REQUIREMENT-LEDGER.md                  |   32 +
+ .../STARTING-STATE.md                              |   20 +
+ .../VALIDATION-REPORT.md                           |   21 +
+ .../ZEUS-NATIVE-VERIFICATION.md                    |   28 +
+ .../COMPLETION-REPORT.md                           |  105 +
+ .../CONTROLLED-DOCUMENT-RECONCILIATION.md          |   16 +
+ .../FINAL-OMISSION-AUDIT.md                        |   21 +
+ .../GIT-AUTOMATION-CONTRACT.md                     |   29 +
+ .../GIT-USAGE-INVENTORY.md                         |   25 +
+ .../IMPLEMENTATION-REPORT.md                       |   22 +
+ .../PUBLICATION-CANDIDATE-MANIFEST.md              |   21 +
+ .../REPOSITORY-PROJECTION-CONTRACT.md              |   30 +
+ .../SESSION-REQUIREMENT-LEDGER.md                  |   24 +
+ .../TEST-RESULTS.md                                |   39 +
+ .../VALIDATION-REPORT.md                           |   20 +
+ .../ZEUS-NATIVE-VERIFICATION.md                    |   27 +
+ .../COMPLETION-REPORT.md                           |   78 +
+ .../CONTROLLED-DOCUMENT-RECONCILIATION.md          |   12 +
+ .../EXECUTION-SESSION-CONTRACT.md                  |   23 +
+ .../FINAL-OMISSION-AUDIT.md                        |   19 +
+ .../GAP-004-GAP-007-OPERATIONAL-ASSESSMENT.md      |   16 +
+ .../IMPLEMENTATION-REPORT.md                       |   13 +
+ .../LIVE-PROJECTION-TRACE.md                       |   19 +
+ .../PROVIDER-INVOCATION-CONTRACT.md                |   21 +
+ .../PUBLICATION-CANDIDATE-MANIFEST.md              |   16 +
+ .../ROADMAP-RECONCILIATION.md                      |   11 +
+ .../SESSION-REQUIREMENT-LEDGER.md                  |   32 +
+ .../STARTING-STATE.md                              |   28 +
+ .../STATE-GRANULARITY-ASSESSMENT.md                |   16 +
+ .../TEST-RESULTS.md                                |   20 +
+ .../VALIDATION-REPORT.md                           |   27 +
+ .../ZEUS-NATIVE-VERIFICATION.md                    |   28 +
+ .../COMPLETION-REPORT.md                           |   60 +
+ .../FOLLOW-ON-LIFECYCLE-DIVERGENCE.md              |   16 +
+ .../PUBLICATION-CANDIDATE-MANIFEST.md              |   38 +
+ .../APPENDED-DIRECTIVE-TRACEABILITY.md             |   19 +
+ .../BASELINE-PROVENANCE-MODEL.md                   |   37 +
+ .../COMPLETION-REPORT.md                           |   77 +
+ .../CONTROLLED-DOCUMENT-RECONCILIATION.md          |   25 +
+ .../FINAL-OMISSION-AUDIT.md                        |   20 +
+ .../HARDCODING-AUDIT.md                            |   34 +
+ .../IMPLEMENTATION-REPORT.md                       |   29 +
+ .../PUBLICATION-CANDIDATE-MANIFEST.md              |   24 +
+ .../REQUIREMENT-COVERAGE-MATRIX.md                 |   41 +
+ .../ROOT-CAUSE-ANALYSIS.md                         |   30 +
+ .../SESSION-INSTRUCTION-RECONCILIATION.md          |   59 +
+ .../SESSION-REQUIREMENT-LEDGER.md                  |   68 +
+ .../STARTING-STATE.md                              |   25 +
+ .../STATUS-CONTRACT-RECONCILIATION.md              |   22 +
+ .../TEST-RESULTS.md                                |   39 +
+ .../VALIDATION-REPORT.md                           |   20 +
+ .../ZEUS-NATIVE-VERIFICATION.md                    |   25 +
+ .../COMPLETION-EVIDENCE.md                         |   93 +
+ .../PUBLICATION-CANDIDATE-MANIFEST.md              |   34 +
+ .../QUALIFICATION-PUBLICATION-STATE.json           |   10 +
+ .../BASELINE-COMPARISON-CLASSIFICATION.md          |   17 +
+ .../COMPLETION-REPORT.md                           |   58 +
+ .../CONTROLLED-DOCUMENT-RECONCILIATION.md          |   15 +
+ .../FINAL-OMISSION-AUDIT.md                        |   17 +
+ .../IMPLEMENTATION-REPORT.md                       |   30 +
+ .../PROVIDER-QUALIFICATION-FRESHNESS-CONTRACT.md   |   15 +
+ .../PROVIDER-SELECTION-PROVENANCE-MODEL.md         |   26 +
+ .../PUBLICATION-CANDIDATE-MANIFEST.md              |   24 +
+ .../ROOT-CAUSE-ANALYSIS.md                         |   24 +
+ .../SESSION-REQUIREMENT-LEDGER.md                  |   31 +
+ .../STARTING-STATE.md                              |   28 +
+ .../TEST-RESULTS.md                                |   21 +
+ .../VALIDATION-REPORT.md                           |   23 +
+ .../ZEUS-NATIVE-VERIFICATION.md                    |   24 +
+ .../COMPLETION-EVIDENCE.md                         |   70 +
+ .../PUBLICATION-CANDIDATE-MANIFEST.md              |   22 +
+ .../QUALIFICATION-PUBLICATION-STATE.json           |   10 +
+ .../CANDIDATE-PROVENANCE-AUDIT.json                | 4538 ++++++++++++++++++++
+ .../CANDIDATE-SCOPE-QUALIFICATION.md               |  131 +
+ .../COMPLETION-REPORT.md                           |   36 +
+ .../FINAL-OMISSION-AUDIT.md                        |   25 +
+ .../NATIVE-REVERIFICATION.md                       |   42 +
+ .../SELECTION-POLICY-ASSESSMENT.md                 |   43 +
+ .../SESSION-REQUIREMENT-LEDGER.md                  |   13 +
+ .../COHORT-AUTHORITY-MODEL.md                      |   10 +
+ .../COMPLETION-REPORT.md                           |   13 +
+ .../CONTROLLED-DOCUMENT-RECONCILIATION.md          |    5 +
+ .../FINAL-OMISSION-AUDIT.md                        |    6 +
+ .../NATIVE-VERIFICATION.md                         |    6 +
+ .../PUBLICATION-CANDIDATE-MANIFEST.md              |   22 +
+ .../ROOT-CAUSE-ANALYSIS.md                         |   10 +
+ .../SESSION-REQUIREMENT-LEDGER.md                  |    7 +
+ .../SUPERSESSION-REPORT.md                         |    7 +
+ .../TEST-RESULTS.md                                |    6 +
+ .../VALIDATION-REPORT.md                           |    6 +
+ .../COMPLETION-REPORT.md                           |   21 +
+ .../FAIL-CLOSED-VERIFICATION.md                    |   21 +
+ .../IMPLEMENTATION-REPORT.md                       |   21 +
+ .../LIVE-ACCEPTANCE.md                             |   25 +
+ .../PUBLICATION-CANDIDATE-MANIFEST.md              |   34 +
+ .../QUALIFICATION-PUBLICATION-STATE.json           |   10 +
+ .../ROOT-CAUSE-ANALYSIS.md                         |   31 +
+ .../STARTING-STATE.md                              |   45 +
+ .../TEST-RESULTS.md                                |   34 +
+ .../COMPLETION-REPORT.md                           |   15 +
+ .../CONTROLLED-DOCUMENT-RECONCILIATION.md          |   11 +
+ .../FAIL-CLOSED-VERIFICATION.md                    |   13 +
+ .../LIVE-TRANSACTION-RECONCILIATION.md             |   18 +
+ .../PUBLICATION-CANDIDATE-MANIFEST.md              |   19 +
+ .../PUBLICATION-CARDINALITY-CONTRACT.md            |   17 +
+ .../QUALIFICATION-PUBLICATION-STATE.json           |   10 +
+ .../REPREPARE-ATOMICITY-ASSESSMENT.md              |   17 +
+ .../ROOT-CAUSE-ANALYSIS.md                         |   27 +
+ .../STARTING-STATE.md                              |   21 +
+ .../SUPERSESSION-LINEAGE-CONTRACT.md               |   16 +
+ .../TEST-RESULTS.md                                |   34 +
+ .../ZEUS-NATIVE-VERIFICATION.md                    |   22 +
+ .../zeus-codex-session-timing-001/README.md        |  124 +
+ .../oversight/codex-handoff-contract.schema.yaml   |   85 +
+ .../zeus-execution-lifecycle-gate1-handoff.yaml    |   39 +
+ engineering/oversight/work-contract.schema.yaml    |   38 +
+ .../controlled-document-semantic-profiles.yaml     |    9 +
+ engineering/validation/engineering-properties.yaml |    2 +-
+ engineering/wop/canonical-wop-package.schema.yaml  |   14 +
+ .../wop/publication-candidate-state.schema.yaml    |   22 +
+ .../bootstrap.md                                   |   11 +
+ .../canonical-79a9fb9ce9017eb66322bbdc/gates.yaml  |  402 ++
+ .../manifests/immutable-manifest.yaml              |   21 +
+ .../mission.yaml                                   |  210 +
+ .../canonical-79a9fb9ce9017eb66322bbdc/roadmap.md  |   34 +
+ .../source-wop.yaml                                |  674 +++
+ .../traceability.json                              |   38 +
+ .../bootstrap.md                                   |   11 +
+ .../canonical-c7a90c8854c170474d210594/gates.yaml  |  402 ++
+ .../manifests/immutable-manifest.yaml              |   18 +
+ .../mission.yaml                                   |  212 +
+ .../canonical-c7a90c8854c170474d210594/roadmap.md  |   14 +
+ .../source-wop.yaml                                |   66 +
+ .../revisions/2/canonical-wop-package.yaml         |  674 +++
+ .../source-wop.md                                  |   43 +
+ scripts/lib/emp/bootstrap_boundary.py              |    8 +-
+ scripts/lib/emp/canonical_lifecycle_resolver.py    |   26 +
+ scripts/lib/emp/canonical_runtime_mission.py       |    3 +
+ scripts/lib/emp/codex_adapter.py                   | 1147 ++++-
+ scripts/lib/emp/codex_app_server_broker.py         |  105 +-
+ scripts/lib/emp/codex_interactive.py               |   19 +
+ scripts/lib/emp/codex_reconciliation.py            |   31 +-
+ scripts/lib/emp/codex_session_timing.py            |  458 ++
+ scripts/lib/emp/execution_monitoring.py            |   12 +
+ scripts/lib/emp/execution_start.py                 |    2 +-
+ scripts/lib/emp/legacy_lifecycle_reconciliation.py |    2 +-
+ .../lib/emp/lifecycle_baseline_reconciliation.py   |   22 +-
+ scripts/lib/emp/managed_handoff.py                 |  131 +-
+ scripts/lib/emp/managed_work_contract.py           |  175 +
+ scripts/lib/emp/mission_admission_verification.py  |    8 +-
+ scripts/lib/emp/mission_submission.py              |   10 +
+ scripts/lib/emp/mission_verification_controller.py |   16 +-
+ scripts/lib/emp/next_action.py                     |   15 +-
+ scripts/lib/emp/provider_invocation.py             |    2 +-
+ scripts/lib/emp/publication_authority.py           |  511 +++
+ scripts/lib/emp/publication_candidate_authority.py |   76 +-
+ scripts/lib/emp/publication_cohort.py              |    7 +-
+ scripts/lib/emp/publication_transaction.py         |  623 ++-
+ scripts/lib/emp/publication_workflow.py            |   11 +-
+ scripts/lib/emp/repository_projection.py           |  283 ++
+ scripts/lib/emp/wop_packaging.py                   |   51 +-
+ scripts/lib/eos/canonical_baseline.py              |   98 +-
+ scripts/lib/eos/operational_beta.py                |  237 +-
+ scripts/lib/wop/canonical_package.py               |   81 +
+ scripts/tests/test-beta-mission-projection.py      |    7 +-
+ scripts/tests/test-beta-platform-invariants.py     |   12 +-
+ .../test-cagf01-identity-binding-corrective.py     |  178 +
+ ...test-controlled-document-semantic-validation.py |   13 +
+ scripts/tests/test-managed-codex-handoff.py        |   39 +
+ ...s-authorized-publication-transition-baseline.py |  222 +
+ scripts/tests/test-zeus-beta-controller.py         |   16 +-
+ .../test-zeus-canonical-baseline-resolution.py     |   37 +-
+ scripts/tests/test-zeus-codex-session-timing.py    |  200 +
+ .../test-zeus-codex-transport-thread-lifecycle.py  |  296 ++
+ ...us-execution-lifecycle-completion-corrective.py |  261 ++
+ .../test-zeus-mission-verification-controller.py   |   17 +-
+ .../test-zeus-operation-lifecycle-convergence.py   |  155 +
+ .../test-zeus-p3-g1-mission-admission-boundary.py  |   17 +
+ .../tests/test-zeus-p5-g4-provider-invocation.py   |   13 +-
+ scripts/tests/test-zeus-p5-g5-execution-start.py   |   15 +
+ scripts/tests/test-zeus-p5-g6-codex-adapter.py     |  162 +-
+ .../tests/test-zeus-p5-g6-session-supersession.py  |   29 +-
+ ...st-zeus-postpublication-verification-routing.py |  177 +
+ .../test-zeus-publication-candidate-authority.py   |   42 +
+ ...st-zeus-publication-supersession-cardinality.py |  257 ++
+ scripts/tests/test-zeus-publication-transaction.py |   83 +-
+ scripts/tests/test-zeus-repository-projection.py   |  173 +
+ ...test-zeus-wave1-canonical-lifecycle-resolver.py |   19 +
+ scripts/validate_controlled_documents.py           |   33 +-
+ scripts/zeus                                       |   38 +-
+ 320 files changed, 29024 insertions(+), 525 deletions(-)
+
+CHANGED PATHS:
+M	docs/procedures/PROC-0004-ENGINEERING_HANDOFF_CONSTRUCTION_PROCEDURE.md
+A	docs/procedures/PROC-0009-ROADMAP_PLANNING_RECORDING_PROCEDURE.md
+M	docs/roadmap.md
+M	engineering/admission/admission-record.schema.yaml
+M	engineering/docs/architecture/OPERATION-BETA-AUTHORITY-MODEL.md
+M	engineering/docs/architecture/OPERATION-BETA-CANONICAL-GATE-CATALOG.md
+M	engineering/docs/architecture/ZEUS-BETA-CONTROLLER-INTEGRATION.md
+M	engineering/docs/architecture/ZEUS-CANONICAL-DEVELOPMENT-ROADMAP.md
+M	engineering/docs/architecture/ZEUS-MISSION-PROJECTION-SPECIFICATION.md
+A	engineering/docs/architecture/ZEUS-ROADMAP-INTEGRATION-ROADMAP.md
+A	engineering/docs/cli/ZEUS-CODEX-TIMING.md
+M	engineering/docs/cli/ZEUS-USER-GUIDE.md
+M	engineering/docs/operations/ZEUS-CANONICAL-MISSION-PUBLICATION-PROCEDURE.md
+M	engineering/docs/operations/ZEUS-DEVELOPMENT-MODE.md
+M	engineering/docs/operations/ZEUS-EXECUTION-LIFECYCLE-PROCEDURE.md
+M	engineering/docs/operations/ZEUS-GIT-PUBLICATION-BOUNDARY-PROCEDURE.md
+A	engineering/evidence/2026-08-07-cagf01-identity-binding-corrective-001/COMPLETION-REPORT.md
+A	engineering/evidence/2026-08-07-cagf01-identity-binding-corrective-001/PUBLICATION-CANDIDATE-MANIFEST.md
+A	engineering/evidence/2026-08-07-cagf01-identity-binding-corrective-001/ZEUS-NATIVE-VERIFICATION.md
+A	engineering/evidence/operation-beta/CANONICAL-WOP-ZEUS-LIFECYCLE-INTEGRATION-ASSESSMENT.md
+A	engineering/evidence/operation-beta/CM-01-CM-06-CANONICAL-ZEUS-ROADMAP-INTEGRATION-ASSESSMENT.md
+A	engineering/evidence/operation-beta/EENS-CURRENT-STATE-AND-DEVELOPMENT-ROADMAP-ASSESSMENT.md
+A	engineering/evidence/operation-beta/EMP-CENTRALIZED-ENGINEERING-MANAGEMENT-PLATFORM-ASSESSMENT.md
+A	engineering/evidence/operation-beta/OB-CAGF-G01-IMPLEMENTATION-SPECIFICATION.md
+M	engineering/evidence/operation-beta/OPERATION-BETA-CANONICAL-GATE-CATALOG.yaml
+A	engineering/evidence/operation-beta/OPERATION-BETA-CONVERGENCE-AUTHORITY-AND-ROADMAP-RECONCILIATION.md
+A	engineering/evidence/operation-beta/OPERATION-BETA-INDEPENDENT-MISSION-AUTHORITY-AND-CONTROLLED-DOCUMENT-RECONCILIATION.md
+A	engineering/evidence/operation-beta/OPERATION-BETA-MISSION-CONVERGENCE-AND-EXECUTION-PATH-ASSESSMENT.md
+A	engineering/evidence/operation-beta/P5-G7-BETA-04-CAGF-01-AUTHORITATIVE-POSITION-AND-MISSION-ORDERING-ASSESSMENT.md
+A	engineering/evidence/operation-beta/WOP-MANAGED-HANDOFF-CONVERGENCE-ASSESSMENT.md
+A	engineering/evidence/operation-beta/ZEUS-CM-EENS-EMP-INTEGRATED-ROADMAP-RECONCILIATION-ASSESSMENT.md
+A	engineering/evidence/operation-beta/beta-test-runtime-source-corrective-001/CORRECTIVE-RECORD.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/AUTHORITY-MODEL-RECONCILIATION.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/CLOSEOUT-ASSESSMENT.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/COMMAND-SURFACE-AUDIT.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/CONFLICT-REGISTER.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/CONTROLLED-DOCUMENT-INVENTORY.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/CROSS-REFERENCE-AUDIT.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/DISPATCH-EXECUTION-START-ASSESSMENT.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/EVIDENCE-QUALIFICATION-ASSESSMENT.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/FINAL-QUALIFICATION-REPORT.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/LIFECYCLE-DOCUMENTATION-RECONCILIATION.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/LIFECYCLE-GAP-REGISTER.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/MONITORING-RECOVERY-ASSESSMENT.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/PROVIDER-SESSION-RUNTIME-ASSESSMENT.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/PUBLICATION-READINESS.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/PUBLICATION-SYNCHRONIZATION-ASSESSMENT.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/RECOMMENDED-LIFECYCLE-REMEDIATION-ROADMAP.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/RECONCILIATION-MANIFEST.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/REMEDIATION-OPTIONS.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/RUNTIME-DOCUMENTATION-DIVERGENCE-MATRIX.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/RUNTIME-LIFECYCLE-MAP.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/STARTING-STATE.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/STATE-MACHINE-CONVERGENCE-ASSESSMENT.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/SUBMISSION-CONTRACT-RECONCILIATION.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/TEST-COVERAGE-ASSESSMENT.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/VALIDATION-FAILURE-REGISTER.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/VALIDATOR-PROFILE-RECONCILIATION.md
+A	engineering/evidence/operation-beta/comprehensive-controlled-document-and-lifecycle-runtime-reconciliation-001/ZEUS-NATIVE-VERIFICATION-COVERAGE.md
+A	engineering/evidence/operation-beta/ob-zeus-g01-lifecycle-gate-convergence-and-residual-assessment-001/AUTHORITATIVE-G01-CONTRACT.md
+A	engineering/evidence/operation-beta/ob-zeus-g01-lifecycle-gate-convergence-and-residual-assessment-001/COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/ob-zeus-g01-lifecycle-gate-convergence-and-residual-assessment-001/DIRTY-WORKTREE-CLASSIFICATION.md
+A	engineering/evidence/operation-beta/ob-zeus-g01-lifecycle-gate-convergence-and-residual-assessment-001/G01-COMPLETION-DECISION.md
+A	engineering/evidence/operation-beta/ob-zeus-g01-lifecycle-gate-convergence-and-residual-assessment-001/G01-G02-BOUNDARY-ANALYSIS.md
+A	engineering/evidence/operation-beta/ob-zeus-g01-lifecycle-gate-convergence-and-residual-assessment-001/G01-REQUIREMENT-MATRIX.md
+A	engineering/evidence/operation-beta/ob-zeus-g01-lifecycle-gate-convergence-and-residual-assessment-001/NEXT-GATE-READINESS.md
+A	engineering/evidence/operation-beta/ob-zeus-g01-lifecycle-gate-convergence-and-residual-assessment-001/PUBLICATION-VS-TECHNICAL-COMPLETION.md
+A	engineering/evidence/operation-beta/ob-zeus-g01-lifecycle-gate-convergence-and-residual-assessment-001/QUALIFIED-EVIDENCE-INVENTORY.md
+A	engineering/evidence/operation-beta/ob-zeus-g01-lifecycle-gate-convergence-and-residual-assessment-001/RESIDUAL-GAP-REGISTER.md
+A	engineering/evidence/operation-beta/ob-zeus-g01-lifecycle-gate-convergence-and-residual-assessment-001/ROADMAP-CONVERGENCE-ANALYSIS.md
+A	engineering/evidence/operation-beta/ob-zeus-g01-lifecycle-gate-convergence-and-residual-assessment-001/STARTING-STATE.md
+A	engineering/evidence/operation-beta/ob-zeus-g01-lifecycle-gate-convergence-and-residual-assessment-001/ZEUS-NATIVE-VERIFICATION.md
+A	engineering/evidence/operation-beta/phase-5-capability-reconciliation-001/PHASE-5-CAPABILITY-RECONCILIATION-REPORT.md
+A	engineering/evidence/operation-beta/roadmap-classification-recording-corrective-001/PROC-0009-REPOSITORY-RECONCILIATION-REPORT.md
+A	engineering/evidence/operation-beta/roadmap-classification-recording-corrective-001/ROADMAP-CLASSIFICATION-RECORDING-CORRECTIVE-COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/roadmap-procedure-maturity-inspection-001/ROADMAP-PROCEDURE-MATURITY-INSPECTION-REPORT.md
+A	engineering/evidence/operation-beta/roadmap-recording-procedure-evaluation-001/ROADMAP-RECORDING-PROCEDURE-EVALUATION-REPORT.md
+A	engineering/evidence/operation-beta/wop-contract-convergence-001/WOP-M1-CANONICAL-CONTRACT-CONVERGENCE-COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/wop-package-maturity-assessment-001/WOP-PACKAGE-MATURITY-ASSESSMENT.md
+A	engineering/evidence/operation-beta/zeus-authorized-publication-transition-baseline-semantics-corrective-001/AUTHORIZED-PUBLICATION-TRANSITION-CONTRACT.md
+A	engineering/evidence/operation-beta/zeus-authorized-publication-transition-baseline-semantics-corrective-001/BASELINE-STATE-MATRIX.md
+A	engineering/evidence/operation-beta/zeus-authorized-publication-transition-baseline-semantics-corrective-001/COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-authorized-publication-transition-baseline-semantics-corrective-001/CONTROLLED-DOCUMENT-RECONCILIATION.md
+A	engineering/evidence/operation-beta/zeus-authorized-publication-transition-baseline-semantics-corrective-001/FAIL-CLOSED-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-authorized-publication-transition-baseline-semantics-corrective-001/IMPLEMENTATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-authorized-publication-transition-baseline-semantics-corrective-001/PUBLICATION-CANDIDATE-MANIFEST.md
+A	engineering/evidence/operation-beta/zeus-authorized-publication-transition-baseline-semantics-corrective-001/QUALIFICATION-PUBLICATION-STATE.json
+A	engineering/evidence/operation-beta/zeus-authorized-publication-transition-baseline-semantics-corrective-001/ROOT-CAUSE-ANALYSIS.md
+A	engineering/evidence/operation-beta/zeus-authorized-publication-transition-baseline-semantics-corrective-001/STARTING-STATE.md
+A	engineering/evidence/operation-beta/zeus-authorized-publication-transition-baseline-semantics-corrective-001/TEST-RESULTS.md
+A	engineering/evidence/operation-beta/zeus-authorized-publication-transition-baseline-semantics-corrective-001/ZEUS-NATIVE-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-codex-transport-thread-lifecycle-reconciliation-corrective-001/CODEX-NATIVE-LIFECYCLE-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-codex-transport-thread-lifecycle-reconciliation-corrective-001/COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-codex-transport-thread-lifecycle-reconciliation-corrective-001/CONTROLLED-DOCUMENT-RECONCILIATION.md
+A	engineering/evidence/operation-beta/zeus-codex-transport-thread-lifecycle-reconciliation-corrective-001/FAIL-CLOSED-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-codex-transport-thread-lifecycle-reconciliation-corrective-001/IMPLEMENTATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-codex-transport-thread-lifecycle-reconciliation-corrective-001/RECOVERY-STATE-MACHINE.md
+A	engineering/evidence/operation-beta/zeus-codex-transport-thread-lifecycle-reconciliation-corrective-001/REMOTE-COMPATIBILITY-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-codex-transport-thread-lifecycle-reconciliation-corrective-001/ROOT-CAUSE-ANALYSIS.md
+A	engineering/evidence/operation-beta/zeus-codex-transport-thread-lifecycle-reconciliation-corrective-001/STARTING-STATE.md
+A	engineering/evidence/operation-beta/zeus-codex-transport-thread-lifecycle-reconciliation-corrective-001/TEST-RESULTS.md
+A	engineering/evidence/operation-beta/zeus-codex-transport-thread-lifecycle-reconciliation-corrective-001/TRANSPORT-THREAD-IDENTITY-MODEL.md
+A	engineering/evidence/operation-beta/zeus-codex-transport-thread-lifecycle-reconciliation-corrective-001/ZEUS-NATIVE-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-execution-activation-gate-001/ADMISSION-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-execution-activation-gate-001/COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-execution-activation-gate-001/CONTROLLED-DOCUMENT-CONSISTENCY.md
+A	engineering/evidence/operation-beta/zeus-execution-activation-gate-001/DISPATCH-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-execution-activation-gate-001/EXECUTION-START-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-execution-activation-gate-001/FIRST-REAL-WORK-UNIT.md
+A	engineering/evidence/operation-beta/zeus-execution-activation-gate-001/MONITORING-CHECKPOINT-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-execution-activation-gate-001/PROVIDER-BINDING-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-execution-activation-gate-001/PROVIDER-INVOCATION-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-execution-activation-gate-001/STARTING-STATE.md
+A	engineering/evidence/operation-beta/zeus-execution-activation-gate-001/VALIDATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-execution-activation-gate-001/ZEUS-NATIVE-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-execution-lifecycle-completion-001/COMPLETION-EVIDENCE.md
+A	engineering/evidence/operation-beta/zeus-execution-lifecycle-completion-001/CONTROLLED-MISSION-WORK-TRANSITION-EVIDENCE.md
+A	engineering/evidence/operation-beta/zeus-execution-lifecycle-completion-001/GATE-1-PROJECTION-ROADMAP-CONVERGENCE-EVIDENCE.md
+A	engineering/evidence/operation-beta/zeus-execution-lifecycle-completion-001/HISTORY-RECONCILIATION-ACCEPTANCE-CORRECTIVE-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-execution-lifecycle-completion-001/PROJECTION-RECONCILIATION-CORRECTIVE-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-execution-lifecycle-completion-001/PROVIDER-CONTROL-RECOVERY-CORRECTIVE-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-execution-lifecycle-submission-contract-investigation-001/AUTHORITY-SEMANTICS-ANALYSIS.md
+A	engineering/evidence/operation-beta/zeus-execution-lifecycle-submission-contract-investigation-001/INVESTIGATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-execution-lifecycle-submission-contract-investigation-001/PHASE1-VS-LIFECYCLE-WOP-COMPARISON.md
+A	engineering/evidence/operation-beta/zeus-execution-lifecycle-submission-contract-investigation-001/RECOMMENDED-REMEDIATION.md
+A	engineering/evidence/operation-beta/zeus-execution-lifecycle-submission-contract-investigation-001/REMEDIATION-OPTIONS.md
+A	engineering/evidence/operation-beta/zeus-execution-lifecycle-submission-contract-investigation-001/SUBMISSION-CALL-PATH.md
+A	engineering/evidence/operation-beta/zeus-execution-provider-evaluation-and-activation-002/COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-execution-provider-evaluation-and-activation-002/FINAL-OMISSION-AUDIT.md
+A	engineering/evidence/operation-beta/zeus-execution-provider-evaluation-and-activation-002/PROVIDER-EVALUATION-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-execution-provider-evaluation-and-activation-002/SESSION-REQUIREMENT-LEDGER.md
+A	engineering/evidence/operation-beta/zeus-execution-provider-evaluation-and-activation-002/STARTING-STATE.md
+A	engineering/evidence/operation-beta/zeus-execution-provider-evaluation-and-activation-002/VALIDATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-execution-provider-evaluation-and-activation-002/ZEUS-NATIVE-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-git-automation-contract-001/COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-git-automation-contract-001/CONTROLLED-DOCUMENT-RECONCILIATION.md
+A	engineering/evidence/operation-beta/zeus-git-automation-contract-001/FINAL-OMISSION-AUDIT.md
+A	engineering/evidence/operation-beta/zeus-git-automation-contract-001/GIT-AUTOMATION-CONTRACT.md
+A	engineering/evidence/operation-beta/zeus-git-automation-contract-001/GIT-USAGE-INVENTORY.md
+A	engineering/evidence/operation-beta/zeus-git-automation-contract-001/IMPLEMENTATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-git-automation-contract-001/PUBLICATION-CANDIDATE-MANIFEST.md
+A	engineering/evidence/operation-beta/zeus-git-automation-contract-001/REPOSITORY-PROJECTION-CONTRACT.md
+A	engineering/evidence/operation-beta/zeus-git-automation-contract-001/SESSION-REQUIREMENT-LEDGER.md
+A	engineering/evidence/operation-beta/zeus-git-automation-contract-001/TEST-RESULTS.md
+A	engineering/evidence/operation-beta/zeus-git-automation-contract-001/VALIDATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-git-automation-contract-001/ZEUS-NATIVE-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/CONTROLLED-DOCUMENT-RECONCILIATION.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/EXECUTION-SESSION-CONTRACT.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/FINAL-OMISSION-AUDIT.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/GAP-004-GAP-007-OPERATIONAL-ASSESSMENT.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/IMPLEMENTATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/LIVE-PROJECTION-TRACE.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/PROVIDER-INVOCATION-CONTRACT.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/PUBLICATION-CANDIDATE-MANIFEST.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/ROADMAP-RECONCILIATION.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/SESSION-REQUIREMENT-LEDGER.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/STARTING-STATE.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/STATE-GRANULARITY-ASSESSMENT.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/TEST-RESULTS.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/VALIDATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-lifecycle-wave2-provider-invocation-execution-session-001/ZEUS-NATIVE-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-native-publication-candidate-authority-resolution-001/COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-native-publication-candidate-authority-resolution-001/FOLLOW-ON-LIFECYCLE-DIVERGENCE.md
+A	engineering/evidence/operation-beta/zeus-native-publication-candidate-authority-resolution-001/PUBLICATION-CANDIDATE-MANIFEST.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/APPENDED-DIRECTIVE-TRACEABILITY.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/BASELINE-PROVENANCE-MODEL.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/CONTROLLED-DOCUMENT-RECONCILIATION.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/FINAL-OMISSION-AUDIT.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/HARDCODING-AUDIT.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/IMPLEMENTATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/PUBLICATION-CANDIDATE-MANIFEST.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/REQUIREMENT-COVERAGE-MATRIX.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/ROOT-CAUSE-ANALYSIS.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/SESSION-INSTRUCTION-RECONCILIATION.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/SESSION-REQUIREMENT-LEDGER.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/STARTING-STATE.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/STATUS-CONTRACT-RECONCILIATION.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/TEST-RESULTS.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/VALIDATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-postpublication-lifecycle-baseline-reconciliation-corrective-001/ZEUS-NATIVE-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-postpublication-verification-routing-corrective-001/COMPLETION-EVIDENCE.md
+A	engineering/evidence/operation-beta/zeus-postpublication-verification-routing-corrective-001/PUBLICATION-CANDIDATE-MANIFEST.md
+A	engineering/evidence/operation-beta/zeus-postpublication-verification-routing-corrective-001/QUALIFICATION-PUBLICATION-STATE.json
+A	engineering/evidence/operation-beta/zeus-provider-evaluation-live-lineage-reconciliation-001/BASELINE-COMPARISON-CLASSIFICATION.md
+A	engineering/evidence/operation-beta/zeus-provider-evaluation-live-lineage-reconciliation-001/COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-provider-evaluation-live-lineage-reconciliation-001/CONTROLLED-DOCUMENT-RECONCILIATION.md
+A	engineering/evidence/operation-beta/zeus-provider-evaluation-live-lineage-reconciliation-001/FINAL-OMISSION-AUDIT.md
+A	engineering/evidence/operation-beta/zeus-provider-evaluation-live-lineage-reconciliation-001/IMPLEMENTATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-provider-evaluation-live-lineage-reconciliation-001/PROVIDER-QUALIFICATION-FRESHNESS-CONTRACT.md
+A	engineering/evidence/operation-beta/zeus-provider-evaluation-live-lineage-reconciliation-001/PROVIDER-SELECTION-PROVENANCE-MODEL.md
+A	engineering/evidence/operation-beta/zeus-provider-evaluation-live-lineage-reconciliation-001/PUBLICATION-CANDIDATE-MANIFEST.md
+A	engineering/evidence/operation-beta/zeus-provider-evaluation-live-lineage-reconciliation-001/ROOT-CAUSE-ANALYSIS.md
+A	engineering/evidence/operation-beta/zeus-provider-evaluation-live-lineage-reconciliation-001/SESSION-REQUIREMENT-LEDGER.md
+A	engineering/evidence/operation-beta/zeus-provider-evaluation-live-lineage-reconciliation-001/STARTING-STATE.md
+A	engineering/evidence/operation-beta/zeus-provider-evaluation-live-lineage-reconciliation-001/TEST-RESULTS.md
+A	engineering/evidence/operation-beta/zeus-provider-evaluation-live-lineage-reconciliation-001/VALIDATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-provider-evaluation-live-lineage-reconciliation-001/ZEUS-NATIVE-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-publication-candidate-qualification-state-authority-corrective-001/COMPLETION-EVIDENCE.md
+A	engineering/evidence/operation-beta/zeus-publication-candidate-qualification-state-authority-corrective-001/PUBLICATION-CANDIDATE-MANIFEST.md
+A	engineering/evidence/operation-beta/zeus-publication-candidate-qualification-state-authority-corrective-001/QUALIFICATION-PUBLICATION-STATE.json
+A	engineering/evidence/operation-beta/zeus-publication-candidate-scope-qualification-001/CANDIDATE-PROVENANCE-AUDIT.json
+A	engineering/evidence/operation-beta/zeus-publication-candidate-scope-qualification-001/CANDIDATE-SCOPE-QUALIFICATION.md
+A	engineering/evidence/operation-beta/zeus-publication-candidate-scope-qualification-001/COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-publication-candidate-scope-qualification-001/FINAL-OMISSION-AUDIT.md
+A	engineering/evidence/operation-beta/zeus-publication-candidate-scope-qualification-001/NATIVE-REVERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-publication-candidate-scope-qualification-001/SELECTION-POLICY-ASSESSMENT.md
+A	engineering/evidence/operation-beta/zeus-publication-candidate-scope-qualification-001/SESSION-REQUIREMENT-LEDGER.md
+A	engineering/evidence/operation-beta/zeus-publication-cohort-authority-001/COHORT-AUTHORITY-MODEL.md
+A	engineering/evidence/operation-beta/zeus-publication-cohort-authority-001/COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-publication-cohort-authority-001/CONTROLLED-DOCUMENT-RECONCILIATION.md
+A	engineering/evidence/operation-beta/zeus-publication-cohort-authority-001/FINAL-OMISSION-AUDIT.md
+A	engineering/evidence/operation-beta/zeus-publication-cohort-authority-001/NATIVE-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-publication-cohort-authority-001/PUBLICATION-CANDIDATE-MANIFEST.md
+A	engineering/evidence/operation-beta/zeus-publication-cohort-authority-001/ROOT-CAUSE-ANALYSIS.md
+A	engineering/evidence/operation-beta/zeus-publication-cohort-authority-001/SESSION-REQUIREMENT-LEDGER.md
+A	engineering/evidence/operation-beta/zeus-publication-cohort-authority-001/SUPERSESSION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-publication-cohort-authority-001/TEST-RESULTS.md
+A	engineering/evidence/operation-beta/zeus-publication-cohort-authority-001/VALIDATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-publication-stage-atomicity-corrective-001/COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-publication-stage-atomicity-corrective-001/FAIL-CLOSED-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-publication-stage-atomicity-corrective-001/IMPLEMENTATION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-publication-stage-atomicity-corrective-001/LIVE-ACCEPTANCE.md
+A	engineering/evidence/operation-beta/zeus-publication-stage-atomicity-corrective-001/PUBLICATION-CANDIDATE-MANIFEST.md
+A	engineering/evidence/operation-beta/zeus-publication-stage-atomicity-corrective-001/QUALIFICATION-PUBLICATION-STATE.json
+A	engineering/evidence/operation-beta/zeus-publication-stage-atomicity-corrective-001/ROOT-CAUSE-ANALYSIS.md
+A	engineering/evidence/operation-beta/zeus-publication-stage-atomicity-corrective-001/STARTING-STATE.md
+A	engineering/evidence/operation-beta/zeus-publication-stage-atomicity-corrective-001/TEST-RESULTS.md
+A	engineering/evidence/operation-beta/zeus-publication-transaction-supersession-cardinality-corrective-001/COMPLETION-REPORT.md
+A	engineering/evidence/operation-beta/zeus-publication-transaction-supersession-cardinality-corrective-001/CONTROLLED-DOCUMENT-RECONCILIATION.md
+A	engineering/evidence/operation-beta/zeus-publication-transaction-supersession-cardinality-corrective-001/FAIL-CLOSED-VERIFICATION.md
+A	engineering/evidence/operation-beta/zeus-publication-transaction-supersession-cardinality-corrective-001/LIVE-TRANSACTION-RECONCILIATION.md
+A	engineering/evidence/operation-beta/zeus-publication-transaction-supersession-cardinality-corrective-001/PUBLICATION-CANDIDATE-MANIFEST.md
+A	engineering/evidence/operation-beta/zeus-publication-transaction-supersession-cardinality-corrective-001/PUBLICATION-CARDINALITY-CONTRACT.md
+A	engineering/evidence/operation-beta/zeus-publication-transaction-supersession-cardinality-corrective-001/QUALIFICATION-PUBLICATION-STATE.json
+A	engineering/evidence/operation-beta/zeus-publication-transaction-supersession-cardinality-corrective-001/REPREPARE-ATOMICITY-ASSESSMENT.md
+A	engineering/evidence/operation-beta/zeus-publication-transaction-supersession-cardinality-corrective-001/ROOT-CAUSE-ANALYSIS.md
+A	engineering/evidence/operation-beta/zeus-publication-transaction-supersession-cardinality-corrective-001/STARTING-STATE.md
+A	engineering/evidence/operation-beta/zeus-publication-transaction-supersession-cardinality-corrective-001/SUPERSESSION-LINEAGE-CONTRACT.md
+A	engineering/evidence/operation-beta/zeus-publication-transaction-supersession-cardinality-corrective-001/TEST-RESULTS.md
+A	engineering/evidence/operation-beta/zeus-publication-transaction-supersession-cardinality-corrective-001/ZEUS-NATIVE-VERIFICATION.md
+A	engineering/evidence/zeus-codex-session-timing-001/README.md
+A	engineering/oversight/codex-handoff-contract.schema.yaml
+A	engineering/oversight/examples/zeus-execution-lifecycle-gate1-handoff.yaml
+A	engineering/oversight/work-contract.schema.yaml
+M	engineering/validation/controlled-document-semantic-profiles.yaml
+M	engineering/validation/engineering-properties.yaml
+M	engineering/wop/canonical-wop-package.schema.yaml
+A	engineering/wop/publication-candidate-state.schema.yaml
+A	engineering/work-orders/WOP-OB-CAGF-G01-CANONICAL-001/canonical-79a9fb9ce9017eb66322bbdc/bootstrap.md
+A	engineering/work-orders/WOP-OB-CAGF-G01-CANONICAL-001/canonical-79a9fb9ce9017eb66322bbdc/gates.yaml
+A	engineering/work-orders/WOP-OB-CAGF-G01-CANONICAL-001/canonical-79a9fb9ce9017eb66322bbdc/manifests/immutable-manifest.yaml
+A	engineering/work-orders/WOP-OB-CAGF-G01-CANONICAL-001/canonical-79a9fb9ce9017eb66322bbdc/mission.yaml
+A	engineering/work-orders/WOP-OB-CAGF-G01-CANONICAL-001/canonical-79a9fb9ce9017eb66322bbdc/roadmap.md
+A	engineering/work-orders/WOP-OB-CAGF-G01-CANONICAL-001/canonical-79a9fb9ce9017eb66322bbdc/source-wop.yaml
+A	engineering/work-orders/WOP-OB-CAGF-G01-CANONICAL-001/canonical-79a9fb9ce9017eb66322bbdc/traceability.json
+A	engineering/work-orders/WOP-OB-CAGF-G01-CANONICAL-001/canonical-c7a90c8854c170474d210594/bootstrap.md
+A	engineering/work-orders/WOP-OB-CAGF-G01-CANONICAL-001/canonical-c7a90c8854c170474d210594/gates.yaml
+A	engineering/work-orders/WOP-OB-CAGF-G01-CANONICAL-001/canonical-c7a90c8854c170474d210594/manifests/immutable-manifest.yaml
+A	engineering/work-orders/WOP-OB-CAGF-G01-CANONICAL-001/canonical-c7a90c8854c170474d210594/mission.yaml
+A	engineering/work-orders/WOP-OB-CAGF-G01-CANONICAL-001/canonical-c7a90c8854c170474d210594/roadmap.md
+A	engineering/work-orders/WOP-OB-CAGF-G01-CANONICAL-001/canonical-c7a90c8854c170474d210594/source-wop.yaml
+A	engineering/work-orders/WOP-OB-CAGF-G01-CANONICAL-001/revisions/2/canonical-wop-package.yaml
+A	engineering/work-orders/WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001/source-wop.md
+M	scripts/lib/emp/bootstrap_boundary.py
+M	scripts/lib/emp/canonical_lifecycle_resolver.py
+M	scripts/lib/emp/canonical_runtime_mission.py
+M	scripts/lib/emp/codex_adapter.py
+M	scripts/lib/emp/codex_app_server_broker.py
+M	scripts/lib/emp/codex_interactive.py
+M	scripts/lib/emp/codex_reconciliation.py
+A	scripts/lib/emp/codex_session_timing.py
+M	scripts/lib/emp/execution_monitoring.py
+M	scripts/lib/emp/execution_start.py
+M	scripts/lib/emp/legacy_lifecycle_reconciliation.py
+M	scripts/lib/emp/lifecycle_baseline_reconciliation.py
+M	scripts/lib/emp/managed_handoff.py
+A	scripts/lib/emp/managed_work_contract.py
+M	scripts/lib/emp/mission_admission_verification.py
+M	scripts/lib/emp/mission_submission.py
+M	scripts/lib/emp/mission_verification_controller.py
+M	scripts/lib/emp/next_action.py
+M	scripts/lib/emp/provider_invocation.py
+A	scripts/lib/emp/publication_authority.py
+M	scripts/lib/emp/publication_candidate_authority.py
+M	scripts/lib/emp/publication_cohort.py
+M	scripts/lib/emp/publication_transaction.py
+M	scripts/lib/emp/publication_workflow.py
+A	scripts/lib/emp/repository_projection.py
+M	scripts/lib/emp/wop_packaging.py
+M	scripts/lib/eos/canonical_baseline.py
+M	scripts/lib/eos/operational_beta.py
+M	scripts/lib/wop/canonical_package.py
+M	scripts/tests/test-beta-mission-projection.py
+M	scripts/tests/test-beta-platform-invariants.py
+A	scripts/tests/test-cagf01-identity-binding-corrective.py
+M	scripts/tests/test-controlled-document-semantic-validation.py
+M	scripts/tests/test-managed-codex-handoff.py
+A	scripts/tests/test-zeus-authorized-publication-transition-baseline.py
+M	scripts/tests/test-zeus-beta-controller.py
+M	scripts/tests/test-zeus-canonical-baseline-resolution.py
+A	scripts/tests/test-zeus-codex-session-timing.py
+A	scripts/tests/test-zeus-codex-transport-thread-lifecycle.py
+A	scripts/tests/test-zeus-execution-lifecycle-completion-corrective.py
+M	scripts/tests/test-zeus-mission-verification-controller.py
+A	scripts/tests/test-zeus-operation-lifecycle-convergence.py
+M	scripts/tests/test-zeus-p3-g1-mission-admission-boundary.py
+M	scripts/tests/test-zeus-p5-g4-provider-invocation.py
+M	scripts/tests/test-zeus-p5-g5-execution-start.py
+M	scripts/tests/test-zeus-p5-g6-codex-adapter.py
+M	scripts/tests/test-zeus-p5-g6-session-supersession.py
+A	scripts/tests/test-zeus-postpublication-verification-routing.py
+M	scripts/tests/test-zeus-publication-candidate-authority.py
+A	scripts/tests/test-zeus-publication-supersession-cardinality.py
+M	scripts/tests/test-zeus-publication-transaction.py
+A	scripts/tests/test-zeus-repository-projection.py
+M	scripts/tests/test-zeus-wave1-canonical-lifecycle-resolver.py
+M	scripts/validate_controlled_documents.py
+M	scripts/zeus
+
+COMMITS:
+> 4f5626d Preserve OB lifecycle development before architectural rebuild

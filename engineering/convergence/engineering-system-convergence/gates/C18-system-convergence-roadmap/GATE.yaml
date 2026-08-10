@@ -1,0 +1,47 @@
+schema_version: 1
+gate_id: C18
+title: System Convergence Roadmap
+status: PENDING
+purpose: Convert the approved target architecture into a safe, executable migration sequence.
+problem_statement: An architecture alone does not define dependency order, acceptance gates, compatibility periods, rollback boundaries, or authorization packages.
+objective: Convert the approved target architecture into an executable implementation roadmap with dependency-ordered migration gates and safe rollback boundaries.
+rationale: Controlled implementation requires bounded work units that preserve service, history, authority, and recoverability.
+scope_in:
+  - Migration gates, dependencies, prerequisites, outputs, evidence, acceptance, compatibility, rollback, deprecation, and authorization needs.
+scope_out:
+  - Execute migrations, create broad automatic authorization, or begin C20 implementation.
+dependencies: [C17]
+entry_conditions:
+  - C17 target architecture is approved and evidence-backed.
+  - C18 is explicitly selected and unresolved architecture blockers are absent.
+authoritative_inputs:
+  - Approved C17 architecture, C16 dispositions, subsystem evidence, governing lifecycle/publication/recovery contracts.
+assessment_or_execution_procedure:
+  - Decompose target adoption into dependency-ordered, reversible migration gates.
+  - Define entry, procedure, outputs, proof, acceptance, compatibility, stop, rollback, and next authorization for each gate.
+  - Identify state/data migrations, parallel-operation limits, deprecation/removal timing, and publication boundaries.
+  - Validate end-to-end ordering, no orphan consumers, service continuity, and recovery at every boundary.
+required_outputs:
+  - Approved implementation/migration roadmap.
+  - Dependency and critical-path model.
+  - Gate evidence and acceptance contracts.
+  - Compatibility/deprecation/removal plan.
+  - Rollback/publication/recovery boundaries.
+  - Authorization package map and RESULT.yaml.
+required_evidence:
+  - Architecture-to-migration traceability and scenario/rollback review evidence.
+acceptance_criteria:
+  - Every target change is assigned to a bounded dependency-ordered gate.
+  - Every gate has safe rollback, evidence, acceptance, and separate authorization boundaries.
+fail_closed_conditions:
+  - Migration order can strand a consumer, split authority, lose history, or prevent rollback.
+  - A gate implies authorization beyond its explicit package.
+stop_boundary: Stop after implementation-roadmap approval; do not implement any migration.
+result_location: engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/RESULT.yaml
+evidence_location: engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/evidence
+next_gate: C19
+resume_instructions:
+  start_here: Decompose only the approved C17 target into bounded migration gates with rollback.
+  validate_first: engctl roadmap validate
+  next_authorized_action: BEGIN_C18_SYSTEM_CONVERGENCE_ROADMAP
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED
