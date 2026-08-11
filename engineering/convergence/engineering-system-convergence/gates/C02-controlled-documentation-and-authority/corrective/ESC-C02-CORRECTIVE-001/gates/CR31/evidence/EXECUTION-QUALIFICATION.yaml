@@ -1,0 +1,29 @@
+schema_version: 1
+record_id: CR31-EXECUTION-QUALIFICATION-001
+gate_id: CR31
+recorded_at: '2026-08-11T00:57:25Z'
+result: PASS
+objective: Verify missing evidence/review prerequisites block acceptance.
+qualification:
+  tested_missing_prerequisites:
+  - valid_result
+  - evidence
+  - review_state
+  - authority_identity
+  - required_binding
+  missing_prerequisite_fail_closed: true
+  prerequisites_complete: false
+  acceptance_authorized: false
+  receipt_created: false
+  completion_authorized: false
+  state_advanced: false
+  successor_executed: false
+  cr32_executed: false
+boundary:
+  cr31_result_written: false
+  state_advanced: false
+  parent_c02_advanced: false
+  cr32_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

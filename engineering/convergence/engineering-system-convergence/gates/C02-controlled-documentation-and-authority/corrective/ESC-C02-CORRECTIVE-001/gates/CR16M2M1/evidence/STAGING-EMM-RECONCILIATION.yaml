@@ -1,0 +1,16 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR16M2M1
+recorded_at: '2026-08-10T10:00:55Z'
+result: PASS
+classification: AUTHORIZED_CR16M2M1_STAGING_PROJECTION_DRIFT
+drifted_sources:
+- path: engineering/convergence/engineering-system-convergence/STATE.yaml
+  manifest_sha256: 23924fa1ba56c66a6fdc5213ebaaeddf7f02823bc07ccf20d369a380cf27f028
+  actual_sha256: 23cffe3eaac0ff81b4701c21e0525c392422a60cd321d63ba8f25d9153897f68
+- path: docs/project/PROJ-0001-PROJECT_STATE.md
+  manifest_sha256: e8fca924b059722e7f0f2c9b4a86e5264a7ee54c8e1921c5fa87b629ba682f3c
+  actual_sha256: 6d500dec7377a06e117bc44c31ddd7f1441649d0d6bec3cdd0eb66ff612b6ebe
+rebind_authorized: true
+persisted_qualification_changed: false
+persisted_evaluation_changed: false

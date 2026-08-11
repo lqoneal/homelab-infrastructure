@@ -1,0 +1,31 @@
+schema_version: 1
+record_id: CR40-EXISTING-RESOLVER-QUALIFICATION-001
+gate_id: CR40
+recorded_at: '2026-08-11T05:06:58Z'
+result: PASS
+opportunity_id: ZO-057
+qualification_instrumentation:
+  previous_missing_gate_id_argument: CORRECTED
+  previous_classifier_name_error: CORRECTED
+  production_defect_from_previous_failure: false
+existing_capability:
+  candidate_confirmed: true
+  resolver_callable: scripts.lib.eos.convergence_roadmap.project_successor_action_contract
+  invocation_contract: project_successor_action_contract(repository_root, gate_id='CR40')
+  classification: RESOLVER_EXCEPTION_FAIL_CLOSED
+  resolved_actions: []
+  behavior_sufficient: UNPROVEN
+  proven_gap: EXCEPTION_REQUIRES_SEMANTIC_ANALYSIS
+  greenfield_creation_authorized: false
+  parallel_resolver_authorized: false
+  implementation_authorized_only_for_proven_gap: true
+  exception:
+    type: RoadmapError
+    message: 'gate locator is not uniquely resolvable: CR40'
+safety:
+  fixture_only: true
+  live_cr40_action_materialized: false
+  live_state_advanced: false
+  cr41_executed: false
+  resolver_read_only: true
+  repeat_resolution_deterministic: true

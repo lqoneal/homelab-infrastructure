@@ -1,0 +1,23 @@
+schema_version: 1
+record_id: CR23-ZO009-AUTHORITY-LAYER-DECISION-001
+gate_id: CR23
+opportunity_id: ZO-009
+recorded_at: '2026-08-10T15:23:58Z'
+decision: CANONICAL_LAYER_OWNS_STRUCTURE
+canonical_resolver_owns:
+- gate schema validity
+- historical next_gate determinism
+- nonterminal next_gate resolution
+- terminal next_gate null enforcement
+- terminal continuation completeness
+- resume_instructions schema validity
+zo009_owns:
+- read-only authoritative successor lookup
+- successor GATE.yaml authority-surface identification
+- resume_instructions.next_authorized_action projection
+- exactly-one projected roadmap successor action
+- terminal no-roadmap-successor projection
+- proof that projection does not execute successor
+removed_assumption: top-level next_authorized_action is not an authorized gate-contract action surface
+terminal_semantics: terminal means no roadmap successor; a terminal gate may retain a resume or external-authority
+  action

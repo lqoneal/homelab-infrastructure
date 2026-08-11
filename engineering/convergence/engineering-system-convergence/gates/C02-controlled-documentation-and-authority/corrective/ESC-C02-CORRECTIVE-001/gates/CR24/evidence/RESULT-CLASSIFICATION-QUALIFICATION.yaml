@@ -1,0 +1,31 @@
+schema_version: 1
+record_id: CR24-RESULT-CLASSIFICATION-QUALIFICATION-001
+gate_id: CR24
+result: PASS
+recorded_at: '2026-08-10T18:37:44Z'
+qualified_semantics:
+  result_class: VALID_FINAL
+  lifecycle_state: AWAITING_OPERATOR_REVIEW
+  canonical_validation: PASS
+  structural_result: PASS
+  review_boundary_result: PASS
+  state_transition_result: PASS
+  authority_boundary_result: PASS
+  fail_closed_result: PASS
+  acceptance_receipt_present: false
+  completion_authorized: false
+  state_advanced: false
+  successor_executed: false
+  cr25_executed: false
+fixture_corrective:
+  prior_fixture_issue: Block 3 excluded .git, causing synthetic C12 discovery failure.
+  corrective: Qualification fixture retained .git and required C12 discovery PASS.
+  discovery_fixture_defect_corrected: true
+boundary:
+  live_cr24_result_written: false
+  live_state_advanced: false
+  parent_c02_advanced: false
+  cr25_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

@@ -1,0 +1,19 @@
+schema_version: 1
+gate_id: CR17
+implemented_at: '2026-08-10T11:10:23+00:00'
+result: PASS
+objective: Expose result, review and acceptance as distinct status facts.
+status_projection:
+  lifecycle_state: AWAITING_OPERATOR_REVIEW
+  execution_result_state: VALID_FINAL
+  review_required: true
+  review_state: AWAITING_OPERATOR_REVIEW
+  operator_decision: NONE
+  completion_state: INCOMPLETE
+  read_only: true
+qualification:
+  deterministic_projection: PASS
+  read_only_projection: PASS
+  targeted_status_tests: 2/2 PASS
+  roadmap_regression: 33/33 PASS
+  emm_source_integrity: PASS

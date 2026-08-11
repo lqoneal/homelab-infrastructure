@@ -1,0 +1,220 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR09
+finding_id: C02-F-027
+status: DEFINED_NOT_IMPLEMENTED
+
+purpose: >
+  Define the explicit authority required to accept or reject a VALID_FINAL
+  roadmap-gate result without allowing result existence, CLI invocation, or
+  process state to imply operator consent.
+
+authority_principles:
+
+  - id: OAU-001
+    rule: >
+      ACCEPTED and REJECTED may be produced only by an explicit authorized
+      operator decision.
+
+  - id: OAU-002
+    rule: >
+      Result existence, result validity, result finality, process identity,
+      CLI execution, or resume state MUST NOT imply operator acceptance.
+
+  - id: OAU-003
+    rule: >
+      Operator authority must bind to an exact roadmap identity, gate identity,
+      result identity, and result digest.
+
+  - id: OAU-004
+    rule: >
+      A decision made against stale, replaced, mismatched, or conflicting
+      result evidence is invalid and MUST fail closed.
+
+  - id: OAU-005
+    rule: >
+      Operator decisions are durable historical facts and MUST NOT be silently
+      overwritten.
+
+authorized_decisions:
+
+  ACCEPT:
+    lifecycle_effect: ACCEPTED
+    requirements:
+      - Current lifecycle state is AWAITING_OPERATOR_REVIEW.
+      - Result class is VALID_FINAL.
+      - Result identity and digest validate.
+      - Operator authority is explicit.
+      - No conflicting decision exists.
+    does_not_imply:
+      - Gate completion.
+      - Successor activation.
+      - EOS synchronization.
+      - Publication.
+
+  REJECT:
+    lifecycle_effect: REJECTED
+    requirements:
+      - Current lifecycle state is AWAITING_OPERATOR_REVIEW.
+      - Result class is VALID_FINAL.
+      - Result identity and digest validate.
+      - Operator authority is explicit.
+      - No conflicting decision exists.
+    does_not_imply:
+      - Result deletion.
+      - Result rewrite.
+      - Gate completion.
+      - Automatic re-execution.
+
+authority_binding:
+
+  required_fields:
+    - roadmap_id
+    - roadmap_version
+    - gate_id
+    - gate_definition_digest
+    - result_path
+    - result_digest
+    - decision
+    - operator_identity
+    - decision_timestamp
+    - transaction_id
+
+  optional_fields:
+    - operator_comment
+    - external_authority_reference
+
+  prohibited_bindings:
+    - floating current gate without gate identity
+    - result path without digest
+    - gate ID without roadmap identity
+    - implicit shell session identity as operator consent
+    - conversational context as sole authority
+
+operator_identity_semantics:
+
+  requirement: >
+    The persisted decision must identify the operator authority sufficiently
+    for independent verification.
+
+  current_bootstrap_model: >
+    Where the system still relies on direct human operator authority, the
+    operator decision must nevertheless be persisted explicitly and bound to
+    the exact lifecycle transaction.
+
+  future_model: >
+    Later Zeus/EMP authority infrastructure may strengthen identity resolution
+    but must preserve the same explicit decision semantics.
+
+decision_receipt_semantics:
+
+  requirement: >
+    Each ACCEPT or REJECT action must produce a durable machine-readable review
+    decision record or equivalent receipt.
+
+  receipt_properties:
+    - immutable_after_recording
+    - digest_bound
+    - gate_bound
+    - roadmap_bound
+    - decision_bound
+    - replay_detectable
+    - independently_readable
+
+  replay:
+    exact_same_decision:
+      behavior: IDEMPOTENT_OR_ALREADY_APPLIED
+
+    same_transaction_different_decision:
+      behavior: FAIL_CLOSED
+
+    same_result_different_digest:
+      behavior: FAIL_CLOSED
+
+    different_result_same_transaction:
+      behavior: FAIL_CLOSED
+
+decision_conflict_semantics:
+
+  conflicting_accept_reject:
+    behavior:
+      - fail_closed
+      - do_not_advance
+      - preserve_both_claims_as_evidence
+      - require_explicit_reconciliation
+
+  duplicate_identical_decision:
+    behavior:
+      - idempotent
+      - no_duplicate_lifecycle_effect
+
+revocation_semantics:
+
+  principle: >
+    An accepted or rejected historical operator decision is not erased.
+
+  correction_model: >
+    If an operator decision is later determined to be invalid, remediation must
+    create a new explicit corrective/reversal transaction rather than rewriting
+    the historical decision record.
+
+read_only_boundaries:
+
+  validate:
+    may_create_operator_decision: false
+
+  evaluate:
+    may_create_operator_decision: false
+
+  status:
+    may_create_operator_decision: false
+
+  resume:
+    may_create_operator_decision: false
+
+  inspection:
+    may_create_operator_decision: false
+
+fail_closed_conditions:
+
+  - Missing operator authority.
+  - Missing decision identity.
+  - Missing roadmap or gate binding.
+  - Missing result digest.
+  - Gate definition digest mismatch.
+  - Result digest mismatch.
+  - Result class is not VALID_FINAL.
+  - Lifecycle state is not AWAITING_OPERATOR_REVIEW.
+  - Conflicting prior decision.
+  - Stale or superseded result.
+  - Ambiguous operator identity.
+  - Transaction replay conflict.
+
+invariants:
+
+  - id: OAU-INV-001
+    rule: Operator acceptance MUST always be explicit.
+
+  - id: OAU-INV-002
+    rule: Operator rejection MUST always be explicit.
+
+  - id: OAU-INV-003
+    rule: No read-only interface may create a decision.
+
+  - id: OAU-INV-004
+    rule: Every decision must bind to the exact result digest.
+
+  - id: OAU-INV-005
+    rule: Every decision must bind to the exact frozen gate definition.
+
+  - id: OAU-INV-006
+    rule: Conflicting decisions MUST fail closed.
+
+  - id: OAU-INV-007
+    rule: Exact replay must be idempotent or already-applied.
+
+  - id: OAU-INV-008
+    rule: Historical operator decisions are append-only.
+
+implementation_authorized: false
+next_design_item: CR10

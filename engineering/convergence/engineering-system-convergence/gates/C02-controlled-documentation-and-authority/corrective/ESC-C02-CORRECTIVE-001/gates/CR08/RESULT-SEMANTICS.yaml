@@ -1,0 +1,209 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR08
+finding_id: C02-F-027
+status: DEFINED_NOT_IMPLEMENTED
+
+purpose: >
+  Define execution-result validity and finality independently of operator
+  review, acceptance, completion, and successor activation.
+
+result_facts:
+
+  result_exists:
+    type: boolean
+    meaning: >
+      A result artifact exists at the exact result location declared by the
+      applicable gate contract.
+
+  result_identity_valid:
+    type: boolean
+    meaning: >
+      The result identifies the exact roadmap and gate for which it was
+      produced.
+
+  result_schema_valid:
+    type: boolean
+    meaning: >
+      The result satisfies the required structural schema.
+
+  result_evidence_valid:
+    type: boolean
+    meaning: >
+      All required evidence exists, resolves safely, and satisfies any required
+      digest or semantic checks.
+
+  result_final:
+    type: boolean
+    meaning: >
+      The execution result is terminal for the execution attempt and is not an
+      in-progress or provisional record.
+
+  result_reviewable:
+    type: boolean
+    meaning: >
+      The result is valid, final, evidence-complete, and eligible for the
+      operator-review lifecycle.
+
+  result_stale:
+    type: boolean
+    meaning: >
+      The result no longer binds to the exact current gate contract, execution
+      attempt, repository identity, or other required provenance.
+
+  result_conflicting:
+    type: boolean
+    meaning: >
+      More than one incompatible result or decision claims authority for the
+      same gate/execution identity.
+
+validity_classes:
+
+  - id: ABSENT
+    definition: No result exists.
+    reviewable: false
+    acceptance_implied: false
+    completion_implied: false
+
+  - id: INVALID
+    definition: >
+      A result exists but fails identity, schema, evidence, digest, semantic,
+      or provenance validation.
+    reviewable: false
+    acceptance_implied: false
+    completion_implied: false
+
+  - id: NONFINAL
+    definition: >
+      A result exists but does not represent terminal execution outcome.
+    reviewable: false
+    acceptance_implied: false
+    completion_implied: false
+
+  - id: STALE
+    definition: >
+      A structurally valid result no longer binds to the exact authoritative
+      execution/gate context required for review.
+    reviewable: false
+    acceptance_implied: false
+    completion_implied: false
+
+  - id: CONFLICTING
+    definition: >
+      Incompatible authoritative claims exist for the same result identity or
+      execution attempt.
+    reviewable: false
+    acceptance_implied: false
+    completion_implied: false
+
+  - id: VALID_FINAL
+    definition: >
+      The result is identity-valid, schema-valid, evidence-valid, final, and
+      provenance-consistent.
+    reviewable: true
+    acceptance_implied: false
+    completion_implied: false
+
+review_boundary:
+
+  eligible_class: VALID_FINAL
+
+  required_facts:
+    - result_exists
+    - result_identity_valid
+    - result_schema_valid
+    - result_evidence_valid
+    - result_final
+    - result_reviewable
+
+  prohibited_inferences:
+    - Valid result does not imply ACCEPTED.
+    - Final result does not imply ACCEPTED.
+    - Reviewable result does not imply ACCEPTED.
+    - RESULT.yaml existence does not imply ACCEPTED.
+    - RESULT.yaml existence does not imply COMPLETED.
+    - Operator acceptance does not originate from result contents.
+
+terminal_result_semantics:
+
+  requirement: >
+    A result may be terminal for an execution attempt without making the gate
+    terminal in the roadmap lifecycle.
+
+  distinction:
+    execution_terminal: >
+      The execution attempt has produced a final result.
+    gate_terminal: >
+      The roadmap gate has completed the qualified lifecycle advancement.
+    roadmap_terminal: >
+      The final roadmap gate has completed and no successor exists.
+
+stale_result_semantics:
+
+  stale_if:
+    - Gate identity does not match.
+    - Result location does not match the gate contract.
+    - Required frozen gate digest does not match.
+    - Required execution identity does not match.
+    - Required repository/provenance identity does not match.
+    - A later qualified execution attempt supersedes the result.
+
+  behavior:
+    - fail_closed
+    - do_not_review
+    - do_not_accept
+    - do_not_complete
+    - preserve_as_evidence_where_required
+
+conflict_semantics:
+
+  examples:
+    - Two incompatible results claim the same execution identity.
+    - Result digest differs from an already-bound review receipt.
+    - A replay presents different result content under the same transaction identity.
+
+  behavior:
+    - fail_closed
+    - no_state_advancement
+    - no_operator_decision_inference
+    - preserve_conflict_evidence
+
+result_value_semantics:
+
+  principle: >
+    Execution-result value is distinct from roadmap lifecycle state.
+
+  examples:
+    - COMPLETE_WITH_FINDINGS may still require operator review.
+    - PASS may still require operator review.
+    - FAIL may be final for execution while preventing lifecycle completion.
+    - A result value never creates ACCEPTED by itself.
+
+invariants:
+
+  - id: RSM-INV-001
+    rule: Result existence MUST NOT imply acceptance.
+
+  - id: RSM-INV-002
+    rule: Result finality MUST NOT imply acceptance.
+
+  - id: RSM-INV-003
+    rule: Only VALID_FINAL results may enter operator review.
+
+  - id: RSM-INV-004
+    rule: Invalid, stale, nonfinal, or conflicting results MUST fail closed.
+
+  - id: RSM-INV-005
+    rule: Review must bind to the exact result identity and digest.
+
+  - id: RSM-INV-006
+    rule: Result value and lifecycle state MUST remain distinct facts.
+
+  - id: RSM-INV-007
+    rule: Result validation MUST be read-only.
+
+  - id: RSM-INV-008
+    rule: Existing historical result records MUST NOT be silently rewritten.
+
+implementation_authorized: false
+next_design_item: CR09

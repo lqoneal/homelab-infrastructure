@@ -1,0 +1,144 @@
+schema_version: 1
+contract_id: CR22-MANUAL-EXECUTION-001
+gate_id: CR22
+title: Implement Replay Protection
+established_at: '2026-08-10T13:52:39Z'
+authority:
+  gate_contract: gates/CR22/GATE.yaml
+  corrective_roadmap: ROADMAP.yaml
+  corrective_state: STATE.yaml
+  parent_gate: C02
+  current_item_required: CR22
+  dependency_required: CR21
+  next_item: CR23
+objective: Complete deterministic replay/conflict handling for review and advancement transactions.
+execution_mode: MANUAL_BOUNDED
+preconditions:
+- Corrective STATE.yaml identifies CR22 as current.
+- CR21 RESULT.yaml exists and records COMPLETE/PASS.
+- Parent roadmap remains at C02.
+- CR22 RESULT.yaml is absent.
+- CR23 has not executed.
+- EMM has zero missing sources and zero drift.
+- Protected and authority-bearing inputs are captured before mutation.
+implementation_scope:
+  review_transaction: true
+  advancement_transaction: true
+  real_c02_mutation_fixture: false
+  successor_execution: false
+  eos_synchronization: false
+  commit: false
+  push: false
+required_fixture_matrix:
+- fixture: EXACT_REPLAY
+  required_outcome: ALREADY_APPLIED
+  requirement: Exact replay cannot duplicate receipts, completed-gate membership, successor activation,
+    or provenance.
+- fixture: COMMITTED_REPLAY
+  required_outcome: ALREADY_APPLIED
+  requirement: A durably completed transaction replays idempotently without new lifecycle effects.
+- fixture: CONFLICTING_TRANSACTION_IDENTITY
+  required_outcome: FAIL_CLOSED
+  requirement: Reuse of transaction identity with conflicting bindings fails before authoritative mutation.
+- fixture: STALE_RESULT
+  required_outcome: FAIL_CLOSED
+  requirement: A stale result identity cannot authorize review, acceptance, or advancement.
+- fixture: STALE_STATE
+  required_outcome: FAIL_CLOSED
+  requirement: A stale authoritative state identity cannot authorize a transition.
+- fixture: STALE_RECEIPT
+  required_outcome: FAIL_CLOSED
+  requirement: A stale or mismatched receipt cannot authorize acceptance or advancement.
+- fixture: PARTIAL_PROVENANCE_PRE_STATE_PROMOTION
+  required_outcome: RECOVERED
+  requirement: Persisted transaction provenance with the original pre-state resumes deterministically.
+- fixture: PARTIAL_PROVENANCE_POST_STATE_PROMOTION
+  required_outcome: RECOVERED
+  requirement: Persisted transaction provenance with the qualified post-state finalizes deterministically.
+- fixture: UNRECOVERABLE_PARTIAL_STATE
+  required_outcome: FAIL_CLOSED
+  requirement: State matching neither the qualified pre-state nor post-state cannot infer completion.
+required_machine_classifications:
+- APPLIED
+- ALREADY_APPLIED
+- RECOVERED
+- FAIL_CLOSED
+ordered_execution:
+- step: 1
+  action: Verify repository identity, authority, dependency, execution position, EMM, and mutation boundary.
+- step: 2
+  action: Inspect CR21 advancement implementation and CR12 replay/interruption specification before mutation.
+- step: 3
+  action: Create isolated review and advancement transaction fixtures covering the complete required matrix.
+- step: 4
+  action: Implement only missing replay/conflict/recovery behavior required by the fixture matrix.
+- step: 5
+  action: Run isolated replay, stale-identity, conflict, interruption, and unrecoverable-state qualification.
+- step: 6
+  action: Run complete convergence-roadmap and lifecycle regression suites.
+- step: 7
+  action: Reconcile EMM only for authorized changed bound sources, then require zero missing and zero
+    drift.
+- step: 8
+  action: Run canonical roadmap validation/evaluation and prove parent C02 remains unadvanced.
+- step: 9
+  action: Write IMPLEMENTATION-CR22.yaml, COMMANDS.md, VALIDATION.yaml, SUMMARY.md, and RESULT.yaml only
+    after all acceptance criteria pass.
+- step: 10
+  action: Append corrective HISTORY.md and advance corrective STATE.yaml exactly once from CR22 to CR23.
+- step: 11
+  action: Stop immediately. Do not execute CR23.
+acceptance_criteria:
+- Exact replay cannot duplicate lifecycle effects.
+- Conflicting replay fails closed.
+- Stale identities cannot authorize transitions.
+- Partial transaction conditions are detectable and recoverable.
+- The next CR item is not executed in the same transaction.
+- Corrective STATE.yaml is advanced only after this item's result passes.
+- SUMMARY.md exists and accurately summarizes the gate objective, result, material findings/decisions,
+  validation, artifacts, mutation boundary, and next authorized item.
+- Corrective HISTORY.md contains a human-readable entry for this completed gate.
+- Every ordered manual-procedure step applicable to this gate is either PASS with evidence or explicitly
+  NOT_APPLICABLE with justification.
+- All gate-specific expected outcomes are independently reproducible from durable repository state.
+- Pre/post protected-artifact and authority-surface comparisons prove the mutation boundary.
+- Interruption or failure cannot silently authorize successor execution.
+fail_closed_conditions:
+- Protected artifact manifest mismatch
+- Dependency RESULT missing or not PASS/COMPLETE
+- Unexpected path mutation
+- Ambiguous or contradictory lifecycle state
+- Implicit EOS synchronization or refresh
+- Attempt to execute a later CR item
+- Required manual-procedure step lacks reproducible evidence.
+- Pre/post authority or protected-artifact state cannot be compared exactly.
+- Execution would require an unstated architectural or authority decision.
+required_outputs:
+- gates/CR22/IMPLEMENTATION-CR22.yaml
+- gates/CR22/SUMMARY.md
+- gates/CR22/RESULT.yaml
+- gates/CR22/evidence/COMMANDS.md
+- gates/CR22/evidence/VALIDATION.yaml
+mutation_boundary:
+  allowed:
+  - scripts/lib/eos/convergence_roadmap.py
+  - scripts/engctl
+  - scripts/tests/test-convergence-roadmap.py
+  - engineering/convergence/engineering-system-convergence/schemas/**
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/**
+  prohibited:
+  - ESC C00 GATE.yaml
+  - ESC C01 GATE.yaml
+  - ESC C02 GATE.yaml
+  - Existing parent C02 RESULT.yaml
+  - Existing parent C02 assessment evidence
+  - C02-F-001 through C02-F-026 remediation
+  - C03 execution
+  - Implicit EOS synchronization or refresh
+  - Commit or push except at separately authorized future publication gates
+state_transition:
+  from: CR22
+  to: CR23
+  authorized_only_after_result_pass: true
+  execute_successor: false
+stop_boundary: STOP_AFTER_THIS_ITEM

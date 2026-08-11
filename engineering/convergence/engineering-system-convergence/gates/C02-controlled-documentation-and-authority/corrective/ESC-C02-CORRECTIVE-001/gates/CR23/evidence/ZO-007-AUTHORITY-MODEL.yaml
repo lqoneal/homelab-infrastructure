@@ -1,0 +1,35 @@
+schema_version: 1
+record_id: CR23-ZO007-AUTHORITY-MODEL-001
+gate_id: CR23
+opportunity_id: ZO-007
+recorded_at: '2026-08-10T15:56:25Z'
+result: PASS
+authority_model:
+  parent_maturity_source: ZO-006
+  parent_gate: C02
+  manual_execution_contract: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/MANUAL-EXECUTION.yaml
+  manual_contract_gate: CR23
+  corrective_state: STATE.yaml
+  required_current_item: CR23
+  gate_contract: gates/CR23/GATE.yaml
+  successor_authority_source: ZO-009
+  emm_awareness_source: ZO-005
+  emm_scope_source: ZO-010
+  resource_preflight_source: ZO-011
+preflight_ownership:
+  read_only: true
+  execute_manual_step: false
+  advance_corrective_state: false
+  advance_parent_gate: false
+  execute_successor: false
+  synchronize_eos: false
+  commit: false
+  push: false
+proposed_classifications:
+- READY_FOR_MANUAL_EXECUTION
+- PARENT_NOT_EXECUTABLE
+- WRONG_CURRENT_ITEM
+- DEPENDENCY_NOT_COMPLETE
+- EMM_RECONCILIATION_REQUIRED
+- RESOURCE_BLOCKED
+- CONTRACT_INVALID

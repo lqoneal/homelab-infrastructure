@@ -1,0 +1,22 @@
+schema_version: 1
+gate_id: CR43
+classification: CR43_COMMIT_RECOVERY_QUALIFICATION
+recorded_at: '2026-08-11T13:08:25.656583+00:00'
+existing_commit: 91505033340f0595c2ceb52ee29a32963ae2a5bb
+root_cause: CORRECTIVE_TREE_OMITTED_BY_STAGESET_DERIVATION
+existing_commit_structurally_valid: true
+existing_commit_objective_complete: false
+single_commit_semantic_required: true
+second_commit_authorized: false
+amend_model: CANDIDATE_PENDING_EXACT_RECOVERY_SET
+amend_authorized: false
+required_pre_amend_conditions:
+- materialize CR43-EVIDENCE.yaml
+- qualify required command evidence
+- qualify required validation evidence
+- derive exact corrective recovery stage set
+- verify no prohibited parent-C02 mutation
+- verify no deferred Zeus development inclusion
+- verify resulting amended tree before result write
+state_advanced: false
+cr44_executed: false

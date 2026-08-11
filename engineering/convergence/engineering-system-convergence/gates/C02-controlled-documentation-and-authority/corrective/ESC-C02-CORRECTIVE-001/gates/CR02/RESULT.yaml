@@ -1,0 +1,29 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR02
+result: COMPLETE
+completed_at: '2026-08-10T04:00:11Z'
+
+objective: Create the authoritative immutable comparison manifest for protected history and C02 assessment evidence.
+
+outputs:
+  protected_artifact_manifest:
+    path: gates/CR02/PROTECTED-ARTIFACT-MANIFEST.yaml
+    sha256: 36fc9b6e96f231181a8558b8f60709fee433f031d9b8ddc3c4f06880c42e9fe4
+    protected_artifact_count: 20
+
+evidence:
+  commands:
+    path: gates/CR02/evidence/COMMANDS.md
+    sha256: cc638ddb53275bee534b22543d761e4640f41686b274d78dc0d013f0ce7d581c
+  validation:
+    path: gates/CR02/evidence/VALIDATION.yaml
+    sha256: 8f1cb86a25e25a678b62a4eb18728e3a15068a2c26082d4b83caec8873c0695b
+
+acceptance:
+  result: PASS
+  all_protected_digests_verified: true
+  protected_artifacts_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR03

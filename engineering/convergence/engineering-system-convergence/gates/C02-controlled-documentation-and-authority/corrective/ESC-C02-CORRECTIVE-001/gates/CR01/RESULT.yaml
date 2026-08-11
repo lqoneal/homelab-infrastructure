@@ -1,0 +1,29 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR01
+result: COMPLETE
+completed_at: '2026-08-10T03:57:59Z'
+
+objective: Capture the complete pre-corrective roadmap and controller state.
+
+outputs:
+  starting_state:
+    path: gates/CR01/STARTING-STATE.yaml
+    sha256: 67161ad3443e0e51a7e2cab21e9b1dfac3db88fd52b0223632a63765ee221722
+
+evidence:
+  commands:
+    path: gates/CR01/evidence/COMMANDS.md
+    sha256: 33e09cb28962f016521e86eb3de18d8f10f24d04013806ead264bc2835c828e8
+  validation:
+    path: gates/CR01/evidence/VALIDATION.yaml
+    sha256: 2250fe8ad9323e5896b934ea7412e3d7baf4d4f8a1328a77d8d9ca4c0f3a2b90
+
+acceptance:
+  result: PASS
+  c02_f027_reproduced: true
+  implementation_modified: false
+  protected_history_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR02

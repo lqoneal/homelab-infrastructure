@@ -1,0 +1,22 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR11
+validated_at: '2026-08-10T08:43:23Z'
+result: PASS
+
+checks:
+  cr10_dependency: PASS
+  interrupted_attempt_recovered: PASS
+  design_inputs: PASS
+  accepted_starting_state: PASS
+  atomic_completion_projection: PASS
+  deterministic_successor_selection: PASS
+  terminal_gate_semantics: PASS
+  interruption_recovery: PASS
+  replay_semantics: PASS
+  read_only_advancement_boundary: PASS
+  eos_side_effect_boundary: PASS
+  implementation_unchanged: PASS
+  cr12_not_executed: PASS
+
+next_authorized_item: CR12

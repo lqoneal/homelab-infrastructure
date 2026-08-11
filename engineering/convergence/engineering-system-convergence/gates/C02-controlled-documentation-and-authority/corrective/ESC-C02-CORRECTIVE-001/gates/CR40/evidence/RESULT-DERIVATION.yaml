@@ -1,0 +1,21 @@
+schema_version: 1
+gate: CR40
+result: PASS
+derived_result: COMPLETE_PASS
+current_operation: OPERATION_BETA
+operation_alpha: HISTORICAL_OBSOLETE
+machine_action_resolution:
+  capability: EXISTING
+  action_source: ConvergenceRoadmap.projection
+  operation_authority: OperationBeta.authority
+  operation_next_action: operational_beta.next_action
+  canonical_lifecycle: canonical_lifecycle_resolver
+  canonical_runtime_mission: canonical_runtime_mission
+new_machine_action_resolver_required: false
+new_machine_action_router_required: false
+new_wop_binding_required: false
+oa_resolution_authorized: false
+action_executed: false
+state_advanced: false
+cr41_executed: false
+result_write_authorized: false

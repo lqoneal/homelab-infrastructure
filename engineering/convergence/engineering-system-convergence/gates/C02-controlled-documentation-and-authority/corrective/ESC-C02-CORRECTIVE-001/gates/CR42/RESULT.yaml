@@ -1,0 +1,25 @@
+schema_version: 1
+gate_id: CR42
+title: Prepublication Qualification
+objective: Qualify complete corrective implementation while C02 remains unaccepted.
+status: COMPLETE
+result: COMPLETE_PASS
+qualification:
+  current_operation: OPERATION_BETA
+  operation_alpha: HISTORICAL_OBSOLETE
+  oa_authority_disagreement_allowed: false
+  semantic_profile_blocker: CLOSED
+  stale_transient_test_blocker: CLOSED
+  protected_manifest: PASS
+  protected_snapshot_coverage: COMPLETE
+  emm_bindings: PASS
+  c02_accepted: false
+  cr43_executed: false
+  state_advanced: false
+evidence:
+  primary: CR42-EVIDENCE.yaml
+  validation: evidence/VALIDATION.yaml
+  requalification: evidence/REQUALIFICATION-2K2N.yaml
+successor: CR43
+successor_executed: false
+completed_at: '2026-08-11T12:27:59.361869+00:00'

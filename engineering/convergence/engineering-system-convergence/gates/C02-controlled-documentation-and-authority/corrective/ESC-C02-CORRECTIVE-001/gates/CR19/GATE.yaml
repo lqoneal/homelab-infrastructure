@@ -1,0 +1,79 @@
+schema_version: 1
+gate_id: CR19
+title: Implement Read-Only Resume Projection
+status: PENDING
+purpose: Expose pending review through engctl resume without mutation.
+objective: Expose pending review through engctl resume without mutation.
+dependencies:
+- CR18
+entry_conditions:
+- Corrective STATE.yaml identifies this item as current.
+- All dependencies are COMPLETE.
+- Protected artifact manifest remains valid where applicable.
+authoritative_inputs:
+- ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+- ESC-C02-CORRECTIVE-001/STATE.yaml
+- ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- Parent C02 GATE.yaml
+- Parent C02 RESULT.yaml
+- Parent C02 evidence/VALIDATION.yaml
+- C02-F-027
+allowed_mutations:
+- scripts/lib/eos/convergence_roadmap.py
+- scripts/engctl
+- scripts/tests/test-convergence-roadmap.py
+- scripts/lib/eos/context.sh
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/**
+prohibited_mutations:
+- ESC C00 GATE.yaml
+- ESC C01 GATE.yaml
+- ESC C02 GATE.yaml
+- Existing parent C02 RESULT.yaml
+- Existing parent C02 assessment evidence
+- C02-F-001 through C02-F-026 remediation
+- C03 execution
+- Implicit EOS synchronization or refresh
+- Commit or push except at separately authorized future publication gates
+manual_procedure:
+- Verify CR18.
+- Implement resume projection from corrected lifecycle model.
+- Record hashes of repository/EOS state before resume.
+- Run resume.
+- Verify hashes unchanged.
+- Add regression test for no EOS sync/refresh and no repository mutation.
+- Write IMPLEMENTATION-CR19.yaml.
+- Create SUMMARY.md from the validated RESULT and evidence before advancing corrective state.
+- Append a concise gate completion entry to corrective HISTORY.md before advancing corrective state.
+required_outputs:
+- IMPLEMENTATION-CR19.yaml
+- SUMMARY.md
+required_evidence:
+- gates/CR19/evidence/COMMANDS.md
+- gates/CR19/evidence/VALIDATION.yaml
+acceptance_criteria:
+- Resume reports C02 awaiting operator review.
+- Resume performs no repository mutation.
+- Resume performs no EOS synchronization or refresh.
+- Resume exposes the explicit next review action.
+- The next CR item is not executed in the same transaction.
+- Corrective STATE.yaml is advanced only after this item's result passes.
+- SUMMARY.md exists and accurately summarizes the gate objective, result, material findings/decisions, validation,
+  artifacts, mutation boundary, and next authorized item.
+- Corrective HISTORY.md contains a human-readable entry for this completed gate.
+fail_closed_conditions:
+- Protected artifact manifest mismatch
+- Dependency RESULT missing or not PASS/COMPLETE
+- Unexpected path mutation
+- Ambiguous or contradictory lifecycle state
+- Implicit EOS synchronization or refresh
+- Attempt to execute a later CR item
+stop_boundary: STOP_AFTER_THIS_ITEM
+result_location: gates/CR19/RESULT.yaml
+evidence_location: gates/CR19/evidence
+next_item: CR20
+resume_instructions: Read STATE.yaml. If current_item is CR19, verify dependencies and execute only CR19. Stop after
+  RESULT.yaml and STATE.yaml update.
+human_readable_record:
+  summary: gates/CR19/SUMMARY.md
+  history: HISTORY.md
+  required_before_state_advancement: true

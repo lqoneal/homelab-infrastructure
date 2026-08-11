@@ -1,0 +1,16 @@
+ M engineering/convergence/engineering-system-convergence/STATE.yaml
+ M engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/README.md
+ M engineering/convergence/engineering-system-convergence/roadmap.yaml
+?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/RESULT.yaml
+?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/
+?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/ASSESSMENT-COMMANDS.md
+?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/AUTHORITY-CLAIM-MATRIX.yaml
+?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/CONTROLLED-DOCUMENT-INVENTORY.yaml
+?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/DOCUMENT-RUNTIME-DIVERGENCE.yaml
+?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/DUPLICATE-OVERLAP-REGISTER.yaml
+?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/EVIDENCE-MANIFEST.yaml
+?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/FINDINGS.yaml
+?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/IMPLEMENTATION-CONSUMER-MAP.yaml
+?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/STALE-DOCUMENT-REGISTER.yaml
+?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/VALIDATION.yaml
+?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/build_inventory.py

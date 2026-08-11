@@ -27,7 +27,7 @@ from scripts.lib.emp.mission_verification_controller import verify as verify_mis
 from scripts.lib.emp import publication_candidate_authority
 from scripts.lib.emp import publication_cohort
 from scripts.lib.emp.production_execution import atomic_write, digest, identifier, load_json
-from scripts.lib.emp.repository_projection import project as project_repository
+from scripts.lib.emp.repository_state_view import project as project_repository
 from scripts.lib.emp.runtime_paths import initialize_runtime, resolve_runtime
 
 

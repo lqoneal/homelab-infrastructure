@@ -1,0 +1,31 @@
+schema_version: 1
+gate_id: CR20
+implemented_at: '2026-08-10T12:26:56+00:00'
+result: PASS
+objective: Implement explicit durable operator acceptance transaction.
+capabilities:
+  canonical_transaction: apply_operator_review_transaction
+  accept: PASS
+  reject: PASS
+  durable_accept_recovery: PASS
+  durable_reject_recovery: PASS
+  identical_replay: PASS
+  cross_transaction_conflict: FAIL_CLOSED
+  tampered_receipt: FAIL_CLOSED
+  explicit_operator_identity: true
+  explicit_transaction_identity: true
+  cli_adapter: PASS
+  implicit_advancement: false
+  successor_execution: false
+qualification:
+  cr20_regressions: 7/7 PASS
+  roadmap_tests: 45/45 PASS
+  emm_source_integrity: PASS
+  live_operator_decision_created: false
+zeus_integration:
+  preferred_interface: Zeus
+  canonical_target: apply_operator_review_transaction
+  restart_verification: persisted operator-review receipts
+  duplicate_acceptance_authority: PROHIBITED
+deferred_improvements:
+- Automatic authorized-source EMM rebinding inside mutation transactions.

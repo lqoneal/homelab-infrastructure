@@ -1,0 +1,75 @@
+schema_version: 1
+gate_id: CR10
+title: Define Acceptance Receipt
+status: PENDING
+purpose: Specify the durable machine-readable review decision receipt.
+objective: Specify the durable machine-readable review decision receipt.
+dependencies:
+- CR09
+entry_conditions:
+- Corrective STATE.yaml identifies this item as current.
+- All dependencies are COMPLETE.
+- Protected artifact manifest remains valid where applicable.
+authoritative_inputs:
+- ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+- ESC-C02-CORRECTIVE-001/STATE.yaml
+- ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- Parent C02 GATE.yaml
+- Parent C02 RESULT.yaml
+- Parent C02 evidence/VALIDATION.yaml
+- C02-F-027
+allowed_mutations:
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/**
+prohibited_mutations:
+- ESC C00 GATE.yaml
+- ESC C01 GATE.yaml
+- ESC C02 GATE.yaml
+- Existing parent C02 RESULT.yaml
+- Existing parent C02 assessment evidence
+- C02-F-001 through C02-F-026 remediation
+- C03 execution
+- Implicit EOS synchronization or refresh
+- Commit or push except at separately authorized future publication gates
+manual_procedure:
+- Read CR09.
+- Define receipt schema fields for receipt ID, roadmap ID, gate ID, frozen gate digest, result digest, decision,
+  authority, timestamp and transaction identity.
+- Define deterministic receipt identity/replay semantics.
+- Define receipt storage location and immutability.
+- Provide valid and invalid examples.
+- Write ACCEPTANCE-RECEIPT-SPEC.yaml.
+- Create SUMMARY.md from the validated RESULT and evidence before advancing corrective state.
+- Append a concise gate completion entry to corrective HISTORY.md before advancing corrective state.
+required_outputs:
+- ACCEPTANCE-RECEIPT-SPEC.yaml
+- SUMMARY.md
+required_evidence:
+- gates/CR10/evidence/COMMANDS.md
+- gates/CR10/evidence/VALIDATION.yaml
+acceptance_criteria:
+- Receipt uniquely binds one decision to one exact result and gate.
+- Receipt supports replay detection.
+- Receipt cannot be mistaken for gate completion.
+- Schema fields are sufficient for independent verification.
+- The next CR item is not executed in the same transaction.
+- Corrective STATE.yaml is advanced only after this item's result passes.
+- SUMMARY.md exists and accurately summarizes the gate objective, result, material findings/decisions, validation,
+  artifacts, mutation boundary, and next authorized item.
+- Corrective HISTORY.md contains a human-readable entry for this completed gate.
+fail_closed_conditions:
+- Protected artifact manifest mismatch
+- Dependency RESULT missing or not PASS/COMPLETE
+- Unexpected path mutation
+- Ambiguous or contradictory lifecycle state
+- Implicit EOS synchronization or refresh
+- Attempt to execute a later CR item
+stop_boundary: STOP_AFTER_THIS_ITEM
+result_location: gates/CR10/RESULT.yaml
+evidence_location: gates/CR10/evidence
+next_item: CR11
+resume_instructions: Read STATE.yaml. If current_item is CR10, verify dependencies and execute only CR10. Stop after
+  RESULT.yaml and STATE.yaml update.
+human_readable_record:
+  summary: gates/CR10/SUMMARY.md
+  history: HISTORY.md
+  required_before_state_advancement: true

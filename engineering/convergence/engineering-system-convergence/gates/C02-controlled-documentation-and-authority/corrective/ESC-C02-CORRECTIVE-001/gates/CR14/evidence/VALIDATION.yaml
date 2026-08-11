@@ -1,0 +1,34 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR14
+validated_at: '2026-08-10T09:04:02Z'
+result: PASS
+
+checks:
+  cr13_dependency: PASS
+  cr12m1_dependency: PASS
+  lifecycle_design_consistency: PASS
+  result_acceptance_separation: PASS
+  explicit_operator_authority: PASS
+  acceptance_receipt_contract: PASS
+  atomic_advancement_contract: PASS
+  deterministic_replay: PASS
+  conflicting_replay_fail_closed: PASS
+  historical_reconciliation: PASS
+  read_only_cli_boundary: PASS
+  zo_002_design_review: PASS
+  zo_003_design_review: PASS
+  zo_004_design_review: PASS
+  implementation_unchanged: PASS
+  cr15_not_executed: PASS
+
+artifacts:
+  lifecycle_review:
+    path: gates/CR14/DESIGN-REVIEW.yaml
+    sha256: 5cb67ee1ad0c420898218575e485edc7689f84b1a0c3416526f9c1259b5af7b2
+
+  zeus_capability_review:
+    path: gates/CR14/evidence/ZEUS-CAPABILITY-REVIEW.yaml
+    sha256: d9d14d0e9e43b9b4e82826599a6fada4ee120de66778a41068fa1c81bb1f30ac
+
+next_authorized_item: CR15

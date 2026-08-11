@@ -1,0 +1,18 @@
+schema_version: 1
+gate_id: CR16M2
+status: COMPLETE
+result: PASS
+persisted_roadmap_version_before: 2.0.0
+persisted_roadmap_version_after: 2.0.2
+persisted_result: PASS
+persisted_executable: true
+semantic_result_changed: false
+semantic_executable_changed: false
+persisted_evaluation_mismatch_resolved: true
+next_item: CR16
+artifacts:
+  PERSISTED-EXECUTION-QUALIFICATION-RECONCILIATION.yaml: 29419faae68fe105ed90ef13ecb6ea3b14c0b8f5b81604d137798ba6590e49d4
+  SUMMARY.md: 7b07414cb168dfa08691839d6694c8f69b3677e076dd03a86cd275d6972134ab
+  evidence/BEFORE-AFTER.yaml: 8de1d70bb5fd9789cfe2467dd735a58af4e6904bc37e6cd4bbe96fb1bf65cc7d
+  evidence/COMMANDS.md: 71f2b7c983bcc3c3a17050aa0ad99c73bdced0a38634fe4145b3b00f9fed8a93
+  evidence/VALIDATION.yaml: febe5afc7fa329d133bf52c790a24ff2780c9a733f96af61d480916196a4b052

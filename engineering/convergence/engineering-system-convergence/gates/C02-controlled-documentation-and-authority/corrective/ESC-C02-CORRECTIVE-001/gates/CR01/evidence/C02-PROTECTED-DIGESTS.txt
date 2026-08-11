@@ -1,0 +1,3 @@
+96885178a7f0c13714b9f60fc9f1486a3cf6b1306d114ee4d2089d30bd8837fc  engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/GATE.yaml
+2c19e69389f3094d874fbaf6c929d23b4d41541953cf04d47a21d1099bc5a195  engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/RESULT.yaml
+63562f3613378facd19f9c05c3c6e087481a391e6f6fcbd4bf639ceb617245a6  engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/VALIDATION.yaml

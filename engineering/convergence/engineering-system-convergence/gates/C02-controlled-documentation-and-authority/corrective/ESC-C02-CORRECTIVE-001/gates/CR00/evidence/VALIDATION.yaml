@@ -1,0 +1,25 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR00
+validated_at: '2026-08-10T03:55:58Z'
+result: PASS
+
+checks:
+  repository_identity: PASS
+  head_origin_parity: PASS
+  c02_result_complete_with_findings: PASS
+  checkpoint_present: PASS
+  checkpoint_resume_record_present: PASS
+  baseline_provenance_complete: PASS
+  recorded_digests_verified: PASS
+  mutation_boundary: PASS
+  next_item_executed: false
+
+protected_state:
+  c00_gate_modified: false
+  c01_gate_modified: false
+  c02_gate_modified: false
+  c02_result_modified_by_cr00: false
+  c03_executed: false
+
+next_authorized_item: CR01

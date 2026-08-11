@@ -1,0 +1,33 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR03
+result: COMPLETE
+completed_at: '2026-08-10T04:03:36Z'
+
+objective: Reproduce the C02-F-027 result/current-gate incompatibility.
+
+outputs:
+  reproduction:
+    path: gates/CR03/C02-F-027-REPRODUCTION.yaml
+    sha256: c76756d663236b81e8bc91742d0ead2f26c391c3c85bc197eef35880e403edc9
+  controller_trace:
+    path: gates/CR03/evidence/CONTROLLER-TRACE.yaml
+    sha256: 742f77c31dea3d747dd0985a96abeddf03b0118a7ae74448a2ca3bd24bd6724b
+
+evidence:
+  commands:
+    path: gates/CR03/evidence/COMMANDS.md
+    sha256: 76c197d232cfca6febd342aab704cb6c78a276c52c114617bbc97ef22774eb96
+  validation:
+    path: gates/CR03/evidence/VALIDATION.yaml
+    sha256: 82c42fd12c58ab1f6608c05afef41a77756f7faf48a7d5a4ccbf7b7601b2ac6c
+
+acceptance:
+  result: PASS
+  c02_f027_reproduced: true
+  controller_failure_rule_located: true
+  controller_modified: false
+  protected_history_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR04

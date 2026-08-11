@@ -1,0 +1,29 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR13
+validated_at: '2026-08-10T09:00:44Z'
+result: PASS
+
+checks:
+  cr12_dependency: PASS
+  cr12m1_dependency: PASS
+  c02_f028_reconciled: PASS
+  historical_cr12_identity_preserved: PASS
+  cr12m1_reconciliation_consumed: PASS
+  current_item: PASS
+  pre_create_verification: PASS
+  read_only_cli_boundary: PASS
+  explicit_mutation_boundary: PASS
+  operator_review_contract: PASS
+  advancement_contract: PASS
+  replay_inspection_contract: PASS
+  repository_projection_contract: PASS
+  pre_create_verification_contract: PASS
+  zo_001_contract: PASS
+  zo_002_cr14_binding_preserved: PASS
+  zo_003_cr14_binding_preserved: PASS
+  zo_004_cr14_binding_preserved: PASS
+  implementation_unchanged: PASS
+  cr14_not_executed: PASS
+
+next_authorized_item: CR14

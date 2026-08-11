@@ -1,0 +1,26 @@
+schema_version: 1
+record_id: CR21-EMM-REBIND-001
+gate_id: CR21
+recorded_at: '2026-08-10T13:45:00Z'
+classification: AUTHORIZED_FINAL_SOURCE_REBIND
+source: scripts/lib/eos/convergence_roadmap.py
+old_sha256: 9a455d1048f9a8d554bcc9571f1ff184f2d514933e72080a0f7dce69dc0f7497
+new_sha256: 8e6b192b4fcfa59aef41710b0c2ec237029ed2ab8175a973d9a0d773970fb7a7
+already_reconciled: false
+pre_manifest_sha256: 5b7aa1b67c3b4936f10518d7b04558b7664cbbaadc9036634dae058274bf1b44
+post_manifest_sha256: 0084b3fcb3949f3bf1f62edc711ef5742da9aed2805defffe690c47a95fb84f3
+bound_source_count: 41
+post_rebind_missing_count: 0
+post_rebind_drift_count: 0
+future_automation_requirement: ESC-EMM-AUTO-REBIND-001
+execution_position:
+  corrective_item: CR21
+  parent_gate: C02
+side_effects:
+  cr21_result_written: false
+  corrective_state_advanced: false
+  parent_c02_advanced: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false
+recovery: /data/engineering/recovery/cr21-final-emm-rebind-20260810T134500Z

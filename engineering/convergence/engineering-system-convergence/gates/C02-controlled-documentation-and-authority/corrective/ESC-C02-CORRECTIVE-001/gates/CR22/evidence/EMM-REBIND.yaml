@@ -1,0 +1,27 @@
+schema_version: 1
+record_id: CR22-EMM-REBIND-001
+gate_id: CR22
+recorded_at: '2026-08-10T14:08:45Z'
+classification: AUTHORIZED_FINAL_SOURCE_REBIND
+source: scripts/lib/eos/convergence_roadmap.py
+old_sha256: 8e6b192b4fcfa59aef41710b0c2ec237029ed2ab8175a973d9a0d773970fb7a7
+new_sha256: dccffde07e2adf4bdec9d245f2154422c093185ce7c125b4e988ee8d76f35b62
+already_reconciled: false
+pre_manifest_sha256: b5a618a6d421a2faa759b2028272c72387810d4cb33e23118bb3364dc44c3607
+post_manifest_sha256: d0f99abaf54b8d09548954a40e02186335d0b5f9dbb099ef86441798a8535d3e
+bound_source_count: 41
+post_rebind_missing_count: 0
+post_rebind_drift_count: 0
+future_automation_requirement: ESC-EMM-AUTO-REBIND-001
+execution_position:
+  corrective_item: CR22
+  parent_gate: C02
+side_effects:
+  cr22_result_written: false
+  state_advanced: false
+  parent_c02_advanced: false
+  cr23_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false
+recovery: /data/engineering/recovery/cr22-final-emm-rebind-20260810T140845Z

@@ -1,0 +1,31 @@
+schema_version: 1
+gate_id: CR37
+repository:
+  engineering/convergence/engineering-system-convergence/STATE.yaml: c1e0936226a8ac5eefe82ccdcc278508467fb2063913055f7e7bdd773ab365c2
+  engineering/convergence/engineering-system-convergence/binding-manifest.yaml: 2eac11ee588493e45d0ec151dfc233ce8c827c1e831dc3750b256923ece6a26c
+  ? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml
+  : 51b56675015dfe2c84d73009f5f0db6840e1f75bfd5e67c35b8a5e35f1906d5e
+  ? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/HISTORY.md
+  : 0764d043943b465633f8c14ae332a53347d879f178695b9e8bd5a26b6e5091c7
+  ? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR36/RESULT.yaml
+  : fed1746dd9a06ef76e1597b4a76a9b1b53d9370c24f906aa3037e71bfb1fe8fb
+  ? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR37/GATE.yaml
+  : 61f18464f9a2541fa8b14b5de62442df0580d25c2e8bbedb82794654c320190e
+  ? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR38/GATE.yaml
+  : 9d2cd0a116ca5e51d8b00bfb6e807520cc41d371c1264158834fec9ca6b879e0
+  docs/project/PROJ-0001-PROJECT_STATE.md: 4e89e949a63ff01cc2877c75f8898d59c99328f58a0d25e4d19efde359325fd9
+eos:
+  checkpoints/20260729T003829Z-repository-eos-integration-baseline.md: bc1d58ae6d8102a0e0fe3291b3dea5cae2a4ca9bf94836ed1856279864d9bf35
+  checkpoints/20260729T005309Z-gh-eos-integration-published-baseline.md: 68d762384f6cc46e6d833a056b471e65eeecda15ff4ea881ebc5ae6c0cf58053
+  checkpoints/20260805T091135Z-zdcl-02-published-canonical-baseline-restoration.md: b97a437735feffc6b6a5a327b60f771f7d4a9a88d7b9c10adbe08cb0d21658c0
+  eos/state/CHECKPOINT-RETENTION: 917df3320d778ddbaa5c5c7742bc4046bf803c36ed2b050f30844ed206783469
+  eos/state/EOS-ID.md: de83f4342eef9c9c8f4515afe0e1ca23ac45e74a5cd09d6e457da81e16a2a016
+  eos/state/EOS-MANIFEST.md: 6cd23201867368cb29f02ed8787fe5d43c02e19da9da55a78fecef6585b6a92d
+  eos/state/EOS-STATE.md: fbd830357ea1cc983b8745f9d689c7f1487ec801d81c44c5ea8a2dce583eaa42
+  runtime/operational-state.json: 321a10393d2ba09ad55b9d96ee1d6709886f0824af1c9e8b7489064852dc6738
+  runtime/repositories.tsv: 5e3d285b09068bf849cb012996ce893870bb8ec954676d76e451966801d83727
+  state/ACTIVE-CHECKPOINT: d29fd2b0b481f0e4fa778e7287fa9f0aedfb3debff919c0bcd053f9be95b234c
+  state/CHECKPOINT-RETENTION: 917df3320d778ddbaa5c5c7742bc4046bf803c36ed2b050f30844ed206783469
+  state/EOS-ID.md: de83f4342eef9c9c8f4515afe0e1ca23ac45e74a5cd09d6e457da81e16a2a016
+  state/EOS-MANIFEST.md: 5c8a8100119e07354849b3f5c0ef0c6316a6cbce6186787466cbbc0f4470d877
+  state/EOS-STATE.md: 44f84ac1e46da8caf99a99ed6d0661f15562a8bc63916476650fa72d6e0166fa

@@ -1,0 +1,74 @@
+schema_version: 1
+record_id: CR38-PRE-EXECUTION-FINGERPRINTS-001
+gate_id: CR38
+recorded_at: '2026-08-11T01:53:02Z'
+result: PASS
+repository_fingerprints:
+- path: engineering/convergence/engineering-system-convergence/STATE.yaml
+  sha256: d0312a46b31d833e25e2f6d700bf8eb799f8982aaa52029632f284a826ff372b
+  size: 1605
+- path: engineering/convergence/engineering-system-convergence/binding-manifest.yaml
+  sha256: 5f66ec31897b31b5fdd87bc70606c7362b1221adfe02fc05462c0b471af36151
+  size: 7325
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml
+  sha256: 240948bf9132573b4764a65c420ee309eb9c443eaf4be46cd72c4f58e009002d
+  size: 666
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/HISTORY.md
+  sha256: 02f094437aa640a0624505dc53320ead7780ad607e4587f2a77193e3f74b8b4a
+  size: 26512
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR37/RESULT.yaml
+  sha256: 9a36854f3f6f99e1d87eab51e1b12d5f6c4546073fd89e431815efd30b0967dd
+  size: 342
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR38/GATE.yaml
+  sha256: 4a99fff6595caf2efd07cf612735c82b33e0dc34f0603e3350deee429202316b
+  size: 5163
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR39/GATE.yaml
+  sha256: 6c370a6db6722afc32142070aca87607c2dadfaa932fa73b56ad7e9716355204
+  size: 5072
+- path: docs/project/PROJ-0001-PROJECT_STATE.md
+  sha256: 286bf530b86fbb8bcf339645b4eebd88721d61d070442ce391c3bae24dc26af0
+  size: 50996
+eos_present: true
+eos_fingerprints:
+- path: checkpoints/20260729T003829Z-repository-eos-integration-baseline.md
+  sha256: bc1d58ae6d8102a0e0fe3291b3dea5cae2a4ca9bf94836ed1856279864d9bf35
+  size: 3438
+- path: checkpoints/20260729T005309Z-gh-eos-integration-published-baseline.md
+  sha256: 68d762384f6cc46e6d833a056b471e65eeecda15ff4ea881ebc5ae6c0cf58053
+  size: 390
+- path: checkpoints/20260805T091135Z-zdcl-02-published-canonical-baseline-restoration.md
+  sha256: b97a437735feffc6b6a5a327b60f771f7d4a9a88d7b9c10adbe08cb0d21658c0
+  size: 401
+- path: eos/state/CHECKPOINT-RETENTION
+  sha256: 917df3320d778ddbaa5c5c7742bc4046bf803c36ed2b050f30844ed206783469
+  size: 3
+- path: eos/state/EOS-ID.md
+  sha256: de83f4342eef9c9c8f4515afe0e1ca23ac45e74a5cd09d6e457da81e16a2a016
+  size: 362
+- path: eos/state/EOS-MANIFEST.md
+  sha256: 6cd23201867368cb29f02ed8787fe5d43c02e19da9da55a78fecef6585b6a92d
+  size: 1148
+- path: eos/state/EOS-STATE.md
+  sha256: fbd830357ea1cc983b8745f9d689c7f1487ec801d81c44c5ea8a2dce583eaa42
+  size: 879
+- path: runtime/operational-state.json
+  sha256: 321a10393d2ba09ad55b9d96ee1d6709886f0824af1c9e8b7489064852dc6738
+  size: 818
+- path: runtime/repositories.tsv
+  sha256: 5e3d285b09068bf849cb012996ce893870bb8ec954676d76e451966801d83727
+  size: 399
+- path: state/ACTIVE-CHECKPOINT
+  sha256: d29fd2b0b481f0e4fa778e7287fa9f0aedfb3debff919c0bcd053f9be95b234c
+  size: 103
+- path: state/CHECKPOINT-RETENTION
+  sha256: 917df3320d778ddbaa5c5c7742bc4046bf803c36ed2b050f30844ed206783469
+  size: 3
+- path: state/EOS-ID.md
+  sha256: de83f4342eef9c9c8f4515afe0e1ca23ac45e74a5cd09d6e457da81e16a2a016
+  size: 362
+- path: state/EOS-MANIFEST.md
+  sha256: 5c8a8100119e07354849b3f5c0ef0c6316a6cbce6186787466cbbc0f4470d877
+  size: 1148
+- path: state/EOS-STATE.md
+  sha256: 44f84ac1e46da8caf99a99ed6d0661f15562a8bc63916476650fa72d6e0166fa
+  size: 848

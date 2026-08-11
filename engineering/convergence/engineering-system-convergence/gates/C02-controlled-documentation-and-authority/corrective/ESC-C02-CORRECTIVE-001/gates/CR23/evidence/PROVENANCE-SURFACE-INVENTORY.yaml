@@ -1,0 +1,2069 @@
+schema_version: 1
+gate_id: CR23
+inventory:
+  scripts/lib/eos/convergence_roadmap.py:
+    present: true
+    matches:
+      transaction:
+      - line: 1006
+        text: 'if not receipt.get("transaction_id"):'
+      - line: 1008
+        text: '"persisted operator review transaction missing"'
+      - line: 1040
+        text: def apply_gate_advancement_transaction(
+      - line: 1051
+        text: 'transaction_id: str,'
+      - line: 1080
+        text: '# legitimate replay before its immutable transaction can be checked.'
+      - line: 1088
+        text: transaction_dir = (
+      - line: 1090
+        text: / "runtime/advancement-transactions"
+      - line: 1093
+        text: transaction_path = (
+      - line: 1094
+        text: transaction_dir
+      - line: 1095
+        text: / f"{transaction_id}.json"
+      - line: 1098
+        text: recovering_pre_state_transaction = False
+      - line: 1100
+        text: 'if transaction_path.is_file():'
+      - line: 1103
+        text: transaction_path.read_text()
+      - line: 1107
+        text: '"existing advancement transaction is unreadable"'
+      - line: 1111
+        text: '"transaction_id": transaction_id,'
+      - line: 1133
+        text: '"conflicting advancement transaction replay: "'
+      - line: 1137
+        text: transaction_status = committed.get("status")
+      - line: 1139
+        text: if transaction_status not in {
+      - line: 1144
+        text: '"existing advancement transaction status is invalid"'
+      - line: 1166
+        text: 'if transaction_status == "ADVANCEMENT_COMPLETE":'
+      - line: 1179
+        text: '"transaction_id": transaction_id,'
+      - line: 1188
+        text: '#    and deterministically execute the exact recorded transaction.'
+      - line: 1191
+        text: '#    promotion succeeded and only transaction finalization was'
+      - line: 1197
+        text: prefix="." + transaction_path.name + ".",
+      - line: 1198
+        text: dir=str(transaction_path.parent),
+      - line: 1220
+        text: transaction_path,
+      - line: 1233
+        text: '"transaction_id": transaction_id,'
+      - line: 1238
+        text: '"FINALIZED_POST_STATE_TRANSACTION",'
+      - line: 1247
+        text: recovering_pre_state_transaction = True
+      - line: 1251
+        text: '# transaction identity.'
+      - line: 1337
+        text: ("transaction_id", transaction_id),
+      - line: 1414
+        text: transaction_id=transaction_id,
+      - line: 1424
+        text: '# Persist the qualified advancement as one recoverable transaction.'
+      - line: 1426
+        text: '# The transaction receipt is written first. The authoritative roadmap'
+      - line: 1428
+        text: '# either observe the old state plus a recoverable transaction receipt,'
+      - line: 1430
+        text: '# outside this transaction.'
+      - line: 1439
+        text: transaction_dir = (
+      - line: 1441
+        text: / "runtime/advancement-transactions"
+      - line: 1443
+        text: transaction_dir.mkdir(parents=True, exist_ok=True)
+      - line: 1445
+        text: transaction_path = (
+      - line: 1446
+        text: transaction_dir
+      - line: 1447
+        text: / f"{transaction_id}.json"
+      - line: 1467
+        text: '"gate already completed without matching transaction replay"'
+      - line: 1573
+        text: transaction_record = {
+      - line: 1575
+        text: '"transaction_type": "GATE_ADVANCEMENT",'
+      - line: 1576
+        text: '"transaction_id": transaction_id,'
+      - line: 1594
+        text: transaction_bytes = (
+      - line: 1596
+        text: transaction_record,
+      - line: 1625
+        text: '# Record transaction provenance before authoritative mutation.'
+      - line: 1627
+        text: transaction_path,
+      - line: 1628
+        text: transaction_bytes,
+      - line: 1637
+        text: transaction_record["status"] = "ADVANCEMENT_COMPLETE"
+      - line: 1640
+        text: transaction_path,
+      - line: 1643
+        text: transaction_record,
+      - line: 1653
+        text: '"transaction_id": transaction_id,'
+      - line: 1661
+        text: if recovering_pre_state_transaction
+      - line: 1665
+        text: '"recovered": recovering_pre_state_transaction,'
+      - line: 1671
+        text: def apply_operator_review_transaction(
+      - line: 1681
+        text: 'transaction_id: str,'
+      - line: 1729
+        text: ("transaction_id", transaction_id),
+      - line: 1764
+        text: receipt_path = receipt_dir / f"{transaction_id}.json"
+      - line: 1767
+        text: '"transaction_id": transaction_id,'
+      - line: 1788
+        text: raise RoadmapError("conflicting transaction replay")
+      - line: 1793
+        text: '"transaction_id": transaction_id,'
+      - line: 1827
+        text: '"transaction_id": existing["transaction_id"],'
+      - line: 1848
+        text: transaction_id=transaction_id,
+      - line: 1899
+        text: '"transaction_id": transaction_id,'
+      - line: 1974
+        text: review_parser.add_argument("--transaction-id", required=True)
+      - line: 2004
+        text: result = apply_operator_review_transaction(
+      - line: 2013
+        text: transaction_id=args.transaction_id,
+      receipt:
+      - line: 843
+        text: receipt = _resolve_operator_review_receipt(
+      - line: 855
+        text: 'if receipt is None:'
+      - line: 861
+        text: operator_decision = receipt["decision"]
+      - line: 928
+        text: def _resolve_operator_review_receipt(
+      - line: 940
+        text: receipt_dir = (
+      - line: 943
+        text: / "receipts/operator-review"
+      - line: 946
+        text: 'if not receipt_dir.is_dir():'
+      - line: 959
+        text: 'for receipt_path in sorted(receipt_dir.glob("*.json")):'
+      - line: 961
+        text: receipt = json.loads(receipt_path.read_text())
+      - line: 964
+        text: 'f"invalid operator review receipt: {receipt_path}"'
+      - line: 967
+        text: 'if receipt.get("receipt_type") != "OPERATOR_REVIEW_DECISION":'
+      - line: 971
+        text: receipt.get("roadmap_id") == roadmap_id
+      - line: 972
+        text: and str(receipt.get("roadmap_version")) == str(roadmap_version)
+      - line: 973
+        text: and receipt.get("gate_id") == gate_id
+      - line: 979
+        text: 'if receipt.get("gate_definition_digest") != gate_digest:'
+      - line: 984
+        text: 'if receipt.get("result_digest") != result_digest:'
+      - line: 989
+        text: 'if receipt.get("result_class") != "VALID_FINAL":'
+      - line: 994
+        text: decision = receipt.get("decision")
+      - line: 1001
+        text: 'if not receipt.get("operator_identity"):'
+      - line: 1006
+        text: 'if not receipt.get("transaction_id"):'
+      - line: 1011
+        text: 'if not receipt.get("receipt_id"):'
+      - line: 1013
+        text: '"persisted operator review receipt identity missing"'
+      - line: 1016
+        text: matching.append(receipt)
+      - line: 1028
+        text: receipt_ids = {x["receipt_id"] for x in matching}
+      - line: 1030
+        text: 'if len(receipt_ids) != 1:'
+      - line: 1048
+        text: 'acceptance_receipt_id: str,'
+      - line: 1049
+        text: 'acceptance_receipt_digest: str,'
+      - line: 1053
+        text: '"""Apply one explicit, receipt-backed atomic gate advancement."""'
+      - line: 1118
+        text: '"acceptance_receipt_id":'
+      - line: 1119
+        text: acceptance_receipt_id,
+      - line: 1120
+        text: '"acceptance_receipt_digest":'
+      - line: 1121
+        text: acceptance_receipt_digest,
+      - line: 1192
+        text: '#    interrupted; finalize the receipt without applying state again.'
+      - line: 1287
+        text: review_receipt = _resolve_operator_review_receipt(
+      - line: 1296
+        text: 'if review_receipt is None:'
+      - line: 1297
+        text: raise RoadmapError("valid ACCEPT receipt is missing")
+      - line: 1299
+        text: 'if review_receipt.get("decision") != "ACCEPT":'
+      - line: 1302
+        text: 'if review_receipt.get("lifecycle_state") != "ACCEPTED":'
+      - line: 1303
+        text: raise RoadmapError("acceptance receipt lifecycle state invalid")
+      - line: 1305
+        text: 'if review_receipt.get("receipt_id") != acceptance_receipt_id:'
+      - line: 1306
+        text: raise RoadmapError("acceptance receipt identity mismatch")
+      - line: 1308
+        text: receipt_dir = (
+      - line: 1311
+        text: / "receipts/operator-review"
+      - line: 1314
+        text: matching_receipts = [
+      - line: 1316
+        text: for path in sorted(receipt_dir.glob("*.json"))
+      - line: 1317
+        text: if json.loads(path.read_text()).get("receipt_id")
+      - line: 1318
+        text: == acceptance_receipt_id
+      - line: 1321
+        text: 'if len(matching_receipts) != 1:'
+      - line: 1323
+        text: '"acceptance receipt cannot be uniquely resolved"'
+      - line: 1326
+        text: actual_receipt_digest = hashlib.sha256(
+      - line: 1327
+        text: matching_receipts[0].read_bytes()
+      - line: 1330
+        text: 'if actual_receipt_digest != acceptance_receipt_digest:'
+      - line: 1331
+        text: raise RoadmapError("acceptance receipt digest mismatch")
+      - line: 1334
+        text: ("acceptance_receipt_id", acceptance_receipt_id),
+      - line: 1335
+        text: ("acceptance_receipt_digest", acceptance_receipt_digest),
+      - line: 1412
+        text: acceptance_receipt_id=acceptance_receipt_id,
+      - line: 1413
+        text: acceptance_receipt_digest=acceptance_receipt_digest,
+      - line: 1426
+        text: '# The transaction receipt is written first. The authoritative roadmap'
+      - line: 1428
+        text: '# either observe the old state plus a recoverable transaction receipt,'
+      - line: 1582
+        text: '"acceptance_receipt_id":'
+      - line: 1583
+        text: acceptance_receipt_id,
+      - line: 1584
+        text: '"acceptance_receipt_digest":'
+      - line: 1585
+        text: acceptance_receipt_digest,
+      - line: 1656
+        text: '"acceptance_receipt_id": acceptance_receipt_id,'
+      - line: 1683
+        text: '"""Apply one explicit, receipt-backed operator review decision."""'
+      - line: 1757
+        text: receipt_dir = (
+      - line: 1760
+        text: / "receipts/operator-review"
+      - line: 1762
+        text: receipt_dir.mkdir(parents=True, exist_ok=True)
+      - line: 1764
+        text: receipt_path = receipt_dir / f"{transaction_id}.json"
+      - line: 1779
+        text: 'if receipt_path.exists():'
+      - line: 1780
+        text: prior = json.loads(receipt_path.read_text())
+      - line: 1792
+        text: '"decision_receipt_id": prior["receipt_id"],'
+      - line: 1802
+        text: 'for existing_path in sorted(receipt_dir.glob("*.json")):'
+      - line: 1826
+        text: '"decision_receipt_id": existing["receipt_id"],'
+      - line: 1860
+        text: receipt_seed = {
+      - line: 1866
+        text: receipt_digest = hashlib.sha256(
+      - line: 1868
+        text: receipt_seed,
+      - line: 1874
+        text: receipt_id = "ORR-" + receipt_digest[:24].upper()
+      - line: 1876
+        text: receipt = {
+      - line: 1877
+        text: '"receipt_type": "OPERATOR_REVIEW_DECISION",'
+      - line: 1878
+        text: '"receipt_id": receipt_id,'
+      - line: 1879
+        text: '**receipt_seed,'
+      - line: 1886
+        text: tmp = receipt_path.with_suffix(".tmp")
+      - line: 1892
+        text: json.dumps(receipt, indent=2, sort_keys=True) + "\n"
+      - line: 1894
+        text: tmp.replace(receipt_path)
+      - line: 1898
+        text: '"decision_receipt_id": receipt_id,'
+      - line: 1905
+        text: receipt["next_authorized_action"],
+      result_identity:
+      - line: 362
+        text: f"{gate_id} result identity mismatch"
+      - line: 953
+        text: result_digest = hashlib.sha256(
+      - line: 984
+        text: 'if receipt.get("result_digest") != result_digest:'
+      - line: 1047
+        text: 'result_digest: str,'
+      - line: 1117
+        text: '"result_digest": result_digest,'
+      - line: 1277
+        text: actual_result_digest = hashlib.sha256(
+      - line: 1284
+        text: 'if actual_result_digest != result_digest:'
+      - line: 1411
+        text: result_digest=result_digest,
+      - line: 1581
+        text: '"result_digest": result_digest,'
+      - line: 1678
+        text: 'result_digest: str,'
+      - line: 1747
+        text: actual_result_digest = hashlib.sha256(
+      - line: 1754
+        text: 'if actual_result_digest != result_digest:'
+      - line: 1773
+        text: '"result_digest": result_digest,'
+      - line: 1811
+        text: and existing.get("result_digest") == result_digest
+      - line: 1846
+        text: result_digest=result_digest,
+      - line: 2010
+        text: result_digest=args.result_digest,
+      gate_identity:
+      - line: 52
+        text: EXPECTED_GATE_IDS = [f"C{number:02d}" for number in range(21)]
+      - line: 57
+        text: HISTORICAL_GATE_IDS = {"C00", "C01"}
+      - line: 58
+        text: ACTIVATION_GATE_IDS = {"C02"}
+      - line: 59
+        text: PROSPECTIVE_GATE_IDS = set(EXPECTED_GATE_IDS) - HISTORICAL_GATE_IDS - ACTIVATION_GATE_IDS
+      - line: 207
+        text: gate_ids = [item.get("gate_id") for item in gate_refs]
+      - line: 208
+        text: 'if not set(EXPECTED_GATE_IDS).issubset(gate_ids) or len(set(gate_ids)) != len(gate_ids):'
+      - line: 210
+        text: 'gate_orders = {item["gate_id"]: item["roadmap_order"] for item in gate_refs}'
+      - line: 213
+        text: gate_identities = [item["gate_identity"] for item in gate_refs]
+      - line: 214
+        text: 'if len(set(gate_identities)) != len(gate_identities):'
+      - line: 219
+        text: gate_id = item["gate_id"]
+      - line: 220
+        text: gate_path = _safe_repository_path(self.repository_root, item["definition"], f"{gate_id} definition")
+      - line: 223
+        text: raise RoadmapError(f"{gate_id} definition is outside canonical gate tree")
+      - line: 224
+        text: gate = _load_yaml(gate_path, f"{gate_id} definition")
+      - line: 228
+        text: f"{gate_id} validation schema",
+      - line: 231
+        text: raise RoadmapError(f"{gate_id} validation schema is outside canonical schema tree")
+      - line: 232
+        text: _schema_validate(gate, schema_path, f"{gate_id} definition")
+      - line: 233
+        text: _reject_runtime_identifiers(gate, f"gate.{gate_id}")
+      - line: 234
+        text: 'if gate["gate_id"] != gate_id:'
+      - line: 235
+        text: raise RoadmapError(f"{gate_id} definition identity mismatch")
+      - line: 237
+        text: raise RoadmapError(f"{gate_id} has unsupported status")
+      - line: 239
+        text: raise RoadmapError(f"{gate_id} result location disagrees with roadmap index")
+      - line: 240
+        text: gates[gate_id] = gate
+      - line: 242
+        text: 'for gate_id, gate in gates.items():'
+      - line: 245
+        text: 'raise RoadmapError(f"{gate_id} dependency does not resolve: {dependency}")'
+      - line: 246
+        text: 'if gate_orders[dependency] >= gate_orders[gate_id]:'
+      - line: 247
+        text: 'raise RoadmapError(f"{gate_id} dependency is not a predecessor: {dependency}")'
+      - line: 248
+        text: 'if gate_id not in HISTORICAL_GATE_IDS and gate_id not in ACTIVATION_GATE_IDS:'
+      - line: 252
+        text: raise RoadmapError(f"{gate_id} terminal gate must set next_gate to null")
+      - line: 254
+        text: raise RoadmapError(f"{gate_id} terminal continuation is ambiguous")
+      - line: 257
+        text: raise RoadmapError(f"{gate_id} next_gate does not resolve")
+      - line: 258
+        text: 'if gate_orders[gate["next_gate"]] <= gate_orders[gate_id]:'
+      - line: 259
+        text: raise RoadmapError(f"{gate_id} next_gate does not advance roadmap order")
+      - line: 260
+        text: 'if gate_id == EXPECTED_GATE_IDS[-1] and gate["next_gate"] is None:'
+      - line: 261
+        text: raise RoadmapError(f"{gate_id} final gate must declare terminal semantics")
+      - line: 263
+        text: raise RoadmapError(f"{gate_id} non-terminal gate declares external continuation")
+      - line: 265
+        text: 'if gate["next_gate"] not in gates or gate_orders[gate["next_gate"]] <= gate_orders[gate_id]:'
+      - line: 266
+        text: raise RoadmapError(f"{gate_id} historical next_gate is not deterministic")
+      - line: 288
+        text: gate_id = item["gate_id"]
+      - line: 291
+        text: '"COMPLETE" if gate_id in completed else'
+      - line: 292
+        text: '"BLOCKED" if gate_id in blocked else'
+      - line: 293
+        text: '"CURRENT" if gate_id == current else'
+      - line: 297
+        text: raise RoadmapError(f"{gate_id} roadmap provenance lifecycle disagrees with state")
+      - line: 299
+        text: '"HISTORICAL_FROZEN" if gate_id in HISTORICAL_GATE_IDS else'
+      - line: 300
+        text: '"ACTIVATION_FROZEN" if gate_id in ACTIVATION_GATE_IDS else'
+      - line: 304
+        text: raise RoadmapError(f"{gate_id} roadmap provenance generation is not canonical")
+      - line: 305
+        text: expected_applicability = "STD-0006@1.0" if gate_id in PROSPECTIVE_GATE_IDS else "NOT_APPLICABLE"
+      - line: 307
+        text: raise RoadmapError(f"{gate_id} STD-0006 applicability is not canonical")
+      - line: 310
+        text: if gate_id not in HISTORICAL_GATE_IDS and gate_id not in ACTIVATION_GATE_IDS
+      - line: 313
+        text: 'if _safe_repository_path(self.repository_root, provenance["validation_schema"], f"{gate_id} validation schema")
+          != expected_schema:'
+      - line: 314
+        text: raise RoadmapError(f"{gate_id} selects the wrong generation validation schema")
+      - line: 317
+        text: 'for gate_id, gate in gates.items():'
+      - line: 319
+        text: '"CURRENT" if gate_id == current else'
+      - line: 320
+        text: '"BLOCKED" if gate_id in blocked else'
+      - line: 321
+        text: gate["status"] if gate_id in completed else "PENDING"
+      - line: 324
+        text: raise RoadmapError(f"{gate_id} definition and state status disagree")
+      - line: 326
+        text: 'if gate_id == current and unmet:'
+      - line: 329
+        text: result_path = _safe_repository_path(self.repository_root, gate["result_location"], f"{gate_id} result")
+      - line: 330
+        text: 'if gate_id in completed:'
+      - line: 331
+        text: result = _load_yaml(result_path, f"{gate_id} result")
+      - line: 332
+        text: _schema_validate(result, self.roadmap_root / "schemas/result.schema.yaml", f"{gate_id} result")
+      - line: 333
+        text: _reject_runtime_identifiers(result, f"result.{gate_id}")
+      - line: 334
+        text: 'if result["gate_id"] != gate_id or result["result"] != gate["status"]:'
+      - line: 335
+        text: raise RoadmapError(f"{gate_id} state/evidence contradiction")
+      - line: 337
+        text: raise RoadmapError(f"{gate_id} is completed without a terminal result")
+      - line: 339
+        text: raise RoadmapError(f"{gate_id} completion lacks evidence")
+      - line: 342
+        text: self.repository_root, evidence["path"], f"{gate_id} evidence"
+      - line: 345
+        text: 'raise RoadmapError(f"{gate_id} evidence missing: {evidence[''path'']}")'
+      - line: 348
+        text: 'raise RoadmapError(f"{gate_id} evidence digest mismatch: {evidence[''path'']}")'
+      - line: 350
+        text: self._validate_evidence_manifest(gate_id, evidence_path)
+      - line: 351
+        text: results[gate_id] = result
+      - line: 353
+        text: result = _load_yaml(result_path, f"{gate_id} result")
+      - line: 357
+        text: f"result.{gate_id}",
+      - line: 360
+        text: 'if result.get("gate_id") != gate_id:'
+      - line: 362
+        text: f"{gate_id} result identity mismatch"
+      - line: 392
+        text: f"{gate_id} current result is not "
+      - line: 411
+        text: f"{gate_id} failed to derive "
+      - line: 415
+        text: results[gate_id] = result
+      - line: 502
+        text: 'for gate_id, gate in gates.items():'
+      - line: 503
+        text: provenance = next(item["contract_provenance"] for item in roadmap["gates"] if item["gate_id"] == gate_id)
+      - line: 506
+        text: '"gate_id": gate_id,'
+      - line: 528
+        text: 'if playbook.get("gate_id") != gate_id:'
+      - line: 529
+        text: blockers.append("execution playbook gate identity mismatch")
+      - line: 546
+        text: self.repository_root, location, f"{gate_id} discovery surface"
+      - line: 626
+        text: 'all_blockers.extend(f"{gate_id}: {blocker}" for blocker in blockers)'
+      - line: 627
+        text: 'all_warnings.extend(f"{gate_id}: {warning}" for warning in warnings)'
+      - line: 629
+        text: '"gate_id": gate_id,'
+      - line: 770
+        text: required.update(gates[gate_id]["result_location"] for gate_id in state["completed_gates"])
+      - line: 788
+        text: 'def _validate_evidence_manifest(self, gate_id: str, path: Path) -> None:'
+      - line: 789
+        text: value = _load_yaml(path, f"{gate_id} evidence manifest")
+      - line: 793
+        text: 'if value.get("gate_id") != gate_id or not isinstance(files, list) or not files:'
+      - line: 794
+        text: raise RoadmapError(f"{gate_id} evidence manifest is malformed")
+      - line: 796
+        text: self.repository_root, value.get("canonical_location"), f"{gate_id} canonical evidence location"
+      - line: 801
+        text: raise RoadmapError(f"{gate_id} evidence manifest entry is malformed")
+      - line: 804
+        text: 'raise RoadmapError(f"{gate_id} evidence manifest path is invalid: {relative}")'
+      - line: 808
+        text: 'raise RoadmapError(f"{gate_id} manifested evidence missing: {relative}")'
+      - line: 810
+        text: 'raise RoadmapError(f"{gate_id} manifested evidence digest mismatch: {relative}")'
+      - line: 832
+        text: if item["gate_id"] == state["current_gate"]
+      - line: 847
+        text: gate_id=state["current_gate"],
+      - line: 896
+        text: next(item["definition"] for item in roadmap["gates"] if item["gate_id"] == state["current_gate"]),
+      - line: 933
+        text: 'gate_id: str,'
+      - line: 973
+        text: and receipt.get("gate_id") == gate_id
+      - line: 979
+        text: 'if receipt.get("gate_definition_digest") != gate_digest:'
+      - line: 1045
+        text: 'gate_id: str,'
+      - line: 1046
+        text: 'gate_definition_digest: str,'
+      - line: 1114
+        text: '"gate_id": gate_id,'
+      - line: 1115
+        text: '"gate_definition_digest":'
+      - line: 1116
+        text: gate_definition_digest,
+      - line: 1175
+        text: '"completed_gate": gate_id,'
+      - line: 1229
+        text: '"completed_gate": gate_id,'
+      - line: 1261
+        text: 'if projection["current_gate"] != gate_id:'
+      - line: 1262
+        text: raise RoadmapError("gate identity mismatch")
+      - line: 1281
+        text: 'if actual_gate_digest != gate_definition_digest:'
+      - line: 1291
+        text: gate_id=gate_id,
+      - line: 1347
+        text: current_definition = roadmap["gates"].get(gate_id)
+      - line: 1396
+        text: and dependency != gate_id
+      - line: 1409
+        text: gate_id=gate_id,
+      - line: 1410
+        text: gate_definition_digest=gate_definition_digest,
+      - line: 1458
+        text: completed_gate = gate_id
+      - line: 1579
+        text: '"gate_id": gate_id,'
+      - line: 1580
+        text: '"gate_definition_digest": gate_definition_digest,'
+      - line: 1654
+        text: '"gate_id": gate_id,'
+      - line: 1676
+        text: 'gate_id: str,'
+      - line: 1677
+        text: 'gate_definition_digest: str,'
+      - line: 1718
+        text: 'if projection["current_gate"] != gate_id:'
+      - line: 1719
+        text: raise RoadmapError("gate identity mismatch")
+      - line: 1751
+        text: 'if actual_gate_digest != gate_definition_digest:'
+      - line: 1770
+        text: '"gate_id": gate_id,'
+      - line: 1771
+        text: '"gate_definition_digest": gate_definition_digest,'
+      - line: 1808
+        text: and existing.get("gate_id") == gate_id
+      - line: 1809
+        text: and existing.get("gate_definition_digest")
+      - line: 1810
+        text: == gate_definition_digest
+      - line: 1844
+        text: gate_id=gate_id,
+      - line: 1845
+        text: gate_definition_digest=gate_definition_digest,
+      - line: 1977
+        text: gate_parser.add_argument("gate_id")
+      - line: 2008
+        text: gate_id=args.gate_id,
+      - line: 2009
+        text: gate_definition_digest=args.gate_definition_digest,
+      - line: 2029
+        text: gate_id = args.gate_id.upper()
+      - line: 2030
+        text: 'if gate_id not in resolved["gates"]:'
+      - line: 2031
+        text: 'raise RoadmapError(f"unknown gate: {args.gate_id}")'
+      - line: 2032
+        text: print(yaml.safe_dump(resolved["gates"][gate_id], sort_keys=False).rstrip())
+      - line: 2036
+        text: 'for gate_id in resolved["state"]["completed_gates"]:'
+      - line: 2037
+        text: result = resolved["results"][gate_id]
+      - line: 2038
+        text: path = resolved["gates"][gate_id]["result_location"]
+      - line: 2039
+        text: "print(f\"{gate_id}: {result['result']} \u2014 {resolver.repository_root / path}\")"
+      roadmap_identity:
+      - line: 193
+        text: 'if roadmap["roadmap_id"] != state["roadmap_id"]:'
+      - line: 194
+        text: raise RoadmapError("roadmap definition and state roadmap_id disagree")
+      - line: 195
+        text: 'if str(roadmap["roadmap_version"]) != str(state["roadmap_version"]):'
+      - line: 196
+        text: raise RoadmapError("roadmap definition and state roadmap_version disagree")
+      - line: 685
+        text: '"roadmap_id": roadmap["roadmap_id"],'
+      - line: 686
+        text: '"roadmap_version": str(roadmap["roadmap_version"]),'
+      - line: 706
+        text: '"roadmap_id", "roadmap_version", "evaluation_standard", "structural_result",'
+      - line: 730
+        text: '"roadmap_id": roadmap["roadmap_id"],'
+      - line: 731
+        text: '"roadmap_version": roadmap["roadmap_version"],'
+      - line: 747
+        text: 'if manifest.get("schema_version") != 1 or manifest.get("roadmap_id") != roadmap["roadmap_id"]:'
+      - line: 845
+        text: roadmap_id=roadmap["roadmap_id"],
+      - line: 846
+        text: roadmap_version=str(roadmap["roadmap_version"]),
+      - line: 874
+        text: '"roadmap_id": roadmap["roadmap_id"],'
+      - line: 875
+        text: '"roadmap_version": roadmap["roadmap_version"],'
+      - line: 931
+        text: 'roadmap_id: str,'
+      - line: 932
+        text: 'roadmap_version: str,'
+      - line: 971
+        text: receipt.get("roadmap_id") == roadmap_id
+      - line: 972
+        text: and str(receipt.get("roadmap_version")) == str(roadmap_version)
+      - line: 1043
+        text: 'roadmap_id: str,'
+      - line: 1044
+        text: 'roadmap_version: str,'
+      - line: 1112
+        text: '"roadmap_id": roadmap_id,'
+      - line: 1113
+        text: '"roadmap_version": str(roadmap_version),'
+      - line: 1255
+        text: 'if projection["roadmap_id"] != roadmap_id:'
+      - line: 1256
+        text: raise RoadmapError("roadmap identity mismatch")
+      - line: 1258
+        text: 'if str(projection["roadmap_version"]) != str(roadmap_version):'
+      - line: 1289
+        text: roadmap_id=roadmap_id,
+      - line: 1290
+        text: roadmap_version=str(roadmap_version),
+      - line: 1407
+        text: roadmap_id=roadmap_id,
+      - line: 1408
+        text: roadmap_version=str(roadmap_version),
+      - line: 1577
+        text: '"roadmap_id": roadmap_id,'
+      - line: 1578
+        text: '"roadmap_version": str(roadmap_version),'
+      - line: 1674
+        text: 'roadmap_id: str,'
+      - line: 1675
+        text: 'roadmap_version: str,'
+      - line: 1712
+        text: 'if projection["roadmap_id"] != roadmap_id:'
+      - line: 1713
+        text: raise RoadmapError("roadmap identity mismatch")
+      - line: 1715
+        text: 'if str(projection["roadmap_version"]) != str(roadmap_version):'
+      - line: 1768
+        text: '"roadmap_id": roadmap_id,'
+      - line: 1769
+        text: '"roadmap_version": str(roadmap_version),'
+      - line: 1806
+        text: existing.get("roadmap_id") == roadmap_id
+      - line: 1807
+        text: and str(existing.get("roadmap_version")) == str(roadmap_version)
+      - line: 1842
+        text: roadmap_id=roadmap_id,
+      - line: 1843
+        text: roadmap_version=str(roadmap_version),
+      - line: 1921
+        text: 'f"Roadmap ID: {value[''roadmap_id'']}",'
+      - line: 1922
+        text: 'f"Roadmap Version: {value[''roadmap_version'']}",'
+      - line: 1991
+        text: 'print(f"PASS: {resolved[''roadmap''][''roadmap_id'']} roadmap, state, gates, results, evidence, Project State,
+          and EMM bindings are consistent")'
+      - line: 2006
+        text: roadmap_id=args.roadmap_id,
+      - line: 2007
+        text: roadmap_version=args.roadmap_version,
+      - line: 2020
+        text: '"roadmap_id": args.roadmap_id,'
+      operator_authority:
+      - line: 1001
+        text: 'if not receipt.get("operator_identity"):'
+      - line: 1679
+        text: 'operator_identity: str,'
+      - line: 1728
+        text: ("operator_identity", operator_identity),
+      - line: 1776
+        text: '"operator_identity": operator_identity,'
+      - line: 1847
+        text: operator_identity=operator_identity,
+      - line: 2011
+        text: operator_identity=args.operator_identity,
+      lifecycle_state:
+      - line: 677
+        text: lifecycle_state = (
+      - line: 694
+        text: '"lifecycle_state": lifecycle_state,'
+      - line: 820
+        text: lifecycle_state = "CURRENT"
+      - line: 856
+        text: lifecycle_state = "AWAITING_OPERATOR_REVIEW"
+      - line: 862
+        text: lifecycle_state = (
+      - line: 868
+        text: review_state = lifecycle_state
+      - line: 881
+        text: '"lifecycle_state": lifecycle_state,'
+      - line: 1174
+        text: '"lifecycle_state": "COMPLETED",'
+      - line: 1228
+        text: '"lifecycle_state": "COMPLETED",'
+      - line: 1302
+        text: 'if review_receipt.get("lifecycle_state") != "ACCEPTED":'
+      - line: 1303
+        text: raise RoadmapError("acceptance receipt lifecycle state invalid")
+      - line: 1655
+        text: '"lifecycle_state": target.value,'
+      - line: 1795
+        text: '"lifecycle_state": prior["lifecycle_state"],'
+      - line: 1829
+        text: '"lifecycle_state": existing["lifecycle_state"],'
+      - line: 1836
+        text: 'if projection["lifecycle_state"] != "AWAITING_OPERATOR_REVIEW":'
+      - line: 1863
+        text: '"lifecycle_state": target.value,'
+      - line: 1901
+        text: '"lifecycle_state": target.value,'
+      - line: 1928
+        text: 'f"Lifecycle State: {value[''lifecycle_state'']}",'
+      pre_state:
+      - line: 1050
+        text: 'pre_state_digest: str,'
+      - line: 1098
+        text: recovering_pre_state_transaction = False
+      - line: 1122
+        text: '"pre_state_digest": pre_state_digest,'
+      - line: 1160
+        text: '"pre_state_digest"'
+      - line: 1187
+        text: '# 1. STATE.yaml still equals the recorded pre-state. Fall through'
+      - line: 1244
+        text: '"recorded pre-state nor post-state"'
+      - line: 1247
+        text: recovering_pre_state_transaction = True
+      - line: 1249
+        text: '# Exact pre-state remains authoritative. Continue through the normal'
+      - line: 1336
+        text: ("pre_state_digest", pre_state_digest),
+      - line: 1450
+        text: pre_state_bytes = state_path.read_bytes()
+      - line: 1451
+        text: actual_pre_state_digest = hashlib.sha256(
+      - line: 1452
+        text: pre_state_bytes
+      - line: 1455
+        text: 'if actual_pre_state_digest != pre_state_digest:'
+      - line: 1456
+        text: raise RoadmapError("pre-state digest mismatch")
+      - line: 1462
+        text: pre_state_bytes.decode("utf-8")
+      - line: 1586
+        text: '"pre_state_digest": pre_state_digest,'
+      - line: 1661
+        text: if recovering_pre_state_transaction
+      - line: 1665
+        text: '"recovered": recovering_pre_state_transaction,'
+      post_state:
+      - line: 1163
+        text: '"post_state_digest"'
+      - line: 1169
+        text: '"committed advancement post-state does not match"'
+      - line: 1190
+        text: '# 2. STATE.yaml already equals the recorded post-state. The state'
+      - line: 1238
+        text: '"FINALIZED_POST_STATE_TRANSACTION",'
+      - line: 1244
+        text: '"recorded pre-state nor post-state"'
+      - line: 1564
+        text: post_state_bytes = yaml.safe_dump(
+      - line: 1569
+        text: post_state_digest = hashlib.sha256(
+      - line: 1570
+        text: post_state_bytes
+      - line: 1587
+        text: '"post_state_digest": post_state_digest,'
+      - line: 1634
+        text: post_state_bytes,
+      successor:
+      - line: 53
+        text: TERMINAL_RESULTS = {"COMPLETE", "COMPLETE_WITH_FINDINGS"}
+      - line: 65
+        text: '"cold_resume", "terminal_semantics",'
+      - line: 249
+        text: terminal = gate["terminal"]
+      - line: 250
+        text: 'if terminal["is_terminal"]:'
+      - line: 252
+        text: raise RoadmapError(f"{gate_id} terminal gate must set next_gate to null")
+      - line: 253
+        text: 'if not terminal["continuation_authority"] or not terminal["continuation_action"]:'
+      - line: 254
+        text: raise RoadmapError(f"{gate_id} terminal continuation is ambiguous")
+      - line: 261
+        text: raise RoadmapError(f"{gate_id} final gate must declare terminal semantics")
+      - line: 262
+        text: 'if terminal["continuation_authority"] is not None or terminal["continuation_action"] is not None:'
+      - line: 263
+        text: raise RoadmapError(f"{gate_id} non-terminal gate declares external continuation")
+      - line: 336
+        text: 'if result["result"] not in TERMINAL_RESULTS:'
+      - line: 337
+        text: raise RoadmapError(f"{gate_id} is completed without a terminal result")
+      - line: 385
+        text: result_value in TERMINAL_RESULTS
+      - line: 435
+        text: '# Once validation has accepted a terminal result for the current'
+      - line: 616
+        text: terminal = gate.get("terminal") or {}
+      - line: 617
+        text: 'if terminal.get("is_terminal"):'
+      - line: 618
+        text: 'if gate.get("next_gate") is not None or not terminal.get("continuation_authority") or not terminal.get("continuation_action"):'
+      - line: 619
+        text: criteria["terminal_semantics"] = "FAIL"
+      - line: 620
+        text: blockers.append("terminal continuation is ambiguous")
+      - line: 622
+        text: criteria["terminal_semantics"] = "FAIL"
+      - line: 623
+        text: blockers.append("non-terminal gate has no successor")
+      - line: 1176
+        text: '"successor_gate": committed.get('
+      - line: 1177
+        text: '"successor_gate"'
+      - line: 1230
+        text: '"successor_gate": committed.get('
+      - line: 1231
+        text: '"successor_gate"'
+      - line: 1354
+        text: terminal_contract = current_definition.get("terminal") or {}
+      - line: 1355
+        text: terminal = bool(terminal_contract.get("is_terminal"))
+      - line: 1356
+        text: successor = current_definition.get("next_gate")
+      - line: 1358
+        text: 'if terminal:'
+      - line: 1359
+        text: 'if successor is not None:'
+      - line: 1361
+        text: '"terminal gate cannot define successor"'
+      - line: 1364
+        text: 'if not successor:'
+      - line: 1366
+        text: '"nonterminal gate has no authoritative successor"'
+      - line: 1369
+        text: successor_definition = roadmap["gates"].get(successor)
+      - line: 1371
+        text: 'if successor_definition is None:'
+      - line: 1373
+        text: '"authoritative successor gate is unavailable"'
+      - line: 1376
+        text: 'if successor in completed:'
+      - line: 1378
+        text: '"authoritative successor is already complete"'
+      - line: 1381
+        text: 'if successor in blocked:'
+      - line: 1383
+        text: '"authoritative successor is blocked"'
+      - line: 1386
+        text: dependencies = successor_definition.get(
+      - line: 1402
+        text: '"authoritative successor dependencies "'
+      - line: 1417
+        text: target, resolved_successor = complete_accepted_gate(
+      - line: 1420
+        text: successor_gate=successor,
+      - line: 1421
+        text: terminal=terminal,
+      - line: 1429
+        text: '# or the complete new state. Successor execution is intentionally'
+      - line: 1459
+        text: successor_gate = resolved_successor
+      - line: 1480
+        text: 'if not terminal and successor_gate not in pending:'
+      - line: 1482
+        text: '"successor missing from pending gate set"'
+      - line: 1496
+        text: None if terminal else successor_gate
+      - line: 1525
+        text: 'if terminal:'
+      - line: 1528
+        text: successor_definition = roadmap["gates"][
+      - line: 1529
+        text: successor_gate
+      - line: 1532
+        text: resume = successor_definition.get(
+      - line: 1544
+        text: next_action = successor_definition.get(
+      - line: 1550
+        text: '"authoritative successor next action unavailable"'
+      - line: 1588
+        text: '"successor_gate": successor_gate,'
+      - line: 1657
+        text: '"successor_gate": resolved_successor,'
+      - line: 1658
+        text: '"terminal_state": terminal,'
+      replay:
+      - line: 1077
+        text: '# Exact committed replay must be recognized before current-state'
+      - line: 1080
+        text: '# legitimate replay before its immutable transaction can be checked.'
+      - line: 1110
+        text: expected_replay = {
+      - line: 1127
+        text: for key, expected in expected_replay.items()
+      - line: 1133
+        text: '"conflicting advancement transaction replay: "'
+      - line: 1180
+        text: '"classification": "ALREADY_APPLIED",'
+      - line: 1181
+        text: '"already_applied": True,'
+      - line: 1235
+        text: '"already_applied": True,'
+      - line: 1467
+        text: '"gate already completed without matching transaction replay"'
+      - line: 1664
+        text: '"already_applied": False,'
+      - line: 1788
+        text: raise RoadmapError("conflicting transaction replay")
+      - line: 1796
+        text: '"classification": "ALREADY_APPLIED",'
+      - line: 1797
+        text: '"already_applied": True,'
+      - line: 1830
+        text: '"classification": "ALREADY_APPLIED",'
+      - line: 1831
+        text: '"already_applied": True,'
+      - line: 1903
+        text: '"already_applied": False,'
+      recovery:
+      - line: 56
+        text: EXECUTABLE_CLASSES = {"EXECUTABLE", "IMPLEMENTATION", "RECOVERY_RESUME"}
+      - line: 1098
+        text: recovering_pre_state_transaction = False
+      - line: 1140
+        text: '"PENDING_RECONCILIATION",'
+      - line: 1151
+        text: '"authoritative state missing during advancement recovery"'
+      - line: 1182
+        text: '"recovered": False,'
+      - line: 1185
+        text: '# PENDING_RECONCILIATION has exactly two recoverable states:'
+      - line: 1234
+        text: '"classification": "RECOVERED",'
+      - line: 1236
+        text: '"recovered": True,'
+      - line: 1237
+        text: '"recovery_mode":'
+      - line: 1247
+        text: recovering_pre_state_transaction = True
+      - line: 1424
+        text: '# Persist the qualified advancement as one recoverable transaction.'
+      - line: 1428
+        text: '# either observe the old state plus a recoverable transaction receipt,'
+      - line: 1591
+        text: '"status": "PENDING_RECONCILIATION",'
+      - line: 1660
+        text: '"RECOVERED"'
+      - line: 1661
+        text: if recovering_pre_state_transaction
+      - line: 1665
+        text: '"recovered": recovering_pre_state_transaction,'
+      emm:
+      - line: 5
+        text: the EMM-owned binding, digest, provenance, and drift checks before projecting
+      - line: 50
+        text: MANIFEST_FILE = "binding-manifest.yaml"
+      - line: 199
+        text: 'if roadmap["binding_manifest"] != str(ROADMAP_RELATIVE_ROOT / MANIFEST_FILE):'
+      - line: 200
+        text: raise RoadmapError("roadmap binding manifest path is not canonical")
+      - line: 472
+        text: '"drift_owner": "EMM",'
+      - line: 746
+        text: manifest = _load_yaml(self.manifest_path, "EMM binding manifest")
+      - line: 748
+        text: raise RoadmapError("EMM binding manifest identity mismatch")
+      - line: 751
+        text: raise RoadmapError("EMM binding manifest has no sources")
+      - line: 755
+        text: raise RoadmapError("EMM binding manifest source is malformed")
+      - line: 759
+        text: 'raise RoadmapError(f"duplicate EMM binding source: {path}")'
+      - line: 761
+        text: 'raise RoadmapError(f"invalid EMM binding digest: {path}")'
+      - line: 779
+        text: 'raise RoadmapError(f"EMM binding manifest missing required source(s): {'', ''.join(missing)}")'
+      - line: 781
+        text: path = _safe_repository_path(self.repository_root, relative, "EMM binding source")
+      - line: 783
+        text: 'raise RoadmapError(f"EMM binding source missing: {relative}")'
+      - line: 786
+        text: 'raise RoadmapError(f"EMM source drift: {relative}")'
+      - line: 1991
+        text: 'print(f"PASS: {resolved[''roadmap''][''roadmap_id'']} roadmap, state, gates, results, evidence, Project State,
+          and EMM bindings are consistent")'
+  scripts/lib/eos/roadmap_lifecycle.py:
+    present: true
+    matches:
+      transaction:
+      - line: 62
+        text: 'transaction_id: str'
+      - line: 74
+        text: 'transaction_id: str'
+      - line: 231
+        text: 'transaction_id_matches: bool,'
+      - line: 238
+        text: 'if not transaction_id_matches:'
+      - line: 239
+        text: return "NEW_TRANSACTION"
+      - line: 254
+        text: else "RESUME_EXACT_TRANSACTION"
+      - line: 278
+        text: '"transaction_id",'
+      - line: 297
+        text: '"transaction_id",'
+      receipt:
+      - line: 72
+        text: 'acceptance_receipt_id: str'
+      - line: 73
+        text: 'acceptance_receipt_digest: str'
+      - line: 234
+        text: 'receipt_matches: bool,'
+      - line: 244
+        text: receipt_matches,
+      - line: 295
+        text: '"acceptance_receipt_id",'
+      - line: 296
+        text: '"acceptance_receipt_digest",'
+      result_identity:
+      - line: 60
+        text: 'result_digest: str'
+      - line: 71
+        text: 'result_digest: str'
+      - line: 276
+        text: '"result_digest",'
+      - line: 294
+        text: '"result_digest",'
+      gate_identity:
+      - line: 58
+        text: 'gate_id: str'
+      - line: 59
+        text: 'gate_definition_digest: str'
+      - line: 69
+        text: 'gate_id: str'
+      - line: 70
+        text: 'gate_definition_digest: str'
+      - line: 274
+        text: '"gate_id",'
+      - line: 275
+        text: '"gate_definition_digest",'
+      - line: 292
+        text: '"gate_id",'
+      - line: 293
+        text: '"gate_definition_digest",'
+      roadmap_identity:
+      - line: 56
+        text: 'roadmap_id: str'
+      - line: 57
+        text: 'roadmap_version: str'
+      - line: 67
+        text: 'roadmap_id: str'
+      - line: 68
+        text: 'roadmap_version: str'
+      - line: 272
+        text: '"roadmap_id",'
+      - line: 273
+        text: '"roadmap_version",'
+      - line: 290
+        text: '"roadmap_id",'
+      - line: 291
+        text: '"roadmap_version",'
+      operator_authority:
+      - line: 61
+        text: 'operator_identity: str'
+      - line: 277
+        text: '"operator_identity",'
+      lifecycle_state: []
+      pre_state:
+      - line: 235
+        text: 'pre_state_matches: bool,'
+      - line: 245
+        text: pre_state_matches,
+      post_state: []
+      successor:
+      - line: 4
+        text: mutation, EOS synchronization, publication, git operation, or successor work.
+      - line: 201
+        text: 'successor_gate: Optional[str],'
+      - line: 202
+        text: 'terminal: bool,'
+      - line: 211
+        text: 'if terminal and successor_gate is not None:'
+      - line: 213
+        text: '"terminal advancement cannot fabricate successor"'
+      - line: 216
+        text: 'if not terminal and not successor_gate:'
+      - line: 218
+        text: '"nonterminal advancement requires deterministic successor"'
+      - line: 226
+        text: return LifecycleState.COMPLETED, successor_gate
+      replay:
+      - line: 229
+        text: def classify_replay(
+      - line: 248
+        text: '"conflicting replay identity"'
+      - line: 252
+        text: '"ALREADY_APPLIED"'
+      recovery: []
+      emm: []
+  scripts/engctl:
+    present: true
+    matches:
+      transaction:
+      - line: 119
+        text: 'value = {"resolution": "NO_AUTHORIZED_WORK", "transactional_authority": False}'
+      - line: 124
+        text: 'print(f"Transactional Authority: {''GRANTED'' if value.get(''transactional_authority'') else ''DENIED''}")'
+      receipt: []
+      result_identity: []
+      gate_identity: []
+      roadmap_identity: []
+      operator_authority: []
+      lifecycle_state: []
+      pre_state: []
+      post_state: []
+      successor: []
+      replay: []
+      recovery:
+      - line: 50
+        text: engctl mission contract {inspect|validate|resolve|admit|activate-request|recover|activate|suspend|resume|revoke|complete}
+      emm: []
+  scripts/tests/test-convergence-roadmap.py:
+    present: true
+    matches:
+      transaction:
+      - line: 475
+        text: '"EXECUTE_CR20_IMPLEMENT_ACCEPTANCE_TRANSACTION"'
+      - line: 565
+        text: '"EXECUTE_CR20_IMPLEMENT_ACCEPTANCE_TRANSACTION"'
+      - line: 648
+        text: apply_operator_review_transaction,
+      - line: 685
+        text: accepted = apply_operator_review_transaction(
+      - line: 689
+        text: transaction_id="tx-cr20-accept",
+      - line: 697
+        text: replay = apply_operator_review_transaction(
+      - line: 701
+        text: transaction_id="tx-cr20-accept",
+      - line: 710
+        text: apply_operator_review_transaction(
+      - line: 714
+        text: transaction_id="tx-cr20-accept",
+      - line: 717
+        text: assert "conflicting transaction replay" in str(exc)
+      - line: 722
+        text: apply_operator_review_transaction(
+      - line: 726
+        text: transaction_id="tx-cr20-reject",
+      - line: 732
+        text: '"cross-transaction ACCEPT/REJECT conflict did not fail closed"'
+      - line: 735
+        text: duplicate_accept = apply_operator_review_transaction(
+      - line: 739
+        text: transaction_id="tx-cr20-duplicate-accept",
+      - line: 751
+        text: apply_operator_review_transaction(
+      - line: 755
+        text: transaction_id="tx-cr20-missing-authority",
+      - line: 766
+        text: apply_operator_review_transaction(
+      - line: 770
+        text: transaction_id="tx-cr20-bad-result",
+      - line: 781
+        text: apply_operator_review_transaction(
+      - line: 785
+        text: transaction_id="tx-cr20-bad-gate",
+      - line: 811
+        text: apply_operator_review_transaction,
+      - line: 831
+        text: value = apply_operator_review_transaction(
+      - line: 835
+        text: transaction_id="tx-cr20-no-advance",
+      - line: 895
+        text: apply_operator_review_transaction,
+      - line: 916
+        text: accepted = apply_operator_review_transaction(
+      - line: 920
+        text: transaction_id="tx-cr21-review-accept",
+      - line: 968
+        text: apply_gate_advancement_transaction,
+      - line: 994
+        text: result = apply_gate_advancement_transaction(
+      - line: 997
+        text: transaction_id="tx-cr21-advance",
+      - line: 1016
+        text: / "runtime/advancement-transactions"
+      - line: 1029
+        text: replay = apply_gate_advancement_transaction(
+      - line: 1032
+        text: transaction_id="tx-cr21-advance",
+      - line: 1052
+        text: apply_gate_advancement_transaction,
+      - line: 1073
+        text: apply_gate_advancement_transaction(
+      - line: 1076
+        text: transaction_id="tx-cr21-bad-prestate",
+      - line: 1089
+        text: apply_gate_advancement_transaction(
+      - line: 1092
+        text: transaction_id="tx-cr21-bad-receipt",
+      - line: 1105
+        text: apply_gate_advancement_transaction(
+      - line: 1108
+        text: transaction_id="tx-cr21-bad-result",
+      - line: 1121
+        text: apply_gate_advancement_transaction(
+      - line: 1124
+        text: transaction_id="tx-cr21-bad-gate",
+      - line: 1141
+        text: apply_gate_advancement_transaction,
+      - line: 1158
+        text: apply_gate_advancement_transaction(
+      - line: 1161
+        text: transaction_id="tx-cr21-conflict",
+      - line: 1168
+        text: apply_gate_advancement_transaction(
+      - line: 1171
+        text: transaction_id="tx-cr21-conflict",
+      - line: 1175
+        text: '"conflicting advancement transaction replay"'
+      - line: 1184
+        text: 'def test_cr21_interrupted_transaction_recovers_exactly(tmp_path):'
+      - line: 1192
+        text: apply_gate_advancement_transaction,
+      - line: 1218
+        text: first = apply_gate_advancement_transaction(
+      - line: 1221
+        text: transaction_id="tx-cr21-interrupted",
+      - line: 1230
+        text: / "runtime/advancement-transactions"
+      - line: 1241
+        text: '# Simulate interruption after transaction provenance was durably'
+      - line: 1256
+        text: recovered = apply_gate_advancement_transaction(
+      - line: 1259
+        text: transaction_id="tx-cr21-interrupted",
+      - line: 1286
+        text: apply_gate_advancement_transaction,
+      - line: 1310
+        text: first = apply_gate_advancement_transaction(
+      - line: 1313
+        text: transaction_id="tx-cr21-poststate-interrupted",
+      - line: 1322
+        text: / "runtime/advancement-transactions"
+      - line: 1339
+        text: recovered = apply_gate_advancement_transaction(
+      - line: 1342
+        text: transaction_id="tx-cr21-poststate-interrupted",
+      - line: 1349
+        text: '"FINALIZED_POST_STATE_TRANSACTION"'
+      - line: 1376
+        text: apply_gate_advancement_transaction,
+      - line: 1426
+        text: apply_gate_advancement_transaction(
+      - line: 1429
+        text: transaction_id="tx-cr21-missing-successor",
+      - line: 1449
+        text: apply_gate_advancement_transaction,
+      - line: 1502
+        text: apply_gate_advancement_transaction(
+      - line: 1505
+        text: transaction_id="tx-cr21-unsatisfied-successor",
+      - line: 1525
+        text: apply_gate_advancement_transaction,
+      - line: 1554
+        text: apply_gate_advancement_transaction(
+      - line: 1557
+        text: transaction_id="tx-cr21-isolated-only",
+      - line: 1573
+        text: apply_gate_advancement_transaction,
+      - line: 1574
+        text: apply_operator_review_transaction,
+      - line: 1593
+        text: first_advance = apply_gate_advancement_transaction(
+      - line: 1596
+        text: transaction_id="tx-cr22-classification-advance",
+      - line: 1602
+        text: replay_advance = apply_gate_advancement_transaction(
+      - line: 1605
+        text: transaction_id="tx-cr22-classification-advance",
+      - line: 1646
+        text: first_review = apply_operator_review_transaction(
+      - line: 1649
+        text: transaction_id="tx-cr22-classification-review",
+      - line: 1655
+        text: replay_review = apply_operator_review_transaction(
+      - line: 1658
+        text: transaction_id="tx-cr22-classification-review",
+      - line: 1673
+        text: apply_gate_advancement_transaction,
+      - line: 1697
+        text: '# Produce a legitimate complete transaction first so all provenance'
+      - line: 1699
+        text: first = apply_gate_advancement_transaction(
+      - line: 1702
+        text: transaction_id="tx-cr22-unrecoverable",
+      - line: 1709
+        text: / "runtime/advancement-transactions"
+      - line: 1727
+        text: '# Construct state that is intentionally neither the transaction''s'
+      - line: 1747
+        text: apply_gate_advancement_transaction(
+      - line: 1750
+        text: transaction_id="tx-cr22-unrecoverable",
+      - line: 1773
+        text: apply_gate_advancement_transaction,
+      - line: 1799
+        text: apply_gate_advancement_transaction(
+      - line: 1802
+        text: transaction_id="tx-cr22-classification-recover",
+      - line: 1807
+        text: / "runtime/advancement-transactions"
+      - line: 1813
+        text: '# Recreate transaction-recorded-before-state-promotion interruption.'
+      - line: 1826
+        text: recovered = apply_gate_advancement_transaction(
+      - line: 1829
+        text: transaction_id="tx-cr22-classification-recover",
+      - line: 1888
+        text: '"--transaction-id",'
+      - line: 1910
+        text: '"--transaction-id",'
+      - line: 1931
+        text: '"--transaction-id",'
+      - line: 1961
+        text: apply_operator_review_transaction,
+      - line: 1978
+        text: accepted = apply_operator_review_transaction(
+      - line: 1982
+        text: transaction_id="tx-cr20-persisted-accept",
+      - line: 2006
+        text: apply_operator_review_transaction,
+      - line: 2023
+        text: rejected = apply_operator_review_transaction(
+      - line: 2027
+        text: transaction_id="tx-cr20-persisted-reject",
+      - line: 2052
+        text: apply_operator_review_transaction,
+      - line: 2069
+        text: result = apply_operator_review_transaction(
+      - line: 2073
+        text: transaction_id="tx-cr20-tamper",
+      - line: 2103
+        text: apply_operator_review_transaction,
+      - line: 2120
+        text: apply_operator_review_transaction(
+      - line: 2124
+        text: transaction_id="tx-cr20-conflict-a",
+      - line: 2137
+        text: value["transaction_id"] = "tx-cr20-conflict-b"
+      receipt:
+      - line: 706
+        text: assert replay["decision_receipt_id"] == \
+      - line: 707
+        text: accepted["decision_receipt_id"]
+      - line: 745
+        text: assert duplicate_accept["decision_receipt_id"] ==         accepted["decision_receipt_id"]
+      - line: 805
+        text: 'def test_cr20_review_receipt_does_not_advance_live_roadmap(tmp_path):'
+      - line: 923
+        text: receipt_dir = (
+      - line: 926
+        text: / "receipts/operator-review"
+      - line: 929
+        text: receipt_path = next(
+      - line: 931
+        text: for path in receipt_dir.glob("*.json")
+      - line: 932
+        text: if accepted["decision_receipt_id"]
+      - line: 950
+        text: '"acceptance_receipt_id":'
+      - line: 951
+        text: accepted["decision_receipt_id"],
+      - line: 952
+        text: '"acceptance_receipt_digest": hashlib.sha256('
+      - line: 953
+        text: receipt_path.read_bytes()
+      - line: 1086
+        text: bad["acceptance_receipt_digest"] = "0" * 64
+      - line: 1092
+        text: transaction_id="tx-cr21-bad-receipt",
+      - line: 1095
+        text: assert "acceptance receipt digest mismatch" in str(exc)
+      - line: 1098
+        text: '"bad receipt digest did not fail closed"'
+      - line: 1279
+        text: 'def test_cr21_interrupted_after_state_promotion_finalizes_receipt(tmp_path):'
+      - line: 1590
+        text: '# produces one valid ACCEPT receipt.'
+      - line: 1924
+        text: assert replay_value["decision_receipt_id"] == \
+      - line: 1925
+        text: accepted_value["decision_receipt_id"]
+      - line: 2044
+        text: 'def test_cr20_tampered_persisted_receipt_fails_closed(tmp_path):'
+      - line: 2076
+        text: receipt = (
+      - line: 2079
+        text: / "receipts/operator-review"
+      - line: 2083
+        text: value = json.loads(receipt.read_text())
+      - line: 2085
+        text: receipt.write_text(json.dumps(value, indent=2) + "\n")
+      - line: 2092
+        text: raise AssertionError("tampered persisted receipt did not fail closed")
+      - line: 2095
+        text: 'def test_cr20_conflicting_persisted_receipts_fail_closed(tmp_path):'
+      - line: 2127
+        text: receipt_dir = (
+      - line: 2130
+        text: / "receipts/operator-review"
+      - line: 2133
+        text: source = receipt_dir / "tx-cr20-conflict-a.json"
+      - line: 2134
+        text: conflicting = receipt_dir / "tx-cr20-conflict-b.json"
+      - line: 2138
+        text: value["receipt_id"] = "ORR-CONFLICT"
+      - line: 2152
+        text: '"conflicting persisted receipts did not fail closed"'
+      result_identity:
+      - line: 635
+        text: '"result_digest": hashlib.sha256('
+      - line: 763
+        text: bad_result["result_digest"] = "0" * 64
+      - line: 910
+        text: '"result_digest": hashlib.sha256('
+      - line: 1102
+        text: bad["result_digest"] = "0" * 64
+      - line: 1165
+        text: conflicting["result_digest"] = "0" * 64
+      - line: 1640
+        text: '"result_digest":'
+      - line: 2084
+        text: value["result_digest"] = "0" * 64
+      gate_identity:
+      - line: 23
+        text: EXPECTED_GATE_IDS,
+      - line: 90
+        text: 'def test_gate_ids_are_unique_and_c00_through_c20_are_present(self):'
+      - line: 92
+        text: self.assertEqual(list(value["gates"]), EXPECTED_GATE_IDS)
+      - line: 118
+        text: 'references = {item["gate_id"]: item for item in value["roadmap"]["gates"]}'
+      - line: 122
+        text: 'for gate_id in ("C00", "C01", "C02"):'
+      - line: 123
+        text: self.assertEqual(references[gate_id]["contract_provenance"]["standard_applicability"], "NOT_APPLICABLE")
+      - line: 126
+        text: 'gate_results = {item["gate_id"]: item for item in result["gate_results"]}'
+      - line: 127
+        text: 'for gate_id in ("C00", "C01", "C02"):'
+      - line: 128
+        text: self.assertEqual(gate_results[gate_id]["result"], "NOT_APPLICABLE")
+      - line: 131
+        text: 'def test_gate_identity_is_separate_from_roadmap_order(self):'
+      - line: 135
+        text: c03 = next(item for item in roadmap["gates"] if item["gate_id"] == "C03")
+      - line: 140
+        text: self.assertEqual(next(item for item in value["roadmap"]["gates"] if item["gate_id"] == "C03")["gate_identity"],
+          "ESC-GATE-C03")
+      - line: 150
+        text: gate = value["gates"][reference["gate_id"]]
+      - line: 209
+        text: 'if reference["gate_id"] == "C02":'
+      - line: 211
+        text: 'elif reference["gate_id"] == "C03":'
+      - line: 240
+        text: 'gate_results = {item["gate_id"]: item for item in value["gate_results"]}'
+      - line: 242
+        text: 'for gate_id in [f"C{number:02d}" for number in range(3, 21)]:'
+      - line: 243
+        text: self.assertEqual(gate_results[gate_id]["result"], "PASS")
+      - line: 398
+        text: if x["gate_id"] == current
+      - line: 488
+        text: 'item["gate_id"]: item'
+      - line: 492
+        text: 'for gate_id in ("C00", "C01", "C02"):'
+      - line: 493
+        text: assert gates[gate_id]["result"] == "NOT_APPLICABLE"
+      - line: 494
+        text: assert gates[gate_id]["standard_applicability"] == "NOT_APPLICABLE"
+      - line: 506
+        text: 'item["gate_id"]: item'
+      - line: 511
+        text: gate_id = f"C{number:02d}"
+      - line: 512
+        text: assert gates[gate_id]["result"] == "PASS"
+      - line: 513
+        text: assert gates[gate_id]["standard_applicability"] != "NOT_APPLICABLE"
+      - line: 631
+        text: '"gate_id": value["current_gate"],'
+      - line: 632
+        text: '"gate_definition_digest": hashlib.sha256('
+      - line: 778
+        text: bad_gate["gate_definition_digest"] = "0" * 64
+      - line: 906
+        text: '"gate_id": projection["current_gate"],'
+      - line: 907
+        text: '"gate_definition_digest": hashlib.sha256('
+      - line: 1025
+        text: assert tx["gate_id"] == "C02"
+      - line: 1118
+        text: bad["gate_definition_digest"] = "0" * 64
+      - line: 1407
+        text: if item["gate_id"] == "C02"
+      - line: 1478
+        text: if item["gate_id"] == "C03"
+      - line: 1637
+        text: '"gate_id": projection["current_gate"],'
+      - line: 1638
+        text: '"gate_definition_digest":'
+      - line: 2212
+        text: 'gate_id: C02'
+      - line: 2227
+        text: 'gate_id: C02'
+      - line: 2266
+        text: 'gate_id: C02'
+      - line: 2281
+        text: 'gate_id: C02'
+      roadmap_identity:
+      - line: 231
+        text: self.assertEqual(value["roadmap_version"], "2.0.2")
+      - line: 629
+        text: '"roadmap_id": value["roadmap_id"],'
+      - line: 630
+        text: '"roadmap_version": str(value["roadmap_version"]),'
+      - line: 904
+        text: '"roadmap_id": projection["roadmap_id"],'
+      - line: 905
+        text: '"roadmap_version": str(projection["roadmap_version"]),'
+      - line: 1635
+        text: '"roadmap_id": projection["roadmap_id"],'
+      - line: 1636
+        text: '"roadmap_version": str(projection["roadmap_version"]),'
+      - line: 1871
+        text: value["roadmap_id"],
+      - line: 1873
+        text: str(value["roadmap_version"]),
+      operator_authority:
+      - line: 638
+        text: '"operator_identity": "test-operator",'
+      - line: 748
+        text: bad_authority["operator_identity"] = ""
+      - line: 758
+        text: assert "missing operator_identity" in str(exc)
+      - line: 913
+        text: '"operator_identity": "cr21-test-operator",'
+      - line: 945
+        text: if key != "operator_identity"
+      - line: 1642
+        text: '"operator_identity": "cr22-classification-test",'
+      - line: 2246
+        text: '"""Result existence alone never supplies operator authority."""'
+      lifecycle_state:
+      - line: 373
+        text: assert v["lifecycle_state"] == "AWAITING_OPERATOR_REVIEW"
+      - line: 453
+        text: assert v["lifecycle_state"] == "CURRENT"
+      - line: 472
+        text: assert value["lifecycle_state"] == "AWAITING_OPERATOR_REVIEW"
+      - line: 558
+        text: assert value["lifecycle_state"] == "AWAITING_OPERATOR_REVIEW"
+      - line: 694
+        text: assert accepted["lifecycle_state"] == "ACCEPTED"
+      - line: 840
+        text: assert value["lifecycle_state"] == "ACCEPTED"
+      - line: 1005
+        text: assert result["lifecycle_state"] == "COMPLETED"
+      - line: 1263
+        text: assert recovered["lifecycle_state"] == "COMPLETED"
+      - line: 1903
+        text: assert accepted_value["lifecycle_state"] == "ACCEPTED"
+      - line: 1985
+        text: assert accepted["lifecycle_state"] == "ACCEPTED"
+      - line: 1990
+        text: assert fresh["lifecycle_state"] == "ACCEPTED"
+      - line: 2030
+        text: assert rejected["lifecycle_state"] == "REJECTED"
+      - line: 2035
+        text: assert fresh["lifecycle_state"] == "REJECTED"
+      - line: 2140
+        text: value["lifecycle_state"] = "REJECTED"
+      pre_state:
+      - line: 955
+        text: '"pre_state_digest": hashlib.sha256('
+      - line: 1027
+        text: assert tx["pre_state_digest"] == inputs["pre_state_digest"]
+      - line: 1070
+        text: bad["pre_state_digest"] = "0" * 64
+      - line: 1079
+        text: assert "pre-state digest mismatch" in str(exc)
+      - line: 1082
+        text: '"bad pre-state digest did not fail closed"'
+      - line: 1216
+        text: pre_state_bytes = state_path.read_bytes()
+      - line: 1243
+        text: state_path.write_bytes(pre_state_bytes)
+      - line: 1728
+        text: '# recorded pre-state nor its recorded post-state.'
+      - line: 1755
+        text: '"recorded pre-state nor post-state"'
+      - line: 1797
+        text: pre_state = state_path.read_bytes()
+      - line: 1814
+        text: state_path.write_bytes(pre_state)
+      post_state:
+      - line: 1226
+        text: post_state_bytes = state_path.read_bytes()
+      - line: 1237
+        text: assert tx["post_state_digest"] == hashlib.sha256(
+      - line: 1238
+        text: post_state_bytes
+      - line: 1349
+        text: '"FINALIZED_POST_STATE_TRANSACTION"'
+      - line: 1698
+        text: '# fields and post-state digest are canonical.'
+      - line: 1728
+        text: '# recorded pre-state nor its recorded post-state.'
+      - line: 1755
+        text: '"recorded pre-state nor post-state"'
+      successor:
+      - line: 244
+        text: self.assertEqual(gate_results["C20"]["criteria"]["terminal_semantics"], "PASS")
+      - line: 288
+        text: 'def test_ambiguous_terminal_continuation_fails_closed(self):'
+      - line: 292
+        text: gate["terminal"]["continuation_authority"] = None
+      - line: 295
+        text: 'with self.assertRaisesRegex(RoadmapError, "terminal continuation is ambiguous"):'
+      - line: 799
+        text: '# CR20 review replay must not mutate its successor''s historical result.'
+      - line: 1006
+        text: assert result["successor_gate"] == "C03"
+      - line: 1026
+        text: assert tx["successor_gate"] == "C03"
+      - line: 1264
+        text: assert recovered["successor_gate"] == "C03"
+      - line: 1369
+        text: 'def test_cr21_missing_authoritative_successor_fails_closed(tmp_path):'
+      - line: 1429
+        text: transaction_id="tx-cr21-missing-successor",
+      - line: 1438
+        text: '"missing authoritative successor did not fail closed"'
+      - line: 1442
+        text: 'def test_cr21_conflicting_successor_dependency_fails_closed(tmp_path):'
+      - line: 1475
+        text: successor_ref = next(
+      - line: 1481
+        text: successor_path = repo / successor_ref["definition"]
+      - line: 1482
+        text: successor = yaml.safe_load(
+      - line: 1483
+        text: successor_path.read_text()
+      - line: 1486
+        text: successor["dependencies"] = [
+      - line: 1491
+        text: successor_path.write_text(
+      - line: 1493
+        text: successor,
+      - line: 1505
+        text: transaction_id="tx-cr21-unsatisfied-successor",
+      - line: 1514
+        text: '"unsatisfied successor dependency did not fail closed"'
+      replay:
+      - line: 228
+        text: self.assertEqual(value["next_authorized_action"], "EXECUTE_CR22_IMPLEMENT_REPLAY_PROTECTION")
+      - line: 642
+        text: 'def test_cr20_operator_review_accept_reject_replay_and_fail_closed(tmp_path):'
+      - line: 695
+        text: assert accepted["already_applied"] is False
+      - line: 697
+        text: replay = apply_operator_review_transaction(
+      - line: 704
+        text: assert replay["result"] == "PASS"
+      - line: 705
+        text: assert replay["already_applied"] is True
+      - line: 706
+        text: assert replay["decision_receipt_id"] == \
+      - line: 717
+        text: assert "conflicting transaction replay" in str(exc)
+      - line: 719
+        text: raise AssertionError("conflicting replay did not fail closed")
+      - line: 744
+        text: assert duplicate_accept["already_applied"] is True
+      - line: 793
+        text: '# Operator-review replay must preserve that historical RESULT exactly;'
+      - line: 799
+        text: '# CR20 review replay must not mutate its successor''s historical result.'
+      - line: 961
+        text: 'def test_cr21_advancement_success_and_replay(tmp_path):'
+      - line: 1007
+        text: assert result["already_applied"] is False
+      - line: 1029
+        text: replay = apply_gate_advancement_transaction(
+      - line: 1035
+        text: assert replay["result"] == "PASS"
+      - line: 1036
+        text: assert replay["already_applied"] is True
+      - line: 1038
+        text: replay_state = yaml.safe_load(
+      - line: 1042
+        text: assert replay_state["completed_gates"].count("C02") == 1
+      - line: 1043
+        text: assert replay_state["current_gate"] == "C03"
+      - line: 1135
+        text: 'def test_cr21_conflicting_committed_replay_fails_closed(tmp_path):'
+      - line: 1175
+        text: '"conflicting advancement transaction replay"'
+      - line: 1180
+        text: '"conflicting committed replay did not fail closed"'
+      - line: 1346
+        text: assert recovered["already_applied"] is True
+      - line: 1600
+        text: assert first_advance["already_applied"] is False
+      - line: 1602
+        text: replay_advance = apply_gate_advancement_transaction(
+      - line: 1608
+        text: assert replay_advance["classification"] == "ALREADY_APPLIED"
+      - line: 1609
+        text: assert replay_advance["already_applied"] is True
+      - line: 1653
+        text: assert first_review["already_applied"] is False
+      - line: 1655
+        text: replay_review = apply_operator_review_transaction(
+      - line: 1661
+        text: assert replay_review["classification"] == "ALREADY_APPLIED"
+      - line: 1662
+        text: assert replay_review["already_applied"] is True
+      - line: 1836
+        text: 'def test_cr20_operator_review_cli_accept_replay_and_conflict(tmp_path):'
+      - line: 1906
+        text: replay = subprocess.run(
+      - line: 1919
+        text: assert replay.returncode == 0, replay.stderr
+      - line: 1921
+        text: replay_value = yaml.safe_load(replay.stdout)
+      - line: 1923
+        text: assert replay_value["already_applied"] is True
+      - line: 1924
+        text: assert replay_value["decision_receipt_id"] == \
+      recovery:
+      - line: 1184
+        text: 'def test_cr21_interrupted_transaction_recovers_exactly(tmp_path):'
+      - line: 1245
+        text: tx["status"] = "PENDING_RECONCILIATION"
+      - line: 1256
+        text: recovered = apply_gate_advancement_transaction(
+      - line: 1262
+        text: assert recovered["result"] == "PASS"
+      - line: 1263
+        text: assert recovered["lifecycle_state"] == "COMPLETED"
+      - line: 1264
+        text: assert recovered["successor_gate"] == "C03"
+      - line: 1318
+        text: state_before_recovery = state_path.read_bytes()
+      - line: 1328
+        text: tx["status"] = "PENDING_RECONCILIATION"
+      - line: 1339
+        text: recovered = apply_gate_advancement_transaction(
+      - line: 1345
+        text: assert recovered["result"] == "PASS"
+      - line: 1346
+        text: assert recovered["already_applied"] is True
+      - line: 1347
+        text: assert recovered["recovered"] is True
+      - line: 1348
+        text: assert recovered["recovery_mode"] == (
+      - line: 1352
+        text: assert state_path.read_bytes() == state_before_recovery
+      - line: 1665
+        text: 'def test_cr22_unrecoverable_partial_state_fails_closed(tmp_path):'
+      - line: 1702
+        text: transaction_id="tx-cr22-unrecoverable",
+      - line: 1710
+        text: / "tx-cr22-unrecoverable.json"
+      - line: 1716
+        text: tx["status"] = "PENDING_RECONCILIATION"
+      - line: 1734
+        text: '"CR22_SYNTHETIC_UNRECOVERABLE_STATE"'
+      - line: 1750
+        text: transaction_id="tx-cr22-unrecoverable",
+      - line: 1760
+        text: '"unrecoverable partial state did not fail closed"'
+      - line: 1767
+        text: 'def test_cr22_recovery_classification_contract(tmp_path):'
+      - line: 1802
+        text: transaction_id="tx-cr22-classification-recover",
+      - line: 1808
+        text: / "tx-cr22-classification-recover.json"
+      - line: 1815
+        text: tx["status"] = "PENDING_RECONCILIATION"
+      - line: 1826
+        text: recovered = apply_gate_advancement_transaction(
+      - line: 1829
+        text: transaction_id="tx-cr22-classification-recover",
+      - line: 1832
+        text: assert recovered["classification"] == "RECOVERED"
+      - line: 1833
+        text: assert recovered["result"] == "PASS"
+      - line: 1955
+        text: 'def test_cr20_fresh_projection_recovers_persisted_operator_decision(tmp_path):'
+      - line: 2000
+        text: 'def test_cr20_fresh_projection_recovers_rejected_decision(tmp_path):'
+      emm:
+      - line: 44
+        text: manifest = self.load(roadmap_target / "binding-manifest.yaml")
+      - line: 76
+        text: 'def rebind(self, fixture_root: Path) -> None:'
+      - line: 77
+        text: manifest_path = fixture_root / ROADMAP_RELATIVE_ROOT / "binding-manifest.yaml"
+      - line: 106
+        text: self.rebind(fixture_root)
+      - line: 138
+        text: self.rebind(fixture_root)
+      - line: 172
+        text: self.rebind(fixture_root)
+      - line: 182
+        text: self.rebind(fixture_root)
+      - line: 220
+        text: self.rebind(fixture_root)
+      - line: 252
+        text: self.rebind(fixture_root)
+      - line: 263
+        text: self.rebind(fixture_root)
+      - line: 274
+        text: self.rebind(fixture_root)
+      - line: 284
+        text: self.rebind(fixture_root)
+      - line: 294
+        text: self.rebind(fixture_root)
+      - line: 305
+        text: self.rebind(fixture_root)
+      - line: 433
+        text: manifest_path = root / "binding-manifest.yaml"
+      - line: 572
+        text: 'def _cr20_fixture_emm_rebind(repo):'
+      - line: 579
+        text: / "binding-manifest.yaml"
+      - line: 600
+        text: '"expected exactly one convergence_roadmap.py EMM binding"'
+      - line: 621
+        text: _cr20_fixture_emm_rebind(repo)
+      - line: 849
+        text: 'def _cr21_fixture_emm_rebind(repo):'
+      - line: 856
+        text: / "binding-manifest.yaml"
+      - line: 891
+        text: _cr21_fixture_emm_rebind(repo)
+      - line: 1423
+        text: _cr21_fixture_emm_rebind(repo)
+      - line: 1499
+        text: _cr21_fixture_emm_rebind(repo)
+      - line: 1589
+        text: '# CR21 fixture creates an isolated EMM-rebound repository and'
+      - line: 1624
+        text: _cr21_fixture_emm_rebind(review_repo)
+      - line: 1857
+        text: _cr20_fixture_emm_rebind(repo)
+  scripts/tests/test-roadmap-lifecycle.py:
+    present: true
+    matches:
+      transaction:
+      - line: 36
+        text: transaction_id="tx-review-1",
+      - line: 49
+        text: transaction_id="tx-advance-1",
+      - line: 183
+        text: transaction_id_matches=True,
+      - line: 189
+        text: ) == "RESUME_EXACT_TRANSACTION"
+      - line: 192
+        text: transaction_id_matches=True,
+      - line: 204
+        text: transaction_id_matches=True,
+      receipt:
+      - line: 47
+        text: acceptance_receipt_id="receipt-1",
+      - line: 48
+        text: acceptance_receipt_digest="c" * 64,
+      - line: 186
+        text: receipt_matches=True,
+      - line: 195
+        text: receipt_matches=True,
+      - line: 207
+        text: receipt_matches=True,
+      result_identity:
+      - line: 34
+        text: result_digest="b" * 64,
+      - line: 46
+        text: result_digest="b" * 64,
+      gate_identity:
+      - line: 32
+        text: gate_id="C01",
+      - line: 33
+        text: gate_definition_digest="a" * 64,
+      - line: 44
+        text: gate_id="C01",
+      - line: 45
+        text: gate_definition_digest="a" * 64,
+      roadmap_identity:
+      - line: 30
+        text: roadmap_id="ESC-ROADMAP-TEST",
+      - line: 31
+        text: roadmap_version="1.0.0",
+      - line: 42
+        text: roadmap_id="ESC-ROADMAP-TEST",
+      - line: 43
+        text: roadmap_version="1.0.0",
+      operator_authority:
+      - line: 35
+        text: operator_identity="operator",
+      lifecycle_state: []
+      pre_state:
+      - line: 187
+        text: pre_state_matches=True,
+      - line: 196
+        text: pre_state_matches=True,
+      - line: 208
+        text: pre_state_matches=True,
+      post_state: []
+      successor:
+      - line: 131
+        text: successor_gate="C02",
+      - line: 132
+        text: terminal=False,
+      - line: 137
+        text: 'def test_acceptance_does_not_execute_successor():'
+      - line: 138
+        text: state, successor = complete_accepted_gate(
+      - line: 141
+        text: successor_gate="C02",
+      - line: 142
+        text: terminal=False,
+      - line: 146
+        text: assert successor == "C02"
+      - line: 149
+        text: 'def test_terminal_does_not_fabricate_successor():'
+      - line: 150
+        text: state, successor = complete_accepted_gate(
+      - line: 153
+        text: successor_gate=None,
+      - line: 154
+        text: terminal=True,
+      - line: 158
+        text: assert successor is None
+      - line: 164
+        text: successor_gate="C99",
+      - line: 165
+        text: terminal=True,
+      - line: 170
+        text: 'def test_nonterminal_requires_successor():'
+      - line: 175
+        text: successor_gate=None,
+      - line: 176
+        text: terminal=False,
+      - line: 229
+        text: test_acceptance_does_not_execute_successor,
+      - line: 230
+        text: test_terminal_does_not_fabricate_successor,
+      - line: 231
+        text: test_nonterminal_requires_successor,
+      replay:
+      - line: 12
+        text: classify_replay,
+      - line: 181
+        text: 'def test_exact_replay():'
+      - line: 182
+        text: assert classify_replay(
+      - line: 191
+        text: assert classify_replay(
+      - line: 198
+        text: ) == "ALREADY_APPLIED"
+      - line: 201
+        text: 'def test_conflicting_replay_fails_closed():'
+      - line: 203
+        text: 'lambda: classify_replay('
+      - line: 232
+        text: test_exact_replay,
+      - line: 233
+        text: test_conflicting_replay_fails_closed,
+      recovery: []
+      emm: []

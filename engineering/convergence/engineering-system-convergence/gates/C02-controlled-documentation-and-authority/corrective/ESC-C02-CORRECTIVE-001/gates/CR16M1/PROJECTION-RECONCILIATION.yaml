@@ -1,0 +1,82 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR16M1
+finding_id: C02-F-029
+created_at: '2026-08-10T09:37:44Z'
+result: PASS
+
+objective: >
+  Reconcile the active corrective execution position, parent ESC state,
+  controlled Project State binding, and EMM integrity without weakening
+  validation or advancing C02.
+
+projection:
+  parent_roadmap:
+    path: engineering/convergence/engineering-system-convergence/roadmap.yaml
+    roadmap_version: 2.0.2
+    sha256: 47fc1ec0116a65d422a4b41537f1de097a45738cfacdd8e675e745a28d588ce4
+
+  parent_state:
+    path: engineering/convergence/engineering-system-convergence/STATE.yaml
+    current_gate: C02
+    next_authorized_action: EXECUTE_CR16_IMPLEMENT_VALIDATION_SEMANTICS
+    sha256: 480168819c2bd30771a29ae32cb6b19f15ae11ca9c45ac7844492358a298770b
+
+  project_state:
+    path: docs/project/PROJ-0001-PROJECT_STATE.md
+    document_version: 10.6
+    roadmap_version: 2.0.2
+    current_gate: C02
+    next_authorized_action: EXECUTE_CR16_IMPLEMENT_VALIDATION_SEMANTICS
+    sha256: b2c87879b802175652d18bf96b08180d25bd99677376dfa595002286098cc99c
+
+integrity:
+  emm_manifest:
+    path: engineering/convergence/engineering-system-convergence/binding-manifest.yaml
+    sha256: a0c5cfc428f6653481ce306109214cae2844579e12467d80d8641f307cc51c6a
+    source_integrity: PASS
+    source_drift: NONE
+
+  drift_provenance:
+    path: gates/CR16M1/evidence/EMM-DRIFT-PROVENANCE.yaml
+    sha256: bac56e1e7adbaeea8ff3cc5613e0e32bc9f1bfc03eec59957d3e0e249aa24dfa
+    result: PASS
+
+validation:
+  consistency: PASS
+  structural_validity: PASS
+  execution_sufficiency: NOT_EXECUTABLE
+  executable: false
+  non_executable_expected: true
+  lifecycle_boundary: PENDING_OPERATOR_REVIEW
+  read_only: true
+
+evidence:
+  before_after:
+    path: gates/CR16M1/evidence/BEFORE-AFTER.yaml
+    sha256: c46298e9197b8bead3abb629554ee74bc25e138c668625a3bd11bf9e76987a84
+
+  validation:
+    path: gates/CR16M1/evidence/VALIDATION.yaml
+    sha256: 543014ed2e19daf08c99ca2edb2ada788bad8d9aaa72d914525e9af5b35e1878
+
+  interpretation:
+    path: gates/CR16M1/evidence/VALIDATION-INTERPRETATION.yaml
+    sha256: 756d185df2f7be364554d621e4abdf52a452b3e57f4e1a46e642e8f4d1a61878
+
+follow_up:
+  finding_id: C02-F-030
+  finding: CONTROLLED_DOCUMENT_VERSION_HISTORY_TABLE_LAG
+  blocking: false
+  evidence:
+    path: gates/CR16M1/evidence/CONTROLLED-DOC-VERSION-HISTORY-GAP.yaml
+    sha256: 479cd1c6bb736389542925b0ce9016b4b552d06108d4480272d0c55a06f21b4e
+
+lifecycle_boundary:
+  c02_current: true
+  c02_completed: false
+  cr16_completed: false
+  cr17_executed: false
+  c03_executed: false
+
+next_authorized_item: CR16

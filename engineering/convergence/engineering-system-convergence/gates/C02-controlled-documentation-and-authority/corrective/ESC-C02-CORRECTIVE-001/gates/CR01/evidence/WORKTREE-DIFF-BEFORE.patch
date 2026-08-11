@@ -1,0 +1,56 @@
+diff --git a/engineering/convergence/engineering-system-convergence/STATE.yaml b/engineering/convergence/engineering-system-convergence/STATE.yaml
+index 0397ecb..33d3c26 100644
+--- a/engineering/convergence/engineering-system-convergence/STATE.yaml
++++ b/engineering/convergence/engineering-system-convergence/STATE.yaml
+@@ -9,7 +9,7 @@ pending_gates: [C02, C03, C04, C05, C06, C07, C08, C09, C10, C11, C12, C13, C14,
+ last_completed_gate: C01
+ last_result: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml
+ last_evidence: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence/EVIDENCE-MANIFEST.yaml
+-next_authorized_action: BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT
++next_authorized_action: EXECUTE_ESC_C02_CORRECTIVE_CR00
+ executable_qualification:
+   result: PASS
+   executable: true
+diff --git a/engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/README.md b/engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/README.md
+index 134ff05..9c8c48d 100644
+--- a/engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/README.md
++++ b/engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/README.md
+@@ -1,5 +1,22 @@
+ # C02 Evidence
+ 
+-C02 has not been executed. Put only C02 assessment evidence here after
+-`engctl roadmap validate` confirms C02 remains current and its entry conditions
+-are satisfied. Evidence presence does not complete the gate.
++C02 was executed as a frozen, read-only assessment at published baseline
++`f2e85d857dc73210c428d42ef9530ce9ffc4933b`. Evidence presence and the C02
++result do not advance roadmap state or authorize correction.
++
++Required outputs:
++
++- `CONTROLLED-DOCUMENT-INVENTORY.yaml`
++- `AUTHORITY-CLAIM-MATRIX.yaml`
++- `STALE-DOCUMENT-REGISTER.yaml`
++- `DUPLICATE-OVERLAP-REGISTER.yaml`
++- `IMPLEMENTATION-CONSUMER-MAP.yaml`
++- `DOCUMENT-RUNTIME-DIVERGENCE.yaml`
++- `FINDINGS.yaml`
++
++Supporting evidence:
++
++- `build_inventory.py` — deterministic inventory generator
++- `ASSESSMENT-COMMANDS.md` — command and observation record
++- `VALIDATION.yaml` — final fail-closed checks
++- `EVIDENCE-MANIFEST.yaml` — artifact integrity manifest
+diff --git a/engineering/convergence/engineering-system-convergence/roadmap.yaml b/engineering/convergence/engineering-system-convergence/roadmap.yaml
+index 8a40b34..165eb7e 100644
+--- a/engineering/convergence/engineering-system-convergence/roadmap.yaml
++++ b/engineering/convergence/engineering-system-convergence/roadmap.yaml
+@@ -5,7 +5,7 @@ program_id: ENGINEERING-SYSTEM-CONVERGENCE
+ program_title: Engineering System Convergence
+ classification: AUTHORITATIVE_EXECUTABLE_ROADMAP
+ roadmap_class: EXECUTABLE
+-purpose: Establish a durable, repository-authoritative assessment and convergence sequence that can be resumed without conversational history.
++purpose: "Establish a durable, repository-authoritative assessment and convergence sequence that can be resumed without conversational history. Current blocking maturity corrective: ESC-C02-CORRECTIVE-001, triggered by C02-F-027, must complete before C02 can close and C03 can activate."
+ authority_model:
+   planning_owner: Engineering Governance through this roadmap
+   gate_state_owner: STATE.yaml under this roadmap root

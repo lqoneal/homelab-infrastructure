@@ -1,0 +1,27 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR08
+result: COMPLETE
+
+objective: Define result validity and finality independently of operator review.
+
+outputs:
+  result_semantics:
+    path: gates/CR08/RESULT-SEMANTICS.yaml
+    sha256: 4ef5da0bfe2f49e746464b69092f559a83f7801a3b59948d5ca6d4edb0cb8156
+
+evidence:
+  validation:
+    path: gates/CR08/evidence/VALIDATION.yaml
+    sha256: d2f9c563193bf37c0b90acb4fb43e8dd774a2254eb2d8151c36410bf67b3b504
+  summary:
+    path: gates/CR08/SUMMARY.md
+    sha256: c312d0e1a8e1226e192c2d8f21b1a13293e31c0e229a22f1224a03d4f0a003fa
+
+acceptance:
+  result: PASS
+  result_acceptance_separated: true
+  implementation_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR09

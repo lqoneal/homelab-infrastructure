@@ -1,0 +1,37 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR15
+implemented_at: '2026-08-10T09:07:37Z'
+result: PASS
+
+implementation:
+  lifecycle_model:
+    path: scripts/lib/eos/roadmap_lifecycle.py
+    sha256: b20dd10881e203103eee24455bb3452ac369927fbb9d5e47c15d66cb886894d5
+
+  focused_tests:
+    path: scripts/tests/test-roadmap-lifecycle.py
+    sha256: 537dc6c677bc91bd6a77e7b82035da01619f8f4ffbb0de324801a7651ae333b3
+
+scope:
+  generic_lifecycle_model: IMPLEMENTED
+  convergence_controller_integration: NOT_PERFORMED
+  cli_integration: NOT_PERFORMED
+  successor_execution: NOT_PERFORMED
+
+implemented_semantics:
+  - explicit lifecycle state vocabulary
+  - result classification
+  - valid-final review boundary
+  - explicit ACCEPT and REJECT
+  - accepted-only completion
+  - deterministic successor requirement
+  - terminal completion semantics
+  - exact replay classification
+  - conflicting replay fail-closed
+
+side_effects:
+  eos_synchronized: false
+  eos_refreshed: false
+  committed: false
+  pushed: false

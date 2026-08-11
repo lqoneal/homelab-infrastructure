@@ -1,0 +1,144 @@
+schema_version: 1
+gate_id: CR16M2M1
+title: Correct CR16M2 Live Evaluation Contract
+status: PENDING
+
+purpose: >
+  Correct the invalid CR16M2 assumption that the canonical live evaluation
+  is NOT_EXECUTABLE. Preserve CR16M2 history and redefine the authorized
+  persistence target from qualified diagnostic evidence.
+
+objective: >
+  Establish that evaluate(compare_persisted=false) is the canonical live
+  evaluation, prove that it returns PASS / executable true for roadmap
+  version 2.0.2, classify the default NOT_EXECUTABLE result as a
+  persisted-comparison fail-closed condition, and authorize CR16M2 to
+  reconcile only the stale persisted evaluation identity.
+
+trigger:
+  source_item: CR16M2
+  classification: CR16M2_LIVE_EVALUATION_CONTRACT_ASSUMPTION_ERROR
+
+dependencies:
+  - CR16M1
+
+entry_conditions:
+  - CR16M2 remains current and incomplete.
+  - CR16M2 RESULT.yaml does not exist.
+  - LIVE-CANDIDATE-DIAGNOSTIC.yaml exists.
+  - Persisted qualification remains PASS / executable true.
+  - Persisted evaluation remains roadmap version 2.0.0.
+  - No persistence mutation from the failed CR16M2 candidate transaction occurred.
+  - CR16 remains incomplete.
+  - CR17 remains unexecuted.
+
+authoritative_inputs:
+  - gates/CR16M2/GATE.yaml
+  - gates/CR16M2/evidence/LIVE-CANDIDATE-DIAGNOSTIC.yaml
+  - engineering/convergence/engineering-system-convergence/roadmap.yaml
+  - engineering/convergence/engineering-system-convergence/STATE.yaml
+  - engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml
+  - scripts/lib/eos/convergence_roadmap.py
+
+allowed_mutations:
+  - gates/CR16M2M1/**
+  - ESC-C02-CORRECTIVE-001/STATE.yaml
+  - ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+  - ESC-C02-CORRECTIVE-001/HISTORY.md
+  - engineering/convergence/engineering-system-convergence/STATE.yaml
+  - docs/project/PROJ-0001-PROJECT_STATE.md
+  - engineering/convergence/engineering-system-convergence/binding-manifest.yaml
+
+prohibited_mutations:
+  - gates/CR16M2/**
+  - gates/CR16/**
+  - gates/CR17/**
+  - persisted ROADMAP-EVALUATION.yaml
+  - STATE.yaml executable_qualification
+  - convergence-roadmap controller
+  - lifecycle model
+  - operator acceptance
+  - C02 completion
+  - C03 activation or execution
+  - EOS synchronization or refresh
+  - commit
+  - push
+
+corrected_semantics:
+  live_evaluation:
+    invocation: evaluate(compare_persisted=false)
+    roadmap_version: 2.0.2
+    structural_result: PASS
+    overall_result: PASS
+    executable: true
+    blockers: []
+
+  persisted_evaluation:
+    roadmap_version: 2.0.0
+    overall_result: PASS
+    executable: true
+
+  default_evaluation_before_reconciliation:
+    overall_result: NOT_EXECUTABLE
+    executable: false
+    cause: PERSISTED_EVALUATION_MISMATCH
+
+  reconciliation_target:
+    roadmap_version: 2.0.2
+    overall_result: PASS
+    executable: true
+
+manual_procedure:
+  - Read CR16M2 live-candidate diagnostic.
+  - Replay evaluate(compare_persisted=false).
+  - Require structural PASS, overall PASS, executable true and no blockers.
+  - Require roadmap version 2.0.2.
+  - Replay default evaluate().
+  - Require its only blocker to be persisted-evaluation mismatch.
+  - Confirm persisted evaluation is PASS / executable true for roadmap 2.0.0.
+  - Confirm no semantic PASS/executable change is required.
+  - Define the corrected CR16M2 persistence target as PASS / true / 2.0.2.
+  - Write CORRECTED-LIVE-EVALUATION-CONTRACT.yaml.
+  - Create SUMMARY.md.
+  - Append HISTORY.md.
+  - Record CR16M2M1 RESULT.yaml.
+  - Restore control to CR16M2.
+  - Stop before resuming CR16M2.
+
+required_outputs:
+  - CORRECTED-LIVE-EVALUATION-CONTRACT.yaml
+  - SUMMARY.md
+
+required_evidence:
+  - evidence/COMMANDS.md
+  - evidence/VALIDATION.yaml
+
+acceptance_criteria:
+  - Canonical live result is PASS.
+  - Canonical live executable is true.
+  - Canonical live roadmap version is 2.0.2.
+  - Canonical live blockers are empty.
+  - Default NOT_EXECUTABLE is attributable only to persisted comparison.
+  - Persisted semantic result PASS remains valid.
+  - Persisted executable true remains valid.
+  - Only persisted roadmap-bound evaluation identity is stale.
+  - CR16M2 historical definition and evidence remain immutable.
+  - CR16 remains incomplete.
+  - CR17 remains unexecuted.
+  - C02 remains incomplete.
+  - C03 remains unexecuted.
+
+stop_boundary: STOP_AFTER_CR16M2M1
+result_location: gates/CR16M2M1/RESULT.yaml
+evidence_location: gates/CR16M2M1/evidence
+next_item: CR16M2
+
+human_readable_record:
+  summary: gates/CR16M2M1/SUMMARY.md
+  history: HISTORY.md
+  required_before_state_advancement: true
+
+resume_instructions: >
+  Execute only CR16M2M1. After successful correction restore current_item
+  CR16M2 and stop. CR16M2 must subsequently persist PASS / executable true
+  for roadmap version 2.0.2, not NOT_EXECUTABLE.

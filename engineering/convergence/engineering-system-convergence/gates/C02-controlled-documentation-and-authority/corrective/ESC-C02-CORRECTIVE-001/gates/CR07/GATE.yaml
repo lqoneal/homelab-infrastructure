@@ -1,0 +1,74 @@
+schema_version: 1
+gate_id: CR07
+title: Define Transition Matrix
+status: PENDING
+purpose: Specify every allowed and forbidden lifecycle transition.
+objective: Specify every allowed and forbidden lifecycle transition.
+dependencies:
+- CR06
+entry_conditions:
+- Corrective STATE.yaml identifies this item as current.
+- All dependencies are COMPLETE.
+- Protected artifact manifest remains valid where applicable.
+authoritative_inputs:
+- ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+- ESC-C02-CORRECTIVE-001/STATE.yaml
+- ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- Parent C02 GATE.yaml
+- Parent C02 RESULT.yaml
+- Parent C02 evidence/VALIDATION.yaml
+- C02-F-027
+allowed_mutations:
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/**
+prohibited_mutations:
+- ESC C00 GATE.yaml
+- ESC C01 GATE.yaml
+- ESC C02 GATE.yaml
+- Existing parent C02 RESULT.yaml
+- Existing parent C02 assessment evidence
+- C02-F-001 through C02-F-026 remediation
+- C03 execution
+- Implicit EOS synchronization or refresh
+- Commit or push except at separately authorized future publication gates
+manual_procedure:
+- Read CR06 vocabulary.
+- Enumerate source and target states.
+- For each allowed transition define authority, prerequisites, validation and persisted output.
+- Explicitly enumerate forbidden transitions.
+- Define terminal-gate behavior.
+- Write TRANSITION-MATRIX.yaml.
+- Create SUMMARY.md from the validated RESULT and evidence before advancing corrective state.
+- Append a concise gate completion entry to corrective HISTORY.md before advancing corrective state.
+required_outputs:
+- TRANSITION-MATRIX.yaml
+- SUMMARY.md
+required_evidence:
+- gates/CR07/evidence/COMMANDS.md
+- gates/CR07/evidence/VALIDATION.yaml
+acceptance_criteria:
+- All defined states participate in an explicit transition matrix.
+- Forbidden shortcuts such as RESULT_RECORDED to COMPLETE without review are represented.
+- Every mutation transition names an authority source.
+- No ambiguous transition remains.
+- The next CR item is not executed in the same transaction.
+- Corrective STATE.yaml is advanced only after this item's result passes.
+- SUMMARY.md exists and accurately summarizes the gate objective, result, material findings/decisions, validation,
+  artifacts, mutation boundary, and next authorized item.
+- Corrective HISTORY.md contains a human-readable entry for this completed gate.
+fail_closed_conditions:
+- Protected artifact manifest mismatch
+- Dependency RESULT missing or not PASS/COMPLETE
+- Unexpected path mutation
+- Ambiguous or contradictory lifecycle state
+- Implicit EOS synchronization or refresh
+- Attempt to execute a later CR item
+stop_boundary: STOP_AFTER_THIS_ITEM
+result_location: gates/CR07/RESULT.yaml
+evidence_location: gates/CR07/evidence
+next_item: CR08
+resume_instructions: Read STATE.yaml. If current_item is CR07, verify dependencies and execute only CR07. Stop after
+  RESULT.yaml and STATE.yaml update.
+human_readable_record:
+  summary: gates/CR07/SUMMARY.md
+  history: HISTORY.md
+  required_before_state_advancement: true

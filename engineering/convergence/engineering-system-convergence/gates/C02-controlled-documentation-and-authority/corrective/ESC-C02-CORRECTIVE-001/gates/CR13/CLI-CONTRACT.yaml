@@ -1,0 +1,315 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR13
+finding_id: C02-F-027
+status: DEFINED_NOT_IMPLEMENTED
+
+purpose: >
+  Define exact read-only and mutating CLI interfaces for the corrected roadmap
+  lifecycle and the Zeus-native repository/pre-creation verification
+  capabilities required by ZO-001.
+
+design_inputs:
+
+  lifecycle_vocabulary:
+    path: gates/CR06/LIFECYCLE-STATE-VOCABULARY.yaml
+
+  transition_matrix:
+    path: gates/CR07/TRANSITION-MATRIX.yaml
+
+  result_semantics:
+    path: gates/CR08/RESULT-SEMANTICS.yaml
+
+  operator_authority:
+    path: gates/CR09/OPERATOR-AUTHORITY.yaml
+
+  acceptance_receipt:
+    path: gates/CR10/ACCEPTANCE-RECEIPT-SPEC.yaml
+
+  atomic_advancement:
+    path: gates/CR11/ATOMIC-ADVANCEMENT-SPEC.yaml
+
+  historical_replay_recovery:
+    path: gates/CR12/INTERRUPTION-REPLAY-SPEC.yaml
+
+  replay_recovery_reconciliation:
+    path: gates/CR12M1/REPLAY-RECOVERY-RECONCILIATION.yaml
+    required_for_consumers_after_cr12m1: true
+
+historical_integrity_rule: >
+  No interface or documentation may claim that historical CR12 produced
+  REPLAY-RECOVERY-SPEC.yaml. Consumers use the CR12M1 reconciliation locator
+  while retaining CR12/INTERRUPTION-REPLAY-SPEC.yaml as the actual historical
+  semantic source.
+
+principles:
+
+  - id: CLI-001
+    rule: Read-only interfaces MUST NOT mutate lifecycle state.
+
+  - id: CLI-002
+    rule: Every lifecycle mutation MUST use an explicitly mutating command.
+
+  - id: CLI-003
+    rule: Result existence MUST NOT imply operator acceptance.
+
+  - id: CLI-004
+    rule: Operator acceptance MUST NOT imply advancement.
+
+  - id: CLI-005
+    rule: Advancement MUST NOT execute successor work.
+
+  - id: CLI-006
+    rule: Machine-readable output MUST expose blockers and the next authorized action.
+
+  - id: CLI-007
+    rule: Missing required Zeus repository projection MUST fail visibly.
+
+read_only_surfaces:
+
+  roadmap_validate:
+    preferred_interface: zeus
+    fallback_interface: engctl
+    mutations_allowed: false
+    required_output:
+      - result
+      - roadmap_id
+      - roadmap_version
+      - current_gate
+      - lifecycle_consistency
+      - blockers
+      - next_authorized_action
+
+  roadmap_evaluate:
+    preferred_interface: zeus
+    fallback_interface: engctl
+    mutations_allowed: false
+    required_output:
+      - result
+      - executable
+      - lifecycle_state
+      - blockers
+      - next_authorized_action
+
+  roadmap_status:
+    preferred_interface: zeus
+    fallback_interface: engctl
+    mutations_allowed: false
+    required_output:
+      - result
+      - roadmap_id
+      - roadmap_version
+      - current_gate
+      - completed_gates
+      - lifecycle_state
+      - execution_result_state
+      - review_required
+      - review_state
+      - operator_decision
+      - completion_state
+      - blockers
+      - next_authorized_action
+
+  roadmap_resume:
+    preferred_interface: zeus
+    fallback_interface: engctl
+    mutations_allowed: false
+    required_output:
+      - result
+      - current_gate
+      - lifecycle_state
+      - blockers
+      - next_authorized_action
+
+    prohibited_effects:
+      - acceptance
+      - rejection
+      - advancement
+      - successor execution
+      - EOS synchronization
+      - EOS refresh
+
+  replay_inspect:
+    preferred_interface: zeus
+    mutations_allowed: false
+    required_output:
+      - result
+      - replay_identity
+      - replay_classification
+      - conflict
+      - already_applied
+      - next_authorized_action
+
+  repository_projection:
+    preferred_interface: zeus
+    mutations_allowed: false
+    required_output:
+      - result
+      - repository_root
+      - branch
+      - head
+      - origin_baseline
+      - controlled_document_inventory
+      - authoritative_artifact_inventory
+      - capability_gap
+
+  pre_create_verify:
+    preferred_interface: zeus
+    mutations_allowed: false
+    required_inputs:
+      - proposed_artifact_identity
+      - proposed_artifact_type
+      - intended_path
+      - intended_authority
+      - intended_purpose
+    required_output:
+      - result
+      - pre_create_verification
+      - identifier_conflict
+      - authority_overlap
+      - placement_conflict
+      - existing_document_owner
+      - capability_gap
+
+mutating_surfaces:
+
+  operator_review:
+    preferred_interface: zeus
+
+    required_inputs:
+      - roadmap_id
+      - roadmap_version
+      - gate_id
+      - gate_definition_digest
+      - result_digest
+      - operator_identity
+      - decision
+      - transaction_id
+
+    allowed_decisions:
+      - ACCEPT
+      - REJECT
+
+    required_output:
+      - result
+      - decision_receipt_id
+      - transaction_id
+      - decision
+      - lifecycle_state
+      - next_authorized_action
+
+    implicit_advancement_allowed: false
+
+  roadmap_advance:
+    preferred_interface: zeus
+
+    required_inputs:
+      - roadmap_id
+      - roadmap_version
+      - gate_id
+      - acceptance_receipt_id
+      - advancement_transaction_id
+
+    required_output:
+      - result
+      - completed_gate
+      - successor_gate
+      - terminal_state
+      - next_authorized_action
+
+    successor_execution_allowed: false
+
+zo_001:
+
+  opportunity_id: ZO-001
+
+  required_cli_capabilities:
+
+    repository_projection:
+      required: true
+      read_only: true
+
+    controlled_document_inventory:
+      required: true
+      read_only: true
+
+    controlled_identifier_lookup:
+      required: true
+      read_only: true
+
+    duplicate_identifier_detection:
+      required: true
+
+    authority_overlap_detection:
+      required: true
+
+    canonical_placement_validation:
+      required: true
+
+    existing_document_preference:
+      required: true
+
+    pre_create_verification:
+      required: true
+      machine_readable: true
+
+    capability_gap_reporting:
+      required: true
+      machine_readable: true
+
+fallback_policy:
+
+  before_zo_001_qualification:
+    repository_native_fallback_allowed: true
+    fallback_must_be_explicit: true
+
+  after_zo_001_qualification:
+    fallback_for_supported_zeus_surface: false
+
+machine_readable_common_fields:
+
+  every_command:
+    - result
+    - command
+    - roadmap_id
+    - read_only
+
+  lifecycle_surfaces:
+    - current_gate
+    - lifecycle_state
+    - blockers
+    - next_authorized_action
+
+error_semantics:
+
+  unsupported_command:
+    exit_result: FAIL_CLOSED
+
+  ambiguous_lifecycle_state:
+    exit_result: FAIL_CLOSED
+
+  digest_mismatch:
+    exit_result: FAIL_CLOSED
+
+  missing_operator_authority:
+    exit_result: FAIL_CLOSED
+
+  repository_projection_unavailable:
+    exit_result: CAPABILITY_GAP
+
+  pre_create_verification_unavailable:
+    exit_result: CAPABILITY_GAP
+
+  conflicting_replay:
+    exit_result: FAIL_CLOSED
+
+side_effect_boundaries:
+
+  implicit_eos_sync: false
+  implicit_eos_refresh: false
+  implicit_publication: false
+  implicit_commit: false
+  implicit_push: false
+
+implementation_authorized: false
+next_item: CR14

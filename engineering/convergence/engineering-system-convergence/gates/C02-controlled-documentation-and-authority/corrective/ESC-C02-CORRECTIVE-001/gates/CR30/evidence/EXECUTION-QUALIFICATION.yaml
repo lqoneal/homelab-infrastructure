@@ -1,0 +1,28 @@
+schema_version: 1
+record_id: CR30-EXECUTION-QUALIFICATION-001
+gate_id: CR30
+recorded_at: '2026-08-11T00:51:32Z'
+result: PASS
+objective: Verify acceptance cannot target a non-current gate.
+qualification:
+  authoritative_current_gate: CR30
+  tested_noncurrent_targets:
+  - CR31
+  - CR29
+  wrong_current_gate_acceptance_fail_closed: true
+  acceptance_target_match: false
+  acceptance_authorized: false
+  receipt_created: false
+  target_gate_mutated: false
+  current_gate_mutated: false
+  state_advanced: false
+  successor_executed: false
+  cr31_executed: false
+boundary:
+  cr30_result_written: false
+  state_advanced: false
+  parent_c02_advanced: false
+  cr31_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

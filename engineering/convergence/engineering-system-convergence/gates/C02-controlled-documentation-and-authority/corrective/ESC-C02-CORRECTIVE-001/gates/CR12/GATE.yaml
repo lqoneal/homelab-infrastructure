@@ -1,0 +1,75 @@
+schema_version: 1
+gate_id: CR12
+title: Define Interruption and Replay
+status: PENDING
+purpose: Define idempotency, crash recovery and stale transaction handling.
+objective: Define idempotency, crash recovery and stale transaction handling.
+dependencies:
+- CR11
+entry_conditions:
+- Corrective STATE.yaml identifies this item as current.
+- All dependencies are COMPLETE.
+- Protected artifact manifest remains valid where applicable.
+authoritative_inputs:
+- ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+- ESC-C02-CORRECTIVE-001/STATE.yaml
+- ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- Parent C02 GATE.yaml
+- Parent C02 RESULT.yaml
+- Parent C02 evidence/VALIDATION.yaml
+- C02-F-027
+allowed_mutations:
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/**
+prohibited_mutations:
+- ESC C00 GATE.yaml
+- ESC C01 GATE.yaml
+- ESC C02 GATE.yaml
+- Existing parent C02 RESULT.yaml
+- Existing parent C02 assessment evidence
+- C02-F-001 through C02-F-026 remediation
+- C03 execution
+- Implicit EOS synchronization or refresh
+- Commit or push except at separately authorized future publication gates
+manual_procedure:
+- Read CR10-CR11.
+- Define transaction IDs for review and advancement.
+- Define first execution and exact replay behavior.
+- Define conflicting replay behavior.
+- Define partial-write detection and recovery.
+- Define stale-result and stale-state rejection.
+- Write REPLAY-RECOVERY-SPEC.yaml.
+- Create SUMMARY.md from the validated RESULT and evidence before advancing corrective state.
+- Append a concise gate completion entry to corrective HISTORY.md before advancing corrective state.
+required_outputs:
+- REPLAY-RECOVERY-SPEC.yaml
+- SUMMARY.md
+required_evidence:
+- gates/CR12/evidence/COMMANDS.md
+- gates/CR12/evidence/VALIDATION.yaml
+acceptance_criteria:
+- Exact replay is deterministic.
+- Conflicting replay fails closed.
+- Partial transaction state can be detected.
+- Recovery never silently invents operator authority.
+- The next CR item is not executed in the same transaction.
+- Corrective STATE.yaml is advanced only after this item's result passes.
+- SUMMARY.md exists and accurately summarizes the gate objective, result, material findings/decisions, validation,
+  artifacts, mutation boundary, and next authorized item.
+- Corrective HISTORY.md contains a human-readable entry for this completed gate.
+fail_closed_conditions:
+- Protected artifact manifest mismatch
+- Dependency RESULT missing or not PASS/COMPLETE
+- Unexpected path mutation
+- Ambiguous or contradictory lifecycle state
+- Implicit EOS synchronization or refresh
+- Attempt to execute a later CR item
+stop_boundary: STOP_AFTER_THIS_ITEM
+result_location: gates/CR12/RESULT.yaml
+evidence_location: gates/CR12/evidence
+next_item: CR13
+resume_instructions: Read STATE.yaml. If current_item is CR12, verify dependencies and execute only CR12. Stop after
+  RESULT.yaml and STATE.yaml update.
+human_readable_record:
+  summary: gates/CR12/SUMMARY.md
+  history: HISTORY.md
+  required_before_state_advancement: true

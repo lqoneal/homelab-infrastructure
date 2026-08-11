@@ -1,0 +1,20 @@
+schema_version: 1
+record_id: CR35-EXECUTION-QUALIFICATION-001
+gate_id: CR35
+recorded_at: '2026-08-11T01:25:29Z'
+result: PASS
+objective: Verify deterministic terminal semantics.
+qualification:
+  terminal_gate: true
+  terminal_completion: AUTHORIZED
+  roadmap_terminal_state: COMPLETE
+  successor_required: false
+  successor_fabricated: false
+  next_gate_activated: false
+  state_advancement_beyond_terminal: false
+  exact_replay: ALREADY_APPLIED
+  exact_replay_idempotent: true
+  second_lifecycle_mutation: false
+  live_state_advanced: false
+  successor_executed: false
+  cr36_executed: false

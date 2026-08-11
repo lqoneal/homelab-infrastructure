@@ -1,0 +1,168 @@
+schema_version: 1
+classification: ZEUS_DEVELOPMENT_OPPORTUNITIES
+source_gate: CR41
+source_execution: FRESH_SHELL_COLD_RESUME_REAL_C02
+source_findings:
+- CR41-FINDING-STALE-OA-AUTHORITY-001
+- CR41-FINDING-STALE-PROJECT-RESUME-TEXT-001
+recorded_at: '2026-08-11T11:44:26.604149+00:00'
+current_authority:
+  operation: OPERATION_BETA
+  operation_alpha: HISTORICAL_OBSOLETE
+  oa_execution_authority: false
+  oa_fallback_authorized: false
+observed_defect:
+  classification: STALE_HISTORICAL_AUTHORITY_CONTAMINATION
+  required_semantics: Historical OA records may remain discoverable as historical
+    evidence but must not participate in current-authority comparisons or cause AUTHORITY_DISAGREEMENT.
+  correction_status: RECORDED_NOT_EXECUTED
+authorization:
+  development_execution_created: false
+  defect_correction_executed: false
+  roadmap_priority_changed: false
+  state_advanced: false
+opportunities:
+- id: ZEUS-DEV-OPP-GENERATIONAL-AUTHORITY-FILTERING
+  priority: HIGH
+  classification: AUTHORITY_PROJECTION_CORRECTNESS
+  title: Generation-aware authority filtering
+  objective: Exclude superseded operation generations from current mission, phase,
+    active-work, authorization, and resume authority calculations while preserving
+    their records as historical evidence.
+- id: ZEUS-DEV-OPP-AUTHORITY-DISAGREEMENT-SEMANTICS
+  priority: HIGH
+  classification: AUTHORITY_PROJECTION_CORRECTNESS
+  title: Authority disagreement semantic hardening
+  objective: Emit AUTHORITY_DISAGREEMENT only when two or more currently authoritative
+    sources genuinely conflict. Superseded historical records must not create an authority
+    disagreement.
+- id: ZEUS-DEV-OPP-AUTHORITY-CONFLICT-PROVENANCE
+  priority: HIGH
+  classification: DIAGNOSTICS
+  title: Machine-readable authority conflict provenance
+  objective: For genuine authority conflicts, expose every participating source, entity
+    identifier, lifecycle state, operation generation, comparison, and reason for
+    disagreement.
+- id: ZEUS-DEV-OPP-STALE-LINEAGE-CLASSIFICATION
+  priority: HIGH
+  classification: DIAGNOSTICS
+  title: Stale lineage classification
+  objective: Classify obsolete active/current registry records as stale historical
+    lineage rather than current authority and identify exact records requiring reconciliation.
+- id: ZEUS-DEV-OPP-CANONICAL-AUTHORITY-FIRST-RESUME
+  priority: HIGH
+  classification: RESUME_ARCHITECTURE
+  title: Canonical-authority-first resume composition
+  objective: Resolve the current operation and canonical authority before composing
+    Project State and Work Registry context so secondary projections cannot override
+    or contaminate current authority.
+- id: ZEUS-DEV-OPP-HISTORICAL-LINEAGE-SUPPRESSION
+  priority: HIGH
+  classification: RESUME_ARCHITECTURE
+  title: Historical lineage suppression
+  objective: Prevent superseded missions, phases, and work items from appearing in
+    live Mission, Phase, Active Work, Authorized Work, or Current Authority fields.
+- id: ZEUS-DEV-OPP-CURRENT-GENERATION-VERIFY
+  priority: MEDIUM
+  classification: VERIFICATION
+  title: Current-generation authority verification
+  objective: Provide a Zeus-native read-only verification proving that the current
+    mission, phase, active work, and authority projection all belong to the current
+    operation generation.
+  candidate_interface: zeus authority verify-current-generation
+- id: ZEUS-DEV-OPP-OBSOLETE-AUTHORITY-LINT
+  priority: MEDIUM
+  classification: PREVENTION
+  title: Obsolete authority reference lint
+  objective: Detect current or active fields that reference superseded operation generations
+    before those records reach resume, authority, or execution projections.
+- id: ZEUS-DEV-OPP-COLD-RESUME-REGRESSION
+  priority: MEDIUM
+  classification: VERIFICATION
+  title: Cold-resume regression qualification
+  objective: Promote the CR41 fresh-shell cold-resume pattern into a reusable qualification
+    proving lifecycle derivation and authority projection cleanliness from an independent
+    process environment.
+- id: ZEUS-DEV-OPP-SEMANTIC-PROFILE-AUTHORITY
+  priority: HIGH
+  classification: CONTROLLED_DOCUMENT_VALIDATION
+  title: Canonical semantic-profile authority
+  objective: Establish one canonical machine-readable authority for controlled-document
+    semantic profile classification so validators, tests, and documents do not independently
+    infer Procedure, Standard, Specification, Policy, or Template.
+  source: CR42_PREPUBLICATION_QUALIFICATION
+- id: ZEUS-DEV-OPP-SEMANTIC-PROFILE-DIAGNOSTICS
+  priority: MEDIUM
+  classification: CONTROLLED_DOCUMENT_VALIDATION
+  title: Semantic-profile failure diagnostics
+  objective: When semantic classification fails, report whether the cause is missing
+    metadata, unsupported filename inference, validator contract mismatch, or stale
+    test expectation.
+  source: CR42_PREPUBLICATION_QUALIFICATION
+- id: ZEUS-DEV-OPP-PROTECTED-BASELINE-LIFECYCLE
+  priority: HIGH
+  classification: BASELINE_INTEGRITY
+  title: Protected baseline lifecycle model
+  objective: Distinguish immutable protected artifacts from intentionally evolving
+    lifecycle and controller artifacts so authorized post-baseline mutations do not
+    appear as unexplained drift.
+  source: CR42_PREPUBLICATION_QUALIFICATION
+- id: ZEUS-DEV-OPP-AUTHORIZED-DRIFT-PROVENANCE
+  priority: HIGH
+  classification: BASELINE_INTEGRITY
+  title: Authorized drift provenance chain
+  objective: Maintain machine-readable lineage from protected baseline digest through
+    each authorized gate mutation, reconciliation, and EMM rebind to the current live
+    digest.
+  source: CR42_PREPUBLICATION_QUALIFICATION
+- id: ZEUS-DEV-OPP-PROTECTED-MANIFEST-REBIND
+  priority: MEDIUM
+  classification: BASELINE_INTEGRITY
+  title: Protected manifest controlled rebinding
+  objective: Provide an explicit qualified transaction for rebasing protected-manifest
+    digests after authorized evolution, with prior digest provenance and no silent
+    refresh.
+  source: CR42_PREPUBLICATION_QUALIFICATION
+- id: ZEUS-DEV-OPP-HISTORICAL-TEST-ISOLATION
+  priority: HIGH
+  classification: TEST_ARCHITECTURE
+  title: Historical test isolation
+  objective: Separate superseded-operation tests from current-operation qualification
+    so historical OA tests remain available for regression archaeology without blocking
+    Operation Beta.
+  source: CR42_PREPUBLICATION_QUALIFICATION
+- id: ZEUS-DEV-OPP-TEST-AUTHORITY-GENERATION-TAGS
+  priority: MEDIUM
+  classification: TEST_ARCHITECTURE
+  title: Operation-generation test metadata
+  objective: Tag tests with operation generation and authority scope so qualification
+    can automatically include current tests and classify superseded-generation failures
+    as historical.
+  source: CR42_PREPUBLICATION_QUALIFICATION
+- id: ZEUS-DEV-OPP-STATE-AWARE-TEST-FIXTURES
+  priority: MEDIUM
+  classification: TEST_ARCHITECTURE
+  title: State-aware convergence test fixtures
+  objective: Replace hard-coded transient current_item and next_authorized_action
+    expectations with controlled fixtures or canonical projections that advance with
+    authorized state.
+  source: CR42_PREPUBLICATION_QUALIFICATION
+- id: ZEUS-DEV-OPP-QUALIFICATION-FAILURE-TAXONOMY
+  priority: HIGH
+  classification: QUALIFICATION_ARCHITECTURE
+  title: Qualification failure taxonomy
+  objective: Classify failures as production defect, stale test, historical surface,
+    baseline drift, validation-contract gap, or evidence defect before permitting
+    corrective mutation.
+  source: CR42_PREPUBLICATION_QUALIFICATION
+- id: ZEUS-DEV-OPP-QUALIFICATION-SNAPSHOT-COVERAGE
+  priority: HIGH
+  classification: QUALIFICATION_ARCHITECTURE
+  title: Complete qualification snapshot coverage
+  objective: Require pre/post qualification snapshots to cover every artifact subsequently
+    used for drift or mutation-causation claims, and distinguish an uncaptured artifact
+    from a changed artifact instead of representing missing baseline data as post-snapshot
+    mutation.
+  source: CR42_PREPUBLICATION_QUALIFICATION
+last_updated_at: '2026-08-11T12:15:41.062336+00:00'
+latest_source_gate: CR42

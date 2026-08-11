@@ -1,0 +1,22 @@
+schema_version: 1
+gate_id: CR16M2M1
+status: COMPLETE
+result: PASS
+canonical_live_result: PASS
+canonical_live_executable: true
+canonical_live_roadmap_version: 2.0.2
+canonical_live_blockers: []
+default_failure_cause_before_reconciliation: PERSISTED_EVALUATION_MISMATCH
+corrected_cr16m2_persistence_target:
+  roadmap_version: 2.0.2
+  overall_result: PASS
+  executable: true
+persisted_evaluation_mutated: false
+persisted_qualification_mutated: false
+cr16m2_executed: false
+next_item: CR16M2
+artifacts:
+  CORRECTED-LIVE-EVALUATION-CONTRACT.yaml: 1e4b60ed7def5aa0d27cb5ad450f52bfa2a6d819aac70156f2f865806882eed8
+  SUMMARY.md: 349748862110e500d8bdfaaa0c3764bf50ddcd865d792ff2ec4e6adbc31d8003
+  evidence/COMMANDS.md: 5a2005a8b1e630a2ff45bf38b0be5ef211681430da1dd54c1a161d5130ac1737
+  evidence/VALIDATION.yaml: ee252885409726ee253180ac7054fc98ff28617aaf8db4951f63188073dfc2fa

@@ -1,0 +1,27 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR09
+result: COMPLETE
+
+objective: Define explicit operator authority for result acceptance and rejection.
+
+outputs:
+  operator_authority:
+    path: gates/CR09/OPERATOR-AUTHORITY.yaml
+    sha256: 3134a2fb1754b54e8a3ed8a44191deeca6aad796bdc21bfb826375dace19eef6
+
+evidence:
+  validation:
+    path: gates/CR09/evidence/VALIDATION.yaml
+    sha256: 1abc2f6195ba911f2a26f4ff11ca494e026bd734ace52d4a9c8396606dbfaeb2
+  summary:
+    path: gates/CR09/SUMMARY.md
+    sha256: ecd679bd25aa8fed752e73f82a2523ede1f61f1637f1b1a056db3d632c374b0d
+
+acceptance:
+  result: PASS
+  operator_authority_explicit: true
+  implementation_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR10

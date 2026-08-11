@@ -1,0 +1,27 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR00
+result: COMPLETE
+completed_at: '2026-08-10T03:55:58Z'
+
+objective: Establish the authoritative starting baseline for the C02 lifecycle corrective.
+
+outputs:
+  starting_baseline:
+    path: gates/CR00/STARTING-BASELINE.yaml
+    sha256: 205c15a022fffe801ff0f92867412d9fb761c77dd8db79a93bd60672a7d30f96
+
+evidence:
+  commands:
+    path: gates/CR00/evidence/COMMANDS.md
+    sha256: eadcb424b5a3312efe1e6e3dc98cca0412bf68568281127576347ee604e88dce
+  validation:
+    path: gates/CR00/evidence/VALIDATION.yaml
+    sha256: ba263bd384246dd0700506395ce68d4a575cd566bb5777ba138e616f5a0015de
+
+acceptance:
+  result: PASS
+  protected_artifacts_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR01

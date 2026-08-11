@@ -1,0 +1,276 @@
+schema_version: 1
+record_id: CR23-ZO013-QUALIFICATION-001
+gate_id: CR23
+opportunity_id: ZO-013
+recorded_at: '2026-08-10T17:52:10Z'
+result: PASS
+implementation:
+  primitive: scripts.lib.eos.convergence_roadmap.project_composite_execution_preflight
+  role: COMPOSITE_PREFLIGHT_DEPENDENCY_PROJECTION
+  authority_boundary: gates/CR23/evidence/ZO-008-ZO-013-AUTHORITY-BOUNDARY.yaml
+  component_sources:
+  - ZO-005
+  - ZO-006
+  - ZO-007
+  - ZO-008
+  - ZO-009
+  - ZO-010
+  - ZO-011
+  authority_rederivation: false
+  automatic_reconciliation: false
+  execution_ownership: false
+  state_advancement_ownership: false
+  successor_execution_ownership: false
+  read_only: true
+qualification:
+  zo013_focused_tests: 8/8 PASS
+  prior_zeus_regression: 48/48 PASS
+  emm_transaction_regression: 6/6 PASS
+  cr23_provenance: 5/5 PASS
+  lifecycle_regression: 10/10 PASS
+  pre_rebind_live_composite: FAIL_CLOSED_EXPECTED_EMM_DRIFT
+  post_rebind_live_composite: READY
+live_reconciliation:
+  transaction_id: tx-cr23-zo013-emm-rebind-001
+  first_application: PASS
+  exact_replay: ALREADY_RECONCILED
+  pre_manifest_sha256: c0e9a8879d9bc28349b8a70c0f3a2c61c64169899b17ccf33d35d76bd496cc29
+  post_manifest_sha256: 619e061a2ff460dd05275511bf603d02fe2957703ec6e1b58d51bff8194990ba
+  transaction_record: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo013-emm-rebind-001.json
+live_projection:
+  result: PASS
+  projection: ZEUS_COMPOSITE_EXECUTION_PREFLIGHT
+  classification: READY
+  ready: true
+  blocking_dependency: null
+  blocking_classification: null
+  blocking_dependencies: []
+  component_order:
+  - ZO-010
+  - ZO-005
+  - ZO-011
+  - ZO-008
+  - ZO-006
+  - ZO-007
+  - ZO-009
+  components:
+    ZO-005:
+      result: PASS
+      projection: ZEUS_EMM_RECONCILIATION_AWARENESS
+      source_path: scripts/lib/eos/convergence_roadmap.py
+      classification: BOUND_CLEAN
+      bound: true
+      source_exists: true
+      expected_sha256: d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc
+      actual_sha256: d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc
+      drifted: false
+      rebind_eligible: false
+      reconciliation_required: false
+      recommended_action: NONE_REQUIRED
+      canonical_reconciliation_primitive: apply_emm_rebind_transaction
+      automatic_reconciliation: false
+      read_only: true
+    ZO-006:
+      result: PASS
+      projection: ZEUS_EXECUTABLE_ROADMAP_MATURITY
+      gate_id: C02
+      current_gate: C02
+      is_current: true
+      is_completed: false
+      is_blocked: false
+      terminal: false
+      classification: CURRENT_EXECUTABLE
+      executable: true
+      successor_gate: C03
+      next_authorized_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
+      recommended_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
+      authority_surface: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/GATE.yaml
+      authority_kind: GATE_DEFINITION
+      action_surface: resume_instructions.next_authorized_action
+      successor_executed: false
+      read_only: true
+    ZO-007:
+      result: PASS
+      projection: ZEUS_MANUAL_GATE_EXECUTION_PREFLIGHT
+      classification: READY_FOR_MANUAL_EXECUTION
+      ready: true
+      blocking_dependency: null
+      blocking_classification: null
+      parent_gate: C02
+      parent_maturity:
+        result: PASS
+        projection: ZEUS_EXECUTABLE_ROADMAP_MATURITY
+        gate_id: C02
+        current_gate: C02
+        is_current: true
+        is_completed: false
+        is_blocked: false
+        terminal: false
+        classification: CURRENT_EXECUTABLE
+        executable: true
+        successor_gate: C03
+        next_authorized_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
+        recommended_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
+        authority_surface: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/GATE.yaml
+        authority_kind: GATE_DEFINITION
+        action_surface: resume_instructions.next_authorized_action
+        successor_executed: false
+        read_only: true
+      manual_gate_id: CR23
+      manual_contract_path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/MANUAL-EXECUTION.yaml
+      manual_contract_id: CR23-MANUAL-EXECUTION-001
+      execution_mode: MANUAL_BOUNDED
+      current_item: CR23
+      dependency_gate: CR22
+      dependency_result: COMPLETE_PASS
+      emm_awareness:
+        result: PASS
+        projection: ZEUS_EMM_RECONCILIATION_AWARENESS
+        source_path: scripts/lib/eos/convergence_roadmap.py
+        classification: BOUND_CLEAN
+        bound: true
+        source_exists: true
+        expected_sha256: d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc
+        actual_sha256: d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc
+        drifted: false
+        rebind_eligible: false
+        reconciliation_required: false
+        recommended_action: NONE_REQUIRED
+        canonical_reconciliation_primitive: apply_emm_rebind_transaction
+        automatic_reconciliation: false
+        read_only: true
+      resource_preflight:
+        result: PASS
+        projection: ZEUS_QUALIFICATION_RESOURCE_PREFLIGHT
+        classification: READY
+        resource: null
+        repository_root: /data/engineering/repositories/homelab
+        repository_bytes: 45536586
+        temporary_workspace: /data/engineering/tmp/zeus-composite-preflight
+        filesystem_probe: /data/engineering/tmp
+        filesystem_total_bytes: 1967846068224
+        filesystem_used_bytes: 7104909312
+        filesystem_free_bytes: 1860704489472
+        fixture_copy_multiplier: 8
+        minimum_extra_bytes: 2147483648
+        required_reserve_bytes: 2193020234
+        ready: true
+        semantic_test_failure: false
+        qualification_executed: false
+        recommended_action: USE_SELECTED_WORKSPACE
+        read_only: true
+      next_item: CR24
+      state_transition:
+        from: CR23
+        to: CR24
+        authorized_only_after_result_pass: true
+        execute_successor: false
+        stop_boundary: STOP_AFTER_THIS_ITEM
+      execution_performed: false
+      state_advanced: false
+      successor_executed: false
+      read_only: true
+    ZO-008:
+      result: PASS
+      projection: ZEUS_NESTED_CORRECTIVE_RECONCILIATION
+      classification: NESTED_CORRECTIVE_CONSISTENT
+      consistent: true
+      blocking_dependency: null
+      parent_gate_id: C02
+      parent_current_gate: C02
+      parent_result_present: true
+      parent_result_complete_pass: false
+      corrective_roadmap_id: ESC-C02-CORRECTIVE-001
+      corrective_root_path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001
+      manual_gate_id: CR23
+      manual_contract_path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/MANUAL-EXECUTION.yaml
+      nested_current_item: CR23
+      dependency_gate: CR22
+      dependency_result: COMPLETE_PASS
+      next_item: CR24
+      state_transition:
+        from: CR23
+        to: CR24
+        authorized_only_after_result_pass: true
+        execute_successor: false
+        stop_boundary: STOP_AFTER_THIS_ITEM
+      nested_ready_implies_parent_advance: false
+      execution_performed: false
+      state_advanced: false
+      parent_gate_advanced: false
+      successor_executed: false
+      read_only: true
+    ZO-009:
+      result: PASS
+      projection: ZEUS_SUCCESSOR_ACTION_CONTRACT
+      authority_surface: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/GATE.yaml
+      authority_kind: GATE_DEFINITION
+      action_surface: resume_instructions.next_authorized_action
+      gate_id: C02
+      terminal: false
+      successor_gate: C03
+      next_authorized_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
+      terminal_resume_action: null
+      continuation_authority: null
+      continuation_action: null
+      action_count: 1
+      classification: EXECUTABLE_SUCCESSOR_ACTION_RESOLVED
+      executable_successor: true
+      successor_executed: false
+      read_only: true
+    ZO-010:
+      result: PASS
+      classification: BOUND_CLEAN
+      source_path: scripts/lib/eos/convergence_roadmap.py
+      bound: true
+      source_exists: true
+      expected_sha256: d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc
+      actual_sha256: d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc
+      drifted: false
+      rebind_eligible: false
+      read_only: true
+    ZO-011:
+      result: PASS
+      projection: ZEUS_QUALIFICATION_RESOURCE_PREFLIGHT
+      classification: READY
+      resource: null
+      repository_root: /data/engineering/repositories/homelab
+      repository_bytes: 45536586
+      temporary_workspace: /data/engineering/tmp/zeus-composite-preflight
+      filesystem_probe: /data/engineering/tmp
+      filesystem_total_bytes: 1967846068224
+      filesystem_used_bytes: 7104909312
+      filesystem_free_bytes: 1860704489472
+      fixture_copy_multiplier: 8
+      minimum_extra_bytes: 2147483648
+      required_reserve_bytes: 2193020234
+      ready: true
+      semantic_test_failure: false
+      qualification_executed: false
+      recommended_action: USE_SELECTED_WORKSPACE
+      read_only: true
+  parent_gate_id: C02
+  manual_gate_id: CR23
+  nested_current_item: CR23
+  next_nested_item: CR24
+  successor_gate: C03
+  next_authorized_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
+  recommended_action: READY_FOR_MANUAL_EXECUTION
+  execution_performed: false
+  state_advanced: false
+  parent_gate_advanced: false
+  successor_executed: false
+  automatic_reconciliation: false
+  read_only: true
+boundary:
+  authority_rederived: false
+  automatic_reconciliation: false
+  execution_performed: false
+  state_advanced: false
+  parent_gate_advanced: false
+  successor_executed: false
+  cr23_result_written: false
+  cr24_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

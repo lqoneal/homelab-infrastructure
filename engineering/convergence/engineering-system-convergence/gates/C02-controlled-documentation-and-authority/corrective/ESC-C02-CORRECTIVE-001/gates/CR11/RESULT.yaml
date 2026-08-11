@@ -1,0 +1,25 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR11
+result: COMPLETE
+
+outputs:
+  atomic_advancement:
+    path: gates/CR11/ATOMIC-ADVANCEMENT-SPEC.yaml
+    sha256: 3d5fd990c10baca6d03d931a5e8ab123d09a4943eb428a0913fcad8476a4954e
+
+evidence:
+  validation:
+    path: gates/CR11/evidence/VALIDATION.yaml
+    sha256: 6342136cce85b5d4c40324f9635f829d22568038b39c2a2588b4714c8431eb00
+  summary:
+    path: gates/CR11/SUMMARY.md
+    sha256: a6a9aaa5917cd2b3153afb3d79c458b52e6d4b094a39f2d3c9fc10c12a3fb497
+
+acceptance:
+  result: PASS
+  atomic_advancement_defined: true
+  implementation_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR12

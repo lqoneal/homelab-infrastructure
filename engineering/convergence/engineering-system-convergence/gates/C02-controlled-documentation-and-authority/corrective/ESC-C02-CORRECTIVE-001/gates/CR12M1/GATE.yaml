@@ -1,0 +1,109 @@
+schema_version: 1
+gate_id: CR12M1
+title: Reconcile CR12 Historical Output Contract Divergence
+status: PENDING
+
+purpose: >
+  Reconcile the historical CR12 output-contract divergence without modifying
+  CR12 history, and produce a qualified canonical replay/recovery design input
+  before CR13 resumes.
+
+objective: >
+  Preserve CR12 exactly as executed, characterize C02-F-028, derive the
+  contract-required REPLAY-RECOVERY-SPEC semantics from immutable CR12
+  evidence, create a new maturity-owned canonical reconciliation artifact,
+  and prove CR13 can consume the reconciled design without rewriting history.
+
+dependencies:
+  - CR12
+
+historical_trigger:
+  finding_id: C02-F-028
+  source_gate: CR12
+  required_output: REPLAY-RECOVERY-SPEC.yaml
+  historical_actual_output: INTERRUPTION-REPLAY-SPEC.yaml
+
+entry_conditions:
+  - CR12 remains completed and immutable.
+  - CR13 remains current but unexecuted.
+  - C02-F-028 is reproducibly demonstrated.
+  - No CR13 execution artifact exists.
+
+authoritative_inputs:
+  - gates/CR12/GATE.yaml
+  - gates/CR12/RESULT.yaml
+  - gates/CR12/INTERRUPTION-REPLAY-SPEC.yaml
+  - gates/CR12/evidence/VALIDATION.yaml
+  - gates/CR12/SUMMARY.md
+  - gates/CR13/GATE.yaml
+  - ESC-C02-CORRECTIVE-001/STATE.yaml
+  - ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+
+allowed_mutations:
+  - gates/CR12M1/**
+  - ESC-C02-CORRECTIVE-001/STATE.yaml
+  - ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+  - ESC-C02-CORRECTIVE-001/HISTORY.md
+
+prohibited_mutations:
+  - gates/CR12/**
+  - gates/CR13/GATE.yaml
+  - gates/CR00 through CR11 historical definitions/results
+  - parent C00/C01/C02 historical artifacts
+  - C03 execution
+  - implicit EOS synchronization or refresh
+  - commit or push
+
+manual_procedure:
+  - Reproduce C02-F-028 from frozen CR12 GATE.yaml and RESULT.yaml.
+  - Verify CR12 artifacts and digests remain unchanged.
+  - Analyze INTERRUPTION-REPLAY-SPEC.yaml against the frozen CR12 acceptance criteria.
+  - Determine whether its semantics satisfy the intended replay/recovery contract despite the historical filename divergence.
+  - Create REPLAY-RECOVERY-RECONCILIATION.yaml under CR12M1; do not create or rename files under CR12.
+  - Map each frozen CR12 acceptance criterion to reconciled evidence.
+  - Define the authoritative CR13 design-input locator for the reconciled replay/recovery semantics.
+  - Verify CR13 itself remains unmodified and unexecuted.
+  - Create SUMMARY.md and validation evidence.
+  - Record RESULT.yaml only after all acceptance criteria pass.
+  - Restore CR13 as current only after CR12M1 completes.
+  - Stop before CR13 execution.
+
+required_outputs:
+  - REPLAY-RECOVERY-RECONCILIATION.yaml
+  - SUMMARY.md
+
+required_evidence:
+  - evidence/COMMANDS.md
+  - evidence/VALIDATION.yaml
+  - evidence/CR12-CONTRACT-DIVERGENCE.yaml
+  - evidence/CR12-ACCEPTANCE-TRACEABILITY.yaml
+
+acceptance_criteria:
+  - CR12 historical files remain byte-for-byte unchanged.
+  - C02-F-028 is explicitly reproduced and recorded.
+  - The historical actual CR12 design is semantically evaluated against every frozen CR12 acceptance criterion.
+  - A canonical maturity-owned reconciliation artifact exists.
+  - No false claim is made that CR12 originally produced REPLAY-RECOVERY-SPEC.yaml.
+  - CR13 has one deterministic replay/recovery design input after reconciliation.
+  - CR13 definition remains byte-for-byte unchanged.
+  - CR13 is not executed in the same transaction.
+  - SUMMARY.md and HISTORY.md record the maturity result.
+
+fail_closed_conditions:
+  - Any CR12 historical mutation.
+  - Any CR13 definition mutation.
+  - Semantic gaps in the CR12 historical replay/recovery design.
+  - Ambiguous authoritative reconciliation input.
+  - Attempt to disguise historical divergence through rename or rewrite.
+  - CR13 execution during this maturity transaction.
+  - Implicit EOS synchronization or refresh.
+
+stop_boundary: STOP_AFTER_THIS_ITEM
+result_location: gates/CR12M1/RESULT.yaml
+evidence_location: gates/CR12M1/evidence
+next_item: CR13
+
+resume_instructions: >
+  Read corrective STATE.yaml. If current_item is CR12M1, execute only CR12M1.
+  Preserve CR12 and CR13 definitions exactly. Stop after CR12M1 RESULT.yaml
+  and state restoration to CR13.

@@ -1,0 +1,20 @@
+schema_version: 1
+roadmap_id: ESC-C02-CORRECTIVE-001
+parent_roadmap: ESC-ROADMAP-001
+parent_gate: C02
+trigger_finding: C02-F-027
+state: ACTIVE
+completed_items:
+- CR00
+- CR01
+- CR02
+- CR03
+- CR04
+- CR05
+current_item: CR06
+blockers: []
+c02:
+  result: COMPLETE_WITH_FINDINGS
+  operator_assessment_disposition: ACCEPTED
+  roadmap_state_advanced: false
+next_authorized_action: EXECUTE_CR06_DEFINE_LIFECYCLE_STATE_VOCABULARY

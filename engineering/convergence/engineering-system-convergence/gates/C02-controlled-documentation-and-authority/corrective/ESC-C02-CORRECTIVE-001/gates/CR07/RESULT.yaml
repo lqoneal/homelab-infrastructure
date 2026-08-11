@@ -1,0 +1,27 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR07
+result: COMPLETE
+
+objective: Define every allowed and forbidden lifecycle transition.
+
+outputs:
+  transition_matrix:
+    path: gates/CR07/TRANSITION-MATRIX.yaml
+    sha256: cefa5b11f51eb7bc793149017e1f7e57a6f101e702c19bb86e478661d9a72cf1
+
+evidence:
+  validation:
+    path: gates/CR07/evidence/VALIDATION.yaml
+    sha256: 1b9db9e0e76b9457843374a03d3cd87b236ecf5192e31e5152c770994408b467
+  summary:
+    path: gates/CR07/SUMMARY.md
+    sha256: 8d861c678a750858c515e8a12e3e5b9247463f68b4125ca205b928439f028ddd
+
+acceptance:
+  result: PASS
+  all_non_self_transitions_classified: true
+  implementation_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR08

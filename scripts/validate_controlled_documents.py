@@ -215,6 +215,12 @@ def semantic_profile_for(path: Path, metadata: dict[str, Any] | None = None) -> 
         return "Operator Verification Guide"
     if "completion-report" in name:
         return "Completion Report"
+    if (
+        name == "zeus-wop-submission-procedure.md"
+        or name == "zeus-development-mode.md"
+        or name == "zeus-execution-lifecycle-procedure.md"
+    ):
+        return "Procedure"
     classification = str((metadata or {}).get("classification", ""))
     for profile in ("Standard", "Specification", "Procedure", "Policy", "Template"):
         if profile.lower() in classification.lower():

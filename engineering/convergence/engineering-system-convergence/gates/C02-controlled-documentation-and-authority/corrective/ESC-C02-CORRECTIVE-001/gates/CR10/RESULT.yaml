@@ -1,0 +1,27 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR10
+result: COMPLETE
+
+objective: Define the durable operator review decision receipt.
+
+outputs:
+  acceptance_receipt:
+    path: gates/CR10/ACCEPTANCE-RECEIPT-SPEC.yaml
+    sha256: b768f20c9b35fc2be483c93991689fd64c8732fafd6d271817688afebd8cb769
+
+evidence:
+  validation:
+    path: gates/CR10/evidence/VALIDATION.yaml
+    sha256: 0a89fadd131db43d3bb1ba27d11cb903e38ead6ad82748ccc6ed3f17dd07c549
+  summary:
+    path: gates/CR10/SUMMARY.md
+    sha256: 101f989a630f984707528b04235625938d1d7a6954094166a431bb9ec791b32a
+
+acceptance:
+  result: PASS
+  receipt_contract_defined: true
+  implementation_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR11

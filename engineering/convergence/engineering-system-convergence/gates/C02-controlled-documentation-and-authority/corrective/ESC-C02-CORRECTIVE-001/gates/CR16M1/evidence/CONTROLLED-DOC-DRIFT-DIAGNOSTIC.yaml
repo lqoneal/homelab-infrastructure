@@ -1,0 +1,22 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR16M1
+finding_id: C02-F-029
+recorded_at: '2026-08-10T09:29:46Z'
+result: DIAGNOSTIC_COMPLETE
+controlled_documents:
+- path: docs/standards/STD-0006-ENGINEERING_EXECUTABLE_ROADMAP_STANDARD.md
+  manifest_sha256: 9ff83a35d304c2209032c8ec8d93d6458e0fef80f96478a6a929c90be4487bd6
+  actual_sha256: f4c9dd70c7d95806565933f138c6c7853849639aa9d9770f634d9640259da0c1
+  drift: true
+  worktree_modified: true
+  diff_sha256: f4f5d683fc854bb4063208cea05bb0e8cfc411f5b58c39d25825310a6a9ac9f5
+  rebind_authorized: false
+- path: docs/procedures/PROC-0009-EXECUTABLE_ROADMAP_EVALUATION_PROCEDURE.md
+  manifest_sha256: 000586025bb964349ba86e6d7531aaae4c58f16ee2609301345dd08c40706f97
+  actual_sha256: c9abf94dc454ff61b8a3efdeba5a455a83570ab2e2d29e728461042e4cf625dc
+  drift: true
+  worktree_modified: true
+  diff_sha256: 68415b80dcdaf47c4e6e4ee9affb366a61e3b7b77a2e4e7047bfc8afb532b14c
+  rebind_authorized: false
+decision: DO_NOT_REBIND_UNTIL_ACTUAL_DOCUMENT_VERSIONING_AND_CHANGE_PROVENANCE_ARE_QUALIFIED

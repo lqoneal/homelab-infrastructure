@@ -1,0 +1,28 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR10
+validated_at: '2026-08-10T08:38:16Z'
+result: PASS
+
+checks:
+  cr09_dependency: PASS
+  current_item: PASS
+  pre_create_verification: PASS
+  cr08_result_semantics: PASS
+  cr09_operator_authority: PASS
+  receipt_identity: PASS
+  gate_digest_binding: PASS
+  result_digest_binding: PASS
+  explicit_decision_binding: PASS
+  operator_identity_binding: PASS
+  transaction_identity_binding: PASS
+  accept_effect: PASS
+  reject_effect: PASS
+  replay_semantics: PASS
+  interruption_semantics: PASS
+  read_only_boundary: PASS
+  append_only_history: PASS
+  implementation_unchanged: PASS
+  cr11_not_executed: PASS
+
+next_authorized_item: CR11

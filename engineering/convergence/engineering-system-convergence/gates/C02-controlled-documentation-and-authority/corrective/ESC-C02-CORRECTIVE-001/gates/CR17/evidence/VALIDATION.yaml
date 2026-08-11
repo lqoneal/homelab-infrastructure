@@ -1,0 +1,14 @@
+schema_version: 1
+gate_id: CR17
+validated_at: '2026-08-10T11:10:23+00:00'
+result: PASS
+checks:
+  result_state_separate_from_review_decision: PASS
+  unaccepted_result_not_complete: PASS
+  status_read_only: PASS
+  machine_output_deterministic: PASS
+  current_projection_test: PASS
+  awaiting_operator_review_projection_test: PASS
+  roadmap_tests: 33/33 PASS
+  emm_integrity: PASS
+  cr18_not_executed: PASS

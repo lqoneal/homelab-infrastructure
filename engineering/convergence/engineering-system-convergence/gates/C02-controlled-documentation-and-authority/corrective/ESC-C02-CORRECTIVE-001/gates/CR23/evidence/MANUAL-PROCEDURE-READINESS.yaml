@@ -1,0 +1,35 @@
+schema_version: 1
+record_id: CR23-MANUAL-PROCEDURE-READINESS-001
+gate_id: CR23
+recorded_at: '2026-08-10T17:54:14Z'
+result: PASS
+phase: PRE_CLOSEOUT
+ordered_step_count: 13
+completed_or_evidenced_steps:
+- 1
+- 2
+- 3
+- 4
+- 5
+- 6
+- 7
+- 8
+- 9
+- 10
+pending_closeout_steps:
+- 11
+- 12
+- 13
+available_evidence:
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/evidence/PROVENANCE-SURFACE-INVENTORY.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/evidence/PROVENANCE-GAP-ANALYSIS.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/evidence/PRE-MUTATION-AUTHORITY-DIGESTS.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/evidence/ZO-005-QUALIFICATION.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/evidence/ZO-006-QUALIFICATION.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/evidence/ZO-007-QUALIFICATION.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/evidence/ZO-008-QUALIFICATION.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/evidence/ZO-009-QUALIFICATION.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/evidence/ZO-010-QUALIFICATION.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/evidence/ZO-011-QUALIFICATION.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/evidence/ZO-013-QUALIFICATION.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/evidence/ZEUS-OPPORTUNITY-CLOSEOUT-INVENTORY.yaml

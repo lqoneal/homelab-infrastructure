@@ -1,0 +1,33 @@
+schema_version: 1
+gate_id: CR23
+records:
+- path: engineering/convergence/engineering-system-convergence/STATE.yaml
+  present: true
+  sha256: 764e907527e035a939f3329dd2a607b40d379d8e658c7075ef49c404bb26d690
+- path: engineering/convergence/engineering-system-convergence/binding-manifest.yaml
+  present: true
+  sha256: bcb432391ce4aa7879872e7f7efd72cca9e2a38031fea9694a6c105100cf16a5
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/GATE.yaml
+  present: true
+  sha256: 96885178a7f0c13714b9f60fc9f1486a3cf6b1306d114ee4d2089d30bd8837fc
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/RESULT.yaml
+  present: true
+  sha256: 2c19e69389f3094d874fbaf6c929d23b4d41541953cf04d47a21d1099bc5a195
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+  present: true
+  sha256: 790366d1b4328a48e9833aff2ced67654b9246d65d9fdda98403edd7e53bc5fd
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml
+  present: true
+  sha256: 0cd380d558f3c8a3e9a168a92104db2cfe3d1d879909c3e393c2a7a46d89b9c3
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR22/RESULT.yaml
+  present: true
+  sha256: 9d21edea3457b03c2baf61561d5796c5c26d81c7e1c20dc849658534a592434f
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/GATE.yaml
+  present: true
+  sha256: 7ce17ef7278d39199ef0c91f03ca8d77412d0e353eed09ffd19c36dfc7e80b00
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/MANUAL-EXECUTION.yaml
+  present: true
+  sha256: 0289bd866905ca93ea77050deb1ced8d0c53b1fdbcc77d637052085cd335b6d9
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+  present: true
+  sha256: 3cbaef3e74cd361514f36678091ffec73b1f96155bcbc6eec415572d19c17639

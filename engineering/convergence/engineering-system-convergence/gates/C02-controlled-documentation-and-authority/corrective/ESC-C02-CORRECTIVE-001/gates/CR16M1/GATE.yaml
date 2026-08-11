@@ -1,0 +1,131 @@
+schema_version: 1
+gate_id: CR16M1
+title: Reconcile Parent Roadmap and Project State Projection
+status: PENDING
+
+purpose: >
+  Reconcile the authoritative projection chain exposed during CR16 without
+  weakening convergence validation or modifying the frozen CR16 definition.
+
+objective: >
+  Establish deterministic agreement between the active corrective execution
+  position, parent ESC roadmap state, and controlled Project State convergence
+  binding, then return execution authority to CR16 for regression
+  qualification.
+
+trigger:
+  finding_id: C02-F-029
+  source_gate: CR16
+  classification: PARENT_AND_PROJECT_STATE_PROJECTION_DRIFT
+
+dependencies:
+  - CR15
+
+entry_conditions:
+  - CR16 remains current and incomplete.
+  - CR16 RESULT.yaml does not exist.
+  - CR16 RC-001 through RC-004 remain present.
+  - Parent ESC current_gate remains C02.
+  - Project State binding mismatch is reproducible.
+  - CR17 remains unexecuted.
+
+authoritative_inputs:
+  - ESC-C02-CORRECTIVE-001/STATE.yaml
+  - ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+  - gates/CR16/GATE.yaml
+  - engineering/convergence/engineering-system-convergence/roadmap.yaml
+  - engineering/convergence/engineering-system-convergence/STATE.yaml
+  - docs/project/PROJ-0001-PROJECT_STATE.md
+  - scripts/lib/eos/convergence_roadmap.py
+
+allowed_mutations:
+  - gates/CR16M1/**
+  - ESC-C02-CORRECTIVE-001/STATE.yaml
+  - ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+  - ESC-C02-CORRECTIVE-001/HISTORY.md
+  - engineering/convergence/engineering-system-convergence/STATE.yaml
+  - docs/project/PROJ-0001-PROJECT_STATE.md
+
+prohibited_mutations:
+  - gates/CR16/**
+  - gates/CR17/**
+  - parent C00/C01/C02 GATE.yaml
+  - parent C02 RESULT.yaml
+  - parent C02 assessment evidence
+  - convergence-roadmap validation weakening
+  - operator acceptance
+  - C02 completion
+  - C03 activation or execution
+  - EOS synchronization or refresh
+  - commit
+  - push
+
+manual_procedure:
+  - Reproduce C02-F-029 from parent STATE.yaml, corrective STATE.yaml and Project State.
+  - Verify whether the corrective current action is the authoritative executable action.
+  - Preserve C02 as the parent current gate.
+  - Update parent ESC STATE next_authorized_action to the active corrective action.
+  - Update controlled Project State convergence_program binding to exactly match the parent ESC state.
+  - Increment the controlled Project State document version according to its existing versioning convention.
+  - Add a human-readable Project State history entry describing only this projection reconciliation.
+  - Do not alter unrelated Project State mission, phase or historical content.
+  - Validate Project State frontmatter against parent ESC state.
+  - Rebind any integrity manifest that explicitly covers the modified authorized artifacts, if required by its existing contract.
+  - Run roadmap validation.
+  - Verify validation is read-only.
+  - Verify C02 remains current and incomplete.
+  - Verify CR16 remains uncompleted during CR16M1.
+  - Create SUMMARY.md before maturity-state advancement.
+  - Append HISTORY.md before maturity-state advancement.
+  - Record CR16M1 RESULT.yaml only after all checks pass.
+  - Restore corrective current_item to CR16.
+  - Stop before resuming CR16 implementation.
+
+required_outputs:
+  - PROJECTION-RECONCILIATION.yaml
+  - SUMMARY.md
+
+required_evidence:
+  - evidence/BEFORE-AFTER.yaml
+  - evidence/COMMANDS.md
+  - evidence/VALIDATION.yaml
+
+acceptance_criteria:
+  - Project State convergence_program exactly matches the authoritative parent ESC binding.
+  - Parent ESC next_authorized_action identifies the actual active corrective execution action.
+  - Corrective current_item remains CR16 after CR16M1 closes.
+  - CR16 historical and active artifacts remain unchanged.
+  - C02 remains current.
+  - C02 remains uncompleted.
+  - C03 remains unexecuted.
+  - convergence-roadmap validation passes without weakening the Project State validator.
+  - Project State versioning is incremented.
+  - Human-readable controlled history records the reconciliation.
+  - No unrelated Project State content is rewritten.
+  - No EOS synchronization or refresh occurs.
+  - CR16 is not resumed in the same transaction.
+
+fail_closed_conditions:
+  - Ambiguous authoritative next action.
+  - Project State requires unrelated substantive C02 remediation.
+  - CR16 artifact mutation.
+  - Validator weakening.
+  - C02 completion.
+  - C03 activation.
+  - Project State update without version increment.
+  - Unresolved integrity-manifest drift.
+
+stop_boundary: STOP_AFTER_CR16M1
+result_location: gates/CR16M1/RESULT.yaml
+evidence_location: gates/CR16M1/evidence
+next_item: CR16
+
+human_readable_record:
+  summary: gates/CR16M1/SUMMARY.md
+  history: HISTORY.md
+  required_before_state_advancement: true
+
+resume_instructions: >
+  If current_item is CR16M1, execute only CR16M1. After successful
+  reconciliation restore current_item CR16 and stop. Do not resume CR16 in
+  the same transaction.

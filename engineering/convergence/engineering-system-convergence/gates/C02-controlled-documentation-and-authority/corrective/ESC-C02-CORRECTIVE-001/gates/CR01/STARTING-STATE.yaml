@@ -1,0 +1,43 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR01
+captured_at: '2026-08-10T03:57:59Z'
+repository:
+  root: /data/engineering/repositories/homelab
+  branch: main
+  head: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+  origin_main: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+parent_roadmap:
+  roadmap_id: ESC-ROADMAP-001
+  current_gate: C02
+  completed_gates:
+  - C00
+  - C01
+  next_authorized_action: EXECUTE_ESC_C02_CORRECTIVE_CR00
+parent_c02:
+  result: COMPLETE_WITH_FINDINGS
+  finding: C02-F-027
+  gate_sha256: 96885178a7f0c13714b9f60fc9f1486a3cf6b1306d114ee4d2089d30bd8837fc
+  result_sha256: 2c19e69389f3094d874fbaf6c929d23b4d41541953cf04d47a21d1099bc5a195
+  validation_sha256: 63562f3613378facd19f9c05c3c6e087481a391e6f6fcbd4bf639ceb617245a6
+corrective:
+  current_item: CR01
+  completed_items:
+  - CR00
+  next_authorized_action: EXECUTE_CR01_CAPTURE_FULL_STARTING_STATE
+  executable_horizon: CR00-CR23
+observed_controller_behavior:
+  roadmap_validate_rc: 1
+  roadmap_evaluate_rc: 1
+  roadmap_status_rc: 1
+  engctl_resume_rc: 1
+  c02_f027_reproduced: true
+controller:
+  path: scripts/lib/eos/convergence_roadmap.py
+  sha256: adc340c4b3f30aeeb724a973c033bfcf6838e509fcf68c6fb708a2bcfd76395c
+execution_constraints:
+  controller_modified: false
+  parent_c02_modified: false
+  c03_executed: false
+  eos_synchronized: false
+  eos_refreshed: false

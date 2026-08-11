@@ -1,0 +1,54 @@
+schema_version: 1
+record_id: CR23-ZO011-QUALIFICATION-001
+gate_id: CR23
+opportunity_id: ZO-011
+recorded_at: '2026-08-10T15:14:44Z'
+result: PASS
+implementation:
+  primitive: scripts.lib.eos.convergence_roadmap.project_qualification_resource_preflight
+  classifications:
+  - READY
+  - RESOURCE_BLOCKED
+  qualification_execution_ownership: false
+  semantic_failure_classification: false
+  read_only: true
+qualification:
+  zo011_focused_tests: 6/6 PASS
+  zo005_zo010_regression: 12/12 PASS
+  emm_transaction_regression: 6/6 PASS
+  cr23_provenance: 5/5 PASS
+  lifecycle_regression: 10/10 PASS
+live_reconciliation:
+  transaction_id: tx-cr23-zo011-emm-rebind-001
+  first_application: PASS
+  exact_replay: ALREADY_RECONCILED
+  pre_manifest_sha256: 1c3ad548a37a5a7f852e76b243ced184e459052c8671f4633b14c594759c890d
+  post_manifest_sha256: f2e4cdf07e11a6cbb86040dec2a44ac7950a739627a3fecde827b1fcf1e3b644
+  transaction_record: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo011-emm-rebind-001.json
+live_projection:
+  result: PASS
+  projection: ZEUS_QUALIFICATION_RESOURCE_PREFLIGHT
+  classification: READY
+  resource: null
+  repository_root: /data/engineering/repositories/homelab
+  repository_bytes: 45223543
+  temporary_workspace: /data/engineering/tmp/zeus-qualification
+  filesystem_probe: /data/engineering/tmp
+  filesystem_total_bytes: 1967846068224
+  filesystem_used_bytes: 7102287872
+  filesystem_free_bytes: 1860707110912
+  fixture_copy_multiplier: 8
+  minimum_extra_bytes: 2147483648
+  required_reserve_bytes: 2192707191
+  ready: true
+  semantic_test_failure: false
+  qualification_executed: false
+  recommended_action: USE_SELECTED_WORKSPACE
+  read_only: true
+boundary:
+  cr23_result_written: false
+  parent_c02_advanced: false
+  cr24_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

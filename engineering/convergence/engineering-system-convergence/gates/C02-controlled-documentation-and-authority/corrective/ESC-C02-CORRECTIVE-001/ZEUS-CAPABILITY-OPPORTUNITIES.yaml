@@ -1,0 +1,1512 @@
+schema_version: 1
+roadmap_id: ESC-C02-CORRECTIVE-001
+purpose: Queue Zeus capability-development opportunities discovered during convergence without diverting active
+  roadmap execution.
+opportunities:
+- opportunity_id: ZO-001
+  title: Zeus Repository Projection and Pre-Creation Verification
+  status: IMPLEMENTED_QUALIFIED
+  discovered_during: PRE_CR06_ROADMAP_HARDENING
+  discovered_at: '2026-08-10T04:36:43Z'
+  trigger: Zeus-first pre-creation verification could not execute because scripts.lib.emp.repository_projection
+    is missing.
+  current_failure:
+    interface: scripts/zeus
+    error: 'ModuleNotFoundError: No module named ''scripts.lib.emp.repository_projection'''
+  existing_authority_converged:
+  - STD-0006
+  - PROC-0009
+  - SPEC-0001
+  - SPEC-0002
+  - EOS-0001
+  required_capabilities:
+  - Restore or establish canonical repository projection.
+  - Allow scripts/zeus to initialize independently.
+  - Expose Zeus-native repository artifact inventory.
+  - Expose controlled-document identifier lookup.
+  - Detect duplicate controlled-document identifiers.
+  - Detect conflicting or overlapping document authority.
+  - Verify canonical repository placement.
+  - Verify existing-document ownership before new creation.
+  - Expose machine-readable PRE_CREATE_VERIFICATION result.
+  - Expose explicit Zeus capability-gap result when a required surface is unavailable.
+  - Retain read-only semantics for discovery and verification.
+  - Qualify Zeus results against repository-native verification during migration.
+  acceptance_requirements:
+  - scripts/zeus initializes successfully.
+  - Zeus can inventory repository/document authority without fallback.
+  - Zeus detects a synthetic duplicate identifier.
+  - Zeus detects a synthetic invalid placement.
+  - Zeus prefers an existing authoritative document over redundant creation.
+  - Zeus returns PRE_CREATE_VERIFICATION=PASS for a valid proposal.
+  - Zeus returns a deterministic fail-closed result for conflicting proposals.
+  - Zeus verification is read-only.
+  - Repository fallback and Zeus agree for qualified test fixtures.
+  target_gate: CR13
+  target_gate_state_at_assignment: PENDING
+  active_gate_modified: false
+  completed_gate_modified: false
+  implementation_pairing:
+    result: IMPLEMENTED_QUALIFIED
+    implementation_gate: CR13
+    execution_class: SECONDARY_CR_MISSION
+    historical_execution_qualified: true
+- opportunity_id: ZO-002
+  title: Zeus Lifecycle Interruption Classification
+  status: IMPLEMENTED_QUALIFIED
+  discovered_during: CR12
+  discovered_at: '2026-08-10T08:50:15Z'
+  trigger: CR12 established deterministic lifecycle interruption classifications that Zeus should surface natively.
+  required_capabilities:
+  - Inspect durable lifecycle artifacts.
+  - Classify the exact interruption state.
+  - Return deterministic interruption classification.
+  - Fail closed on contradictory lifecycle evidence.
+  - Remain read-only during classification.
+  target_gate: CR14
+  implementation_pairing:
+    result: IMPLEMENTED_QUALIFIED
+    implementation_gate: CR14
+    execution_class: SECONDARY_CR_MISSION
+    historical_execution_qualified: true
+- opportunity_id: ZO-003
+  title: Zeus Replay Identity and Recovery Recommendation
+  status: IMPLEMENTED_QUALIFIED
+  discovered_during: CR12
+  discovered_at: '2026-08-10T08:50:15Z'
+  trigger: CR12 defined exact replay identity and deterministic recovery semantics suitable for Zeus-native exposure.
+  required_capabilities:
+  - Resolve replay transaction identity.
+  - Compare gate/result/receipt/pre-state digests.
+  - Distinguish exact replay from conflicting replay.
+  - Return the next authorized recovery action.
+  - Fail closed on replay conflicts.
+  target_gate: CR14
+  implementation_pairing:
+    result: IMPLEMENTED_QUALIFIED
+    implementation_gate: CR14
+    execution_class: SECONDARY_CR_MISSION
+    historical_execution_qualified: true
+- opportunity_id: ZO-004
+  title: Zeus Read-Only Recovery Status and Resume Projection
+  status: IMPLEMENTED_QUALIFIED
+  discovered_during: CR12
+  discovered_at: '2026-08-10T08:50:15Z'
+  trigger: CR12 requires status/resume surfaces to expose recovery state without mutating lifecycle authority.
+  required_capabilities:
+  - Expose interruption state through Zeus status.
+  - Expose replay identity through Zeus status.
+  - Expose recommended recovery action.
+  - Expose blocker/reconciliation state.
+  - Ensure status/resume remain read-only.
+  target_gate: CR14
+  implementation_pairing:
+    result: IMPLEMENTED_QUALIFIED
+    implementation_gate: CR14
+    execution_class: SECONDARY_CR_MISSION
+    historical_execution_qualified: true
+- opportunity_id: ZO-005
+  title: Zeus EMM Reconciliation Awareness
+  status: IMPLEMENTED_QUALIFIED
+  target_gate: CR23
+  objective: Expose Zeus-native read-only EMM binding, drift, and authorized-reconciliation awareness.
+  requirements:
+  - Report expected and actual EMM source digests.
+  - Distinguish authorized pending rebinding from unexplained drift.
+  - Expose affected bindings and the next authorized action.
+  - Consume the canonical EMM rebinding mechanism rather than create a second authority.
+  - Never auto-rebind from Zeus read-only status or resume.
+  - Preserve fail-closed behavior for unauthorized drift.
+  qualification_evidence: gates/CR23/evidence/ZO-005-QUALIFICATION.yaml
+  updated_at: '2026-08-10T15:10:29Z'
+- opportunity_id: ZO-006
+  title: Zeus Executable Roadmap Maturity Projection
+  status: IMPLEMENTED_QUALIFIED
+  target_gate: CR23
+  objective: Expose authoritative roadmap maturity, qualification, execution position, and next action.
+  requirements:
+  - Resolve ESC-ROADMAP-001 and its active corrective.
+  - Report parent and corrective roadmap versions.
+  - Report parent gate and corrective current item.
+  - Distinguish hardened horizon from qualified executable horizon.
+  - Expose REQUIRES_REQUALIFICATION as non-executable.
+  - Resolve the exact current gate contract and supplement.
+  - Remain completely read-only.
+  implementation:
+    primitive: scripts.lib.eos.convergence_roadmap.project_executable_roadmap_maturity
+    successor_authority_dependency: ZO-009
+    classifications:
+    - CURRENT_EXECUTABLE
+    - NOT_CURRENT
+    - COMPLETE
+    - BLOCKED
+    - TERMINAL_CURRENT
+    successor_execution_ownership: false
+    read_only: true
+    focused_tests: 7
+    focused_result: PASS
+  updated_at: '2026-08-10T15:54:43Z'
+  qualification_evidence: gates/CR23/evidence/ZO-006-QUALIFICATION.yaml
+  qualification_state:
+    result: PASS
+    focused_tests: 7/7 PASS
+    successor_authority_dependency: ZO-009
+    live_projection: PASS_AFTER_CANONICAL_EMM_RECONCILIATION
+    successor_execution_ownership: false
+- opportunity_id: ZO-007
+  title: Zeus Manual Gate Execution Preflight
+  status: IMPLEMENTED_QUALIFIED
+  target_gate: CR23
+  objective: Provide deterministic read-only readiness verification for the exact current manual gate.
+  requirements:
+  - Verify dependencies and dependency results.
+  - Verify frozen and protected artifact integrity.
+  - Expose authoritative inputs and required supplements.
+  - Expose allowed and prohibited mutation boundaries.
+  - Expose required outputs, evidence, acceptance criteria, and stop boundary.
+  - Return READY or BLOCKED with explicit blockers.
+  - Never execute, accept, advance, synchronize, commit, or push.
+  implementation:
+    primitive: scripts.lib.eos.convergence_roadmap.project_manual_gate_execution_preflight
+    parent_maturity_source: ZO-006
+    successor_authority_source: ZO-009
+    emm_awareness_source: ZO-005
+    emm_scope_source: ZO-010
+    resource_preflight_source: ZO-011
+    manual_execution_ownership: false
+    state_advancement_ownership: false
+    successor_execution_ownership: false
+    read_only: true
+    focused_tests: 8
+    focused_result: PASS
+  updated_at: '2026-08-10T17:35:06Z'
+  qualification_state:
+    result: PASS
+    focused_tests: 8/8 PASS
+    corrective_root_resolution: QUALIFIED
+    zo005_interface_reconciliation: QUALIFIED
+    live_preflight: PASS_AFTER_CANONICAL_EMM_RECONCILIATION
+    execution_performed: false
+    state_advanced: false
+    successor_executed: false
+  qualification_evidence: gates/CR23/evidence/ZO-007-QUALIFICATION.yaml
+- opportunity_id: ZO-008
+  title: Zeus Nested Corrective Projection Reconciliation
+  owner_gate: CR23
+  status: IMPLEMENTED_QUALIFIED
+  source: CR21/CR22 post-closeout projection reconciliation
+  objective: Detect and reconcile stale parent, Project State, and controlled-reference next-action projections
+    after a nested corrective advances, without advancing the parent lifecycle.
+  requirements:
+  - Compare nested corrective current item/action with every live parent projection.
+  - Classify stale projection separately from lifecycle advancement.
+  - Produce deterministic reconciliation scope before mutation.
+  - Reconcile only authorized projection surfaces.
+  - Preserve parent gate identity, completed-gate set, and review state.
+  - Revalidate EMM and canonical roadmap state after reconciliation.
+  - Expose reconciliation need and outcome through Zeus read-only inspection.
+  recorded_at: '2026-08-10T14:29:20Z'
+  assessment_state:
+    result: PASS
+    role: NESTED_CORRECTIVE_PROJECTION_RECONCILIATION
+    implementation_order: 1
+    authority_boundary_evidence: gates/CR23/evidence/ZO-008-ZO-013-AUTHORITY-BOUNDARY.yaml
+    read_only: true
+  updated_at: '2026-08-10T17:43:18Z'
+  implementation:
+    primitive: scripts.lib.eos.convergence_roadmap.project_nested_corrective_reconciliation
+    role: NESTED_CORRECTIVE_PROJECTION_RECONCILIATION
+    aggregate_readiness_ownership: false
+    parent_advancement_ownership: false
+    nested_state_advancement_ownership: false
+    successor_execution_ownership: false
+    read_only: true
+    focused_tests: 8
+    focused_result: PASS
+  qualification_evidence: gates/CR23/evidence/ZO-008-QUALIFICATION.yaml
+  qualification_state:
+    result: PASS
+    focused_tests: 8/8 PASS
+    live_projection: PASS_AFTER_CANONICAL_EMM_RECONCILIATION
+    nested_ready_implies_parent_advance: false
+    execution_performed: false
+    state_advanced: false
+    parent_gate_advanced: false
+    successor_executed: false
+- opportunity_id: ZO-009
+  title: Zeus Successor Action Contract Enforcement
+  owner_gate: CR23
+  status: IMPLEMENTED_QUALIFIED
+  source: CR22 closeout successor-action resolution failure
+  objective: Require every executable prospective gate to expose a structured machine-readable next_authorized_action
+    rather than requiring inference from natural-language resume text.
+  requirements:
+  - Validate next_authorized_action for every executable prospective gate.
+  - Require deterministic uniqueness of successor action contracts.
+  - Fail roadmap maturity qualification on missing or ambiguous machine actions.
+  - Do not derive execution authority from arbitrary string scanning.
+  - Expose missing-action defects in Zeus manual-gate preflight.
+  recorded_at: '2026-08-10T14:29:20Z'
+  implementation:
+    primitive: scripts.lib.eos.convergence_roadmap.project_successor_action_contract
+    classifications:
+    - EXECUTABLE_SUCCESSOR_ACTION_RESOLVED
+    - TERMINAL_NO_SUCCESSOR
+    successor_execution_ownership: false
+    read_only: true
+    focused_tests: 7
+    focused_result: PASS
+  updated_at: '2026-08-10T15:28:50Z'
+  qualification_state:
+    result: PASS
+    focused_tests: 7/7 PASS
+    action_surface: resume_instructions.next_authorized_action
+    structural_failure_owner: CANONICAL_RESOLVER
+    terminal_semantic: NO_ROADMAP_SUCCESSOR
+    live_projection: PASS_AFTER_CANONICAL_EMM_RECONCILIATION
+  qualification_evidence: gates/CR23/evidence/ZO-009-QUALIFICATION.yaml
+- opportunity_id: ZO-010
+  title: Zeus EMM Binding Scope Introspection
+  owner_gate: CR23
+  status: IMPLEMENTED_QUALIFIED
+  source: CR23 prospective gate action corrective EMM inspection
+  objective: Allow Zeus to determine whether an authorized changed path is EMM-bound, intentionally unbound, missing,
+    or drifted before attempting reconciliation.
+  requirements:
+  - Report EMM binding membership for an exact repository path.
+  - Distinguish UNBOUND_BY_POLICY from MISSING_BINDING and DRIFT.
+  - Return ALREADY_RECONCILED when a bound source already matches.
+  - Prevent attempted rebinding of intentionally unbound sources.
+  - Expose per-source expected and actual digests where applicable.
+  - Integrate binding-scope inspection with authorized EMM auto-rebinding.
+  - Keep all inspection operations read-only.
+  recorded_at: '2026-08-10T14:29:20Z'
+  implementation:
+    primitive: scripts.lib.eos.convergence_roadmap.inspect_emm_binding_scope
+    classifications:
+    - BOUND_CLEAN
+    - BOUND_DRIFTED
+    - UNBOUND_BY_POLICY
+    - MISSING_SOURCE
+    read_only: true
+    rebind_execution: false
+    focused_tests: 6
+    focused_result: PASS
+  updated_at: '2026-08-10T15:06:13Z'
+  qualification_evidence: gates/CR23/evidence/ZO-010-QUALIFICATION.yaml
+- opportunity_id: ZO-011
+  title: Zeus Qualification Resource Preflight
+  owner_gate: CR23
+  status: IMPLEMENTED_QUALIFIED
+  source: CR23 Block 9A full-regression temporary-storage exhaustion
+  objective: Preflight qualification runtime resources so infrastructure exhaustion is classified separately from
+    semantic test failure.
+  requirements:
+  - Measure available temporary-workspace capacity before expensive qualification.
+  - Estimate qualification workspace requirements from the selected suite and fixture strategy.
+  - Classify insufficient storage as RESOURCE_BLOCKED rather than semantic test failure.
+  - Select an authorized alternate temporary workspace when the default temporary filesystem is insufficient.
+  - Expose selected temporary workspace and available capacity before execution.
+  - Keep resource preflight read-only except for creation of an explicitly authorized temporary workspace.
+  - Never infer engineering failure from ENOSPC or equivalent infrastructure exhaustion.
+  - Clean or preserve qualification workspaces according to explicit retention policy.
+  recorded_at: '2026-08-10T14:57:00Z'
+  implementation:
+    primitive: scripts.lib.eos.convergence_roadmap.project_qualification_resource_preflight
+    classifications:
+    - READY
+    - RESOURCE_BLOCKED
+    qualification_execution_ownership: false
+    semantic_failure_classification: false
+    read_only: true
+    focused_tests: 6
+    focused_result: PASS
+  updated_at: '2026-08-10T15:14:44Z'
+  qualification_evidence: gates/CR23/evidence/ZO-011-QUALIFICATION.yaml
+- opportunity_id: ZO-012
+  title: Zeus Authority-Surface Contract Introspection
+  owner_gate: CR47
+  status: QUEUED
+  source: CR23 Block 13 wrong-layer successor-action implementation
+  objective: Identify the authoritative source surface for a machine-consumed lifecycle or execution field before
+    validation, projection, or mutation.
+  requirements:
+  - Distinguish roadmap locator/provenance metadata from executable gate-contract authority.
+  - Resolve the authoritative file and contract type for requested lifecycle fields.
+  - Report whether a field is authoritative, projected, inherited, historical, or non-authoritative on the inspected
+    surface.
+  - Fail closed when multiple authority surfaces claim conflicting ownership.
+  - Expose source path and authority kind without mutating repository state.
+  - Allow Zeus validation and preflight capabilities to consume the resolved authority surface instead of inferring
+    ownership from field names.
+  recorded_at: '2026-08-10T15:20:25Z'
+  target_gate: CR47
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR47
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    execution_class: SECONDARY_CR_MISSION
+    roadmap_admission_required: false
+    current_gate_scope_expanded: false
+- opportunity_id: ZO-013
+  title: Zeus Composite Preflight Dependency Projection
+  owner_gate: CR23
+  status: IMPLEMENTED_QUALIFIED
+  source: CR23 ZO-007 manual execution authority inventory
+  objective: Expose which independently qualified Zeus projections contribute to a composite execution-readiness
+    decision and identify the exact blocking dependency without duplicating its authority logic.
+  requirements:
+  - Reference qualified projections instead of independently re-deriving their authority.
+  - Identify parent maturity, successor authority, EMM state, resource readiness, and manual-contract state separately.
+  - Return the exact blocking dependency and its classification.
+  - Do not collapse infrastructure, authority, lifecycle, or manual-procedure blockers into one generic failure.
+  - Remain read-only and non-executing.
+  recorded_at: '2026-08-10T15:56:25Z'
+  assessment_state:
+    result: PASS
+    role: COMPOSITE_PREFLIGHT_DEPENDENCY_PROJECTION
+    implementation_order: 2
+    authority_boundary_evidence: gates/CR23/evidence/ZO-008-ZO-013-AUTHORITY-BOUNDARY.yaml
+    read_only: true
+  updated_at: '2026-08-10T17:52:17Z'
+  implementation:
+    primitive: scripts.lib.eos.convergence_roadmap.project_composite_execution_preflight
+    role: COMPOSITE_PREFLIGHT_DEPENDENCY_PROJECTION
+    component_sources:
+    - ZO-005
+    - ZO-006
+    - ZO-007
+    - ZO-008
+    - ZO-009
+    - ZO-010
+    - ZO-011
+    authority_rederivation: false
+    automatic_reconciliation: false
+    execution_ownership: false
+    state_advancement_ownership: false
+    successor_execution_ownership: false
+    read_only: true
+    focused_tests: 8
+    focused_result: PASS
+  qualification_evidence: gates/CR23/evidence/ZO-013-QUALIFICATION.yaml
+  qualification_state:
+    result: PASS
+    focused_tests: 8/8 PASS
+    component_count: 7
+    live_composite: READY_AFTER_CANONICAL_EMM_RECONCILIATION
+    authority_rederivation: false
+    automatic_reconciliation: false
+    execution_performed: false
+    state_advanced: false
+    parent_gate_advanced: false
+    successor_executed: false
+- opportunity_id: ZO-014
+  title: Zeus Prospective Gate Action Contract Horizon Enforcement
+  owner_gate: CR24
+  target_gate: CR24
+  status: IMPLEMENTED_QUALIFIED
+  source: CR23 Block 21R.4A CR24 action-contract discovery
+  objective: Prevent gates entering the executable horizon from lacking a unique structured machine-readable action
+    surface.
+  requirements:
+  - Validate every gate before it enters the executable horizon.
+  - Require exactly one canonical structured machine-readable action surface.
+  - Reject prose-only resume instructions as sufficient machine authority.
+  - Fail closed before predecessor closeout when the successor action is unresolved.
+  - Do not duplicate or override canonical gate authority.
+  blocking_current_cr23_closeout: false
+  disposition: CR24 machine contract corrected locally; generalized horizon enforcement remains queued.
+  implementation:
+    gate: CR25
+    surface: resume_instructions.next_authorized_action
+    action: EXECUTE_CR25_QUALIFY_RESULT_WITHOUT_ACCEPTANCE
+    human_instructions_preserved: true
+    successor_executed: false
+  implemented_at: '2026-08-10T18:39:18Z'
+  qualification_evidence: gates/CR24/evidence/ZO-014-QUALIFICATION.yaml
+- opportunity_id: ZO-015
+  title: Zeus Coupled State Projection Transaction Discovery
+  owner_gate: CR51
+  target_gate: CR51
+  status: QUEUED
+  recorded_at: '2026-08-10T18:31:19Z'
+  source: CR23 closeout Blocks 21R.4C.1 through 21R.4C.4
+  objective: Enable Zeus to discover and qualify every authoritative state projection coupled to a lifecycle transition
+    before committing live advancement.
+  requirements:
+  - Enumerate nested corrective state, parent roadmap state, Project State projection, result, history, and EMM-bound
+    sources before advancement.
+  - Derive the complete prospective mutation set before any live state transition.
+  - Fixture-qualify coupled lifecycle mutations before live execution.
+  - Authorize all intentionally drifted EMM-bound sources together in one canonical EMM reconciliation transaction.
+  - Require exact replay to be idempotent and zero unexplained EMM drift after reconciliation.
+  - Fail closed before live mutation whenever a required coupled projection is missing, stale, ambiguous, or unexplained.
+  qualification_basis:
+    fixture_result: PASS
+    live_result: PASS
+    project_state_changed_binding: next_authorized_action
+    atomic_emm_source_count: 2
+    atomic_emm_sources:
+    - engineering/convergence/engineering-system-convergence/STATE.yaml
+    - docs/project/PROJ-0001-PROJECT_STATE.md
+    emm_first_application: PASS
+    emm_exact_replay: ALREADY_RECONCILED
+    post_rebind_drift_count: 0
+  blocking_current_cr23_closeout: false
+  blocking_cr24_execution: false
+  disposition: CR23 closeout completed using explicit fixture-qualified coupled reconciliation. Generalized Zeus
+    lifecycle projection discovery remains queued for prospective development.
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR51
+    execution_class: SECONDARY_CR_MISSION
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    historical_execution_qualified: false
+- opportunity_id: ZO-016
+  title: Zeus CR26 Prospective Gate Action Contract Horizon Enforcement
+  owner_gate: CR25
+  target_gate: CR26
+  status: IMPLEMENTED_QUALIFIED
+  source: CR25 preparation and execution
+  objective: Require the prospective CR26 gate to expose exactly one canonical structured machine-readable next-authorized
+    action before CR25 closeout.
+  requirements:
+  - Preserve existing human resume instructions.
+  - Expose exactly one next_authorized_action.
+  - Do not execute CR26 while correcting its prospective action surface.
+  - Do not advance CR25 state during the corrective.
+  - Require canonical validation after correction.
+  implementation:
+    gate: CR26
+    surface: resume_instructions.next_authorized_action
+    action: EXECUTE_CR26_QUALIFY_MISSING_RESULT
+    human_instructions_preserved: true
+    cr26_executed: false
+  implemented_at: '2026-08-10T23:54:57Z'
+  qualification_evidence: gates/CR25/evidence/CR26-ACTION-QUALIFICATION.yaml
+- opportunity_id: ZO-017
+  title: Zeus CR27 Prospective Gate Action Contract Horizon Enforcement
+  owner_gate: CR26
+  target_gate: CR27
+  status: IMPLEMENTED_QUALIFIED
+  source: CR26 preparation and execution
+  objective: Require CR27 to expose exactly one canonical structured machine-readable next-authorized action before
+    CR26 closeout.
+  requirements:
+  - Preserve existing human resume instructions.
+  - Expose exactly one next_authorized_action.
+  - Do not execute CR27 while correcting its prospective action surface.
+  - Do not advance CR26 state during the corrective.
+  - Require canonical validation after correction.
+  implementation:
+    gate: CR27
+    surface: resume_instructions.next_authorized_action
+    action: EXECUTE_CR27_QUALIFY_WRONG_GATE_RESULT
+    human_instructions_preserved: true
+    cr27_executed: false
+  implemented_at: '2026-08-11T00:02:19Z'
+  qualification_evidence: gates/CR26/evidence/CR27-ACTION-QUALIFICATION.yaml
+- opportunity_id: ZO-018
+  title: Zeus Missing-Result Lifecycle Diagnostic Projection
+  owner_gate: CR47
+  target_gate: CR47
+  status: QUEUED
+  source: CR26 missing-result qualification
+  objective: Expose a compact direct machine-readable missing-result lifecycle classification and recommended action
+    instead of requiring Zeus to infer the condition from broad roadmap evaluation diagnostics.
+  requirements:
+  - Distinguish result absence from invalid, rejected, pending-review, and accepted results.
+  - Expose the classification through a stable read-only Zeus projection.
+  - Return the exact blocking dependency and recommended authorized action.
+  - Do not fabricate acceptance, completion, state advancement, or successor authority.
+  - Compose canonical lifecycle authority rather than duplicating result-state logic.
+  blocking_current_gate: false
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T00:04:07Z'
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR47
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    previous_keyword_owner: CR33
+    previous_keyword_target: CR33
+    previous_keyword_pairing_superseded: true
+    existing_corrective_gate_reuse: false
+    reason: Existing CR29-CR39 gates are lifecycle or regression qualification gates and do not provide appropriate
+      implementation authority for this deferred Zeus capability.
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    discovered_during_gate: CR28
+    execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-019
+  title: Zeus Targeted Lifecycle Diagnostic Reduction
+  owner_gate: CR47
+  target_gate: CR47
+  status: QUEUED
+  source: CR26 missing-result qualification
+  objective: Provide bounded lifecycle diagnostics relevant to the active gate and failure condition so Zeus does
+    not need to consume hundreds of unrelated roadmap evaluation diagnostics.
+  requirements:
+  - Filter diagnostic output by active gate, authority boundary, and requested lifecycle condition.
+  - Preserve access to the complete canonical evaluation when deeper inspection is required.
+  - Expose deterministic blocker identifiers.
+  - Remain read-only and non-executing.
+  - Do not weaken fail-closed behavior.
+  blocking_current_gate: false
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T00:04:07Z'
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR47
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    previous_keyword_owner: CR51
+    previous_keyword_target: CR51
+    previous_keyword_pairing_superseded: true
+    existing_corrective_gate_reuse: false
+    reason: Existing CR29-CR39 gates are lifecycle or regression qualification gates and do not provide appropriate
+      implementation authority for this deferred Zeus capability.
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    discovered_during_gate: CR28
+    execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-020
+  title: Zeus Wrong-Gate Result Diagnostic Projection
+  owner_gate: CR47
+  target_gate: CR47
+  status: QUEUED
+  source: CR27 wrong-gate result qualification
+  objective: Expose a compact machine-readable wrong-gate result classification, exact identity mismatch, blocking
+    authority, and recommended recovery action without requiring Zeus to infer the condition from broad validation
+    diagnostics.
+  requirements:
+  - Distinguish wrong-gate identity from missing, stale, invalid, and valid results.
+  - Expose active gate and claimed result gate identifiers directly.
+  - Return deterministic fail-closed classification and recovery guidance.
+  - Do not fabricate acceptance, completion, state advancement, or successor authority.
+  - Remain read-only and consume canonical lifecycle authority.
+  blocking_current_gate: false
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T00:09:01Z'
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR47
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    previous_keyword_owner: CR29
+    previous_keyword_target: CR29
+    previous_keyword_pairing_superseded: true
+    existing_corrective_gate_reuse: false
+    reason: Existing CR29-CR39 gates are lifecycle or regression qualification gates and do not provide appropriate
+      implementation authority for this deferred Zeus capability.
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    discovered_during_gate: CR28
+    execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-021
+  title: Zeus Result Authority Identity Projection
+  owner_gate: CR47
+  target_gate: CR47
+  status: QUEUED
+  source: CR27 wrong-gate result qualification
+  objective: Expose canonical active-gate/result-gate identity binding so Zeus can directly distinguish missing,
+    wrong-gate, stale, and valid current-gate results without re-deriving authority.
+  requirements:
+  - Expose active gate identity.
+  - Expose result-declared gate identity.
+  - Expose identity-match state.
+  - Identify the canonical authority surface used for the comparison.
+  - Remain read-only and non-executing.
+  blocking_current_gate: false
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T00:09:01Z'
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR47
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    previous_keyword_owner: CR29
+    previous_keyword_target: CR29
+    previous_keyword_pairing_superseded: true
+    existing_corrective_gate_reuse: false
+    reason: Existing CR29-CR39 gates are lifecycle or regression qualification gates and do not provide appropriate
+      implementation authority for this deferred Zeus capability.
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    discovered_during_gate: CR28
+    execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-022
+  title: Zeus CR28 Prospective Gate Action Contract Horizon Enforcement
+  owner_gate: CR27
+  target_gate: CR28
+  status: IMPLEMENTED_QUALIFIED
+  source: CR27 preparation and execution
+  objective: Require CR28 to expose exactly one canonical structured machine-readable next-authorized action before
+    CR27 closeout.
+  requirements:
+  - Preserve existing human resume instructions.
+  - Expose exactly one next_authorized_action.
+  - Do not execute CR28 while correcting its action surface.
+  - Do not advance CR27 state during the corrective.
+  - Require canonical validation after correction.
+  implementation:
+    gate: CR28
+    surface: resume_instructions.next_authorized_action
+    action: EXECUTE_CR28_QUALIFY_STALE_RESULT
+    human_instructions_preserved: true
+    cr28_executed: false
+  implemented_at: '2026-08-11T00:10:29Z'
+  qualification_evidence: gates/CR27/evidence/CR28-ACTION-QUALIFICATION.yaml
+- opportunity_id: ZO-023
+  title: Zeus Stale Result Diagnostic Projection
+  owner_gate: CR47
+  target_gate: CR47
+  status: QUEUED
+  source: CR28 stale-result qualification
+  objective: Expose a compact machine-readable stale-result classification, exact stale authority or provenance
+    dependency, and recommended recovery action.
+  requirements:
+  - Distinguish stale results from missing, wrong-gate, invalid, and valid results.
+  - Identify stale baseline, digest, or authority relationship directly.
+  - Expose deterministic fail-closed classification and recovery guidance.
+  - Do not authorize acceptance, completion, state advancement, or successor execution.
+  - Remain read-only and consume canonical lifecycle authority.
+  blocking_current_gate: false
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T00:21:33Z'
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR47
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    previous_keyword_owner: CR29
+    previous_keyword_target: CR29
+    previous_keyword_pairing_superseded: true
+    existing_corrective_gate_reuse: false
+    reason: Existing CR29-CR39 gates are lifecycle or regression qualification gates and do not provide appropriate
+      implementation authority for this deferred Zeus capability.
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    discovered_during_gate: CR28
+    execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-024
+  title: Zeus Result Freshness and Provenance Projection
+  owner_gate: CR46
+  target_gate: CR46
+  status: QUEUED
+  source: CR28 stale-result qualification
+  objective: Expose the canonical freshness and provenance relationship between a result, active gate state, authority
+    surface, and lifecycle revision.
+  requirements:
+  - Expose result authority provenance.
+  - Expose expected authoritative digest or revision.
+  - Expose result-bound digest or revision.
+  - Expose deterministic freshness-match state.
+  - Compose canonical lifecycle authority rather than duplicating validation logic.
+  - Remain read-only and non-executing.
+  blocking_current_gate: false
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T00:21:33Z'
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR46
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    previous_keyword_owner: CR29
+    previous_keyword_target: CR29
+    previous_keyword_pairing_superseded: true
+    existing_corrective_gate_reuse: false
+    reason: Existing CR29-CR39 gates are lifecycle or regression qualification gates and do not provide appropriate
+      implementation authority for this deferred Zeus capability.
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    discovered_during_gate: CR28
+    execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-025
+  title: Zeus CR29 Prospective Gate Action Contract Horizon Enforcement
+  owner_gate: CR28
+  target_gate: CR29
+  status: IMPLEMENTED_QUALIFIED
+  source: CR28 execution and closeout preparation
+  objective: Require CR29 to expose exactly one canonical structured machine-readable next-authorized action before
+    CR28 closeout.
+  requirements:
+  - Preserve existing human resume instructions.
+  - Expose exactly one next_authorized_action.
+  - Do not execute CR29 while correcting its action surface.
+  - Do not advance CR28 state during the corrective.
+  - Require canonical validation after correction.
+  implementation:
+    gate: CR29
+    surface: resume_instructions.next_authorized_action
+    action: EXECUTE_CR29_QUALIFY_INVALID_RESULT
+    human_instructions_preserved: true
+    cr29_executed: false
+  implemented_at: '2026-08-11T00:22:56Z'
+  qualification_evidence: gates/CR28/evidence/CR29-ACTION-QUALIFICATION.yaml
+- opportunity_id: ZO-026
+  title: Zeus Projection Scope and Qualification Instrument Selection
+  owner_gate: CR46
+  target_gate: CR46
+  status: QUEUED
+  source: CR29 qualification instrumentation correction
+  objective: Expose projection scope explicitly and allow Zeus to select a canonical qualification primitive appropriate
+    to parent roadmap, nested corrective, result lifecycle, or authority scope.
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR46
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    execution_class: SECONDARY_CR_MISSION
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T00:44:17Z'
+- opportunity_id: ZO-027
+  title: Zeus CR30 Prospective Gate Action Contract Horizon Enforcement
+  owner_gate: CR29
+  target_gate: CR30
+  status: IMPLEMENTED_QUALIFIED
+  source: CR29 successor-action horizon
+  objective: Require CR30 to expose exactly one canonical structured machine-readable next authorized action before
+    CR29 may advance to CR30.
+  requirements:
+  - Require exactly one canonical machine action surface.
+  - Preserve human resume instructions.
+  - Do not execute CR30 while correcting its prospective action contract.
+  - Do not advance CR29 state as part of the action-contract corrective.
+  qualification_evidence: gates/CR29/evidence/CR30-ACTION-QUALIFICATION.yaml
+- opportunity_id: ZO-028
+  title: Zeus Acceptance Target Authority Projection
+  owner_gate: CR47
+  target_gate: CR47
+  status: QUEUED
+  source: CR30 wrong-current-gate acceptance qualification
+  objective: Expose the authoritative relationship between an acceptance request target, the active gate, and the
+    exact authority failure when those identities differ.
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR47
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    execution_class: SECONDARY_CR_MISSION
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T00:51:33Z'
+- opportunity_id: ZO-029
+  title: Zeus Acceptance Boundary Diagnostic Projection
+  owner_gate: CR47
+  target_gate: CR47
+  status: QUEUED
+  source: CR30 wrong-current-gate acceptance qualification
+  objective: Expose machine-readable acceptance eligibility and rejection reasoning without executing or re-deriving
+    canonical lifecycle authority.
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR47
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    execution_class: SECONDARY_CR_MISSION
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T00:51:33Z'
+- opportunity_id: ZO-030
+  title: Zeus CR31 Prospective Gate Action Contract Horizon Enforcement
+  owner_gate: CR30
+  target_gate: CR31
+  status: IMPLEMENTED_QUALIFIED
+  source: CR30 successor-action horizon
+  objective: Require CR31 to expose exactly one structured machine-readable action before CR30 may advance.
+  qualification_evidence: gates/CR30/evidence/CR31-ACTION-QUALIFICATION.yaml
+- opportunity_id: ZO-031
+  title: Zeus Acceptance Prerequisite Projection
+  owner_gate: CR47
+  target_gate: CR47
+  status: QUEUED
+  source: CR31 missing acceptance prerequisite qualification
+  objective: Expose every canonical prerequisite required before acceptance may be authorized, including the precise
+    missing or invalid prerequisite.
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR47
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    execution_class: SECONDARY_CR_MISSION
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T00:57:25Z'
+- opportunity_id: ZO-032
+  title: Zeus Acceptance Readiness Diagnostic Projection
+  owner_gate: CR47
+  target_gate: CR47
+  status: QUEUED
+  source: CR31 missing acceptance prerequisite qualification
+  objective: Expose machine-readable acceptance readiness, blockers, and the next authorized recovery action.
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR47
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    execution_class: SECONDARY_CR_MISSION
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T00:57:25Z'
+- opportunity_id: ZO-033
+  title: Zeus CR32 Prospective Gate Action Contract Horizon Enforcement
+  owner_gate: CR31
+  target_gate: CR32
+  status: IMPLEMENTED_QUALIFIED
+  source: CR31 successor-action horizon
+  objective: Require CR32 to expose exactly one structured machine-readable action before CR31 may advance.
+  qualification_evidence: gates/CR31/evidence/CR32-ACTION-QUALIFICATION.yaml
+- opportunity_id: ZO-034
+  title: Zeus Acceptance Replay Classification Projection
+  owner_gate: CR48
+  target_gate: CR48
+  status: QUEUED
+  source: CR32 duplicate acceptance qualification
+  objective: Expose whether a repeated acceptance request is a first application, exact replay, already-applied
+    operation, or conflicting replay.
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR48
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    execution_class: SECONDARY_CR_MISSION
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T01:02:50Z'
+- opportunity_id: ZO-035
+  title: Zeus Acceptance Receipt Idempotency Projection
+  owner_gate: CR49
+  target_gate: CR49
+  status: QUEUED
+  source: CR32 duplicate acceptance qualification
+  objective: Expose canonical receipt identity and replay status so duplicate acceptance cannot create additional
+    receipts or lifecycle mutations.
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR49
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    execution_class: SECONDARY_CR_MISSION
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T01:02:50Z'
+- opportunity_id: ZO-036
+  title: Zeus CR33 Prospective Gate Action Contract Horizon Enforcement
+  owner_gate: CR32
+  target_gate: CR33
+  status: IMPLEMENTED_QUALIFIED
+  source: CR32 successor-action horizon
+  objective: Require CR33 to expose exactly one structured machine-readable action before CR32 may advance.
+  qualification_evidence: gates/CR32/evidence/CR33-ACTION-QUALIFICATION.yaml
+- opportunity_id: ZO-037
+  title: Zeus Acceptance Interruption Recovery Projection
+  owner_gate: CR48
+  target_gate: CR48
+  status: QUEUED
+  source: CR33 interrupted acceptance qualification
+  objective: Expose the durable acceptance boundary reached before interruption and identify whether recovery requires
+    retry, exact replay, reconciliation, or operator intervention.
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR48
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    execution_class: SECONDARY_CR_MISSION
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T01:08:23Z'
+- opportunity_id: ZO-038
+  title: Zeus Partial Acceptance Transaction Diagnostic Projection
+  owner_gate: CR48
+  target_gate: CR48
+  status: QUEUED
+  source: CR33 interrupted acceptance qualification
+  objective: Expose transaction phase, receipt, binding, and lifecycle facts so Zeus can distinguish no-op interruption,
+    durable acceptance, incomplete projection, and conflicting recovery.
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR48
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    execution_class: SECONDARY_CR_MISSION
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T01:08:23Z'
+- opportunity_id: ZO-039
+  title: Zeus CR34 Prospective Gate Action Contract Horizon Enforcement
+  owner_gate: CR33
+  target_gate: CR34
+  status: IMPLEMENTED_QUALIFIED
+  source: CR33 successor-action horizon
+  objective: Require CR34 to expose exactly one structured machine-readable action before CR33 may advance.
+  qualification_evidence: gates/CR33/evidence/CR34-ACTION-QUALIFICATION.yaml
+- opportunity_id: ZO-040
+  title: Zeus Advancement Replay Classification Projection
+  owner_gate: CR50
+  target_gate: CR50
+  status: QUEUED
+  source: CR34 replayed advancement qualification
+  objective: Expose whether an advancement request is a first application, exact replay, already-applied operation,
+    or conflicting replay without executing the transition.
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR50
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    execution_class: SECONDARY_CR_MISSION
+  recorded_at: '2026-08-11T01:19:15Z'
+- opportunity_id: ZO-041
+  title: Zeus Advancement Idempotency and Successor Projection
+  owner_gate: CR50
+  target_gate: CR50
+  status: QUEUED
+  source: CR34 replayed advancement qualification
+  objective: Expose advancement transaction identity, successor activation state, receipt identity, and replay status
+    without creating duplicate lifecycle mutation.
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR50
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    execution_class: SECONDARY_CR_MISSION
+  recorded_at: '2026-08-11T01:19:15Z'
+- opportunity_id: ZO-042
+  title: Zeus CR35 Prospective Gate Action Contract Horizon Enforcement
+  owner_gate: CR34
+  target_gate: CR35
+  status: IMPLEMENTED_QUALIFIED
+  source: CR34 prospective successor action horizon
+  objective: Ensure CR35 exposes exactly one structured next-authorized machine action before CR34 advances.
+  recorded_at: '2026-08-11T01:21:03Z'
+- opportunity_id: ZO-043
+  title: Zeus Terminal Gate Completion Projection
+  owner_gate: CR55
+  target_gate: CR55
+  status: QUEUED
+  source: CR35 terminal lifecycle qualification
+  objective: Expose whether the active gate is terminal and whether completion is authorized without requiring or
+    fabricating a successor gate.
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR55
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: true
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    execution_class: SECONDARY_CR_MISSION
+    historical_execution_qualified: false
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T01:25:29Z'
+  assignment_basis: NEXT_SEMANTICALLY_APPROPRIATE_CORRECTIVE_QUALIFICATION_GATE
+  gate_pairing:
+    result: PAIRED_CORRECTIVE_QUALIFICATION_GATE
+    gate_id: CR36
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+  updated_at: '2026-08-11T01:28:03Z'
+- opportunity_id: ZO-044
+  title: Zeus Terminal Lifecycle Boundary Diagnostic Projection
+  owner_gate: CR55
+  target_gate: CR55
+  status: QUEUED
+  source: CR35 terminal lifecycle qualification
+  objective: Expose terminal lifecycle state, completion prerequisites, successor absence, replay status, and the
+    exact next authorized action after terminal completion.
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR55
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: true
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    execution_class: SECONDARY_CR_MISSION
+    historical_execution_qualified: false
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T01:25:29Z'
+  assignment_basis: NEXT_SEMANTICALLY_APPROPRIATE_CORRECTIVE_QUALIFICATION_GATE
+  gate_pairing:
+    result: PAIRED_CORRECTIVE_QUALIFICATION_GATE
+    gate_id: CR36
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+  updated_at: '2026-08-11T01:28:03Z'
+- opportunity_id: ZO-045
+  title: Zeus CR36 Prospective Gate Action Contract Horizon Enforcement
+  owner_gate: CR35
+  target_gate: CR36
+  status: IMPLEMENTED_QUALIFIED
+  source: CR35 prospective successor action horizon
+  objective: Ensure CR36 exposes exactly one structured next-authorized machine action before CR35 advances.
+  recorded_at: '2026-08-11T01:28:04Z'
+- opportunity_id: ZO-046
+  title: Zeus Frozen Gate Integrity Projection
+  status: QUEUED
+  source: CR36 frozen-gate integrity qualification
+  objective: Expose whether a frozen gate and its authority-bearing inputs remain byte- and digest-identical to
+    the qualified baseline before Zeus relies on them.
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T01:32:30Z'
+  owner_gate: CR52
+  target_gate: CR52
+  assignment_basis: NEXT_APPROPRIATE_CORRECTIVE_QUALIFICATION_GATE
+  gate_pairing:
+    result: PAIRED_CORRECTIVE_QUALIFICATION_GATE
+    gate_id: CR37
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+  updated_at: '2026-08-11T01:33:43Z'
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR52
+    execution_class: SECONDARY_CR_MISSION
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    historical_execution_qualified: false
+- opportunity_id: ZO-047
+  title: Zeus Protected Gate Mutation Diagnostic Projection
+  status: QUEUED
+  source: CR36 frozen-gate integrity qualification
+  objective: Expose machine-readable frozen/protected gate mutation classification, affected authority surfaces,
+    and the exact fail-closed recovery action.
+  disposition: FUTURE_DEVELOPMENT
+  recorded_at: '2026-08-11T01:32:30Z'
+  owner_gate: CR52
+  target_gate: CR52
+  assignment_basis: NEXT_APPROPRIATE_CORRECTIVE_QUALIFICATION_GATE
+  gate_pairing:
+    result: PAIRED_CORRECTIVE_QUALIFICATION_GATE
+    gate_id: CR37
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+  updated_at: '2026-08-11T01:33:43Z'
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR52
+    execution_class: SECONDARY_CR_MISSION
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    historical_execution_qualified: false
+- opportunity_id: ZO-048
+  title: Zeus CR37 Prospective Gate Action Contract Horizon Enforcement
+  owner_gate: CR36
+  target_gate: CR37
+  status: IMPLEMENTED_QUALIFIED
+  source: CR36 prospective successor action horizon
+  objective: Ensure CR37 exposes exactly one structured next-authorized machine action before CR36 advances.
+  recorded_at: '2026-08-11T01:33:43Z'
+- opportunity_id: ZO-049
+  title: Zeus Resume Read-Only Integrity Projection
+  status: QUEUED
+  source_gate: CR37
+  objective: Expose whether a resume operation is strictly read-only, including proof that no result, lifecycle
+    state, receipt, authority surface, repository state, EOS state, or successor state was mutated.
+  disposition: FUTURE_ZEUS_DEVELOPMENT
+  recorded_at: '2026-08-11T01:43:08Z'
+  owner_gate: CR55
+  target_gate: CR55
+  assignment_basis: NEXT_APPROPRIATE_CORRECTIVE_QUALIFICATION_GATE
+  gate_pairing:
+    result: PAIRED_CORRECTIVE_QUALIFICATION_GATE
+    gate_id: CR38
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+  updated_at: '2026-08-11T01:43:08Z'
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR55
+    execution_class: SECONDARY_CR_MISSION
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    historical_execution_qualified: false
+- opportunity_id: ZO-050
+  title: Zeus Resume Determinism Diagnostic Projection
+  status: QUEUED
+  source_gate: CR37
+  objective: Expose the canonical current position, blockers, and next authorized action before and after repeated
+    resume operations and prove deterministic idempotent resume behavior.
+  disposition: FUTURE_ZEUS_DEVELOPMENT
+  recorded_at: '2026-08-11T01:43:08Z'
+  owner_gate: CR55
+  target_gate: CR55
+  assignment_basis: NEXT_APPROPRIATE_CORRECTIVE_QUALIFICATION_GATE
+  gate_pairing:
+    result: PAIRED_CORRECTIVE_QUALIFICATION_GATE
+    gate_id: CR38
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+  updated_at: '2026-08-11T01:43:08Z'
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR55
+    execution_class: SECONDARY_CR_MISSION
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    historical_execution_qualified: false
+- opportunity_id: ZO-051
+  title: Zeus CR38 Prospective Gate Action Contract Horizon Enforcement
+  source_gate: CR37
+  owner_gate: CR37
+  target_gate: CR38
+  objective: Ensure CR38 exposes exactly one structured machine-readable next authorized action before CR37 may
+    advance.
+  status: IMPLEMENTED_QUALIFIED
+  updated_at: '2026-08-11T01:43:09Z'
+- opportunity_id: ZO-052
+  title: Zeus EOS Side-Effect Boundary Projection
+  objective: Expose whether the current Zeus operation is authorized to mutate EOS and whether synchronize, refresh,
+    persistence, or projection writes are permitted.
+  status: QUEUED
+  owner_gate: CR55
+  target_gate: CR55
+  pairing_class: CORRECTIVE_QUALIFICATION_GATE
+  source_gate: CR38
+  recorded_at: '2026-08-11T01:53:13Z'
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR55
+    execution_class: SECONDARY_CR_MISSION
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    historical_execution_qualified: false
+- opportunity_id: ZO-053
+  title: Zeus EOS Mutation Authority Diagnostic Projection
+  objective: Expose machine-readable EOS mutation authority, attempted side effects, blocked side effects, and the
+    exact next authorized recovery or synchronization action.
+  status: QUEUED
+  owner_gate: CR55
+  target_gate: CR55
+  pairing_class: CORRECTIVE_QUALIFICATION_GATE
+  source_gate: CR38
+  recorded_at: '2026-08-11T01:53:13Z'
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR55
+    execution_class: SECONDARY_CR_MISSION
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    historical_execution_qualified: false
+- opportunity_id: ZO-054
+  title: Zeus CR39 Prospective Gate Action Contract Horizon Enforcement
+  objective: Expose a deterministic machine-readable action contract for CR39 full regression qualification.
+  status: IMPLEMENTED_QUALIFIED
+  owner_gate: CR38
+  target_gate: CR39
+  pairing_class: CORRECTIVE_QUALIFICATION_GATE
+  source_gate: CR38
+  recorded_at: '2026-08-11T01:54:38Z'
+- opportunity_id: ZO-055
+  title: Zeus Full Regression Qualification Projection
+  objective: Expose aggregate regression qualification across roadmap lifecycle, EMM, Project State, EOS boundaries,
+    replay, interruption, frozen-state, and action-contract integrity.
+  status: QUEUED
+  owner_gate: CR55
+  target_gate: CR55
+  pairing_class: CORRECTIVE_QUALIFICATION_GATE
+  roadmap_admission_required: false
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR55
+    execution_class: SECONDARY_CR_MISSION
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    historical_execution_qualified: false
+- opportunity_id: ZO-056
+  title: Zeus Regression Failure Localization Projection
+  objective: Expose the failing subsystem, test, evidence surface, authority consequence, blocker, and exact next
+    authorized recovery action when aggregate regression qualification fails.
+  status: QUEUED
+  owner_gate: CR55
+  target_gate: CR55
+  pairing_class: CORRECTIVE_QUALIFICATION_GATE
+  roadmap_admission_required: false
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR55
+    execution_class: SECONDARY_CR_MISSION
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    historical_execution_qualified: false
+- opportunity_id: ZO-057
+  title: Zeus Deterministic Machine-Action Resolver Qualification and Canonical Integration
+  objective: Qualify the existing Zeus machine-action resolver candidate against a real unresolved gate action,
+    determine the authoritative reusable implementation surface, canonically integrate and expose that capability
+    through Zeus, and implement only capability proven missing by qualification. Do not create a parallel resolver.
+  status: EXISTING_CAPABILITY_CANDIDATE
+  owner_gate: CR40
+  target_gate: CR40
+  pairing_class: CORRECTIVE_QUALIFICATION_GATE
+  roadmap_admission_required: false
+  discovery:
+    classification: EXISTING_RESOLVER_CANDIDATE_FOUND
+    new_development_authorized: false
+    qualification_required: true
+    parallel_resolver_authorized: false
+    real_case_gate: CR40
+  qualification_requirements:
+  - Identify the existing authoritative resolver implementation surface.
+  - Verify unresolved machine-action detection.
+  - Verify deterministic action derivation from authoritative state.
+  - Verify structured next_authorized_action materialization.
+  - Verify fail-closed behavior on ambiguity or conflicting authority.
+  - Verify existing authority is preserved and no authority is invented.
+  - Verify resolver invocation does not execute the resolved action.
+  - Verify replay is deterministic and idempotent.
+  - Expose the qualified capability through the Zeus platform.
+  - Implement only missing capability demonstrated by qualification evidence.
+  prohibited_implementation:
+  - Do not create a second or parallel machine-action resolver.
+  - Do not replace qualified authority-bearing lifecycle logic without evidence.
+  - Do not manually populate CR40 next_authorized_action as a substitute for resolver qualification.
+  - Do not execute CR40 successor activity during resolver qualification.
+- opportunity_id: ZO-058
+  title: Zeus Bounded Repository Transaction Closure and Commit Recovery
+  status: QUEUED
+  source: CR43 corrective commit recovery
+  source_gate: CR43
+  objective: Allow Zeus to classify a mixed dirty worktree, resolve the exact authorized transaction closure, exclude
+    protected and deferred work, recover an interrupted single-commit transaction, and verify the candidate tree
+    before commit or amendment without inventing mutation authority.
+  requirements:
+  - Inventory tracked, modified, staged, and untracked repository paths.
+  - Resolve each candidate path against explicit mutation authority and provenance.
+  - Distinguish authorized corrective work from protected, pre-existing, and deferred work.
+  - Derive a deterministic exact staging allowlist.
+  - Detect an interrupted structurally-valid but objective-incomplete local commit.
+  - Preserve single-commit semantics when the controlling gate requires one commit.
+  - Verify candidate commit or amended tree before publication or state advancement.
+  - Fail closed on ambiguous transaction closure or contamination.
+  - Never stage, commit, amend, reset, discard, or publish from read-only inspection.
+  owner_gate: CR46
+  target_gate: CR46
+  disposition: FUTURE_DEVELOPMENT
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR46
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    discovered_during_gate: CR43
+    execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-059
+  title: Zeus Gate Definition and Execution Provenance Classification
+  status: QUEUED
+  source: CR43 corrective-tree lifecycle closure
+  source_gate: CR43
+  objective: Allow Zeus to distinguish prospective gate-definition presence from actual execution, result-backed
+    completion, current-gate activity, and successor execution so roadmap artifacts cannot be misclassified as lifecycle
+    progress.
+  requirements:
+  - Distinguish GATE.yaml contract presence from execution evidence.
+  - Distinguish RESULT-backed completion from state-only or prose-only claims.
+  - Identify the exact current gate independently from future gate definitions.
+  - Detect successor execution only from authoritative lifecycle/evidence surfaces.
+  - Derive transaction closure from result-backed predecessors plus the current authorized gate.
+  - Preserve future gate contracts without treating them as completed or executed work.
+  - Expose machine-readable provenance for each lifecycle classification.
+  - Fail closed when state, result, and gate-definition surfaces contradict each other.
+  - Remain read-only during classification.
+  owner_gate: CR46
+  target_gate: CR46
+  disposition: FUTURE_DEVELOPMENT
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR46
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    discovered_during_gate: CR43
+    execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-060
+  title: Zeus Immutable Commit Dependency-Closure Qualification
+  status: QUEUED
+  source: CR44 local-commit requalification
+  source_gate: CR44
+  objective: Require Zeus to prove that a candidate or amended commit is dependency-complete and independently executable
+    from its immutable committed tree before qualification, publication, or lifecycle advancement, including detection
+    of missing committed dependencies that are masked by tracked, modified, staged, ignored, or untracked live-worktree
+    files.
+  requirements:
+  - Construct or inspect an immutable committed-tree execution surface before publication qualification.
+  - Resolve executable imports and runtime dependencies against the committed tree rather than the live worktree.
+  - Detect dependencies referenced by committed executable code but absent from the candidate commit.
+  - Detect when live tracked, modified, staged, ignored, or untracked files mask an incomplete committed dependency
+    closure.
+  - Require representative executable startup or equivalent dependency-closure verification from the immutable commit.
+  - Bind dependency-closure evidence to the exact candidate commit digest.
+  - Fail closed when the immutable committed tree is not independently executable.
+  - Distinguish transaction-path authorization from dependency-complete commit qualification.
+  - Prevent publication and successor lifecycle advancement until dependency closure passes.
+  - Preserve read-only diagnosis unless separate mutation authority explicitly authorizes repair.
+  owner_gate: CR46
+  target_gate: CR46
+  disposition: FUTURE_DEVELOPMENT
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR46
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    discovered_during_gate: CR44
+    execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-061
+  title: Zeus Qualification Context and Validation Applicability Classification
+  status: QUEUED
+  source: CR44M1 prepublication candidate qualification blocker resolution
+  source_gate: CR44M1
+  objective: Enable Zeus to classify qualification checks by lifecycle phase, repository topology, publication state,
+    EOS state, and test-harness context so non-applicable validation failures cannot be misclassified as candidate
+    semantic defects.
+  requirements:
+  - Classify validators as content-semantic, local-commit, published-platform, lifecycle-state, or test-harness
+    checks.
+  - Determine validator applicability before treating a nonzero return code as a candidate defect.
+  - Distinguish prepublication candidate topology from published main and synchronized EOS topology.
+  - Detect tests whose fixtures do not satisfy the active canonical repository-state contract.
+  - Represent NOT_APPLICABLE with durable machine-readable justification.
+  - Fail closed when validator applicability is ambiguous.
+  - Never suppress an applicable semantic, integrity, authority, lifecycle, or publication failure.
+  owner_gate: CR46
+  target_gate: CR46
+  disposition: FUTURE_DEVELOPMENT
+  implementation_pairing:
+    result: PAIRED_SECONDARY_CR_MISSION
+    implementation_gate: CR46
+    assignment_basis: EARLIEST_SEMANTICALLY_APPROPRIATE_MUTABLE_CR_GATE
+    roadmap_admission_required: false
+    blocks_current_gate: false
+    current_gate_scope_expanded: false
+    discovered_during_gate: CR44M1
+    execution_class: SECONDARY_CR_MISSION
+last_updated_at: '2026-08-11T14:03:09.036779+00:00'
+planned_implementation_gates:
+- gate_id: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  title: Implement Zeus Result Lifecycle Diagnostic Projections
+  status: PLANNED
+  purpose: Implement canonical read-only Zeus projections for missing, wrong-gate, stale, and active-result lifecycle
+    diagnostics without duplicating lifecycle authority.
+  implementation_scope:
+  - missing-result diagnostic projection
+  - targeted lifecycle diagnostic reduction
+  - wrong-gate result diagnostic projection
+  - result authority identity projection
+  - stale-result diagnostic projection
+  dependencies:
+  - existing qualified lifecycle primitives
+  - canonical roadmap result classification
+  - canonical active-gate authority surfaces
+  qualification_requirements:
+  - Focused projection tests for missing, wrong-gate, stale, invalid, and valid-current result states.
+  - Regression proving no acceptance, completion, advancement, EOS synchronization, or successor execution ownership.
+  - Machine-readable blocking dependency and recommended recovery action.
+  - Read-only exact replay and deterministic output.
+  current_corrective_blocking: false
+  current_corrective_scope: false
+  roadmap_admission_required: true
+- gate_id: ZG-RESULT-FRESHNESS-PROVENANCE-001
+  title: Implement Zeus Result Freshness and Provenance Projection
+  status: PLANNED
+  purpose: Implement canonical read-only result freshness and provenance projection binding active gate authority,
+    result provenance, baseline/digest identity, and lifecycle revision.
+  implementation_scope:
+  - result authority provenance
+  - authoritative digest or revision
+  - result-bound digest or revision
+  - freshness-match classification
+  - stale-dependency identification
+  dependencies:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - canonical result provenance surfaces
+  - canonical gate authority surfaces
+  qualification_requirements:
+  - Fresh/current and stale-result fixture coverage.
+  - Wrong-gate versus stale-result distinction.
+  - No independent re-derivation of canonical lifecycle authority.
+  - Read-only and non-executing projection.
+  current_corrective_blocking: false
+  current_corrective_scope: false
+  roadmap_admission_required: true
+- gate_id: ZG-REPOSITORY-TRANSACTION-INTEGRITY-001
+  title: Implement Zeus Repository Transaction Integrity and Recovery
+  status: PLANNED
+  purpose: Implement canonical Zeus inspection and qualification of bounded repository transaction closure, staging
+    authority, and interrupted single-commit recovery.
+  implementation_scope:
+  - dirty-worktree transaction classification
+  - exact authorized stage-set derivation
+  - protected and deferred path exclusion
+  - interrupted commit recovery classification
+  - candidate commit-tree verification
+  dependencies:
+  - canonical repository state surfaces
+  - canonical mutation-authority surfaces
+  - qualified provenance surfaces
+  qualification_requirements:
+  - Mixed dirty-tree fixtures with authorized, protected, deferred, and unrelated paths.
+  - Deterministic exact allowlist output.
+  - Fail-closed ambiguous-path qualification.
+  - Interrupted single-commit recovery fixtures.
+  - Proof inspection cannot stage, commit, amend, reset, discard, push, or advance lifecycle.
+  current_corrective_blocking: false
+  current_corrective_scope: false
+  roadmap_admission_required: true
+- gate_id: ZG-GATE-EXECUTION-PROVENANCE-001
+  title: Implement Zeus Gate Definition and Execution Provenance Projection
+  status: PLANNED
+  purpose: Implement canonical Zeus classification of prospective gate contracts, result-backed execution, current-gate
+    state, and successor execution provenance.
+  implementation_scope:
+  - prospective gate-definition classification
+  - result-backed execution classification
+  - current-gate provenance
+  - successor-execution detection
+  - lifecycle contradiction diagnostics
+  dependencies:
+  - canonical executable roadmap state
+  - canonical gate contracts
+  - canonical result lifecycle surfaces
+  qualification_requirements:
+  - Future GATE.yaml without RESULT.yaml is never classified as executed.
+  - Result-backed predecessor gates classify independently of stale aggregate state lists.
+  - Current gate is resolved from canonical lifecycle authority.
+  - Successor execution requires positive authoritative evidence.
+  - Contradictory state/result fixtures fail closed with machine-readable provenance.
+  - Projection remains read-only and non-executing.
+  current_corrective_blocking: false
+  current_corrective_scope: false
+  roadmap_admission_required: true
+future_zeus_gate_pairing_policy:
+  policy_version: 1
+  recorded_at: '2026-08-11T00:30:21Z'
+  rule: A future Zeus opportunity must be paired with a gate that has compatible implementation authority and lifecycle
+    purpose. Qualification-only corrective gates must not be used as implementation owners solely because their
+    titles share keywords.
+  existing_gate_reuse_requires:
+  - semantic capability alignment
+  - compatible mutation authority
+  - compatible implementation objective
+  - independent qualification boundary
+  otherwise: CREATE_OR_ADMIT_PLANNED_ZEUS_IMPLEMENTATION_GATE
+  current_corrective_scope_expansion: false
+planned_gates:
+- gate_id: ZG-COMMIT-DEPENDENCY-CLOSURE-001
+  title: Immutable Commit Dependency-Closure Qualification
+  status: PLANNED
+  source_opportunity: ZO-060
+  objective: Implement Zeus-native immutable candidate-commit dependency closure and executable qualification before
+    publication or lifecycle advance.
+planned_zeus_gates:
+- gate_id: ZG-QUALIFICATION-CONTEXT-APPLICABILITY-001
+  title: Zeus Qualification Context and Validation Applicability Classification
+  status: PLANNED
+  source_opportunity: ZO-061
+  roadmap_admission_required: true

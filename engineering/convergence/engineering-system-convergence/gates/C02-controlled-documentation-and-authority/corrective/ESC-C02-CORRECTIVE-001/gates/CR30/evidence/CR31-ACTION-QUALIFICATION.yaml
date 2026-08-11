@@ -1,0 +1,12 @@
+schema_version: 1
+record_id: CR30-CR31-ACTION-QUALIFICATION-001
+gate_id: CR30
+target_gate: CR31
+recorded_at: '2026-08-11T00:52:34Z'
+result: PASS
+action_surface: resume_instructions.next_authorized_action
+next_authorized_action: EXECUTE_CR31_QUALIFY_MISSING_ACCEPTANCE_PREREQUISITES
+human_instructions_preserved: true
+current_item: CR30
+cr31_executed: false
+errors: []

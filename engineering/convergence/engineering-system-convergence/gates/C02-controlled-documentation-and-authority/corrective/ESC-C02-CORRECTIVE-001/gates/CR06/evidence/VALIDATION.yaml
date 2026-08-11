@@ -1,0 +1,22 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR06
+result: PASS
+
+checks:
+  dependencies_complete: PASS
+  current_item: PASS
+  pre_create_verification: PASS
+  lifecycle_state_identity: PASS
+  result_acceptance_separation: PASS
+  operator_decision_semantics: PASS
+  completion_semantics: PASS
+  successor_activation_semantics: PASS
+  fail_closed_semantics: PASS
+  read_only_projection_semantics: PASS
+  replay_semantics: PASS
+  implementation_unchanged: PASS
+  zo_001_binding_preserved: PASS
+  cr07_not_executed: PASS
+
+next_authorized_item: CR07

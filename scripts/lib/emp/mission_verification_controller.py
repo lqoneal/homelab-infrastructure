@@ -17,7 +17,7 @@ from typing import Any
 from scripts.lib.emp.bootstrap_boundary import _transaction_digest
 from scripts.lib.emp.mission_admission_boundary import _digest
 from scripts.lib.emp.repository_identity import resolve
-from scripts.lib.emp.repository_projection import project as project_repository
+from scripts.lib.emp.repository_state_view import project as project_repository
 from scripts.lib.eos.canonical_baseline import resolve as resolve_baseline
 from scripts.lib.emp.runtime_paths import resolve_runtime
 from scripts.lib.eos import operational_beta

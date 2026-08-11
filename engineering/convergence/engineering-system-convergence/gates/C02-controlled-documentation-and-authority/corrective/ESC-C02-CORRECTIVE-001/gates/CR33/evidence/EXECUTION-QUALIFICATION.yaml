@@ -1,0 +1,25 @@
+schema_version: 1
+record_id: CR33-EXECUTION-QUALIFICATION-001
+gate_id: CR33
+recorded_at: '2026-08-11T01:08:23Z'
+result: PASS
+objective: Verify interruption leaves recoverable deterministic state.
+qualification:
+  pre_receipt_interruption: NO_ACCEPTANCE_COMMITTED
+  post_receipt_interruption: RECOVERABLE_BY_EXACT_REPLAY
+  post_advancement_replay: ALREADY_APPLIED
+  partial_authority_state: FAIL_CLOSED
+  duplicate_receipt_created: false
+  ambiguous_operator_decision: false
+  second_lifecycle_mutation: false
+  state_advanced: false
+  successor_executed: false
+  cr34_executed: false
+boundary:
+  cr33_result_written: false
+  state_advanced: false
+  parent_c02_advanced: false
+  cr34_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

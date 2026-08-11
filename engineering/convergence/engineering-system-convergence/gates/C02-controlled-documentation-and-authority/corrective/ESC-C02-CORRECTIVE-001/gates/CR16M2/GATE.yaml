@@ -1,0 +1,155 @@
+schema_version: 1
+gate_id: CR16M2
+title: Reconcile Persisted Execution Qualification
+status: PENDING
+
+purpose: >
+  Reconcile the persisted executable qualification with the qualified live
+  execution-sufficiency result without making inspection interfaces mutating
+  or collapsing persisted projection into live evaluation.
+
+objective: >
+  Preserve projection() as a persisted-status interface, preserve evaluate()
+  as a live read-only evaluation interface, explicitly refresh the persisted
+  qualification through an authorized transaction, and return control to CR16
+  for final regression qualification.
+
+trigger:
+  source_gate: CR16
+  classification: PERSISTED_EXECUTION_QUALIFICATION_DRIFT
+  observed:
+    persisted_roadmap_version: 2.0.0
+    current_roadmap_version: 2.0.2
+    persisted_result: PASS
+    persisted_executable: true
+    live_result: NOT_EXECUTABLE
+    live_executable: false
+
+dependencies:
+  - CR15
+  - CR16M1
+
+entry_conditions:
+  - CR16 remains current and incomplete.
+  - CR16 RESULT.yaml does not exist.
+  - CR17 remains unexecuted.
+  - CR16M1 RESULT.yaml is COMPLETE.
+  - projection() exposes persisted executable qualification.
+  - evaluate() exposes live execution sufficiency.
+  - Live evaluation reports NOT_EXECUTABLE and executable false.
+  - Persisted evaluation mismatch is reproduced.
+
+authoritative_inputs:
+  - ESC-C02-CORRECTIVE-001/STATE.yaml
+  - ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+  - gates/CR16/GATE.yaml
+  - gates/CR16M1/RESULT.yaml
+  - engineering/convergence/engineering-system-convergence/roadmap.yaml
+  - engineering/convergence/engineering-system-convergence/STATE.yaml
+  - engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml
+  - scripts/lib/eos/convergence_roadmap.py
+  - scripts/tests/test-convergence-roadmap.py
+
+allowed_mutations:
+  - gates/CR16M2/**
+  - ESC-C02-CORRECTIVE-001/STATE.yaml
+  - ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+  - ESC-C02-CORRECTIVE-001/HISTORY.md
+  - engineering/convergence/engineering-system-convergence/STATE.yaml
+  - engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml
+  - engineering/convergence/engineering-system-convergence/binding-manifest.yaml
+  - docs/project/PROJ-0001-PROJECT_STATE.md
+  - scripts/tests/test-convergence-roadmap.py
+
+prohibited_mutations:
+  - gates/CR16/**
+  - gates/CR17/**
+  - parent C00/C01/C02 GATE.yaml
+  - parent C02 RESULT.yaml
+  - parent C02 assessment evidence
+  - convergence-roadmap validator weakening
+  - projection() conversion to implicit live evaluation
+  - evaluate() persistence or mutation
+  - status/resume persistence or mutation
+  - operator acceptance
+  - C02 completion
+  - C03 activation or execution
+  - EOS synchronization or refresh
+  - commit
+  - push
+
+manual_procedure:
+  - Reproduce persisted-versus-live execution-sufficiency divergence.
+  - Prove projection() intentionally consumes STATE executable_qualification.
+  - Prove evaluate() independently computes live execution sufficiency.
+  - Run evaluate with persisted-comparison disabled and capture the canonical live result.
+  - Verify live result is structurally PASS, overall NOT_EXECUTABLE and executable false.
+  - Generate a candidate persisted ROADMAP-EVALUATION record from that qualified live result.
+  - Verify its roadmap_version equals the current authoritative roadmap version.
+  - Verify result persistence does not occur through evaluate, validate, status or resume.
+  - Explicitly replace the persisted ROADMAP-EVALUATION record only after qualification.
+  - Explicitly update STATE executable_qualification to match the persisted qualified result.
+  - Preserve the existing evaluation-result locator.
+  - Rebind EMM only if its existing manifest contract covers an authorized changed source.
+  - Validate projection now exposes the newly persisted qualification without computing live state.
+  - Validate evaluate agrees with the persisted qualification.
+  - Validate status, validate, evaluate and resume remain read-only.
+  - Validate C02 remains current and incomplete.
+  - Create SUMMARY.md before maturity-state advancement.
+  - Append HISTORY.md before maturity-state advancement.
+  - Record CR16M2 RESULT.yaml only after all checks pass.
+  - Restore corrective current_item to CR16.
+  - Stop before resuming CR16.
+
+required_outputs:
+  - PERSISTED-EXECUTION-QUALIFICATION-RECONCILIATION.yaml
+  - SUMMARY.md
+
+required_evidence:
+  - evidence/BEFORE-AFTER.yaml
+  - evidence/COMMANDS.md
+  - evidence/VALIDATION.yaml
+
+acceptance_criteria:
+  - projection() remains a persisted qualification projection.
+  - evaluate() remains live and read-only.
+  - Persisted evaluation roadmap_version equals the authoritative roadmap version.
+  - Persisted evaluation result equals the qualified live result.
+  - STATE executable_qualification agrees with the persisted evaluation.
+  - projection() and evaluate() no longer disagree on execution sufficiency.
+  - No inspection interface performs implicit persistence.
+  - EMM integrity passes.
+  - C02 remains current.
+  - C02 remains uncompleted.
+  - CR16 remains incomplete during CR16M2.
+  - CR17 remains unexecuted.
+  - C03 remains unexecuted.
+  - No EOS synchronization or refresh occurs.
+
+fail_closed_conditions:
+  - Live evaluation is structurally invalid.
+  - Live evaluation differs between exact replays.
+  - Persisted evaluation cannot be deterministically generated.
+  - Persisted evaluation locator is ambiguous.
+  - Projection requires live evaluation to become correct.
+  - Read-only command mutates persisted qualification.
+  - EMM source drift remains unresolved.
+  - C02 completion.
+  - CR16 mutation.
+  - CR17 execution.
+  - C03 activation.
+
+stop_boundary: STOP_AFTER_CR16M2
+result_location: gates/CR16M2/RESULT.yaml
+evidence_location: gates/CR16M2/evidence
+next_item: CR16
+
+human_readable_record:
+  summary: gates/CR16M2/SUMMARY.md
+  history: HISTORY.md
+  required_before_state_advancement: true
+
+resume_instructions: >
+  If current_item is CR16M2, execute only CR16M2. After successful persisted
+  qualification reconciliation restore current_item CR16 and stop. Do not
+  resume CR16 in the same transaction.

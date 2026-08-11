@@ -1,0 +1,25 @@
+schema_version: 1
+record_id: EMM-MANUAL-REBIND-001
+recorded_at: '2026-08-10T13:21:46Z'
+classification: AUTHORIZED_MANUAL_REBINDING
+reason: Temporary manual reconciliation required after authorized roadmap/lifecycle source development.
+  Future automatic handling is queued as ESC-EMM-AUTO-REBIND-001 in CR23.
+binding_owner: EMM
+source: scripts/lib/eos/convergence_roadmap.py
+old_sha256: 31077662c65a8920b163299ff19e7cb5a2c3bbc2e0c9db2c0cba92531440da0d
+new_sha256: 9a455d1048f9a8d554bcc9571f1ff184f2d514933e72080a0f7dce69dc0f7497
+pre_manifest_sha256: 9b05f06482474e4a158a3095790b2aba2c5c3191f78119832069a7a857d195cc
+post_manifest_sha256: 5b7aa1b67c3b4936f10518d7b04558b7664cbbaadc9036634dae058274bf1b44
+authorization_preflight:
+  drift_count: 1
+  missing_count: 0
+  unauthorized_drift_count: 0
+  result: READY
+future_requirement: ESC-EMM-AUTO-REBIND-001
+execution_state_changed: false
+cr21_executed: false
+parent_c02_advanced: false
+eos_synchronized: false
+commit_created: false
+push_performed: false
+recovery: /data/engineering/recovery/emm-manual-rebind-20260810T132146Z

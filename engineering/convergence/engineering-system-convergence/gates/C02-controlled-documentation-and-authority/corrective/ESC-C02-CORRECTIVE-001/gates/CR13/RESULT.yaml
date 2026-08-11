@@ -1,0 +1,32 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR13
+result: COMPLETE
+
+objective: >
+  Define the lifecycle and Zeus-native CLI contract after CR12M1 maturity
+  reconciliation.
+
+outputs:
+  cli_contract:
+    path: gates/CR13/CLI-CONTRACT.yaml
+    sha256: c5e7a350dc064caee76611a82571da3744acd6e8c5fa854704fd0338a506ae92
+
+evidence:
+  validation:
+    path: gates/CR13/evidence/VALIDATION.yaml
+    sha256: 48e02aeffd9431cb5f06bbb2074780ef8ab570be6ffb9790969741e67b5a988e
+
+  summary:
+    path: gates/CR13/SUMMARY.md
+    sha256: cec1cdee7559b26b89d0df15e6489f51991f8c9cb03f2ee9d8afc370ab86bbf4
+
+acceptance:
+  result: PASS
+  c02_f028_reconciliation_consumed: true
+  cli_contract_defined: true
+  zo_001_incorporated: true
+  implementation_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR14

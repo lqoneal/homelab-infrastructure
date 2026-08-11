@@ -1,0 +1,19 @@
+{
+  "authorized_mutations": {
+    "scripts/lib/eos/convergence_roadmap.py": "8db742922b3c0a9bf703835e9aaa8f445528e709e5a91bd691e39ffa31ad8524"
+  },
+  "post_manifest_sha256": "619e061a2ff460dd05275511bf603d02fe2957703ec6e1b58d51bff8194990ba",
+  "pre_manifest_sha256": "c0e9a8879d9bc28349b8a70c0f3a2c61c64169899b17ccf33d35d76bd496cc29",
+  "recorded_at": "2026-08-10T17:52:03Z",
+  "schema_version": 1,
+  "sources": [
+    {
+      "new_sha256": "d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc",
+      "old_sha256": "8db742922b3c0a9bf703835e9aaa8f445528e709e5a91bd691e39ffa31ad8524",
+      "path": "scripts/lib/eos/convergence_roadmap.py"
+    }
+  ],
+  "status": "RECONCILIATION_COMPLETE",
+  "transaction_id": "tx-cr23-zo013-emm-rebind-001",
+  "transaction_type": "EMM_REBIND"
+}

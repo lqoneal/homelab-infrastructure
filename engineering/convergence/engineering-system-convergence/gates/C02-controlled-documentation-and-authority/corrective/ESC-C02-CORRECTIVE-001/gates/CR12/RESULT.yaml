@@ -1,0 +1,26 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR12
+result: COMPLETE
+
+outputs:
+  interruption_replay_spec:
+    path: gates/CR12/INTERRUPTION-REPLAY-SPEC.yaml
+    sha256: 849413bb66e3eba46e307cabc5106d5e31f0dfd4bf44959898c35dca768b7c10
+
+evidence:
+  validation:
+    path: gates/CR12/evidence/VALIDATION.yaml
+    sha256: d62781c3a924a659666dd73ae677819184f0185f8456f046692607028d00e358
+  summary:
+    path: gates/CR12/SUMMARY.md
+    sha256: 7e066d18cde10b5e10e379ac50453b0e684fe21658320289372295d329cd2e26
+
+acceptance:
+  result: PASS
+  interruption_semantics_defined: true
+  replay_semantics_defined: true
+  implementation_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR13

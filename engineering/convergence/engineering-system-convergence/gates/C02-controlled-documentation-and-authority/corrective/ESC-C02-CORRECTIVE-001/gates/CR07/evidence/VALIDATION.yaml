@@ -1,0 +1,26 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR07
+validated_at: '2026-08-10T04:50:20Z'
+result: PASS
+
+checks:
+  cr06_dependency: PASS
+  current_item: PASS
+  pre_create_verification: PASS
+  state_vocabulary_input: PASS
+  state_count: 8
+  transition_identity: PASS
+  complete_transition_classification: PASS
+  result_acceptance_separation: PASS
+  explicit_operator_authority: PASS
+  rejected_result_cannot_complete: PASS
+  accepted_completion_path: PASS
+  blocked_semantics: PASS
+  terminal_gate_semantics: PASS
+  read_only_projection_semantics: PASS
+  implementation_unchanged: PASS
+  zo_001_cr13_binding_preserved: PASS
+  cr08_not_executed: PASS
+
+next_authorized_item: CR08

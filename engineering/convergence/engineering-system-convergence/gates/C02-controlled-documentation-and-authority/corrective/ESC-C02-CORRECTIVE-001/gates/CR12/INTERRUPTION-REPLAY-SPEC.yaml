@@ -1,0 +1,218 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR12
+finding_id: C02-F-027
+status: DEFINED_NOT_IMPLEMENTED
+
+purpose: >
+  Define deterministic interruption recovery and replay semantics for roadmap
+  lifecycle transactions without inferring acceptance, completion, or
+  successor activation from partial durable state.
+
+scope:
+  - result recording
+  - pending operator review
+  - operator decision receipt
+  - accepted state
+  - completion transaction
+  - successor activation
+  - terminal completion
+
+principles:
+
+  - id: IRP-001
+    rule: Durable evidence existence never implies an unrecorded lifecycle decision.
+
+  - id: IRP-002
+    rule: Recovery reconstructs state only from validated authoritative artifacts.
+
+  - id: IRP-003
+    rule: Exact replay is idempotent or returns ALREADY_APPLIED.
+
+  - id: IRP-004
+    rule: Conflicting replay fails closed.
+
+  - id: IRP-005
+    rule: Read-only commands never repair or advance lifecycle state.
+
+  - id: IRP-006
+    rule: Recovery never executes the next gate implicitly.
+
+interruption_states:
+
+  - id: IRS-001
+    point: BEFORE_RESULT_RECORD
+    durable_state: EXECUTION_INCOMPLETE
+    recovery: RESUME_CURRENT_GATE
+    infer_acceptance: false
+    infer_completion: false
+
+  - id: IRS-002
+    point: AFTER_RESULT_BEFORE_PENDING_REVIEW
+    durable_state: RESULT_RECORDED_TRANSITION_INCOMPLETE
+    recovery: VALIDATE_RESULT_THEN_COMPLETE_PENDING_REVIEW_TRANSITION
+    infer_acceptance: false
+    infer_completion: false
+
+  - id: IRS-003
+    point: PENDING_OPERATOR_REVIEW
+    durable_state: AWAITING_OPERATOR_REVIEW
+    recovery: WAIT_FOR_EXPLICIT_OPERATOR_DECISION
+    infer_acceptance: false
+    infer_completion: false
+
+  - id: IRS-004
+    point: AFTER_ACCEPT_RECEIPT_BEFORE_ACCEPTED_STATE
+    durable_state: ACCEPT_RECEIPT_RECORDED_TRANSITION_INCOMPLETE
+    recovery: VALIDATE_RECEIPT_AND_BINDINGS_THEN_COMPLETE_ACCEPTED_TRANSITION
+    infer_acceptance: false
+    infer_completion: false
+
+  - id: IRS-005
+    point: ACCEPTED_BEFORE_ADVANCEMENT
+    durable_state: ACCEPTED
+    recovery: REVALIDATE_AND_EXECUTE_ADVANCEMENT_TRANSACTION
+    infer_acceptance: true
+    infer_completion: false
+
+  - id: IRS-006
+    point: ADVANCEMENT_TRANSACTION_RECORDED_BEFORE_STATE_COMMIT
+    durable_state: PENDING_RECONCILIATION
+    recovery: REVALIDATE_EXACT_TRANSACTION_AND_APPLY_ONCE
+    infer_completion: false
+
+  - id: IRS-007
+    point: PARTIAL_ADVANCEMENT_STATE
+    durable_state: INVALID_PARTIAL_TRANSACTION
+    recovery: RECONCILE_FROM_TRANSACTION_PROVENANCE_OR_FAIL_CLOSED
+    infer_completion: false
+
+  - id: IRS-008
+    point: AFTER_ADVANCEMENT_COMMIT
+    durable_state: ADVANCEMENT_COMPLETE
+    recovery: RETURN_ALREADY_APPLIED
+    infer_completion: true
+
+replay_identity:
+  required_bindings:
+    - roadmap_id
+    - roadmap_version
+    - gate_id
+    - gate_definition_digest
+    - result_digest
+    - decision_receipt_digest
+    - pre_state_digest
+    - transaction_id
+
+replay_outcomes:
+
+  exact_uncommitted:
+    result: RESUME_EXACT_TRANSACTION
+
+  exact_committed:
+    result: ALREADY_APPLIED
+
+  different_gate:
+    result: FAIL_CLOSED
+
+  different_gate_definition:
+    result: FAIL_CLOSED
+
+  different_result:
+    result: FAIL_CLOSED
+
+  different_decision_receipt:
+    result: FAIL_CLOSED
+
+  different_pre_state:
+    result: FAIL_CLOSED
+
+  reused_transaction_id:
+    result: FAIL_CLOSED
+
+recovery_algorithm:
+
+  - step: 1
+    action: Load roadmap and authoritative lifecycle state without mutation.
+
+  - step: 2
+    action: Validate roadmap identity and version.
+
+  - step: 3
+    action: Validate current gate identity and frozen gate digest.
+
+  - step: 4
+    action: Inventory durable result, review, receipt, transaction and state artifacts.
+
+  - step: 5
+    action: Validate every artifact and cross-binding before interpreting it.
+
+  - step: 6
+    action: Classify the interruption point deterministically.
+
+  - step: 7
+    action: Reject contradictory or ambiguous durable states.
+
+  - step: 8
+    action: Select exactly one authorized recovery action.
+
+  - step: 9
+    action: If recovery is mutating, require the explicit mutation interface.
+
+  - step: 10
+    action: Apply at most the interrupted lifecycle transaction.
+
+  - step: 11
+    action: Verify post-state and transaction identity.
+
+  - step: 12
+    action: Stop before executing successor work.
+
+read_only_surfaces:
+
+  validate:
+    mutation_allowed: false
+    may_report_recovery_action: true
+
+  evaluate:
+    mutation_allowed: false
+    may_report_recovery_action: true
+
+  status:
+    mutation_allowed: false
+    may_report_recovery_action: true
+
+  resume:
+    mutation_allowed: false
+    may_report_recovery_action: true
+
+recovery_mutation_authority:
+  explicit_interface_required: true
+  implicit_resume_repair_allowed: false
+  implicit_validation_repair_allowed: false
+
+successor_boundary:
+  successor_may_be_selected_by_advancement_transaction: true
+  successor_execution_in_same_transaction: false
+  automatic_successor_execution_on_replay: false
+
+external_side_effects:
+  eos_sync_implicit: false
+  eos_refresh_implicit: false
+  commit_implicit: false
+  push_implicit: false
+  publication_implicit: false
+
+fail_closed_conditions:
+  - Ambiguous interruption classification.
+  - Missing required replay identity.
+  - Digest or identity mismatch.
+  - Contradictory lifecycle artifacts.
+  - Conflicting operator decisions.
+  - Transaction identity reuse with different inputs.
+  - State indicates completion without valid advancement provenance.
+  - Recovery would require executing successor work.
+  - Recovery would require implicit EOS synchronization or refresh.
+
+implementation_authorized: false
+next_design_item: CR13

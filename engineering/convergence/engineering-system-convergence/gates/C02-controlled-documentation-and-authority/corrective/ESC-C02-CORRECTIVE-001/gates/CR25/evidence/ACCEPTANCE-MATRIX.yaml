@@ -1,0 +1,55 @@
+schema_version: 1
+record_id: CR25-ACCEPTANCE-MATRIX-001
+gate_id: CR25
+recorded_at: '2026-08-10T23:54:57Z'
+result: PASS
+criteria:
+- criterion: 1
+  text: The stated objective is fully satisfied.
+  result: PASS
+- criterion: 2
+  text: All required outputs exist and validate.
+  result: PASS
+- criterion: 3
+  text: No prohibited mutation occurred.
+  result: PASS
+- criterion: 4
+  text: All dependencies remain valid.
+  result: PASS
+- criterion: 5
+  text: The next item is not executed.
+  result: PASS
+- criterion: 6
+  text: Every ordered manual-procedure step applicable to this gate is either PASS with evidence or explicitly
+    NOT_APPLICABLE with justification.
+  result: PASS
+- criterion: 7
+  text: All gate-specific expected outcomes are independently reproducible from durable repository state.
+  result: PASS
+- criterion: 8
+  text: Pre/post protected-artifact and authority-surface comparisons prove the mutation boundary.
+  result: PASS
+- criterion: 9
+  text: Interruption or failure cannot silently authorize successor execution.
+  result: PASS
+manual_procedure:
+  step_count: 26
+  result: PASS
+qualified_semantics:
+  result_class: VALID_FINAL
+  lifecycle_state: AWAITING_OPERATOR_REVIEW
+  result_existence_implies_acceptance: false
+  result_existence_implies_completion: false
+  acceptance_receipt_present: false
+  state_advanced: false
+  successor_executed: false
+protected_artifacts:
+  result: PASS
+  unexpected_changes: []
+closeout_blockers:
+- CR26 prospective machine action must be resolved before CR25 -> CR26 advancement.
+boundary:
+  cr25_result_written: false
+  state_advanced: false
+  cr26_executed: false
+  successor_executed: false

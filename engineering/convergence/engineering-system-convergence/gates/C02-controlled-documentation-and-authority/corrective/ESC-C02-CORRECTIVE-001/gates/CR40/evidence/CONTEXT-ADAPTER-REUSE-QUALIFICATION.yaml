@@ -1,0 +1,16 @@
+schema_version: 1
+record_id: CR40-CONTEXT-ADAPTER-REUSE-QUALIFICATION-001
+gate_id: CR40
+recorded_at: '2026-08-11T05:10:55Z'
+result: PASS
+existing_resolver_present: true
+new_resolver_required: false
+greenfield_resolver_creation_authorized: false
+parallel_resolver_authorized: false
+reuse_candidates_qualified:
+- project_nested_corrective_reconciliation
+- project_manual_gate_execution_preflight
+- project_composite_execution_preflight
+- projection
+next_rule: reuse existing contextual primitive if sufficient; authorize only the smallest proven context-input
+  gap otherwise

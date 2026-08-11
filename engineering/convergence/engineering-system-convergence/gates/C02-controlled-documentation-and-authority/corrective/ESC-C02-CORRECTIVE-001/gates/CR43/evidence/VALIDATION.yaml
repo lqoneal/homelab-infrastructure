@@ -1,0 +1,31 @@
+schema_version: 1
+gate_id: CR43
+classification: CORRECTIVE_COMMIT_RECOVERY_PRE_AMEND_VALIDATION
+result: PASS
+validated_at: '2026-08-11T14:07:02.345044+00:00'
+existing_commit: 91505033340f0595c2ceb52ee29a32963ae2a5bb
+existing_commit_parent: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+origin_main: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+root_cause: CORRECTIVE_TREE_OMITTED_BY_STAGESET_DERIVATION
+recovery_closure_path_count: 434
+protected_parent_c02_excluded: true
+deferred_unrelated_work_excluded: true
+future_cr44_cr55_execution_excluded: true
+zeus_opportunities_recorded:
+- ZO-058
+- ZO-059
+checks:
+  current_item_cr43: true
+  existing_commit_matches_recovery: true
+  parent_equals_origin_main: true
+  single_local_commit: true
+  single_commit_semantic_required: true
+  second_commit_authorized_false: true
+  recovery_closure_missing_zero: true
+  index_empty: true
+  cr44_result_absent: true
+result_written: false
+state_advanced: false
+commit_amended: false
+cr44_executed: false
+eos_synchronized: false

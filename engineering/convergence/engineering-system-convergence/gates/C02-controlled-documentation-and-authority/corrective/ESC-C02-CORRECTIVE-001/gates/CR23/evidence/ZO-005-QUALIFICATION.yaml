@@ -1,0 +1,82 @@
+schema_version: 1
+record_id: CR23-ZO005-QUALIFICATION-001
+gate_id: CR23
+opportunity_id: ZO-005
+recorded_at: '2026-08-10T15:10:29Z'
+result: PASS
+implementation:
+  primitive: scripts.lib.eos.convergence_roadmap.project_emm_reconciliation_awareness
+  dependency: scripts.lib.eos.convergence_roadmap.inspect_emm_binding_scope
+  canonical_reconciliation: scripts.lib.eos.convergence_roadmap.apply_emm_rebind_transaction
+  read_only: true
+  automatic_reconciliation: false
+qualification:
+  zo005_focused_tests: 6/6 PASS
+  zo010_regression: 6/6 PASS
+  emm_transaction_regression: 6/6 PASS
+  cr23_provenance: 5/5 PASS
+  lifecycle_regression: 10/10 PASS
+live_reconciliation:
+  transaction_id: tx-cr23-zo005-emm-rebind-001
+  pre_classification: BOUND_DRIFTED
+  pre_reconciliation_required: true
+  first_application: PASS
+  exact_replay: ALREADY_RECONCILED
+  post_classification: BOUND_CLEAN
+  post_reconciliation_required: false
+  pre_manifest_sha256: edae64b3d742fa00061535383e9d811907c8d5fcbb93b1cb654875ef377e1cb6
+  post_manifest_sha256: 1c3ad548a37a5a7f852e76b243ced184e459052c8671f4633b14c594759c890d
+  transaction_record: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo005-emm-rebind-001.json
+live_projection:
+- result: PASS
+  projection: ZEUS_EMM_RECONCILIATION_AWARENESS
+  source_path: scripts/lib/eos/convergence_roadmap.py
+  classification: BOUND_CLEAN
+  bound: true
+  source_exists: true
+  expected_sha256: 3a22d9465faf147cf70dbed6a23926650656b080c2356cec35f82881d994fc4e
+  actual_sha256: 3a22d9465faf147cf70dbed6a23926650656b080c2356cec35f82881d994fc4e
+  drifted: false
+  rebind_eligible: false
+  reconciliation_required: false
+  recommended_action: NONE_REQUIRED
+  canonical_reconciliation_primitive: apply_emm_rebind_transaction
+  automatic_reconciliation: false
+  read_only: true
+- result: PASS
+  projection: ZEUS_EMM_RECONCILIATION_AWARENESS
+  source_path: scripts/tests/test-convergence-roadmap.py
+  classification: UNBOUND_BY_POLICY
+  bound: false
+  source_exists: true
+  expected_sha256: null
+  actual_sha256: fa638a00f0d614d454393cccf92b5aac26f8948e876378a74e9ec4434a79f709
+  drifted: false
+  rebind_eligible: false
+  reconciliation_required: false
+  recommended_action: NONE_UNBOUND_BY_POLICY
+  canonical_reconciliation_primitive: apply_emm_rebind_transaction
+  automatic_reconciliation: false
+  read_only: true
+- result: PASS
+  projection: ZEUS_EMM_RECONCILIATION_AWARENESS
+  source_path: ZO005-NONEXISTENT-LIVE-PATH.txt
+  classification: UNBOUND_BY_POLICY
+  bound: false
+  source_exists: false
+  expected_sha256: null
+  actual_sha256: null
+  drifted: false
+  rebind_eligible: false
+  reconciliation_required: false
+  recommended_action: NONE_UNBOUND_BY_POLICY
+  canonical_reconciliation_primitive: apply_emm_rebind_transaction
+  automatic_reconciliation: false
+  read_only: true
+boundary:
+  cr23_result_written: false
+  parent_c02_advanced: false
+  cr24_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

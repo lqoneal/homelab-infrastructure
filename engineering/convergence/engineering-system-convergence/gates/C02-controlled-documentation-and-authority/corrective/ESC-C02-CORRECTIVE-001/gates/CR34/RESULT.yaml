@@ -1,0 +1,11 @@
+schema_version: 1
+gate_id: CR34
+status: COMPLETE
+result: PASS
+evidence:
+- evidence/EXECUTION-QUALIFICATION.yaml
+- evidence/ACCEPTANCE-MATRIX.yaml
+- evidence/CR35-ACTION-QUALIFICATION.yaml
+- evidence/PRE-CLOSEOUT-DIGESTS.yaml
+- evidence/CLOSEOUT-QUALIFICATION.yaml
+next_item: CR35

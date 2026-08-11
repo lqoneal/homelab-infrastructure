@@ -1,0 +1,22 @@
+schema_version: 1
+gate_id: CR16M2M1
+result: PASS
+checks:
+  canonical_live_result: PASS
+  canonical_live_executable: PASS
+  canonical_live_roadmap_version: PASS
+  canonical_live_blockers_empty: PASS
+  deterministic_live_replay: PASS
+  default_failure_is_persisted_comparison_only: PASS
+  persisted_semantic_result_remains_pass: PASS
+  persisted_executable_remains_true: PASS
+  stale_dimension_is_roadmap_bound_identity: PASS
+  corrected_cr16m2_target: PASS
+  persisted_evaluation_not_mutated: PASS
+  persisted_qualification_not_mutated: PASS
+  cr16m2_not_completed: PASS
+  cr16_not_completed: PASS
+  cr17_not_executed: PASS
+  c02_not_completed: PASS
+  c03_not_executed: PASS
+next_authorized_item: CR16M2

@@ -1,0 +1,37 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR15
+result: COMPLETE
+
+objective: Implement the qualified generic roadmap lifecycle model.
+
+outputs:
+  lifecycle_model:
+    path: scripts/lib/eos/roadmap_lifecycle.py
+    sha256: b20dd10881e203103eee24455bb3452ac369927fbb9d5e47c15d66cb886894d5
+
+  lifecycle_tests:
+    path: scripts/tests/test-roadmap-lifecycle.py
+    sha256: 537dc6c677bc91bd6a77e7b82035da01619f8f4ffbb0de324801a7651ae333b3
+
+evidence:
+  implementation:
+    path: gates/CR15/evidence/LIFECYCLE-MODEL-IMPLEMENTATION.yaml
+    sha256: 3cddc2950d78e347fe33cc5d5f1bb35f0aee99be92867d3de442ec2cd06546b4
+
+  validation:
+    path: gates/CR15/evidence/VALIDATION.yaml
+    sha256: 0c29514f60bce200268094267d199dec51ff0cb1dd4a2418c5913c7883556017
+
+  summary:
+    path: gates/CR15/SUMMARY.md
+    sha256: c314320900162ae11189647c5103819ebf319890470c246d95733401f3bba09d
+
+acceptance:
+  result: PASS
+  lifecycle_model_implemented: true
+  controller_integrated: false
+  cli_integrated: false
+  next_item_executed: false
+
+next_authorized_item: CR16

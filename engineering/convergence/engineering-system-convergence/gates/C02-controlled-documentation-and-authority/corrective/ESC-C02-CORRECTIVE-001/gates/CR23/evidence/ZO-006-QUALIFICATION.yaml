@@ -1,0 +1,60 @@
+schema_version: 1
+record_id: CR23-ZO006-QUALIFICATION-001
+gate_id: CR23
+opportunity_id: ZO-006
+recorded_at: '2026-08-10T15:54:40Z'
+result: PASS
+implementation:
+  primitive: scripts.lib.eos.convergence_roadmap.project_executable_roadmap_maturity
+  successor_authority_dependency: ZO-009
+  classifications:
+  - CURRENT_EXECUTABLE
+  - NOT_CURRENT
+  - COMPLETE
+  - BLOCKED
+  - TERMINAL_CURRENT
+  lifecycle_execution_ownership: false
+  successor_execution_ownership: false
+  read_only: true
+qualification:
+  zo006_focused_tests: 7/7 PASS
+  prior_zeus_regression: 25/25 PASS
+  emm_transaction_regression: 6/6 PASS
+  cr23_provenance: 5/5 PASS
+  lifecycle_regression: 10/10 PASS
+  pre_rebind_live_projection: FAIL_CLOSED_EXPECTED_EMM_DRIFT
+  post_rebind_live_projection: PASS
+live_reconciliation:
+  transaction_id: tx-cr23-zo006-emm-rebind-001
+  first_application: PASS
+  exact_replay: ALREADY_RECONCILED
+  pre_manifest_sha256: 4706f42c4bd779dfe50b2dc1b4839a7a838c48128f047b7d1ec95a0960719cf6
+  post_manifest_sha256: 82fa5a9dfdafdc2a40db82987a2bc6ee517a08051843d8ff220ce790dbc71286
+  transaction_record: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo006-emm-rebind-001.json
+live_projection:
+  result: PASS
+  projection: ZEUS_EXECUTABLE_ROADMAP_MATURITY
+  gate_id: C02
+  current_gate: C02
+  is_current: true
+  is_completed: false
+  is_blocked: false
+  terminal: false
+  classification: CURRENT_EXECUTABLE
+  executable: true
+  successor_gate: C03
+  next_authorized_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
+  recommended_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
+  authority_surface: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/GATE.yaml
+  authority_kind: GATE_DEFINITION
+  action_surface: resume_instructions.next_authorized_action
+  successor_executed: false
+  read_only: true
+boundary:
+  successor_executed: false
+  cr23_result_written: false
+  parent_c02_advanced: false
+  cr24_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

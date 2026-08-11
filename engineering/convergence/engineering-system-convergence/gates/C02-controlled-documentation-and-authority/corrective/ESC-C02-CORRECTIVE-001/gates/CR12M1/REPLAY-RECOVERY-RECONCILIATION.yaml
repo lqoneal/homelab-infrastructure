@@ -1,0 +1,61 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+maturity_gate: CR12M1
+finding_id: C02-F-028
+historical_gate: CR12
+status: RECONCILED
+
+purpose: >
+  Establish the authoritative post-historical reconciliation for CR12 replay
+  and recovery semantics without rewriting completed CR12 artifacts.
+
+historical_contract:
+  required_output: REPLAY-RECOVERY-SPEC.yaml
+
+historical_actual:
+  path: gates/CR12/INTERRUPTION-REPLAY-SPEC.yaml
+  sha256: 849413bb66e3eba46e307cabc5106d5e31f0dfd4bf44959898c35dca768b7c10
+
+historical_result:
+  path: gates/CR12/RESULT.yaml
+  sha256: 803cafaddafa9835d8cb9f13ebbe7b5dc3ba00936e0e556befa794b45d24f652
+
+finding:
+  type: OUTPUT_NAME_DIVERGENCE
+  semantics_diverged: false
+  filename_diverged: true
+
+semantic_disposition:
+  result: PASS
+  conclusion: >
+    The historical INTERRUPTION-REPLAY-SPEC.yaml satisfies the frozen CR12
+    semantic acceptance requirements for deterministic exact replay,
+    fail-closed conflicting replay, partial-state detection and preservation
+    of explicit operator authority.
+
+historical_preservation:
+  rename_cr12_artifact: false
+  rewrite_cr12_result: false
+  modify_cr12_summary: false
+  modify_cr12_gate: false
+
+canonical_reconciled_input:
+  owner: CR12M1
+  locator: gates/CR12M1/REPLAY-RECOVERY-RECONCILIATION.yaml
+  semantic_source: gates/CR12/INTERRUPTION-REPLAY-SPEC.yaml
+
+consumer_rule:
+  cr13:
+    primary_reconciliation_input: gates/CR12M1/REPLAY-RECOVERY-RECONCILIATION.yaml
+    historical_semantic_source: gates/CR12/INTERRUPTION-REPLAY-SPEC.yaml
+    historical_required_name_must_not_be_assumed: true
+
+authority_rule: >
+  Consumers after CR12M1 must not claim that CR12 produced
+  REPLAY-RECOVERY-SPEC.yaml. They must consume the maturity reconciliation
+  locator while preserving the actual historical artifact identity.
+
+resolution:
+  c02_f028: RESOLVED_BY_MATURITY_RECONCILIATION
+  historical_gate_modified: false
+  active_cr13_definition_modified: false

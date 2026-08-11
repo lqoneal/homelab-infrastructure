@@ -1,0 +1,65 @@
+schema_version: 1
+roadmap_id: ESC-C02-CORRECTIVE-001
+gate_id: CR21
+contract_role: ADDITIVE_CURRENT_GATE_EXECUTION_SUPPLEMENT
+frozen_gate_sha256: 04fd995bc7a3a25fd85df70085a5b5946bb2750292b6f5d997cfd026408ab16d
+established_at: '2026-08-10T13:12:39Z'
+reason: CR21 is already current and its GATE.yaml is immutable. This additive supplement removes manual-execution
+  ambiguity without rewriting the current gate contract.
+preflight:
+- Read ESC-ROADMAP-001.md, the parent roadmap/state, corrective ROADMAP.yaml, corrective STATE.yaml, this
+  gate contract, and every named authoritative input.
+- Verify repository root, branch, HEAD, origin/main, and worktree before any mutation.
+- Verify corrective STATE.yaml identifies this gate as current at execution time.
+- Verify every dependency RESULT.yaml exists and records the required passing/completed result.
+- Verify the protected-artifact manifest and frozen C00/C01/C02 inputs before mutation.
+- Capture pre-execution digests for every protected or authority-bearing source that the gate could affect.
+- Verify the exact allowed_mutations and prohibited_mutations surfaces before executing any command.
+- Verify no successor item has been executed and no successor execution is included in this transaction.
+- Fail closed before mutation if roadmap identity, version, gate identity, dependency state, digest, authority,
+  or execution scope is ambiguous.
+ordered_manual_procedure:
+- Verify CR20 and read CR11 ATOMIC-ADVANCEMENT-SPEC.yaml, CR12 replay/interruption design, and the current
+  partial advancement implementation.
+- Complete one canonical accepted-gate advancement primitive; do not create a second lifecycle authority.
+- Require exact roadmap ID/version, current gate, gate-definition digest, result digest, acceptance-receipt
+  ID/digest, transaction ID, and pre-state digest.
+- Recover ACCEPTED only from the validated durable acceptance receipt; result existence alone must not
+  authorize advancement.
+- Derive the successor from the authoritative gate next_gate/terminal contract; do not hard-code C03 or
+  infer an alternative successor from conversational context.
+- Validate successor identity, dependencies, blocked/completed classification, evidence identity, receipt
+  identity, and pre-state digest before durable mutation.
+- Construct the entire post-transition authoritative state before writing any authoritative state surface.
+- Persist transaction provenance sufficient for exact replay, interrupted-transaction recovery, pre/post-state
+  digest verification, and conflict detection.
+- Use atomic replacement for durable transaction and state files.
+- Exact committed replay must return already-applied/idempotent behavior; conflicting replay must fail
+  closed.
+- Qualify only against isolated fixtures. Do not invoke advancement against real C02 during CR21.
+- Test success, missing acceptance, wrong receipt, wrong result/gate digest, pre-state mismatch, missing
+  successor, conflicting successor, interrupted write, committed replay, conflicting replay, and terminal
+  semantics.
+- Do not execute CR22.
+evidence_requirements:
+- Record every executed command, return code, and material output in the gate command evidence.
+- Record pre-state and post-state repository status and protected-artifact digests.
+- Record every intentionally created or modified file and map it to an allowed mutation.
+- Record every acceptance criterion individually as PASS or FAIL.
+- Record proof that the successor item was not executed.
+- Record proof that no implicit EOS synchronization or refresh occurred unless the gate explicitly authorizes
+  a separate synchronization operation.
+- Record interruption/recovery facts when any command or mutation does not complete normally.
+closeout:
+- Do not write a passing RESULT.yaml until every gate-specific and common acceptance criterion passes.
+- Create or update SUMMARY.md before advancing corrective state when required by the gate contract.
+- Append the human-readable completion entry to corrective HISTORY.md before state advancement when required.
+- Advance corrective STATE.yaml exactly one item only after the gate RESULT passes.
+- Stop immediately after that single state advancement; do not execute the successor item.
+- On failure, preserve this gate as current, record the blocker and evidence, and do not infer completion.
+hard_boundaries:
+- CR21/GATE.yaml remains byte-identical.
+- Real parent C02 is not advanced during CR21 implementation.
+- CR22 is not executed.
+- No implicit EOS synchronization or refresh.
+- No commit or push.

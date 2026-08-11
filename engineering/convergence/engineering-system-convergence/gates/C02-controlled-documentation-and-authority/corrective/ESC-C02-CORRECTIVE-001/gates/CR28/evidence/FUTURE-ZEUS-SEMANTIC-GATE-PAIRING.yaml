@@ -1,0 +1,60 @@
+schema_version: 1
+record_id: CR28-FUTURE-ZEUS-SEMANTIC-GATE-PAIRING-001
+gate_id: CR28
+recorded_at: '2026-08-11T00:30:21Z'
+result: PASS
+supersedes: gates/CR28/evidence/FUTURE-ZEUS-GATE-PAIRING.yaml
+reason: Prior automatic keyword affinity paired deferred implementation capabilities to qualification-only
+  corrective gates. Semantic implementation authority requires dedicated planned Zeus implementation gates.
+planned_implementation_gates:
+- ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- ZG-RESULT-FRESHNESS-PROVENANCE-001
+assignments:
+- opportunity_id: ZO-018
+  title: Zeus Missing-Result Lifecycle Diagnostic Projection
+  previous_owner_gate: CR33
+  previous_target_gate: CR33
+  implementation_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  result: PAIRED_PLANNED_ZEUS_IMPLEMENTATION_GATE
+- opportunity_id: ZO-019
+  title: Zeus Targeted Lifecycle Diagnostic Reduction
+  previous_owner_gate: CR51
+  previous_target_gate: CR51
+  implementation_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  result: PAIRED_PLANNED_ZEUS_IMPLEMENTATION_GATE
+- opportunity_id: ZO-020
+  title: Zeus Wrong-Gate Result Diagnostic Projection
+  previous_owner_gate: CR29
+  previous_target_gate: CR29
+  implementation_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  result: PAIRED_PLANNED_ZEUS_IMPLEMENTATION_GATE
+- opportunity_id: ZO-021
+  title: Zeus Result Authority Identity Projection
+  previous_owner_gate: CR29
+  previous_target_gate: CR29
+  implementation_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  result: PAIRED_PLANNED_ZEUS_IMPLEMENTATION_GATE
+- opportunity_id: ZO-023
+  title: Zeus Stale Result Diagnostic Projection
+  previous_owner_gate: CR29
+  previous_target_gate: CR29
+  implementation_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  result: PAIRED_PLANNED_ZEUS_IMPLEMENTATION_GATE
+- opportunity_id: ZO-024
+  title: Zeus Result Freshness and Provenance Projection
+  previous_owner_gate: CR29
+  previous_target_gate: CR29
+  implementation_gate: ZG-RESULT-FRESHNESS-PROVENANCE-001
+  result: PAIRED_PLANNED_ZEUS_IMPLEMENTATION_GATE
+qualification_alignment:
+  CR39: Future regression-alignment point only; not implementation authority.
+  CR42: Current corrective prepublication qualification remains scoped to the corrective implementation
+    and does not implicitly admit deferred Zeus work.
+boundary:
+  cr28_closeout_qualification_invalidated: false
+  cr28_result_written: false
+  state_advanced: false
+  parent_c02_advanced: false
+  cr29_executed: false
+  successor_executed: false
+  current_corrective_scope_expanded: false

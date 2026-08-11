@@ -1,0 +1,16 @@
+schema_version: 1
+record_id: CR28-CR29-ACTION-QUALIFICATION-001
+gate_id: CR28
+prospective_gate: CR29
+opportunity_id: ZO-025
+recorded_at: '2026-08-11T00:22:56Z'
+result: PASS
+qualification:
+  action_surface: resume_instructions.next_authorized_action
+  action: EXECUTE_CR29_QUALIFY_INVALID_RESULT
+  action_count: 1
+  human_instructions_preserved: true
+  current_item: CR28
+  state_advanced: false
+  cr29_executed: false
+errors: []

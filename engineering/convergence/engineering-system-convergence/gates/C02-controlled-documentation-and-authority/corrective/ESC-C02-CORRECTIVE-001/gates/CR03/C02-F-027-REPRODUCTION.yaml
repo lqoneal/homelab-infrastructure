@@ -1,0 +1,51 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR03
+finding_id: C02-F-027
+captured_at: '2026-08-10T04:03:36Z'
+result: REPRODUCED
+preconditions:
+  current_gate: C02
+  completed_gates:
+  - C00
+  - C01
+  c02_result_exists: true
+  c02_result: COMPLETE_WITH_FINDINGS
+observations:
+  roadmap_validate:
+    exit_code: 1
+    reproduced: true
+  roadmap_status:
+    exit_code: 1
+    reproduced: true
+  roadmap_evaluate:
+    exit_code: 1
+    reproduced: true
+  engctl_resume:
+    exit_code: 1
+    reproduced: true
+  failure_message: C02 has a result but is not completed
+controller:
+  path: scripts/lib/eos/convergence_roadmap.py
+  sha256: adc340c4b3f30aeeb724a973c033bfcf6838e509fcf68c6fb708a2bcfd76395c
+  trace_result: PASS
+  trace_path: gates/CR03/evidence/CONTROLLER-TRACE.yaml
+  failure_context: gates/CR03/evidence/CONTROLLER-FAILURE-CONTEXT.txt
+defect_statement: The current roadmap controller rejects the legitimate condition where C02 remains the current
+  gate while its required execution result has already been recorded for operator review. The controller therefore
+  cannot represent the post-execution/pre-acceptance state required by the frozen C02 contract.
+expected_future_semantics:
+  current_gate: C02
+  result: COMPLETE_WITH_FINDINGS
+  review_state: AWAITING_OPERATOR_REVIEW
+  operator_acceptance: NOT_RECORDED
+  roadmap_validation: PASS
+  roadmap_status: PASS
+  roadmap_evaluation: PASS
+  read_only_resume: PASS
+mutation:
+  controller_changed: false
+  parent_c02_changed: false
+  c03_executed: false
+  eos_synchronized: false
+  eos_refreshed: false

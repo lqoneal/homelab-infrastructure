@@ -1,0 +1,56 @@
+schema_version: 1
+record_id: CR23-ZO009-QUALIFICATION-001
+gate_id: CR23
+opportunity_id: ZO-009
+recorded_at: '2026-08-10T15:28:49Z'
+result: PASS
+implementation:
+  primitive: scripts.lib.eos.convergence_roadmap.project_successor_action_contract
+  authority_kind: GATE_DEFINITION
+  authority_surface: authoritative resolved GATE.yaml
+  action_surface: resume_instructions.next_authorized_action
+  structural_failure_owner: CANONICAL_RESOLVER
+  terminal_semantic: NO_ROADMAP_SUCCESSOR
+  successor_execution_ownership: false
+  read_only: true
+qualification:
+  zo009_focused_tests: 7/7 PASS
+  prior_zeus_regression: 18/18 PASS
+  emm_transaction_regression: 6/6 PASS
+  cr23_provenance: 5/5 PASS
+  lifecycle_regression: 10/10 PASS
+  pre_rebind_live_projection: FAIL_CLOSED_EXPECTED_EMM_DRIFT
+  post_rebind_live_projection: PASS
+live_reconciliation:
+  transaction_id: tx-cr23-zo009-emm-rebind-001
+  first_application: PASS
+  exact_replay: ALREADY_RECONCILED
+  pre_manifest_sha256: f2e4cdf07e11a6cbb86040dec2a44ac7950a739627a3fecde827b1fcf1e3b644
+  post_manifest_sha256: 4706f42c4bd779dfe50b2dc1b4839a7a838c48128f047b7d1ec95a0960719cf6
+  transaction_record: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo009-emm-rebind-001.json
+live_projection:
+  result: PASS
+  projection: ZEUS_SUCCESSOR_ACTION_CONTRACT
+  authority_surface: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/GATE.yaml
+  authority_kind: GATE_DEFINITION
+  action_surface: resume_instructions.next_authorized_action
+  gate_id: C02
+  terminal: false
+  successor_gate: C03
+  next_authorized_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
+  terminal_resume_action: null
+  continuation_authority: null
+  continuation_action: null
+  action_count: 1
+  classification: EXECUTABLE_SUCCESSOR_ACTION_RESOLVED
+  executable_successor: true
+  successor_executed: false
+  read_only: true
+boundary:
+  successor_executed: false
+  cr23_result_written: false
+  parent_c02_advanced: false
+  cr24_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

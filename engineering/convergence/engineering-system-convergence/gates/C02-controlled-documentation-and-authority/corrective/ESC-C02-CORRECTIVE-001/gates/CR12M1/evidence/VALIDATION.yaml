@@ -1,0 +1,31 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR12M1
+finding_id: C02-F-028
+validated_at: '2026-08-10T08:57:38Z'
+result: PASS
+
+checks:
+  historical_divergence_reproduced: PASS
+  cr12_immutable: PASS
+  cr13_immutable: PASS
+  cr13_unexecuted: PASS
+  cr12_semantic_acceptance: PASS
+  deterministic_exact_replay: PASS
+  conflicting_replay_fail_closed: PASS
+  partial_state_detection: PASS
+  explicit_operator_authority_preserved: PASS
+  maturity_reconciliation_created: PASS
+  false_historical_filename_claim_prevented: PASS
+  deterministic_cr13_input: PASS
+
+artifacts:
+  reconciliation:
+    path: gates/CR12M1/REPLAY-RECOVERY-RECONCILIATION.yaml
+    sha256: 054af8949dd5a330ed3f55d9af1148c08559960d4e03b2de1814f13823d23ccb
+
+  traceability:
+    path: gates/CR12M1/evidence/CR12-ACCEPTANCE-TRACEABILITY.yaml
+    sha256: 0a9a3bfd72939ee8b953e42cd6458efef48f8013c4f9ec81734810f5d1d435d6
+
+next_authorized_item: CR13

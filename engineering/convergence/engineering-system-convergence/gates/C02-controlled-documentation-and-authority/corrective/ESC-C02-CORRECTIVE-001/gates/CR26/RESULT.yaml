@@ -1,0 +1,12 @@
+schema_version: 1
+gate_id: CR26
+status: COMPLETE
+result: PASS
+evidence:
+- evidence/PRE-EXECUTION-DIGESTS.yaml
+- evidence/EXECUTION-QUALIFICATION.yaml
+- evidence/ACCEPTANCE-MATRIX.yaml
+- evidence/CR27-ACTION-QUALIFICATION.yaml
+- evidence/PRE-CLOSEOUT-DIGESTS.yaml
+- evidence/CLOSEOUT-QUALIFICATION.yaml
+next_item: CR27

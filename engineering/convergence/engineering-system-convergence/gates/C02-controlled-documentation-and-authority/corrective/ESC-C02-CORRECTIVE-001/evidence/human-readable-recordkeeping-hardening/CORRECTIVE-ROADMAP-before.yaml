@@ -1,0 +1,130 @@
+schema_version: 1
+roadmap_id: ESC-C02-CORRECTIVE-001
+title: C02 Result Publication and Operator Review Lifecycle Corrective
+roadmap_type: MATURITY_CORRECTIVE
+parent_roadmap: ESC-ROADMAP-001
+parent_gate: C02
+trigger_finding: C02-F-027
+purpose: 'Resolve the roadmap-controller lifecycle defect that prevents a legitimate completed assessment result
+  from existing while the current gate awaits explicit operator review. Establish a generic result-review-acceptance-
+  completion-next-gate lifecycle without modifying the frozen C02 contract or repairing any substantive C02 finding.
+
+  '
+execution_model: MANUAL_ONE_ITEM_AT_A_TIME
+starting_baseline:
+  repository_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+  checkpoint: /data/engineering/recovery/c02-operator-review-20260810T032154Z
+  c02_result: COMPLETE_WITH_FINDINGS
+  operator_assessment_disposition: ACCEPTED
+  c02_state_advanced: false
+hard_boundaries:
+- C00 GATE.yaml is immutable.
+- C01 GATE.yaml is immutable.
+- C02 GATE.yaml is immutable.
+- Existing C02 assessment evidence is immutable input.
+- Existing C02 RESULT.yaml is immutable input.
+- C02-F-001 through C02-F-026 are not corrected here.
+- C03 may not execute until this corrective completes.
+- engctl resume must remain read-only.
+- EOS synchronization or refresh must never be an implicit lifecycle side effect.
+- RESULT existence must never imply operator acceptance.
+- Operator acceptance must be explicit and persisted.
+- Gate completion and next-gate activation must be deterministic and atomic.
+- No commit or push is permitted except at the specifically authorized publication items.
+manual_execution_rule: 'Execute exactly one CR item at a time. After each item, inspect evidence, verify acceptance
+  criteria, record RESULT.yaml, advance corrective STATE.yaml, and stop before the next item.
+
+  '
+phases:
+- phase_id: A
+  title: Preserve and Characterize
+  items:
+  - CR00
+  - CR01
+  - CR02
+  - CR03
+  - CR04
+  - CR05
+- phase_id: B
+  title: Lifecycle Design
+  items:
+  - CR06
+  - CR07
+  - CR08
+  - CR09
+  - CR10
+  - CR11
+  - CR12
+  - CR13
+  - CR14
+- phase_id: C
+  title: Incremental Implementation
+  items:
+  - CR15
+  - CR16
+  - CR17
+  - CR18
+  - CR19
+  - CR20
+  - CR21
+  - CR22
+  - CR23
+- phase_id: D
+  title: Adversarial Qualification
+  items:
+  - CR24
+  - CR25
+  - CR26
+  - CR27
+  - CR28
+  - CR29
+  - CR30
+  - CR31
+  - CR32
+  - CR33
+  - CR34
+  - CR35
+  - CR36
+  - CR37
+  - CR38
+  - CR39
+- phase_id: E
+  title: Real C02 Projection
+  items:
+  - CR40
+  - CR41
+  - CR42
+- phase_id: F
+  title: Corrective Publication
+  items:
+  - CR43
+  - CR44
+  - CR45
+  - CR46
+- phase_id: G
+  title: C02 Acceptance and Advancement
+  items:
+  - CR47
+  - CR48
+  - CR49
+  - CR50
+- phase_id: H
+  title: Closeout
+  items:
+  - CR51
+  - CR52
+  - CR53
+  - CR54
+  - CR55
+terminal_condition:
+  corrective_state: COMPLETE
+  c02_state: COMPLETE
+  c03_state: CURRENT
+  trigger_finding: RESOLVED
+  cold_resume: PASS
+current_executable_horizon:
+  first_item: CR00
+  last_item: CR23
+  result: EXECUTABLE
+  deferred_items: CR24-CR55
+  deferred_rule: CR24-CR55 remain planning placeholders and must be hardened before entering the executable horizon.

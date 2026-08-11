@@ -1,0 +1,19 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR16M2
+recorded_at: '2026-08-10T09:52:46Z'
+result: PASS
+classification: AUTHORIZED_CR16M2_STAGING_PROJECTION_DRIFT
+drifted_sources:
+- path: engineering/convergence/engineering-system-convergence/STATE.yaml
+  manifest_sha256: 480168819c2bd30771a29ae32cb6b19f15ae11ca9c45ac7844492358a298770b
+  actual_sha256: 23924fa1ba56c66a6fdc5213ebaaeddf7f02823bc07ccf20d369a380cf27f028
+- path: docs/project/PROJ-0001-PROJECT_STATE.md
+  manifest_sha256: b2c87879b802175652d18bf96b08180d25bd99677376dfa595002286098cc99c
+  actual_sha256: e8fca924b059722e7f0f2c9b4a86e5264a7ee54c8e1921c5fa87b629ba682f3c
+authority:
+  parent_state: CR16M2 staging projected the temporary maturity next-authorized action
+  project_state: CR16M2 staging versioned and projected the same temporary maturity action
+rebind_authorized: true
+persisted_qualification_changed: false
+persisted_evaluation_changed: false

@@ -1,0 +1,23 @@
+schema_version: 1
+record_id: CR30-CLOSEOUT-QUALIFICATION-001
+gate_id: CR30
+recorded_at: '2026-08-11T00:53:45Z'
+result: PASS
+prospective_transition:
+  from: CR30
+  to: CR31
+  parent_gate: C02
+  next_authorized_action: EXECUTE_CR31_QUALIFY_MISSING_ACCEPTANCE_PREREQUISITES
+qualification:
+  cr30_result: COMPLETE_PASS
+  project_state_reconciliation: QUALIFIED
+  atomic_multi_source_emm_rebind: QUALIFIED
+  successor_execution: false
+boundary:
+  live_cr30_result_written: false
+  live_state_advanced: false
+  live_parent_c02_advanced: false
+  live_cr31_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

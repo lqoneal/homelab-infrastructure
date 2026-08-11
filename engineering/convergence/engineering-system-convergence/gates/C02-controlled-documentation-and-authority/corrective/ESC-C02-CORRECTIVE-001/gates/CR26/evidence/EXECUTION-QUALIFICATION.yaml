@@ -1,0 +1,26 @@
+schema_version: 1
+record_id: CR26-EXECUTION-QUALIFICATION-001
+gate_id: CR26
+recorded_at: '2026-08-11T00:01:06Z'
+result: PASS
+objective: Verify review/acceptance fails closed without a result.
+qualified_semantics:
+  result_present: false
+  missing_result_fail_closed: true
+  literal_missing_result_token_required: false
+  acceptance_authorized: false
+  completion_authorized: false
+  acceptance_receipt_created: false
+  state_advanced: false
+  parent_gate_advanced: false
+  successor_executed: false
+  cr27_executed: false
+boundary:
+  live_cr26_result_written: false
+  live_state_advanced: false
+  live_parent_c02_advanced: false
+  live_cr27_executed: false
+  live_successor_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

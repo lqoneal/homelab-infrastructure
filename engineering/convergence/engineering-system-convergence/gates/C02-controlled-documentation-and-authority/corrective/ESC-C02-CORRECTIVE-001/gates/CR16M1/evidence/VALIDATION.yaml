@@ -1,0 +1,36 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR16M1
+finding_id: C02-F-029
+validated_at: '2026-08-10T09:34:38Z'
+result: PASS
+
+checks:
+  projection_drift_reproduced: PASS
+  parent_state_reconciled: PASS
+  project_state_reconciled: PASS
+  project_state_versioned_10_6: PASS
+  controlled_document_provenance: PASS
+  c02_f030_recorded: PASS
+  roadmap_provenance: PASS
+  cr16_controller_provenance: PASS
+  emm_source_integrity: PASS
+  structural_validity: PASS
+  roadmap_consistency: PASS
+  expected_non_executable_state: PASS
+  validation_interpretation: PASS
+  validation_read_only: PASS
+  validator_not_weakened: PASS
+  c02_remains_current: PASS
+  c02_not_completed: PASS
+  cr16_not_completed: PASS
+  cr17_not_executed: PASS
+  c03_not_executed: PASS
+
+roadmap_validation:
+  structural_validity: PASS
+  execution_sufficiency: NOT_EXECUTABLE
+  executable: false
+  expected_at_operator_review_boundary: true
+
+next_authorized_item: CR16

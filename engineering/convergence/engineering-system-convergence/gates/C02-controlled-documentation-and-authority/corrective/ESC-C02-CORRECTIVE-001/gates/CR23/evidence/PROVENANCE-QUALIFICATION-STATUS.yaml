@@ -1,0 +1,18 @@
+schema_version: 1
+gate_id: CR23
+phase: LIFECYCLE_PROVENANCE_QUALIFICATION
+required_bindings:
+- roadmap identity and version
+- gate identity
+- result identity and digest
+- operator authority
+- transaction identity
+- lifecycle state
+- acceptance or rejection receipt
+- pre-state identity
+- post-state identity
+- successor or terminal disposition
+status: PENDING_OPERATOR_REVIEW_OF_TEST_RESULTS
+production_source_mutated: false
+real_parent_c02_advanced: false
+cr24_executed: false

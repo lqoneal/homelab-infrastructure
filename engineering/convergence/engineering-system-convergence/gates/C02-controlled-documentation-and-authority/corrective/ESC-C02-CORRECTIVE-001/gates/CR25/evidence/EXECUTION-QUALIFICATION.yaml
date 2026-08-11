@@ -1,0 +1,26 @@
+schema_version: 1
+record_id: CR25-EXECUTION-QUALIFICATION-001
+gate_id: CR25
+recorded_at: '2026-08-10T18:51:13Z'
+result: PASS
+objective: Verify result existence does not complete or accept gate.
+qualified_semantics:
+  result_class: VALID_FINAL
+  lifecycle_state: AWAITING_OPERATOR_REVIEW
+  result_existence_implies_acceptance: false
+  result_existence_implies_completion: false
+  acceptance_receipt_present: false
+  state_advanced: false
+  successor_executed: false
+  cr26_executed: false
+  canonical_validation: PASS
+  repository_discovery: PASS
+boundary:
+  live_cr25_result_written: false
+  live_state_advanced: false
+  parent_c02_advanced: false
+  cr26_executed: false
+  successor_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

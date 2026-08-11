@@ -1,0 +1,412 @@
+schema_version: 1
+controller: scripts/lib/eos/convergence_roadmap.py
+functions:
+- qualified_name: _construct_unique_mapping
+  class: null
+  name: _construct_unique_mapping
+  line_start: 54
+  line_end: 64
+  calls:
+  - ConstructorError
+  - loader.construct_object
+  relevant_strings: []
+- qualified_name: _load_yaml
+  class: null
+  name: _load_yaml
+  line_start: 73
+  line_end: 82
+  calls:
+  - RoadmapError
+  - isinstance
+  - path.is_file
+  - path.read_text
+  - yaml.load
+  relevant_strings: []
+- qualified_name: _sha256
+  class: null
+  name: _sha256
+  line_start: 85
+  line_end: 93
+  calls:
+  - RoadmapError
+  - digest.hexdigest
+  - digest.update
+  - hashlib.sha256
+  - iter
+  - path.open
+  - stream.read
+  relevant_strings: []
+- qualified_name: _safe_repository_path
+  class: null
+  name: _safe_repository_path
+  line_start: 96
+  line_end: 102
+  calls:
+  - Path
+  - RoadmapError
+  - is_absolute
+  - isinstance
+  - resolve
+  relevant_strings: []
+- qualified_name: _schema_validate
+  class: null
+  name: _schema_validate
+  line_start: 105
+  line_end: 114
+  calls:
+  - RoadmapError
+  - _load_yaml
+  - join
+  - jsonschema.Draft202012Validator.check_schema
+  - jsonschema.validate
+  - str
+  relevant_strings: []
+- qualified_name: _reject_runtime_identifiers
+  class: null
+  name: _reject_runtime_identifiers
+  line_start: 117
+  line_end: 125
+  calls:
+  - RoadmapError
+  - _reject_runtime_identifiers
+  - enumerate
+  - isinstance
+  - lower
+  - str
+  - value.items
+  relevant_strings: []
+- qualified_name: _frontmatter
+  class: null
+  name: _frontmatter
+  line_start: 128
+  line_end: 143
+  calls:
+  - RoadmapError
+  - isinstance
+  - join
+  - lines.index
+  - path.read_text
+  - text.splitlines
+  - yaml.load
+  relevant_strings: []
+- qualified_name: ConvergenceRoadmap.__init__
+  class: ConvergenceRoadmap
+  name: __init__
+  line_start: 149
+  line_end: 160
+  calls:
+  - Path
+  - RoadmapError
+  - resolve
+  relevant_strings: []
+- &id001
+  qualified_name: ConvergenceRoadmap.validate
+  class: ConvergenceRoadmap
+  name: validate
+  line_start: 162
+  line_end: 362
+  calls:
+  - RoadmapError
+  - _load_yaml
+  - _raise
+  - _reject_runtime_identifiers
+  - _safe_repository_path
+  - _schema_validate
+  - _sha256
+  - all
+  - dict
+  - evidence.get
+  - evidence_path.exists
+  - evidence_path.is_file
+  - gate_orders.items
+  - gates.items
+  - is_file
+  - isinstance
+  - issubset
+  - item.get
+  - join
+  - len
+  - result_path.exists
+  - self._validate_evidence_manifest
+  - self._validate_manifest
+  - self._validate_project_state
+  - set
+  - sorted
+  - str
+  relevant_strings:
+  - ' definition and state status disagree'
+  - ' has a result but is not completed'
+  - ' has unsupported status'
+  - ' is completed without a terminal result'
+  - ' result'
+  - ' result location disagrees with roadmap index'
+  - COMPLETE
+  - CURRENT
+  - completed
+  - completed_gates
+  - current gate classification is inconsistent
+  - 'current gate does not resolve: '
+  - 'current gate has incomplete dependencies: '
+  - current_gate
+  - last_completed_gate
+  - last_completed_gate disagrees with completed_gates
+  - last_result
+  - last_result does not identify the last completed gate result
+  - next_authorized_action
+  - result
+  - result.
+  - result_location
+  - results
+  - resume_instructions
+  - schemas/result.schema.yaml
+  - state and current gate next authorized action disagree
+  - status
+- qualified_name: ConvergenceRoadmap.evaluate
+  class: ConvergenceRoadmap
+  name: evaluate
+  line_start: 364
+  line_end: 591
+  calls:
+  - _load_yaml
+  - _reject_runtime_identifiers
+  - _safe_repository_path
+  - _schema_validate
+  - all
+  - all_blockers.extend
+  - all_warnings.append
+  - all_warnings.extend
+  - any
+  - append
+  - artifact.get
+  - blockers.append
+  - criterion_dimensions.items
+  - dimension_results.keys
+  - field.replace
+  - gate.get
+  - gate_results.append
+  - gates.items
+  - get
+  - isinstance
+  - keys
+  - len
+  - next
+  - path.exists
+  - persisted.get
+  - persisted_path.is_file
+  - playbook.get
+  - reference.get
+  - result.get
+  - rule.get
+  - self.validate
+  - set
+  - shared.items
+  - shared_references.items
+  - str
+  - surface.get
+  - terminal.get
+  - vocabulary.get
+  relevant_strings:
+  - COMPLETE
+  - COMPLETE_WITH_FINDINGS
+  - Evaluate execution sufficiency without adding roadmap-specific methodology.
+  - Persisted evaluation does not match live execution-sufficiency result.
+  - artifact contracts are missing, duplicate, or incomplete
+  - artifact_contract_result
+  - authority_boundary_result
+  - classification_result
+  - cold_resume
+  - cold_resume_contract
+  - cold_resume_result
+  - completeness_key
+  - completeness_tests
+  - coverage rules are missing or incomplete
+  - coverage_result
+  - cross-checks or completeness tests are missing
+  - discovery_result
+  - evaluated_at
+  - evidence_result
+  - fail_closed_result
+  - gate_results
+  - overall_result
+  - persistence_result
+  - procedural_result
+  - result
+  - result contract does not resolve
+  - result rules are incomplete or ambiguous
+  - result_contract
+  - result_determinism
+  - result_determinism_result
+  - result_rules
+  - review_boundary_result
+  - state_transition_result
+  - structural_result
+- qualified_name: ConvergenceRoadmap._validate_project_state
+  class: ConvergenceRoadmap
+  name: _validate_project_state
+  line_start: 593
+  line_end: 617
+  calls:
+  - RoadmapError
+  - _frontmatter
+  - _safe_repository_path
+  - startswith
+  - str
+  - value.get
+  relevant_strings:
+  - Project State phase and convergence current gate disagree
+  - current_gate
+  - evaluation_result
+  - next_authorized_action
+  - result
+- qualified_name: ConvergenceRoadmap._validate_manifest
+  class: ConvergenceRoadmap
+  name: _validate_manifest
+  line_start: 619
+  line_end: 661
+  calls:
+  - RoadmapError
+  - _load_yaml
+  - _safe_repository_path
+  - _sha256
+  - by_path.items
+  - isinstance
+  - join
+  - len
+  - manifest.get
+  - path.is_file
+  - required.update
+  - set
+  - sorted
+  - str
+  relevant_strings:
+  - completed_gates
+  - result_location
+- qualified_name: ConvergenceRoadmap._validate_evidence_manifest
+  class: ConvergenceRoadmap
+  name: _validate_evidence_manifest
+  line_start: 663
+  line_end: 685
+  calls:
+  - Path
+  - RoadmapError
+  - _load_yaml
+  - _safe_repository_path
+  - _sha256
+  - evidence_file.is_file
+  - is_absolute
+  - isinstance
+  - resolve
+  - seen.add
+  - set
+  - value.get
+  relevant_strings: []
+- qualified_name: ConvergenceRoadmap.projection
+  class: ConvergenceRoadmap
+  name: projection
+  line_start: 687
+  line_end: 735
+  calls:
+  - _safe_repository_path
+  - next
+  - self.validate
+  - str
+  relevant_strings:
+  - completed_gates
+  - current gate definition
+  - current gate evidence
+  - current gate result
+  - current_authority
+  - current_gate
+  - current_gate_title
+  - current_role
+  - gate_result
+  - last result
+  - last_completed_gate
+  - last_result
+  - next_authorized_action
+  - result
+  - result_location
+- qualified_name: _raise
+  class: null
+  name: _raise
+  line_start: 738
+  line_end: 739
+  calls:
+  - RoadmapError
+  relevant_strings: []
+- qualified_name: _format_status
+  class: null
+  name: _format_status
+  line_start: 742
+  line_end: 774
+  calls:
+  - Path
+  - is_file
+  - join
+  - len
+  relevant_strings:
+  - 'Completed: '
+  - 'Current Gate: '
+  - 'Gate Result: '
+  - 'Last Completed Gate: '
+  - 'Last Result: '
+  - 'Next Authorized Action: '
+  - 'Result: PASS'
+  - completed_gates
+  - current_gate
+  - current_gate_title
+  - gate_result
+  - last_completed_gate
+  - last_result
+  - next_authorized_action
+- qualified_name: _parse_args
+  class: null
+  name: _parse_args
+  line_start: 777
+  line_end: 789
+  calls:
+  - argparse.ArgumentParser
+  - gate_parser.add_argument
+  - parser.add_argument
+  - parser.add_subparsers
+  - parser.parse_args
+  - str
+  - subparsers.add_parser
+  relevant_strings:
+  - evaluate
+  - results
+  - resume
+  - status
+  - validate
+- qualified_name: main
+  class: null
+  name: main
+  line_start: 792
+  line_end: 832
+  calls:
+  - ConvergenceRoadmap
+  - RoadmapError
+  - _format_status
+  - _parse_args
+  - args.gate_id.upper
+  - list
+  - print
+  - resolver.evaluate
+  - resolver.projection
+  - resolver.validate
+  - rstrip
+  - yaml.safe_dump
+  relevant_strings:
+  - ' roadmap, state, gates, results, evidence, Project State, and EMM bindings are consistent'
+  - No completed gate results.
+  - completed_gates
+  - evaluate
+  - overall_result
+  - result
+  - result_location
+  - results
+  - resume
+  - status
+  - validate
+c02_f027_failure_line: 330
+failure_owner: *id001

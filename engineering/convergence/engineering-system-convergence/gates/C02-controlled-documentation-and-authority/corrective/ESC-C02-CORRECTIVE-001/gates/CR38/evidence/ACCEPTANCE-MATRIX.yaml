@@ -1,0 +1,24 @@
+schema_version: 1
+record_id: CR38-ACCEPTANCE-MATRIX-001
+gate_id: CR38
+recorded_at: '2026-08-11T01:54:37Z'
+result: PASS
+acceptance_criteria:
+- criterion: ACCEPTANCE_01
+  result: PASS
+- criterion: ACCEPTANCE_02
+  result: PASS
+- criterion: ACCEPTANCE_03
+  result: PASS
+- criterion: ACCEPTANCE_04
+  result: PASS
+- criterion: ACCEPTANCE_05
+  result: PASS
+- criterion: ACCEPTANCE_06
+  result: PASS
+- criterion: ACCEPTANCE_07
+  result: PASS
+- criterion: ACCEPTANCE_08
+  result: PASS
+- criterion: ACCEPTANCE_09
+  result: PASS

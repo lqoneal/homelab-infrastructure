@@ -1,0 +1,19 @@
+{
+  "authorized_mutations": {
+    "docs/project/PROJ-0001-PROJECT_STATE.md": "52b9509ef8d296fd294cb7310dfd646f3f98de2ceba763696cf53461975b6879"
+  },
+  "post_manifest_sha256": "7766948c83b1c1c602d32f304bc171389024e9020ca7d2e705fd30b33ba16377",
+  "pre_manifest_sha256": "3100ad08ad1f2353e459a695f8e736e70ed856dda93712fa56fe929c62d94683",
+  "recorded_at": "2026-08-11T12:34:40Z",
+  "schema_version": 1,
+  "sources": [
+    {
+      "new_sha256": "c41ba20b73123c2f4003d0e1beee5b9b6d8cffe27edb5b9c35bd1fa26b9ad30f",
+      "old_sha256": "52b9509ef8d296fd294cb7310dfd646f3f98de2ceba763696cf53461975b6879",
+      "path": "docs/project/PROJ-0001-PROJECT_STATE.md"
+    }
+  ],
+  "status": "RECONCILIATION_COMPLETE",
+  "transaction_id": "CR43-PROJECT-STATE-CONTINUATION-REPAIR-20260811T123440Z",
+  "transaction_type": "EMM_REBIND"
+}

@@ -1,0 +1,20 @@
+schema_version: 1
+record_id: CR31-PRE-CLOSEOUT-DIGESTS-001
+gate_id: CR31
+recorded_at: '2026-08-11T00:59:26Z'
+result: PASS
+protected_artifacts:
+- path: engineering/convergence/engineering-system-convergence/STATE.yaml
+  sha256: c9309d953e2e67a5d46ed4ecb6ef47e237d6bdec518d7800c175e691ebe9fc44
+- path: engineering/convergence/engineering-system-convergence/binding-manifest.yaml
+  sha256: 8f31d943c900857ebe8043de8909c506d9676620a2a59115fe6132675cdc0dfb
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml
+  sha256: 8ad3a930b26befa7745612e531fb7b530513bc8ebfc8b96a8407f26455bacf24
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/HISTORY.md
+  sha256: 6343879939db4042613ff2db3a3b998d12a6897bf8b57f5169c2385c6af704ef
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR31/GATE.yaml
+  sha256: 6f5f91e81620e96084a3376c22f4d1f18f1863c8846fed2cb53ef898a9fd86f3
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR32/GATE.yaml
+  sha256: 5b6ff9a6b225b935eae01aa816915508976247d658ff47ad44f0a3c32acfc7ea
+- path: docs/project/PROJ-0001-PROJECT_STATE.md
+  sha256: ec388bfaf1e196a96c2436e253edef89f56eea04321c29e02576a7acde5561d4

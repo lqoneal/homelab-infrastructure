@@ -1,0 +1,60 @@
+schema_version: 1
+record_id: CR28-FUTURE-ZEUS-GATE-PAIRING-001
+gate_id: CR28
+recorded_at: '2026-08-11T00:27:06Z'
+result: PASS
+policy:
+  future_zeus_opportunities_require_implementation_gate: true
+  prefer_existing_semantically_aligned_future_gate: true
+  unresolved_assignment: FUTURE_ZEUS_DEVELOPMENT_GATE_REQUIRED
+  current_gate_scope_expansion: false
+  current_gate_blocked: false
+assignments:
+- opportunity_id: ZO-018
+  title: Zeus Missing-Result Lifecycle Diagnostic Projection
+  result: PAIRED_EXISTING_GATE
+  owner_gate: CR33
+  target_gate: CR33
+  score: 1
+  reason: "Best authoritative future-gate semantic match: CR33 \u2014 Qualify Interrupted Acceptance;\
+    \ matched=interruption"
+- opportunity_id: ZO-019
+  title: Zeus Targeted Lifecycle Diagnostic Reduction
+  result: PAIRED_EXISTING_GATE
+  owner_gate: CR51
+  target_gate: CR51
+  score: 2
+  reason: "Best authoritative future-gate semantic match: CR51 \u2014 Post-Transition Verification; matched=resume,status"
+- opportunity_id: ZO-020
+  title: Zeus Wrong-Gate Result Diagnostic Projection
+  result: PAIRED_EXISTING_GATE
+  owner_gate: CR29
+  target_gate: CR29
+  score: 2
+  reason: "Best authoritative future-gate semantic match: CR29 \u2014 Qualify Invalid Result; matched=result,invalid"
+- opportunity_id: ZO-021
+  title: Zeus Result Authority Identity Projection
+  result: PAIRED_EXISTING_GATE
+  owner_gate: CR29
+  target_gate: CR29
+  score: 2
+  reason: "Best authoritative future-gate semantic match: CR29 \u2014 Qualify Invalid Result; matched=result,invalid"
+- opportunity_id: ZO-023
+  title: Zeus Stale Result Diagnostic Projection
+  result: PAIRED_EXISTING_GATE
+  owner_gate: CR29
+  target_gate: CR29
+  score: 2
+  reason: "Best authoritative future-gate semantic match: CR29 \u2014 Qualify Invalid Result; matched=result,invalid"
+- opportunity_id: ZO-024
+  title: Zeus Result Freshness and Provenance Projection
+  result: PAIRED_EXISTING_GATE
+  owner_gate: CR29
+  target_gate: CR29
+  score: 1
+  reason: "Best authoritative future-gate semantic match: CR29 \u2014 Qualify Invalid Result; matched=result"
+boundary:
+  cr28_result_written: false
+  state_advanced: false
+  cr29_executed: false
+  successor_executed: false

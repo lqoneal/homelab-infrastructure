@@ -1,0 +1,105 @@
+schema_version: 1
+gate_id: CR13
+title: Define CLI Contract
+status: PENDING
+purpose: Specify the exact operator-facing lifecycle interfaces before implementation.
+objective: Specify the exact operator-facing lifecycle interfaces before implementation.
+dependencies:
+- CR12
+entry_conditions:
+- Corrective STATE.yaml identifies this item as current.
+- All dependencies are COMPLETE.
+- Protected artifact manifest remains valid where applicable.
+authoritative_inputs:
+- ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+- ESC-C02-CORRECTIVE-001/STATE.yaml
+- ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- Parent C02 GATE.yaml
+- Parent C02 RESULT.yaml
+- Parent C02 evidence/VALIDATION.yaml
+- C02-F-027
+- ESC-C02-CORRECTIVE-001/ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+allowed_mutations:
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/**
+prohibited_mutations:
+- ESC C00 GATE.yaml
+- ESC C01 GATE.yaml
+- ESC C02 GATE.yaml
+- Existing parent C02 RESULT.yaml
+- Existing parent C02 assessment evidence
+- C02-F-001 through C02-F-026 remediation
+- C03 execution
+- Implicit EOS synchronization or refresh
+- Commit or push except at separately authorized future publication gates
+manual_procedure:
+- Read CR06-CR12.
+- Define roadmap status fields for execution result, review requirement, review state, decision and completion.
+- Define the proposed explicit review/accept command syntax and machine-readable output.
+- Define advancement command semantics if separate from review.
+- Define error/exit semantics.
+- Define engctl resume projection and prove it remains read-only by contract.
+- Write CLI-CONTRACT.yaml.
+- Create SUMMARY.md from the validated RESULT and evidence before advancing corrective state.
+- Append a concise gate completion entry to corrective HISTORY.md before advancing corrective state.
+- Read ZO-001 from ZEUS-CAPABILITY-OPPORTUNITIES.yaml and verify its target_gate still identifies this gate.
+- Reproduce the Zeus repository-projection initialization failure before implementation unless already resolved
+  by an independently qualified earlier change.
+- Establish or restore canonical Zeus repository projection without introducing a second repository authority.
+- Expose Zeus-native repository/document inventory, identifier lookup, authority-overlap detection, placement verification,
+  and PRE_CREATE_VERIFICATION.
+- Qualify Zeus-native results against repository-native controlled-document verification using valid and conflicting
+  fixtures.
+- Verify Zeus discovery/pre-creation verification is read-only and does not synchronize or refresh EOS implicitly.
+required_outputs:
+- CLI-CONTRACT.yaml
+- SUMMARY.md
+required_evidence:
+- gates/CR13/evidence/COMMANDS.md
+- gates/CR13/evidence/VALIDATION.yaml
+- evidence/ZO-001-IMPLEMENTATION-REPORT.yaml
+- evidence/ZO-001-QUALIFICATION.yaml
+acceptance_criteria:
+- Every mutating command is explicitly distinguishable from read-only commands.
+- Machine-readable success and failure semantics are specified.
+- Resume performs no acceptance, advancement, synchronization or refresh.
+- CLI contract is implementable by the traced controller surfaces.
+- The next CR item is not executed in the same transaction.
+- Corrective STATE.yaml is advanced only after this item's result passes.
+- SUMMARY.md exists and accurately summarizes the gate objective, result, material findings/decisions, validation,
+  artifacts, mutation boundary, and next authorized item.
+- Corrective HISTORY.md contains a human-readable entry for this completed gate.
+- ZO-001 is resolved or explicitly dispositioned with qualified evidence.
+- scripts/zeus initializes without the repository_projection import failure.
+- Zeus exposes a native repository projection suitable for verification.
+- Zeus can detect a duplicate controlled-document identifier.
+- Zeus can detect invalid repository placement.
+- Zeus can detect overlapping or redundant controlled-document authority.
+- Zeus returns a machine-readable PRE_CREATE_VERIFICATION result.
+- Zeus pre-creation verification is read-only.
+- Zeus and repository-native verification agree on qualified fixtures.
+- No parallel repository/document authority is introduced.
+fail_closed_conditions:
+- Protected artifact manifest mismatch
+- Dependency RESULT missing or not PASS/COMPLETE
+- Unexpected path mutation
+- Ambiguous or contradictory lifecycle state
+- Implicit EOS synchronization or refresh
+- Attempt to execute a later CR item
+stop_boundary: STOP_AFTER_THIS_ITEM
+result_location: gates/CR13/RESULT.yaml
+evidence_location: gates/CR13/evidence
+next_item: CR14
+resume_instructions: Read STATE.yaml. If current_item is CR13, verify dependencies and execute only CR13. Stop after
+  RESULT.yaml and STATE.yaml update.
+human_readable_record:
+  summary: gates/CR13/SUMMARY.md
+  history: HISTORY.md
+  required_before_state_advancement: true
+incorporated_capability_opportunities:
+- ZO-001
+zeus_capability_maturity:
+  opportunity_id: ZO-001
+  required: true
+  source: ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+  fallback_allowed_during_implementation: true
+  fallback_allowed_after_qualification: false

@@ -1,0 +1,86 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR02
+purpose: Authoritative immutable comparison manifest for protected history and pre-corrective controller/queue state.
+protected_artifact_count: 20
+artifacts:
+- path: engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/GATE.yaml
+  sha256: 1cde92b85a6ddee4520d56e3d020450da29c367226ffabe9b53c739372fc4902
+  protection_class: FROZEN_GATE_CONTRACT
+  reason: Completed historical C00 gate definition.
+- path: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/GATE.yaml
+  sha256: 807157e630584f325bc0412af424f630b8c202ec89bb83d1939388074b4e4272
+  protection_class: FROZEN_GATE_CONTRACT
+  reason: Completed historical C01 gate definition.
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/GATE.yaml
+  sha256: 96885178a7f0c13714b9f60fc9f1486a3cf6b1306d114ee4d2089d30bd8837fc
+  protection_class: FROZEN_GATE_CONTRACT
+  reason: Activation-frozen C02 gate definition.
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/RESULT.yaml
+  sha256: 2c19e69389f3094d874fbaf6c929d23b4d41541953cf04d47a21d1099bc5a195
+  protection_class: PARENT_RESULT
+  reason: Accepted C02 assessment result; immutable input to corrective.
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/ASSESSMENT-COMMANDS.md
+  sha256: 4568979e87f41fe308d03ee9d5e89dc44dfebdd288de0a17631aa5bbafd17708
+  protection_class: PARENT_ASSESSMENT_EVIDENCE
+  reason: Existing C02 assessment evidence; immutable input.
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/AUTHORITY-CLAIM-MATRIX.yaml
+  sha256: 42d14560126274deed54e891cc54383fb8afe2dc2dbd3755baad2cc58dbd2336
+  protection_class: PARENT_ASSESSMENT_EVIDENCE
+  reason: Existing C02 assessment evidence; immutable input.
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/CONTROLLED-DOCUMENT-INVENTORY.yaml
+  sha256: dc0eee3fac58ae601b778e5e6027b930e82f4ecd3343a01b295de285853f21f3
+  protection_class: PARENT_ASSESSMENT_EVIDENCE
+  reason: Existing C02 assessment evidence; immutable input.
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/DOCUMENT-RUNTIME-DIVERGENCE.yaml
+  sha256: 295ed121f1d8b2a9a551cb4cad9f3967a6bef069f3a269185d129a2aae170e74
+  protection_class: PARENT_ASSESSMENT_EVIDENCE
+  reason: Existing C02 assessment evidence; immutable input.
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/DUPLICATE-OVERLAP-REGISTER.yaml
+  sha256: 2196b0879d5a2c153793432e3b9a3c481dd623b958497d3e77f248e8e5ba54af
+  protection_class: PARENT_ASSESSMENT_EVIDENCE
+  reason: Existing C02 assessment evidence; immutable input.
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/EVIDENCE-MANIFEST.yaml
+  sha256: 4930019e01356d2b35465f63fb65a833754b2cd6d3e6772e3824f73153847090
+  protection_class: PARENT_ASSESSMENT_EVIDENCE
+  reason: Existing C02 assessment evidence; immutable input.
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/FINDINGS.yaml
+  sha256: f2169ba7006674451df9eaa9e296451109da4d1a72b07d5b0c984b63d2e25860
+  protection_class: PARENT_ASSESSMENT_EVIDENCE
+  reason: Existing C02 assessment evidence; immutable input.
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/IMPLEMENTATION-CONSUMER-MAP.yaml
+  sha256: 2b550645ede8a57eb14aa77b295efab5cdf4c08215ecb9382d8c8997be891c88
+  protection_class: PARENT_ASSESSMENT_EVIDENCE
+  reason: Existing C02 assessment evidence; immutable input.
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/README.md
+  sha256: a15339a54da384ad7da55d17a859deccd74894162e84b32f1466b92a79c4bd7c
+  protection_class: PARENT_ASSESSMENT_EVIDENCE
+  reason: Existing C02 assessment evidence; immutable input.
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/STALE-DOCUMENT-REGISTER.yaml
+  sha256: 0ef8ac9a5f7b50f0cb3e3dc08c3958f450dbb7c10cfa65b0c488bb739b330949
+  protection_class: PARENT_ASSESSMENT_EVIDENCE
+  reason: Existing C02 assessment evidence; immutable input.
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/VALIDATION.yaml
+  sha256: 63562f3613378facd19f9c05c3c6e087481a391e6f6fcbd4bf639ceb617245a6
+  protection_class: PARENT_ASSESSMENT_EVIDENCE
+  reason: Existing C02 assessment evidence; immutable input.
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/build_inventory.py
+  sha256: 57e1d2936c5c330fb5474264fbd502584af6e9ba8e23df3207b4fe81ecea033f
+  protection_class: PARENT_ASSESSMENT_EVIDENCE
+  reason: Existing C02 assessment evidence; immutable input.
+- path: engineering/convergence/engineering-system-convergence/roadmap.yaml
+  sha256: 47fc1ec0116a65d422a4b41537f1de097a45738cfacdd8e675e745a28d588ce4
+  protection_class: PARENT_QUEUE_AUTHORITY
+  reason: Current ESC queue definition.
+- path: engineering/convergence/engineering-system-convergence/STATE.yaml
+  sha256: 4152aa7435e4c55d830fedc18c5b1390d6c76429194566b2ff922c1be6d3a1f3
+  protection_class: PARENT_QUEUE_STATE
+  reason: Current ESC queue state at corrective start.
+- path: scripts/lib/eos/convergence_roadmap.py
+  sha256: d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc
+  protection_class: CONTROLLER_BASELINE
+  reason: Pre-corrective roadmap controller implementation.
+- path: scripts/engctl
+  sha256: 543ecd440311a09cbe07d512b2195a727dd4c477a168ffb5e3616549d2d73a54
+  protection_class: CLI_BASELINE
+  reason: Pre-corrective engctl command surface.

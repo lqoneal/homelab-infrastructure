@@ -1,0 +1,8 @@
+schema_version: 1
+gate_id: CR17
+status: COMPLETE
+result: PASS
+evidence:
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR17/evidence/COMMANDS.md
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR17/evidence/VALIDATION.yaml
+next_item: CR18

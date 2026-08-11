@@ -1,0 +1,14 @@
+schema_version: 1
+gate_id: CR18
+validated_at: '2026-08-10T11:32:23+00:00'
+result: PASS
+checks:
+  pending_review_not_corruption: PASS
+  historical_standard_provenance: PASS
+  prospective_c03_plus_qualification: PASS
+  evaluation_read_only: PASS
+  cli_evaluate: PASS
+  targeted_tests: 4/4 PASS
+  roadmap_tests: 37/37 PASS
+  emm_integrity: PASS
+  cr19_not_executed: PASS

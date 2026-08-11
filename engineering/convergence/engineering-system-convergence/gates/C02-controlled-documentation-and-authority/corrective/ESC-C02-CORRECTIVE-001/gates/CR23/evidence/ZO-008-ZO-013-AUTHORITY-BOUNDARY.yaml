@@ -1,0 +1,54 @@
+schema_version: 1
+record_id: CR23-ZO008-ZO013-AUTHORITY-BOUNDARY-001
+gate_id: CR23
+recorded_at: '2026-08-10T17:36:45Z'
+result: PASS
+zo008:
+  role: NESTED_CORRECTIVE_PROJECTION_RECONCILIATION
+  owns:
+  - parent gate identity
+  - nested corrective roadmap identity
+  - nested current item
+  - nested dependency/result relationship
+  - nested next item
+  - nested-to-parent execution-position consistency
+  - proof that nested execution does not imply parent advancement
+  does_not_own:
+  - aggregate readiness classification
+  - resource readiness
+  - EMM reconciliation policy
+  - successor action derivation
+  - manual execution
+  - state advancement
+zo013:
+  role: COMPOSITE_PREFLIGHT_DEPENDENCY_PROJECTION
+  owns:
+  - composition of already-qualified projections
+  - ordered blocking dependency reporting
+  - exact blocking projection/classification
+  - top-level READY or BLOCKED projection
+  consumes:
+  - ZO-005
+  - ZO-006
+  - ZO-007
+  - ZO-008
+  - ZO-009
+  - ZO-010
+  - ZO-011
+  does_not_own:
+  - re-derivation of component authority
+  - manual execution
+  - state advancement
+  - successor execution
+  - automatic EMM reconciliation
+implementation_order:
+- ZO-008
+- ZO-013
+reason: ZO-013 requires a qualified nested-corrective projection to compose without independently reconstructing
+  nested state.
+boundary:
+  read_only: true
+  execution_performed: false
+  state_advanced: false
+  parent_gate_advanced: false
+  successor_executed: false

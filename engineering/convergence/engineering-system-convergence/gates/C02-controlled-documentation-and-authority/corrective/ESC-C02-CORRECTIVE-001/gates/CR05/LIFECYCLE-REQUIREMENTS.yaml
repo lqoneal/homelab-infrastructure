@@ -1,0 +1,317 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR05
+finding_id: C02-F-027
+captured_at: '2026-08-10T04:08:45Z'
+status: DEFINED
+
+problem_statement: >
+  The current ConvergenceRoadmap.validate implementation accepts a result only
+  for gates already listed in completed_gates and rejects any result associated
+  with the current/non-completed gate. The frozen C02 contract requires its
+  execution result to exist before explicit operator review. The current
+  lifecycle therefore cannot represent the legitimate post-execution,
+  pre-acceptance condition.
+
+source_evidence:
+  reproduction:
+    path: gates/CR03/C02-F-027-REPRODUCTION.yaml
+  controller_behavior:
+    path: gates/CR04/CONTROLLER-BEHAVIOR-MAP.yaml
+  failure_owner:
+    component: ConvergenceRoadmap.validate
+    failure_rule: C02 has a result but is not completed
+
+requirements:
+
+  - id: LCR-001
+    category: STATE
+    title: Represent current gate with recorded result
+    requirement: >
+      The lifecycle shall permit the current gate to have a valid terminal
+      execution result without requiring that gate to already be listed in
+      completed_gates.
+    verification: >
+      A valid current gate plus matching terminal result validates without
+      advancing completed_gates.
+
+  - id: LCR-002
+    category: STATE
+    title: Explicit pending-review state
+    requirement: >
+      A gate with a valid terminal result that still requires operator review
+      shall have a deterministic lifecycle representation equivalent to
+      AWAITING_OPERATOR_REVIEW.
+    verification: >
+      validate, evaluate, status, and resume independently derive the same
+      pending-review state.
+
+  - id: LCR-003
+    category: AUTHORITY
+    title: Result does not imply acceptance
+    requirement: >
+      RESULT existence or terminal result value shall never itself constitute
+      operator acceptance.
+    verification: >
+      A result can validate while acceptance remains NOT_RECORDED.
+
+  - id: LCR-004
+    category: AUTHORITY
+    title: Explicit review authority
+    requirement: >
+      Acceptance or rejection shall require an explicit authorized operator
+      action bound to the exact roadmap, gate, result, and result digest.
+    verification: >
+      Missing or mismatched authority fails closed.
+
+  - id: LCR-005
+    category: PERSISTENCE
+    title: Durable review decision
+    requirement: >
+      Each operator review decision shall be persisted as a machine-readable
+      immutable receipt or equivalent authoritative record.
+    verification: >
+      Review state can be reconstructed independently after process restart.
+
+  - id: LCR-006
+    category: IDENTITY
+    title: Result identity binding
+    requirement: >
+      Review authority shall bind to the exact gate identity, frozen gate
+      definition identity, result identity, and result digest.
+    verification: >
+      Stale or replaced results invalidate an otherwise valid review action.
+
+  - id: LCR-007
+    category: VALIDATION
+    title: Fail closed on invalid result
+    requirement: >
+      Missing, malformed, unsupported, stale, mismatched, or contradictory
+      result records shall fail closed.
+    verification: >
+      Negative tests cover each invalid class.
+
+  - id: LCR-008
+    category: STATE
+    title: Acceptance separate from completion
+    requirement: >
+      ACCEPTED and COMPLETE shall remain distinct lifecycle facts even if the
+      implementation later performs both within one atomic transaction.
+    verification: >
+      Status/provenance can distinguish the operator decision from gate
+      completion.
+
+  - id: LCR-009
+    category: TRANSACTION
+    title: Atomic completion and successor selection
+    requirement: >
+      Once an accepted gate is advanced, completed-gate persistence and
+      deterministic successor selection shall occur atomically.
+    verification: >
+      No durable state can contain a newly completed gate with an indeterminate
+      or contradictory current successor.
+
+  - id: LCR-010
+    category: TRANSACTION
+    title: Explicit advancement authority
+    requirement: >
+      completed_gates shall advance only through a qualified lifecycle
+      transition and never merely because a result file exists.
+    verification: >
+      Result creation alone leaves completed_gates unchanged.
+
+  - id: LCR-011
+    category: REPLAY
+    title: Deterministic exact replay
+    requirement: >
+      Repeating an identical review or advancement transaction shall be
+      idempotent or return a deterministic already-applied result.
+    verification: >
+      Exact replay creates no duplicate lifecycle effects.
+
+  - id: LCR-012
+    category: REPLAY
+    title: Conflicting replay fails closed
+    requirement: >
+      A transaction using the same identity with different gate, result,
+      digest, decision, authority, or state shall fail closed.
+    verification: >
+      Conflicting replay does not mutate authoritative state.
+
+  - id: LCR-013
+    category: INTERRUPTION
+    title: Detect partial transaction
+    requirement: >
+      Interrupted lifecycle writes shall be detectable and recoverable without
+      inventing operator authority or silently skipping lifecycle stages.
+    verification: >
+      Fault-injection tests detect and recover or fail closed from partial
+      transactions.
+
+  - id: LCR-014
+    category: READ_ONLY
+    title: Validation is read-only
+    requirement: >
+      roadmap validate shall not mutate repository, corrective, EOS, or
+      lifecycle state.
+    verification: >
+      Pre/post digest comparison is identical.
+
+  - id: LCR-015
+    category: READ_ONLY
+    title: Evaluation is read-only
+    requirement: >
+      roadmap evaluate shall not mutate repository, corrective, EOS, or
+      lifecycle state.
+    verification: >
+      Pre/post digest comparison is identical.
+
+  - id: LCR-016
+    category: READ_ONLY
+    title: Status is read-only
+    requirement: >
+      roadmap status shall not mutate repository, corrective, EOS, or
+      lifecycle state.
+    verification: >
+      Pre/post digest comparison is identical.
+
+  - id: LCR-017
+    category: READ_ONLY
+    title: Resume is read-only
+    requirement: >
+      engctl resume shall derive and report lifecycle state without accepting,
+      advancing, synchronizing, refreshing, or otherwise mutating authoritative
+      or derived state.
+    verification: >
+      Pre/post repository and EOS digests remain identical.
+
+  - id: LCR-018
+    category: EOS_BOUNDARY
+    title: No implicit EOS synchronization
+    requirement: >
+      Lifecycle inspection, review, acceptance, and advancement shall not
+      implicitly synchronize or refresh EOS.
+    verification: >
+      EOS mutation occurs only through a separately authorized explicit
+      synchronization operation.
+
+  - id: LCR-019
+    category: CLI
+    title: Machine-readable review state
+    requirement: >
+      Operator-facing roadmap interfaces shall expose execution result, review
+      requirement, review state, operator decision, completion state, current
+      gate, and next authorized action as distinct machine-readable facts.
+    verification: >
+      CLI regression tests assert each field independently.
+
+  - id: LCR-020
+    category: CLI
+    title: Explicit mutating command
+    requirement: >
+      Operator review/acceptance shall use an explicit mutating interface that
+      is visibly distinct from validate, evaluate, status, and resume.
+    verification: >
+      Read-only interfaces cannot trigger acceptance.
+
+  - id: LCR-021
+    category: SUCCESSOR
+    title: Deterministic successor
+    requirement: >
+      Advancement shall select exactly the successor permitted by the roadmap
+      definition and dependency state.
+    verification: >
+      Wrong, missing, ambiguous, or unavailable successor fails closed.
+
+  - id: LCR-022
+    category: TERMINAL
+    title: Terminal roadmap handling
+    requirement: >
+      A completed final gate shall transition the roadmap to an explicit
+      terminal state without requiring a nonexistent successor.
+    verification: >
+      Terminal-gate test completes deterministically.
+
+  - id: LCR-023
+    category: HISTORY
+    title: Preserve frozen history
+    requirement: >
+      Lifecycle correction shall not rewrite frozen gate definitions, existing
+      execution results, existing assessment evidence, or prior operator
+      decisions.
+    verification: >
+      CR02 protected-artifact manifest remains valid.
+
+  - id: LCR-024
+    category: GENERICITY
+    title: Generic lifecycle infrastructure
+    requirement: >
+      The corrected lifecycle model shall apply generically to roadmap gates
+      and shall not contain a C02-specific validation exception.
+    verification: >
+      Tests construct non-C02 gates exercising the same lifecycle.
+
+  - id: LCR-025
+    category: RESUME
+    title: Independent recovery
+    requirement: >
+      A fresh process shall reconstruct pending review, accepted state,
+      completion, and successor state exclusively from persisted repository
+      records.
+    verification: >
+      Cold resume returns the same lifecycle projection without conversational
+      context or process memory.
+
+  - id: LCR-026
+    category: PROVENANCE
+    title: Lifecycle provenance
+    requirement: >
+      Result validation, review decision, acceptance authority, completion,
+      advancement, and successor selection shall have enough persisted
+      provenance for independent verification.
+    verification: >
+      Status or dedicated inspection surfaces resolve the corresponding
+      receipts/records and identities.
+
+  - id: LCR-027
+    category: ERROR
+    title: Machine-readable failure semantics
+    requirement: >
+      Invalid lifecycle operations shall return deterministic nonzero failure
+      status and stable machine-readable blocker/error identifiers.
+    verification: >
+      Negative CLI tests assert error identity and no mutation.
+
+  - id: LCR-028
+    category: COMPATIBILITY
+    title: Preserve completed historical gates
+    requirement: >
+      Existing completed C00 and C01 semantics shall remain valid without
+      retrospective lifecycle rewriting.
+    verification: >
+      Historical regression tests continue to pass.
+
+  - id: LCR-029
+    category: COMPATIBILITY
+    title: Preserve prospective executable-roadmap semantics
+    requirement: >
+      The lifecycle correction shall not weaken STD-0006 execution-sufficiency
+      requirements for C03 and later gates.
+    verification: >
+      Existing prospective roadmap qualification tests continue to pass.
+
+  - id: LCR-030
+    category: CURRENT_BOUNDARY
+    title: Real C02 remains unaccepted during implementation
+    requirement: >
+      Design and implementation gates shall not consume the operator's existing
+      C02 acceptance decision until the corrective mechanism has been qualified
+      and published.
+    verification: >
+      Through CR46, real C02 remains awaiting review through the corrected
+      projection and C03 remains unexecuted.
+
+acceptance_summary:
+  total_requirements: 30
+  implementation_authorized: false
+  next_design_item: CR06

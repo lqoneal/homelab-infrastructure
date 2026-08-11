@@ -1,0 +1,38 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR16M1
+recorded_at: '2026-08-10T09:34:38Z'
+result: PASS
+
+observed:
+  consistency: PASS
+  structural_validity: PASS
+  execution_sufficiency: NOT_EXECUTABLE
+  executable: false
+  read_only: true
+  cli_return_code: 1
+
+classification:
+  lifecycle: PENDING_OPERATOR_REVIEW
+  non_executable_expected: true
+  validation_failure: false
+  fail_closed_error: false
+
+interpretation:
+  rule: >
+    A roadmap at an operator-review boundary may be structurally valid and
+    internally consistent while intentionally reporting NOT_EXECUTABLE.
+    Nonzero executable/readiness status must not be conflated with structural
+    validation or integrity failure.
+
+harness_corrective:
+  previous_assumption: ROADMAP_VALIDATE_REQUIRES_RC_ZERO
+  corrected_assumption: >
+    CR16M1 accepts the validator when consistency and structural validity
+    pass, the result is intentionally NOT_EXECUTABLE at the pending-review
+    boundary, and no FAIL CLOSED condition is emitted.
+
+mutation:
+  implementation_changed: false
+  validator_changed: false
+  roadmap_state_changed: false

@@ -1,0 +1,23 @@
+schema_version: 1
+record_id: CR24-EXECUTION-QUALIFICATION-001
+gate_id: CR24
+recorded_at: '2026-08-10T18:36:13Z'
+result: PASS
+objective: Qualify Valid Current Gate With Result
+fixture_expectation:
+  result_class: VALID_FINAL
+  review_state: AWAITING_OPERATOR_REVIEW
+  acceptance_receipt_present: false
+  completion_authorized: false
+  state_advanced: false
+  successor_activated: false
+  cr25_executed: false
+boundary:
+  live_cr24_result_written: false
+  live_state_advanced: false
+  parent_c02_advanced: false
+  cr25_executed: false
+  successor_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

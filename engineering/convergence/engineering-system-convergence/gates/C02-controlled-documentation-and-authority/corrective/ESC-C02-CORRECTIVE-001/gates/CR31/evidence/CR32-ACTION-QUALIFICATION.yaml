@@ -1,0 +1,12 @@
+schema_version: 1
+record_id: CR31-CR32-ACTION-QUALIFICATION-001
+gate_id: CR31
+target_gate: CR32
+recorded_at: '2026-08-11T00:58:27Z'
+result: PASS
+action_surface: resume_instructions.next_authorized_action
+next_authorized_action: EXECUTE_CR32_QUALIFY_DUPLICATE_ACCEPTANCE
+human_instructions_preserved: true
+current_item: CR31
+cr32_executed: false
+errors: []

@@ -1,0 +1,38 @@
+schema_version: 1
+record_id: POST-CR22-PROJECTION-RECONCILIATION-001
+recorded_at: '2026-08-10T14:30:21Z'
+completed_corrective_item: CR22
+current_corrective_item: CR23
+old_next_authorized_action: EXECUTE_CR22_IMPLEMENT_REPLAY_PROTECTION
+new_next_authorized_action: EXECUTE_CR23_IMPLEMENT_LIFECYCLE_PROVENANCE
+reconciled_surfaces:
+- engineering/convergence/engineering-system-convergence/STATE.yaml
+- docs/project/PROJ-0001-PROJECT_STATE.md
+- engineering/convergence/engineering-system-convergence/ESC-ROADMAP-001.md
+emm_rebound_surfaces:
+- docs/project/PROJ-0001-PROJECT_STATE.md
+- engineering/convergence/engineering-system-convergence/STATE.yaml
+emm_bound_source_count: 41
+emm_missing_count: 0
+emm_drift_count: 0
+parent:
+  current_gate: C02
+  advanced: false
+  completed_gates_preserved: true
+corrective:
+  current_item: CR23
+  advanced_by_this_transaction: false
+zeus_opportunities:
+- ZO-005
+- ZO-006
+- ZO-007
+- ZO-008
+- ZO-009
+- ZO-010
+boundaries:
+  cr23_executed: false
+  parent_c02_advanced: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false
+recovery: /data/engineering/recovery/post-cr22-projection-reconciliation-20260810T143021Z

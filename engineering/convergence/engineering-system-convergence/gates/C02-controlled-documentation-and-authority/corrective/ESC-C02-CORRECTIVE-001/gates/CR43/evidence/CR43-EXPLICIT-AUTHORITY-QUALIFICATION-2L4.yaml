@@ -1,0 +1,122 @@
+schema_version: 1
+gate_id: CR43
+classification: EXPLICIT_AUTHORITY_QUALIFICATION
+source_decision: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR43/evidence/CR43-COMMIT-CANDIDATE-DECISION-2L3A.yaml
+qualification_only: true
+staging_performed: false
+commit_created: false
+cr43_result_written: false
+state_advanced: false
+cr44_executed: false
+qualifications:
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/RESULT.yaml
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: PARENT_C02_ARTIFACT_PROTECTED_FROM_IMPLICIT_CORRECTIVE_COMMIT
+  disposition: EXCLUDE_PREEXISTING
+  basis: PROTECTED_PARENT_ARTIFACT_WITHOUT_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/ASSESSMENT-COMMANDS.md
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: PARENT_C02_ARTIFACT_PROTECTED_FROM_IMPLICIT_CORRECTIVE_COMMIT
+  disposition: EXCLUDE_PREEXISTING
+  basis: PROTECTED_PARENT_ARTIFACT_WITHOUT_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/AUTHORITY-CLAIM-MATRIX.yaml
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: PARENT_C02_ARTIFACT_PROTECTED_FROM_IMPLICIT_CORRECTIVE_COMMIT
+  disposition: EXCLUDE_PREEXISTING
+  basis: PROTECTED_PARENT_ARTIFACT_WITHOUT_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/CONTROLLED-DOCUMENT-INVENTORY.yaml
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: PARENT_C02_ARTIFACT_PROTECTED_FROM_IMPLICIT_CORRECTIVE_COMMIT
+  disposition: EXCLUDE_PREEXISTING
+  basis: PROTECTED_PARENT_ARTIFACT_WITHOUT_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/DOCUMENT-RUNTIME-DIVERGENCE.yaml
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: PARENT_C02_ARTIFACT_PROTECTED_FROM_IMPLICIT_CORRECTIVE_COMMIT
+  disposition: EXCLUDE_PREEXISTING
+  basis: PROTECTED_PARENT_ARTIFACT_WITHOUT_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/DUPLICATE-OVERLAP-REGISTER.yaml
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: PARENT_C02_ARTIFACT_PROTECTED_FROM_IMPLICIT_CORRECTIVE_COMMIT
+  disposition: EXCLUDE_PREEXISTING
+  basis: PROTECTED_PARENT_ARTIFACT_WITHOUT_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/EVIDENCE-MANIFEST.yaml
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: PARENT_C02_ARTIFACT_PROTECTED_FROM_IMPLICIT_CORRECTIVE_COMMIT
+  disposition: EXCLUDE_PREEXISTING
+  basis: PROTECTED_PARENT_ARTIFACT_WITHOUT_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/FINDINGS.yaml
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: PARENT_C02_ARTIFACT_PROTECTED_FROM_IMPLICIT_CORRECTIVE_COMMIT
+  disposition: EXCLUDE_PREEXISTING
+  basis: PROTECTED_PARENT_ARTIFACT_WITHOUT_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/IMPLEMENTATION-CONSUMER-MAP.yaml
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: PARENT_C02_ARTIFACT_PROTECTED_FROM_IMPLICIT_CORRECTIVE_COMMIT
+  disposition: EXCLUDE_PREEXISTING
+  basis: PROTECTED_PARENT_ARTIFACT_WITHOUT_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/README.md
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: PARENT_C02_ARTIFACT_PROTECTED_FROM_IMPLICIT_CORRECTIVE_COMMIT
+  disposition: EXCLUDE_PREEXISTING
+  basis: PROTECTED_PARENT_ARTIFACT_WITHOUT_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/STALE-DOCUMENT-REGISTER.yaml
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: PARENT_C02_ARTIFACT_PROTECTED_FROM_IMPLICIT_CORRECTIVE_COMMIT
+  disposition: EXCLUDE_PREEXISTING
+  basis: PROTECTED_PARENT_ARTIFACT_WITHOUT_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/VALIDATION.yaml
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: PARENT_C02_ARTIFACT_PROTECTED_FROM_IMPLICIT_CORRECTIVE_COMMIT
+  disposition: EXCLUDE_PREEXISTING
+  basis: PROTECTED_PARENT_ARTIFACT_WITHOUT_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/build_inventory.py
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: PARENT_C02_ARTIFACT_PROTECTED_FROM_IMPLICIT_CORRECTIVE_COMMIT
+  disposition: EXCLUDE_PREEXISTING
+  basis: PROTECTED_PARENT_ARTIFACT_WITHOUT_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: engineering/convergence/engineering-system-convergence/roadmap.yaml
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: PREEXISTING_FILE_REFERENCED_BY_CORRECTIVE_BUT_MUTATION_AUTHORITY_NOT_YET_PROVEN
+  disposition: EXCLUDE_PREEXISTING
+  basis: PREEXISTING_ROADMAP_WITHOUT_CORRECTIVE_PROVENANCE
+- path: scripts/lib/emp/codex_session_timing.py
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: NO_INDEPENDENT_CORRECTIVE_PROVENANCE
+  disposition: EXCLUDE_FUTURE_WORK
+  basis: DEFERRED_ZEUS_DEVELOPMENT_WITH_ZERO_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: scripts/lib/emp/publication_candidate_authority.py
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: NO_INDEPENDENT_CORRECTIVE_PROVENANCE
+  disposition: EXCLUDE_PREEXISTING
+  basis: ZERO_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: scripts/lib/emp/publication_cohort.py
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: NO_INDEPENDENT_CORRECTIVE_PROVENANCE
+  disposition: EXCLUDE_PREEXISTING
+  basis: ZERO_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: scripts/lib/emp/repository_state_view.py
+  prior_decision: REQUIRES_EXPLICIT_AUTHORITY
+  evidence_count: 0
+  prior_reason: NO_INDEPENDENT_CORRECTIVE_PROVENANCE
+  disposition: EXCLUDE_FUTURE_WORK
+  basis: DEFERRED_ZEUS_DEVELOPMENT_WITH_ZERO_INDEPENDENT_CORRECTIVE_PROVENANCE
+unresolved_paths: []
+unresolved_count: 0
+result: PASS

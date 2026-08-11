@@ -1,0 +1,29 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR04
+validated_at: '2026-08-10T04:05:38Z'
+result: PASS
+
+checks:
+  cr03_dependency: PASS
+  protected_history: PASS
+  python_structure_trace: PASS
+  actual_failure_owner_identified: PASS
+  entry_point_inventory: PASS
+  command_surface_trace: PASS
+  lifecycle_semantics_trace: PASS
+  failure_owner_caller_trace: PASS
+  roadmap_validate_path: PASS
+  roadmap_evaluate_path: PASS
+  roadmap_status_path: PASS
+  engctl_resume_path: PASS
+  read_only_behavior: PASS
+  behavior_map: PASS
+  implementation_changed: false
+  next_item_executed: false
+
+finding:
+  id: C02-F-027
+  status: REPRODUCED_AND_TRACED
+
+next_authorized_item: CR05

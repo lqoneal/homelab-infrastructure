@@ -1,0 +1,53 @@
+schema_version: 1
+roadmap_id: ESC-C02-CORRECTIVE-001
+roadmap_version: 1.1.0
+recorded_at: '2026-08-10T13:12:39Z'
+current_item: CR21
+parent_current_gate: C02
+current_gate_contract_preserved:
+  gate_id: CR21
+  path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR21/GATE.yaml
+  sha256: 04fd995bc7a3a25fd85df70085a5b5946bb2750292b6f5d997cfd026408ab16d
+current_gate_supplement: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR21/MANUAL-EXECUTION.yaml
+prospectively_hardened:
+- CR22
+- CR23
+- CR24
+- CR25
+- CR26
+- CR27
+- CR28
+- CR29
+- CR30
+- CR31
+- CR32
+- CR33
+- CR34
+- CR35
+- CR36
+- CR37
+- CR38
+- CR39
+- CR40
+- CR41
+- CR42
+- CR43
+- CR44
+- CR45
+- CR46
+- CR47
+- CR48
+- CR49
+- CR50
+- CR51
+- CR52
+- CR53
+- CR54
+- CR55
+state_advanced: false
+gate_executed: false
+parent_c02_advanced: false
+eos_synchronized: false
+commit_created: false
+push_performed: false
+qualification: PENDING_REQUALIFICATION

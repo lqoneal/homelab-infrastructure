@@ -1,0 +1,75 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR05
+finding_id: C02-F-027
+
+sources:
+  CR03:
+    artifact: gates/CR03/C02-F-027-REPRODUCTION.yaml
+    contribution:
+      - establishes legitimate current-gate plus terminal-result failure
+      - establishes validate/evaluate/status/resume failure
+  CR04:
+    artifact: gates/CR04/CONTROLLER-BEHAVIOR-MAP.yaml
+    contribution:
+      - identifies ConvergenceRoadmap.validate as failure owner
+      - identifies current result/completed-gate coupling
+      - identifies affected read-only command surfaces
+      - establishes missing review-state representation
+
+requirement_groups:
+  state_and_authority:
+    requirements:
+      - LCR-001
+      - LCR-002
+      - LCR-003
+      - LCR-004
+      - LCR-005
+      - LCR-006
+      - LCR-008
+
+  validation_and_failure:
+    requirements:
+      - LCR-007
+      - LCR-027
+
+  advancement:
+    requirements:
+      - LCR-009
+      - LCR-010
+      - LCR-021
+      - LCR-022
+
+  replay_and_recovery:
+    requirements:
+      - LCR-011
+      - LCR-012
+      - LCR-013
+      - LCR-025
+
+  read_only_boundary:
+    requirements:
+      - LCR-014
+      - LCR-015
+      - LCR-016
+      - LCR-017
+      - LCR-018
+
+  operator_interface:
+    requirements:
+      - LCR-019
+      - LCR-020
+
+  integrity_and_generality:
+    requirements:
+      - LCR-023
+      - LCR-024
+      - LCR-026
+      - LCR-028
+      - LCR-029
+      - LCR-030
+
+coverage:
+  all_requirements_mapped: true
+  substantive_c02_findings_repaired: false
+  implementation_performed: false

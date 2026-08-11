@@ -1,0 +1,11 @@
+schema_version: 1
+record_id: CR37-ACTION-QUALIFICATION-001
+owner_gate: CR36
+target_gate: CR37
+recorded_at: '2026-08-11T01:33:42Z'
+result: PASS
+next_authorized_action: EXECUTE_CR37_QUALIFY_RESUME_READ_ONLY_BEHAVIOR
+action_count: 1
+human_instructions_preserved: true
+current_item: CR36
+cr37_executed: false

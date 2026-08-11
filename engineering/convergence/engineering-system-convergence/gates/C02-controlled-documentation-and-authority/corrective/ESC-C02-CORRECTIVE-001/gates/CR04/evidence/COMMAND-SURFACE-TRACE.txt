@@ -1,0 +1,245 @@
+# engctl / roadmap references
+
+scripts/zeus:375:def authority_status(mission_status):
+scripts/zeus:446:def live_status_projection():
+scripts/zeus:518:def status_text(value):
+scripts/zeus:567:def operational_alpha_status_text(value):
+scripts/lib/authority_pipeline/progressive_runtime_policies.py:59:def validate(repository: Path | str) -> dict[str, object]:
+scripts/lib/authority_pipeline/progressive_runtime_consolidation.py:81:def validate(repository: Path | str) -> dict[str, object]:
+scripts/lib/authority_pipeline/progressive_runtime_states.py:67:def validate(repository: Path | str) -> dict[str, object]:
+scripts/lib/authority_pipeline/progressive_runtime_states.py:229:def validate_execution_eligibility(
+scripts/lib/authority_pipeline/progressive_runtime_execution_contracts.py:62:def validate(repository: Path | str) -> dict[str, object]:
+scripts/lib/authority_pipeline/progressive_runtime_dependencies.py:221:def validate(repository: Path | str) -> dict[str, object]:
+scripts/lib/authority_pipeline/progressive_runtime_dependencies.py:303:def validate_implementation(repository: Path | str) -> dict[str, object]:
+scripts/lib/authority_pipeline/progressive_runtime_registration.py:95:def validate(repository: Path | str) -> dict[str, object]:
+scripts/lib/authority_pipeline/progressive_runtime_registration.py:192:def validate_implementation(repository: Path | str) -> dict[str, object]:
+scripts/lib/authority_pipeline/progressive_runtime_outcomes.py:60:def validate(repository: Path | str) -> dict[str, object]:
+scripts/lib/authority_pipeline/progressive_runtime_transitions.py:52:def validate(repository: Path | str) -> dict[str, object]:
+scripts/lib/authority_pipeline/progressive_runtime_capabilities.py:51:def validate(repository: Path | str) -> dict[str, object]:
+scripts/lib/document_synchronization.py:127:def validate_metadata(metadata: dict[str, Any]) -> list[str]:
+scripts/lib/document_synchronization.py:233:def qualification_impact(status: str, policy: dict[str, Any]) -> dict[str, Any]:
+scripts/lib/wop/canonical_package.py:105:def _validate_cagf_extension(extension: Mapping[str, Any]) -> None:
+scripts/lib/wop/canonical_package.py:128:def validate(package: Mapping[str, Any]) -> dict[str, Any]:
+scripts/lib/wop/contract.py:512:    def validate(self, signature_verifier: SignatureVerifier | None = None) -> None:
+scripts/lib/wop/contract.py:517:    def evaluate(
+scripts/lib/eos/state_sync.py:220:def validate(expected: dict[Path, bytes]) -> list[str]:
+scripts/lib/eos/assurance_language.py:62:    def _validate_definition(self) -> None:
+scripts/lib/eos/assurance_language.py:202:    def validate_declaration(self, declaration: Any) -> None:
+scripts/lib/eos/assurance_language.py:232:    def validate_expression(self, expression: Any) -> None:
+scripts/lib/eos/assurance_language.py:280:    def _validate_selector(self, selector: Any) -> None:
+scripts/lib/eos/assurance_language.py:312:    def evaluate(
+scripts/lib/eos/working_tree_baseline.py:21:def _status_entries(root: Path) -> list[bytes]:
+scripts/lib/eos/working_tree_baseline.py:44:def validate(root: Path, contract_path: Path) -> dict[str, object]:
+scripts/lib/eos/execution_interface.py:460:    def validate_handoff(self, path: Path | str) -> dict[str, Any]:
+scripts/lib/eos/platform_sync_verification.py:17:def _checkpoint_status(root: Path, eos_workspace: Path, current: str) -> dict[str, Any]:
+scripts/lib/eos/mission_assurance.py:146:    def evaluate(self, mission_id: str, phase: str) -> dict[str, Any]:
+scripts/lib/eos/mission_contract.py:70:def validate(value: Mapping[str, Any], root: Path) -> list[str]:
+scripts/lib/eos/mission_contract.py:179:    def _context_status(self, value: Mapping[str, Any]) -> str:
+scripts/lib/eos/convergence_roadmap.py:105:def _schema_validate(instance: dict[str, Any], schema_path: Path, label: str) -> None:
+scripts/lib/eos/convergence_roadmap.py:162:    def validate(self) -> dict[str, Any]:
+scripts/lib/eos/convergence_roadmap.py:364:    def evaluate(self, resolved: dict[str, Any] | None = None, *, compare_persisted: bool = True) -> dict[str, Any]:
+scripts/lib/eos/convergence_roadmap.py:593:    def _validate_project_state(self, roadmap: dict[str, Any], state: dict[str, Any]) -> None:
+scripts/lib/eos/convergence_roadmap.py:619:    def _validate_manifest(self, roadmap: dict[str, Any], state: dict[str, Any],
+scripts/lib/eos/convergence_roadmap.py:663:    def _validate_evidence_manifest(self, gate_id: str, path: Path) -> None:
+scripts/lib/eos/convergence_roadmap.py:742:def _format_status(value: dict[str, Any], heading: str = "ENGINEERING SYSTEM CONVERGENCE ROADMAP") -> str:
+scripts/lib/implementation_coverage.py:44:def validate_policy(policy: dict[str, Any]) -> list[str]:
+scripts/lib/work_initiation/shadow.py:101:    def evaluate(
+scripts/lib/emp/oa30_cap030_verification.py:35:def validate_candidate(evidence: Mapping[str, Any]) -> dict[str, Any]:
+scripts/lib/emp/native_session.py:156:    def _validate_evidence(entries):
+scripts/lib/emp/canonical_recovery.py:113:def _validate_checkpoint(value: Mapping[str, Any], *, expected: Mapping[str, Any] | None = None) -> dict[str, Any]:
+scripts/lib/emp/canonical_recovery.py:310:def request_resume(runtime_root: Path | str, *, resolved: Mapping[str, Any]) -> dict[str, Any]:
+scripts/lib/emp/autonomous_dispatch.py:103:    def _validate(authoritative: Mapping[str, Any]) -> tuple[str, Mapping[str, Any], Mapping[str, Any]]:
+scripts/lib/emp/gate_approval.py:211:def validate_gate(gate: str) -> str:
+scripts/lib/emp/gate_approval.py:580:    def _verify_resume_and_blocker(self, gate: str) -> None:
+scripts/lib/emp/gate_approval.py:684:    def validate_carry_forward(self, gate: str) -> dict[str, Any]:
+scripts/lib/emp/oa03_gate_verification.py:108:def validate_marker(root: Path | str) -> dict[str, Any]:
+scripts/lib/emp/admission_supersession.py:43:def _validate_lineage_package_digest(admission: Mapping[str, Any], expected: str) -> None:
+scripts/lib/emp/admission_supersession.py:115:def _validate_lineage_authority_snapshot_digest(admission: Mapping[str, Any], expected: str) -> None:
+scripts/lib/emp/admission_supersession.py:135:def _validate_execution_authority_snapshot_digest(projection: Mapping[str, Any], expected: str) -> None:
+scripts/lib/emp/admission_supersession.py:146:def _validate_lineage_source_digest(admission: Mapping[str, Any], expected: str) -> None:
+scripts/lib/emp/admission_supersession.py:163:def _validate_execution_source_digest(projection: Mapping[str, Any], expected: str) -> None:
+scripts/lib/emp/admission_supersession.py:361:def resolve_for_resume(root: Path | str, admission_store: Path | str,
+scripts/lib/emp/codex_interactive.py:1137:def status(repository: Path | str, mission_id: str | None = None, *, session_id: str | None = None,
+scripts/lib/emp/progressive_runtime_support.py:125:def status(root: Path) -> dict:
+scripts/lib/emp/progressive_runtime_support.py:274:def _validate_receipt_bindings(
+scripts/lib/emp/progressive_runtime_support.py:362:def _validate_replay_lifecycle(value: dict, normalized: str) -> None:
+scripts/lib/emp/canonical_mission_aggregate.py:72:def _validate_records(records: list[tuple[Path, dict[str, Any]]], expected: Mapping[str, Any], family: str) -> None:
+scripts/lib/emp/owner_enrollment.py:37:def enrollment_status(
+scripts/lib/emp/wop_lifecycle.py:368:    def set_queue_status(self, mission_id: str, status: QueueStatus) -> None:
+scripts/lib/emp/wop_lifecycle.py:545:    def validate(self) -> None:
+scripts/lib/emp/wop_lifecycle.py:612:    def _persist_validated(self) -> None:
+scripts/lib/emp/wop_lifecycle.py:641:    def _validate_authorization(
+scripts/lib/emp/wop_lifecycle.py:674:    def _validate_approval_history(checkpoint: Mapping[str, Any]) -> None:
+scripts/lib/emp/wop_lifecycle.py:699:    def _validate_stored_authorization(
+scripts/lib/emp/wop_lifecycle.py:721:    def _validate_prerequisites_and_dependencies(
+scripts/lib/emp/wop_lifecycle.py:734:    def _validate_reservation(
+scripts/lib/emp/oa05_implementation.py:32:def validate_evidence(root: Path | str) -> dict[str, Any]:
+scripts/lib/emp/oa01_gate_verification.py:209:def _validate_state(root: Path) -> None:
+scripts/lib/emp/oa01_gate_verification.py:229:def _validate_implementation(root: Path) -> tuple[Path, dict[str, Any]]:
+scripts/lib/emp/oa01_gate_verification.py:266:def validate_marker(root: Path | str) -> dict[str, Any]:
+scripts/lib/emp/wop_admission.py:133:    def validate(
+scripts/lib/emp/execution_oversight.py:154:    def validate(self) -> None:
+scripts/lib/emp/execution_oversight.py:514:    def validate(self) -> None:
+scripts/lib/emp/wop_packaging.py:192:def extract(source: Path, *, validate: bool = True) -> tuple[dict[str, Any], str]:
+scripts/lib/emp/execution_authorization.py:110:def validate(request_record: dict[str, Any], receipt: dict[str, Any], *, at: datetime | str) -> dict[str, Any]:
+scripts/lib/emp/oa02_gate_verification.py:114:def validate_marker(root: Path | str) -> dict[str, Any]:
+scripts/lib/emp/oa04_gate_verification.py:118:def validate_marker(root: Path | str) -> dict[str, Any]:
+scripts/lib/emp/provider_session.py:120:def _validate_inputs(root: Path, mission_id: str, runtime: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+scripts/lib/emp/dispatch_candidate.py:54:def validate(repository: Path | str, candidate: dict[str, Any]) -> dict[str, Any]:
+scripts/lib/emp/execution_monitoring.py:239:def status(repository: Path | str, identifier: str, *, runtime_root: Path | str | None = None) -> dict[str, Any]:
+scripts/lib/emp/oa03_implementation.py:25:def validate_evidence(root: Path | str) -> dict[str, Any]:
+scripts/lib/emp/codex_app_server_broker.py:28:def _validate_control_socket(path: Path) -> None:
+scripts/lib/emp/production_execution.py:123:def validate_activation(
+scripts/lib/emp/production_execution.py:154:def validate_agent(
+scripts/lib/emp/mission_verification_controller.py:519:    def status(key: str) -> str: return checks.get(key, "PASS" if key == "provider_selection" and lifecycle.get("provider_selected") else "FAIL")
+scripts/lib/emp/reasoning.py:39:    def validate(self,wop,repository):
+scripts/lib/emp/reasoning.py:131:    def respond(self,request,*,repository=None,package=None,rejection=None,status=None):
+scripts/lib/emp/corrective_work_authorization.py:130:def validate(request_record: dict[str, Any], receipt: dict[str, Any], *, at: datetime | str) -> dict[str, Any]:
+scripts/lib/emp/gate_handlers.py:75:    def validate(self):
+scripts/lib/emp/oa04_implementation.py:25:def validate_evidence(root: Path | str) -> dict[str, Any]:
+scripts/lib/emp/operational_gate_handler.py:84:    def _validate_plan(value):
+scripts/lib/emp/operational_gate_handler.py:124:    def validate(value: Mapping[str, Any]):
+scripts/lib/emp/authority_resolution.py:264:    def _validate_state(self) -> None:
+scripts/lib/emp/authority_resolution.py:415:def validate_bundle(
+scripts/lib/emp/bootstrap_boundary.py:272:def _validate_bootstrap_artifacts(runtime: Path, bootstrap_id: str, response: Mapping[str, Any]) -> None:
+scripts/lib/emp/management.py:287:    def resume_work(
+scripts/lib/emp/management.py:327:    def portfolio_status(self, project_id: str | None = None) -> dict[str, Any]:
+scripts/lib/emp/codex_adapter.py:731:def status(repository: Path | str, mission_id: str, *, runtime_root: Path | str | None = None) -> dict[str, Any]:
+scripts/lib/emp/codex_adapter.py:1027:def resume(repository: Path | str, mission_id: str, *, approval: bool = False,
+scripts/lib/emp/registry.py:122:    def validate(self) -> list[str]:
+scripts/lib/emp/registry.py:247:    def _validate_parents(self, schema_types: dict[str, Any], errors: list[str]) -> None:
+scripts/lib/emp/registry.py:264:    def _validate_ordering(self, errors: list[str]) -> None:
+scripts/lib/emp/registry.py:318:    def _validate_references(self, errors: list[str]) -> None:
+scripts/lib/emp/registry.py:389:    def _validate_authority_and_evidence(self, errors: list[str]) -> None:
+scripts/lib/emp/registry.py:419:    def _validate_transition_histories(self, errors: list[str]) -> None:
+scripts/lib/emp/registry.py:454:    def _validate_deferrals(self, errors: list[str]) -> None:
+scripts/lib/emp/registry.py:474:    def _validate_dependencies(self, errors: list[str]) -> None:
+scripts/lib/emp/registry.py:508:    def _validate_relationships(self, errors: list[str]) -> None:
+scripts/lib/emp/provider_selection.py:137:def _validate_live_lineage(
+scripts/lib/emp/submission_boundary.py:226:def _validate(wop: Path, repository: Path) -> dict[str, Any]:
+scripts/lib/emp/wop_schema.py:17:def validate_optional_approval_date(value: Any) -> bool:
+scripts/lib/emp/operator_interface.py:66:def validate_state(value: Any) -> dict[str, int]:
+scripts/lib/emp/operator_interface.py:169:def status(value: dict[str, int]) -> dict[str, Any]:
+scripts/lib/emp/autonomous_execution_lifecycle.py:134:    def _validate_authority(authoritative: Mapping[str, Any]) -> None:
+scripts/lib/emp/autonomous_execution_lifecycle.py:169:    def reconcile(self, authoritative: Mapping[str, Any], derived: Mapping[str, Any] | None = None, *, command: str = "status", policy: Mapping[str, Any] | None = None) -> dict[str, Any]:
+scripts/lib/emp/authority_publication.py:130:def validate_publication_payload(record_type: str, payload: Mapping[str, Any]) -> None:
+scripts/lib/emp/authority_publication.py:186:def commissioning_status(repository_root: Path | str) -> dict[str, Any]:
+scripts/lib/emp/mission_execution_runtime.py:135:    def _validate_evidence(entries):
+scripts/lib/emp/mission_execution_runtime.py:442:    def resume(self, execution_id: str, *, at: datetime, max_gates=None):
+scripts/lib/emp/mission_execution_runtime.py:688:    def _validate_binding(self, state, admission):
+scripts/lib/emp/wop_validation.py:39:def validate_metadata(metadata: Mapping[str, Any], *, source: Path | str = "<source>") -> ValidationResult:
+scripts/lib/emp/wop_validation.py:55:def validate_source(source: Path, repository_root: Path | str | None = None) -> ValidationResult:
+scripts/lib/emp/wop_validation.py:82:def validate_generated_package(package: Path) -> dict[str, Any]:
+scripts/lib/emp/oa06_gate_verification.py:131:def _validate(root: Path) -> dict[str, Any]:
+scripts/lib/emp/mission_eligibility.py:30:def _validate(candidate: Mapping[str, Any]) -> dict[str, Any]:
+scripts/lib/emp/mission_eligibility.py:115:def evaluate_file(path: Path | str) -> dict[str, Any]:
+scripts/lib/emp/publication_transaction.py:416:def _revalidate_authority(root: Path, record: Mapping[str, Any], runtime: Path) -> dict[str, Any]:
+scripts/lib/emp/publication_transaction.py:865:def status(root: Path | str, publication_or_mission: str, *, runtime_root: Path | str | None = None) -> dict[str, Any]:
+scripts/lib/emp/publication_transaction.py:947:def resume(root: Path | str, publication_id: str, *, runtime_root: Path | str | None = None, approve: bool = False) -> dict[str, Any]:
+scripts/lib/emp/reconciliation.py:139:    def validate(self) -> None:
+scripts/lib/emp/reconciliation.py:235:    def validate(self) -> None:
+scripts/lib/emp/reconciliation.py:310:def validate_store(value: Mapping[str, Any]) -> None:
+scripts/lib/emp/oa02_implementation.py:96:def validate_evidence(root: Path) -> dict[str, Any]:
+scripts/lib/emp/canonical_mission_lifecycle.py:161:def activate(root: Path | str, transaction: Mapping[str, Any], *, publication_approved: bool, eos_synchronized: bool, platform_validated: bool, fault_after: str | None = None) -> dict[str, Any]:
+scripts/lib/emp/orchestration.py:100:    def validate(self) -> None:
+scripts/lib/emp/orchestration.py:162:    def evaluate(self, *, observed_repository: str, observed_baseline: str,
+scripts/lib/emp/orchestration.py:279:    def status(self) -> dict[str, Any]:
+scripts/lib/emp/orchestration.py:290:    def validate(self) -> None:
+scripts/lib/emp/dispatch_authorization.py:73:def validate(repository: Path | str, request_record: dict[str, Any], receipt: dict[str, Any]) -> dict[str, Any]:
+scripts/lib/emp/stage1_runtime.py:333:def validate_package(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+scripts/lib/emp/stage1_runtime.py:753:    def _resume_development(self, record: dict[str, Any], baseline: str,
+scripts/lib/emp/stage1_runtime.py:919:    def status(self) -> dict[str, Any]:
+scripts/lib/emp/stage1_runtime.py:1006:    def _canonical_resume_readiness(self, record: Mapping[str, Any], *,
+scripts/lib/emp/stage1_runtime.py:1038:    def resume_transaction(self, identifier: str | None = None, *, at: datetime | None = None) -> dict[str, Any]:
+scripts/lib/emp/progressive_gate.py:149:def validate_receipt(root: Path | str, gate_id: str) -> dict[str, Any]:
+scripts/lib/emp/progressive_gate.py:301:    def validate_receipt(self, gate_id: str) -> dict[str, Any]:
+scripts/lib/emp/progressive_gate.py:548:    def _validate_rejection(
+scripts/lib/emp/wop_dispatch.py:89:    def validate(self) -> None:
+scripts/lib/emp/wop_dispatch.py:228:    def validate(self) -> None:
+scripts/lib/emp/wop_dispatch.py:389:    def status(self, wop_id: str) -> str:
+scripts/lib/emp/wop_dispatch.py:394:    def validate(self) -> None:
+scripts/lib/emp/wop_dispatch.py:422:    def _validate_context(
+scripts/lib/emp/work_authority_lifecycle.py:44:def validate_record(record: Mapping[str, Any]) -> dict[str, Any]:
+scripts/lib/emp/resume_continuation.py:79:    def resume(self, execution_id: str, *, mission_id: str, baseline: str,
+scripts/lib/emp/oa05_gate_verification.py:124:def validate_marker(root: Path | str) -> dict[str, Any]:
+scripts/lib/emp/evidence_qualification.py:121:    def validate(self) -> None:
+scripts/lib/emp/evidence_qualification.py:215:    def validate_structure(self) -> None:
+scripts/lib/emp/evidence_qualification.py:332:    def validate(self) -> None:
+scripts/lib/emp/evidence_qualification.py:375:    def evaluate(
+scripts/lib/emp/evidence_qualification.py:565:    def validate(self) -> None:
+scripts/lib/emp/wop_service.py:103:    def evaluate(self, *, bundle: Mapping[str, Any], wop_id: str) -> dict[str, Any]:
+scripts/lib/authority_wop/compatibility.py:132:    def evaluate(
+scripts/lib/authority/engine.py:336:    def validate(self) -> None:
+scripts/tests/test-wop-lifecycle-manager.py:370:    def test_restart_and_resume_reconstruct_identically(self) -> None:
+scripts/tests/test-wop-lifecycle-manager.py:421:    def test_cli_validates_and_resumes_persisted_state(self) -> None:
+scripts/tests/test-work-initiation-shadow.py:58:    def evaluate(self, legacy_authorized=True, state=None):
+scripts/tests/test-work-initiation-shadow.py:258:    def test_repository_resume_and_derived_state_are_not_authority_inputs(self) -> None:
+scripts/tests/test-mission-contract.py:109:    def test_suspend_and_resume(self):
+scripts/tests/test-zeus-mission-count-status.py:101:    def test_cli_status_fails_closed_on_corrupt_override_store(self):
+scripts/tests/test-authority-resolution.py:105:    def test_cli_validate_and_resolve(self) -> None:
+scripts/tests/test-progressive-runtime-execution-contracts.py:191:    def test_missing_resume_behavior_is_rejected(self) -> None:
+scripts/tests/test-progressive-runtime-execution-contracts.py:196:    def test_resume_restart_mismatch_is_rejected(self) -> None:
+scripts/tests/test-zeus-p5-g6-reconciliation.py:293:    def test_remote_status_uses_canonical_detached_projection(self):
+scripts/tests/test-zeus-gate-approval.py:424:    def test_stale_head_invalidates_verification(self):
+scripts/tests/test-zeus-gate-approval.py:432:    def test_evidence_digest_change_invalidates_verification(self):
+scripts/tests/test-zeus-gate-approval.py:444:    def test_wop_digest_change_invalidates_verification(self):
+scripts/tests/test-zeus-gate-approval.py:631:    def test_verification_checksum_tamper_invalidates_record(self):
+scripts/tests/test-zeus-gate-approval.py:639:    def test_operator_identity_change_invalidates_record(self):
+scripts/tests/test-work-initiation-enforcement.py:59:    def evaluate(self, legacy_authorized=False, mode="enforcement", **overrides):
+scripts/tests/test-zeus-publication-transaction-cohort-revalidation.py:107:    def _revalidate(self, record):
+scripts/tests/test-zeus-canonical-transaction-recovery.py:59:    def test_resume_migrates_and_replays_without_new_receipts(self):
+scripts/tests/test-zeus-canonical-transaction-recovery.py:257:    def test_readiness_defers_internal_dispatch_artifacts_to_resume(self):
+scripts/tests/test-authority-publication.py:401:    def test_production_commissioning_status_is_ready(self):
+scripts/tests/test-managed-codex-handoff.py:88:    def test_explicit_metadata_is_validated_not_authoritative(self):
+scripts/tests/test-managed-codex-handoff.py:129:    def test_compatible_stopped_session_resumes(self):
+scripts/tests/test-zeus-operator-interface.py:113:    def test_status_json_uses_live_beta_and_canonical_lifecycle_fields(self):
+scripts/tests/test-zeus-operator-interface.py:127:    def test_status_human_surface_contains_required_sections(self):
+scripts/tests/test-zeus-operator-interface.py:179:    def test_status_stdout_is_json_and_intro_review_survives_limit(self):
+scripts/tests/test-evidence-qualification.py:369:    def test_cli_validates_and_replays_history(self) -> None:
+scripts/tests/test-mission-execution-runtime.py:101:    def test_interruption_resume_skips_completed_gates_and_replay_is_idempotent(self):
+scripts/tests/test-mission-execution-runtime.py:117:    def test_waiting_dependency_resumes_current_gate_without_duplicate_completion(self):
+scripts/tests/test-zeus-oa04-current-context.py:33:    def test_current_status_is_convergence_only(self):
+scripts/tests/test-authority-wop-compatibility.py:61:    def evaluate(self, **overrides):
+scripts/tests/test-authority-wop-compatibility.py:103:    def evaluate_mutated_wop(self, wop: WorkPackage, **overrides):
+scripts/tests/test-zeus-p5-g6-execution-monitoring.py:73:    def test_work_state_derivation_converges_for_replay_status_and_verify(self):
+scripts/tests/test-zeus-p5-g6-execution-monitoring.py:131:    def test_cli_status_and_verify_are_machine_readable(self):
+scripts/tests/test-operational-alpha-status.py:119:    def test_dispatcher_status_uses_convergence_prerequisites_not_pmct(self) -> None:
+scripts/tests/test-governance-mission-admission-documentation.py:125:    def test_blocked_mission_resumes_without_readmission(self) -> None:
+scripts/tests/test-emp-management.py:112:    def test_dependency_milestone_deferral_and_status_operations(self) -> None:
+scripts/tests/test-zeus-p5-g6-codex-adapter.py:44:    def test_status_is_read_only_and_not_started_before_operator_action(self):
+scripts/tests/test-zeus-wave3-recovery.py:47:    def _checkpoint(self, *, status: str = "RESUMABLE", completed: list[str] | None = None,
+scripts/tests/test-zeus-wave3-recovery.py:59:    def test_checkpoint_interruption_resume_is_deterministic_and_idempotent(self) -> None:
+scripts/tests/test-zeus-wave3-recovery.py:91:    def test_missing_checkpoint_fails_closed_for_resume_but_is_truthful(self) -> None:
+scripts/tests/test-convergence-roadmap.py:2:"""Regression coverage for durable convergence roadmap persistence and resume."""
+scripts/tests/test-convergence-roadmap.py:21:from scripts.lib.eos.convergence_roadmap import (  # noqa: E402
+scripts/tests/test-convergence-roadmap.py:84:    def test_roadmap_parses_and_schema_validates(self):
+scripts/tests/test-convergence-roadmap.py:224:    def test_resume_projection_exposes_program_gate_and_next_action(self):
+scripts/tests/test-convergence-roadmap.py:347:    def test_cli_evaluate_reports_machine_readable_pass(self):
+scripts/tests/test-zeus-wop-authoring.py:83:    def test_markdown_and_docx_templates_validate(self):
+scripts/tests/test-zeus-wop-authoring.py:95:    def test_validate_failure_is_non_mutating_and_lists_fields(self):
+scripts/tests/test-reconciliation-closeout.py:475:    def test_resume_and_progress_are_immediately_consistent(self) -> None:
+scripts/tests/test-reconciliation-closeout.py:488:    def test_cli_validates_reconciled_state(self) -> None:
+scripts/tests/test-zeus-development-mode-recovery.py:84:    def test_interrupted_submission_resumes(self):
+scripts/tests/test-zeus-development-mode-recovery.py:172:    def test_receiptless_dispatched_state_rolls_back_on_resume(self):
+scripts/tests/test-operational-gate-handler.py:214:    def test_action_checkpoint_resume_skips_completed_action(self):
+scripts/tests/test-wop-execution-interface-reconciliation.py:19:    def test_status_resolves_the_single_active_execution(self):
+scripts/tests/test-wop-execution-interface-reconciliation.py:41:    def test_status_requires_an_id_when_active_execution_is_ambiguous(self):
+scripts/tests/test-operation-beta-authority-reconciliation.py:38:    def test_status_uses_beta_projection(self):
+scripts/tests/test-mission-admission-runtime.py:72:    def test_interruption_resume_and_replay_are_idempotent(self):
+scripts/tests/test-mission-admission-runtime.py:205:    def test_zeus_cli_runs_and_resumes_qualification_pipeline(self):
+scripts/tests/test-wop-supervised-dispatch.py:291:    def test_cli_validates_and_reports_dispatched(self) -> None:
+scripts/tests/test-zeus-gate-carry-forward.py:94:    def test_tampering_invalidates_record(self):
+scripts/tests/test-mission-orchestration.py:32:    def test_eligibility_evaluates_all_required_gates(self):
+scripts/tests/test-mission-orchestration.py:72:    def test_status_is_deterministic_and_complete(self):
+scripts/tests/test-mission-orchestration.py:84:        for prohibited in ("def select_mission","def evaluate_eligibility","dispatch(","execute_wop(","generate_wop("):
+scripts/tests/test-wop-contract.py:69:    def test_valid_contract_and_signature_validate(self) -> None:
+scripts/tests/test-wop-contract.py:208:    def test_cli_validate_and_evaluate(self) -> None:
+scripts/tests/test-execution-oversight.py:216:    def test_approval_pause_and_explicit_resume(self) -> None:
+scripts/tests/test-execution-oversight.py:293:    def test_disconnect_interruption_builds_resume_plan(self) -> None:
+scripts/tests/test-execution-oversight.py:401:    def test_cli_validates_and_replays(self) -> None:
+scripts/validate_controlled_documents.py:356:def semantic_validate_path(
+scripts/validate_controlled_documents.py:567:def validate_metadata(
+scripts/validate_controlled_documents.py:617:def validate_repository_relationships(
+scripts/validate_controlled_documents.py:664:def validate_governance_cycles(
+scripts/engctl:9:CONVERGENCE_ROADMAP="${CONVERGENCE_ROADMAP:-$SCRIPT_DIR/lib/eos/convergence_roadmap.py}"
+scripts/engctl:31:  engctl resume [project]

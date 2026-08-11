@@ -1,0 +1,97 @@
+schema_version: 1
+records:
+- path: scripts/lib/eos/convergence_roadmap.py
+  language: python
+  functions:
+  - name: _construct_unique_mapping
+    line_start: 54
+    line_end: 64
+  - name: _load_yaml
+    line_start: 73
+    line_end: 82
+  - name: _sha256
+    line_start: 85
+    line_end: 93
+  - name: _safe_repository_path
+    line_start: 96
+    line_end: 102
+  - name: _schema_validate
+    line_start: 105
+    line_end: 114
+  - name: _reject_runtime_identifiers
+    line_start: 117
+    line_end: 125
+  - name: _frontmatter
+    line_start: 128
+    line_end: 143
+  - name: _raise
+    line_start: 738
+    line_end: 739
+  - name: _format_status
+    line_start: 742
+    line_end: 774
+  - name: _parse_args
+    line_start: 777
+    line_end: 789
+  - name: main
+    line_start: 792
+    line_end: 832
+  - name: __init__
+    line_start: 149
+    line_end: 160
+  - name: validate
+    line_start: 162
+    line_end: 362
+  - name: evaluate
+    line_start: 364
+    line_end: 591
+  - name: _validate_project_state
+    line_start: 593
+    line_end: 617
+  - name: _validate_manifest
+    line_start: 619
+    line_end: 661
+  - name: _validate_evidence_manifest
+    line_start: 663
+    line_end: 685
+  - name: projection
+    line_start: 687
+    line_end: 735
+- path: scripts/engctl
+  language: shell_or_non_python
+  references:
+  - line: 9
+    text: CONVERGENCE_ROADMAP="${CONVERGENCE_ROADMAP:-$SCRIPT_DIR/lib/eos/convergence_roadmap.py}"
+  - line: 31
+    text: engctl resume [project]
+  - line: 32
+    text: engctl roadmap {status|show|gate CXX|results|validate|evaluate}
+  - line: 45
+    text: engctl defer {list|validate|apply|resume|history}
+  - line: 50
+    text: engctl mission contract {inspect|validate|resolve|admit|activate-request|recover|activate|suspend|resume|revoke|complete}
+  - line: 60
+    text: resume)
+  - line: 62
+    text: convergence_active=0
+  - line: 64
+    text: '&& -f "$(eos_project_root "$project")/engineering/convergence/engineering-system-convergence/roadmap.yaml" ]];
+      then'
+  - line: 65
+    text: convergence_active=1
+  - line: 66
+    text: python3 "$CONVERGENCE_ROADMAP" --repository-root "$(eos_project_root "$project")" resume
+  - line: 71
+    text: if [[ "$convergence_active" -eq 1 ]]; then
+  - line: 103
+    text: eos_render_resume "$project"
+  - line: 137
+    text: roadmap)
+  - line: 142
+    text: python3 "$CONVERGENCE_ROADMAP" --repository-root "$(eos_project_root homelab)" "$action" "$@"
+  - line: 145
+    text: '[[ "$#" -eq 1 ]] || { echo "ERROR: roadmap gate requires one gate ID" >&2; exit 2; }'
+  - line: 146
+    text: python3 "$CONVERGENCE_ROADMAP" --repository-root "$(eos_project_root homelab)" gate "$1"
+  - line: 148
+    text: '*) echo "ERROR: unknown roadmap action: $action" >&2; usage; exit 1 ;;'

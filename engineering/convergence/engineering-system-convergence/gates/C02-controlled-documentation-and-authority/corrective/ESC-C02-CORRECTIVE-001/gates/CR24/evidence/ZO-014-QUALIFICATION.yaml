@@ -1,0 +1,15 @@
+schema_version: 1
+record_id: CR24-ZO014-QUALIFICATION-001
+gate_id: CR24
+opportunity_id: ZO-014
+recorded_at: '2026-08-10T18:39:18Z'
+result: PASS
+qualification:
+  prospective_gate: CR25
+  action_surface: resume_instructions.next_authorized_action
+  action: EXECUTE_CR25_QUALIFY_RESULT_WITHOUT_ACCEPTANCE
+  action_count: 1
+  human_instructions_preserved: true
+  cr25_executed: false
+  state_advanced: false
+errors: []

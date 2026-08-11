@@ -1,0 +1,66 @@
+schema_version: 1
+gate_id: CR00
+title: Establish Corrective Baseline
+status: PENDING
+purpose: Create the authoritative starting record for ESC-C02-CORRECTIVE-001.
+objective: Create the authoritative starting record for ESC-C02-CORRECTIVE-001.
+dependencies: []
+entry_conditions:
+- Corrective STATE.yaml identifies this item as current.
+- All dependencies are COMPLETE.
+- Protected artifact manifest remains valid where applicable.
+authoritative_inputs:
+- ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+- ESC-C02-CORRECTIVE-001/STATE.yaml
+- ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- Parent C02 GATE.yaml
+- Parent C02 RESULT.yaml
+- Parent C02 evidence/VALIDATION.yaml
+- C02-F-027
+allowed_mutations:
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/**
+prohibited_mutations:
+- ESC C00 GATE.yaml
+- ESC C01 GATE.yaml
+- ESC C02 GATE.yaml
+- Existing parent C02 RESULT.yaml
+- Existing parent C02 assessment evidence
+- C02-F-001 through C02-F-026 remediation
+- C03 execution
+- Implicit EOS synchronization or refresh
+- Commit or push except at separately authorized future publication gates
+manual_procedure:
+- Verify repository root, main branch, HEAD and origin/main equal the published f2e85d8 baseline.
+- Verify corrective STATE.yaml identifies CR00 as current and no CR RESULT.yaml exists.
+- Verify parent C02 RESULT.yaml is COMPLETE_WITH_FINDINGS.
+- Verify checkpoint /data/engineering/recovery/c02-operator-review-20260810T032154Z exists.
+- Record repository identity, corrective identity, parent-gate identity, result digest, checkpoint identity, UTC
+  timestamp, and tool versions in STARTING-BASELINE.yaml.
+- Record the exact commands and observed values in evidence/COMMANDS.md.
+- Re-read every recorded path/digest and write evidence/VALIDATION.yaml.
+required_outputs:
+- STARTING-BASELINE.yaml
+required_evidence:
+- gates/CR00/evidence/COMMANDS.md
+- gates/CR00/evidence/VALIDATION.yaml
+acceptance_criteria:
+- Repository HEAD and origin/main equal f2e85d857dc73210c428d42ef9530ce9ffc4933b.
+- Parent C02 result is COMPLETE_WITH_FINDINGS.
+- Corrective current_item remains CR00 until CR00 RESULT/state transition is recorded.
+- Starting baseline contains repository, parent C02, corrective, checkpoint, and digest provenance.
+- No path outside the corrective subtree changed.
+- The next CR item is not executed in the same transaction.
+- Corrective STATE.yaml is advanced only after this item's result passes.
+fail_closed_conditions:
+- Protected artifact manifest mismatch
+- Dependency RESULT missing or not PASS/COMPLETE
+- Unexpected path mutation
+- Ambiguous or contradictory lifecycle state
+- Implicit EOS synchronization or refresh
+- Attempt to execute a later CR item
+stop_boundary: STOP_AFTER_THIS_ITEM
+result_location: gates/CR00/RESULT.yaml
+evidence_location: gates/CR00/evidence
+next_item: CR01
+resume_instructions: Read STATE.yaml. If current_item is CR00, verify dependencies and execute only CR00. Stop after
+  RESULT.yaml and STATE.yaml update.

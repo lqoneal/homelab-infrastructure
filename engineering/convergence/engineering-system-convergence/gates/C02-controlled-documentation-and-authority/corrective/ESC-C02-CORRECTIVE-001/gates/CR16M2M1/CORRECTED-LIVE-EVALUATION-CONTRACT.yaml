@@ -1,0 +1,27 @@
+schema_version: 1
+gate_id: CR16M2M1
+result: PASS
+classification: CR16M2_LIVE_EVALUATION_CONTRACT_ASSUMPTION_ERROR
+canonical_live_evaluation:
+  invocation: evaluate(compare_persisted=false)
+  roadmap_version: 2.0.2
+  structural_result: PASS
+  overall_result: PASS
+  executable: true
+  blockers: []
+persisted_evaluation_before_reconciliation:
+  roadmap_version: 2.0.0
+  overall_result: PASS
+  executable: true
+default_evaluation_before_reconciliation:
+  overall_result: NOT_EXECUTABLE
+  executable: false
+  cause: PERSISTED_EVALUATION_MISMATCH
+corrected_cr16m2_persistence_target:
+  roadmap_version: 2.0.2
+  overall_result: PASS
+  executable: true
+semantic_change_required: false
+stale_dimension: ROADMAP_BOUND_EVALUATION_IDENTITY
+persistence_mutation_performed: false
+next_item: CR16M2

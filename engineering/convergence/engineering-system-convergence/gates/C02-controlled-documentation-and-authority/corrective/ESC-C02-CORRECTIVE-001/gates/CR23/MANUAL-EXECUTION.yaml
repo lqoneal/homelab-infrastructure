@@ -1,0 +1,177 @@
+schema_version: 1
+contract_id: CR23-MANUAL-EXECUTION-001
+gate_id: CR23
+title: Implement Lifecycle Provenance
+established_at: '2026-08-10T14:33:18Z'
+authority:
+  gate_contract: gates/CR23/GATE.yaml
+  corrective_roadmap: ROADMAP.yaml
+  corrective_state: STATE.yaml
+  parent_gate: C02
+  current_item_required: CR23
+  dependency_required: CR22
+  next_item: CR24
+objective: Complete durable lifecycle provenance and directly affected controlled documentation.
+execution_mode: MANUAL_BOUNDED
+preconditions:
+- Corrective STATE.yaml identifies CR23 as current.
+- CR22 RESULT.yaml records COMPLETE/PASS.
+- Parent roadmap remains at C02.
+- CR23 RESULT.yaml is absent.
+- CR24 has not executed.
+- EMM has zero missing sources and zero drift.
+- Protected and authority-bearing inputs are captured before mutation.
+- The CR23 machine action contract is uniquely resolvable.
+implementation_scope:
+  lifecycle_provenance: true
+  controlled_document_reconciliation: true
+  emm_auto_rebinding: true
+  zeus_capabilities:
+  - ZO-005
+  - ZO-006
+  - ZO-007
+  - ZO-008
+  - ZO-009
+  - ZO-010
+  real_c02_advancement: false
+  successor_execution: false
+  eos_synchronization: false
+  commit: false
+  push: false
+required_provenance_bindings:
+- roadmap identity and version
+- gate identity
+- result identity and digest
+- operator authority
+- transaction identity
+- lifecycle state
+- acceptance or rejection receipt
+- pre-state identity
+- post-state identity
+- successor or terminal disposition
+emm_auto_rebinding:
+  requirement_id: ESC-EMM-AUTO-REBIND-001
+  requirements:
+  - Use one canonical authorized EMM rebinding primitive.
+  - Compute new digests from final repository bytes.
+  - Rebind only the exact authorized mutation set.
+  - Preserve unrelated bindings unchanged.
+  - Persist pre/post manifest identity and per-source old/new digests.
+  - Replace the EMM manifest atomically.
+  - Return ALREADY_RECONCILED for exact replay.
+  - Fail closed on conflicting replay.
+  - Fail closed on unauthorized or unexplained drift.
+  - Never mutate EMM from read-only status, resume, validation, evaluation, or inspection.
+  - Recover interrupted EMM writes deterministically.
+zeus_requirements:
+  ZO-005: Expose read-only EMM binding, drift, and authorized-reconciliation awareness.
+  ZO-006: Expose authoritative roadmap maturity, qualification, position, and next action.
+  ZO-007: Provide deterministic read-only manual-gate preflight.
+  ZO-008: Detect and reconcile stale nested corrective projections without parent advancement.
+  ZO-009: Enforce unique structured successor action contracts.
+  ZO-010: Expose exact-path EMM binding-scope introspection.
+ordered_execution:
+- step: 1
+  action: Verify repository identity, execution position, dependency, protected artifacts, EMM integrity,
+    and exact mutation boundary.
+- step: 2
+  action: Inventory existing durable lifecycle provenance for result review, acceptance/rejection, and
+    advancement.
+- step: 3
+  action: Capture pre-execution digests for every protected or authority-bearing source that may be affected.
+- step: 4
+  action: Implement missing generic lifecycle provenance bindings without advancing real C02.
+- step: 5
+  action: Implement ESC-EMM-AUTO-REBIND-001 as the single authorized atomic EMM reconciliation primitive.
+- step: 6
+  action: Implement or explicitly disposition ZO-005 through ZO-010 with qualified evidence.
+- step: 7
+  action: Reconcile STD-0006, PROC-0009, schemas, semantic profiles, CLI surfaces, and tests only where
+    directly affected.
+- step: 8
+  action: Run focused lifecycle, EMM replay/recovery, Zeus read-only, semantic, and mutation-boundary
+    qualification.
+- step: 9
+  action: Run complete convergence-roadmap and lifecycle regression suites plus canonical validation and
+    evaluation.
+- step: 10
+  action: Require zero unexplained EMM drift and prove read-only operations produced no EMM mutation.
+- step: 11
+  action: Write IMPLEMENTATION-CR23.yaml, COMMANDS.md, VALIDATION.yaml, SUMMARY.md, and RESULT.yaml only
+    after every acceptance criterion passes.
+- step: 12
+  action: Append corrective HISTORY.md and advance corrective STATE.yaml exactly once from CR23 to CR24.
+- step: 13
+  action: Stop immediately. Do not execute CR24.
+acceptance_criteria:
+- Lifecycle transitions leave independently verifiable provenance.
+- Controlled documentation matches implemented generic behavior.
+- Targeted semantic validation passes.
+- Real C02 remains awaiting operator review and unaccepted by the new interface.
+- The next CR item is not executed in the same transaction.
+- Corrective STATE.yaml is advanced only after this item's result passes.
+- SUMMARY.md exists and accurately summarizes the gate objective, result, material findings/decisions,
+  validation, artifacts, mutation boundary, and next authorized item.
+- Corrective HISTORY.md contains a human-readable entry for this completed gate.
+- Every ordered manual-procedure step applicable to this gate is either PASS with evidence or explicitly
+  NOT_APPLICABLE with justification.
+- All gate-specific expected outcomes are independently reproducible from durable repository state.
+- Pre/post protected-artifact and authority-surface comparisons prove the mutation boundary.
+- Interruption or failure cannot silently authorize successor execution.
+- ZO-005 is implemented or explicitly dispositioned with qualified evidence.
+- ZO-006 is implemented or explicitly dispositioned with qualified evidence.
+- ZO-007 is implemented or explicitly dispositioned with qualified evidence.
+- Zeus distinguishes authorized EMM reconciliation from unauthorized drift.
+- Zeus distinguishes hardened roadmap scope from qualified executable scope.
+- Zeus provides deterministic read-only manual-gate preflight.
+- Authorized roadmap-controlled source changes automatically reconcile required EMM bindings without manual
+  digest editing.
+- EMM automatic reconciliation is limited to the exact authorized mutation set.
+- Unauthorized or unexplained EMM source drift continues to fail closed.
+- Read-only commands cannot automatically alter EMM bindings.
+- EMM rebinding provenance is durable and independently verifiable.
+- ZO-008 is implemented or explicitly dispositioned with qualified evidence.
+- ZO-009 is implemented or explicitly dispositioned with qualified evidence.
+- ZO-010 is implemented or explicitly dispositioned with qualified evidence.
+fail_closed_conditions:
+- Protected artifact manifest mismatch
+- Dependency RESULT missing or not PASS/COMPLETE
+- Unexpected path mutation
+- Ambiguous or contradictory lifecycle state
+- Implicit EOS synchronization or refresh
+- Attempt to execute a later CR item
+- Required manual-procedure step lacks reproducible evidence.
+- Pre/post authority or protected-artifact state cannot be compared exactly.
+- Execution would require an unstated architectural or authority decision.
+required_outputs:
+- gates/CR23/IMPLEMENTATION-CR23.yaml
+- gates/CR23/SUMMARY.md
+- gates/CR23/RESULT.yaml
+- gates/CR23/evidence/COMMANDS.md
+- gates/CR23/evidence/VALIDATION.yaml
+mutation_boundary:
+  allowed:
+  - scripts/lib/eos/convergence_roadmap.py
+  - scripts/engctl
+  - scripts/tests/test-convergence-roadmap.py
+  - engineering/convergence/engineering-system-convergence/schemas/**
+  - docs/standards/STD-0006-ENGINEERING_EXECUTABLE_ROADMAP_STANDARD.md
+  - docs/procedures/PROC-0009-EXECUTABLE_ROADMAP_EVALUATION_PROCEDURE.md
+  - engineering/validation/controlled-document-semantic-profiles.yaml
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/**
+  prohibited:
+  - ESC C00 GATE.yaml
+  - ESC C01 GATE.yaml
+  - ESC C02 GATE.yaml
+  - Existing parent C02 RESULT.yaml
+  - Existing parent C02 assessment evidence
+  - C02-F-001 through C02-F-026 remediation
+  - C03 execution
+  - Implicit EOS synchronization or refresh
+  - Commit or push except at separately authorized future publication gates
+state_transition:
+  from: CR23
+  to: CR24
+  authorized_only_after_result_pass: true
+  execute_successor: false
+  stop_boundary: STOP_AFTER_THIS_ITEM

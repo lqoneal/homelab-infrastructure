@@ -1,0 +1,22 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR01
+validated_at: '2026-08-10T03:57:59Z'
+result: PASS
+
+checks:
+  cr00_dependency: PASS
+  repository_identity: PASS
+  head_origin_parity: PASS
+  parent_state_captured: PASS
+  corrective_state_captured: PASS
+  c02_assessment_captured: PASS
+  controller_state_captured: PASS
+  c02_f027_reproduced: PASS
+  starting_state_complete: PASS
+  protected_digests_verified: PASS
+  implementation_unchanged: PASS
+  frozen_history_unchanged: PASS
+  next_item_executed: false
+
+next_authorized_item: CR02

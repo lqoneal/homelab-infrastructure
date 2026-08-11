@@ -1,0 +1,35 @@
+schema_version: 1
+gate_id: CR42
+classification: PREPUBLICATION_REQUALIFICATION
+recorded_at: '2026-08-11T12:23:45.967348+00:00'
+result: PASS
+current_operation: OPERATION_BETA
+operation_alpha: HISTORICAL_OBSOLETE
+oa_authority_disagreement_allowed: false
+oa_test_failure_count: 1
+oa_test_failures_block_cr42: false
+semantic_profile_blocker: CLOSED
+stale_transient_test_blocker: CLOSED
+protected_manifest_rebind: PASS
+protected_snapshot_coverage: COMPLETE
+cr42_result_written: false
+state_advanced: false
+cr43_executed: false
+eos_synchronized: false
+commit_created: false
+push_performed: false
+return_codes:
+  authority_rc: 0
+  recovery_rc: 0
+  test_delta_rc: 0
+  manifest_delta_rc: 0
+  prestate_rc: 0
+  lifecycle_rc: 0
+  roadmap_validate_rc: 0
+  roadmap_evaluate_rc: 0
+  current_test_rc: 0
+  ob_rc: 0
+  binding_rc: 0
+  protected_rc: 0
+  poststate_rc: 0
+  boundary_rc: 0

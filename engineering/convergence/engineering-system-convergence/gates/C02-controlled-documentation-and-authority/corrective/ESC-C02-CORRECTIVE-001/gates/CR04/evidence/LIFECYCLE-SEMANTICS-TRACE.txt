@@ -1,0 +1,31 @@
+# Controller result/completion/current-gate semantics
+
+30:TERMINAL_RESULTS = {"COMPLETE", "COMPLETE_WITH_FINDINGS"}
+245:        completed = state["completed_gates"]
+248:        current = state["current_gate"]
+306:            result_path = _safe_repository_path(self.repository_root, gate["result_location"], f"{gate_id} result")
+308:                result = _load_yaml(result_path, f"{gate_id} result")
+313:                if result["result"] not in TERMINAL_RESULTS:
+329:            elif result_path.exists():
+330:                raise RoadmapError(f"{gate_id} has a result but is not completed")
+332:        if state["last_completed_gate"] != (completed[-1] if completed else None):
+333:            raise RoadmapError("last_completed_gate disagrees with completed_gates")
+334:        last_result = gates[state["last_completed_gate"]]["result_location"] if completed else None
+345:        current_gate = gates[current]
+346:        if state["next_authorized_action"] != current_gate["resume_instructions"]["next_authorized_action"]:
+600:        if not str(value.get("phase", "")).startswith(state["current_gate"]):
+609:            "current_gate": state["current_gate"],
+610:            "next_authorized_action": state["next_authorized_action"],
+645:        required.update(gates[gate_id]["result_location"] for gate_id in state["completed_gates"])
+691:        gate = resolved["gates"][state["current_gate"]]
+701:            "current_gate": state["current_gate"],
+702:            "current_gate_title": gate["title"],
+703:            "last_completed_gate": state["last_completed_gate"],
+704:            "completed_gates": state["completed_gates"],
+707:            "next_authorized_action": state["next_authorized_action"],
+712:                next(item["definition"] for item in roadmap["gates"] if item["gate_id"] == state["current_gate"]),
+743:    completed = ", ".join(value["completed_gates"]) or "none"
+759:        f"Current Gate: {value['current_gate']} — {value['current_gate_title']}",
+760:        f"Last Completed Gate: {value['last_completed_gate'] or 'none'}",
+763:        f"Next Authorized Action: {value['next_authorized_action']}",
+824:            for gate_id in resolved["state"]["completed_gates"]:

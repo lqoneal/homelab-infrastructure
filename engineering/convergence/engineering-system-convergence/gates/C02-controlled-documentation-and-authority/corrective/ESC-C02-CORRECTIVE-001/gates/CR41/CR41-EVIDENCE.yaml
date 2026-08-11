@@ -1,0 +1,18 @@
+schema_version: 1
+gate_id: CR41
+result: PASS
+execution_type: FRESH_SHELL_COLD_RESUME
+objective: Verify fresh-shell resume independently derives AWAITING_OPERATOR_REVIEW.
+derived_state: AWAITING_OPERATOR_REVIEW
+derived_review_state: AWAITING_OPERATOR_REVIEW
+resume_result: PASS
+read_only: true
+acceptance_performed: false
+state_advanced: false
+successor_executed: false
+stdout_sha256: 578ff231e665d53991d880208a84e81ff1f42ca20a763231e3e56c413732cdbd
+stderr_sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+observed_next_authorized_action: EXECUTE_CR41_COLD_RESUME_REAL_C02
+current_operation: OPERATION_BETA
+operation_alpha: HISTORICAL_OBSOLETE
+qualified_at: '2026-08-11T11:36:00.260128+00:00'

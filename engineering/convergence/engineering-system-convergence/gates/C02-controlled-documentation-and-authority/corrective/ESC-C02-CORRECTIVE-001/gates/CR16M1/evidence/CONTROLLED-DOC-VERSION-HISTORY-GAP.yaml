@@ -1,0 +1,22 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR16M1
+finding_id: C02-F-030
+finding: CONTROLLED_DOCUMENT_VERSION_HISTORY_TABLE_LAG
+result: RECORDED
+documents:
+- path: docs/standards/STD-0006-ENGINEERING_EXECUTABLE_ROADMAP_STANDARD.md
+  document_id: STD-0006
+  frontmatter_version: '1.2'
+  revision_table_versions:
+  - '1.0'
+  current_version_present_in_revision_table: false
+- path: docs/procedures/PROC-0009-EXECUTABLE_ROADMAP_EVALUATION_PROCEDURE.md
+  document_id: PROC-0009
+  frontmatter_version: '1.2'
+  revision_table_versions:
+  - '1.0'
+  current_version_present_in_revision_table: false
+disposition: DEFER_REPAIR_TO_SEPARATELY_AUTHORIZED_DOCUMENT_VERSION_HISTORY_MATURITY_CORRECTIVE
+blocks_cr16m1_emm_provenance: false
+controlled_documents_modified: false

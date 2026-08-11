@@ -1,0 +1,26 @@
+schema_version: 1
+record_id: CR40-RESOLVER-GAP-CLASSIFICATION-001
+gate_id: CR40
+recorded_at: '2026-08-11T05:08:21Z'
+result: PASS
+existing_capability:
+  resolver_present: true
+  read_only: true
+  deterministic: true
+  fail_closed: true
+  authority_preserving: true
+observed_failure:
+  exception_type: RoadmapError
+  exception_message: 'gate locator is not uniquely resolvable: CR40'
+proven_gap:
+  classification: INSUFFICIENT_GATE_LOCATOR_CONTEXT_FOR_NESTED_CORRECTIVE_GATE
+  new_resolver_required: false
+  resolver_extension_or_existing_context_binding_required: true
+  greenfield_resolver_creation_authorized: false
+  parallel_resolver_authorized: false
+required_next_qualification:
+- Determine whether an existing contextual gate locator can be reused.
+- Prefer passing canonical corrective context into the existing resolver.
+- Do not introduce a parallel resolver.
+- Bound any implementation to contextual disambiguation only.
+- Verify resolution remains read-only and non-executing.

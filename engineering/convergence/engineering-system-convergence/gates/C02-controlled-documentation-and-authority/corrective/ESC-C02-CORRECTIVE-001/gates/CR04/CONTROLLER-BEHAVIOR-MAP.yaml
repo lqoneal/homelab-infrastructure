@@ -1,0 +1,42 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR04
+finding_id: C02-F-027
+captured_at: '2026-08-10T04:05:38Z'
+result: TRACE_COMPLETE
+controller:
+  path: scripts/lib/eos/convergence_roadmap.py
+  sha256: adc340c4b3f30aeeb724a973c033bfcf6838e509fcf68c6fb708a2bcfd76395c
+  failure_line: 330
+  failure_owner: ConvergenceRoadmap.validate
+  failure_owner_start: 162
+  failure_owner_end: 362
+observed_surfaces:
+  roadmap_validate:
+    exit_code: 1
+    reaches_c02_f027: true
+  roadmap_evaluate:
+    exit_code: 1
+    reaches_c02_f027: true
+  roadmap_status:
+    exit_code: 1
+    reaches_c02_f027: true
+  engctl_resume:
+    exit_code: 1
+    reaches_c02_f027: true
+    required_semantics: READ_ONLY
+current_lifecycle_model:
+  completed_gate: Gate must be listed in completed_gates before an existing result is accepted by controller validation.
+  current_gate_with_result: Rejected by controller with C02-F-027.
+  pending_operator_review: No valid representation currently exists for the C02 post-execution/pre-acceptance condition.
+required_corrective_capabilities:
+- Represent execution-complete/current-gate state explicitly.
+- Represent pending operator review without implying acceptance.
+- Validate RESULT and evidence while gate remains current.
+- Keep read-only validate/evaluate/status/resume functional.
+- Provide a separate explicit operator-acceptance transition.
+- Advance completed_gates only through explicit acceptance.
+- Select the next gate deterministically after acceptance.
+- Reject stale, mismatched, invalid, or unsupported results.
+- Preserve idempotent or fail-safe replay semantics.
+implementation_changed: false

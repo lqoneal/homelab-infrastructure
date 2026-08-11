@@ -1,0 +1,305 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR07
+finding_id: C02-F-027
+artifact: TRANSITION-MATRIX.yaml
+status: DEFINED_NOT_IMPLEMENTED
+purpose: Define every explicitly allowed lifecycle transition and make all other state changes fail closed.
+source_vocabulary: gates/CR06/LIFECYCLE-STATE-VOCABULARY.yaml
+states:
+- PENDING
+- CURRENT
+- RESULT_RECORDED
+- AWAITING_OPERATOR_REVIEW
+- ACCEPTED
+- REJECTED
+- COMPLETED
+- BLOCKED
+allowed_transitions:
+- from: PENDING
+  to: CURRENT
+  transition_id: LST-001
+  authority: ROADMAP_SUCCESSOR_ACTIVATION
+  preconditions:
+  - All gate dependencies are complete.
+  - Gate is the deterministic authorized successor.
+  - No conflicting current gate exists.
+  effects:
+  - Gate becomes current.
+  - No execution result is implied.
+- from: CURRENT
+  to: RESULT_RECORDED
+  transition_id: LST-002
+  authority: QUALIFIED_GATE_EXECUTION
+  preconditions:
+  - Gate execution completes.
+  - A structurally valid terminal result is persisted.
+  - Required evidence exists.
+  effects:
+  - Result existence becomes true.
+  - Operator acceptance remains NONE.
+- from: RESULT_RECORDED
+  to: AWAITING_OPERATOR_REVIEW
+  transition_id: LST-003
+  authority: LIFECYCLE_PROJECTION
+  preconditions:
+  - Result validates against the exact gate identity.
+  - Required evidence validates.
+  - Operator decision is NONE.
+  - Review is required.
+  effects:
+  - Gate remains current.
+  - Operator review becomes the next authorized lifecycle action.
+- from: AWAITING_OPERATOR_REVIEW
+  to: ACCEPTED
+  transition_id: LST-004
+  authority: EXPLICIT_AUTHORIZED_OPERATOR_DECISION
+  preconditions:
+  - Review receipt binds exact roadmap and gate.
+  - Review receipt binds exact result identity and digest.
+  - Decision is ACCEPT.
+  effects:
+  - Operator decision becomes ACCEPT.
+  - Gate is not yet completed.
+  - Successor is not yet activated.
+- from: AWAITING_OPERATOR_REVIEW
+  to: REJECTED
+  transition_id: LST-005
+  authority: EXPLICIT_AUTHORIZED_OPERATOR_DECISION
+  preconditions:
+  - Review receipt binds exact roadmap and gate.
+  - Review receipt binds exact result identity and digest.
+  - Decision is REJECT.
+  effects:
+  - Operator decision becomes REJECT.
+  - Gate may not transition directly to COMPLETED.
+- from: ACCEPTED
+  to: COMPLETED
+  transition_id: LST-006
+  authority: QUALIFIED_ADVANCEMENT_TRANSACTION
+  preconditions:
+  - Accepted result remains valid and digest-bound.
+  - Gate completion invariants pass.
+  - Successor selection is deterministic or gate is terminal.
+  effects:
+  - Gate enters completed historical state.
+  - If nonterminal, deterministic successor may be activated atomically.
+  - If terminal, roadmap enters explicit terminal condition.
+- from: REJECTED
+  to: CURRENT
+  transition_id: LST-007
+  authority: EXPLICIT_REEXECUTION_AUTHORIZATION
+  preconditions:
+  - A new execution attempt is explicitly authorized.
+  - Rejected result remains preserved as historical evidence.
+  - No prior result is silently overwritten.
+  effects:
+  - Gate remains the current gate for a new execution attempt.
+  - Previous rejected decision remains durable provenance.
+- from: CURRENT
+  to: BLOCKED
+  transition_id: LST-008
+  authority: FAIL_CLOSED_LIFECYCLE_VALIDATION
+  preconditions:
+  - A required invariant, prerequisite, artifact, authority, or state relationship fails validation.
+  effects:
+  - Further progression is prohibited.
+  - No operator acceptance or completion is invented.
+- from: RESULT_RECORDED
+  to: BLOCKED
+  transition_id: LST-009
+  authority: FAIL_CLOSED_LIFECYCLE_VALIDATION
+  preconditions:
+  - A required invariant, prerequisite, artifact, authority, or state relationship fails validation.
+  effects:
+  - Further progression is prohibited.
+  - No operator acceptance or completion is invented.
+- from: AWAITING_OPERATOR_REVIEW
+  to: BLOCKED
+  transition_id: LST-010
+  authority: FAIL_CLOSED_LIFECYCLE_VALIDATION
+  preconditions:
+  - A required invariant, prerequisite, artifact, authority, or state relationship fails validation.
+  effects:
+  - Further progression is prohibited.
+  - No operator acceptance or completion is invented.
+- from: ACCEPTED
+  to: BLOCKED
+  transition_id: LST-011
+  authority: FAIL_CLOSED_LIFECYCLE_VALIDATION
+  preconditions:
+  - A required invariant, prerequisite, artifact, authority, or state relationship fails validation.
+  effects:
+  - Further progression is prohibited.
+  - No operator acceptance or completion is invented.
+- from: REJECTED
+  to: BLOCKED
+  transition_id: LST-012
+  authority: FAIL_CLOSED_LIFECYCLE_VALIDATION
+  preconditions:
+  - A required invariant, prerequisite, artifact, authority, or state relationship fails validation.
+  effects:
+  - Further progression is prohibited.
+  - No operator acceptance or completion is invented.
+forbidden_transitions:
+- from: PENDING
+  to: RESULT_RECORDED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: PENDING
+  to: AWAITING_OPERATOR_REVIEW
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: PENDING
+  to: ACCEPTED
+  reason: Result existence or execution state may not bypass explicit operator review/acceptance.
+- from: PENDING
+  to: REJECTED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: PENDING
+  to: COMPLETED
+  reason: Result existence or execution state may not bypass explicit operator review/acceptance.
+- from: PENDING
+  to: BLOCKED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: CURRENT
+  to: PENDING
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: CURRENT
+  to: AWAITING_OPERATOR_REVIEW
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: CURRENT
+  to: ACCEPTED
+  reason: Result existence or execution state may not bypass explicit operator review/acceptance.
+- from: CURRENT
+  to: REJECTED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: CURRENT
+  to: COMPLETED
+  reason: Result existence or execution state may not bypass explicit operator review/acceptance.
+- from: RESULT_RECORDED
+  to: PENDING
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: RESULT_RECORDED
+  to: CURRENT
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: RESULT_RECORDED
+  to: ACCEPTED
+  reason: Result existence or execution state may not bypass explicit operator review/acceptance.
+- from: RESULT_RECORDED
+  to: REJECTED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: RESULT_RECORDED
+  to: COMPLETED
+  reason: Result existence or execution state may not bypass explicit operator review/acceptance.
+- from: AWAITING_OPERATOR_REVIEW
+  to: PENDING
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: AWAITING_OPERATOR_REVIEW
+  to: CURRENT
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: AWAITING_OPERATOR_REVIEW
+  to: RESULT_RECORDED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: AWAITING_OPERATOR_REVIEW
+  to: COMPLETED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: ACCEPTED
+  to: PENDING
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: ACCEPTED
+  to: CURRENT
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: ACCEPTED
+  to: RESULT_RECORDED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: ACCEPTED
+  to: AWAITING_OPERATOR_REVIEW
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: ACCEPTED
+  to: REJECTED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: REJECTED
+  to: PENDING
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: REJECTED
+  to: RESULT_RECORDED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: REJECTED
+  to: AWAITING_OPERATOR_REVIEW
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: REJECTED
+  to: ACCEPTED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: REJECTED
+  to: COMPLETED
+  reason: A rejected result cannot become completed.
+- from: COMPLETED
+  to: PENDING
+  reason: Completed historical state is immutable.
+- from: COMPLETED
+  to: CURRENT
+  reason: Completed historical state is immutable.
+- from: COMPLETED
+  to: RESULT_RECORDED
+  reason: Completed historical state is immutable.
+- from: COMPLETED
+  to: AWAITING_OPERATOR_REVIEW
+  reason: Completed historical state is immutable.
+- from: COMPLETED
+  to: ACCEPTED
+  reason: Completed historical state is immutable.
+- from: COMPLETED
+  to: REJECTED
+  reason: Completed historical state is immutable.
+- from: COMPLETED
+  to: BLOCKED
+  reason: Completed historical state is immutable.
+- from: BLOCKED
+  to: PENDING
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: BLOCKED
+  to: CURRENT
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: BLOCKED
+  to: RESULT_RECORDED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: BLOCKED
+  to: AWAITING_OPERATOR_REVIEW
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: BLOCKED
+  to: ACCEPTED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: BLOCKED
+  to: REJECTED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+- from: BLOCKED
+  to: COMPLETED
+  reason: Transition is not explicitly authorized by the lifecycle design and therefore fails closed.
+global_invariants:
+- id: LTM-INV-001
+  rule: No transition may infer operator acceptance from RESULT existence.
+- id: LTM-INV-002
+  rule: No transition may skip AWAITING_OPERATOR_REVIEW when review is required.
+- id: LTM-INV-003
+  rule: Only explicit authorized operator authority may produce ACCEPTED or REJECTED.
+- id: LTM-INV-004
+  rule: Only an ACCEPTED gate may progress to COMPLETED.
+- id: LTM-INV-005
+  rule: COMPLETED is immutable historical state.
+- id: LTM-INV-006
+  rule: Unknown or unlisted transitions fail closed.
+- id: LTM-INV-007
+  rule: Inspection, evaluation, status, and resume do not cause mutating lifecycle transitions.
+- id: LTM-INV-008
+  rule: Exact transaction replay is idempotent or returns an already-applied result; conflicting replay fails closed.
+blocked_semantics:
+  entry: BLOCKED may be entered only when validation detects a condition that makes continued progression unsafe.
+  exit: BLOCKED does not have an implicit forward transition. After the blocker is corrected, lifecycle state must
+    be re-derived from authoritative persisted facts or an explicit recovery transaction defined by later design
+    gates.
+  acceptance_implied: false
+  completion_implied: false
+terminal_gate_semantics:
+  accepted_final_gate: ACCEPTED may transition to COMPLETED without selecting a nonexistent successor.
+  roadmap_result: The roadmap enters an explicit terminal-complete condition.
+implementation_authorized: false
+next_design_item: CR08

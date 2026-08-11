@@ -1,0 +1,35 @@
+schema_version: 1
+gate_id: CR16M2
+result: PASS
+before:
+  parent_state:
+    path: engineering/convergence/engineering-system-convergence/STATE.yaml
+    sha256: 23924fa1ba56c66a6fdc5213ebaaeddf7f02823bc07ccf20d369a380cf27f028
+    executable_qualification:
+      result: PASS
+      executable: true
+  persisted_evaluation:
+    path: engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml
+    sha256: dde3c5319c9cd556eda78ae4462d181c0c99b78ff19f1f00d3a07e062450d3cd
+    roadmap_version: 2.0.0
+    overall_result: PASS
+    executable: true
+  manifest:
+    path: engineering/convergence/engineering-system-convergence/binding-manifest.yaml
+    sha256: 45073a313d6bc743395cbdcae4c0ef7bfa406e95c397c6f215062c5e7a03c502
+after:
+  parent_state:
+    path: engineering/convergence/engineering-system-convergence/STATE.yaml
+    sha256: 23924fa1ba56c66a6fdc5213ebaaeddf7f02823bc07ccf20d369a380cf27f028
+    executable_qualification:
+      result: PASS
+      executable: true
+      standard: STD-0006@1.0
+      procedure: PROC-0009@1.0
+      evaluation_result: engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml
+  persisted_evaluation:
+    path: engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml
+    sha256: 8144b0fbf644b63566b5f2f648681e7c127c18e8839b9be95edf07e2e02f5785
+    roadmap_version: 2.0.2
+    overall_result: PASS
+    executable: true

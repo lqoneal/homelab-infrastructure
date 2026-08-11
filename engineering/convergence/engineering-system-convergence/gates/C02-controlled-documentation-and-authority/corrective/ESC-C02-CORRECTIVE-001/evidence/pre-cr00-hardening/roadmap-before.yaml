@@ -1,0 +1,266 @@
+schema_version: 2
+roadmap_id: ESC-ROADMAP-001
+roadmap_version: 2.0.0
+program_id: ENGINEERING-SYSTEM-CONVERGENCE
+program_title: Engineering System Convergence
+classification: AUTHORITATIVE_EXECUTABLE_ROADMAP
+roadmap_class: EXECUTABLE
+purpose: Establish a durable, repository-authoritative assessment and convergence sequence that can be resumed without
+  conversational history.
+authority_model:
+  planning_owner: Engineering Governance through this roadmap
+  gate_state_owner: STATE.yaml under this roadmap root
+  project_resume_owner: PROJ-0001 Project State binding to this roadmap
+  binding_and_drift_owner: EMM
+  qualification_owner: PROC-0009
+  execution_authority: SEPARATE_AUTHORITY_REQUIRED
+  queue_model:
+    current_authority: ESC-ROADMAP-001
+    current_role: ACTIVE
+    future_authority: ZEUS_STAGING
+    transfer_condition: Transfer only after Zeus staging exposes an equivalent reviewed queue contract and the operator
+      accepts the authority transition.
+  mutation_policy:
+    pending_only: true
+    immutable_lifecycles:
+    - COMPLETE
+    - CURRENT
+    historical_model: APPEND_ONLY
+    maturity_model: PROSPECTIVE
+repository:
+  identity: homelab
+  root: /data/engineering/repositories/homelab
+  baseline: 6a26d2ea378248a4a9e9fe0d58b5df1c45a8c882
+  preservation:
+    reference: preservation/ob-lifecycle-pre-rebuild-20260809T235039Z
+    commit: 4f5626d39f0924d3551cdabfcb61788153706774
+    mode: REFERENCE_ONLY
+project_state_path: docs/project/PROJ-0001-PROJECT_STATE.md
+state_path: engineering/convergence/engineering-system-convergence/STATE.yaml
+binding_manifest: engineering/convergence/engineering-system-convergence/binding-manifest.yaml
+evaluation_contract:
+  standard: STD-0006@1.0
+  procedure: PROC-0009@1.0
+  playbook_catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  playbook_schema: engineering/convergence/engineering-system-convergence/schemas/execution-playbook.schema.yaml
+  evaluation_schema: engineering/convergence/engineering-system-convergence/schemas/roadmap-evaluation.schema.yaml
+  persisted_evaluation: engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml
+gates:
+- gate_id: C00
+  gate_identity: ESC-GATE-C00
+  roadmap_order: 0
+  definition: engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/RESULT.yaml
+  contract_provenance:
+    contract_generation: HISTORICAL_FROZEN
+    lifecycle: COMPLETE
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate-historical-v1.schema.yaml
+    standard_applicability: NOT_APPLICABLE
+- gate_id: C01
+  gate_identity: ESC-GATE-C01
+  roadmap_order: 10
+  definition: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml
+  contract_provenance:
+    contract_generation: HISTORICAL_FROZEN
+    lifecycle: COMPLETE
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate-historical-v1.schema.yaml
+    standard_applicability: NOT_APPLICABLE
+- gate_id: C02
+  gate_identity: ESC-GATE-C02
+  roadmap_order: 20
+  definition: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/RESULT.yaml
+  contract_provenance:
+    contract_generation: ACTIVATION_FROZEN
+    lifecycle: CURRENT
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate-historical-v1.schema.yaml
+    standard_applicability: NOT_APPLICABLE
+- gate_id: C03
+  gate_identity: ESC-GATE-C03
+  roadmap_order: 30
+  definition: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C04
+  gate_identity: ESC-GATE-C04
+  roadmap_order: 40
+  definition: engineering/convergence/engineering-system-convergence/gates/C04-engctl-and-resume/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C04-engctl-and-resume/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C05
+  gate_identity: ESC-GATE-C05
+  roadmap_order: 50
+  definition: engineering/convergence/engineering-system-convergence/gates/C05-roadmap-project-state-registry/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C05-roadmap-project-state-registry/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C06
+  gate_identity: ESC-GATE-C06
+  roadmap_order: 60
+  definition: engineering/convergence/engineering-system-convergence/gates/C06-wop-and-execution-contract/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C06-wop-and-execution-contract/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C07
+  gate_identity: ESC-GATE-C07
+  roadmap_order: 70
+  definition: engineering/convergence/engineering-system-convergence/gates/C07-emp/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C07-emp/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C08
+  gate_identity: ESC-GATE-C08
+  roadmap_order: 80
+  definition: engineering/convergence/engineering-system-convergence/gates/C08-zeus/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C08-zeus/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C09
+  gate_identity: ESC-GATE-C09
+  roadmap_order: 90
+  definition: engineering/convergence/engineering-system-convergence/gates/C09-eens/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C09-eens/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C10
+  gate_identity: ESC-GATE-C10
+  roadmap_order: 100
+  definition: engineering/convergence/engineering-system-convergence/gates/C10-provider-codex-runtime/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C10-provider-codex-runtime/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C11
+  gate_identity: ESC-GATE-C11
+  roadmap_order: 110
+  definition: engineering/convergence/engineering-system-convergence/gates/C11-evidence-qualification-acceptance/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C11-evidence-qualification-acceptance/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C12
+  gate_identity: ESC-GATE-C12
+  roadmap_order: 120
+  definition: engineering/convergence/engineering-system-convergence/gates/C12-git-publication-synchronization/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C12-git-publication-synchronization/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C13
+  gate_identity: ESC-GATE-C13
+  roadmap_order: 130
+  definition: engineering/convergence/engineering-system-convergence/gates/C13-recovery-interruption-resume/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C13-recovery-interruption-resume/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C14
+  gate_identity: ESC-GATE-C14
+  roadmap_order: 140
+  definition: engineering/convergence/engineering-system-convergence/gates/C14-validation-tests-observability/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C14-validation-tests-observability/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C15
+  gate_identity: ESC-GATE-C15
+  roadmap_order: 150
+  definition: engineering/convergence/engineering-system-convergence/gates/C15-cross-system-authority-reconciliation/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C15-cross-system-authority-reconciliation/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C16
+  gate_identity: ESC-GATE-C16
+  roadmap_order: 160
+  definition: engineering/convergence/engineering-system-convergence/gates/C16-redundancy-simplification/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C16-redundancy-simplification/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C17
+  gate_identity: ESC-GATE-C17
+  roadmap_order: 170
+  definition: engineering/convergence/engineering-system-convergence/gates/C17-canonical-target-architecture/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C17-canonical-target-architecture/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C18
+  gate_identity: ESC-GATE-C18
+  roadmap_order: 180
+  definition: engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C19
+  gate_identity: ESC-GATE-C19
+  roadmap_order: 190
+  definition: engineering/convergence/engineering-system-convergence/gates/C19-engctl-cold-resume-qualification/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C19-engctl-cold-resume-qualification/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+- gate_id: C20
+  gate_identity: ESC-GATE-C20
+  roadmap_order: 200
+  definition: engineering/convergence/engineering-system-convergence/gates/C20-controlled-convergence-implementation/GATE.yaml
+  result: engineering/convergence/engineering-system-convergence/gates/C20-controlled-convergence-implementation/RESULT.yaml
+  contract_provenance:
+    contract_generation: PROSPECTIVE_EXECUTABLE
+    lifecycle: PENDING
+    validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
+    standard_applicability: STD-0006@1.0
+active_correctives:
+- corrective_id: ESC-C02-CORRECTIVE-001
+  parent_gate: C02
+  trigger_finding: C02-F-027
+  state: ACTIVE
+  current_item: CR00
+  path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+  blocking_effect: C02 cannot complete and C03 cannot activate until corrective closeout

@@ -1,0 +1,34 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR04
+result: COMPLETE
+completed_at: '2026-08-10T04:05:38Z'
+
+objective: Trace the actual controller and CLI behavior producing C02-F-027.
+
+outputs:
+  controller_behavior_map:
+    path: gates/CR04/CONTROLLER-BEHAVIOR-MAP.yaml
+    sha256: 5e2a069766d1f60ecc2eef0875249ac0a1394b4ea77e48570c9ce3397723fbef
+  python_structure:
+    path: gates/CR04/evidence/PYTHON-STRUCTURE.yaml
+    sha256: 1ce84f2f670b509a368334b260b3ff1954ce9e6057a05cb69d6957d6f31ec1dd
+
+evidence:
+  commands:
+    path: gates/CR04/evidence/COMMANDS.md
+    sha256: 0b2b68de93c8084f201d241aa73f6b08c4d014214a60e1416aca9ff85692fe6e
+  validation:
+    path: gates/CR04/evidence/VALIDATION.yaml
+    sha256: 8f34ff6d8d4cf40eb6f035b364941805f07dec0cd6fd6c185af8573f51e084d9
+
+acceptance:
+  result: PASS
+  c02_f027_traced: true
+  actual_failure_owner_identified: true
+  affected_command_surfaces_identified: true
+  implementation_modified: false
+  protected_history_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR05

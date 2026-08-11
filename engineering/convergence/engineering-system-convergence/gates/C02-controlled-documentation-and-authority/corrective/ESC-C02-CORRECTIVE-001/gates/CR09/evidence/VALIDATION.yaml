@@ -1,0 +1,27 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR09
+validated_at: '2026-08-10T08:36:02Z'
+result: PASS
+
+checks:
+  cr08_dependency: PASS
+  current_item: PASS
+  pre_create_verification: PASS
+  transition_matrix_input: PASS
+  result_semantics_input: PASS
+  explicit_accept_authority: PASS
+  explicit_reject_authority: PASS
+  roadmap_gate_result_binding: PASS
+  frozen_gate_digest_binding: PASS
+  result_digest_binding: PASS
+  operator_identity_requirement: PASS
+  decision_receipt_semantics: PASS
+  replay_conflict_semantics: PASS
+  append_only_decision_history: PASS
+  read_only_decision_boundary: PASS
+  implementation_unchanged: PASS
+  zo_001_cr13_binding_preserved: PASS
+  cr10_not_executed: PASS
+
+next_authorized_item: CR10

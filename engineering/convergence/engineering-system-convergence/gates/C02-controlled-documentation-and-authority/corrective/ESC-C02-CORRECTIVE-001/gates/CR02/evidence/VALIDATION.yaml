@@ -1,0 +1,24 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR02
+validated_at: '2026-08-10T04:00:11Z'
+result: PASS
+
+checks:
+  cr00_dependency: PASS
+  cr01_dependency: PASS
+  repository_identity: PASS
+  head_origin_parity: PASS
+  c00_gate_frozen: PASS
+  c01_gate_frozen: PASS
+  c02_gate_frozen: PASS
+  protected_artifact_inventory: PASS
+  protected_artifact_digest_verification: PASS
+  protected_artifact_count: 20
+  next_item_executed: false
+
+manifest:
+  path: gates/CR02/PROTECTED-ARTIFACT-MANIFEST.yaml
+  sha256: 36fc9b6e96f231181a8558b8f60709fee433f031d9b8ddc3c4f06880c42e9fe4
+
+next_authorized_item: CR03

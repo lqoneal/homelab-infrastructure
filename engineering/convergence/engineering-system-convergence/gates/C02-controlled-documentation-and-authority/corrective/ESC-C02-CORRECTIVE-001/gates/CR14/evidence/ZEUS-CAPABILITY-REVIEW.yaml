@@ -1,0 +1,37 @@
+schema_version: 1
+item_id: CR14
+result: PASS
+opportunities:
+- opportunity_id: ZO-002
+  title: Zeus Lifecycle Interruption Classification
+  review_result: PASS
+  required_design:
+  - deterministic interruption classification
+  - contradictory-state fail-closed behavior
+  - read-only classification
+  design_source:
+  - CR12/INTERRUPTION-REPLAY-SPEC.yaml
+  implementation_status: NOT_IMPLEMENTED
+- opportunity_id: ZO-003
+  title: Zeus Replay Identity and Recovery Recommendation
+  review_result: PASS
+  required_design:
+  - replay identity resolution
+  - exact vs conflicting replay
+  - deterministic recovery recommendation
+  design_source:
+  - CR12/INTERRUPTION-REPLAY-SPEC.yaml
+  - CR13/CLI-CONTRACT.yaml
+  implementation_status: NOT_IMPLEMENTED
+- opportunity_id: ZO-004
+  title: Zeus Read-Only Recovery Status and Resume Projection
+  review_result: PASS
+  required_design:
+  - read-only recovery projection
+  - blocker projection
+  - next authorized recovery action
+  design_source:
+  - CR13/CLI-CONTRACT.yaml
+  implementation_status: NOT_IMPLEMENTED
+conclusion: ZO-002 through ZO-004 are design-qualified for downstream implementation but remain unresolved until
+  implementation and qualification evidence exist.

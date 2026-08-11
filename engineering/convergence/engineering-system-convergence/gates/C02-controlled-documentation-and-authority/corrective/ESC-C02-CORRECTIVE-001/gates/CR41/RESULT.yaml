@@ -1,0 +1,18 @@
+schema_version: 1
+gate_id: CR41
+result: COMPLETE_PASS
+status: COMPLETE
+title: Cold Resume Real C02
+objective: Verify fresh-shell resume independently derives AWAITING_OPERATOR_REVIEW.
+qualification:
+  execution_type: FRESH_SHELL_COLD_RESUME
+  independent_derivation: PASS
+  derived_state: AWAITING_OPERATOR_REVIEW
+  acceptance_performed: false
+  state_advanced: false
+  current_operation: OPERATION_BETA
+  operation_alpha: HISTORICAL_OBSOLETE
+evidence:
+- gates/CR41/CR41-EVIDENCE.yaml
+successor_executed: false
+completed_at: '2026-08-11T11:36:00.260128+00:00'

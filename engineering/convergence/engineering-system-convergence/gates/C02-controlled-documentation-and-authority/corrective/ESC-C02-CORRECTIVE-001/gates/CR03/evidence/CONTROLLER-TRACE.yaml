@@ -1,0 +1,12 @@
+schema_version: 1
+finding: C02-F-027
+controller: scripts/lib/eos/convergence_roadmap.py
+failure_rules:
+- failure_line: 330
+  enclosing_function: _frontmatter
+  function_line: 128
+  context_start: 123
+  context_end: 345
+trace_result: PASS
+note: Trace is based on the actual fail-closed rule and its enclosing controller function. RESULT path construction
+  may be abstracted and is not required to contain the literal string RESULT.yaml in this module.

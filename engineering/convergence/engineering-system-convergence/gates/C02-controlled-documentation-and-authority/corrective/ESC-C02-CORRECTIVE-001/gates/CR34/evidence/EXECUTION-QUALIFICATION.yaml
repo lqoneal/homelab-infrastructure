@@ -1,0 +1,17 @@
+schema_version: 1
+record_id: CR34-EXECUTION-QUALIFICATION-001
+gate_id: CR34
+recorded_at: '2026-08-11T01:19:14Z'
+result: PASS
+objective: Verify replay cannot duplicate lifecycle advancement.
+qualification:
+  first_advancement: APPLIED_ONCE
+  exact_replay: ALREADY_APPLIED
+  exact_replay_idempotent: true
+  conflicting_replay: FAIL_CLOSED
+  second_successor_activation: false
+  second_lifecycle_mutation: false
+  duplicate_advancement_receipt: false
+  state_advanced: false
+  successor_executed: false
+  cr35_executed: false

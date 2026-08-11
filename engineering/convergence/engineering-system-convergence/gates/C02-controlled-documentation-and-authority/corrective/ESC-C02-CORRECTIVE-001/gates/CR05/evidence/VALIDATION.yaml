@@ -1,0 +1,27 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR05
+validated_at: '2026-08-10T04:08:45Z'
+result: PASS
+
+checks:
+  cr04_dependency: PASS
+  protected_history: PASS
+  c02_f027_source_evidence: PASS
+  controller_trace_source_evidence: PASS
+  lifecycle_requirement_count: 30
+  lifecycle_requirement_identity: PASS
+  lifecycle_requirement_testability: PASS
+  lifecycle_category_coverage: PASS
+  traceability: PASS
+  result_acceptance_separation: PASS
+  read_only_boundary_defined: PASS
+  eos_boundary_defined: PASS
+  replay_and_interruption_defined: PASS
+  atomic_advancement_requirement_defined: PASS
+  genericity_requirement_defined: PASS
+  real_c02_nonconsumption_requirement_defined: PASS
+  implementation_changed: false
+  next_item_executed: false
+
+next_authorized_item: CR06

@@ -1,0 +1,52 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR16M1
+finding_id: C02-F-029
+result: COMPLETE
+
+outputs:
+  reconciliation:
+    path: gates/CR16M1/PROJECTION-RECONCILIATION.yaml
+    sha256: 7afeb0342f73deb038c2557b6c487783fa33167764111a2320371b6487ac9e7c
+
+  summary:
+    path: gates/CR16M1/SUMMARY.md
+    sha256: 9e91d142546818b161f8ab9bd3914fbb622f865094b2da416de73656c739a3ea
+
+evidence:
+  before_after:
+    path: gates/CR16M1/evidence/BEFORE-AFTER.yaml
+    sha256: c46298e9197b8bead3abb629554ee74bc25e138c668625a3bd11bf9e76987a84
+
+  commands:
+    path: gates/CR16M1/evidence/COMMANDS.md
+    sha256: e867e7333a848877c9054169c10988d9fe935165f12dd1d40bc03e342fcdb7d5
+
+  validation:
+    path: gates/CR16M1/evidence/VALIDATION.yaml
+    sha256: 543014ed2e19daf08c99ca2edb2ada788bad8d9aaa72d914525e9af5b35e1878
+
+  validation_interpretation:
+    path: gates/CR16M1/evidence/VALIDATION-INTERPRETATION.yaml
+    sha256: 756d185df2f7be364554d621e4abdf52a452b3e57f4e1a46e642e8f4d1a61878
+
+acceptance:
+  result: PASS
+  projection_reconciled: true
+  project_state_versioned: true
+  emm_source_integrity: true
+  structural_validity: PASS
+  execution_sufficiency: NOT_EXECUTABLE
+  non_executable_expected: true
+  validation_read_only: true
+  required_output_contract_satisfied: true
+  required_evidence_contract_satisfied: true
+  c02_completed: false
+  cr16_completed: false
+  cr17_executed: false
+  c03_executed: false
+
+follow_up_findings:
+  - C02-F-030
+
+next_authorized_item: CR16

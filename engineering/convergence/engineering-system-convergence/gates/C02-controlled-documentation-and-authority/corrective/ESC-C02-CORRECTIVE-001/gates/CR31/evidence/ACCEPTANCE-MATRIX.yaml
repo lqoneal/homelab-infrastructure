@@ -1,0 +1,39 @@
+schema_version: 1
+record_id: CR31-ACCEPTANCE-MATRIX-001
+gate_id: CR31
+recorded_at: '2026-08-11T00:58:27Z'
+result: PASS
+criteria:
+- criterion_number: 1
+  criterion: The stated objective is fully satisfied.
+  result: PASS
+- criterion_number: 2
+  criterion: All required outputs exist and validate.
+  result: PASS
+- criterion_number: 3
+  criterion: No prohibited mutation occurred.
+  result: PASS
+- criterion_number: 4
+  criterion: All dependencies remain valid.
+  result: PASS
+- criterion_number: 5
+  criterion: The next item is not executed.
+  result: PASS
+- criterion_number: 6
+  criterion: Every ordered manual-procedure step applicable to this gate is either PASS with evidence
+    or explicitly NOT_APPLICABLE with justification.
+  result: PASS
+- criterion_number: 7
+  criterion: All gate-specific expected outcomes are independently reproducible from durable repository
+    state.
+  result: PASS
+- criterion_number: 8
+  criterion: Pre/post protected-artifact and authority-surface comparisons prove the mutation boundary.
+  result: PASS
+- criterion_number: 9
+  criterion: Interruption or failure cannot silently authorize successor execution.
+  result: PASS
+boundary:
+  cr31_result_written: false
+  state_advanced: false
+  cr32_executed: false

@@ -1,0 +1,16 @@
+schema_version: 1
+finding_id: C02-F-029
+item_id: CR16M1
+before:
+  parent:
+    roadmap_version: 2.0.2
+    current_gate: C02
+    next_authorized_action: EXECUTE_ESC_C02_CORRECTIVE_CR00
+  corrective:
+    roadmap_version: 1.0.5
+    current_item: CR16M1
+    next_authorized_action: EXECUTE_CR16M1_RECONCILE_PARENT_AND_PROJECT_STATE_PROJECTION
+  project_state:
+    roadmap_version: 2.0.0
+    current_gate: C02
+    next_authorized_action: BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT

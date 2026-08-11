@@ -1,0 +1,22 @@
+schema_version: 1
+record_id: CR23-FINAL-ACCEPTANCE-QUALIFICATION-001
+gate_id: CR23
+recorded_at: '2026-08-10T18:12:26Z'
+result: PASS
+gate_acceptance_criteria_count: 27
+manual_acceptance_criteria_count: 26
+evidence:
+  implementation: IMPLEMENTATION-CR23.yaml
+  commands: COMMANDS.md
+  validation: VALIDATION.yaml
+  summary: SUMMARY.md
+  canonical_qualification: evidence/CANONICAL-ROADMAP-QUALIFICATION.yaml
+  closeout_readiness: evidence/CLOSEOUT-READINESS.yaml
+  zeus_inventory: evidence/ZEUS-OPPORTUNITY-CLOSEOUT-INVENTORY.yaml
+boundary:
+  result_written: false
+  state_advanced: false
+  parent_c02_advanced: false
+  cr24_executed: false
+  successor_executed: false
+errors: []

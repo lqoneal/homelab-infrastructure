@@ -12,7 +12,7 @@ from typing import Any, Mapping
 
 from scripts.lib.emp.canonical_lifecycle_resolver import resolve as resolve_lifecycle
 from scripts.lib.emp.production_execution import atomic_write, digest, identifier, load_json
-from scripts.lib.emp.repository_projection import project as project_repository
+from scripts.lib.emp.repository_state_view import project as project_repository
 from scripts.lib.emp.runtime_paths import initialize_runtime, resolve_runtime
 
 

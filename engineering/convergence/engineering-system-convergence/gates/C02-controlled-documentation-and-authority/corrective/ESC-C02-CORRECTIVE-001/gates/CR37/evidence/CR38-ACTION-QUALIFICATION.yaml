@@ -1,0 +1,10 @@
+schema_version: 1
+record_id: CR38-ACTION-QUALIFICATION-001
+source_gate: CR37
+target_gate: CR38
+result: PASS
+action_count: 1
+next_authorized_action: EXECUTE_CR38_QUALIFY_EOS_SIDE_EFFECT_BOUNDARY
+human_instructions_preserved: true
+current_item: CR37
+cr38_executed: false

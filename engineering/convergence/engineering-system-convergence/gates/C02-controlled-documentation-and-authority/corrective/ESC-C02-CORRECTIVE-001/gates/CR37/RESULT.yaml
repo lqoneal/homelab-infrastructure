@@ -1,0 +1,12 @@
+schema_version: 1
+gate_id: CR37
+status: COMPLETE
+result: PASS
+objective: Verify resume performs no repository/EOS mutation.
+evidence:
+- evidence/EXECUTION-QUALIFICATION.yaml
+- evidence/ACCEPTANCE-MATRIX.yaml
+- evidence/CR38-ACTION-QUALIFICATION.yaml
+- evidence/PRE-CLOSEOUT-DIGESTS.yaml
+- evidence/CLOSEOUT-QUALIFICATION.yaml
+next_item: CR38

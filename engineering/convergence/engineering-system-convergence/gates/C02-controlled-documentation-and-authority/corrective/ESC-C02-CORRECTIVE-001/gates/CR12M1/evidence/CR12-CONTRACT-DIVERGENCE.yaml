@@ -1,0 +1,32 @@
+schema_version: 1
+finding_id: C02-F-028
+maturity_gate: CR12M1
+historical_gate: CR12
+classification: HISTORICAL_OUTPUT_CONTRACT_DIVERGENCE
+
+frozen_contract:
+  path: gates/CR12/GATE.yaml
+  sha256: 734aefda67be919e34826441996de37d6a62ad50d23f355e0ddc93de581d680d
+  required_output: REPLAY-RECOVERY-SPEC.yaml
+
+historical_result:
+  path: gates/CR12/RESULT.yaml
+  sha256: 803cafaddafa9835d8cb9f13ebbe7b5dc3ba00936e0e556befa794b45d24f652
+  result: COMPLETE
+
+historical_actual_output:
+  path: gates/CR12/INTERRUPTION-REPLAY-SPEC.yaml
+  sha256: 849413bb66e3eba46e307cabc5106d5e31f0dfd4bf44959898c35dca768b7c10
+
+facts:
+  required_filename_present: false
+  historical_actual_present: true
+  historical_result_binds_actual: true
+  historical_gate_reopened: false
+  historical_gate_mutated: false
+
+required_disposition:
+  preserve_history: true
+  rename_historical_artifact: false
+  rewrite_historical_result: false
+  maturity_reconciliation_required: true

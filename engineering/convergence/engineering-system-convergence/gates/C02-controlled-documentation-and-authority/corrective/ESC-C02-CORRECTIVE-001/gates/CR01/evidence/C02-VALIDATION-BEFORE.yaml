@@ -1,0 +1,121 @@
+schema_version: 1
+gate_id: C02
+baseline: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+validated_at: '2026-08-10T03:10:21Z'
+artifact_validation:
+  yaml_parse: PASS
+  result_schema: PASS
+  declared_counts: PASS
+  structured_reference_resolution: PASS
+  inventory_determinism: PASS
+  inventory_command: python evidence/build_inventory.py --output /tmp/C02-CONTROLLED-DOCUMENT-INVENTORY.yaml
+  inventory_comparison: byte-identical to CONTROLLED-DOCUMENT-INVENTORY.yaml
+  preservation_reference_resolution: PASS
+  preservation_reference: preservation/ob-lifecycle-pre-rebuild-20260809T235039Z:scripts/lib/emp/repository_projection.py
+  missing_current_dependency_confirmed: scripts/lib/emp/repository_projection.py
+
+published_gate_integrity:
+  C00:
+    current_sha256: 1cde92b85a6ddee4520d56e3d020450da29c367226ffabe9b53c739372fc4902
+    published_sha256: 1cde92b85a6ddee4520d56e3d020450da29c367226ffabe9b53c739372fc4902
+    result: PASS
+  C01:
+    current_sha256: 807157e630584f325bc0412af424f630b8c202ec89bb83d1939388074b4e4272
+    published_sha256: 807157e630584f325bc0412af424f630b8c202ec89bb83d1939388074b4e4272
+    result: PASS
+  C02:
+    current_sha256: 96885178a7f0c13714b9f60fc9f1486a3cf6b1306d114ee4d2089d30bd8837fc
+    published_sha256: 96885178a7f0c13714b9f60fc9f1486a3cf6b1306d114ee4d2089d30bd8837fc
+    result: PASS
+
+mutation_boundary:
+  repository_head: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+  origin_main: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+  branch: main
+  allowed_changed_prefix: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority
+  paths_outside_allowed_prefix: []
+  controlled_documents_corrected: false
+  doc_0001_modified: false
+  project_state_modified: false
+  work_registry_modified: false
+  eos_repository_authority_modified: false
+  eos_synchronized: false
+  eos_refreshed: false
+  eos_runtime_mutated: false
+  zeus_modified: false
+  emp_modified: false
+  eens_modified: false
+  c03_executed: false
+  c03_modified: false
+  commit_performed: false
+  push_performed: false
+  repository_source_hashes:
+    docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md: 2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a
+    docs/project/PROJ-0001-PROJECT_STATE.md: c40f044a7ecdb51216b4591dc59c5784e5727e2a2b0b2f5448297d5b5e36c143
+    engineering/registry/work-registry.yaml: 3acb3522e4ab6c492fc631b64c72a2446af66ab7cb98da0123a27236f890f4fd
+    engineering/eos/repository-eos-authority.yaml: 966194da1dc9e11274ae8bf962cf3d93a1b3a765c0e2d2d68da0d9e6b0aa3228
+    scripts/lib/eos/context.sh: f5ee74103321a22945216fbf41790464cbd66dcdc4e3a74aeceae8213c2dc854
+    scripts/lib/eos/state_sync.py: 70e79d82ec4f7f78f857dded8907f1d6a6c6bea0ee7d906538eded82d6817258
+    scripts/zeus: 650e171d60fc66db8b5f80087bbbfc1b1ef095e0c4de948ae1590545a54fee92
+  external_eos_observation:
+    note: All mtimes predate C02 assessment; resume --help temporary write was rejected before replacement.
+    state_sha256: 44f84ac1e46da8caf99a99ed6d0661f15562a8bc63916476650fa72d6e0166fa
+    manifest_sha256: 5c8a8100119e07354849b3f5c0ef0c6316a6cbce6186787466cbbc0f4470d877
+    operational_state_sha256: 321a10393d2ba09ad55b9d96ee1d6709886f0824af1c9e8b7489064852dc6738
+    active_checkpoint_sha256: d29fd2b0b481f0e4fa778e7287fa9f0aedfb3debff919c0bcd053f9be95b234c
+
+roadmap_validation:
+  before_result_staging:
+    validate_exit: 0
+    validate_result: PASS
+    structural_validity: PASS
+    execution_sufficiency: PASS
+    executable: true
+    read_only: true
+    status_exit: 0
+    current_gate: C02
+    completed_gates: [C00, C01]
+    blockers: []
+    next_authorized_action: BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT
+  after_required_result_staging:
+    validate_exit: 1
+    status_exit: 1
+    message: 'FAIL CLOSED: C02 has a result but is not completed'
+    state_file_current_gate: C02
+    state_file_completed_gates: [C00, C01]
+    state_file_next_authorized_action: BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT
+    classification: FROZEN_RESULT_PUBLICATION_STATE_TRANSITION_INCOMPATIBILITY
+    explanation: C02 GATE.yaml requires RESULT.yaml before operator review; convergence_roadmap.py rejects any result for a gate still current. Advancing state is outside C02 and was not performed.
+
+pre_existing_unrelated_or_out_of_scope_failures:
+  - command: scripts/validate_controlled_documents.py --semantic-all
+    exit: 1
+    result: 3869 PASS, 190 FAIL
+    classification: PRE_EXISTING_FINDINGS
+  - command: scripts/validate_controlled_documents.py --synchronization
+    exit: 1
+    result: 5 OUT_OF_SYNC, 2 DOCUMENT_CHANGED, 1 IMPLEMENTATION_CHANGED, 1 PASS
+    classification: PRE_EXISTING_FINDINGS
+  - command: scripts/validate_controlled_documents.py --conformance-only
+    exit: 1
+    result: 9 conformant, 1 partially conformant
+    classification: PRE_EXISTING_FINDING_CONTRACT_ZEUS_COMMAND
+  - command: scripts/validate_controlled_documents.py --assurance-only
+    exit: 1
+    result: 11 assured, 1 partially assured
+    classification: PRE_EXISTING_FINDING_EMP_PROGRESS_DEVIATION_TRACEABILITY
+  - command: scripts/engctl eos sync-validate homelab
+    exit: 1
+    result: EOS-STATE and EOS-MANIFEST drift
+    classification: PRE_EXISTING_FINDING
+  - command: scripts/engctl execution snapshot
+    exit: 78
+    result: INVALID_CONTRACT; wop.digest mismatch; transactional authority false
+    classification: PRE_EXISTING_FINDING
+
+final_scope_check:
+  git_diff_check: PASS
+  evidence_manifest_required: true
+  result_required_by_frozen_contract: true
+  roadmap_advanced: false
+  stop_at: OPERATOR_REVIEW

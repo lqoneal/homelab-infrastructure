@@ -1,0 +1,26 @@
+schema_version: 1
+record_id: CR24-CLOSEOUT-QUALIFICATION-001
+gate_id: CR24
+recorded_at: '2026-08-10T18:42:35Z'
+result: PASS
+prospective_transition:
+  from: CR24
+  to: CR25
+  parent_gate: C02
+  parent_advances: false
+  next_authorized_action: EXECUTE_CR25_QUALIFY_RESULT_WITHOUT_ACCEPTANCE
+  successor_executed: false
+qualified_coupling:
+  project_state_changed_binding: next_authorized_action
+  atomic_emm_source_count: 2
+  atomic_emm_sources:
+  - engineering/convergence/engineering-system-convergence/STATE.yaml
+  - docs/project/PROJ-0001-PROJECT_STATE.md
+  emm_exact_replay: ALREADY_RECONCILED
+  post_rebind_drift_count: 0
+boundary:
+  live_cr24_result_written: false
+  live_state_advanced: false
+  live_parent_advanced: false
+  live_cr25_executed: false
+  live_successor_executed: false

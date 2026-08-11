@@ -1,0 +1,43 @@
+schema_version: 1
+finding_id: C02-F-028
+maturity_gate: CR12M1
+historical_gate: CR12
+semantic_evaluation: PASS
+checks:
+- criterion: Exact replay is deterministic.
+  result: PASS
+  evidence:
+  - replay_outcomes.exact_committed
+  - replay_outcomes.exact_uncommitted
+- criterion: Conflicting replay fails closed.
+  result: PASS
+  evidence:
+  - replay_outcomes
+- criterion: Partial transaction state can be detected.
+  result: PASS
+  evidence:
+  - interruption_states
+- criterion: Recovery never silently invents operator authority.
+  result: PASS
+  evidence:
+  - interruption_states
+  - recovery_mutation_authority
+- criterion: The next CR item is not executed in the same transaction.
+  result: PASS
+  evidence:
+  - CR12 RESULT and state history
+- criterion: Corrective STATE.yaml is advanced only after this item's result passes.
+  result: PASS
+  evidence:
+  - CR12 historical result/state ordering
+- criterion: SUMMARY.md exists and accurately summarizes the gate objective, result, material findings/decisions,
+    validation, artifacts, mutation boundary, and next authorized item.
+  result: PASS
+  evidence:
+  - gates/CR12/SUMMARY.md
+- criterion: Corrective HISTORY.md contains a human-readable entry for this completed gate.
+  result: PASS
+  evidence:
+  - HISTORY.md
+conclusion: Historical CR12 artifact is semantically sufficient for the frozen CR12 acceptance criteria despite
+  the historical output-name divergence.

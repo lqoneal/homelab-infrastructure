@@ -1,0 +1,114 @@
+schema_version: 1
+gate_id: CR22
+title: Implement Replay Protection
+status: PENDING
+purpose: Complete deterministic replay/conflict handling for review and advancement transactions.
+objective: Complete deterministic replay/conflict handling for review and advancement transactions.
+dependencies:
+- CR21
+entry_conditions:
+- Corrective STATE.yaml identifies this item as current.
+- All dependencies are COMPLETE.
+- Protected artifact manifest remains valid where applicable.
+authoritative_inputs:
+- ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+- ESC-C02-CORRECTIVE-001/STATE.yaml
+- ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- Parent C02 GATE.yaml
+- Parent C02 RESULT.yaml
+- Parent C02 evidence/VALIDATION.yaml
+- C02-F-027
+allowed_mutations:
+- scripts/lib/eos/convergence_roadmap.py
+- scripts/engctl
+- scripts/tests/test-convergence-roadmap.py
+- engineering/convergence/engineering-system-convergence/schemas/**
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/**
+prohibited_mutations:
+- ESC C00 GATE.yaml
+- ESC C01 GATE.yaml
+- ESC C02 GATE.yaml
+- Existing parent C02 RESULT.yaml
+- Existing parent C02 assessment evidence
+- C02-F-001 through C02-F-026 remediation
+- C03 execution
+- Implicit EOS synchronization or refresh
+- Commit or push except at separately authorized future publication gates
+manual_procedure:
+- Read ESC-ROADMAP-001.md, the parent roadmap/state, corrective ROADMAP.yaml, corrective STATE.yaml, this
+  gate contract, and every named authoritative input.
+- Verify repository root, branch, HEAD, origin/main, and worktree before any mutation.
+- Verify corrective STATE.yaml identifies this gate as current at execution time.
+- Verify every dependency RESULT.yaml exists and records the required passing/completed result.
+- Verify the protected-artifact manifest and frozen C00/C01/C02 inputs before mutation.
+- Capture pre-execution digests for every protected or authority-bearing source that the gate could affect.
+- Verify the exact allowed_mutations and prohibited_mutations surfaces before executing any command.
+- Verify no successor item has been executed and no successor execution is included in this transaction.
+- Fail closed before mutation if roadmap identity, version, gate identity, dependency state, digest, authority,
+  or execution scope is ambiguous.
+- Verify CR21 and read the CR12 replay/interruption specification.
+- Create isolated fixtures for exact replay, committed replay, conflicting transaction identity, stale
+  result, stale state, stale receipt, and partially persisted advancement.
+- Verify exact replay cannot duplicate receipts, completed-gate membership, successor activation, or provenance.
+- Verify conflicting replay fails before new authoritative mutation.
+- Verify stale gate/result/state/receipt identities cannot authorize review, acceptance, or advancement.
+- Simulate transaction provenance persisted before state promotion and prove deterministic resume of that
+  exact transaction.
+- Simulate unrecoverable partial state and prove the implementation refuses to infer completion.
+- Require machine-readable classifications for each replay/recovery outcome.
+- Do not use real C02 as a mutation fixture.
+- Record every executed command, return code, and material output in the gate command evidence.
+- Record pre-state and post-state repository status and protected-artifact digests.
+- Record every intentionally created or modified file and map it to an allowed mutation.
+- Record every acceptance criterion individually as PASS or FAIL.
+- Record proof that the successor item was not executed.
+- Record proof that no implicit EOS synchronization or refresh occurred unless the gate explicitly authorizes
+  a separate synchronization operation.
+- Record interruption/recovery facts when any command or mutation does not complete normally.
+- Do not write a passing RESULT.yaml until every gate-specific and common acceptance criterion passes.
+- Create or update SUMMARY.md before advancing corrective state when required by the gate contract.
+- Append the human-readable completion entry to corrective HISTORY.md before state advancement when required.
+- Advance corrective STATE.yaml exactly one item only after the gate RESULT passes.
+- Stop immediately after that single state advancement; do not execute the successor item.
+- On failure, preserve this gate as current, record the blocker and evidence, and do not infer completion.
+required_outputs:
+- IMPLEMENTATION-CR22.yaml
+- SUMMARY.md
+required_evidence:
+- gates/CR22/evidence/COMMANDS.md
+- gates/CR22/evidence/VALIDATION.yaml
+acceptance_criteria:
+- Exact replay cannot duplicate lifecycle effects.
+- Conflicting replay fails closed.
+- Stale identities cannot authorize transitions.
+- Partial transaction conditions are detectable and recoverable.
+- The next CR item is not executed in the same transaction.
+- Corrective STATE.yaml is advanced only after this item's result passes.
+- SUMMARY.md exists and accurately summarizes the gate objective, result, material findings/decisions,
+  validation, artifacts, mutation boundary, and next authorized item.
+- Corrective HISTORY.md contains a human-readable entry for this completed gate.
+- Every ordered manual-procedure step applicable to this gate is either PASS with evidence or explicitly
+  NOT_APPLICABLE with justification.
+- All gate-specific expected outcomes are independently reproducible from durable repository state.
+- Pre/post protected-artifact and authority-surface comparisons prove the mutation boundary.
+- Interruption or failure cannot silently authorize successor execution.
+fail_closed_conditions:
+- Protected artifact manifest mismatch
+- Dependency RESULT missing or not PASS/COMPLETE
+- Unexpected path mutation
+- Ambiguous or contradictory lifecycle state
+- Implicit EOS synchronization or refresh
+- Attempt to execute a later CR item
+- Required manual-procedure step lacks reproducible evidence.
+- Pre/post authority or protected-artifact state cannot be compared exactly.
+- Execution would require an unstated architectural or authority decision.
+stop_boundary: STOP_AFTER_THIS_ITEM
+result_location: gates/CR22/RESULT.yaml
+evidence_location: gates/CR22/evidence
+next_item: CR23
+resume_instructions: Read STATE.yaml. If current_item is CR22, verify dependencies and execute only CR22.
+  Stop after RESULT.yaml and STATE.yaml update.
+human_readable_record:
+  summary: gates/CR22/SUMMARY.md
+  history: HISTORY.md
+  required_before_state_advancement: true

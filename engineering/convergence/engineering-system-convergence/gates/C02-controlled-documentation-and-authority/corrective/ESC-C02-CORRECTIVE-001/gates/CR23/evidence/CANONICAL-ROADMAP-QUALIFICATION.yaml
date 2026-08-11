@@ -1,0 +1,26 @@
+schema_version: 1
+record_id: CR23-CANONICAL-ROADMAP-QUALIFICATION-001
+gate_id: CR23
+recorded_at: '2026-08-10T18:02:06Z'
+result: PASS
+invocation_model:
+  wrapper: scripts/engctl
+  repository_context: current repository root
+  explicit_repository_root_argument: false
+  discovery: scripts/engctl roadmap dispatch inspected directly
+commands:
+  validate:
+    command: scripts/engctl roadmap validate
+    rc: 0
+  evaluate:
+    command: scripts/engctl roadmap evaluate
+    rc: 0
+boundary:
+  read_only: true
+  cr23_result_written: false
+  state_advanced: false
+  parent_c02_advanced: false
+  cr24_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

@@ -1,0 +1,19 @@
+schema_version: 1
+gate_id: CR18
+implemented_at: '2026-08-10T11:32:23+00:00'
+result: PASS
+objective: Make executable-roadmap evaluation understand pending review.
+evaluation_semantics:
+  lifecycle_state: AWAITING_OPERATOR_REVIEW
+  overall_result: PASS
+  executable: true
+  execution_blockers: []
+  pending_review_classified_as_corruption: false
+qualification:
+  targeted_regressions: 4/4 PASS
+  roadmap_regression: 37/37 PASS
+  cli_evaluate: PASS
+  evaluation_read_only: PASS
+  emm_source_integrity: PASS
+  historical_c00_c02_provenance: PASS
+  prospective_c03_plus_qualification: PASS

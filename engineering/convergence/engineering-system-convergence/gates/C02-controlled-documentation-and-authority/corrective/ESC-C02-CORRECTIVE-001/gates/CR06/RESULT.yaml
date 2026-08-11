@@ -1,0 +1,26 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR06
+result: COMPLETE
+
+objective: Define the generic lifecycle state vocabulary required by C02-F-027.
+
+outputs:
+  lifecycle_state_vocabulary:
+    path: gates/CR06/LIFECYCLE-STATE-VOCABULARY.yaml
+    sha256: 4ba5fb18155f7bae5d9eb620aa9a439a989e7a8f37825e3e1efa40ecd759ce3a
+
+evidence:
+  validation:
+    path: gates/CR06/evidence/VALIDATION.yaml
+    sha256: e4a8091515427dedcab19723271ebd508642f13269b4742989aef81a7a02c027
+  summary:
+    path: gates/CR06/SUMMARY.md
+    sha256: 83f2b139ed5bf9c2264074762a6520cc4a443b7e570a1fb3d5baf29bc2aad4e8
+
+acceptance:
+  result: PASS
+  implementation_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR07

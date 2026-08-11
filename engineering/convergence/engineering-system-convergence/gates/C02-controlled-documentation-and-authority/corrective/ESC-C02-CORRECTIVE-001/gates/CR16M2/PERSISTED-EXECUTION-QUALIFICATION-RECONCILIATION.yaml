@@ -1,0 +1,30 @@
+schema_version: 1
+gate_id: CR16M2
+result: PASS
+
+before:
+  persisted_roadmap_version: 2.0.0
+  persisted_result: PASS
+  persisted_executable: true
+
+after:
+  persisted_roadmap_version: 2.0.2
+  persisted_result: PASS
+  persisted_executable: true
+
+semantic_change:
+  result_changed: false
+  executable_changed: false
+
+reconciled_dimension:
+  roadmap_bound_evaluation_identity: true
+
+validation:
+  canonical_live_result: PASS
+  canonical_live_executable: true
+  canonical_live_roadmap_version: 2.0.2
+  default_evaluation_after_reconciliation: PASS
+  projection_after_reconciliation: PASS
+  emm_source_integrity: PASS
+
+next_item: CR16

@@ -1,0 +1,29 @@
+schema_version: 1
+record_id: CR26-CLOSEOUT-QUALIFICATION-001
+gate_id: CR26
+recorded_at: '2026-08-11T00:04:11Z'
+result: PASS
+prospective_transition:
+  from: CR26
+  to: CR27
+  parent_gate: C02
+  parent_advances: false
+  next_authorized_action: EXECUTE_CR27_QUALIFY_WRONG_GATE_RESULT
+  successor_executed: false
+qualified_coupling:
+  project_state_changed_binding: next_authorized_action
+  atomic_emm_source_count: 2
+  atomic_emm_sources:
+  - engineering/convergence/engineering-system-convergence/STATE.yaml
+  - docs/project/PROJ-0001-PROJECT_STATE.md
+  emm_exact_replay: ALREADY_RECONCILED
+  post_rebind_drift_count: 0
+future_zeus_opportunities:
+- ZO-018
+- ZO-019
+boundary:
+  live_cr26_result_written: false
+  live_state_advanced: false
+  live_parent_advanced: false
+  live_cr27_executed: false
+  live_successor_executed: false

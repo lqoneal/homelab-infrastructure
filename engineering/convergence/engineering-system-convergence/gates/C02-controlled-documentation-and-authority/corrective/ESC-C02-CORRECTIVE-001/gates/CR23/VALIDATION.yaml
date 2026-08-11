@@ -1,0 +1,26 @@
+schema_version: 1
+record_id: CR23-VALIDATION-001
+gate_id: CR23
+recorded_at: '2026-08-10T18:11:14+00:00'
+result: PASS
+qualification_reused: true
+qualification_rerun: false
+checks:
+  closeout_readiness: PASS
+  canonical_roadmap_validation: PASS
+  canonical_roadmap_evaluation: PASS
+  zeus_opportunity_qualification: PASS
+  emm_integrity: PASS
+  manual_authority: PASS
+  stop_boundary: PASS
+evidence:
+  canonical_roadmap: evidence/CANONICAL-ROADMAP-QUALIFICATION.yaml
+  closeout_readiness: evidence/CLOSEOUT-READINESS.yaml
+  acceptance_readiness: evidence/ACCEPTANCE-READINESS-MATRIX.yaml
+  zeus_inventory: evidence/ZEUS-OPPORTUNITY-CLOSEOUT-INVENTORY.yaml
+boundary:
+  result_written: false
+  state_advanced: false
+  parent_c02_advanced: false
+  cr24_executed: false
+  successor_executed: false

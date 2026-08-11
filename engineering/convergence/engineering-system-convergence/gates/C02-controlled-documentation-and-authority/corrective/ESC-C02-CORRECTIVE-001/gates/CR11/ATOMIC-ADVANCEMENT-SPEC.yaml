@@ -1,0 +1,223 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR11
+finding_id: C02-F-027
+status: DEFINED_NOT_IMPLEMENTED
+
+purpose: >
+  Define the atomic lifecycle transaction that converts an explicitly accepted
+  gate into immutable completion and deterministically establishes the next
+  authoritative roadmap position.
+
+transaction_type: GATE_ADVANCEMENT
+
+starting_state:
+  required_lifecycle_state: ACCEPTED
+
+  required_facts:
+    - current gate identity is exact
+    - gate definition digest matches frozen contract
+    - result exists
+    - result class is VALID_FINAL
+    - result digest matches
+    - valid ACCEPT decision receipt exists
+    - receipt binds exact result digest
+    - receipt binds exact gate definition digest
+    - receipt binds exact roadmap identity and version
+    - no conflicting receipt exists
+
+transaction_identity:
+  required_fields:
+    - advancement_transaction_id
+    - roadmap_id
+    - roadmap_version
+    - gate_id
+    - gate_definition_digest
+    - result_digest
+    - acceptance_receipt_id
+    - acceptance_receipt_digest
+    - pre_state_digest
+    - created_at
+
+atomic_effects:
+
+  - id: AAT-001
+    effect: Verify all transaction invariants before any durable lifecycle mutation.
+
+  - id: AAT-002
+    effect: Add the accepted gate to completed_gates exactly once.
+
+  - id: AAT-003
+    effect: Set last_completed_gate to the newly completed gate.
+
+  - id: AAT-004
+    effect: Bind last_result and last_evidence to the completed gate.
+
+  - id: AAT-005
+    effect: Determine whether the completed gate is terminal.
+
+  - id: AAT-006
+    effect: If nonterminal, select exactly one deterministic eligible successor.
+
+  - id: AAT-007
+    effect: If nonterminal, establish the successor as current.
+
+  - id: AAT-008
+    effect: If terminal, establish explicit roadmap terminal-complete state.
+
+  - id: AAT-009
+    effect: Persist transaction provenance sufficient for replay detection and verification.
+
+atomicity_invariant: >
+  No successfully committed durable state may expose only a subset of gate
+  completion, last-completed/result/evidence projection, and deterministic
+  successor-or-terminal selection.
+
+successor_selection:
+
+  requirements:
+    - successor is defined by the authoritative roadmap
+    - successor dependencies are satisfied
+    - successor is not already complete
+    - successor is not blocked
+    - exactly one successor is eligible unless the completed gate is terminal
+
+  zero_candidates:
+    terminal_gate: ROADMAP_COMPLETE
+    nonterminal_gate: FAIL_CLOSED
+
+  multiple_candidates: FAIL_CLOSED
+  implicit_skipping_allowed: false
+
+terminal_semantics:
+  completed_gate_recorded: true
+  successor_required: false
+  roadmap_state: COMPLETE
+  next_authorized_action: NONE
+
+interruption_model:
+
+  before_transaction_record:
+    durable_effect: NONE
+    recovery: REVALIDATE_AND_RETRY
+
+  transaction_recorded_before_state_commit:
+    durable_effect: PENDING_RECONCILIATION
+    recovery: >
+      Revalidate immutable transaction inputs and apply the exact transaction
+      once or fail closed.
+
+  partial_state_detected:
+    durable_effect: INVALID_PARTIAL_TRANSACTION
+    recovery: >
+      Do not infer completion. Reconcile from transaction provenance and
+      preserved pre-state; fail closed if exact recovery cannot be proven.
+
+  state_committed:
+    durable_effect: ADVANCEMENT_COMPLETE
+    recovery: RETURN_ALREADY_APPLIED
+
+replay_semantics:
+
+  identical_transaction:
+    behavior: IDEMPOTENT_OR_ALREADY_APPLIED
+
+  identical_transaction_after_commit:
+    behavior: ALREADY_APPLIED
+
+  same_transaction_different_gate:
+    behavior: FAIL_CLOSED
+
+  same_transaction_different_result:
+    behavior: FAIL_CLOSED
+
+  same_transaction_different_receipt:
+    behavior: FAIL_CLOSED
+
+  same_gate_new_transaction_after_completion:
+    behavior: FAIL_CLOSED
+
+read_only_boundaries:
+
+  validate:
+    may_advance: false
+
+  evaluate:
+    may_advance: false
+
+  status:
+    may_advance: false
+
+  resume:
+    may_advance: false
+
+  inspection:
+    may_advance: false
+
+side_effect_boundaries:
+
+  eos_synchronization:
+    implicit: false
+
+  eos_refresh:
+    implicit: false
+
+  publication:
+    implicit: false
+
+  commit:
+    implicit: false
+
+  push:
+    implicit: false
+
+fail_closed_conditions:
+
+  - Gate is not ACCEPTED.
+  - Valid ACCEPT receipt is missing.
+  - Result digest mismatch.
+  - Gate definition digest mismatch.
+  - Acceptance receipt digest mismatch.
+  - Roadmap identity or version mismatch.
+  - Current gate mismatch.
+  - Gate already completed under conflicting transaction.
+  - Zero successors for a nonterminal gate.
+  - Multiple eligible successors.
+  - Unsatisfied successor dependencies.
+  - Partial transaction cannot be deterministically reconciled.
+  - Replay identity conflict.
+
+invariants:
+
+  - id: AAD-INV-001
+    rule: Only ACCEPTED may advance to COMPLETED.
+
+  - id: AAD-INV-002
+    rule: Gate completion and successor-or-terminal selection form one logical atomic transaction.
+
+  - id: AAD-INV-003
+    rule: A gate may appear in completed_gates at most once.
+
+  - id: AAD-INV-004
+    rule: A completed gate may not remain current.
+
+  - id: AAD-INV-005
+    rule: Nonterminal advancement must produce exactly one deterministic successor.
+
+  - id: AAD-INV-006
+    rule: Terminal advancement must not fabricate a successor.
+
+  - id: AAD-INV-007
+    rule: Exact replay must be idempotent or already-applied.
+
+  - id: AAD-INV-008
+    rule: Conflicting replay MUST fail closed.
+
+  - id: AAD-INV-009
+    rule: Read-only interfaces MUST NOT perform advancement.
+
+  - id: AAD-INV-010
+    rule: Advancement MUST NOT implicitly synchronize or refresh EOS.
+
+implementation_authorized: false
+next_design_item: CR12

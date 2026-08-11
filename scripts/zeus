@@ -102,7 +102,7 @@ from scripts.lib.emp import codex_interactive
 from scripts.lib.emp import codex_reconciliation
 from scripts.lib.emp import managed_handoff
 from scripts.lib.emp import lifecycle_baseline_reconciliation
-from scripts.lib.emp.repository_projection import project as project_repository
+from scripts.lib.emp.repository_state_view import project as project_repository
 from scripts.lib.emp import codex_session_timing
 
 CODEX_CONTROLLER_ROUTING = {

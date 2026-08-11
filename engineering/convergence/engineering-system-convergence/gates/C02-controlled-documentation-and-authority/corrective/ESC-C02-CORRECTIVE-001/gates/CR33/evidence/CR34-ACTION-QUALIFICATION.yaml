@@ -1,0 +1,12 @@
+schema_version: 1
+record_id: CR33-CR34-ACTION-QUALIFICATION-001
+gate_id: CR33
+target_gate: CR34
+recorded_at: '2026-08-11T01:09:24Z'
+result: PASS
+action_surface: resume_instructions.next_authorized_action
+next_authorized_action: EXECUTE_CR34_QUALIFY_REPLAYED_ADVANCEMENT
+human_instructions_preserved: true
+current_item: CR33
+cr34_executed: false
+errors: []

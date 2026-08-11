@@ -1,0 +1,15 @@
+schema_version: 1
+record_id: CR36-EXECUTION-QUALIFICATION-001
+gate_id: CR36
+recorded_at: '2026-08-11T01:32:30Z'
+result: PASS
+objective: Verify historical/current frozen definitions remain unchanged.
+qualification:
+  frozen_gate_mutation: false
+  frozen_gate_digest_match: true
+  authority_surface_unchanged: true
+  protected_artifacts_unchanged: true
+  unauthorized_mutation: FAIL_CLOSED
+  live_state_advanced: false
+  successor_executed: false
+  cr37_executed: false

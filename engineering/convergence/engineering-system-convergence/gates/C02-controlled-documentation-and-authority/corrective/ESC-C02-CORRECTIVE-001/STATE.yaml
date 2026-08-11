@@ -1,0 +1,51 @@
+schema_version: 1
+roadmap_id: ESC-C02-CORRECTIVE-001
+parent_roadmap: ESC-ROADMAP-001
+parent_gate: C02
+trigger_finding: C02-F-027
+state: ACTIVE
+completed_items:
+- CR00
+- CR01
+- CR02
+- CR03
+- CR04
+- CR05
+- CR06
+- CR07
+- CR08
+- CR09
+- CR10
+- CR11
+- CR12
+- CR13
+- CR14
+- CR15
+- CR16
+- CR17
+- CR18
+- CR19
+- CR20
+- CR21
+- CR22
+- CR23
+- CR24
+- CR25
+- CR26
+- CR27
+- CR28
+current_item: CR43
+blockers: []
+c02:
+  result: COMPLETE_WITH_FINDINGS
+  operator_assessment_disposition: ACCEPTED
+  roadmap_state_advanced: false
+next_authorized_action: Read STATE.yaml. If current_item is CR43, verify dependencies
+  and execute only CR43. Stop after RESULT.yaml and STATE.yaml update.
+roadmap_version: 1.0.7
+completed_maturity_items:
+- CR12M1
+- CR16M1
+- CR16M2M1
+- CR16M2
+last_completed_item: CR39

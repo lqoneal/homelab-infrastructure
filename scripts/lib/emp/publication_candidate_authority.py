@@ -17,7 +17,7 @@ import yaml
 
 from scripts.lib.emp.canonical_lifecycle_resolver import resolve as resolve_lifecycle
 from scripts.lib.emp.production_execution import digest
-from scripts.lib.emp.repository_projection import project as project_repository
+from scripts.lib.emp.repository_state_view import project as project_repository
 
 
 MANIFEST_NAME = "PUBLICATION-CANDIDATE-MANIFEST.md"

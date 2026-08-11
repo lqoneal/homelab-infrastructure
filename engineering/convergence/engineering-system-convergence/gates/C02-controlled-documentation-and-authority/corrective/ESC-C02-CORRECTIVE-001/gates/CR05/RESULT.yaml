@@ -1,0 +1,35 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR05
+result: COMPLETE
+completed_at: '2026-08-10T04:08:45Z'
+
+objective: Convert C02-F-027 into explicit generic lifecycle requirements before design and implementation.
+
+outputs:
+  lifecycle_requirements:
+    path: gates/CR05/LIFECYCLE-REQUIREMENTS.yaml
+    sha256: 1d2778206c722472a9852c40c9cb53d36fa54b178304e916a263f5397d4c3330
+    requirement_count: 30
+
+evidence:
+  traceability:
+    path: gates/CR05/evidence/REQUIREMENT-TRACEABILITY.yaml
+    sha256: 4cbc727e982a2abc8805701c2be762f495f35a8a20297c8878210a96688c2f0a
+  commands:
+    path: gates/CR05/evidence/COMMANDS.md
+    sha256: 09c27ad6cf6b021089b30281642835ae3aac9a5b00c08b055b59b9d764155068
+  validation:
+    path: gates/CR05/evidence/VALIDATION.yaml
+    sha256: 3ec41547ff205dbafe241e91287ee2e85cc95ba8661fd0568787929c4116d476
+
+acceptance:
+  result: PASS
+  requirements_testable: true
+  requirements_generic: true
+  implementation_authorized: false
+  implementation_modified: false
+  protected_history_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR06

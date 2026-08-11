@@ -1,0 +1,31 @@
+schema_version: 1
+record_id: CR40-RESOLVER-HANDOFF-001
+source_gate: CR39
+target_gate: CR40
+recorded_at: '2026-08-11T04:55:14Z'
+result: PASS
+capability:
+  opportunity_id: ZO-057
+  classification: EXISTING_RESOLVER_CANDIDATE_FOUND
+  greenfield_development_authorized: false
+  qualification_required: true
+  canonical_integration_required: true
+  parallel_resolver_authorized: false
+cr40_execution_objective: Qualify the existing Zeus machine-action resolver candidate against CR40's real
+  unresolved machine-action case, canonically surface the qualified resolver through Zeus, and implement
+  only capability proven missing.
+required_outcomes:
+- Existing resolver implementation surface identified.
+- Unresolved machine action detected.
+- Exactly one deterministic action resolved when authority is sufficient.
+- Ambiguous or conflicting authority fails closed.
+- Structured machine action is materialized without executing it.
+- Existing lifecycle authority remains authoritative.
+- Repeated resolution is deterministic and idempotent.
+- No duplicate or parallel resolver is introduced.
+- Zeus exposes the qualified resolver through a canonical platform interface.
+- Any implementation change is bounded to a demonstrated capability gap.
+stop_boundary:
+  execute_cr40_during_cr39: false
+  advance_state_during_cr39: false
+  manually_resolve_cr40_action: false

@@ -1,0 +1,17 @@
+schema_version: 1
+gate_id: CR20
+validated_at: '2026-08-10T12:26:56+00:00'
+result: PASS
+checks:
+  accept_transaction: PASS
+  reject_transaction: PASS
+  durable_accept_recovery: PASS
+  durable_reject_recovery: PASS
+  idempotent_replay: PASS
+  conflicting_decision_fail_closed: PASS
+  tampered_receipt_fail_closed: PASS
+  explicit_review_command: PASS
+  non_advancement: PASS
+  roadmap_tests: 45/45 PASS
+  emm_integrity: PASS
+  cr21_not_executed: PASS

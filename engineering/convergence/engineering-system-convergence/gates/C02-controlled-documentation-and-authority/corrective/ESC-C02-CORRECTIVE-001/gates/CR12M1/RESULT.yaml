@@ -1,0 +1,37 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR12M1
+finding_id: C02-F-028
+result: COMPLETE
+
+objective: >
+  Reconcile the completed CR12 historical output-contract divergence without
+  rewriting CR12 history.
+
+disposition:
+  c02_f028: RESOLVED_BY_MATURITY_RECONCILIATION
+  historical_semantics: QUALIFIED
+  historical_filename_divergence: PRESERVED
+
+outputs:
+  replay_recovery_reconciliation:
+    path: gates/CR12M1/REPLAY-RECOVERY-RECONCILIATION.yaml
+    sha256: 054af8949dd5a330ed3f55d9af1148c08559960d4e03b2de1814f13823d23ccb
+
+evidence:
+  validation:
+    path: gates/CR12M1/evidence/VALIDATION.yaml
+    sha256: 5e4dda4659e48a581c405b6278b2fe60e477e430e5cc0fd5df3ea162e0a816cc
+
+  summary:
+    path: gates/CR12M1/SUMMARY.md
+    sha256: 224e5d6ba2da5ec465f529e41d810abef736bcffbfc195358d81352d3a61b7d3
+
+acceptance:
+  result: PASS
+  cr12_modified: false
+  cr13_modified: false
+  cr13_executed: false
+  semantic_reconciliation_complete: true
+
+next_authorized_item: CR13

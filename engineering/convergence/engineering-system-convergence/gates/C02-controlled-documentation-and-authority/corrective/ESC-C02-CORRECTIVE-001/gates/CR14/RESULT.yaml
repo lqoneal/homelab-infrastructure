@@ -1,0 +1,34 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR14
+result: COMPLETE
+
+objective: >
+  Qualify the complete lifecycle corrective design before downstream
+  implementation.
+
+outputs:
+  lifecycle_design_review:
+    path: gates/CR14/DESIGN-REVIEW.yaml
+    sha256: 5cb67ee1ad0c420898218575e485edc7689f84b1a0c3416526f9c1259b5af7b2
+
+evidence:
+  validation:
+    path: gates/CR14/evidence/VALIDATION.yaml
+    sha256: 8e9d5f844782f0fcafcc7709cdaf4f75e7a086ae0d31aa8d46a9705041749de5
+
+  summary:
+    path: gates/CR14/SUMMARY.md
+    sha256: af3783dcdf1bd4f67bb4c635d0a8ceaa4185232375013e8f5e29a45096f46e9b
+
+acceptance:
+  result: PASS
+  lifecycle_design_qualified: true
+  zo_002_design_qualified: true
+  zo_003_design_qualified: true
+  zo_004_design_qualified: true
+  zo_002_004_implemented: false
+  implementation_modified: false
+  next_item_executed: false
+
+next_authorized_item: CR15

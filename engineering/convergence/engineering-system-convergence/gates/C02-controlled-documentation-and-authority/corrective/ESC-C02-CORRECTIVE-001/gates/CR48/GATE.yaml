@@ -1,0 +1,114 @@
+schema_version: 1
+gate_id: CR48
+title: Record C02 Operator Acceptance
+status: PENDING
+purpose: Invoke explicit published acceptance interface.
+objective: Invoke explicit published acceptance interface.
+dependencies:
+- CR47
+entry_conditions:
+- Corrective STATE.yaml identifies this item as current.
+- All dependencies are COMPLETE.
+- Protected artifact manifest remains valid where applicable.
+authoritative_inputs:
+- ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+- ESC-C02-CORRECTIVE-001/STATE.yaml
+- ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- Parent C02 GATE.yaml and RESULT.yaml
+allowed_mutations:
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/**
+prohibited_mutations:
+- ESC C00 GATE.yaml
+- ESC C01 GATE.yaml
+- ESC C02 GATE.yaml
+- Existing C02 assessment evidence except additive corrective references expressly authorized later
+- Substantive C02 finding remediation
+- C03 execution before CR50
+- Implicit EOS synchronization/refresh
+manual_procedure:
+- Read ESC-ROADMAP-001.md, the parent roadmap/state, corrective ROADMAP.yaml, corrective STATE.yaml, this gate contract,
+  and every named authoritative input.
+- Verify repository root, branch, HEAD, origin/main, and worktree before any mutation.
+- Verify corrective STATE.yaml identifies this gate as current at execution time.
+- Verify every dependency RESULT.yaml exists and records the required passing/completed result.
+- Verify the protected-artifact manifest and frozen C00/C01/C02 inputs before mutation.
+- Capture pre-execution digests for every protected or authority-bearing source that the gate could affect.
+- Verify the exact allowed_mutations and prohibited_mutations surfaces before executing any command.
+- Verify no successor item has been executed and no successor execution is included in this transaction.
+- Fail closed before mutation if roadmap identity, version, gate identity, dependency state, digest, authority,
+  or execution scope is ambiguous.
+- Reverify the exact C02 gate/result/roadmap identities and operator authority immediately before mutation.
+- Invoke the published canonical operator-review interface exactly once with explicit ACCEPT.
+- Persist the acceptance receipt atomically.
+- Verify C02 becomes ACCEPTED but is not yet completed and C03 is not current.
+- Do not perform advancement in this gate.
+- Record every executed command, return code, and material output in the gate command evidence.
+- Record pre-state and post-state repository status and protected-artifact digests.
+- Record every intentionally created or modified file and map it to an allowed mutation.
+- Record every acceptance criterion individually as PASS or FAIL.
+- Record proof that the successor item was not executed.
+- Record proof that no implicit EOS synchronization or refresh occurred unless the gate explicitly authorizes a
+  separate synchronization operation.
+- Record interruption/recovery facts when any command or mutation does not complete normally.
+- Do not write a passing RESULT.yaml until every gate-specific and common acceptance criterion passes.
+- Create or update SUMMARY.md before advancing corrective state when required by the gate contract.
+- Append the human-readable completion entry to corrective HISTORY.md before state advancement when required.
+- Advance corrective STATE.yaml exactly one item only after the gate RESULT passes.
+- Stop immediately after that single state advancement; do not execute the successor item.
+- On failure, preserve this gate as current, record the blocker and evidence, and do not infer completion.
+required_outputs:
+- CR48-EVIDENCE.yaml
+required_evidence:
+- COMMANDS.md or equivalent command record
+- VALIDATION.yaml or equivalent validation record
+acceptance_criteria:
+- The stated objective is fully satisfied.
+- All required outputs exist and validate.
+- No prohibited mutation occurred.
+- All dependencies remain valid.
+- The next item is not executed.
+- Every ordered manual-procedure step applicable to this gate is either PASS with evidence or explicitly NOT_APPLICABLE
+  with justification.
+- All gate-specific expected outcomes are independently reproducible from durable repository state.
+- Pre/post protected-artifact and authority-surface comparisons prove the mutation boundary.
+- Interruption or failure cannot silently authorize successor execution.
+fail_closed_conditions:
+- Unexpected repository mutation
+- Frozen artifact mismatch
+- Missing dependency result
+- Ambiguous lifecycle state
+- Any implicit EOS synchronization or refresh
+- Required manual-procedure step lacks reproducible evidence.
+- Pre/post authority or protected-artifact state cannot be compared exactly.
+- Execution would require an unstated architectural or authority decision.
+stop_boundary: STOP_AFTER_THIS_ITEM
+result_location: gates/CR48/RESULT.yaml
+evidence_location: gates/CR48/evidence
+next_item: CR49
+resume_instructions: Read STATE.yaml. If current_item is CR48, verify dependencies and execute only CR48. Stop after
+  RESULT.yaml and STATE.yaml update.
+secondary_missions:
+- opportunity_id: ZO-034
+  class: ZEUS_CAPABILITY_SECONDARY_MISSION
+  title: Zeus Acceptance Replay Classification Projection
+  status: QUEUED
+  execution_authority: ONLY_WHEN_CR48_IS_CURRENT
+  primary_gate_objective_preserved: true
+  separate_acceptance_gate_required: false
+- opportunity_id: ZO-037
+  class: ZEUS_CAPABILITY_SECONDARY_MISSION
+  title: Zeus Acceptance Interruption Recovery Projection
+  status: QUEUED
+  execution_authority: ONLY_WHEN_CR48_IS_CURRENT
+  primary_gate_objective_preserved: true
+  separate_acceptance_gate_required: false
+- opportunity_id: ZO-038
+  class: ZEUS_CAPABILITY_SECONDARY_MISSION
+  title: Zeus Partial Acceptance Transaction Diagnostic Projection
+  status: QUEUED
+  execution_authority: ONLY_WHEN_CR48_IS_CURRENT
+  primary_gate_objective_preserved: true
+  separate_acceptance_gate_required: false
+secondary_mission_execution_rule: Execute queued ZO-* secondary missions only while this CR gate is current; preserve
+  the primary gate objective and stop boundary; record independent evidence and deduplicate any newly discovered
+  Zeus opportunity before registration.

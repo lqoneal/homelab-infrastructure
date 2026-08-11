@@ -1,0 +1,37 @@
+schema_version: 1
+classification: ZEUS_DEVELOPMENT_OPPORTUNITIES
+source_gate: CR43
+source_execution: CORRECTIVE_COMMIT_RECOVERY
+recorded_at: '2026-08-11T14:03:09.036779+00:00'
+observed_conditions:
+- classification: BOUNDED_TRANSACTION_RECOVERY_GAP
+  description: CR43 required repeated manual classification of a dirty repository, protected/deferred
+    paths, an interrupted local single-commit transaction, and exact recovery closure before amendment
+    could be considered.
+- classification: GATE_DEFINITION_EXECUTION_PROVENANCE_GAP
+  description: The corrective tree contains prospective CR44-CR55 gate definitions while only result-backed
+    predecessors through CR42 and current CR43 have execution evidence; presence of a GATE.yaml must not
+    be interpreted as gate execution.
+authorization:
+  development_execution_created: false
+  current_gate_scope_expanded: false
+  corrective_successor_executed: false
+  roadmap_priority_changed: false
+  implementation_deferred_to_planned_zeus_gates: true
+opportunities:
+- opportunity_id: ZO-058
+  title: Zeus Bounded Repository Transaction Closure and Commit Recovery
+  priority: HIGH
+  classification: REPOSITORY_TRANSACTION_INTEGRITY
+  objective: Allow Zeus to classify a mixed dirty worktree, resolve the exact authorized transaction closure,
+    exclude protected and deferred work, recover an interrupted single-commit transaction, and verify
+    the candidate tree before commit or amendment without inventing mutation authority.
+  target_gate: ZG-REPOSITORY-TRANSACTION-INTEGRITY-001
+- opportunity_id: ZO-059
+  title: Zeus Gate Definition and Execution Provenance Classification
+  priority: HIGH
+  classification: EXECUTION_PROVENANCE
+  objective: Allow Zeus to distinguish prospective gate-definition presence from actual execution, result-backed
+    completion, current-gate activity, and successor execution so roadmap artifacts cannot be misclassified
+    as lifecycle progress.
+  target_gate: ZG-GATE-EXECUTION-PROVENANCE-001

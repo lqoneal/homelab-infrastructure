@@ -1,0 +1,36 @@
+schema_version: 1
+record_id: CR37-ACCEPTANCE-MATRIX-001
+gate_id: CR37
+recorded_at: '2026-08-11T01:44:13Z'
+objective: Verify resume performs no repository/EOS mutation.
+result: PASS
+criteria:
+- criterion: ACCEPTANCE_01
+  result: PASS
+  description: The stated objective is fully satisfied.
+- criterion: ACCEPTANCE_02
+  result: PASS
+  description: All required outputs exist and validate.
+- criterion: ACCEPTANCE_03
+  result: PASS
+  description: No prohibited mutation occurred.
+- criterion: ACCEPTANCE_04
+  result: PASS
+  description: All dependencies remain valid.
+- criterion: ACCEPTANCE_05
+  result: PASS
+  description: The next item is not executed.
+- criterion: ACCEPTANCE_06
+  result: PASS
+  description: Applicable manual procedure steps are satisfied by entry qualification, corrective resume
+    execution, fingerprint comparison, action-horizon qualification, and preserved stop-boundary evidence.
+- criterion: ACCEPTANCE_07
+  result: PASS
+  description: Gate-specific expected outcomes are independently reproducible from durable repository
+    evidence.
+- criterion: ACCEPTANCE_08
+  result: PASS
+  description: Pre/post protected-artifact and authority-surface comparisons prove the mutation boundary.
+- criterion: ACCEPTANCE_09
+  result: PASS
+  description: Interruption or failure cannot silently authorize successor execution.

@@ -1,0 +1,224 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR10
+finding_id: C02-F-027
+status: DEFINED_NOT_IMPLEMENTED
+
+purpose: >
+  Define the durable machine-readable receipt that proves an explicit
+  authorized operator decision against an exact reviewable gate result.
+
+receipt_type: OPERATOR_REVIEW_DECISION
+
+receipt_identity:
+
+  required_fields:
+    - receipt_id
+    - transaction_id
+    - roadmap_id
+    - roadmap_version
+    - gate_id
+    - gate_definition_digest
+    - result_path
+    - result_digest
+    - result_class
+    - decision
+    - operator_identity
+    - decided_at
+
+  optional_fields:
+    - operator_comment
+    - authority_reference
+    - supersedes_receipt_id
+
+decision_vocabulary:
+
+  ACCEPT:
+    lifecycle_target: ACCEPTED
+
+  REJECT:
+    lifecycle_target: REJECTED
+
+preconditions:
+
+  - lifecycle_state == AWAITING_OPERATOR_REVIEW
+  - result_class == VALID_FINAL
+  - result_path exists
+  - result_digest matches
+  - gate_definition_digest matches frozen definition
+  - roadmap identity matches current roadmap
+  - gate identity matches current gate
+  - operator authority is explicit
+  - no conflicting decision receipt exists
+
+receipt_invariants:
+
+  - id: ARI-001
+    rule: >
+      Receipt creation MUST require an explicit ACCEPT or REJECT decision.
+
+  - id: ARI-002
+    rule: >
+      A receipt MUST bind to the exact immutable result digest.
+
+  - id: ARI-003
+    rule: >
+      A receipt MUST bind to the exact frozen gate definition digest.
+
+  - id: ARI-004
+    rule: >
+      A receipt MUST identify the exact roadmap and roadmap version.
+
+  - id: ARI-005
+    rule: >
+      Receipt existence proves a persisted decision but does not independently
+      prove gate completion or successor activation.
+
+  - id: ARI-006
+    rule: >
+      Receipt creation and lifecycle mutation must form one atomic logical
+      transaction or recover deterministically after interruption.
+
+  - id: ARI-007
+    rule: >
+      Historical receipts are append-only and MUST NOT be silently rewritten.
+
+  - id: ARI-008
+    rule: >
+      Read-only roadmap interfaces MUST NOT create decision receipts.
+
+receipt_validation:
+
+  identity:
+    - receipt_id is present
+    - transaction_id is present
+    - roadmap_id matches
+    - roadmap_version matches
+    - gate_id matches
+
+  gate_binding:
+    - gate_definition_digest resolves
+    - gate_definition_digest matches frozen gate
+
+  result_binding:
+    - result_path resolves
+    - result_digest matches
+    - result_class is VALID_FINAL
+
+  authority:
+    - operator_identity is present
+    - decision is ACCEPT or REJECT
+    - decided_at is present
+
+  conflict_detection:
+    - no different decision exists for same transaction
+    - no different result digest exists for same transaction
+    - no different gate exists for same transaction
+
+replay_semantics:
+
+  identical_receipt:
+    behavior: IDEMPOTENT_OR_ALREADY_APPLIED
+
+  identical_transaction_identical_decision:
+    behavior: IDEMPOTENT_OR_ALREADY_APPLIED
+
+  identical_transaction_conflicting_decision:
+    behavior: FAIL_CLOSED
+
+  identical_transaction_different_result:
+    behavior: FAIL_CLOSED
+
+  receipt_id_collision:
+    behavior: FAIL_CLOSED
+
+interruption_semantics:
+
+  before_receipt_persisted:
+    lifecycle_effect: NONE
+    recovery: REVALIDATE_AND_RETRY
+
+  receipt_persisted_before_state_transition:
+    lifecycle_effect: PENDING_RECONCILIATION
+    recovery: >
+      Verify receipt, transaction, result and gate bindings before applying
+      exactly the lifecycle effect represented by the receipt.
+
+  state_transition_without_valid_receipt:
+    lifecycle_effect: INVALID
+    recovery: FAIL_CLOSED
+
+  receipt_and_state_consistent:
+    lifecycle_effect: VALID
+    recovery: NONE
+
+acceptance_receipt_effect:
+
+  decision: ACCEPT
+  lifecycle_transition:
+    from: AWAITING_OPERATOR_REVIEW
+    to: ACCEPTED
+
+  does_not_imply:
+    - COMPLETED
+    - successor activation
+    - EOS synchronization
+    - publication
+
+rejection_receipt_effect:
+
+  decision: REJECT
+  lifecycle_transition:
+    from: AWAITING_OPERATOR_REVIEW
+    to: REJECTED
+
+  does_not_imply:
+    - result deletion
+    - result rewrite
+    - automatic re-execution
+    - successor activation
+
+read_only_surfaces:
+
+  validate:
+    may_create_receipt: false
+
+  evaluate:
+    may_create_receipt: false
+
+  status:
+    may_create_receipt: false
+
+  resume:
+    may_create_receipt: false
+
+  inspection:
+    may_create_receipt: false
+
+fail_closed_conditions:
+
+  - Missing receipt identity.
+  - Missing transaction identity.
+  - Missing or ambiguous operator identity.
+  - Unsupported decision.
+  - Non-VALID_FINAL result.
+  - Result digest mismatch.
+  - Gate definition digest mismatch.
+  - Roadmap identity mismatch.
+  - Gate identity mismatch.
+  - Lifecycle state mismatch.
+  - Receipt ID collision.
+  - Conflicting transaction replay.
+  - State transition without a valid receipt.
+
+historical_record_policy:
+
+  receipts_are_append_only: true
+  silent_rewrite_allowed: false
+
+  correction_method: >
+    Create a new explicit corrective receipt or transaction referencing the
+    historical receipt rather than rewriting the historical record.
+
+implementation_authorized: false
+next_design_item: CR11

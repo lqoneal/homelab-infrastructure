@@ -1,0 +1,51 @@
+schema_version: 1
+gate_id: CR41
+classification: CONVERGENCE_FINDINGS
+recorded_at: '2026-08-11T11:38:50.933738+00:00'
+current_authority:
+  operation: OPERATION_BETA
+  operation_alpha: HISTORICAL_OBSOLETE
+  oa_execution_authority: false
+  oa_fallback_authorized: false
+findings:
+- id: CR41-FINDING-STALE-OA-AUTHORITY-001
+  severity: HIGH
+  classification: STALE_HISTORICAL_AUTHORITY_CONTAMINATION
+  observation: Fresh-shell engineering resume reports an authority disagreement because
+    current management projections still include Zeus Operational Alpha alongside
+    Operation Beta.
+  observed_stale_surfaces:
+  - management_current_missions
+  - management_current_mission_titles
+  - management_current_phases
+  - management_current_phase_titles
+  - management_active_work
+  - executive_summary.mission
+  - executive_summary.phase
+  - executive_summary.active_work
+  - executive_summary.current_authority
+  expected_semantics: Historical or superseded Operational Alpha records may remain
+    discoverable as history but must not participate in current authority comparison,
+    current mission selection, current phase selection, active-work authority, or
+    authority-disagreement generation.
+  current_effect: False authority disagreement and false recommendation to reconcile
+    current authority before engineering work.
+  operation_beta_authority_affected: false
+  cr41_result_affected: false
+  resolution_required: true
+  resolution_authorized_now: false
+- id: CR41-FINDING-STALE-PROJECT-RESUME-TEXT-001
+  severity: MEDIUM
+  classification: STALE_HISTORICAL_RESUME_CONTENT
+  observation: Project/resume context contains older text describing Zeus Operational
+    Alpha as current mission, phase, runtime, or resume authority.
+  expected_semantics: Historical narrative may remain in history sections, but active/current
+    resume projections must identify Operation Beta and the canonical Engineering
+    System Convergence position.
+  resolution_required: true
+  resolution_authorized_now: false
+closeout_disposition:
+  cr41_may_remain_complete: true
+  finding_must_survive_cr41_closeout: true
+  silent_discard_authorized: false
+  automatic_oa_reactivation_authorized: false

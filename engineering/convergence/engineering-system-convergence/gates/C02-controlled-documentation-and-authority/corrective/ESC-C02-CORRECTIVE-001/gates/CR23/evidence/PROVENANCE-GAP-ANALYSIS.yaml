@@ -1,0 +1,59 @@
+schema_version: 1
+gate_id: CR23
+note: Surface presence is not proof of complete lifecycle provenance. Every binding remains UNQUALIFIED
+  until behavior is independently tested.
+requirements:
+  roadmap_identity_and_version:
+    tokens:
+      roadmap_id: true
+      roadmap_version: true
+    surface_present: true
+    qualification_status: UNQUALIFIED
+  gate_identity:
+    tokens:
+      gate_id: true
+      gate_definition_digest: true
+    surface_present: true
+    qualification_status: UNQUALIFIED
+  result_identity_and_digest:
+    tokens:
+      result_digest: true
+    surface_present: true
+    qualification_status: UNQUALIFIED
+  operator_authority:
+    tokens:
+      operator_identity: true
+    surface_present: true
+    qualification_status: UNQUALIFIED
+  transaction_identity:
+    tokens:
+      transaction_id: true
+    surface_present: true
+    qualification_status: UNQUALIFIED
+  lifecycle_state:
+    tokens:
+      lifecycle_state: true
+    surface_present: true
+    qualification_status: UNQUALIFIED
+  acceptance_or_rejection_receipt:
+    tokens:
+      decision_receipt: true
+      acceptance_receipt: true
+    surface_present: true
+    qualification_status: UNQUALIFIED
+  pre_state_identity:
+    tokens:
+      pre_state: true
+    surface_present: true
+    qualification_status: UNQUALIFIED
+  post_state_identity:
+    tokens:
+      post_state: true
+    surface_present: true
+    qualification_status: UNQUALIFIED
+  successor_or_terminal_disposition:
+    tokens:
+      successor: true
+      terminal: true
+    surface_present: true
+    qualification_status: UNQUALIFIED

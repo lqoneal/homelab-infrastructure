@@ -1,0 +1,14 @@
+schema_version: 1
+gate_id: CR19
+validated_at: '2026-08-10T11:48:32+00:00'
+result: PASS
+checks:
+  resume_reports_c02_pending_review: PASS
+  resume_repository_read_only: PASS
+  resume_eos_read_only: PASS
+  no_eos_synchronization: PASS
+  no_eos_refresh: PASS
+  explicit_next_action: PASS
+  roadmap_tests: 38/38 PASS
+  emm_integrity: PASS
+  cr20_not_executed: PASS

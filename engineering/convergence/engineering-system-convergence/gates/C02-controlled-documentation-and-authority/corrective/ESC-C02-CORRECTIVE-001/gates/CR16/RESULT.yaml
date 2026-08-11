@@ -1,0 +1,18 @@
+schema_version: 1
+gate_id: CR16
+status: COMPLETE
+result: PASS
+qualification:
+  legitimate_pending_review: PASS
+  fail_closed_result_combinations: PASS
+  roadmap_tests: 31/31 PASS
+  cli_evaluate: PASS
+  validation_read_only: true
+  emm_integrity: PASS
+runtime_changed_by_final_qualification: false
+next_item: CR17
+artifacts:
+  IMPLEMENTATION-CR16.yaml: 6b780321e6a8f7211036fe8ed13b7723ea6d07b09a190793d6c91df0200077a9
+  SUMMARY.md: 335663f786d961ccdfffc8a4fe965395107b86da5b2e4db87a460b1af245f299
+  evidence/COMMANDS.md: 8d21c7dd0efc8cdc63ec0489748f8feaa963eda2bdb9921f7d77895798923a72
+  evidence/VALIDATION.yaml: ea5e71591ee5e0fe0b910e0856f9ce2a4670bcc11632dd1384567be326bb73bd

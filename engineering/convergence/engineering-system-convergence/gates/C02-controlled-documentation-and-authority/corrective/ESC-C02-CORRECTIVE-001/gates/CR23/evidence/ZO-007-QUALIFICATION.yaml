@@ -1,0 +1,127 @@
+schema_version: 1
+record_id: CR23-ZO007-QUALIFICATION-001
+gate_id: CR23
+opportunity_id: ZO-007
+recorded_at: '2026-08-10T17:35:02Z'
+result: PASS
+implementation:
+  primitive: scripts.lib.eos.convergence_roadmap.project_manual_gate_execution_preflight
+  authority_model: gates/CR23/evidence/ZO-007-AUTHORITY-MODEL.yaml
+  manual_contract: gates/CR23/MANUAL-EXECUTION.yaml
+  parent_maturity_source: ZO-006
+  successor_authority_source: ZO-009
+  emm_awareness_source: ZO-005
+  emm_scope_source: ZO-010
+  resource_preflight_source: ZO-011
+  manual_execution_ownership: false
+  state_advancement_ownership: false
+  successor_execution_ownership: false
+  read_only: true
+qualification:
+  zo007_focused_tests: 8/8 PASS
+  prior_zeus_regression: 32/32 PASS
+  emm_transaction_regression: 6/6 PASS
+  cr23_provenance: 5/5 PASS
+  lifecycle_regression: 10/10 PASS
+  corrective_root_resolution: PASS
+  zo005_interface_reconciliation: PASS
+  pre_rebind_live_preflight: FAIL_CLOSED_EXPECTED_EMM_DRIFT
+  post_rebind_live_preflight: PASS
+live_reconciliation:
+  transaction_id: tx-cr23-zo007-emm-rebind-001
+  first_application: PASS
+  exact_replay: ALREADY_RECONCILED
+  pre_manifest_sha256: 82fa5a9dfdafdc2a40db82987a2bc6ee517a08051843d8ff220ce790dbc71286
+  post_manifest_sha256: 5c032b7fd05583c9f2ec1b1d3396bb9fb1ff0b3d3905951065c21bca15b5f738
+  transaction_record: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo007-emm-rebind-001.json
+live_preflight:
+  result: PASS
+  projection: ZEUS_MANUAL_GATE_EXECUTION_PREFLIGHT
+  classification: READY_FOR_MANUAL_EXECUTION
+  ready: true
+  blocking_dependency: null
+  blocking_classification: null
+  parent_gate: C02
+  parent_maturity:
+    result: PASS
+    projection: ZEUS_EXECUTABLE_ROADMAP_MATURITY
+    gate_id: C02
+    current_gate: C02
+    is_current: true
+    is_completed: false
+    is_blocked: false
+    terminal: false
+    classification: CURRENT_EXECUTABLE
+    executable: true
+    successor_gate: C03
+    next_authorized_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
+    recommended_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
+    authority_surface: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/GATE.yaml
+    authority_kind: GATE_DEFINITION
+    action_surface: resume_instructions.next_authorized_action
+    successor_executed: false
+    read_only: true
+  manual_gate_id: CR23
+  manual_contract_path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/MANUAL-EXECUTION.yaml
+  manual_contract_id: CR23-MANUAL-EXECUTION-001
+  execution_mode: MANUAL_BOUNDED
+  current_item: CR23
+  dependency_gate: CR22
+  dependency_result: COMPLETE_PASS
+  emm_awareness:
+    result: PASS
+    projection: ZEUS_EMM_RECONCILIATION_AWARENESS
+    source_path: scripts/lib/eos/convergence_roadmap.py
+    classification: BOUND_CLEAN
+    bound: true
+    source_exists: true
+    expected_sha256: 2963c733ed0a21be64758c865c79e3cddeb3029406e49d91f2a208650303a302
+    actual_sha256: 2963c733ed0a21be64758c865c79e3cddeb3029406e49d91f2a208650303a302
+    drifted: false
+    rebind_eligible: false
+    reconciliation_required: false
+    recommended_action: NONE_REQUIRED
+    canonical_reconciliation_primitive: apply_emm_rebind_transaction
+    automatic_reconciliation: false
+    read_only: true
+  resource_preflight:
+    result: PASS
+    projection: ZEUS_QUALIFICATION_RESOURCE_PREFLIGHT
+    classification: READY
+    resource: null
+    repository_root: /data/engineering/repositories/homelab
+    repository_bytes: 45401237
+    temporary_workspace: /data/engineering/tmp/zeus-manual-preflight
+    filesystem_probe: /data/engineering/tmp
+    filesystem_total_bytes: 1967846068224
+    filesystem_used_bytes: 7104217088
+    filesystem_free_bytes: 1860705181696
+    fixture_copy_multiplier: 8
+    minimum_extra_bytes: 2147483648
+    required_reserve_bytes: 2192884885
+    ready: true
+    semantic_test_failure: false
+    qualification_executed: false
+    recommended_action: USE_SELECTED_WORKSPACE
+    read_only: true
+  next_item: CR24
+  state_transition:
+    from: CR23
+    to: CR24
+    authorized_only_after_result_pass: true
+    execute_successor: false
+    stop_boundary: STOP_AFTER_THIS_ITEM
+  execution_performed: false
+  state_advanced: false
+  successor_executed: false
+  read_only: true
+boundary:
+  execution_performed: false
+  state_advanced: false
+  successor_executed: false
+  cr23_result_written: false
+  parent_c02_advanced: false
+  cr24_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

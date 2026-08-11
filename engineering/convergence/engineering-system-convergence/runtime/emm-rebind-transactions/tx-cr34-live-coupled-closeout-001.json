@@ -1,0 +1,25 @@
+{
+  "authorized_mutations": {
+    "docs/project/PROJ-0001-PROJECT_STATE.md": "83fdfeca4b8ce63f35d4cd5f5de4da59770ef692c0ffeea35ba43c542d7536e2",
+    "engineering/convergence/engineering-system-convergence/STATE.yaml": "07253bab92911e63d60ff556fb575fe033e97fffe50796aaf2d5f8e1c3d21942"
+  },
+  "post_manifest_sha256": "2b789901fe59e9320fa90337f291eedf2961141c446f31b66a7e3896dbc6dc43",
+  "pre_manifest_sha256": "990293ef9b37ef09c90822eb6c03d817b423e600e5714ae7e748be90dbe0ff5d",
+  "recorded_at": "2026-08-11T01:23:12Z",
+  "schema_version": 1,
+  "sources": [
+    {
+      "new_sha256": "5afd46bd0f8caaa77c6ec20584bdfc373aad8d2ef412a2f9655f4a7758814684",
+      "old_sha256": "07253bab92911e63d60ff556fb575fe033e97fffe50796aaf2d5f8e1c3d21942",
+      "path": "engineering/convergence/engineering-system-convergence/STATE.yaml"
+    },
+    {
+      "new_sha256": "eb0e8755fdb4f89383554962002f849e341ddc8453b0c6287b837314531b9458",
+      "old_sha256": "83fdfeca4b8ce63f35d4cd5f5de4da59770ef692c0ffeea35ba43c542d7536e2",
+      "path": "docs/project/PROJ-0001-PROJECT_STATE.md"
+    }
+  ],
+  "status": "RECONCILIATION_COMPLETE",
+  "transaction_id": "tx-cr34-live-coupled-closeout-001",
+  "transaction_type": "EMM_REBIND"
+}

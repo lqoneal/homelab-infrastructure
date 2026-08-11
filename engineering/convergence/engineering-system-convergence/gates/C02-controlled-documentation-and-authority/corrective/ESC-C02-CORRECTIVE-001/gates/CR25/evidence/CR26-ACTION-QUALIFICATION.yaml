@@ -1,0 +1,16 @@
+schema_version: 1
+record_id: CR25-CR26-ACTION-QUALIFICATION-001
+gate_id: CR25
+prospective_gate: CR26
+opportunity_id: ZO-016
+recorded_at: '2026-08-10T23:54:57Z'
+result: PASS
+qualification:
+  action_surface: resume_instructions.next_authorized_action
+  action: EXECUTE_CR26_QUALIFY_MISSING_RESULT
+  action_count: 1
+  human_instructions_preserved: true
+  current_item: CR25
+  state_advanced: false
+  cr26_executed: false
+errors: []

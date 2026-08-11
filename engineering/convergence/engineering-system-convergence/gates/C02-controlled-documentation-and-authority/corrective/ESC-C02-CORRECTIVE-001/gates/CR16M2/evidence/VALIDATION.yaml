@@ -1,0 +1,21 @@
+schema_version: 1
+gate_id: CR16M2
+result: PASS
+
+checks:
+  cr16m2m1_complete: PASS
+  corrected_target_qualified: PASS
+  live_result_pass: PASS
+  live_executable_true: PASS
+  live_roadmap_version_2_0_2: PASS
+  persisted_evaluation_refreshed: PASS
+  persisted_semantic_result_preserved: PASS
+  persisted_executable_preserved: PASS
+  persisted_comparison_passes: PASS
+  default_evaluation_passes: PASS
+  projection_passes: PASS
+  emm_source_integrity: PASS
+  cr16_not_completed: PASS
+  cr17_not_executed: PASS
+  c02_not_completed: PASS
+  c03_not_executed: PASS

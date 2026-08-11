@@ -1,0 +1,70 @@
+schema_version: 1
+record_id: CR23-ZO008-QUALIFICATION-001
+gate_id: CR23
+opportunity_id: ZO-008
+recorded_at: '2026-08-10T17:43:16Z'
+result: PASS
+implementation:
+  primitive: scripts.lib.eos.convergence_roadmap.project_nested_corrective_reconciliation
+  role: NESTED_CORRECTIVE_PROJECTION_RECONCILIATION
+  authority_boundary: gates/CR23/evidence/ZO-008-ZO-013-AUTHORITY-BOUNDARY.yaml
+  aggregate_readiness_ownership: false
+  parent_advancement_ownership: false
+  nested_state_advancement_ownership: false
+  successor_execution_ownership: false
+  read_only: true
+qualification:
+  zo008_focused_tests: 8/8 PASS
+  prior_zeus_regression: 40/40 PASS
+  emm_transaction_regression: 6/6 PASS
+  cr23_provenance: 5/5 PASS
+  lifecycle_regression: 10/10 PASS
+  pre_rebind_live_projection: FAIL_CLOSED_EXPECTED_EMM_DRIFT
+  post_rebind_live_projection: PASS
+live_reconciliation:
+  transaction_id: tx-cr23-zo008-emm-rebind-001
+  first_application: PASS
+  exact_replay: ALREADY_RECONCILED
+  pre_manifest_sha256: 5c032b7fd05583c9f2ec1b1d3396bb9fb1ff0b3d3905951065c21bca15b5f738
+  post_manifest_sha256: c0e9a8879d9bc28349b8a70c0f3a2c61c64169899b17ccf33d35d76bd496cc29
+  transaction_record: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo008-emm-rebind-001.json
+live_projection:
+  result: PASS
+  projection: ZEUS_NESTED_CORRECTIVE_RECONCILIATION
+  classification: NESTED_CORRECTIVE_CONSISTENT
+  consistent: true
+  blocking_dependency: null
+  parent_gate_id: C02
+  parent_current_gate: C02
+  parent_result_present: true
+  parent_result_complete_pass: false
+  corrective_roadmap_id: ESC-C02-CORRECTIVE-001
+  corrective_root_path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001
+  manual_gate_id: CR23
+  manual_contract_path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR23/MANUAL-EXECUTION.yaml
+  nested_current_item: CR23
+  dependency_gate: CR22
+  dependency_result: COMPLETE_PASS
+  next_item: CR24
+  state_transition:
+    from: CR23
+    to: CR24
+    authorized_only_after_result_pass: true
+    execute_successor: false
+    stop_boundary: STOP_AFTER_THIS_ITEM
+  nested_ready_implies_parent_advance: false
+  execution_performed: false
+  state_advanced: false
+  parent_gate_advanced: false
+  successor_executed: false
+  read_only: true
+boundary:
+  execution_performed: false
+  state_advanced: false
+  parent_gate_advanced: false
+  successor_executed: false
+  cr23_result_written: false
+  cr24_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false

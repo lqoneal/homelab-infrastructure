@@ -1,0 +1,65 @@
+schema_version: 1
+gate_id: CR01
+title: Capture Full Starting State
+status: PENDING
+purpose: Capture the complete pre-corrective lifecycle state required to reproduce and resume the defect.
+objective: Capture the complete pre-corrective lifecycle state required to reproduce and resume the defect.
+dependencies:
+- CR00
+entry_conditions:
+- Corrective STATE.yaml identifies this item as current.
+- All dependencies are COMPLETE.
+- Protected artifact manifest remains valid where applicable.
+authoritative_inputs:
+- ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+- ESC-C02-CORRECTIVE-001/STATE.yaml
+- ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- Parent C02 GATE.yaml
+- Parent C02 RESULT.yaml
+- Parent C02 evidence/VALIDATION.yaml
+- C02-F-027
+allowed_mutations:
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/**
+prohibited_mutations:
+- ESC C00 GATE.yaml
+- ESC C01 GATE.yaml
+- ESC C02 GATE.yaml
+- Existing parent C02 RESULT.yaml
+- Existing parent C02 assessment evidence
+- C02-F-001 through C02-F-026 remediation
+- C03 execution
+- Implicit EOS synchronization or refresh
+- Commit or push except at separately authorized future publication gates
+manual_procedure:
+- Read CR00 RESULT and validate its recorded baseline.
+- Capture git status, roadmap.yaml, STATE.yaml, corrective STATE.yaml, C02 RESULT.yaml and C02 VALIDATION.yaml identities.
+- Run engctl roadmap validate and status without altering any file; capture exit codes and complete stderr/stdout.
+- Capture the exact current_gate, completed_gates, blockers and next_authorized_action from STATE.yaml.
+- Capture convergence_roadmap.py and engctl digests.
+- Write STARTING-STATE.yaml and evidence/COMMANDS.md.
+- Validate every recorded digest/path and write evidence/VALIDATION.yaml.
+required_outputs:
+- STARTING-STATE.yaml
+required_evidence:
+- gates/CR01/evidence/COMMANDS.md
+- gates/CR01/evidence/VALIDATION.yaml
+acceptance_criteria:
+- The pre-corrective roadmap/controller state is reproducibly recorded.
+- The expected fail-closed condition is captured without mutation.
+- All referenced files and digests resolve.
+- No C02 or parent-roadmap lifecycle transition occurred.
+- The next CR item is not executed in the same transaction.
+- Corrective STATE.yaml is advanced only after this item's result passes.
+fail_closed_conditions:
+- Protected artifact manifest mismatch
+- Dependency RESULT missing or not PASS/COMPLETE
+- Unexpected path mutation
+- Ambiguous or contradictory lifecycle state
+- Implicit EOS synchronization or refresh
+- Attempt to execute a later CR item
+stop_boundary: STOP_AFTER_THIS_ITEM
+result_location: gates/CR01/RESULT.yaml
+evidence_location: gates/CR01/evidence
+next_item: CR02
+resume_instructions: Read STATE.yaml. If current_item is CR01, verify dependencies and execute only CR01. Stop after
+  RESULT.yaml and STATE.yaml update.

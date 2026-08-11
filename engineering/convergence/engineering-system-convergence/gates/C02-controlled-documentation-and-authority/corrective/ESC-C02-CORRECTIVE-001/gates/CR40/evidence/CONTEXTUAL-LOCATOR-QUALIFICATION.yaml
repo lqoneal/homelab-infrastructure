@@ -1,0 +1,25 @@
+schema_version: 1
+record_id: CR40-CONTEXTUAL-LOCATOR-QUALIFICATION-001
+gate_id: CR40
+recorded_at: '2026-08-11T05:09:45Z'
+result: PASS
+existing_resolver:
+  present: true
+  callable: project_successor_action_contract
+  signature: '(repository_root: ''Path | str'', *, gate_id: ''str'') -> ''dict[str, Any]'''
+  new_resolver_required: false
+contextual_identity:
+  roadmap_id: ESC-ROADMAP-001
+  parent_gate: C02
+  corrective_id: ESC-C02-CORRECTIVE-001
+  current_item: CR40
+  gate_id: CR40
+  gate_definition: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR40/GATE.yaml
+  unique: true
+resolver_context_contract:
+  existing_context_parameters: []
+  context_input_supported: false
+constraints:
+  greenfield_resolver_creation_authorized: false
+  parallel_resolver_authorized: false
+  bounded_extension_permitted_only_if_no_reusable_adapter: true

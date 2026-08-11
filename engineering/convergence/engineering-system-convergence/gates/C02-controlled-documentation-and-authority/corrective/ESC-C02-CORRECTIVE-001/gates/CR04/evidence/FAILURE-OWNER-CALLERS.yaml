@@ -1,0 +1,3029 @@
+schema_version: 1
+failure_owner: validate
+references:
+- path: scripts/evidence-qualifyctl
+  line: 23
+  text: parser.add_argument("command", choices=("validate", "replay"))
+- path: scripts/zeus
+  line: 67
+  text: from scripts.lib.emp.stage1_runtime import validate_package
+- path: scripts/zeus
+  line: 75
+  text: from scripts.lib.emp.wop_validation import validate_source, require_valid_source
+- path: scripts/zeus
+  line: 128
+  text: metadata, evidence = validate_package(adapted)
+- path: scripts/zeus
+  line: 633
+  text: '"qualification", "completion", "resume", "stop", "policy", "validate", "submit", "execution",'
+- path: scripts/zeus
+  line: 684
+  text: choices=("status", "work-lifecycle", "show", "resolve", "validate"),
+- path: scripts/zeus
+  line: 707
+  text: admit = sub.add_parser("admit", help="Provision a submitted mission admission package without execution."); admit.add_argument("submission",
+    help="canonical P2 submission receipt"); admit.add_argument("--wop", required=True, type=Path, help="authored WOP validated
+    by the submission"); admit.add_argument("--json", action="store_true"); admit.add_argument("--at")
+- path: scripts/zeus
+  line: 708
+  text: wop = sub.add_parser("wop", help="Author and validate Development WOP source documents."); wop.add_argument("action",
+    choices=("format", "template", "init", "validate", "lint", "inspect", "explain", "source", "identity", "context", "traceability",
+    "blockers", "readiness", "next", "snapshot", "verify")); wop.add_argument("source", nargs="?"); wop.add_argument("--wop-id");
+    wop.add_argument("--mission-id"); wop.add_argument("--from", dest="template_from"); wop.add_argument("--replay-against",
+    type=Path); wop.add_argument("--format", choices=("markdown", "docx"), default="markdown"); wop.add_argument("--output",
+    type=Path); wop.add_argument("--json", action="store_true"); wop.add_argument("--verbose", action="store_true")
+- path: scripts/zeus
+  line: 749
+  text: validate=sub.add_parser("validate"); validate.add_argument("wop_package"); validate.add_argument("--repository", required=True)
+- path: scripts/zeus
+  line: 760
+  text: codex_parser=sub.add_parser("codex", help="Operate the Zeus-owned Codex session (managed or operator-interactive).",
+    add_help=False); codex_parser.add_argument("action", choices=("handoff", "shell", "interactive", "attach", "reconcile",
+    "accept-reconciliation", "supersede", "start", "resume", "stop", "status", "logs", "artifacts", "timed", "timing")); codex_parser.add_argument("mission_id",
+    nargs="?", help="mission identity or HANDOFF.md for `codex handoff`"); codex_parser.add_argument("--approve", action="store_true",
+    help="required for mission-bound shell, start, resume, stop, or reconciliation mutation"); codex_parser.add_argument("--work-contract",
+    type=Path, help="structured Zeus managed-work continuation contract for resume"); codex_parser.add_argument("--dry-run",
+    action="store_true", help="force read-only reconciliation"); codex_parser.add_argument("--reject", action="store_true",
+    help="record an explicit rejection of a safe non-authoritative history"); codex_parser.add_argument("--plan-digest", help="require
+    this reviewed reconciliation plan digest before mutation"); codex_parser.add_argument("--diagnose", action="store_true",
+    help="probe a remote endpoint without opening Codex"); codex_parser.add_argument("--preflight", action="store_true", help="validate
+    direct launch without opening Codex"); codex_parser.add_argument("--remote", action="store_true", help="explicitly select
+    REMOTE_INTERACTIVE; shell defaults to DIRECT_INTERACTIVE"); codex_parser.add_argument("--prompt", help="bounded initial
+    prompt for managed start"); codex_parser.add_argument("--reason", default="NON_AUTHORITATIVE_RECONCILED_HISTORY", help=argparse.SUPPRESS);
+    codex_parser.add_argument("--codex-bin", default="codex", help=argparse.SUPPRESS); codex_parser.add_argument("--session");
+    codex_parser.add_argument("--mode", choices=("DIRECT_INTERACTIVE", "REMOTE_INTERACTIVE", "OPERATOR_INTERACTIVE", "ZEUS_MANAGED"));
+    codex_parser.add_argument("--latest", action="store_true"); codex_parser.add_argument("--active", action="store_true");
+    codex_parser.add_argument("--json", action="store_true"); codex_parser.add_argument("--help", action="store_true", dest="codex_help",
+    help="show help for this Codex command")
+- path: scripts/zeus
+  line: 764
+  text: gate=sub.add_parser("gate"); gate.add_argument("action", choices=("show", "objective", "evidence", "receipt", "carry-forward",
+    "validate-carry-forward")); gate.add_argument("gate_id"); gate.add_argument("--json", action="store_true")
+- path: scripts/zeus
+  line: 887
+  text: 'if a.action in {"validate", "lint", "inspect", "explain"}:'
+- path: scripts/zeus
+  line: 892
+  text: metadata, evidence = validate_package(source)
+- path: scripts/zeus
+  line: 900
+  text: validation = validate_source(source, repository_root=ROOT)
+- path: scripts/zeus
+  line: 1046
+  text: 'value = {"result": result, "next_action": "scripts/engctl eos sync-validate homelab", "mutating": False, "reason":
+    "synchronized" if result == "PASS" else "recovery branch must be reconciled with EOS project main"}'
+- path: scripts/zeus
+  line: 1047
+  text: 'emit(value) if a.json else print(f"Synchronization readiness: {result}\nReason: {value[''reason'']}\nNext action:
+    scripts/engctl eos sync-validate homelab")'
+- path: scripts/zeus
+  line: 1357
+  text: '# next action; the controller supplies the validated cross-surface'
+- path: scripts/zeus
+  line: 1895
+  text: 'if a.action in ("resolve", "show", "validate"):'
+- path: scripts/zeus
+  line: 1988
+  text: '# compatible because the shared controller validates their own'
+- path: scripts/zeus
+  line: 2020
+  text: progressive_oa._validate_receipt_bindings(ROOT, gate_id, receipt_path, receipt, marker_path, marker)
+- path: scripts/zeus
+  line: 2035
+  text: 'if a.action == "validate-carry-forward":'
+- path: scripts/zeus
+  line: 2036
+  text: record = service.validate_carry_forward("OA-01")
+- path: scripts/zeus
+  line: 2303
+  text: 'elif a.command=="validate": emit(WopGuidanceService().validate(load_submission(a.wop_package),a.repository))'
+- path: scripts/wop-lifecyclectl
+  line: 25
+  text: parser.add_argument("command", choices=("validate", "inventory", "resume"))
+- path: scripts/wop-lifecyclectl
+  line: 30
+  text: 'if args.command == "validate":'
+- path: scripts/wop-lifecyclectl
+  line: 31
+  text: manager.validate()
+- path: scripts/reconcile-closeoutctl
+  line: 22
+  text: parser.add_argument("command", choices=("validate",))
+- path: scripts/verify.sh
+  line: 161
+  text: '"$SCRIPT_DIR/validate_controlled_documents.py"'
+- path: scripts/wop-dispatchctl
+  line: 2
+  text: '"""Inspect and validate supervised WOP dispatch state."""'
+- path: scripts/wop-dispatchctl
+  line: 29
+  text: parser.add_argument("command", choices=("validate", "status"))
+- path: scripts/validate_controlled_documents.py
+  line: 142
+  text: '"validated_by",'
+- path: scripts/validate_controlled_documents.py
+  line: 143
+  text: '"validates",'
+- path: scripts/validate_controlled_documents.py
+  line: 356
+  text: def semantic_validate_path(
+- path: scripts/validate_controlled_documents.py
+  line: 477
+  text: '"scripts/validate_controlled_documents.py"'
+- path: scripts/validate_controlled_documents.py
+  line: 567
+  text: def validate_metadata(
+- path: scripts/validate_controlled_documents.py
+  line: 617
+  text: def validate_repository_relationships(
+- path: scripts/validate_controlled_documents.py
+  line: 664
+  text: def validate_governance_cycles(
+- path: scripts/validate_controlled_documents.py
+  line: 704
+  text: help="validate one repository-relative document using its resolved semantic profile",
+- path: scripts/validate_controlled_documents.py
+  line: 709
+  text: help="validate every registered semantic artifact (including Zeus domain artifacts)",
+- path: scripts/validate_controlled_documents.py
+  line: 846
+  text: validate_repository_relationships(validation, identities)
+- path: scripts/validate_controlled_documents.py
+  line: 863
+  text: validate_metadata(validation, path, metadata, identities)
+- path: scripts/validate_controlled_documents.py
+  line: 883
+  text: '"engctl registry validate" in index_text,'
+- path: scripts/validate_controlled_documents.py
+  line: 1048
+  text: validate_metadata(validation, path, metadata, identities)
+- path: scripts/validate_controlled_documents.py
+  line: 1073
+  text: validate_governance_cycles(validation, metadata_by_id)
+- path: scripts/validate_controlled_documents.py
+  line: 1143
+  text: semantic_results.append(semantic_validate_path(validation, target, catalog))
+- path: scripts/mission-contractctl
+  line: 12
+  text: from scripts.lib.eos.mission_contract import MissionContractError, Resolver, load, transition, validate
+- path: scripts/mission-contractctl
+  line: 17
+  text: 'for name in ("inspect", "validate", "resolve"):'
+- path: scripts/mission-contractctl
+  line: 36
+  text: 'elif a.command == "validate":'
+- path: scripts/mission-contractctl
+  line: 37
+  text: 'result = [{"path": str(x.relative_to(ROOT)), "errors": validate(y, ROOT)} for x, y in resolver.contracts(a.mission)]'
+- path: scripts/mission-contractctl
+  line: 50
+  text: '[str(ROOT / "scripts/engctl"), "eos", "sync-validate", "homelab"],'
+- path: scripts/engctl
+  line: 32
+  text: engctl roadmap {status|show|gate CXX|results|validate|evaluate}
+- path: scripts/engctl
+  line: 36
+  text: engctl checkpoint {latest|active|list|create <title>|restore [checkpoint]|validate|retention [count]}
+- path: scripts/engctl
+  line: 37
+  text: engctl eos {status|validate|synchronize|sync-validate|sync-status|refresh|operational|persistence} [project]
+- path: scripts/engctl
+  line: 39
+  text: engctl registry {path|validate|show|list|get|context|create|update|archive|transition}
+- path: scripts/engctl
+  line: 42
+  text: engctl queue {list|show|validate|enqueue|dequeue|reprioritize|reorder}
+- path: scripts/engctl
+  line: 44
+  text: engctl dependency {list|validate|check|blocked|satisfy}
+- path: scripts/engctl
+  line: 45
+  text: engctl defer {list|validate|apply|resume|history}
+- path: scripts/engctl
+  line: 47
+  text: engctl validate [project]
+- path: scripts/engctl
+  line: 48
+  text: engctl platform {status|validate|qualify} [project]
+- path: scripts/engctl
+  line: 49
+  text: engctl execution {inventory|snapshot [--mission ID]|validate-handoff FILE}
+- path: scripts/engctl
+  line: 50
+  text: engctl mission contract {inspect|validate|resolve|admit|activate-request|recover|activate|suspend|resume|revoke|complete}
+- path: scripts/engctl
+  line: 73
+  text: if ! eos_synchronization_validate "$project" >/dev/null; then
+- path: scripts/engctl
+  line: 77
+  text: if ! eos_validate_state "$project" >/dev/null; then
+- path: scripts/engctl
+  line: 81
+  text: if ! eos_operational_validate "$project" >/dev/null; then
+- path: scripts/engctl
+  line: 91
+  text: if ! eos_synchronization_validate "$project" >/dev/null; then
+- path: scripts/engctl
+  line: 94
+  text: eos_synchronization_validate "$project"
+- path: scripts/engctl
+  line: 95
+  text: eos_validate_state "$project" >/dev/null
+- path: scripts/engctl
+  line: 96
+  text: if ! eos_operational_validate "$project" >/dev/null; then
+- path: scripts/engctl
+  line: 99
+  text: eos_operational_validate "$project" >/dev/null
+- path: scripts/engctl
+  line: 141
+  text: status|show|results|validate|evaluate)
+- path: scripts/engctl
+  line: 180
+  text: validate) eos_validate_state "$project" ;;
+- path: scripts/engctl
+  line: 182
+  text: sync-validate) eos_synchronization_validate "$project" ;;
+- path: scripts/engctl
+  line: 186
+  text: persistence) eos_persistence_validate "$project" ;;
+- path: scripts/engctl
+  line: 202
+  text: validate)
+- path: scripts/engctl
+  line: 203
+  text: eos_platform_validate "${1:-$EOS_PROJECT}"
+- path: scripts/engctl
+  line: 210
+  text: validate) eos_platform_validate "$project" ;;
+- path: scripts/execution-oversightctl
+  line: 2
+  text: '"""Inspect and validate EMP Execution Oversight state."""'
+- path: scripts/execution-oversightctl
+  line: 24
+  text: parser.add_argument("command", choices=("validate", "replay"))
+- path: scripts/authority-ownerctl
+  line: 23
+  text: validate_publication_payload,
+- path: scripts/authority-ownerctl
+  line: 75
+  text: approval = sub.add_parser("validate-governance-approval")
+- path: scripts/authority-ownerctl
+  line: 130
+  text: validate_publication_payload("approval_authority", payload)
+- path: scripts/bootstrap/verify_yaml_header.py
+  line: 19
+  text: '# This script only validates that a caller-supplied file already has a YAML'
+- path: scripts/lib/document_synchronization.py
+  line: 127
+  text: 'def validate_metadata(metadata: dict[str, Any]) -> list[str]:'
+- path: scripts/lib/document_synchronization.py
+  line: 301
+  text: errors = validate_metadata(metadata)
+- path: scripts/lib/engineering_conformance.py
+  line: 303
+  text: 'validated: list[dict[str, Any]] = []'
+- path: scripts/lib/engineering_conformance.py
+  line: 385
+  text: validated.append(
+- path: scripts/lib/engineering_conformance.py
+  line: 397
+  text: item["determination"] == determination for item in validated
+- path: scripts/lib/engineering_conformance.py
+  line: 410
+  text: for item in validated
+- path: scripts/lib/engineering_conformance.py
+  line: 424
+  text: '"validated_contracts": validated,'
+- path: scripts/lib/engineering_conformance.py
+  line: 428
+  text: for item in validated
+- path: scripts/lib/engineering_conformance.py
+  line: 432
+  text: item for item in validated if item["determination"] == "partially_conformant"
+- path: scripts/lib/engineering_conformance.py
+  line: 436
+  text: item for item in validated if item["determination"] == "incompatible_implementation"
+- path: scripts/lib/implementation_coverage.py
+  line: 44
+  text: 'def validate_policy(policy: dict[str, Any]) -> list[str]:'
+- path: scripts/lib/implementation_coverage.py
+  line: 165
+  text: errors = validate_policy(policy)
+- path: scripts/tests/test-eos-runtime.sh
+  line: 200
+  text: eos_checkpoint_validate homelab >/dev/null
+- path: scripts/tests/test-eos-runtime.sh
+  line: 205
+  text: eos_operational_validate homelab >/dev/null
+- path: scripts/tests/test-eos-runtime.sh
+  line: 206
+  text: eos_persistence_validate homelab >/dev/null
+- path: scripts/tests/test-eos-runtime.sh
+  line: 208
+  text: if eos_persistence_validate homelab >/dev/null; then
+- path: scripts/tests/test-eos-runtime.sh
+  line: 223
+  text: eos_operational_validate homelab >/dev/null
+- path: scripts/tests/test-eos-runtime.sh
+  line: 227
+  text: eos_validate_state homelab >/dev/null
+- path: scripts/tests/test-eos-runtime.sh
+  line: 243
+  text: '"$REPOSITORY_ROOT/scripts/engctl" eos validate >/dev/null'
+- path: scripts/tests/test-eos-runtime.sh
+  line: 250
+  text: '"$REPOSITORY_ROOT/scripts/engctl" checkpoint validate >/dev/null'
+- path: scripts/tests/test-eos-runtime.sh
+  line: 257
+  text: '"$REPOSITORY_ROOT/scripts/engctl" registry validate >/dev/null'
+- path: scripts/tests/test-eos-runtime.sh
+  line: 263
+  text: '"$REPOSITORY_ROOT/scripts/engctl" queue validate >/dev/null'
+- path: scripts/tests/test-wop-lifecycle-manager.py
+  line: 421
+  text: 'def test_cli_validates_and_resumes_persisted_state(self) -> None:'
+- path: scripts/tests/test-wop-lifecycle-manager.py
+  line: 423
+  text: validate = subprocess.run(
+- path: scripts/tests/test-wop-lifecycle-manager.py
+  line: 424
+  text: '[str(ROOT / "scripts/wop-lifecyclectl"), str(self.state_path), "validate"],'
+- path: scripts/tests/test-wop-lifecycle-manager.py
+  line: 430
+  text: self.assertEqual(validate.returncode, 0, validate.stderr)
+- path: scripts/tests/test-zeus-oa04-mission-resolution.py
+  line: 116
+  text: 'if "sync-validate" in arguments:'
+- path: scripts/tests/test-mission-contract.py
+  line: 10
+  text: from scripts.lib.eos.mission_contract import Resolver, digest, transition, validate
+- path: scripts/tests/test-mission-contract.py
+  line: 56
+  text: '"interruption": {"behavior": "revalidate"},'
+- path: scripts/tests/test-mission-contract.py
+  line: 97
+  text: 'self.assertIn("wop.locator: unresolved", validate(value, self.root))'
+- path: scripts/tests/test-mission-contract.py
+  line: 102
+  text: 'self.assertIn("roles.execution_agent: cannot self-authorize", validate(value, self.root))'
+- path: scripts/tests/test-progressive-runtime-implementation-synchronization.py
+  line: 15
+  text: validate_implementation,
+- path: scripts/tests/test-progressive-runtime-implementation-synchronization.py
+  line: 18
+  text: validate_implementation as validate_compatibility_implementation,
+- path: scripts/tests/test-progressive-runtime-implementation-synchronization.py
+  line: 37
+  text: result = validate_implementation(ROOT)
+- path: scripts/tests/test-progressive-runtime-implementation-synchronization.py
+  line: 41
+  text: result = validate_compatibility_implementation(ROOT)
+- path: scripts/tests/test-progressive-runtime-implementation-synchronization.py
+  line: 55
+  text: validate_implementation(root)
+- path: scripts/tests/test-progressive-runtime-implementation-synchronization.py
+  line: 75
+  text: validate_implementation(root)
+- path: scripts/tests/test-authority-resolution.py
+  line: 35
+  text: graph.validate()
+- path: scripts/tests/test-authority-resolution.py
+  line: 40
+  text: graph.validate()
+- path: scripts/tests/test-authority-resolution.py
+  line: 99
+  text: restored.validate()
+- path: scripts/tests/test-authority-resolution.py
+  line: 102
+  text: yaml_restored.validate()
+- path: scripts/tests/test-authority-resolution.py
+  line: 105
+  text: 'def test_cli_validate_and_resolve(self) -> None:'
+- path: scripts/tests/test-authority-resolution.py
+  line: 108
+  text: '[sys.executable, str(CLI), "validate", str(valid)],'
+- path: scripts/tests/test-authority-resolution.py
+  line: 127
+  text: '"validate",'
+- path: scripts/tests/test-progressive-runtime-capabilities.py
+  line: 15
+  text: validate,
+- path: scripts/tests/test-progressive-runtime-capabilities.py
+  line: 48
+  text: result = validate(ROOT)
+- path: scripts/tests/test-progressive-runtime-capabilities.py
+  line: 55
+  text: self.assertEqual(validate(ROOT), validate(ROOT))
+- path: scripts/tests/test-progressive-runtime-capabilities.py
+  line: 63
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-capabilities.py
+  line: 71
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-capabilities.py
+  line: 82
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-capabilities.py
+  line: 92
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-capabilities.py
+  line: 100
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-capabilities.py
+  line: 111
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-capabilities.py
+  line: 121
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-capabilities.py
+  line: 130
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-capabilities.py
+  line: 142
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-capabilities.py
+  line: 148
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-capabilities.py
+  line: 159
+  text: validate(root)
+- path: scripts/tests/test-authority-resolution-runtime.py
+  line: 26
+  text: validate_bundle,
+- path: scripts/tests/test-authority-resolution-runtime.py
+  line: 189
+  text: validate_bundle(first, expected_repository=ROOT, at=AT)
+- path: scripts/tests/test-authority-resolution-runtime.py
+  line: 221
+  text: self.assertEqual(AdmissionController().validate(wop, str(ROOT)), ())
+- path: scripts/tests/test-authority-resolution-runtime.py
+  line: 271
+  text: validate_bundle(bundle, expected_repository=ROOT, at=AT)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 22
+  text: validate,
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 86
+  text: result = validate(ROOT)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 94
+  text: self.assertEqual(validate(ROOT), validate(ROOT))
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 102
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 110
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 118
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 128
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 133
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 141
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 146
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 151
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 159
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 169
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 174
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 179
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 189
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 194
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 202
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 207
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 212
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 217
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 227
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 237
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 243
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-execution-contracts.py
+  line: 251
+  text: validate(root)
+- path: scripts/tests/test-repository-identity.py
+  line: 10
+  text: from scripts.lib.emp.wop_validation import validate_source
+- path: scripts/tests/test-repository-identity.py
+  line: 35
+  text: result = validate_source(source, repository_root=ROOT)
+- path: scripts/tests/test-zeus-provider-boundary-canonicalization.py
+  line: 48
+  text: value = provider_selection._validate_live_lineage(ROOT, anchor)
+- path: scripts/tests/test-zeus-provider-boundary-canonicalization.py
+  line: 59
+  text: lineage = provider_selection._validate_live_lineage(ROOT, anchor)
+- path: scripts/tests/test-zeus-provider-boundary-canonicalization.py
+  line: 93
+  text: provider_selection._validate_live_lineage(ROOT, anchor)
+- path: scripts/tests/test-zeus-gate-approval.py
+  line: 424
+  text: 'def test_stale_head_invalidates_verification(self):'
+- path: scripts/tests/test-zeus-gate-approval.py
+  line: 432
+  text: 'def test_evidence_digest_change_invalidates_verification(self):'
+- path: scripts/tests/test-zeus-gate-approval.py
+  line: 444
+  text: 'def test_wop_digest_change_invalidates_verification(self):'
+- path: scripts/tests/test-zeus-gate-approval.py
+  line: 631
+  text: 'def test_verification_checksum_tamper_invalidates_record(self):'
+- path: scripts/tests/test-zeus-gate-approval.py
+  line: 639
+  text: 'def test_operator_identity_change_invalidates_record(self):'
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 14
+  text: validate,
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 15
+  text: validate_implementation,
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 40
+  text: result = validate(ROOT)
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 71
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 81
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 91
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 101
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 110
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 116
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 120
+  text: result = validate(root)
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 128
+  text: validate_implementation(root)
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 157
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 167
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 182
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 195
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 207
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-dependencies.py
+  line: 214
+  text: validate(root)
+- path: scripts/tests/test-wop-packaging.py
+  line: 12
+  text: from scripts.lib.emp.stage1_runtime import Stage1Runtime, Stage1Error, validate_package
+- path: scripts/tests/test-wop-packaging.py
+  line: 31
+  text: 'Sections Execution Sequence: validate then package'
+- path: scripts/tests/test-wop-packaging.py
+  line: 39
+  text: 'Sections Success And Acceptance Criteria: package validates'
+- path: scripts/tests/test-wop-packaging.py
+  line: 98
+  text: metadata, _ = validate_package(package_root)
+- path: scripts/tests/test-wop-packaging.py
+  line: 108
+  text: metadata, evidence = validate_package(package_root)
+- path: scripts/tests/test-wop-packaging.py
+  line: 140
+  text: metadata, _ = validate_package(package_root)
+- path: scripts/tests/test-wop-packaging.py
+  line: 159
+  text: 'with patch("scripts.lib.emp.stage1_runtime.validate_package", side_effect=Stage1Error("manifest invalid")):'
+- path: scripts/tests/test-engineering-execution-interface.py
+  line: 138
+  text: self.interface.validate_handoff(path)
+- path: scripts/tests/test-engineering-execution-interface.py
+  line: 152
+  text: self.assertEqual(self.interface.validate_handoff(path)["result"], "PASS")
+- path: scripts/tests/test-engineering-execution-interface.py
+  line: 165
+  text: self.interface.validate_handoff(path)
+- path: scripts/tests/test-canonical-wop-stage1-integration.py
+  line: 52
+  text: 'for action in ("validate", "inspect", "verify"):'
+- path: scripts/tests/test-emp-registry.py
+  line: 29
+  text: assert registry.validate() == []
+- path: scripts/tests/test-emp-registry.py
+  line: 107
+  text: assert any("duplicate registry_id" in error for error in duplicate.validate())
+- path: scripts/tests/test-emp-registry.py
+  line: 112
+  text: assert any("authority_boundary" in error for error in authority.validate())
+- path: scripts/tests/test-emp-registry.py
+  line: 121
+  text: assert any("exactly one active deferral" in error for error in deferral.validate())
+- path: scripts/tests/test-emp-registry.py
+  line: 126
+  text: assert any("cannot depend on itself" in error for error in dependency.validate())
+- path: scripts/tests/test-progressive-runtime-consolidation.py
+  line: 17
+  text: validate,
+- path: scripts/tests/test-progressive-runtime-consolidation.py
+  line: 48
+  text: result = validate(ROOT)
+- path: scripts/tests/test-progressive-runtime-consolidation.py
+  line: 63
+  text: result = validate(self.fixture())
+- path: scripts/tests/test-progressive-runtime-consolidation.py
+  line: 67
+  text: first = json.dumps(validate(ROOT), sort_keys=True, separators=(",", ":"))
+- path: scripts/tests/test-progressive-runtime-consolidation.py
+  line: 68
+  text: second = json.dumps(validate(ROOT), sort_keys=True, separators=(",", ":"))
+- path: scripts/tests/test-progressive-runtime-consolidation.py
+  line: 75
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-consolidation.py
+  line: 85
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-consolidation.py
+  line: 94
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-consolidation.py
+  line: 103
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-consolidation.py
+  line: 112
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-consolidation.py
+  line: 126
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-consolidation.py
+  line: 141
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 28
+  text: validate,
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 29
+  text: validate_execution_eligibility,
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 69
+  text: result = validate(ROOT)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 77
+  text: self.assertEqual(validate(ROOT), validate(ROOT))
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 80
+  text: result = validate_execution_eligibility(
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 89
+  text: validate_execution_eligibility(
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 101
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 109
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 117
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 125
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 133
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 153
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 166
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 176
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 186
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 194
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 206
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 212
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 223
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 227
+  text: validate_execution_eligibility(ROOT, "ABSENT", "DECISION_AUTHORIZED")
+- path: scripts/tests/test-progressive-runtime-states.py
+  line: 229
+  text: validate_execution_eligibility(
+- path: scripts/tests/test-zeus-oa03-mission-contract-discovery.py
+  line: 36
+  text: 'discovery, "validate", side_effect=validation or (lambda value, base: [])'
+- path: scripts/tests/test-zeus-publication-transaction-cohort-revalidation.py
+  line: 107
+  text: 'def _revalidate(self, record):'
+- path: scripts/tests/test-zeus-publication-transaction-cohort-revalidation.py
+  line: 109
+  text: return publication_transaction._revalidate_authority(self.root, record, self.runtime)
+- path: scripts/tests/test-zeus-publication-transaction-cohort-revalidation.py
+  line: 113
+  text: first = self._revalidate(record)
+- path: scripts/tests/test-zeus-publication-transaction-cohort-revalidation.py
+  line: 114
+  text: second = self._revalidate(record)
+- path: scripts/tests/test-zeus-publication-transaction-cohort-revalidation.py
+  line: 125
+  text: current = self._revalidate(record)
+- path: scripts/tests/test-zeus-publication-transaction-cohort-revalidation.py
+  line: 131
+  text: current = self._revalidate(record)
+- path: scripts/tests/test-zeus-publication-transaction-cohort-revalidation.py
+  line: 138
+  text: current = self._revalidate(record)
+- path: scripts/tests/test-zeus-publication-transaction-cohort-revalidation.py
+  line: 145
+  text: current = self._revalidate(record)
+- path: scripts/tests/test-zeus-publication-transaction-cohort-revalidation.py
+  line: 152
+  text: self.assertEqual(self._revalidate(missing)["result"], "FAIL")
+- path: scripts/tests/test-zeus-publication-transaction-cohort-revalidation.py
+  line: 154
+  text: current = self._revalidate(mismatch)
+- path: scripts/tests/test-zeus-publication-transaction-cohort-revalidation.py
+  line: 162
+  text: current = self._revalidate(record)
+- path: scripts/tests/test-progressive-gate-primitives.py
+  line: 110
+  text: first = progressive_gate.validate_receipt(self.root, "OA-01")
+- path: scripts/tests/test-progressive-gate-primitives.py
+  line: 111
+  text: second = progressive_gate.validate_receipt(self.root, "OA-01")
+- path: scripts/tests/test-progressive-gate-primitives.py
+  line: 126
+  text: progressive_gate.validate_receipt(self.root, "OA-01")
+- path: scripts/tests/test-progressive-gate-primitives.py
+  line: 140
+  text: progressive_gate.validate_receipt(self.root, "OA-01")
+- path: scripts/tests/test-progressive-gate-primitives.py
+  line: 147
+  text: progressive_gate.validate_receipt(self.root, "OA-01")
+- path: scripts/tests/test-progressive-gate-primitives.py
+  line: 171
+  text: progressive_gate.validate_receipt(self.root, "OA-01")
+- path: scripts/tests/test-progressive-gate-primitives.py
+  line: 186
+  text: progressive_gate.validate_receipt(self.root, "OA-01")
+- path: scripts/tests/test-progressive-gate-primitives.py
+  line: 204
+  text: progressive_gate.validate_receipt(self.root, "OA-01")
+- path: scripts/tests/test-progressive-gate-primitives.py
+  line: 253
+  text: service.validate_receipt("OA-01")["receipt_digest"],
+- path: scripts/tests/test-zeus-mission-assurance.py
+  line: 162
+  text: language.validate_declaration(invalid_operator)
+- path: scripts/tests/test-zeus-mission-assurance.py
+  line: 167
+  text: language.validate_declaration(invalid_selector)
+- path: scripts/tests/test-zeus-mission-assurance.py
+  line: 175
+  text: language.validate_declaration(ambiguous)
+- path: scripts/tests/test-zeus-mission-assurance.py
+  line: 192
+  text: language.validate_declaration(declaration)
+- path: scripts/tests/test-controlled-document-semantic-validation.py
+  line: 17
+  text: MODULE_PATH = ROOT / "scripts/validate_controlled_documents.py"
+- path: scripts/tests/test-controlled-document-semantic-validation.py
+  line: 92
+  text: result = validator.semantic_validate_path(
+- path: scripts/tests/test-controlled-document-semantic-validation.py
+  line: 120
+  text: result = validator.semantic_validate_path(
+- path: scripts/tests/test-controlled-document-semantic-validation.py
+  line: 133
+  text: result = validator.semantic_validate_path(
+- path: scripts/tests/test-controlled-document-semantic-validation.py
+  line: 150
+  text: result = validator.semantic_validate_path(
+- path: scripts/tests/test-controlled-document-semantic-validation.py
+  line: 162
+  text: '["python3", "scripts/validate_controlled_documents.py",'
+- path: scripts/tests/test-managed-codex-handoff.py
+  line: 88
+  text: 'def test_explicit_metadata_is_validated_not_authoritative(self):'
+- path: scripts/tests/test-zeus-agent-qualification.py
+  line: 46
+  text: '"last_validated_at": None,'
+- path: scripts/tests/test-progressive-runtime-registration.py
+  line: 15
+  text: validate,
+- path: scripts/tests/test-progressive-runtime-registration.py
+  line: 43
+  text: result = validate(ROOT)
+- path: scripts/tests/test-progressive-runtime-registration.py
+  line: 56
+  text: self.assertEqual(validate(ROOT), validate(ROOT))
+- path: scripts/tests/test-progressive-runtime-registration.py
+  line: 61
+  text: result = validate(root)
+- path: scripts/tests/test-progressive-runtime-registration.py
+  line: 75
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-registration.py
+  line: 83
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-registration.py
+  line: 91
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-registration.py
+  line: 99
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-registration.py
+  line: 105
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-registration.py
+  line: 111
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-registration.py
+  line: 122
+  text: validate(root)
+- path: scripts/tests/test-zeus-provider-evaluation-live-lineage.py
+  line: 37
+  text: value = provider_selection._validate_live_lineage
+- path: scripts/tests/test-production-execution-foundation.py
+  line: 36
+  text: validate_record,
+- path: scripts/tests/test-production-execution-foundation.py
+  line: 87
+  text: '"last_validated_at": "2026-07-26T23:30:00Z",'
+- path: scripts/tests/test-production-execution-foundation.py
+  line: 243
+  text: validate_record(record)
+- path: scripts/tests/test-evidence-qualification.py
+  line: 369
+  text: 'def test_cli_validates_and_replays_history(self) -> None:'
+- path: scripts/tests/test-evidence-qualification.py
+  line: 374
+  text: validate = subprocess.run(
+- path: scripts/tests/test-evidence-qualification.py
+  line: 375
+  text: command + ["validate"], text=True, capture_output=True
+- path: scripts/tests/test-evidence-qualification.py
+  line: 377
+  text: self.assertEqual(validate.returncode, 0, validate.stderr)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 31
+  text: validate,
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 72
+  text: result = validate(ROOT)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 80
+  text: self.assertEqual(validate(ROOT), validate(ROOT))
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 88
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 96
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 104
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 112
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 122
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 132
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 140
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 148
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 156
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 164
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 173
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 181
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 189
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 197
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 205
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 215
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 232
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 238
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-transitions.py
+  line: 246
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 25
+  text: validate,
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 90
+  text: result = validate(ROOT)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 98
+  text: self.assertEqual(validate(ROOT), validate(ROOT))
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 103
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 111
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 121
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 128
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 138
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 143
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 148
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 153
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 158
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 166
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 171
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 176
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 185
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 190
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 195
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 207
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 213
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-outcomes.py
+  line: 221
+  text: validate(root)
+- path: scripts/tests/test-convergence-runtime.py
+  line: 311
+  text: OperationalExecutionContextService.validate(context)
+- path: scripts/tests/test-engineering-conformance.py
+  line: 86
+  text: for item in report["validated_contracts"]
+- path: scripts/tests/test-engineering-conformance.py
+  line: 94
+  text: self.assertTrue(all(item["evidence"] for item in report["validated_contracts"]))
+- path: scripts/tests/test-canonical-wop-package.py
+  line: 14
+  text: validate,
+- path: scripts/tests/test-canonical-wop-package.py
+  line: 24
+  text: result = validate(package)
+- path: scripts/tests/test-canonical-wop-package.py
+  line: 39
+  text: result = validate(package)
+- path: scripts/tests/test-canonical-wop-package.py
+  line: 46
+  text: validate(package)
+- path: scripts/tests/test-canonical-wop-package.py
+  line: 53
+  text: validate(package)
+- path: scripts/tests/test-canonical-wop-package.py
+  line: 60
+  text: validate(package)
+- path: scripts/tests/test-canonical-wop-package.py
+  line: 67
+  text: validate(package)
+- path: scripts/tests/test-canonical-wop-package.py
+  line: 73
+  text: validate(package)
+- path: scripts/tests/test-governance-baseline-documentation.py
+  line: 69
+  text: '"validate_controlled_documents.py",'
+- path: scripts/tests/test-zeus-oa22-corrective-authorization.py
+  line: 17
+  text: validate,
+- path: scripts/tests/test-zeus-oa22-corrective-authorization.py
+  line: 36
+  text: validate(req, receipt, at=start + timedelta(seconds=2))
+- path: scripts/tests/test-zeus-oa22-corrective-authorization.py
+  line: 55
+  text: validate(req, bad, at=start + timedelta(seconds=2))
+- path: scripts/tests/test-zeus-oa22-corrective-authorization.py
+  line: 57
+  text: validate(bad, receipt, at=start + timedelta(seconds=2))
+- path: scripts/tests/test-zeus-oa22-corrective-authorization.py
+  line: 64
+  text: validate(req, receipt, at=start + timedelta(minutes=11))
+- path: scripts/tests/test-zeus-progressive-oa.py
+  line: 86
+  text: '"scripts.lib.emp.oa04_gate_verification.validate_marker",'
+- path: scripts/tests/test-emp-management.py
+  line: 181
+  text: ("queue", "validate"),
+- path: scripts/tests/test-canonical-mission-lifecycle.py
+  line: 52
+  text: activate(self.root, self.transaction, publication_approved=False, eos_synchronized=True, platform_validated=True)
+- path: scripts/tests/test-canonical-mission-lifecycle.py
+  line: 54
+  text: activate(self.root, self.transaction, publication_approved=True, eos_synchronized=True, platform_validated=True, fault_after="repository")
+- path: scripts/tests/test-canonical-mission-lifecycle.py
+  line: 56
+  text: result = activate(self.root, self.transaction, publication_approved=True, eos_synchronized=True, platform_validated=True)
+- path: scripts/tests/test-canonical-mission-lifecycle.py
+  line: 58
+  text: replay = activate(self.root, self.transaction, publication_approved=True, eos_synchronized=True, platform_validated=True)
+- path: scripts/tests/test-working-tree-baseline.py
+  line: 18
+  text: from scripts.lib.eos.working_tree_baseline import BaselineError, validate
+- path: scripts/tests/test-working-tree-baseline.py
+  line: 50
+  text: self.assertEqual(validate(self.root, self.contract)["decision"], "AUTHORIZED_DIRTY_TREE")
+- path: scripts/tests/test-working-tree-baseline.py
+  line: 55
+  text: validate(self.root, self.contract)
+- path: scripts/tests/test-working-tree-baseline.py
+  line: 58
+  text: validate(self.root, self.contract)
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 84
+  text: 'def test_roadmap_parses_and_schema_validates(self):'
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 85
+  text: value = self.resolver.validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 91
+  text: value = self.resolver.validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 96
+  text: value = self.resolver.validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 108
+  text: ConvergenceRoadmap(fixture_root).validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 111
+  text: value = self.resolver.validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 117
+  text: value = self.resolver.validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 139
+  text: value = ConvergenceRoadmap(fixture_root).validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 143
+  text: value = self.resolver.validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 148
+  text: value = self.resolver.validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 158
+  text: ConvergenceRoadmap(fixture_root).validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 164
+  text: ConvergenceRoadmap(fixture_root).validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 174
+  text: ConvergenceRoadmap(fixture_root).validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 184
+  text: ConvergenceRoadmap(fixture_root).validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 191
+  text: ConvergenceRoadmap(fixture_root).validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 222
+  text: ConvergenceRoadmap(fixture_root).validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 296
+  text: ConvergenceRoadmap(fixture_root).validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 307
+  text: self.assertEqual(resolver.validate()["result"], "PASS")
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 324
+  text: value = self.resolver.validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 330
+  text: value = self.resolver.validate()
+- path: scripts/tests/test-convergence-roadmap.py
+  line: 339
+  text: '[str(ROOT / "scripts/engctl"), "roadmap", "validate"],'
+- path: scripts/tests/test-zeus-wop-authoring.py
+  line: 83
+  text: 'def test_markdown_and_docx_templates_validate(self):'
+- path: scripts/tests/test-zeus-wop-authoring.py
+  line: 95
+  text: 'def test_validate_failure_is_non_mutating_and_lists_fields(self):'
+- path: scripts/tests/test-zeus-wop-authoring.py
+  line: 100
+  text: '[sys.executable, str(ROOT / "scripts" / "zeus"), "wop", "validate", str(source)],'
+- path: scripts/tests/test-zeus-wop-authoring.py
+  line: 151
+  text: sys.executable, str(ROOT / "scripts" / "zeus"), "wop", "validate", str(generated), "--json"],
+- path: scripts/tests/test-reconciliation-closeout.py
+  line: 488
+  text: 'def test_cli_validates_reconciled_state(self) -> None:'
+- path: scripts/tests/test-reconciliation-closeout.py
+  line: 494
+  text: '"validate",'
+- path: scripts/tests/test-oa13-dispatch-candidate.py
+  line: 10
+  text: from scripts.lib.emp.dispatch_candidate import create, validate
+- path: scripts/tests/test-oa13-dispatch-candidate.py
+  line: 39
+  text: self.assertEqual(validate(ROOT, first), first)
+- path: scripts/tests/test-oa13-dispatch-candidate.py
+  line: 48
+  text: validate(ROOT, malformed)
+- path: scripts/tests/test-operational-gate-handler.py
+  line: 286
+  text: OperationalExecutionContextService.validate(tampered)
+- path: scripts/tests/test-controlled-document-relationships.py
+  line: 10
+  text: MODULE_PATH = ROOT / "scripts/validate_controlled_documents.py"
+- path: scripts/tests/test-controlled-document-relationships.py
+  line: 19
+  text: '"validated_by", "validates", "authorized_by", "authorizes",'
+- path: scripts/tests/test-controlled-document-relationships.py
+  line: 38
+  text: VALIDATOR.validate_repository_relationships(validation, identities)
+- path: scripts/tests/test-wop-supervised-dispatch.py
+  line: 291
+  text: 'def test_cli_validates_and_reports_dispatched(self) -> None:'
+- path: scripts/tests/test-wop-supervised-dispatch.py
+  line: 301
+  text: validate = subprocess.run(command + ["validate"], text=True, capture_output=True)
+- path: scripts/tests/test-wop-supervised-dispatch.py
+  line: 302
+  text: self.assertEqual(validate.returncode, 0, validate.stderr)
+- path: scripts/tests/test-zeus-gate-carry-forward.py
+  line: 94
+  text: 'def test_tampering_invalidates_record(self):'
+- path: scripts/tests/test-mission-orchestration.py
+  line: 44
+  text: SelectionDecisionRecord(canonical_json(record)).validate()
+- path: scripts/tests/test-controlled-document-synchronization.py
+  line: 46
+  text: self.assertEqual([], synchronization.validate_metadata(metadata))
+- path: scripts/tests/test-wop-contract.py
+  line: 69
+  text: 'def test_valid_contract_and_signature_validate(self) -> None:'
+- path: scripts/tests/test-wop-contract.py
+  line: 70
+  text: self.wop.validate(DigestSignatureVerifier())
+- path: scripts/tests/test-wop-contract.py
+  line: 85
+  text: WorkPackage.from_mapping(value).validate()
+- path: scripts/tests/test-wop-contract.py
+  line: 93
+  text: ).validate()
+- path: scripts/tests/test-wop-contract.py
+  line: 189
+  text: self.wop.validate(RejectingVerifier())
+- path: scripts/tests/test-wop-contract.py
+  line: 208
+  text: 'def test_cli_validate_and_evaluate(self) -> None:'
+- path: scripts/tests/test-wop-contract.py
+  line: 209
+  text: validate = subprocess.run(
+- path: scripts/tests/test-wop-contract.py
+  line: 210
+  text: '[str(ROOT / "scripts" / "wopctl"), "validate", str(VALID_WOP)],'
+- path: scripts/tests/test-wop-contract.py
+  line: 216
+  text: self.assertEqual(validate.returncode, 0, validate.stderr)
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 22
+  text: validate,
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 57
+  text: result = validate(ROOT)
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 64
+  text: self.assertEqual(validate(ROOT), validate(ROOT))
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 72
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 84
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 92
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 102
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 110
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 118
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 126
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 136
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 144
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 154
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 163
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 169
+  text: validate(root)
+- path: scripts/tests/test-progressive-runtime-policies.py
+  line: 180
+  text: validate(root)
+- path: scripts/tests/test-development-wop-canonical-contract.py
+  line: 30
+  text: self.assertEqual(AdmissionController().validate(wop, str(ROOT)), ())
+- path: scripts/tests/test-execution-oversight.py
+  line: 401
+  text: 'def test_cli_validates_and_replays(self) -> None:'
+- path: scripts/tests/test-execution-oversight.py
+  line: 404
+  text: validate = subprocess.run(
+- path: scripts/tests/test-execution-oversight.py
+  line: 405
+  text: command + ["validate"], text=True, capture_output=True
+- path: scripts/tests/test-execution-oversight.py
+  line: 407
+  text: self.assertEqual(validate.returncode, 0, validate.stderr)
+- path: scripts/tests/test-conversational-reasoning.py
+  line: 21
+  text: result=self.g.validate(self.generated()["wop"],str(ROOT))
+- path: scripts/tests/test-conversational-reasoning.py
+  line: 34
+  text: self.assertEqual(self.g.validate(example,example["repository_identity"])["admission_decision"],"ACCEPTED")
+- path: scripts/tests/test-conversational-reasoning.py
+  line: 54
+  text: self.assertEqual(response["response"],self.g.validate(wop,str(ROOT)))
+- path: scripts/tests/fixtures/WOP-DEVELOPMENT-SOURCE-FIXTURE-001/148f0ec8eac910c74e9f4cc9/mission.yaml
+  line: 11
+  text: '- validate source'
+- path: scripts/tests/fixtures/WOP-DEVELOPMENT-SOURCE-FIXTURE-001/148f0ec8eac910c74e9f4cc9/source-wop.md
+  line: 5
+  text: 'Scope: validate source; preserve source; prepare bounded evidence'
+- path: scripts/lib/authority_pipeline/progressive_runtime_policies.py
+  line: 12
+  text: validate as validate_capabilities,
+- path: scripts/lib/authority_pipeline/progressive_runtime_policies.py
+  line: 59
+  text: 'def validate(repository: Path | str) -> dict[str, object]:'
+- path: scripts/lib/authority_pipeline/progressive_runtime_policies.py
+  line: 72
+  text: capability_analysis = validate_capabilities(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_consolidation.py
+  line: 81
+  text: 'def validate(repository: Path | str) -> dict[str, object]:'
+- path: scripts/lib/authority_pipeline/progressive_runtime_consolidation.py
+  line: 85
+  text: dependency = progressive_runtime_dependencies.validate(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_consolidation.py
+  line: 86
+  text: registration = progressive_runtime_registration.validate(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_consolidation.py
+  line: 87
+  text: capability = progressive_runtime_capabilities.validate(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_consolidation.py
+  line: 88
+  text: policy = progressive_runtime_policies.validate(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_consolidation.py
+  line: 89
+  text: state = progressive_runtime_states.validate(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_consolidation.py
+  line: 90
+  text: transition = progressive_runtime_transitions.validate(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_consolidation.py
+  line: 91
+  text: contract = progressive_runtime_execution_contracts.validate(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_consolidation.py
+  line: 92
+  text: outcome = progressive_runtime_outcomes.validate(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_states.py
+  line: 12
+  text: validate as validate_policies,
+- path: scripts/lib/authority_pipeline/progressive_runtime_states.py
+  line: 67
+  text: 'def validate(repository: Path | str) -> dict[str, object]:'
+- path: scripts/lib/authority_pipeline/progressive_runtime_states.py
+  line: 80
+  text: policy_analysis = validate_policies(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_states.py
+  line: 229
+  text: def validate_execution_eligibility(
+- path: scripts/lib/authority_pipeline/progressive_runtime_states.py
+  line: 233
+  text: analysis = validate(repository)
+- path: scripts/lib/authority_pipeline/progressive_runtime_execution_contracts.py
+  line: 12
+  text: validate as validate_transitions,
+- path: scripts/lib/authority_pipeline/progressive_runtime_execution_contracts.py
+  line: 62
+  text: 'def validate(repository: Path | str) -> dict[str, object]:'
+- path: scripts/lib/authority_pipeline/progressive_runtime_execution_contracts.py
+  line: 77
+  text: transition_analysis = validate_transitions(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_dependencies.py
+  line: 62
+  text: '"validate_receipt",'
+- path: scripts/lib/authority_pipeline/progressive_runtime_dependencies.py
+  line: 221
+  text: 'def validate(repository: Path | str) -> dict[str, object]:'
+- path: scripts/lib/authority_pipeline/progressive_runtime_dependencies.py
+  line: 303
+  text: 'def validate_implementation(repository: Path | str) -> dict[str, object]:'
+- path: scripts/lib/authority_pipeline/progressive_runtime_dependencies.py
+  line: 306
+  text: governance = validate(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_registration.py
+  line: 95
+  text: 'def validate(repository: Path | str) -> dict[str, object]:'
+- path: scripts/lib/authority_pipeline/progressive_runtime_registration.py
+  line: 192
+  text: 'def validate_implementation(repository: Path | str) -> dict[str, object]:'
+- path: scripts/lib/authority_pipeline/progressive_runtime_registration.py
+  line: 195
+  text: governance = validate(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_outcomes.py
+  line: 12
+  text: validate as validate_contracts,
+- path: scripts/lib/authority_pipeline/progressive_runtime_outcomes.py
+  line: 60
+  text: 'def validate(repository: Path | str) -> dict[str, object]:'
+- path: scripts/lib/authority_pipeline/progressive_runtime_outcomes.py
+  line: 73
+  text: contract_analysis = validate_contracts(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_transitions.py
+  line: 12
+  text: validate as validate_states,
+- path: scripts/lib/authority_pipeline/progressive_runtime_transitions.py
+  line: 52
+  text: 'def validate(repository: Path | str) -> dict[str, object]:'
+- path: scripts/lib/authority_pipeline/progressive_runtime_transitions.py
+  line: 65
+  text: state_analysis = validate_states(root)
+- path: scripts/lib/authority_pipeline/progressive_runtime_capabilities.py
+  line: 14
+  text: validate as validate_consumers,
+- path: scripts/lib/authority_pipeline/progressive_runtime_capabilities.py
+  line: 51
+  text: 'def validate(repository: Path | str) -> dict[str, object]:'
+- path: scripts/lib/authority_pipeline/progressive_runtime_capabilities.py
+  line: 58
+  text: consumer_analysis = validate_consumers(root)
+- path: scripts/lib/wop/canonical_package.py
+  line: 3
+  text: This module validates the portable package description used by future WOP
+- path: scripts/lib/wop/canonical_package.py
+  line: 105
+  text: 'def _validate_cagf_extension(extension: Mapping[str, Any]) -> None:'
+- path: scripts/lib/wop/canonical_package.py
+  line: 128
+  text: 'def validate(package: Mapping[str, Any]) -> dict[str, Any]:'
+- path: scripts/lib/wop/canonical_package.py
+  line: 178
+  text: _validate_cagf_extension(ext)
+- path: scripts/lib/wop/canonical_package.py
+  line: 202
+  text: validate(value)
+- path: scripts/lib/wop/contract.py
+  line: 512
+  text: 'def validate(self, signature_verifier: SignatureVerifier | None = None) -> None:'
+- path: scripts/lib/wop/contract.py
+  line: 655
+  text: validate = sub.add_parser("validate")
+- path: scripts/lib/wop/contract.py
+  line: 656
+  text: validate.add_argument("wop", type=Path)
+- path: scripts/lib/wop/contract.py
+  line: 674
+  text: 'if args.command == "validate":'
+- path: scripts/lib/wop/contract.py
+  line: 675
+  text: wop.validate()
+- path: scripts/lib/wop/contract.py
+  line: 678
+  text: wop.validate()
+- path: scripts/lib/eos/state_sync.py
+  line: 220
+  text: 'def validate(expected: dict[Path, bytes]) -> list[str]:'
+- path: scripts/lib/eos/state_sync.py
+  line: 230
+  text: parser.add_argument("action", choices=("render", "synchronize", "validate"))
+- path: scripts/lib/eos/state_sync.py
+  line: 237
+  text: 'if args.action == "validate":'
+- path: scripts/lib/eos/state_sync.py
+  line: 238
+  text: drift = validate(expected)
+- path: scripts/lib/eos/assurance_language.py
+  line: 34
+  text: self._validate_definition()
+- path: scripts/lib/eos/assurance_language.py
+  line: 62
+  text: 'def _validate_definition(self) -> None:'
+- path: scripts/lib/eos/assurance_language.py
+  line: 202
+  text: 'def validate_declaration(self, declaration: Any) -> None:'
+- path: scripts/lib/eos/assurance_language.py
+  line: 228
+  text: self.validate_expression(item["assertion"])
+- path: scripts/lib/eos/assurance_language.py
+  line: 230
+  text: self.validate_expression(item["applicability"])
+- path: scripts/lib/eos/assurance_language.py
+  line: 232
+  text: 'def validate_expression(self, expression: Any) -> None:'
+- path: scripts/lib/eos/assurance_language.py
+  line: 247
+  text: self.validate_expression(child)
+- path: scripts/lib/eos/assurance_language.py
+  line: 270
+  text: self._validate_selector(clause["selector"])
+- path: scripts/lib/eos/assurance_language.py
+  line: 272
+  text: self._validate_selector(clause["value_selector"])
+- path: scripts/lib/eos/assurance_language.py
+  line: 280
+  text: 'def _validate_selector(self, selector: Any) -> None:'
+- path: scripts/lib/eos/assurance_language.py
+  line: 293
+  text: self._validate_selector(selector)
+- path: scripts/lib/eos/assurance_language.py
+  line: 315
+  text: self.validate_expression(expression)
+- path: scripts/lib/eos/checkpoint.sh
+  line: 325
+  text: eos_checkpoint_validate() {
+- path: scripts/lib/eos/checkpoint.sh
+  line: 428
+  text: validate)
+- path: scripts/lib/eos/checkpoint.sh
+  line: 429
+  text: eos_checkpoint_validate "$project"
+- path: scripts/lib/eos/platform.sh
+  line: 48
+  text: echo "  resume status doctor ssh checkpoint eos repository registry portfolio project queue milestone dependency defer
+    context validate platform"
+- path: scripts/lib/eos/platform.sh
+  line: 219
+  text: eos_platform_validate() {
+- path: scripts/lib/eos/platform.sh
+  line: 226
+  text: validator="$root/scripts/validate_controlled_documents.py"
+- path: scripts/lib/eos/platform.sh
+  line: 228
+  text: validator="$root/scripts/validate_repository.py"
+- path: scripts/lib/eos/platform.sh
+  line: 256
+  text: if eos_synchronization_validate "$project" >/dev/null; then
+- path: scripts/lib/eos/platform.sh
+  line: 267
+  text: if eos_validate_state "$project"; then
+- path: scripts/lib/eos/platform.sh
+  line: 299
+  text: if declare -F emp_registry_validate >/dev/null 2>&1 && emp_registry_validate >/dev/null; then
+- path: scripts/lib/eos/platform.sh
+  line: 320
+  text: if eos_checkpoint_validate homelab >/dev/null; then
+- path: scripts/lib/eos/platform.sh
+  line: 327
+  text: if eos_operational_validate homelab >/dev/null; then
+- path: scripts/lib/eos/platform.sh
+  line: 334
+  text: if eos_persistence_validate homelab >/dev/null; then
+- path: scripts/lib/eos/working_tree_baseline.py
+  line: 44
+  text: 'def validate(root: Path, contract_path: Path) -> dict[str, object]:'
+- path: scripts/lib/eos/working_tree_baseline.py
+  line: 85
+  text: result = validate(args.repository.resolve(), args.contract.resolve())
+- path: scripts/lib/eos/operations.sh
+  line: 134
+  text: validator="$root/scripts/validate_controlled_documents.py"
+- path: scripts/lib/eos/operations.sh
+  line: 249
+  text: eos_operational_validate() {
+- path: scripts/lib/eos/operations.sh
+  line: 272
+  text: eos_persistence_validate() {
+- path: scripts/lib/eos/operations.sh
+  line: 279
+  text: if eos_operational_validate "$project" >/dev/null; then
+- path: scripts/lib/eos/operations.sh
+  line: 312
+  text: if eos_checkpoint_validate "$project" >/dev/null; then
+- path: scripts/lib/eos/synchronization.sh
+  line: 28
+  text: eos_synchronization_validate() {
+- path: scripts/lib/eos/synchronization.sh
+  line: 30
+  text: python3 "$(eos_synchronization_tool)" validate \
+- path: scripts/lib/eos/execution_interface.py
+  line: 190
+  text: language.validate_declaration(requirement)
+- path: scripts/lib/eos/execution_interface.py
+  line: 460
+  text: 'def validate_handoff(self, path: Path | str) -> dict[str, Any]:'
+- path: scripts/lib/eos/execution_interface.py
+  line: 496
+  text: validate = sub.add_parser("validate-handoff")
+- path: scripts/lib/eos/execution_interface.py
+  line: 497
+  text: validate.add_argument("path", type=Path)
+- path: scripts/lib/eos/execution_interface.py
+  line: 508
+  text: else interface.validate_handoff(args.path)
+- path: scripts/lib/eos/state.sh
+  line: 84
+  text: eos_validate_state() {
+- path: scripts/lib/eos/operational_beta.py
+  line: 4
+  text: roadmap and validates its bindings; it does not create a second mission or
+- path: scripts/lib/eos/operational_beta.py
+  line: 146
+  text: failures = AdmissionController().validate(wop, str(root.resolve()))
+- path: scripts/lib/eos/convergence_runtime.py
+  line: 155
+  text: '"""Resolve a handler-validated bootstrap action specification.'
+- path: scripts/lib/eos/convergence_runtime.py
+  line: 206
+  text: OperationalExecutionContextService._validate_plan(specification["gate_actions"])
+- path: scripts/lib/eos/convergence_runtime.py
+  line: 383
+  text: 'value = {**common, "plan_id": identifier, "gate_plan": OperationalExecutionContextService._validate_plan(gate_plan)}'
+- path: scripts/lib/eos/platform_sync_verification.py
+  line: 9
+  text: from scripts.lib.eos.state_sync import SynchronizationError, frontmatter, render, validate
+- path: scripts/lib/eos/platform_sync_verification.py
+  line: 76
+  text: drift = validate(render(root, workspace, project))
+- path: scripts/lib/eos/mission_assurance.py
+  line: 108
+  text: self.language.validate_declaration(controlled_declaration)
+- path: scripts/lib/eos/mission_contract.py
+  line: 70
+  text: 'def validate(value: Mapping[str, Any], root: Path) -> list[str]:'
+- path: scripts/lib/eos/mission_contract.py
+  line: 142
+  text: invalid = [(p, v, validate(v, self.root)) for p, v in candidates]
+- path: scripts/lib/eos/mission_contract.py
+  line: 152
+  text: errors = validate(selected[1], self.root)
+- path: scripts/lib/eos/canonical_baseline.py
+  line: 11
+  text: from scripts.lib.eos.state_sync import SynchronizationError, frontmatter, render, validate
+- path: scripts/lib/eos/canonical_baseline.py
+  line: 216
+  text: manifest_ok = not validate(render(root, workspace, project))
+- path: scripts/lib/eos/mission_activation.py
+  line: 24
+  text: validate,
+- path: scripts/lib/eos/mission_activation.py
+  line: 113
+  text: errors = validate(contract, self.root)
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 105
+  text: 'def _schema_validate(instance: dict[str, Any], schema_path: Path, label: str) -> None:'
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 109
+  text: jsonschema.validate(instance=instance, schema=schema)
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 147
+  text: '"""Resolve and validate one repository-authoritative convergence roadmap."""'
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 162
+  text: 'def validate(self) -> dict[str, Any]:'
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 165
+  text: _schema_validate(roadmap, self.roadmap_root / "schemas/roadmap.schema.yaml", "roadmap definition")
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 166
+  text: _schema_validate(state, self.roadmap_root / "schemas/state.schema.yaml", "roadmap state")
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 209
+  text: _schema_validate(gate, schema_path, f"{gate_id} definition")
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 309
+  text: _schema_validate(result, self.roadmap_root / "schemas/result.schema.yaml", f"{gate_id} result")
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 327
+  text: self._validate_evidence_manifest(gate_id, evidence_path)
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 349
+  text: self._validate_project_state(roadmap, state)
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 350
+  text: self._validate_manifest(roadmap, state, gates)
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 366
+  text: resolved = resolved or self.validate()
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 380
+  text: _schema_validate(catalog, schema_path, "execution playbook catalog")
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 590
+  text: _schema_validate(result, evaluation_schema_path, "live roadmap evaluation")
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 593
+  text: 'def _validate_project_state(self, roadmap: dict[str, Any], state: dict[str, Any]) -> None:'
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 619
+  text: 'def _validate_manifest(self, roadmap: dict[str, Any], state: dict[str, Any],'
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 663
+  text: 'def _validate_evidence_manifest(self, gate_id: str, path: Path) -> None:'
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 688
+  text: resolved = self.validate()
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 784
+  text: subparsers.add_parser("validate")
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 796
+  text: resolved = resolver.validate()
+- path: scripts/lib/eos/convergence_roadmap.py
+  line: 800
+  text: 'elif args.command == "validate":'
+- path: scripts/lib/emp/wop_canonicalization.py
+  line: 219
+  text: metadata, text = extract(source, validate=False)
+- path: scripts/lib/emp/wop_canonicalization.py
+  line: 254
+  text: metadata, text = extract(source, validate=False)
+- path: scripts/lib/emp/oa30_cap030_verification.py
+  line: 35
+  text: 'def validate_candidate(evidence: Mapping[str, Any]) -> dict[str, Any]:'
+- path: scripts/lib/emp/oa30_cap030_verification.py
+  line: 124
+  text: calculated = validate_candidate(manifest)
+- path: scripts/lib/emp/oa30_cap030_verification.py
+  line: 136
+  text: validate_candidate(candidate)
+- path: scripts/lib/emp/oa30_cap030_verification.py
+  line: 141
+  text: replay = validate_candidate(json.loads(json.dumps(manifest)))
+- path: scripts/lib/emp/oa30_cap030_verification.py
+  line: 146
+  text: _run(repository, "scripts/engctl", "eos", "sync-validate"),
+- path: scripts/lib/emp/oa30_cap030_verification.py
+  line: 147
+  text: _run(repository, "scripts/engctl", "registry", "validate"),
+- path: scripts/lib/emp/oa30_cap030_verification.py
+  line: 156
+  text: '"eos_sync_validate": "PASS" if commands[1]["returncode"] == 0 else "FAIL",'
+- path: scripts/lib/emp/oa30_cap030_verification.py
+  line: 157
+  text: '"registry_validate": "PASS" if commands[2]["returncode"] == 0 else "FAIL",'
+- path: scripts/lib/emp/native_session.py
+  line: 64
+  text: self._validate_evidence(value.get("evidence", []))
+- path: scripts/lib/emp/native_session.py
+  line: 132
+  text: self._validate_evidence(data.get("evidence", [])); data["state_digest"] = digest(data)
+- path: scripts/lib/emp/native_session.py
+  line: 156
+  text: 'def _validate_evidence(entries):'
+- path: scripts/lib/emp/mission_submission.py
+  line: 6
+  text: the only component that validates and records a submission.
+- path: scripts/lib/emp/oa25_cap025_verification.py
+  line: 101
+  text: _run(repository, "scripts/engctl", "eos", "sync-validate"),
+- path: scripts/lib/emp/oa25_cap025_verification.py
+  line: 102
+  text: _run(repository, "scripts/engctl", "registry", "validate")]
+- path: scripts/lib/emp/oa25_cap025_verification.py
+  line: 103
+  text: assertions["eos_sync_validate"] = "PASS" if commands[1]["returncode"] == 0 else "FAIL"
+- path: scripts/lib/emp/oa25_cap025_verification.py
+  line: 104
+  text: assertions["registry_validate"] = "PASS" if commands[2]["returncode"] == 0 else "FAIL"
+- path: scripts/lib/emp/oa17_gate_verification.py
+  line: 17
+  text: validate,
+- path: scripts/lib/emp/oa17_gate_verification.py
+  line: 52
+  text: validate(req, receipt, at=at)
+- path: scripts/lib/emp/oa17_gate_verification.py
+  line: 70
+  text: 'validate(req, {**receipt, "receipt_digest": "replayed"}, at=at)'
+- path: scripts/lib/emp/oa17_gate_verification.py
+  line: 85
+  text: validate(expired_request, expired_receipt, at=at + timedelta(seconds=2))
+- path: scripts/lib/emp/canonical_recovery.py
+  line: 113
+  text: 'def _validate_checkpoint(value: Mapping[str, Any], *, expected: Mapping[str, Any] | None = None) -> dict[str, Any]:'
+- path: scripts/lib/emp/canonical_recovery.py
+  line: 162
+  text: _validate_checkpoint(value)
+- path: scripts/lib/emp/canonical_recovery.py
+  line: 177
+  text: checkpoint = _validate_checkpoint(_load(checkpoint_path))
+- path: scripts/lib/emp/canonical_recovery.py
+  line: 242
+  text: checkpoints = [_validate_checkpoint(value, expected=checkpoint_expected) for _, value in candidates]
+- path: scripts/lib/emp/autonomous_dispatch.py
+  line: 103
+  text: 'def _validate(authoritative: Mapping[str, Any]) -> tuple[str, Mapping[str, Any], Mapping[str, Any]]:'
+- path: scripts/lib/emp/autonomous_dispatch.py
+  line: 141
+  text: transaction_id, dispatch, selection = self._validate(authoritative)
+- path: scripts/lib/emp/gate_approval.py
+  line: 211
+  text: 'def validate_gate(gate: str) -> str:'
+- path: scripts/lib/emp/gate_approval.py
+  line: 306
+  text: return bool(self._receipt_paths(validate_gate(gate)))
+- path: scripts/lib/emp/gate_approval.py
+  line: 309
+  text: gate = validate_gate(gate)
+- path: scripts/lib/emp/gate_approval.py
+  line: 350
+  text: return f"zeus verify {validate_gate(gate)}"
+- path: scripts/lib/emp/gate_approval.py
+  line: 472
+  text: gate = validate_gate(gate)
+- path: scripts/lib/emp/gate_approval.py
+  line: 624
+  text: evidence validation so controlled WOP tooling can validate a pending
+- path: scripts/lib/emp/gate_approval.py
+  line: 627
+  text: gate = validate_gate(gate)
+- path: scripts/lib/emp/gate_approval.py
+  line: 684
+  text: 'def validate_carry_forward(self, gate: str) -> dict[str, Any]:'
+- path: scripts/lib/emp/gate_approval.py
+  line: 686
+  text: gate = validate_gate(gate)
+- path: scripts/lib/emp/gate_approval.py
+  line: 809
+  text: gate = validate_gate(gate)
+- path: scripts/lib/emp/gate_approval.py
+  line: 844
+  text: gate = validate_gate(gate)
+- path: scripts/lib/emp/gate_approval.py
+  line: 930
+  text: gate = validate_gate(gate)
+- path: scripts/lib/emp/gate_approval.py
+  line: 958
+  text: gate = validate_gate(gate)
+- path: scripts/lib/emp/mission_resolution.py
+  line: 164
+  text: '[str(repository / "scripts/engctl"), "eos", "sync-validate"],'
+- path: scripts/lib/emp/oa03_gate_verification.py
+  line: 16
+  text: from scripts.lib.emp.oa03_implementation import validate_evidence
+- path: scripts/lib/emp/oa03_gate_verification.py
+  line: 59
+  text: implementation = validate_evidence(root)
+- path: scripts/lib/emp/oa03_gate_verification.py
+  line: 108
+  text: 'def validate_marker(root: Path | str) -> dict[str, Any]:'
+- path: scripts/lib/emp/oa03_gate_verification.py
+  line: 136
+  text: return _result(repository, validate_marker(repository), True)
+- path: scripts/lib/emp/oa03_gate_verification.py
+  line: 179
+  text: '# Revalidate at the evidence and marker protected boundaries.'
+- path: scripts/lib/emp/admission_supersession.py
+  line: 43
+  text: 'def _validate_lineage_package_digest(admission: Mapping[str, Any], expected: str) -> None:'
+- path: scripts/lib/emp/admission_supersession.py
+  line: 115
+  text: 'def _validate_lineage_authority_snapshot_digest(admission: Mapping[str, Any], expected: str) -> None:'
+- path: scripts/lib/emp/admission_supersession.py
+  line: 135
+  text: 'def _validate_execution_authority_snapshot_digest(projection: Mapping[str, Any], expected: str) -> None:'
+- path: scripts/lib/emp/admission_supersession.py
+  line: 146
+  text: 'def _validate_lineage_source_digest(admission: Mapping[str, Any], expected: str) -> None:'
+- path: scripts/lib/emp/admission_supersession.py
+  line: 163
+  text: 'def _validate_execution_source_digest(projection: Mapping[str, Any], expected: str) -> None:'
+- path: scripts/lib/emp/admission_supersession.py
+  line: 297
+  text: _validate_lineage_package_digest(predecessor, package_digest)
+- path: scripts/lib/emp/admission_supersession.py
+  line: 299
+  text: _validate_lineage_authority_snapshot_digest(predecessor, authority_digest)
+- path: scripts/lib/emp/admission_supersession.py
+  line: 301
+  text: _validate_lineage_source_digest(predecessor, source_digest)
+- path: scripts/lib/emp/admission_supersession.py
+  line: 302
+  text: _validate_lineage_authority_snapshot_digest(predecessor, authority_digest)
+- path: scripts/lib/emp/admission_supersession.py
+  line: 409
+  text: _validate_lineage_package_digest(value, package_digest)
+- path: scripts/lib/emp/admission_supersession.py
+  line: 410
+  text: _validate_lineage_source_digest(value, source_digest)
+- path: scripts/lib/emp/admission_supersession.py
+  line: 411
+  text: _validate_lineage_authority_snapshot_digest(value, authority_digest)
+- path: scripts/lib/emp/oa26_cap026_verification.py
+  line: 155
+  text: _run(repository, "scripts/engctl", "eos", "sync-validate"),
+- path: scripts/lib/emp/oa26_cap026_verification.py
+  line: 156
+  text: _run(repository, "scripts/engctl", "registry", "validate")]
+- path: scripts/lib/emp/oa26_cap026_verification.py
+  line: 166
+  text: '"eos_sync_validate": "PASS" if commands[1]["returncode"] == 0 else "FAIL",'
+- path: scripts/lib/emp/oa26_cap026_verification.py
+  line: 167
+  text: '"registry_validate": "PASS" if commands[2]["returncode"] == 0 else "FAIL",'
+- path: scripts/lib/emp/corrective_work_generation.py
+  line: 16
+  text: from .corrective_work_authorization import CorrectiveAuthorizationError, digest, validate
+- path: scripts/lib/emp/corrective_work_generation.py
+  line: 40
+  text: authorization = validate(request_record, authorization_receipt, at=at)
+- path: scripts/lib/emp/oa29_cap029_verification.py
+  line: 79
+  text: commands = [_run(repository, "git", "diff", "--check"), _run(repository, "scripts/engctl", "eos", "sync-validate"),
+    _run(repository, "scripts/engctl", "registry", "validate")]
+- path: scripts/lib/emp/oa29_cap029_verification.py
+  line: 80
+  text: 'checks = {"bounded_lifecycle": "PASS" if lifecycle["lifecycle_status"] == "CLOSED" else "FAIL", "negative_fail_closed":
+    "PASS" if all(value == "PASS" for value in negative.values()) else "FAIL", "replay_stability": "PASS" if replay == lifecycle
+    else "FAIL", "eos_sync_validate": "PASS" if commands[1]["returncode"] == 0 else "FAIL", "registry_validate": "PASS" if
+    commands[2]["returncode"] == 0 else "FAIL", "acceptance_bound": "PASS" if lifecycle["acceptance_status"] == "ACCEPTED"
+    else "FAIL"}'
+- path: scripts/lib/emp/progressive_runtime_support.py
+  line: 274
+  text: def _validate_receipt_bindings(
+- path: scripts/lib/emp/progressive_runtime_support.py
+  line: 362
+  text: 'def _validate_replay_lifecycle(value: dict, normalized: str) -> None:'
+- path: scripts/lib/emp/oa27_cap027_verification.py
+  line: 136
+  text: _run(repository, "scripts/engctl", "eos", "sync-validate"),
+- path: scripts/lib/emp/oa27_cap027_verification.py
+  line: 137
+  text: _run(repository, "scripts/engctl", "registry", "validate"),
+- path: scripts/lib/emp/oa27_cap027_verification.py
+  line: 145
+  text: '"eos_sync_validate": "PASS" if commands[1]["returncode"] == 0 else "FAIL",'
+- path: scripts/lib/emp/oa27_cap027_verification.py
+  line: 146
+  text: '"registry_validate": "PASS" if commands[2]["returncode"] == 0 else "FAIL",'
+- path: scripts/lib/emp/canonical_mission_aggregate.py
+  line: 72
+  text: 'def _validate_records(records: list[tuple[Path, dict[str, Any]]], expected: Mapping[str, Any], family: str) -> None:'
+- path: scripts/lib/emp/canonical_mission_aggregate.py
+  line: 100
+  text: _validate_records(records, expected, family)
+- path: scripts/lib/emp/stage1_execution_resolution.py
+  line: 51
+  text: AdmissionSupersessionError, _validate_execution_source_digest,
+- path: scripts/lib/emp/stage1_execution_resolution.py
+  line: 54
+  text: _validate_execution_source_digest(value, source_digest)
+- path: scripts/lib/emp/stage1_execution_resolution.py
+  line: 59
+  text: AdmissionSupersessionError, _validate_execution_authority_snapshot_digest,
+- path: scripts/lib/emp/stage1_execution_resolution.py
+  line: 62
+  text: _validate_execution_authority_snapshot_digest(value, authority_digest)
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 215
+  text: self.validate()
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 235
+  text: wop.validate()
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 236
+  text: self._validate_authorization(
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 323
+  text: self._persist_validated()
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 365
+  text: self._persist_validated()
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 375
+  text: self._persist_validated()
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 403
+  text: self._persist_validated()
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 429
+  text: self._validate_stored_authorization(
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 442
+  text: self._validate_prerequisites_and_dependencies(
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 463
+  text: self._validate_reservation(package, reservation)
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 488
+  text: self._persist_validated()
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 505
+  text: self._persist_validated()
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 545
+  text: 'def validate(self) -> None:'
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 579
+  text: self._validate_approval_history(checkpoint)
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 610
+  text: self._persist_validated()
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 612
+  text: 'def _persist_validated(self) -> None:'
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 613
+  text: self.validate()
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 641
+  text: def _validate_authorization(
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 674
+  text: 'def _validate_approval_history(checkpoint: Mapping[str, Any]) -> None:'
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 699
+  text: def _validate_stored_authorization(
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 721
+  text: def _validate_prerequisites_and_dependencies(
+- path: scripts/lib/emp/wop_lifecycle.py
+  line: 734
+  text: def _validate_reservation(
+- path: scripts/lib/emp/oa05_implementation.py
+  line: 32
+  text: 'def validate_evidence(root: Path | str) -> dict[str, Any]:'
+- path: scripts/lib/emp/oa05_implementation.py
+  line: 64
+  text: return _result(validate_evidence(repository), True)
+- path: scripts/lib/emp/oa05_implementation.py
+  line: 154
+  text: existing = validate_evidence(repository)
+- path: scripts/lib/emp/oa01_gate_verification.py
+  line: 37
+  text: '"eos_synchronization": ["scripts/engctl", "eos", "sync-validate"],'
+- path: scripts/lib/emp/oa01_gate_verification.py
+  line: 38
+  text: '"registry_validation": ["scripts/engctl", "registry", "validate"],'
+- path: scripts/lib/emp/oa01_gate_verification.py
+  line: 39
+  text: '"full_validation": ["scripts/engctl", "validate"],'
+- path: scripts/lib/emp/oa01_gate_verification.py
+  line: 209
+  text: 'def _validate_state(root: Path) -> None:'
+- path: scripts/lib/emp/oa01_gate_verification.py
+  line: 229
+  text: 'def _validate_implementation(root: Path) -> tuple[Path, dict[str, Any]]:'
+- path: scripts/lib/emp/oa01_gate_verification.py
+  line: 253
+  text: _validate_state(root)
+- path: scripts/lib/emp/oa01_gate_verification.py
+  line: 254
+  text: implementation_path, implementation = _validate_implementation(root)
+- path: scripts/lib/emp/oa01_gate_verification.py
+  line: 266
+  text: 'def validate_marker(root: Path | str) -> dict[str, Any]:'
+- path: scripts/lib/emp/oa01_gate_verification.py
+  line: 314
+  text: marker = validate_marker(repository)
+- path: scripts/lib/emp/oa01_gate_verification.py
+  line: 425
+  text: validate_marker(repository)
+- path: scripts/lib/emp/wop_admission.py
+  line: 20
+  text: from scripts.lib.emp.wop_schema import is_wop_id, validate_optional_approval_date
+- path: scripts/lib/emp/wop_admission.py
+  line: 133
+  text: def validate(
+- path: scripts/lib/emp/wop_admission.py
+  line: 218
+  text: 'if not validate_optional_approval_date(approval.get("date")):'
+- path: scripts/lib/emp/wop_admission.py
+  line: 307
+  text: failures = self.validate(submission, expected_repository)
+- path: scripts/lib/emp/execution_oversight.py
+  line: 147
+  text: result.validate()
+- path: scripts/lib/emp/execution_oversight.py
+  line: 154
+  text: 'def validate(self) -> None:'
+- path: scripts/lib/emp/execution_oversight.py
+  line: 227
+  text: self.validate()
+- path: scripts/lib/emp/execution_oversight.py
+  line: 240
+  text: assignment.validate()
+- path: scripts/lib/emp/execution_oversight.py
+  line: 514
+  text: 'def validate(self) -> None:'
+- path: scripts/lib/emp/execution_oversight.py
+  line: 605
+  text: self.validate()
+- path: scripts/lib/emp/wop_packaging.py
+  line: 192
+  text: 'def extract(source: Path, *, validate: bool = True) -> tuple[dict[str, Any], str]:'
+- path: scripts/lib/emp/wop_packaging.py
+  line: 203
+  text: 'if validate:'
+- path: scripts/lib/emp/wop_packaging.py
+  line: 228
+  text: from scripts.lib.emp.wop_validation import validate_generated_package
+- path: scripts/lib/emp/wop_packaging.py
+  line: 229
+  text: validate_generated_package(destination)
+- path: scripts/lib/emp/wop_packaging.py
+  line: 302
+  text: '# The complete candidate is validated before it can enter the'
+- path: scripts/lib/emp/wop_packaging.py
+  line: 305
+  text: from scripts.lib.emp.wop_validation import validate_generated_package
+- path: scripts/lib/emp/wop_packaging.py
+  line: 306
+  text: validate_generated_package(temporary)
+- path: scripts/lib/emp/wop_packaging.py
+  line: 364
+  text: '"objective": f"Adapt validated {package_value[''schema_version'']} package {identity[''package_id'']} into the existing
+    Zeus Stage 1 package model.",'
+- path: scripts/lib/emp/wop_packaging.py
+  line: 376
+  text: '"deliverables": ["validated canonical package", "deterministic Stage 1 representation", "provenance mapping"],'
+- path: scripts/lib/emp/wop_packaging.py
+  line: 405
+  text: '"""Adapt a validated canonical YAML package into the existing Stage 1 tree.'
+- path: scripts/lib/emp/wop_packaging.py
+  line: 411
+  text: from scripts.lib.emp.wop_validation import validate_generated_package
+- path: scripts/lib/emp/wop_packaging.py
+  line: 425
+  text: validate_generated_package(destination)
+- path: scripts/lib/emp/wop_packaging.py
+  line: 467
+  text: validate_generated_package(temporary)
+- path: scripts/lib/emp/wop_packaging.py
+  line: 483
+  text: '"scope": ["validate the bounded workflow", "preserve protected baselines"],'
+- path: scripts/lib/emp/execution_authorization.py
+  line: 110
+  text: 'def validate(request_record: dict[str, Any], receipt: dict[str, Any], *, at: datetime | str) -> dict[str, Any]:'
+- path: scripts/lib/emp/oa02_gate_verification.py
+  line: 15
+  text: atomic_json, canonical_digest, inventory, run, validate_evidence,
+- path: scripts/lib/emp/oa02_gate_verification.py
+  line: 80
+  text: implementation = validate_evidence(root)
+- path: scripts/lib/emp/oa02_gate_verification.py
+  line: 114
+  text: 'def validate_marker(root: Path | str) -> dict[str, Any]:'
+- path: scripts/lib/emp/oa02_gate_verification.py
+  line: 160
+  text: return _result(repository, validate_marker(repository), True)
+- path: scripts/lib/emp/oa02_gate_verification.py
+  line: 209
+  text: return _result(repository, validate_marker(repository), True)
+- path: scripts/lib/emp/oa02_gate_verification.py
+  line: 236
+  text: '"eos_sync": ["scripts/engctl", "eos", "sync-validate"],'
+- path: scripts/lib/emp/oa02_gate_verification.py
+  line: 237
+  text: '"registry": ["scripts/engctl", "registry", "validate"],'
+- path: scripts/lib/emp/oa02_gate_verification.py
+  line: 238
+  text: '"aggregate": ["scripts/engctl", "validate"],'
+- path: scripts/lib/emp/oa02_gate_verification.py
+  line: 248
+  text: '# Revalidate after every potentially long-running qualification boundary.'
+- path: scripts/lib/emp/oa02_gate_verification.py
+  line: 296
+  text: return _result(repository, validate_marker(repository), False)
+- path: scripts/lib/emp/oa04_gate_verification.py
+  line: 16
+  text: from scripts.lib.emp.oa04_implementation import validate_evidence
+- path: scripts/lib/emp/oa04_gate_verification.py
+  line: 59
+  text: implementation = validate_evidence(root)
+- path: scripts/lib/emp/oa04_gate_verification.py
+  line: 118
+  text: 'def validate_marker(root: Path | str) -> dict[str, Any]:'
+- path: scripts/lib/emp/oa04_gate_verification.py
+  line: 144
+  text: return _result(repository, validate_marker(repository), True)
+- path: scripts/lib/emp/provider_session.py
+  line: 120
+  text: 'def _validate_inputs(root: Path, mission_id: str, runtime: Path) -> tuple[dict[str, Any], dict[str, Any]]:'
+- path: scripts/lib/emp/provider_session.py
+  line: 174
+  text: dispatch, provider = _validate_inputs(root, mission_id, runtime)
+- path: scripts/lib/emp/provider_session.py
+  line: 190
+  text: dispatch, provider = _validate_inputs(root, mission_id, runtime)
+- path: scripts/lib/emp/publication_workflow.py
+  line: 28
+  text: OBSOLETE_VALIDATION_PATHS = ("scripts/validate-engineering-platform.py",)
+- path: scripts/lib/emp/publication_workflow.py
+  line: 31
+  text: '"authority": "scripts/zeus authority validate",'
+- path: scripts/lib/emp/publication_workflow.py
+  line: 32
+  text: '"registry": "scripts/engctl registry validate",'
+- path: scripts/lib/emp/publication_workflow.py
+  line: 33
+  text: '"integrated": "scripts/engctl validate homelab",'
+- path: scripts/lib/emp/publication_workflow.py
+  line: 34
+  text: '"eos": "scripts/engctl eos validate homelab",'
+- path: scripts/lib/emp/publication_workflow.py
+  line: 35
+  text: '"eos_sync_validate": "scripts/engctl eos sync-validate homelab",'
+- path: scripts/lib/emp/publication_workflow.py
+  line: 145
+  text: '"eos_sync_validate": "EOS_VALIDATION_FAILURE",'
+- path: scripts/lib/emp/publication_workflow.py
+  line: 243
+  text: '"registry": _validator_result(root, "registry", ("scripts/engctl", "registry", "validate")),'
+- path: scripts/lib/emp/publication_workflow.py
+  line: 244
+  text: '"integrated": _validator_result(root, "integrated", ("scripts/engctl", "validate", "homelab")),'
+- path: scripts/lib/emp/publication_workflow.py
+  line: 245
+  text: '"eos": _validator_result(root, "eos", ("scripts/engctl", "eos", "validate", "homelab")),'
+- path: scripts/lib/emp/publication_workflow.py
+  line: 246
+  text: '"eos_sync_validate": _validator_result(root, "eos_sync_validate", ("scripts/engctl", "eos", "sync-validate", "homelab")),'
+- path: scripts/lib/emp/dispatch_candidate.py
+  line: 54
+  text: 'def validate(repository: Path | str, candidate: dict[str, Any]) -> dict[str, Any]:'
+- path: scripts/lib/emp/wop_authoring.py
+  line: 22
+  text: from scripts.lib.emp.wop_validation import validate_source
+- path: scripts/lib/emp/wop_authoring.py
+  line: 156
+  text: '"purpose_and_expected_outcome": f"Purpose: {objective}\nExpected outcome: a validated Development WOP candidate;
+    no submission or admission is performed.",'
+- path: scripts/lib/emp/wop_authoring.py
+  line: 164
+  text: '"execution_sequence": "Normalize source; resolve context; derive identities; apply template; lint; validate; determine
+    readiness; stop for review.",'
+- path: scripts/lib/emp/wop_authoring.py
+  line: 185
+  text: '"validation": validate_source(generated, repository_root=repository_root).as_dict(), "blockers": blockers,'
+- path: scripts/lib/emp/oa01_implementation.py
+  line: 146
+  text: '"eos_synchronization": ["scripts/engctl", "eos", "sync-validate"],'
+- path: scripts/lib/emp/oa01_implementation.py
+  line: 147
+  text: '"work_registry": ["scripts/engctl", "registry", "validate"],'
+- path: scripts/lib/emp/oa03_implementation.py
+  line: 25
+  text: 'def validate_evidence(root: Path | str) -> dict[str, Any]:'
+- path: scripts/lib/emp/oa03_implementation.py
+  line: 47
+  text: evidence = validate_evidence(repository)
+- path: scripts/lib/emp/oa03_implementation.py
+  line: 130
+  text: existing = validate_evidence(repository)
+- path: scripts/lib/emp/codex_app_server_broker.py
+  line: 28
+  text: 'def _validate_control_socket(path: Path) -> None:'
+- path: scripts/lib/emp/codex_app_server_broker.py
+  line: 161
+  text: _validate_control_socket(control_path)
+- path: scripts/lib/emp/agent_qualification.py
+  line: 16
+  text: from scripts.lib.emp.production_execution import digest, validate_agent
+- path: scripts/lib/emp/agent_qualification.py
+  line: 182
+  text: '"last_validated_at": None,'
+- path: scripts/lib/emp/agent_qualification.py
+  line: 344
+  text: draft["last_validated_at"] = timestamp.isoformat().replace("+00:00", "Z")
+- path: scripts/lib/emp/agent_qualification.py
+  line: 348
+  text: validate_agent(
+- path: scripts/lib/emp/production_execution.py
+  line: 123
+  text: def validate_activation(
+- path: scripts/lib/emp/production_execution.py
+  line: 148
+  text: '"active", "last_validated_at", "trust_binding", "eens_identity",'
+- path: scripts/lib/emp/production_execution.py
+  line: 154
+  text: def validate_agent(
+- path: scripts/lib/emp/production_execution.py
+  line: 412
+  text: activation = validate_activation(
+- path: scripts/lib/emp/production_execution.py
+  line: 433
+  text: agents.append(validate_agent(
+- path: scripts/lib/emp/mission_verification_controller.py
+  line: 296
+  text: '# its validated terminal state in mission views.'
+- path: scripts/lib/emp/mission_verification_controller.py
+  line: 319
+  text: '# verifier.  They bind to the already validated provider selection but'
+- path: scripts/lib/emp/reasoning.py
+  line: 39
+  text: 'def validate(self,wop,repository):'
+- path: scripts/lib/emp/reasoning.py
+  line: 40
+  text: failures=AdmissionController().validate(wop,repository)
+- path: scripts/lib/emp/reasoning.py
+  line: 139
+  text: 'elif normalized.startswith("validate this wop"):'
+- path: scripts/lib/emp/reasoning.py
+  line: 141
+  text: payload=self.guidance.validate(package,repository); intent="WOP_VALIDATE"
+- path: scripts/lib/emp/reasoning.py
+  line: 148
+  text: payload={"recommendation":"Prepare bounded, reviewable work; validate through admission before orchestration.",
+- path: scripts/lib/emp/corrective_work_authorization.py
+  line: 130
+  text: 'def validate(request_record: dict[str, Any], receipt: dict[str, Any], *, at: datetime | str) -> dict[str, Any]:'
+- path: scripts/lib/emp/lifecycle_baseline_reconciliation.py
+  line: 265
+  text: descendant publication.  Any matching receipt is still validated so a
+- path: scripts/lib/emp/gate_handlers.py
+  line: 72
+  text: manifest.validate()
+- path: scripts/lib/emp/gate_handlers.py
+  line: 75
+  text: 'def validate(self):'
+- path: scripts/lib/emp/gate_handlers.py
+  line: 115
+  text: manifest.validate()
+- path: scripts/lib/emp/oa10_gate_verification.py
+  line: 70
+  text: OperationalExecutionContextService.validate(bad)
+- path: scripts/lib/emp/oa10_gate_verification.py
+  line: 81
+  text: '"OPERATOR-CAPABILITY-SUMMARY.md": "# Operator Capability Summary\n\nOperational Alpha complete. Verify with `scripts/zeus
+    capability verify`, `scripts/zeus mission health`, and `scripts/engctl eos sync-validate`.\n",'
+- path: scripts/lib/emp/oa04_implementation.py
+  line: 25
+  text: 'def validate_evidence(root: Path | str) -> dict[str, Any]:'
+- path: scripts/lib/emp/oa04_implementation.py
+  line: 49
+  text: existing = validate_evidence(repository)
+- path: scripts/lib/emp/operational_gate_handler.py
+  line: 66
+  text: plan = cls._validate_plan(gate_plan)
+- path: scripts/lib/emp/operational_gate_handler.py
+  line: 84
+  text: 'def _validate_plan(value):'
+- path: scripts/lib/emp/operational_gate_handler.py
+  line: 124
+  text: 'def validate(value: Mapping[str, Any]):'
+- path: scripts/lib/emp/operational_gate_handler.py
+  line: 131
+  text: OperationalExecutionContextService._validate_plan(material["gate_plan"])
+- path: scripts/lib/emp/operational_gate_handler.py
+  line: 210
+  text: OperationalExecutionContextService.validate(operational)
+- path: scripts/lib/emp/authority_resolution.py
+  line: 159
+  text: self._validate_state()
+- path: scripts/lib/emp/authority_resolution.py
+  line: 261
+  text: validate_bundle(bundle, expected_repository=self.root, at=issued_at)
+- path: scripts/lib/emp/authority_resolution.py
+  line: 264
+  text: 'def _validate_state(self) -> None:'
+- path: scripts/lib/emp/authority_resolution.py
+  line: 336
+  text: graph.validate()
+- path: scripts/lib/emp/authority_resolution.py
+  line: 415
+  text: def validate_bundle(
+- path: scripts/lib/emp/bootstrap_boundary.py
+  line: 272
+  text: 'def _validate_bootstrap_artifacts(runtime: Path, bootstrap_id: str, response: Mapping[str, Any]) -> None:'
+- path: scripts/lib/emp/bootstrap_boundary.py
+  line: 318
+  text: _validate_bootstrap_artifacts(runtime, bootstrap_id, existing)
+- path: scripts/lib/emp/management.py
+  line: 385
+  text: actions.add_parser("validate")
+- path: scripts/lib/emp/management.py
+  line: 398
+  text: actions.add_parser("list"); actions.add_parser("validate")
+- path: scripts/lib/emp/management.py
+  line: 412
+  text: actions.add_parser("list"); actions.add_parser("validate")
+- path: scripts/lib/emp/management.py
+  line: 449
+  text: 'elif action == "validate": service.registry.require_valid(); print("PASS: deterministic queue membership and ordering")'
+- path: scripts/lib/emp/management.py
+  line: 459
+  text: 'elif action == "validate": service.registry.require_valid(); print("PASS: dependency endpoints and active graph")'
+- path: scripts/lib/emp/management.py
+  line: 477
+  text: 'elif action == "validate": service.registry.require_valid(); print("PASS: deferral state and re-entry records")'
+- path: scripts/lib/emp/registry.py
+  line: 2
+  text: '"""Load, validate, discover, and render EMP Work Registry context."""'
+- path: scripts/lib/emp/registry.py
+  line: 28
+  text: '"""Raised when the registry cannot be loaded or validated."""'
+- path: scripts/lib/emp/registry.py
+  line: 122
+  text: 'def validate(self) -> list[str]:'
+- path: scripts/lib/emp/registry.py
+  line: 225
+  text: self._validate_parents(schema_types, errors)
+- path: scripts/lib/emp/registry.py
+  line: 226
+  text: self._validate_references(errors)
+- path: scripts/lib/emp/registry.py
+  line: 227
+  text: self._validate_ordering(errors)
+- path: scripts/lib/emp/registry.py
+  line: 228
+  text: self._validate_transition_histories(errors)
+- path: scripts/lib/emp/registry.py
+  line: 229
+  text: self._validate_authority_and_evidence(errors)
+- path: scripts/lib/emp/registry.py
+  line: 230
+  text: self._validate_deferrals(errors)
+- path: scripts/lib/emp/registry.py
+  line: 231
+  text: self._validate_dependencies(errors)
+- path: scripts/lib/emp/registry.py
+  line: 232
+  text: self._validate_relationships(errors)
+- path: scripts/lib/emp/registry.py
+  line: 247
+  text: 'def _validate_parents(self, schema_types: dict[str, Any], errors: list[str]) -> None:'
+- path: scripts/lib/emp/registry.py
+  line: 264
+  text: 'def _validate_ordering(self, errors: list[str]) -> None:'
+- path: scripts/lib/emp/registry.py
+  line: 318
+  text: 'def _validate_references(self, errors: list[str]) -> None:'
+- path: scripts/lib/emp/registry.py
+  line: 389
+  text: 'def _validate_authority_and_evidence(self, errors: list[str]) -> None:'
+- path: scripts/lib/emp/registry.py
+  line: 419
+  text: 'def _validate_transition_histories(self, errors: list[str]) -> None:'
+- path: scripts/lib/emp/registry.py
+  line: 454
+  text: 'def _validate_deferrals(self, errors: list[str]) -> None:'
+- path: scripts/lib/emp/registry.py
+  line: 474
+  text: 'def _validate_dependencies(self, errors: list[str]) -> None:'
+- path: scripts/lib/emp/registry.py
+  line: 508
+  text: 'def _validate_relationships(self, errors: list[str]) -> None:'
+- path: scripts/lib/emp/registry.py
+  line: 526
+  text: errors = self.validate()
+- path: scripts/lib/emp/registry.py
+  line: 531
+  text: '"""Persist validated YAML by atomic replacement under the schema lock."""'
+- path: scripts/lib/emp/registry.py
+  line: 902
+  text: subparsers.add_parser("validate")
+- path: scripts/lib/emp/registry.py
+  line: 939
+  text: 'if args.command == "validate":'
+- path: scripts/lib/emp/provider_selection.py
+  line: 17
+  text: from scripts.lib.emp.production_execution import ProductionExecutionError, validate_agent
+- path: scripts/lib/emp/provider_selection.py
+  line: 137
+  text: def _validate_live_lineage(
+- path: scripts/lib/emp/provider_selection.py
+  line: 177
+  text: '"provider-selection provenance baseline does not validate to its recorded publication",'
+- path: scripts/lib/emp/provider_selection.py
+  line: 215
+  text: validate_agent(agent, mission_class="engineering", repository=str(root))
+- path: scripts/lib/emp/provider_selection.py
+  line: 356
+  text: lineage = _validate_live_lineage(root, provider_anchor)
+- path: scripts/lib/emp/provider_selection.py
+  line: 401
+  text: lineage = _validate_live_lineage(root, provider_anchor)
+- path: scripts/lib/emp/provider_selection.py
+  line: 424
+  text: lineage = _validate_live_lineage(root, _load(provider_path))
+- path: scripts/lib/emp/submission_boundary.py
+  line: 4
+  text: validates the immutable authoring trace, records one deterministic submission
+- path: scripts/lib/emp/submission_boundary.py
+  line: 226
+  text: 'def _validate(wop: Path, repository: Path) -> dict[str, Any]:'
+- path: scripts/lib/emp/submission_boundary.py
+  line: 263
+  text: facts = _validate(Path(wop).resolve(), repository_path)
+- path: scripts/lib/emp/wop_schema.py
+  line: 17
+  text: 'def validate_optional_approval_date(value: Any) -> bool:'
+- path: scripts/lib/emp/wop_schema.py
+  line: 86
+  text: '"package_behavior": "Validate source, construct and validate an immutable package in isolation, then atomically promote
+    it.",'
+- path: scripts/lib/emp/wop_schema.py
+  line: 87
+  text: '"validation_sequence": ["extract", "resolve required metadata", "validate package", "preserve source", "verify digest",
+    "promote", "initialize runtime", "submit"],'
+- path: scripts/lib/emp/operator_interface.py
+  line: 66
+  text: 'def validate_state(value: Any) -> dict[str, int]:'
+- path: scripts/lib/emp/operator_interface.py
+  line: 117
+  text: return validate_state(value)
+- path: scripts/lib/emp/operator_interface.py
+  line: 120
+  text: validate_state(value)
+- path: scripts/lib/emp/autonomous_execution_lifecycle.py
+  line: 134
+  text: 'def _validate_authority(authoritative: Mapping[str, Any]) -> None:'
+- path: scripts/lib/emp/autonomous_execution_lifecycle.py
+  line: 146
+  text: self._validate_authority(authoritative)
+- path: scripts/lib/emp/oa13_gate_verification.py
+  line: 11
+  text: from scripts.lib.emp.dispatch_candidate import create, validate
+- path: scripts/lib/emp/oa13_gate_verification.py
+  line: 47
+  text: validate(repository, candidate)
+- path: scripts/lib/emp/oa13_gate_verification.py
+  line: 53
+  text: validate(repository, malformed)
+- path: scripts/lib/emp/progressive_oa.py
+  line: 25
+  text: _validate_receipt_bindings,
+- path: scripts/lib/emp/progressive_oa.py
+  line: 26
+  text: _validate_replay_lifecycle,
+- path: scripts/lib/emp/progressive_oa.py
+  line: 62
+  text: validate_receipt,
+- path: scripts/lib/emp/progressive_oa.py
+  line: 66
+  text: result = validate_receipt(root, gate_id)
+- path: scripts/lib/emp/mission_admission_runtime.py
+  line: 29
+  text: from scripts.lib.emp.stage1_runtime import Stage1Runtime, validate_package
+- path: scripts/lib/emp/mission_admission_runtime.py
+  line: 30
+  text: from scripts.lib.eos.mission_contract import load as load_mission_contract, validate as validate_mission_contract
+- path: scripts/lib/emp/mission_admission_runtime.py
+  line: 327
+  text: else AdmissionController().validate(wop, str(self.root))
+- path: scripts/lib/emp/mission_admission_runtime.py
+  line: 352
+  text: else AdmissionController().validate(wop, str(self.root))
+- path: scripts/lib/emp/mission_admission_runtime.py
+  line: 452
+  text: errors = validate_mission_contract(contract, self.root)
+- path: scripts/lib/emp/mission_admission_runtime.py
+  line: 460
+  text: metadata, package_evidence = validate_package(package_root)
+- path: scripts/lib/emp/authority_publication.py
+  line: 130
+  text: 'def validate_publication_payload(record_type: str, payload: Mapping[str, Any]) -> None:'
+- path: scripts/lib/emp/authority_publication.py
+  line: 166
+  text: validate_publication_payload(record_type, payload)
+- path: scripts/lib/emp/authority_publication.py
+  line: 1181
+  text: validate_publication_payload(record_type, envelope["payload"])
+- path: scripts/lib/emp/mission_execution_runtime.py
+  line: 108
+  text: self._validate_evidence(value.get("evidence", []))
+- path: scripts/lib/emp/mission_execution_runtime.py
+  line: 115
+  text: self._validate_evidence(data.get("evidence", []))
+- path: scripts/lib/emp/mission_execution_runtime.py
+  line: 135
+  text: 'def _validate_evidence(entries):'
+- path: scripts/lib/emp/mission_execution_runtime.py
+  line: 344
+  text: self._validate_binding(state, admission)
+- path: scripts/lib/emp/mission_execution_runtime.py
+  line: 552
+  text: failures = AdmissionController().validate(wop, str(self.root))
+- path: scripts/lib/emp/mission_execution_runtime.py
+  line: 688
+  text: 'def _validate_binding(self, state, admission):'
+- path: scripts/lib/emp/wop_validation.py
+  line: 39
+  text: 'def validate_metadata(metadata: Mapping[str, Any], *, source: Path | str = "<source>") -> ValidationResult:'
+- path: scripts/lib/emp/wop_validation.py
+  line: 55
+  text: 'def validate_source(source: Path, repository_root: Path | str | None = None) -> ValidationResult:'
+- path: scripts/lib/emp/wop_validation.py
+  line: 56
+  text: '"""Parse and validate a source without creating package or runtime state."""'
+- path: scripts/lib/emp/wop_validation.py
+  line: 60
+  text: metadata, _ = extract(source, validate=False)
+- path: scripts/lib/emp/wop_validation.py
+  line: 69
+  text: return validate_metadata(metadata, source=source)
+- path: scripts/lib/emp/wop_validation.py
+  line: 73
+  text: result = validate_source(source, repository_root=repository_root)
+- path: scripts/lib/emp/wop_validation.py
+  line: 82
+  text: 'def validate_generated_package(package: Path) -> dict[str, Any]:'
+- path: scripts/lib/emp/wop_validation.py
+  line: 84
+  text: from scripts.lib.emp.stage1_runtime import validate_package
+- path: scripts/lib/emp/wop_validation.py
+  line: 86
+  text: metadata, evidence = validate_package(package)
+- path: scripts/lib/emp/wop_validation.py
+  line: 102
+  text: result = validate_metadata(combined, source=package)
+- path: scripts/lib/emp/oa22_cap021_verification.py
+  line: 15
+  text: validate,
+- path: scripts/lib/emp/oa22_cap021_verification.py
+  line: 56
+  text: validate(request_record, receipt, at=start + timedelta(seconds=2))
+- path: scripts/lib/emp/oa22_cap021_verification.py
+  line: 78
+  text: validate(request_record, tampered, at=start + timedelta(seconds=2))
+- path: scripts/lib/emp/oa22_cap021_verification.py
+  line: 85
+  text: validate(request_record, receipt, at=start + timedelta(minutes=11))
+- path: scripts/lib/emp/oa22_cap021_verification.py
+  line: 99
+  text: validate(request_record, denied, at=start + timedelta(seconds=2))
+- path: scripts/lib/emp/oa02_lifecycle.py
+  line: 4
+  text: evidence, validate receipts, resolve predecessors, or make decisions.  Those
+- path: scripts/lib/emp/oa06_gate_verification.py
+  line: 131
+  text: 'def _validate(root: Path) -> dict[str, Any]:'
+- path: scripts/lib/emp/oa06_gate_verification.py
+  line: 143
+  text: '# mission-knowledge revisions must not invalidate the accepted marker.'
+- path: scripts/lib/emp/oa06_gate_verification.py
+  line: 161
+  text: marker = _validate(repository)
+- path: scripts/lib/emp/registry.sh
+  line: 13
+  text: emp_registry_validate() {
+- path: scripts/lib/emp/registry.sh
+  line: 14
+  text: python3 "$(emp_registry_script)" validate
+- path: scripts/lib/emp/registry.sh
+  line: 26
+  text: path|validate|show|list|get|context|create|update|archive|transition)
+- path: scripts/lib/emp/mission_eligibility.py
+  line: 30
+  text: 'def _validate(candidate: Mapping[str, Any]) -> dict[str, Any]:'
+- path: scripts/lib/emp/mission_eligibility.py
+  line: 68
+  text: value = _validate(candidate)
+- path: scripts/lib/emp/publication_transaction.py
+  line: 416
+  text: 'def _revalidate_authority(root: Path, record: Mapping[str, Any], runtime: Path) -> dict[str, Any]:'
+- path: scripts/lib/emp/publication_transaction.py
+  line: 502
+  text: revalidation = _revalidate_authority(repository, record, runtime)
+- path: scripts/lib/emp/publication_transaction.py
+  line: 534
+  text: bound_revalidation = _revalidate_authority(root, active[0], runtime)
+- path: scripts/lib/emp/publication_transaction.py
+  line: 681
+  text: authority_revalidation = _revalidate_authority(root, record, runtime)
+- path: scripts/lib/emp/publication_transaction.py
+  line: 698
+  text: ([str(root / "scripts" / "validate_controlled_documents.py"), "--semantic-all", "--conformance", "--assurance"], "CONTROLLED_DOCUMENT_VALIDATION_FAILURE"),
+- path: scripts/lib/emp/publication_transaction.py
+  line: 699
+  text: ([str(root / "scripts" / "engctl"), "registry", "validate"], "REGISTRY_VALIDATION_FAILURE"),
+- path: scripts/lib/emp/publication_transaction.py
+  line: 700
+  text: ([str(root / "scripts" / "engctl"), "validate", "homelab"], "INTEGRATED_VALIDATION_FAILURE"),
+- path: scripts/lib/emp/publication_transaction.py
+  line: 702
+  text: ([str(root / "scripts" / "engctl"), "eos", "sync-validate", "homelab"], "REPOSITORY_EOS_VALIDATION_FAILURE"),
+- path: scripts/lib/emp/publication_transaction.py
+  line: 760
+  text: authority_revalidation = _revalidate_authority(root, record, runtime)
+- path: scripts/lib/emp/publication_transaction.py
+  line: 869
+  text: revalidation = _revalidate_authority(root, record, runtime)
+- path: scripts/lib/emp/publication_transaction.py
+  line: 953
+  text: revalidation = _revalidate_authority(root, record, runtime)
+- path: scripts/lib/emp/reconciliation.py
+  line: 126
+  text: result.validate()
+- path: scripts/lib/emp/reconciliation.py
+  line: 132
+  text: result.validate()
+- path: scripts/lib/emp/reconciliation.py
+  line: 139
+  text: 'def validate(self) -> None:'
+- path: scripts/lib/emp/reconciliation.py
+  line: 222
+  text: result.validate()
+- path: scripts/lib/emp/reconciliation.py
+  line: 228
+  text: result.validate()
+- path: scripts/lib/emp/reconciliation.py
+  line: 235
+  text: 'def validate(self) -> None:'
+- path: scripts/lib/emp/reconciliation.py
+  line: 287
+  text: validate_store(value)
+- path: scripts/lib/emp/reconciliation.py
+  line: 291
+  text: validate_store(value)
+- path: scripts/lib/emp/reconciliation.py
+  line: 310
+  text: 'def validate_store(value: Mapping[str, Any]) -> None:'
+- path: scripts/lib/emp/reconciliation.py
+  line: 440
+  text: plan.validate()
+- path: scripts/lib/emp/reconciliation.py
+  line: 441
+  text: qualification_report.validate()
+- path: scripts/lib/emp/reconciliation.py
+  line: 442
+  text: assignment.validate()
+- path: scripts/lib/emp/reconciliation.py
+  line: 531
+  text: evidence_package.validate_structure()
+- path: scripts/lib/emp/oa02_implementation.py
+  line: 96
+  text: 'def validate_evidence(root: Path) -> dict[str, Any]:'
+- path: scripts/lib/emp/oa02_implementation.py
+  line: 118
+  text: evidence = validate_evidence(repository)
+- path: scripts/lib/emp/oa02_implementation.py
+  line: 144
+  text: '"authority_validate": [zeus, "authority", "validate"],'
+- path: scripts/lib/emp/oa02_implementation.py
+  line: 210
+  text: existing = validate_evidence(repository)
+- path: scripts/lib/emp/oa02_implementation.py
+  line: 229
+  text: '# Revalidate immediately before the protected lifecycle transition.'
+- path: scripts/lib/emp/codex_reconciliation.py
+  line: 4
+  text: receipt-backed session records, validates recorded process identity before any
+- path: scripts/lib/emp/canonical_mission_lifecycle.py
+  line: 161
+  text: 'def activate(root: Path | str, transaction: Mapping[str, Any], *, publication_approved: bool, eos_synchronized: bool,
+    platform_validated: bool, fault_after: str | None = None) -> dict[str, Any]:'
+- path: scripts/lib/emp/canonical_mission_lifecycle.py
+  line: 164
+  text: 'if not (publication_approved and eos_synchronized and platform_validated):'
+- path: scripts/lib/emp/mission_contract_discovery.py
+  line: 10
+  text: from scripts.lib.eos.mission_contract import MissionContractError, Resolver, load, validate
+- path: scripts/lib/emp/mission_contract_discovery.py
+  line: 37
+  text: errors = validate(contract, repository)
+- path: scripts/lib/emp/orchestration.py
+  line: 100
+  text: 'def validate(self) -> None:'
+- path: scripts/lib/emp/orchestration.py
+  line: 116
+  text: self.validate()
+- path: scripts/lib/emp/orchestration.py
+  line: 227
+  text: decision.validate()
+- path: scripts/lib/emp/orchestration.py
+  line: 290
+  text: 'def validate(self) -> None:'
+- path: scripts/lib/emp/orchestration.py
+  line: 343
+  text: SelectionDecisionRecord(canonical_json(record)).validate()
+- path: scripts/lib/emp/orchestration.py
+  line: 351
+  text: self.validate()
+- path: scripts/lib/emp/canonical_lifecycle_resolver.py
+  line: 311
+  text: '# validated by verify_current; routine descendants therefore'
+- path: scripts/lib/emp/canonical_lifecycle_resolver.py
+  line: 394
+  text: provider_lineage = provider_selection._validate_live_lineage(
+- path: scripts/lib/emp/canonical_lifecycle_resolver.py
+  line: 430
+  text: '# they exist, validate each set in order and project the furthest'
+- path: scripts/lib/emp/dispatch_authorization.py
+  line: 73
+  text: 'def validate(repository: Path | str, request_record: dict[str, Any], receipt: dict[str, Any]) -> dict[str, Any]:'
+- path: scripts/lib/emp/oa14_gate_verification.py
+  line: 11
+  text: from scripts.lib.emp.dispatch_authorization import authorize, reject, request, validate
+- path: scripts/lib/emp/oa14_gate_verification.py
+  line: 50
+  text: validate(repository, authorization_request, receipt)
+- path: scripts/lib/emp/oa14_gate_verification.py
+  line: 61
+  text: validate(repository, authorization_request, altered)
+- path: scripts/lib/emp/stage1_runtime.py
+  line: 333
+  text: 'def validate_package(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:'
+- path: scripts/lib/emp/stage1_runtime.py
+  line: 453
+  text: metadata, package_evidence = validate_package(root)
+- path: scripts/lib/emp/stage1_runtime.py
+  line: 530
+  text: metadata, package_evidence = validate_package(root)
+- path: scripts/lib/emp/stage1_runtime.py
+  line: 912
+  text: '"validation": receipt("validation", {"source": str(package_source), "source_digest": source_digest, "validator":
+    "stage1.validate_package", "result": package_evidence.get("result", "PASS"), "failures": package_evidence.get("failures",
+    [])}),'
+- path: scripts/lib/emp/stage1_runtime.py
+  line: 1306
+  text: '"platform_validated": False}'
+- path: scripts/lib/emp/stage1_runtime.py
+  line: 1390
+  text: 'if not all(publication.get(key) is True for key in ("ancestry_verified", "eos_synchronized", "platform_validated",
+    "protected_baselines_verified")):'
+- path: scripts/lib/emp/stage1_runtime.py
+  line: 1403
+  text: '"platform_validated": True,'
+- path: scripts/lib/emp/progressive_gate.py
+  line: 149
+  text: 'def validate_receipt(root: Path | str, gate_id: str) -> dict[str, Any]:'
+- path: scripts/lib/emp/progressive_gate.py
+  line: 150
+  text: '"""Centrally validate receipt integrity, replay, predecessor, and state."""'
+- path: scripts/lib/emp/progressive_gate.py
+  line: 182
+  text: progressive_oa._validate_replay_lifecycle(state, normalized)
+- path: scripts/lib/emp/progressive_gate.py
+  line: 194
+  text: progressive_oa._validate_receipt_bindings(
+- path: scripts/lib/emp/progressive_gate.py
+  line: 239
+  text: receipt = validate_receipt(repository, predecessor)
+- path: scripts/lib/emp/progressive_gate.py
+  line: 267
+  text: validate_receipt(repository, normalized)
+- path: scripts/lib/emp/progressive_gate.py
+  line: 301
+  text: 'def validate_receipt(self, gate_id: str) -> dict[str, Any]:'
+- path: scripts/lib/emp/progressive_gate.py
+  line: 302
+  text: return validate_receipt(self.repository, gate_id)
+- path: scripts/lib/emp/progressive_gate.py
+  line: 358
+  text: progressive_oa._validate_replay_lifecycle(value, normalized)
+- path: scripts/lib/emp/progressive_gate.py
+  line: 375
+  text: progressive_oa._validate_receipt_bindings(
+- path: scripts/lib/emp/progressive_gate.py
+  line: 411
+  text: self._validate_rejection(
+- path: scripts/lib/emp/progressive_gate.py
+  line: 438
+  text: self._validate_rejection(
+- path: scripts/lib/emp/progressive_gate.py
+  line: 517
+  text: progressive_oa._validate_receipt_bindings(
+- path: scripts/lib/emp/progressive_gate.py
+  line: 537
+  text: progressive_oa._validate_receipt_bindings(
+- path: scripts/lib/emp/progressive_gate.py
+  line: 548
+  text: def _validate_rejection(
+- path: scripts/lib/emp/wop_dispatch.py
+  line: 86
+  text: agent.validate()
+- path: scripts/lib/emp/wop_dispatch.py
+  line: 89
+  text: 'def validate(self) -> None:'
+- path: scripts/lib/emp/wop_dispatch.py
+  line: 210
+  text: result.validate()
+- path: scripts/lib/emp/wop_dispatch.py
+  line: 216
+  text: result.validate()
+- path: scripts/lib/emp/wop_dispatch.py
+  line: 228
+  text: 'def validate(self) -> None:'
+- path: scripts/lib/emp/wop_dispatch.py
+  line: 298
+  text: self.validate()
+- path: scripts/lib/emp/wop_dispatch.py
+  line: 327
+  text: self._validate_context(
+- path: scripts/lib/emp/wop_dispatch.py
+  line: 355
+  text: assignment.validate()
+- path: scripts/lib/emp/wop_dispatch.py
+  line: 358
+  text: self._validate_context(
+- path: scripts/lib/emp/wop_dispatch.py
+  line: 385
+  text: self.validate()
+- path: scripts/lib/emp/wop_dispatch.py
+  line: 394
+  text: 'def validate(self) -> None:'
+- path: scripts/lib/emp/wop_dispatch.py
+  line: 422
+  text: def _validate_context(
+- path: scripts/lib/emp/work_authority_lifecycle.py
+  line: 44
+  text: 'def validate_record(record: Mapping[str, Any]) -> dict[str, Any]:'
+- path: scripts/lib/emp/work_authority_lifecycle.py
+  line: 74
+  text: value = validate_record(record)
+- path: scripts/lib/emp/work_authority_lifecycle.py
+  line: 88
+  text: value = validate_record(record)
+- path: scripts/lib/emp/work_authority_lifecycle.py
+  line: 106
+  text: return validate_record(value)
+- path: scripts/lib/emp/oa28_cap028_verification.py
+  line: 114
+  text: commands = [_run(repository, "git", "diff", "--check"), _run(repository, "scripts/engctl", "eos", "sync-validate"),
+    _run(repository, "scripts/engctl", "registry", "validate")]
+- path: scripts/lib/emp/oa28_cap028_verification.py
+  line: 119
+  text: '"eos_sync_validate": "PASS" if commands[1]["returncode"] == 0 else "FAIL",'
+- path: scripts/lib/emp/oa28_cap028_verification.py
+  line: 120
+  text: '"registry_validate": "PASS" if commands[2]["returncode"] == 0 else "FAIL",'
+- path: scripts/lib/emp/controlled_mission_authority.py
+  line: 213
+  text: from scripts.lib.eos.mission_contract import validate
+- path: scripts/lib/emp/controlled_mission_authority.py
+  line: 214
+  text: errors = validate(contract, self.root)
+- path: scripts/lib/emp/oa05_gate_verification.py
+  line: 20
+  text: from scripts.lib.emp.oa05_implementation import validate_evidence
+- path: scripts/lib/emp/oa05_gate_verification.py
+  line: 85
+  text: implementation = validate_evidence(root)
+- path: scripts/lib/emp/oa05_gate_verification.py
+  line: 124
+  text: 'def validate_marker(root: Path | str) -> dict[str, Any]:'
+- path: scripts/lib/emp/oa05_gate_verification.py
+  line: 152
+  text: return _result(repository, validate_marker(repository), True)
+- path: scripts/lib/emp/evidence_qualification.py
+  line: 102
+  text: item.validate()
+- path: scripts/lib/emp/evidence_qualification.py
+  line: 118
+  text: item.validate()
+- path: scripts/lib/emp/evidence_qualification.py
+  line: 121
+  text: 'def validate(self) -> None:'
+- path: scripts/lib/emp/evidence_qualification.py
+  line: 167
+  text: assignment.validate()
+- path: scripts/lib/emp/evidence_qualification.py
+  line: 202
+  text: result.validate_structure()
+- path: scripts/lib/emp/evidence_qualification.py
+  line: 208
+  text: result.validate_structure()
+- path: scripts/lib/emp/evidence_qualification.py
+  line: 215
+  text: 'def validate_structure(self) -> None:'
+- path: scripts/lib/emp/evidence_qualification.py
+  line: 325
+  text: result.validate()
+- path: scripts/lib/emp/evidence_qualification.py
+  line: 332
+  text: 'def validate(self) -> None:'
+- path: scripts/lib/emp/evidence_qualification.py
+  line: 389
+  text: evidence_package.validate_structure()
+- path: scripts/lib/emp/evidence_qualification.py
+  line: 531
+  text: self.validate()
+- path: scripts/lib/emp/evidence_qualification.py
+  line: 546
+  text: report.validate()
+- path: scripts/lib/emp/evidence_qualification.py
+  line: 551
+  text: self.validate()
+- path: scripts/lib/emp/evidence_qualification.py
+  line: 565
+  text: 'def validate(self) -> None:'
+- path: scripts/lib/emp/wop_service.py
+  line: 16
+  text: validate_bundle,
+- path: scripts/lib/emp/wop_service.py
+  line: 32
+  text: validate_bundle(bundle, expected_repository=repository_root, at=at)
+- path: scripts/lib/emp/wop_service.py
+  line: 119
+  text: '"decision_basis": "validated sealed ARB with granted human approval",'
+- path: scripts/lib/authority/engine.py
+  line: 336
+  text: 'def validate(self) -> None:'
+- path: scripts/lib/authority/engine.py
+  line: 342
+  text: self.validate()
+- path: scripts/lib/authority/engine.py
+  line: 395
+  text: 'for command in ("validate", "serialize"):'
+- path: scripts/lib/authority/engine.py
+  line: 410
+  text: graph.validate()
+- path: scripts/lib/authority/engine.py
+  line: 411
+  text: 'if args.command == "validate":'

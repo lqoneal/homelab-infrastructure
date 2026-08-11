@@ -1,0 +1,58 @@
+schema_version: 2
+roadmap_id: ESC-ROADMAP-001
+roadmap_version: 2.0.0
+program_state: ASSESSMENT
+current_gate: C02
+completed_gates:
+- C00
+- C01
+blocked_gates: []
+pending_gates:
+- C02
+- C03
+- C04
+- C05
+- C06
+- C07
+- C08
+- C09
+- C10
+- C11
+- C12
+- C13
+- C14
+- C15
+- C16
+- C17
+- C18
+- C19
+- C20
+last_completed_gate: C01
+last_result: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml
+last_evidence: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence/EVIDENCE-MANIFEST.yaml
+next_authorized_action: EXECUTE_ESC_C02_CORRECTIVE_CR00
+executable_qualification:
+  result: PASS
+  executable: true
+  standard: STD-0006@1.0
+  procedure: PROC-0009@1.0
+  evaluation_result: engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml
+repository_baseline: 6a26d2ea378248a4a9e9fe0d58b5df1c45a8c882
+updated_at: '2026-08-10T01:05:55Z'
+state_provenance:
+  authority: Operator directive establishing ENGINEERING-SYSTEM-CONVERGENCE
+  established_by: Engineering System Convergence Roadmap Foundation
+  source_records:
+  - engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/RESULT.yaml
+  - engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml
+  - docs/project/PROJ-0001-PROJECT_STATE.md
+  - docs/standards/STD-0006-ENGINEERING_EXECUTABLE_ROADMAP_STANDARD.md
+  - docs/procedures/PROC-0009-EXECUTABLE_ROADMAP_EVALUATION_PROCEDURE.md
+blocking_corrective:
+  corrective_id: ESC-C02-CORRECTIVE-001
+  parent_gate: C02
+  trigger_finding: C02-F-027
+  current_item: CR00
+  state: ACTIVE
+blockers:
+- C02_RESULT_PUBLICATION_STATE_TRANSITION_CORRECTIVE_REQUIRED

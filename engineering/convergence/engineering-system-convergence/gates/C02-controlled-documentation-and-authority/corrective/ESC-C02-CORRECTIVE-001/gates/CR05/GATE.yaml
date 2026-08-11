@@ -1,0 +1,65 @@
+schema_version: 1
+gate_id: CR05
+title: Establish Lifecycle Requirements
+status: PENDING
+purpose: Convert C02-F-027 into explicit generic requirements before lifecycle design.
+objective: Convert C02-F-027 into explicit generic requirements before lifecycle design.
+dependencies:
+- CR04
+entry_conditions:
+- Corrective STATE.yaml identifies this item as current.
+- All dependencies are COMPLETE.
+- Protected artifact manifest remains valid where applicable.
+authoritative_inputs:
+- ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+- ESC-C02-CORRECTIVE-001/STATE.yaml
+- ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- Parent C02 GATE.yaml
+- Parent C02 RESULT.yaml
+- Parent C02 evidence/VALIDATION.yaml
+- C02-F-027
+allowed_mutations:
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/**
+prohibited_mutations:
+- ESC C00 GATE.yaml
+- ESC C01 GATE.yaml
+- ESC C02 GATE.yaml
+- Existing parent C02 RESULT.yaml
+- Existing parent C02 assessment evidence
+- C02-F-001 through C02-F-026 remediation
+- C03 execution
+- Implicit EOS synchronization or refresh
+- Commit or push except at separately authorized future publication gates
+manual_procedure:
+- Read CR03 reproduction and CR04 controller trace.
+- Define invariants for result existence, operator review, acceptance, completion and successor activation.
+- Define fail-closed requirements for missing/stale/mismatched results.
+- Define read-only requirements for validate/evaluate/status/resume.
+- Define explicit mutation authority for acceptance and advancement.
+- Define atomicity, replay and interruption requirements.
+- Write LIFECYCLE-REQUIREMENTS.yaml with unique requirement IDs.
+required_outputs:
+- LIFECYCLE-REQUIREMENTS.yaml
+required_evidence:
+- gates/CR05/evidence/COMMANDS.md
+- gates/CR05/evidence/VALIDATION.yaml
+acceptance_criteria:
+- Every requirement has a unique ID and testable condition.
+- No requirement is C02-specific unless it expresses provenance.
+- Result existence is explicitly separated from acceptance.
+- Resume and inspection interfaces are explicitly read-only.
+- The next CR item is not executed in the same transaction.
+- Corrective STATE.yaml is advanced only after this item's result passes.
+fail_closed_conditions:
+- Protected artifact manifest mismatch
+- Dependency RESULT missing or not PASS/COMPLETE
+- Unexpected path mutation
+- Ambiguous or contradictory lifecycle state
+- Implicit EOS synchronization or refresh
+- Attempt to execute a later CR item
+stop_boundary: STOP_AFTER_THIS_ITEM
+result_location: gates/CR05/RESULT.yaml
+evidence_location: gates/CR05/evidence
+next_item: CR06
+resume_instructions: Read STATE.yaml. If current_item is CR05, verify dependencies and execute only CR05. Stop after
+  RESULT.yaml and STATE.yaml update.

@@ -1,0 +1,27 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR03
+validated_at: '2026-08-10T04:03:36Z'
+result: PASS
+
+checks:
+  cr02_dependency: PASS
+  protected_manifest_verified: PASS
+  roadmap_validate_reproduction: PASS
+  roadmap_status_reproduction: PASS
+  roadmap_evaluate_reproduction: PASS
+  engctl_resume_reproduction: PASS
+  c02_remains_current: PASS
+  c02_result_complete_with_findings: PASS
+  controller_failure_rule_located: PASS
+  controller_trace: PASS
+  reproduction_mutation: NONE
+  protected_history: PASS
+  next_item_executed: false
+
+finding:
+  id: C02-F-027
+  reproduction: PASS
+  classification: ROADMAP_RESULT_TRANSITION
+
+next_authorized_item: CR04

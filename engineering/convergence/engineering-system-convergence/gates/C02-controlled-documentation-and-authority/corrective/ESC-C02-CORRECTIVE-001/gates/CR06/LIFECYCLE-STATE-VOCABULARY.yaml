@@ -1,0 +1,109 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR06
+finding_id: C02-F-027
+status: DEFINED_NOT_IMPLEMENTED
+
+purpose: >
+  Define the generic lifecycle vocabulary required to distinguish gate
+  execution, result recording, operator review, operator decision,
+  completion, and successor activation.
+
+states:
+
+  - id: PENDING
+    meaning: Gate exists but is not currently authorized for execution.
+
+  - id: CURRENT
+    meaning: Gate is current and has not yet produced a terminal execution result.
+
+  - id: RESULT_RECORDED
+    meaning: >
+      A structurally valid terminal execution result exists, but no operator
+      acceptance or rejection is implied.
+
+  - id: AWAITING_OPERATOR_REVIEW
+    meaning: >
+      A valid result and required evidence exist and an explicit authorized
+      operator decision is required.
+
+  - id: ACCEPTED
+    meaning: >
+      A durable authorized acceptance decision exists. Acceptance itself does
+      not imply completion or successor activation.
+
+  - id: REJECTED
+    meaning: >
+      A durable authorized rejection decision exists and the gate may not
+      advance as completed.
+
+  - id: COMPLETED
+    meaning: >
+      The accepted gate has completed the qualified advancement transaction
+      and is historical.
+
+  - id: BLOCKED
+    meaning: >
+      Lifecycle progression is prohibited because an invariant, prerequisite,
+      authority, result, evidence item, or state relationship is invalid or
+      unresolved.
+
+orthogonal_facts:
+
+  result_exists:
+    type: boolean
+
+  result_valid:
+    type: boolean
+
+  review_required:
+    type: boolean
+
+  operator_decision:
+    allowed:
+      - NONE
+      - ACCEPT
+      - REJECT
+
+  successor_activated:
+    type: boolean
+
+invariants:
+
+  - id: LSV-INV-001
+    rule: Result existence MUST NOT imply operator acceptance.
+
+  - id: LSV-INV-002
+    rule: Operator acceptance MUST be explicit and durable.
+
+  - id: LSV-INV-003
+    rule: A rejected result MUST NOT produce COMPLETED.
+
+  - id: LSV-INV-004
+    rule: COMPLETED MUST require a valid result and required acceptance.
+
+  - id: LSV-INV-005
+    rule: Successor activation MUST be explicit and deterministic.
+
+  - id: LSV-INV-006
+    rule: Inspection and resume projections MUST remain read-only.
+
+  - id: LSV-INV-007
+    rule: Missing, stale, mismatched, or contradictory lifecycle artifacts MUST fail closed.
+
+  - id: LSV-INV-008
+    rule: Completed and active gate definitions remain immutable.
+
+  - id: LSV-INV-009
+    rule: Replay MUST be idempotent or fail safely.
+
+non_semantics:
+
+  - RESULT_RECORDED is not operator acceptance.
+  - AWAITING_OPERATOR_REVIEW is not completion.
+  - ACCEPTED is not successor activation.
+  - RESULT existence alone is not lifecycle advancement.
+  - Resume is not an advancement transaction.
+
+implementation_authorized: false
+next_design_item: CR07

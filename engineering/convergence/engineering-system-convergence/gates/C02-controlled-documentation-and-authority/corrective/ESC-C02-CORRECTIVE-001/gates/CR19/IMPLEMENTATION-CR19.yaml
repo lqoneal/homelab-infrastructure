@@ -1,0 +1,23 @@
+schema_version: 1
+gate_id: CR19
+implemented_at: '2026-08-10T11:48:32+00:00'
+result: PASS
+objective: Expose pending review through engctl resume without mutation.
+resume_projection:
+  current_gate: C02
+  lifecycle_state: AWAITING_OPERATOR_REVIEW
+  execution_result_state: VALID_FINAL
+  review_required: true
+  review_state: AWAITING_OPERATOR_REVIEW
+  operator_decision: NONE
+  completion_state: INCOMPLETE
+  read_only: true
+qualification:
+  full_resume_projection: PASS
+  repository_mutation: 'NO'
+  eos_mutation: 'NO'
+  eos_synchronize_executed: 'NO'
+  eos_refresh_executed: 'NO'
+  cr19_regression: PASS
+  roadmap_tests: 38/38 PASS
+  emm_source_integrity: PASS

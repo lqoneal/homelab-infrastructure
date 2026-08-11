@@ -1,0 +1,76 @@
+schema_version: 1
+gate_id: CR18
+title: Implement Evaluation Semantics
+status: PENDING
+purpose: Make executable-roadmap evaluation understand pending review.
+objective: Make executable-roadmap evaluation understand pending review.
+dependencies:
+- CR17
+entry_conditions:
+- Corrective STATE.yaml identifies this item as current.
+- All dependencies are COMPLETE.
+- Protected artifact manifest remains valid where applicable.
+authoritative_inputs:
+- ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+- ESC-C02-CORRECTIVE-001/STATE.yaml
+- ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- Parent C02 GATE.yaml
+- Parent C02 RESULT.yaml
+- Parent C02 evidence/VALIDATION.yaml
+- C02-F-027
+allowed_mutations:
+- scripts/lib/eos/convergence_roadmap.py
+- scripts/tests/test-convergence-roadmap.py
+- engineering/convergence/engineering-system-convergence/schemas/**
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/**
+prohibited_mutations:
+- ESC C00 GATE.yaml
+- ESC C01 GATE.yaml
+- ESC C02 GATE.yaml
+- Existing parent C02 RESULT.yaml
+- Existing parent C02 assessment evidence
+- C02-F-001 through C02-F-026 remediation
+- C03 execution
+- Implicit EOS synchronization or refresh
+- Commit or push except at separately authorized future publication gates
+manual_procedure:
+- Verify CR17.
+- Implement review-state evaluation without changing prospective-standard applicability.
+- Add historical C00-C02 regression tests and prospective C03+ tests.
+- Run evaluate-focused tests.
+- Write IMPLEMENTATION-CR18.yaml.
+- Create SUMMARY.md from the validated RESULT and evidence before advancing corrective state.
+- Append a concise gate completion entry to corrective HISTORY.md before advancing corrective state.
+required_outputs:
+- IMPLEMENTATION-CR18.yaml
+- SUMMARY.md
+required_evidence:
+- gates/CR18/evidence/COMMANDS.md
+- gates/CR18/evidence/VALIDATION.yaml
+acceptance_criteria:
+- Pending review is not classified as roadmap corruption.
+- Historical standard provenance remains intact.
+- Prospective C03+ executable qualification remains intact.
+- Evaluation is read-only.
+- The next CR item is not executed in the same transaction.
+- Corrective STATE.yaml is advanced only after this item's result passes.
+- SUMMARY.md exists and accurately summarizes the gate objective, result, material findings/decisions, validation,
+  artifacts, mutation boundary, and next authorized item.
+- Corrective HISTORY.md contains a human-readable entry for this completed gate.
+fail_closed_conditions:
+- Protected artifact manifest mismatch
+- Dependency RESULT missing or not PASS/COMPLETE
+- Unexpected path mutation
+- Ambiguous or contradictory lifecycle state
+- Implicit EOS synchronization or refresh
+- Attempt to execute a later CR item
+stop_boundary: STOP_AFTER_THIS_ITEM
+result_location: gates/CR18/RESULT.yaml
+evidence_location: gates/CR18/evidence
+next_item: CR19
+resume_instructions: Read STATE.yaml. If current_item is CR18, verify dependencies and execute only CR18. Stop after
+  RESULT.yaml and STATE.yaml update.
+human_readable_record:
+  summary: gates/CR18/SUMMARY.md
+  history: HISTORY.md
+  required_before_state_advancement: true

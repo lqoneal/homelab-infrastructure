@@ -1,0 +1,115 @@
+schema_version: 1
+gate_id: CR43
+classification: FINAL_STAGE_SET_QUALIFICATION
+recorded_at: '2026-08-11T12:47:30.039231+00:00'
+source_decision: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR43/evidence/CR43-COMMIT-CANDIDATE-DECISION-2L3A.yaml
+source_explicit_authority: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR43/evidence/CR43-EXPLICIT-AUTHORITY-QUALIFICATION-2L4.yaml
+stage_path_count: 35
+paths:
+- path: engineering/convergence/engineering-system-convergence/ESC-ROADMAP-001.md
+  authority: 2L3A_INCLUDE
+  basis: INTRODUCED_OR_USED_WITH_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/CR40-EMM-REBIND-20260811T113149Z.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/CR41-TO-CR42-EMM-REBIND-20260811T115305Z.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/CR42-TO-CR43-EMM-REBIND-20260811T123046Z.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/CR43-PROJECT-STATE-CONTINUATION-REPAIR-20260811T123440Z.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-live-coupled-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-live-emm-rebind-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo005-emm-rebind-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo006-emm-rebind-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo007-emm-rebind-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo008-emm-rebind-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo009-emm-rebind-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo010-emm-rebind-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo011-emm-rebind-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr23-zo013-emm-rebind-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr24-live-coupled-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr25-live-coupled-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr26-live-coupled-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr27-live-coupled-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr28-live-coupled-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr29-live-coupled-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr30-live-coupled-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr31-live-coupled-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr32-live-coupled-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr33-live-coupled-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr34-live-coupled-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr35-live-coupled-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr36-live-coupled-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr37-live-closeout-001.json
+  authority: 2L3A_INCLUDE
+  basis: CORRECTIVE_RUNTIME_TRANSACTION_RECEIPT
+- path: scripts/lib/emp/mission_verification_controller.py
+  authority: 2L3A_INCLUDE
+  basis: INTRODUCED_OR_USED_WITH_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: scripts/lib/emp/publication_transaction.py
+  authority: 2L3A_INCLUDE
+  basis: INTRODUCED_OR_USED_WITH_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: scripts/lib/eos/roadmap_lifecycle.py
+  authority: 2L3A_INCLUDE
+  basis: INTRODUCED_OR_USED_WITH_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: scripts/tests/test-roadmap-lifecycle.py
+  authority: 2L3A_INCLUDE
+  basis: INTRODUCED_OR_USED_WITH_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: scripts/validate_controlled_documents.py
+  authority: 2L3A_INCLUDE
+  basis: INTRODUCED_OR_USED_WITH_INDEPENDENT_CORRECTIVE_PROVENANCE
+- path: scripts/zeus
+  authority: 2L3A_INCLUDE
+  basis: INTRODUCED_OR_USED_WITH_INDEPENDENT_CORRECTIVE_PROVENANCE
+staging_performed: false
+commit_created: false

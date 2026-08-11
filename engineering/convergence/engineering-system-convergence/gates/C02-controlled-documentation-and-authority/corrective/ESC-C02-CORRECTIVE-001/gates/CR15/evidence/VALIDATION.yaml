@@ -1,0 +1,32 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR15
+validated_at: '2026-08-10T09:07:37Z'
+result: PASS
+
+checks:
+  cr14_dependency: PASS
+  cr12m1_dependency: PASS
+  lifecycle_design_qualified: PASS
+  pre_create_verification: PASS
+  lifecycle_model_created: PASS
+  model_compiles: PASS
+  focused_tests: PASS
+  result_acceptance_separation: PASS
+  explicit_operator_decision: PASS
+  rejected_cannot_complete: PASS
+  accepted_only_completion: PASS
+  deterministic_successor_requirement: PASS
+  terminal_semantics: PASS
+  exact_replay: PASS
+  conflicting_replay_fail_closed: PASS
+  existing_controller_unchanged: PASS
+  eos_side_effect_boundary: PASS
+  cr16_not_executed: PASS
+
+implementation_status:
+  lifecycle_model: IMPLEMENTED
+  controller_integration: PENDING_FUTURE_GATE
+  cli_integration: PENDING_FUTURE_GATE
+
+next_authorized_item: CR16

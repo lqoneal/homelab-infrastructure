@@ -1,0 +1,30 @@
+schema_version: 1
+corrective_id: ESC-C02-CORRECTIVE-001
+item_id: CR12
+validated_at: '2026-08-10T08:45:03Z'
+result: PASS
+
+checks:
+  dependencies: PASS
+  frozen_history: PASS
+  pre_create_conflict_check: PASS
+  design_inputs: PASS
+  interruption_classification: PASS
+  replay_identity: PASS
+  idempotent_replay: PASS
+  conflicting_replay_fail_closed: PASS
+  read_only_interfaces: PASS
+  explicit_mutation_authority: PASS
+  successor_execution_boundary: PASS
+  eos_side_effect_boundary: PASS
+  implementation_unchanged: PASS
+  roadmap_maintenance_review: PASS
+  cr13_not_executed: PASS
+
+zeus_opportunities:
+  - ZO-001
+  - ZO-002
+  - ZO-003
+  - ZO-004
+
+next_authorized_item: CR13

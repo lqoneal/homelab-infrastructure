@@ -1,0 +1,24 @@
+schema_version: 1
+record_id: CR32-EXECUTION-QUALIFICATION-001
+gate_id: CR32
+recorded_at: '2026-08-11T01:02:49Z'
+result: PASS
+objective: Verify duplicate acceptance is idempotent or safely rejected.
+qualification:
+  first_acceptance: AUTHORIZED
+  exact_duplicate: ALREADY_APPLIED
+  exact_duplicate_idempotent: true
+  conflicting_duplicate: FAIL_CLOSED
+  second_receipt_created: false
+  second_lifecycle_mutation: false
+  state_advanced: false
+  successor_executed: false
+  cr33_executed: false
+boundary:
+  cr32_result_written: false
+  state_advanced: false
+  parent_c02_advanced: false
+  cr33_executed: false
+  eos_synchronized: false
+  commit_created: false
+  push_performed: false
