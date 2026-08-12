@@ -1,0 +1,3208 @@
+schema_version: 1
+gate_id: C02
+baseline: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+method:
+  script: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/build_inventory.py
+  scope:
+  - docs/**/*.md
+  - engineering/docs/**/*
+  index: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md
+  classification_rule: document_id or asset_id metadata denotes a controlled record; engineering/docs records without such
+    identity remain non-controlled authority candidates
+summary:
+  docs_markdown_files: 135
+  controlled_records: 133
+  document_id_records: 123
+  legacy_asset_records: 10
+  families: 25
+  doc_0001_indexed_record_rows: 131
+  controlled_records_missing_from_index: 2
+  index_rows_without_source: 0
+  registered_legacy_publications: 2
+  engineering_docs_files: 51
+  engineering_docs_with_document_id: 0
+  index_source_metadata_mismatches: 13
+family_counts:
+  ADR: 1
+  AQR: 1
+  ARCH: 1
+  AST: 10
+  CHAR: 1
+  DOC: 1
+  EDR: 3
+  EGR: 6
+  EMP: 1
+  EOS: 3
+  EWO: 46
+  FIN: 2
+  GEN: 1
+  HW: 1
+  INF: 1
+  MILESTONE: 12
+  PHASE: 1
+  POL: 1
+  PROC: 11
+  PROJ: 1
+  SERVICE: 2
+  SPEC: 13
+  STD: 7
+  TPL: 4
+  TRX: 2
+status_counts:
+  Active: 53
+  Approved: 21
+  Archived: 1
+  Available: 1
+  "Available \u2014 enclosure SMART telemetry limitation": 1
+  "Available \u2014 preservation hold": 1
+  Closed: 2
+  Completed: 2
+  Draft: 40
+  Operational: 6
+  "Operational \u2014 qualification limitation": 1
+  Posted: 2
+  Superseded: 2
+persistence_status_counts:
+  Complete: 2
+  MISSING: 52
+  Pending: 49
+  Persisted: 30
+controlled_records_missing_from_index:
+- &id001
+  identifier: CHAR-0001
+  family: CHAR
+  path: docs/charters/CHAR-0001-ENGINEERING_CHARTER.md
+  sha256: ef311bc0eea389df776e215b35a7b7a28eb702bbca34bd8b599ffbf893295cb9
+  title: Engineering Charter
+  version: 1.3
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: false
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- &id002
+  identifier: PROC-0008
+  family: PROC
+  path: docs/procedures/PROC-0008-ENGINEERING_GOVERNANCE_DECISION_PROCEDURE.md
+  sha256: 6638bf7ae5d7fd720f7a02081655106d5001481d49c65853582afe9335d66a78
+  title: Engineering Governance Decision Procedure
+  version: 0.1
+  status: Draft
+  approval_status: Pending
+  persistence_status: Pending
+  indexed: false
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 13
+index_rows_without_source: []
+index_source_metadata_mismatches:
+- identifier: AST-000003
+  field: title
+  index_value: Secondary Intel RST Device
+  source_value: Secondary Intel RST NVMe Device
+  index_line: 671
+  source_line: 3
+  path: docs/hardware/assets/AST-000003.md
+- identifier: AST-000004
+  field: title
+  index_value: WD My Passport Backup Drive
+  source_value: WD My Passport External Backup Drive
+  index_line: 672
+  source_line: 3
+  path: docs/hardware/assets/AST-000004.md
+- identifier: AST-000004
+  field: status
+  index_value: Operational
+  source_value: "Operational \u2014 qualification limitation"
+  index_line: 672
+  source_line: 5
+  path: docs/hardware/assets/AST-000004.md
+- identifier: AST-000005
+  field: title
+  index_value: Seagate Backup Plus Ultra Touch
+  source_value: Seagate Backup Plus Ultra Touch 2 TB
+  index_line: 673
+  source_line: 3
+  path: docs/hardware/assets/AST-000005.md
+- identifier: AST-000006
+  field: title
+  index_value: SanDisk Recovery USB
+  source_value: SanDisk Ultra Recovery USB
+  index_line: 674
+  source_line: 3
+  path: docs/hardware/assets/AST-000006.md
+- identifier: AST-000010
+  field: status
+  index_value: Available
+  source_value: "Available \u2014 preservation hold"
+  index_line: 471
+  source_line: 5
+  path: docs/hardware/assets/AST-000010.md
+- identifier: PROC-0006
+  field: status
+  index_value: Active
+  source_value: Draft
+  index_line: 405
+  source_line: 5
+  path: docs/procedures/PROC-0006-GOVERNANCE-QUALIFICATION-PROCEDURE.md
+- identifier: SPEC-0001
+  field: title
+  index_value: Controlled Document Model
+  source_value: Controlled Document Representation Specification
+  index_line: 376
+  source_line: 3
+  path: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md
+- identifier: SPEC-0001
+  field: status
+  index_value: Active
+  source_value: Draft
+  index_line: 376
+  source_line: 5
+  path: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md
+- identifier: STD-0000
+  field: title
+  index_value: Engineering Governance Documentation Architecture
+  source_value: Engineering Documentation Standard
+  index_line: 393
+  source_line: 3
+  path: docs/standards/STD-0000-ENGINEERING_GOVERNANCE_DOCUMENTATION_ARCHITECTURE.md
+- identifier: EWO-000010-COMPLETION
+  field: title
+  index_value: EWO-000010 Qualification Completion Report
+  source_value: EWO-000010 Governance Baseline 1.0 Qualification Completion Report
+  index_line: 420
+  source_line: 3
+  path: docs/work-orders/EWO-000010-QUALIFICATION-COMPLETION-REPORT.md
+- identifier: EWO-000010-EVIDENCE
+  field: title
+  index_value: EWO-000010 Qualification Evidence Package
+  source_value: EWO-000010 Governance Baseline 1.0 Qualification Evidence Package
+  index_line: 419
+  source_line: 3
+  path: docs/work-orders/EWO-000010-QUALIFICATION-EVIDENCE-PACKAGE.md
+- identifier: EWO-000011
+  field: title
+  index_value: Controlled Document Model Revision 1.1
+  source_value: Controlled Document Model Revision
+  index_line: 421
+  source_line: 3
+  path: docs/work-orders/EWO-000011-CONTROLLED_DOCUMENT_MODEL_REVISION_1.1.md
+registered_legacy_publications:
+- path: docs/architecture.md
+  sha256: ecc673ef284d8aa2de04f03baf8c1bcb033a3815aa39278ce8141ddf19299fc2
+- path: docs/roadmap.md
+  sha256: 83794ecf1f75a7a542cb4841b019cbc0c947ba9911bb6c24ef80f5e388e321cf
+controlled_records:
+- identifier: DOC-0001
+  family: DOC
+  path: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md
+  sha256: 2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a
+  title: Repository Document Index
+  version: 2.79
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 77
+- identifier: ADR-0001
+  family: ADR
+  path: docs/architecture/ADR-0001-ZEUS-CANONICAL-ARCHITECTURE-DECISION.md
+  sha256: 79e6dc27410733351e2486fe43921456ec452ba6762ef79410198d89977e60a9
+  title: Zeus Canonical Architecture Decision
+  version: 1.3
+  status: Draft
+  approval_status: Pending
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 13
+- identifier: AQR-0001
+  family: AQR
+  path: docs/architecture/AQR-0001-ARCHITECTURE-QUALIFICATION-REPORT.md
+  sha256: 5d9f1d06baf0425adefa0c5e2f9559f42e017cf2f73ace4093cac00e20b15b35
+  title: Architecture Qualification Report
+  version: 1.1
+  status: Draft
+  approval_status: Pending
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 10
+- identifier: ARCH-0001
+  family: ARCH
+  path: docs/architecture/ARCH-0001-ENGINEERING-CONVERGENCE-ASSESSMENT.md
+  sha256: a3965a1797d049ca2dc5d8a1d408556ad187d7aa49c4645d73eb52163ac0d9dd
+  title: Engineering Convergence Assessment
+  version: 1.6
+  status: Draft
+  approval_status: Pending
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 10
+- *id001
+- identifier: EDR-0001
+  family: EDR
+  path: docs/edr/EDR-0001-HARDWARE_ASSET_RECORD_ARCHITECTURE.md
+  sha256: 4b80fc9d7c1275d8b46f9a0673f38de363e6f953c3a4eca67ed59d60758b42d7
+  title: Hardware Asset Record Architecture
+  version: 1.0
+  status: Approved
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EDR-0002
+  family: EDR
+  path: docs/edr/EDR-0002-ENGINEERING_AUTHORITY_MODEL.md
+  sha256: 4a84e072e6a428f2a669e3dc4a0803a948bfa3b3485e243be368d1a07b8d32ec
+  title: Engineering Authority Model
+  version: 1.3
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EDR-0003
+  family: EDR
+  path: docs/edr/EDR-0003-GOVERNED-AUTHORIZATION-TRANSACTION-ARCHITECTURE.md
+  sha256: f26ecfd111ba743d18a2d8888bf758fa2532cc6ddd676916a5a3827fd53c0184
+  title: Governed Authorization Transaction Architecture
+  version: 0.3
+  status: Approved
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 15
+    persistence_status: 19
+  relationship_count: 7
+- identifier: EMP-0001
+  family: EMP
+  path: docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md
+  sha256: 1d8000fc50b169c65093efd54b7c2d1087d287a2049b2ad694d00124cda91e49
+  title: Engineering Management Platform Architecture
+  version: 1.4
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 16
+- identifier: EOS-0001
+  family: EOS
+  path: docs/eos/EOS-0001-ENGINEERING_OPERATING_SYSTEM_CONSTITUTION.md
+  sha256: 5c1222b6c924632676f7e40f86f3d1aa3cee8514124ba6b922af4a6435a1f3af
+  title: Engineering Operating System Constitution
+  version: 1.1
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EOS-0002
+  family: EOS
+  path: docs/eos/EOS-0002-ENGINEERING_OPERATING_SYSTEM_MASTER_PLAN.md
+  sha256: f5cf2daa056a221bbd3a14f0cff500cbda2f9d5f9bb9bf958c171531bc8f12c7
+  title: Engineering Operating System Master Plan
+  version: 1.0
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EOS-0003
+  family: EOS
+  path: docs/eos/EOS-0003-OPERATIONAL_PERSISTENCE_PROFILE.md
+  sha256: 654b91ccd2c640a6f7ea52c4cd30934da2794c5fcf0b88ce0822f944ec15857e
+  title: EOS Operational Persistence Profile
+  version: 1.4
+  status: Draft
+  approval_status: Pending
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 5
+- identifier: FIN-0001
+  family: FIN
+  path: docs/finance/FIN-0001-MASTER_FINANCIAL_LEDGER.md
+  sha256: 36ad65b6c37367b486d5c28c1802666be667767a7b7cd101fb116e0347b92cc8
+  title: Master Financial Ledger
+  version: 1.1
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: FIN-0002
+  family: FIN
+  path: docs/finance/FIN-0002-MASTER_PROCUREMENT_REGISTER.md
+  sha256: bf7fa8b28f678732347e6a117e945122e9d65b482fa40fa75d662b25d3ffacf0
+  title: Master Procurement Register
+  version: 1.1
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: PROC-000001
+  family: PROC
+  path: docs/finance/procurements/PROC-000001.md
+  sha256: 88c009f94c18e705f87fcea4ecda664b3bf7091478fe7152aedc055b31c4d158
+  title: Engineering Terminal 01 Procurement
+  version: 1.0
+  status: Closed
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: PROC-000002
+  family: PROC
+  path: docs/finance/procurements/PROC-000002.md
+  sha256: fbb715af41be748f53d72a711ee250e1d096d92b8e828fdedd9d900856f72e76
+  title: Engineering Spare microSD Card 01 Procurement
+  version: 1.0
+  status: Closed
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: TRX-000001
+  family: TRX
+  path: docs/finance/transactions/TRX-000001.md
+  sha256: 7aada8353ec7b4c7f8b2f82c0bc78b0d493482765d5be4665090a7f460255eaf
+  title: Procurement Transaction - Engineering Terminal 01
+  version: 1.0
+  status: Posted
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: TRX-000002
+  family: TRX
+  path: docs/finance/transactions/TRX-000002.md
+  sha256: bcb684bc48b6110f47ec5ba2e7a35f4905cc38660873d3fa613981c686b90824
+  title: Procurement Transaction - Engineering Spare microSD Card 01
+  version: 1.0
+  status: Posted
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: GEN-0001
+  family: GEN
+  path: docs/genesis/GEN-0001-GENESIS_GOVERNANCE_RECORD.md
+  sha256: 90607e14b52b9f892532f65eff4aa564f2ac8e07cbbcb5f9567fb3faeb38b497
+  title: Engineering Operating System Genesis Record
+  version: 1.2
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: HW-0001
+  family: HW
+  path: docs/hardware/HW-0001-MASTER_HARDWARE_REGISTER.md
+  sha256: b0a4a7f2f9964a51bfc683a148cff728762b2d0856a79bfe278a65d51103a4a7
+  title: Master Hardware Register
+  version: 1.7
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: AST-000001
+  family: AST
+  path: docs/hardware/assets/AST-000001.md
+  sha256: 51fb0d4e66a14fcec92201d81cbe76e92223c960ae2beac06d8d3378ff31c0b4
+  title: Engineering Workstation
+  version: 1.0
+  status: Operational
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    asset_id: 2
+    asset_name: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: AST-000002
+  family: AST
+  path: docs/hardware/assets/AST-000002.md
+  sha256: 043b61a7c7419ae95c6d2193f63076a29b0a74f70bc11f7f6453b0b6dca500a8
+  title: Primary Internal NVMe SSD
+  version: 1.2
+  status: Operational
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    asset_id: 2
+    asset_name: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: AST-000003
+  family: AST
+  path: docs/hardware/assets/AST-000003.md
+  sha256: 139fef58c328bb6a43caeb49fa174a8562c9c3a679d0715e589ecfc2a4f0c660
+  title: Secondary Intel RST NVMe Device
+  version: 1.1
+  status: Operational
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    asset_id: 2
+    asset_name: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: AST-000004
+  family: AST
+  path: docs/hardware/assets/AST-000004.md
+  sha256: 7a8e5a343f7e7530e192ba6d98fcb65ed24e4b19f3b863b3931e35ca269ad87e
+  title: WD My Passport External Backup Drive
+  version: 1.3
+  status: "Operational \u2014 qualification limitation"
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    asset_id: 2
+    asset_name: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: AST-000005
+  family: AST
+  path: docs/hardware/assets/AST-000005.md
+  sha256: ab82c99703c299bb5a72e17ddcc6897cf0bf1bae8832c208630cf7fd45951dd0
+  title: Seagate Backup Plus Ultra Touch 2 TB
+  version: 1.3
+  status: "Available \u2014 enclosure SMART telemetry limitation"
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    asset_id: 2
+    asset_name: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: AST-000006
+  family: AST
+  path: docs/hardware/assets/AST-000006.md
+  sha256: 5be1a932e2db42c08026eda443387c231cbbca37789d805e0a836eaaa79977ed
+  title: SanDisk Ultra Recovery USB
+  version: 1.0
+  status: Operational
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    asset_id: 2
+    asset_name: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: AST-000007
+  family: AST
+  path: docs/hardware/assets/AST-000007.md
+  sha256: ccb38662c4de779abe94d2c8948b911dfd3009afd399d953d39ce9a80378d748
+  title: Raspberry Pi 5
+  version: 1.0
+  status: Operational
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    asset_id: 2
+    asset_name: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: AST-000008
+  family: AST
+  path: docs/hardware/assets/AST-000008.md
+  sha256: 7657a1c664f83f10a67602c51eb7395cabf888194b6f2687e34124adf592a1ab
+  title: Engineering Terminal 01
+  version: 1.0
+  status: Operational
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    asset_id: 2
+    asset_name: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: AST-000009
+  family: AST
+  path: docs/hardware/assets/AST-000009.md
+  sha256: 8d52d4495cdff73664369724d008c99c4377ef45ece02370f80c1099d924085d
+  title: Engineering Spare microSD Card 01
+  version: 1.0
+  status: Available
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    asset_id: 2
+    asset_name: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: AST-000010
+  family: AST
+  path: docs/hardware/assets/AST-000010.md
+  sha256: f9df1c0f2d32a40f64b9ce2f3dfc2805c50bd6a54880eb58fae92b2fc03bcc75
+  title: WD 500 GB External HDD
+  version: 1.3
+  status: "Available \u2014 preservation hold"
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    asset_id: 2
+    asset_name: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: INF-0001
+  family: INF
+  path: docs/infrastructure/INF-0001-INFRASTRUCTURE_BASELINE.md
+  sha256: caa9fb3f004940f1116055cf9e86c436b8f4ea7084a5f026336cdcfcef2c11f0
+  title: Engineering Infrastructure Baseline
+  version: 2.8
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 3
+    title: 4
+    version: 5
+    status: 6
+    approval_status: 15
+    persistence_status: 19
+  relationship_count: 5
+- identifier: POL-0001
+  family: POL
+  path: docs/policies/POL-0001-ENGINEERING_GOVERNANCE_POLICY.md
+  sha256: a41a5d1f9527ce5db95e283ba7189ea13ddca045a3c5b44ca818e988437b27bd
+  title: Engineering Governance Policy
+  version: 1.5
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: PROC-0001
+  family: PROC
+  path: docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md
+  sha256: fc3015e88ecbd036b50bb672b17c12818a0b7e77ad32ceb4a9f8db252d0de5ad
+  title: Operational Alpha Work Initiation and Execution Procedure
+  version: 2.7
+  status: Active
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 15
+    persistence_status: 19
+  relationship_count: 17
+- identifier: PROC-0002
+  family: PROC
+  path: docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md
+  sha256: d3aeb98ab0a1566c1b72753c5295d1346e0a06af0551f77ca268bb4602e26fda
+  title: Engineering Governance Resolution Procedure
+  version: 1.5
+  status: Active
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 12
+- identifier: PROC-0003
+  family: PROC
+  path: docs/procedures/PROC-0003-ENGINEERING_RECOVERY_RUNBOOK.md
+  sha256: d50fc03ef072c44f49230c067b04449e51a11c3b9f32c12e2aac055d076eb391
+  title: Engineering Recovery Runbook
+  version: 1.2
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 9
+- identifier: PROC-0004
+  family: PROC
+  path: docs/procedures/PROC-0004-ENGINEERING_HANDOFF_CONSTRUCTION_PROCEDURE.md
+  sha256: 0946fb1bc916710e121135bfd48eda0fa9f1d7d2da099197f43bebb6b42e7a18
+  title: Engineering Handoff Construction Procedure
+  version: 1.6
+  status: Draft
+  approval_status: Candidate
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 17
+- identifier: PROC-0005
+  family: PROC
+  path: docs/procedures/PROC-0005-CONTROLLED_DOCUMENT_PUBLICATION_PROCEDURE.md
+  sha256: f53714994ec7669bb02cae749759f74a7ad395919abcd26001b303371c5e52fc
+  title: Controlled Document Publication Procedure
+  version: 1.7
+  status: Draft
+  approval_status: Pending
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 15
+- identifier: PROC-0006
+  family: PROC
+  path: docs/procedures/PROC-0006-GOVERNANCE-QUALIFICATION-PROCEDURE.md
+  sha256: 9804a28daa532b30dd32998b56f5fbff5d9d4ce81d1f6865447c10abd5b26f99
+  title: Governance Qualification Procedure
+  version: 1.6
+  status: Draft
+  approval_status: Pending
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 18
+- identifier: PROC-0007
+  family: PROC
+  path: docs/procedures/PROC-0007-GOVERNANCE-STABILIZATION-PROCEDURE.md
+  sha256: 79ee1674ae4a7fe78e7fc3f37505b588dbaf5929aff2ce9cf397fe297e055aec
+  title: Governance Stabilization Procedure
+  version: 1.1
+  status: Active
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 17
+- *id002
+- identifier: PROC-0009
+  family: PROC
+  path: docs/procedures/PROC-0009-EXECUTABLE_ROADMAP_EVALUATION_PROCEDURE.md
+  sha256: 000586025bb964349ba86e6d7531aaae4c58f16ee2609301345dd08c40706f97
+  title: Executable Roadmap Evaluation Procedure
+  version: 1.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 12
+- identifier: PHASE-0001
+  family: PHASE
+  path: docs/project/PHASE-0001-ZEUS-OPERATIONAL-ALPHA-AUTHORITY.md
+  sha256: 81a8cf249150a315d7d639732a7402a78651fe278943478e265f3f071155e337
+  title: Zeus Operational Alpha Authority
+  version: 1.2
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 5
+- identifier: PROJ-0001
+  family: PROJ
+  path: docs/project/PROJ-0001-PROJECT_STATE.md
+  sha256: c40f044a7ecdb51216b4591dc59c5784e5727e2a2b0b2f5448297d5b5e36c143
+  title: Project State
+  version: 10.5
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 29
+- identifier: MILESTONE-0001
+  family: MILESTONE
+  path: docs/project/milestones/2026-07-06-hardware-domain-complete.md
+  sha256: ea203db8fe0c4c8956203f13781ea0c819019358618037640168cd24fba76585
+  title: Hardware Domain Complete
+  version: 1.0
+  status: Approved
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: MILESTONE-0002
+  family: MILESTONE
+  path: docs/project/milestones/2026-07-09-engineering-workstation-shared-services-complete.md
+  sha256: aa8978b093acf22db2586cde311d0a9e81341bf4201a4ba2481d3d3adb847953
+  title: Engineering Workstation Shared Services Complete
+  version: 1.0
+  status: Approved
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: MILESTONE-0004
+  family: MILESTONE
+  path: docs/project/milestones/2026-07-13-engineering-management-platform-foundation-1.0-operational.md
+  sha256: 8176197a0a3b3dcb68a813cdd1594178f532501480a8d54baa54bedd27eb156c
+  title: Engineering Management Platform Foundation 1.0 Operational
+  version: 1.0
+  status: Approved
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 6
+- identifier: MILESTONE-0003
+  family: MILESTONE
+  path: docs/project/milestones/2026-07-13-engineering-platform-mission-0-complete.md
+  sha256: 0643cf35fb53f90f1c8726dffb93ac9d47e7b7e4c03ee250c4d8199f444d6fc0
+  title: Engineering Platform Mission 0 Complete
+  version: 1.0
+  status: Approved
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 3
+- identifier: MILESTONE-0005
+  family: MILESTONE
+  path: docs/project/milestones/2026-07-15-engineering-platform-foundation-1.0-foundation-complete.md
+  sha256: 40fd96336a29f9a61aa07a86ee86d7ea18e689ce64d5e8cea837fc698b3c9dc6
+  title: "Engineering Platform Foundation 1.0 \u2014 Foundation Complete"
+  version: 1.0
+  status: Approved
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 7
+- identifier: MILESTONE-0006
+  family: MILESTONE
+  path: docs/project/milestones/2026-07-17-engineering-platform-transition-to-self-implementation.md
+  sha256: 77357d349f1496088b75544e3676e4cf33e33ef4ba3af6ec78177c419a4d4c9b
+  title: Engineering Platform Transition to Self-Implementation
+  version: 1.0
+  status: Approved
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 4
+- identifier: MILESTONE-0008
+  family: MILESTONE
+  path: docs/project/milestones/2026-07-18-engineering-governance-framework-1.0-operationally-qualified.md
+  sha256: 46c5ecef95637e109e96f090850cbf2b05a48ccab266765896ac67b7de6b3f6a
+  title: Engineering Governance Framework Version 1.0 Operationally Qualified
+  version: 1.0
+  status: Approved
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 10
+- identifier: MILESTONE-0007
+  family: MILESTONE
+  path: docs/project/milestones/2026-07-18-governance-authority-transaction-architecture-qualified.md
+  sha256: 41ae9219a1148d3822a081db5576e7e42f9f9b74a3a1950dbf384f6caabb0722
+  title: Governance Authority Transaction Architecture Qualified
+  version: 1.0
+  status: Approved
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 7
+- identifier: MILESTONE-0009
+  family: MILESTONE
+  path: docs/project/milestones/2026-07-29-operational-alpha-governance-baseline-1.0.md
+  sha256: 8bc29f2ce2e5881a92a53b63a73f871dcb85bf75b32056bdd824d8f253fe8d8d
+  title: Operational Alpha Governance Baseline 1.0 and Governance Freeze
+  version: 1.0
+  status: Approved
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 10
+- identifier: MILESTONE-0011
+  family: MILESTONE
+  path: docs/project/milestones/2026-07-30-operational-alpha-convergence-runtime-closeout.md
+  sha256: 23658895f5a2eac2b6e33f529aa7fd48ea11cda054adefe51fc9cf664b28880f
+  title: Operational Alpha Convergence Runtime Closeout and Transition
+  version: 1.0
+  status: Approved
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 4
+- identifier: MILESTONE-0010
+  family: MILESTONE
+  path: docs/project/milestones/2026-07-30-operational-alpha-implementation-baseline-1.0.md
+  sha256: 7a7c842f01ab263f929e8dfd3832ded212a3fd2e7260da54bc4440283db09451
+  title: Operational Alpha Implementation Baseline 1.0 Adoption
+  version: 1.0
+  status: Approved
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 4
+- identifier: MILESTONE-0007-PUBLICATION-VERIFICATION
+  family: MILESTONE
+  path: docs/project/milestones/MILESTONE-0007-PUBLICATION-VERIFICATION-REPORT.md
+  sha256: 5f53f176f81607406af8fa1ce0fe9f91c666abb3f8f7261159cd524fbf7d5b1d
+  title: MILESTONE-0007 Publication Verification Report
+  version: 1.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 12
+    persistence_status: 16
+  relationship_count: 0
+- identifier: EGR-000001
+  family: EGR
+  path: docs/resolutions/EGR-000001-GOVERNANCE_FOUNDATION_QUALIFICATION_AND_PUBLICATION.md
+  sha256: aa7967027e562e24cf4b88690ad27f54077579ae9db1ad6f63cf54fba4fc33c8
+  title: Governance Foundation Qualification and Publication
+  version: 1.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 36
+- identifier: EGR-000002
+  family: EGR
+  path: docs/resolutions/EGR-000002-GOVERNANCE-FRAMEWORK-MODERNIZATION-AUTHORIZATION.md
+  sha256: 72a1ae95046a9d6f83eff8baf04f658f26078c790669ba23e547392aa10efea8
+  title: Governance Framework Modernization Authorization
+  version: 1.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 9
+- identifier: EGR-000003
+  family: EGR
+  path: docs/resolutions/EGR-000003-EWO-000020-NOTIFICATION-SERVICE-AUTHORIZATION.md
+  sha256: 5abb1e045b45e769a99e42c4eb9b6327bf3a8ec64c080f0c65bd1ab305784f21
+  title: EWO-000020 Notification Service Authorization
+  version: 1.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 7
+- identifier: EGR-000004
+  family: EGR
+  path: docs/resolutions/EGR-000004-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION-AUTHORIZATION.md
+  sha256: 862d56577c3dd2089448062b8313246ee9be8c206649e164fbca05b63166d54a
+  title: Engineering Platform Repository Reconciliation Authorization
+  version: 1.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 15
+    persistence_status: 19
+  relationship_count: 5
+- identifier: EGR-000005
+  family: EGR
+  path: docs/resolutions/EGR-000005-PROC-0006-APPROVAL-AND-ACTIVATION.md
+  sha256: 925b2f3dede311ca99960e65ac2d02ea5a984ff67a8550a9ef444ef97bacc482
+  title: PROC-0006 Approval and Activation
+  version: 1.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 13
+- identifier: EGR-000006
+  family: EGR
+  path: docs/resolutions/EGR-000006-PROC-0007-APPROVAL-AND-ACTIVATION.md
+  sha256: e180b0157c92f198b70d43187839901e8a24183c8ad2251e7a922be7ce82af63
+  title: PROC-0007 Approval and Activation
+  version: 1.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 14
+- identifier: SERVICE-0001
+  family: SERVICE
+  path: docs/services/SERVICE-0001-EOS_CORE_SERVICES_CATALOG.md
+  sha256: 4fb2cebf340ff21136b1757ac880115d166b8376a22a267ba605535723374579
+  title: EOS Core Services Catalog
+  version: 1.0
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: SERVICE-0002
+  family: SERVICE
+  path: docs/services/SERVICE-0002-EMP_MANAGEMENT_SERVICES_CATALOG.md
+  sha256: aa00d2d725ddb93750215f65f02ae7937ddca8efd36d47b41d3352cf5160a7b7
+  title: EMP Management Services Catalog
+  version: 1.2
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 11
+- identifier: SPEC-0001
+  family: SPEC
+  path: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md
+  sha256: deae153338fd3d6869cb810c0b6d0b34831174068ea2423bc77cdff5db3e154e
+  title: Controlled Document Representation Specification
+  version: 1.8
+  status: Draft
+  approval_status: Pending
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 15
+    persistence_status: 19
+  relationship_count: 13
+- identifier: SPEC-0002
+  family: SPEC
+  path: docs/specifications/SPEC-0002-ZEUS-CANONICAL-ARCHITECTURE-SPECIFICATION.md
+  sha256: efc8fc7569a9e546b52d1b528c77ddd7c63a4f9cbd7d39027232d12e31c5ff9c
+  title: Zeus Canonical Architecture Specification
+  version: 1.4
+  status: Draft
+  approval_status: Pending
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 17
+- identifier: SPEC-0004
+  family: SPEC
+  path: docs/specifications/SPEC-0004-ENGINEERING_CONTEXT_RECONSTRUCTION_SERVICE.md
+  sha256: 347c74e2b11fce47152821557074faef9f1e7762f2f150a084b541050a135d4f
+  title: Engineering Context Reconstruction Service
+  version: 1.6
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: SPEC-0005
+  family: SPEC
+  path: docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md
+  sha256: 9a20b54da84a54f60999a042a5639f5665be50012aa5f080997f14f6e6c3b558
+  title: Engineering Control Framework
+  version: 2.2
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: SPEC-0006
+  family: SPEC
+  path: docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md
+  sha256: 465b2826c98f5851f2ccd41abbb9803c2bd4b8a733589b5ca9e6e8cf58b6738e
+  title: Engineering Work Registry Model
+  version: 1.2
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 10
+- identifier: SPEC-0007
+  family: SPEC
+  path: docs/specifications/SPEC-0007-ENGINEERING-PLATFORM-CONSTRUCTION-SPECIFICATION.md
+  sha256: f44834f9d1506dcbf6a16b75b4887629294fec01c079de2016b7cec6403144fd
+  title: Engineering Platform Construction Specification
+  version: 1.2
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 14
+- identifier: SPEC-0008
+  family: SPEC
+  path: docs/specifications/SPEC-0008-ENGINEERING_TRANSACTION_PROFILE_SPECIFICATION.md
+  sha256: b0fb8833f65ab44abd4c17eeda6dbf10a5dfb4fb7e7aaf966bdfe5ffe547175e
+  title: Engineering Transaction Profile Specification
+  version: 1.1
+  status: Draft
+  approval_status: Pending
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 13
+- identifier: SPEC-0009
+  family: SPEC
+  path: docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md
+  sha256: 8abf1849926e3f7cee87341ab5f6844687b1f3cfe9599ba1921894fba61f1b6a
+  title: Notification Service Specification
+  version: 1.7
+  status: Active
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 12
+- identifier: SPEC-0010
+  family: SPEC
+  path: docs/specifications/SPEC-0010-ENGINEERING-KNOWLEDGE-REPOSITORY-ARCHITECTURE.md
+  sha256: 6ab5e1a0b8debeb9139e135fb40a05ed72df45dd4ab32995e669262ef07a64f9
+  title: Engineering Knowledge Repository Architecture
+  version: 1.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 12
+- identifier: SPEC-0011
+  family: SPEC
+  path: docs/specifications/SPEC-0011-PRODUCTION-AUTHORITY-RESTORATION-SPECIFICATION.md
+  sha256: 924d509338337964f313c519859353daef636652cbff181948515136546bccaa
+  title: Production Authority Restoration Specification
+  version: 1.1
+  status: Active
+  approval_status: null
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 5
+    status: 6
+    persistence_status: 14
+  relationship_count: 0
+- identifier: SPEC-0012
+  family: SPEC
+  path: docs/specifications/SPEC-0012-PRODUCTION-EXECUTION-FOUNDATION.md
+  sha256: f2f4631b5d06854c8048e591192d4bc518d1adeaa9afba1170da3353c55f46f7
+  title: Production Execution Foundation
+  version: 1.12
+  status: Active
+  approval_status: null
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 5
+    status: 6
+    persistence_status: 14
+  relationship_count: 0
+- identifier: SPEC-0013
+  family: SPEC
+  path: docs/specifications/SPEC-0013-CONTROLLED-MISSION-ASSURANCE-LANGUAGE.md
+  sha256: b1acca9770c44c71784e2d352b66bd5416ca65370e569dafe3b86ea3ea0b4135
+  title: Controlled Mission Assurance Language
+  version: 1.0
+  status: Draft
+  approval_status: Pending
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 12
+    persistence_status: 16
+  relationship_count: 5
+- identifier: SPEC-0014
+  family: SPEC
+  path: docs/specifications/SPEC-0014-OPERATIONAL-ALPHA-CONVERGENCE-AUTHORITY.md
+  sha256: 5cfd587695ffdb819a49314c6d1b05210b88c6bcb87a9fe8b60bfb9653ff389e
+  title: Operational Alpha Convergence Authority Model
+  version: 1.6
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: STD-0000
+  family: STD
+  path: docs/standards/STD-0000-ENGINEERING_GOVERNANCE_DOCUMENTATION_ARCHITECTURE.md
+  sha256: 72dd41a636e8f78f2945dbdc8715bc398f82d6d7341fb4c9b0a4d9761030294b
+  title: Engineering Documentation Standard
+  version: 1.7
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 14
+- identifier: STD-0001
+  family: STD
+  path: docs/standards/STD-0001-ENGINEERING_DOCUMENT_LIFECYCLE_STANDARD.md
+  sha256: bb56e4f16c57ec44b55a226ebe6fe9ef2e90b5f8de95abd3d5f69a622dd79640
+  title: Engineering Document Lifecycle Standard
+  version: 1.6
+  status: Active
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 15
+    persistence_status: 19
+  relationship_count: 14
+- identifier: STD-0002
+  family: STD
+  path: docs/standards/STD-0002-ENGINEERING_DOCUMENT_PERSISTENCE_STANDARD.md
+  sha256: 88e6109fd04bfedc8a9f2d394ee8940079a06979d115cefe48ad43ba5074a147
+  title: Engineering Document Persistence Standard
+  version: 1.4
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 15
+    persistence_status: 19
+  relationship_count: 9
+- identifier: STD-0003
+  family: STD
+  path: docs/standards/STD-0003-ENGINEERING_WORK_ORDER_STANDARD.md
+  sha256: 7e6a04328387e7dd83967688115946bc49cf974c91573dcc77423a5cb6352b10
+  title: Operational Alpha Work Authorization Standard
+  version: 2.2
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: STD-0004
+  family: STD
+  path: docs/standards/STD-0004-ENGINEERING_STATE_FRESHNESS_STANDARD.md
+  sha256: c74d526993e7f42ccc05e3cf925ed68e1776f73a8a11bd634f434a75b8262365
+  title: Engineering State Freshness Standard
+  version: 1.4
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 11
+- identifier: STD-0005
+  family: STD
+  path: docs/standards/STD-0005-ENGINEERING_HARDWARE_LIFECYCLE_STANDARD.md
+  sha256: 91a34b054b59a245fd60019944ca59d03d0f6e4e6485ae1c4f8f05e4f605d180
+  title: Engineering Hardware Lifecycle Standard
+  version: 1.2
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 12
+- identifier: STD-0006
+  family: STD
+  path: docs/standards/STD-0006-ENGINEERING_EXECUTABLE_ROADMAP_STANDARD.md
+  sha256: 9ff83a35d304c2209032c8ec8d93d6458e0fef80f96478a6a929c90be4487bd6
+  title: Engineering Executable Roadmap Standard
+  version: 1.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 13
+- identifier: TPL-0001
+  family: TPL
+  path: docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md
+  sha256: 40729dbe476203962348fe30a2019a28f74a53f60c0d3fdbf674f2eb42172717
+  title: Operational Alpha Implementation WOP Template
+  version: 2.0
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: TPL-0002
+  family: TPL
+  path: docs/templates/TPL-0002-ENGINEERING_COMPLETION_REPORT_TEMPLATE.md
+  sha256: c6de41a3093c925bec878a247778aaf559b1c79594e62d849fd119a3dfacd7d8
+  title: Completion Report Template
+  version: 2.0
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: TPL-0003
+  family: TPL
+  path: docs/templates/TPL-0003-ENGINEERING_EVIDENCE_PACKAGE_TEMPLATE.md
+  sha256: 6d5fdee6ea8540f6b376665c96cb852ed0b4bbe59a02a60b296841cce71acf22
+  title: Engineering Evidence Package Template
+  version: 1.0
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: TPL-0004
+  family: TPL
+  path: docs/templates/TPL-0004-ENGINEERING_GOVERNANCE_RESOLUTION_TEMPLATE.md
+  sha256: ba0ce47ec37132a1308990555ee5f83895e59cc73ff28edb4373a3390c221414
+  title: Engineering Governance Resolution Template
+  version: 1.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 14
+    persistence_status: 18
+  relationship_count: 9
+- identifier: EWO-000010
+  family: EWO
+  path: docs/work-orders/EWO-000010-GOVERNANCE_BASELINE_1.0_QUALIFICATION.md
+  sha256: 455a4ee904918cfa698a5eff0a67266eb59dfa0f0fe5a0895f14d13a130634b4
+  title: Governance Baseline 1.0 Qualification
+  version: 1.2
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 6
+  relationship_count: 0
+- identifier: EWO-000010-COMPLETION
+  family: EWO
+  path: docs/work-orders/EWO-000010-QUALIFICATION-COMPLETION-REPORT.md
+  sha256: 193da51837f74ab4d6abd400af30d28820819c6f2b406d213fbfc14a376bf4e5
+  title: EWO-000010 Governance Baseline 1.0 Qualification Completion Report
+  version: 1.1
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EWO-000010-EVIDENCE
+  family: EWO
+  path: docs/work-orders/EWO-000010-QUALIFICATION-EVIDENCE-PACKAGE.md
+  sha256: 628e4d8f60b45869f8b51c8c2b88aec0bca7517b53cfa402698c15b1127cc24a
+  title: EWO-000010 Governance Baseline 1.0 Qualification Evidence Package
+  version: 1.1
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EWO-000011
+  family: EWO
+  path: docs/work-orders/EWO-000011-CONTROLLED_DOCUMENT_MODEL_REVISION_1.1.md
+  sha256: 488588122c99edfeb58eafc595faa6b79c5fdf06885f90508f8f14418506a625
+  title: Controlled Document Model Revision
+  version: 1.1
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 6
+  relationship_count: 0
+- identifier: EWO-000011-COMPLETION
+  family: EWO
+  path: docs/work-orders/EWO-000011-ENGINEERING-COMPLETION-REPORT.md
+  sha256: 48db118966bb6755680846e2d861144f2007a83895f393bbd57086afd92db9fa
+  title: EWO-000011 Engineering Completion Report
+  version: 1.1
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EWO-000011-EVIDENCE
+  family: EWO
+  path: docs/work-orders/EWO-000011-ENGINEERING-EVIDENCE-PACKAGE.md
+  sha256: 163e5890ee87a8c2e012b2e6f0e5768952d650227aaa869cd58a277adcdde818
+  title: EWO-000011 Engineering Evidence Package
+  version: 1.1
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EWO-000012-COMPLETION
+  family: EWO
+  path: docs/work-orders/EWO-000012-ENGINEERING-COMPLETION-REPORT.md
+  sha256: b3962cfd4b71543645f5faaddb944a9b56fd9e03b7b5893d84c538ae55215577
+  title: EWO-000012 Engineering Completion Report
+  version: 1.0
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EWO-000012-EVIDENCE
+  family: EWO
+  path: docs/work-orders/EWO-000012-ENGINEERING-EVIDENCE-PACKAGE.md
+  sha256: d8161732087ae204eee48d34af50318cc1ae2d7a332bf26e75554d7912318e85
+  title: EWO-000012 Engineering Evidence Package
+  version: 1.0
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EWO-000012
+  family: EWO
+  path: docs/work-orders/EWO-000012-LIFECYCLE_AUTHORITY_RECONCILIATION.md
+  sha256: 628e7889ea7aae15f9723053607bdc925905316bb5c63f5debacca486f9e3c9b
+  title: Lifecycle Authority Reconciliation
+  version: 1.0
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 6
+  relationship_count: 0
+- identifier: EWO-000013-COMPLETION
+  family: EWO
+  path: docs/work-orders/EWO-000013-ENGINEERING-COMPLETION-REPORT.md
+  sha256: 9d6d97a59f61f9fc6522a6c5e5f943310302b1f32ea725f21db3e1892df742da
+  title: EWO-000013 Engineering Completion Report
+  version: 1.0
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EWO-000013-EVIDENCE
+  family: EWO
+  path: docs/work-orders/EWO-000013-ENGINEERING-EVIDENCE-PACKAGE.md
+  sha256: 6ff84a60c9e7ff163347c2ed3354f694a2af20bc401d6ae8709f3ea79dbb7872
+  title: EWO-000013 Engineering Evidence Package
+  version: 1.0
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EWO-000013
+  family: EWO
+  path: docs/work-orders/EWO-000013-EXECUTION_RECORD_TRACEABILITY_CONFORMANCE.md
+  sha256: 80868aeef62fecbf7b60019f585d8b4e12c232cee91bc83f1bfba0c172a09c6d
+  title: Execution Record Traceability Conformance
+  version: 1.0
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 6
+  relationship_count: 0
+- identifier: EWO-000014-COMPLETION
+  family: EWO
+  path: docs/work-orders/EWO-000014-ENGINEERING-COMPLETION-REPORT.md
+  sha256: 719040c535bf30aa0f44c0e8fba4eac3c35db32f6f3ded7c3a343ed89a017054
+  title: EWO-000014 Engineering Completion Report
+  version: 1.1
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EWO-000014-EVIDENCE
+  family: EWO
+  path: docs/work-orders/EWO-000014-ENGINEERING-EVIDENCE-PACKAGE.md
+  sha256: abddc61eb87daf093bd3bc2678e3a1467d5e8fa40847291f27f774d050bcbc29
+  title: EWO-000014 Engineering Evidence Package
+  version: 1.1
+  status: Draft
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EWO-000014
+  family: EWO
+  path: docs/work-orders/EWO-000014-SPEC-0001-LIFECYCLE-PROMOTION.md
+  sha256: 08925035e09b3fe86946782b779a0ed4ca35d389bad045ba7b12fb6dbcdf54a0
+  title: SPEC-0001 Lifecycle Promotion
+  version: 1.0
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 6
+  relationship_count: 0
+- identifier: EWO-000015
+  family: EWO
+  path: docs/work-orders/EWO-000015-GOVERNANCE-ARCHITECTURE-RECONCILIATION.md
+  sha256: 40ca209111bbaa34d39c2bb835999ec4495733633e3d5240f2a3711abb218c24
+  title: Governance Architecture Reconciliation
+  version: 1.0
+  status: Active
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 6
+  relationship_count: 0
+- identifier: EWO-000016
+  family: EWO
+  path: docs/work-orders/EWO-000016-THADUKE-FIRMWARE-REMEDIATION.md
+  sha256: cc2156c40603c05c961544d973435a03aa47e98f17d0edfe740d041af9803732
+  title: thaDuke Firmware Remediation
+  version: 1.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 6
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000017
+  family: EWO
+  path: docs/work-orders/EWO-000017-CODEX-STAGE-1-COMPLETION-NOTIFICATION-INTEGRATION.md
+  sha256: 043305557786cd0c07afa31096e636cb716d621f2de4c2ccac9435299174daaa
+  title: Codex Stage 1 Completion Notification Integration
+  version: 1.1
+  status: Completed
+  approval_status: Approved
+  persistence_status: Complete
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 6
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000017-COMPLETION
+  family: EWO
+  path: docs/work-orders/EWO-000017-ENGINEERING-COMPLETION-REPORT.md
+  sha256: c9a14e9a64c373e4593e29420f8d6e007b2e4d848f9129df81f16fee62141a9d
+  title: EWO-000017 Engineering Completion Report
+  version: 1.0
+  status: Approved
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EWO-000018
+  family: EWO
+  path: docs/work-orders/EWO-000018-GOVERNANCE-FRAMEWORK-MODERNIZATION.md
+  sha256: 79d2ab78cc5005618234b6b01446e5224334d5769103a1e8d2ea41bf945ee5e7
+  title: Governance Framework Modernization
+  version: 1.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 6
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000019
+  family: EWO
+  path: docs/work-orders/EWO-000019-CODEX-WRAPPER-ENFORCEMENT.md
+  sha256: fa3f987f54e2d594716e64a768ac5cd117553d932b8c10a1cffb75fb41cdbd68
+  title: Codex Wrapper Enforcement and Notification Lifecycle Verification
+  version: 1.1
+  status: Completed
+  approval_status: Approved
+  persistence_status: Complete
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 6
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000019-COMPLETION
+  family: EWO
+  path: docs/work-orders/EWO-000019-ENGINEERING-COMPLETION-REPORT.md
+  sha256: 0d503e0d163788d5e2f01d2519dbd8cff9bf79a6c94d285021b0d4acf3eeb91e
+  title: EWO-000019 Engineering Completion Report
+  version: 1.0
+  status: Approved
+  approval_status: null
+  persistence_status: MISSING
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+  relationship_count: 0
+- identifier: EWO-000020
+  family: EWO
+  path: docs/work-orders/EWO-000020-ENGINEERING-NOTIFICATION-SERVICE-IMPLEMENTATION.md
+  sha256: 6d0f3f97fe9b3081d19e22cfb6436db939838e1972693f1136a0e7a355b21dd0
+  title: Engineering Notification Service Implementation
+  version: 1.0
+  status: Superseded
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 6
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000021-AUTHORIZATION-COMPLETION
+  family: EWO
+  path: docs/work-orders/EWO-000021-AUTHORIZATION-COMPLETION-REPORT.md
+  sha256: 724a37e3ade5c9b936586eab4629f5149b4f60398bc9a6dc1a043bedc88bd908
+  title: EWO-000021 Authorization Completion Report
+  version: 1.0
+  status: Approved
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000021-AUTHORIZATION-EVIDENCE
+  family: EWO
+  path: docs/work-orders/EWO-000021-AUTHORIZATION-EVIDENCE-PACKAGE.md
+  sha256: 5de2eb65ffb6506b3cbc10714cacc399433710d1e4a97556844b7f94cccb4c14
+  title: EWO-000021 Authorization Evidence Package
+  version: 1.0
+  status: Approved
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000021-COMPLETION
+  family: EWO
+  path: docs/work-orders/EWO-000021-ENGINEERING-COMPLETION-REPORT.md
+  sha256: cf6c960a678ae895a6ab64c2ee0ff5188e3d2d509b58a7e67b4f0a776399b06f
+  title: EWO-000021 Engineering Completion Report
+  version: 1.0
+  status: Approved
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000021-EVIDENCE
+  family: EWO
+  path: docs/work-orders/EWO-000021-ENGINEERING-EVIDENCE-PACKAGE.md
+  sha256: 5ef98d8e98a92f69707b6d8893251cbb52063cc8fea336bf21b3aceebbafd814
+  title: EWO-000021 Engineering Evidence Package
+  version: 1.0
+  status: Approved
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000021
+  family: EWO
+  path: docs/work-orders/EWO-000021-ENGINEERING-PLATFORM-REPOSITORY-RECONCILIATION.md
+  sha256: 14cd8aef9d69f88befae0c59d30c49c06e510c35afa8bfe81e4968805cf65240
+  title: Engineering Platform Repository Reconciliation Mission (Handoff 1)
+  version: 2.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 6
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000022-COMPLETION
+  family: EWO
+  path: docs/work-orders/EWO-000022-ENGINEERING-COMPLETION-REPORT.md
+  sha256: f6233f821d23adbc349e89dddd968c5e0acf9d060a0d5301b1ae0218fb8165d0
+  title: EWO-000022 Engineering Completion Report
+  version: 1.1
+  status: Approved
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 15
+    persistence_status: 19
+  relationship_count: 0
+- identifier: EWO-000022-EVIDENCE
+  family: EWO
+  path: docs/work-orders/EWO-000022-ENGINEERING-EVIDENCE-PACKAGE.md
+  sha256: 42dc4c43331d9be013f6c70a2a402bd8a90c2bd500e3c7b4c30705635ada4068
+  title: EWO-000022 Engineering Evidence Package
+  version: 1.0
+  status: Approved
+  approval_status: Approved
+  persistence_status: Pending
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000022
+  family: EWO
+  path: docs/work-orders/EWO-000022-SPEC-0007-REVISION-15-CONTROLLED-PUBLICATION.md
+  sha256: 8dd81ceba138995083fc483d68f829459ec99d4d23bde82b212d97e6bc8bc417
+  title: SPEC-0007 Revision 15 Controlled Publication
+  version: 1.1
+  status: Superseded
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 6
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000023-COMPLETION
+  family: EWO
+  path: docs/work-orders/EWO-000023-ENGINEERING-COMPLETION-REPORT.md
+  sha256: 84a866fb91742a1376189c5db03387224027cd48893b54a4cb9c980ca50a6064
+  title: EWO-000023 Engineering Completion Report
+  version: 0.2
+  status: Draft
+  approval_status: Pending
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 15
+    persistence_status: 19
+  relationship_count: 0
+- identifier: EWO-000023
+  family: EWO
+  path: docs/work-orders/EWO-000023-GOVERNANCE-AUTHORITY-ARCHITECTURE-INVESTIGATION.md
+  sha256: 1c5fef653358e0fe4ad948a4bbb55b21762bbbee46ab7cc99928a64611c6f815
+  title: Governance Authority Architecture Investigation
+  version: 1.0
+  status: Archived
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 6
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000023-HISTORICAL-EVIDENCE-PERSISTENCE
+  family: EWO
+  path: docs/work-orders/EWO-000023-HISTORICAL-EVIDENCE-PERSISTENCE-REPORT.md
+  sha256: dcd920d996ae66fb780ad6bac6bb19e78fa01213e2502c0bd128c5ac66d5921e
+  title: EWO-000023 Historical Evidence Persistence Report
+  version: 1.0
+  status: Active
+  approval_status: Approved
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000023-PHASE-1-AUTHORITY-BOUNDARY
+  family: EWO
+  path: docs/work-orders/EWO-000023-PHASE-1-AUTHORITY-BOUNDARY-ANALYSIS.md
+  sha256: 4b464ca3fe2fe9eac78fd00ccc07ab152eceb0cc279a798c631336a8c712fb35
+  title: EWO-000023 Phase 1 Authority Boundary Analysis
+  version: 0.1
+  status: Draft
+  approval_status: Pending
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000023-PHASE-1-EVIDENCE
+  family: EWO
+  path: docs/work-orders/EWO-000023-PHASE-1-ENGINEERING-EVIDENCE-PACKAGE.md
+  sha256: cfe70cd63bacb2349a230605bc06d785f30b09b30644cce2aabee6251a795676
+  title: EWO-000023 Phase 1 Engineering Evidence Package
+  version: 0.1
+  status: Draft
+  approval_status: Pending
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000023-PHASE-1-INVESTIGATION
+  family: EWO
+  path: docs/work-orders/EWO-000023-PHASE-1-INVESTIGATION-REPORT.md
+  sha256: 3acae2ae7f11ee37bb7886ee2dcfb2bf6bc880ebd319652c9f8fdac46a848061
+  title: EWO-000023 Phase 1 Authority-Gap Characterization
+  version: 0.1
+  status: Draft
+  approval_status: Pending
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000023-PHASE-2-ALTERNATIVES
+  family: EWO
+  path: docs/work-orders/EWO-000023-PHASE-2-ALTERNATIVE-ARCHITECTURE-EVALUATION.md
+  sha256: 1b0483011ac46c643ee01073423c3c5af401ff05d1881cdfad3004e3584bff6f
+  title: EWO-000023 Phase 2 Alternative Architecture Evaluation
+  version: 0.1
+  status: Draft
+  approval_status: Pending
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000023-PHASE-2-COMPARATIVE-ANALYSIS
+  family: EWO
+  path: docs/work-orders/EWO-000023-PHASE-2-COMPARATIVE-ANALYSIS.md
+  sha256: 9ced7e730ff253230b1a5a218ebe47a28d5bdfaadd21c6c56d9b64becf0443a2
+  title: EWO-000023 Phase 2 Comparative Architecture Analysis
+  version: 0.1
+  status: Draft
+  approval_status: Pending
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000023-PHASE-2-EVIDENCE
+  family: EWO
+  path: docs/work-orders/EWO-000023-PHASE-2-ENGINEERING-EVIDENCE-PACKAGE.md
+  sha256: 77fe1ca7cbe6405140056b0855029cd7539172a1f799d98ccd1f9ddc31c7fa82
+  title: EWO-000023 Phase 2 Engineering Evidence Package
+  version: 0.1
+  status: Draft
+  approval_status: Pending
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000023-PHASE-2-OWNERSHIP
+  family: EWO
+  path: docs/work-orders/EWO-000023-PHASE-2-REPOSITORY-OWNERSHIP-ANALYSIS.md
+  sha256: 9bd1e64ddac9f0476dbc7c59a894daaf2ab442db9b7449eb962c3d4d6a08d5c4
+  title: EWO-000023 Phase 2 Repository Ownership Analysis
+  version: 0.1
+  status: Draft
+  approval_status: Pending
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000023-PHASE-3-EVIDENCE
+  family: EWO
+  path: docs/work-orders/EWO-000023-PHASE-3-ENGINEERING-EVIDENCE-PACKAGE.md
+  sha256: a3ae0689cc9c05c204e6e284557953e0235e015c24aeb327e671e0be73fc41d1
+  title: EWO-000023 Phase 3 Engineering Evidence Package
+  version: 0.3
+  status: Draft
+  approval_status: Pending
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000023-PHASE-3-RECOMMENDATION
+  family: EWO
+  path: docs/work-orders/EWO-000023-PHASE-3-GOVERNANCE-RECOMMENDATION-PACKAGE.md
+  sha256: ceb98d5af153246f8a581192f94afcfc9a31f1f79dc2ba78302bcbf2a62f9e88
+  title: EWO-000023 Phase 3 Governance Recommendation Package
+  version: 0.3
+  status: Draft
+  approval_status: Pending
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000023-PHASE-3-ROADMAP
+  family: EWO
+  path: docs/work-orders/EWO-000023-PHASE-3-IMPLEMENTATION-ROADMAP.md
+  sha256: 07ef07770a3451ddd47e6bca942b8ad7846459e5ef6765b20b9e9589f0e45142
+  title: EWO-000023 Phase 3 Governed Authorization Transaction Implementation Roadmap
+  version: 0.3
+  status: Draft
+  approval_status: Pending
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000023-PHASE-3-REPOSITORY-IMPACT
+  family: EWO
+  path: docs/work-orders/EWO-000023-PHASE-3-REPOSITORY-IMPACT-ANALYSIS.md
+  sha256: f37254325adb8431ac177c19ddc7795ec66baee82b64faf0bc65fef562091ffd
+  title: EWO-000023 Phase 3 Repository Impact Analysis
+  version: 0.3
+  status: Draft
+  approval_status: Pending
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+- identifier: EWO-000023-PHASE-3-VALIDATION
+  family: EWO
+  path: docs/work-orders/EWO-000023-PHASE-3-VALIDATION-REPORT.md
+  sha256: 1b451dd15aeb26ed5faa9113f0056a0fec9c349d1b3c6f382fb56f4ec615c5ec
+  title: EWO-000023 Phase 3 Validation Report
+  version: 0.3
+  status: Draft
+  approval_status: Pending
+  persistence_status: Persisted
+  indexed: true
+  metadata_lines:
+    document_id: 2
+    title: 3
+    version: 4
+    status: 5
+    approval_status: 13
+    persistence_status: 17
+  relationship_count: 0
+engineering_docs_authority_candidates:
+- path: engineering/docs/architecture/CANONICAL-AUTHORITY-GENERATION-FRAMEWORK-DIRECTION.md
+  sha256: 327bbde09cae2cae816b6e4a094f7b2a85931119ffa64aa3d8cab44c4a6e97df
+  document_id: null
+  heading: "Canonical Authority Generation Framework \u2014 Published Engineering Direction"
+  authority_signals:
+  - line: 1
+    text: "# Canonical Authority Generation Framework \u2014 Published Engineering Direction"
+  - line: 4
+    text: 'Authority boundary: generated artifacts remain subordinate to their canonical owners'
+  - line: 8
+    text: The Canonical Authority Generation Framework (CAGF) is the planned engineering
+  - line: 9
+    text: architecture for eliminating drift between canonical authority and derived
+  - line: 10
+    text: operational artifacts. CAGF will transform validated canonical records into
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ENGINEERING-PLATFORM-DESIGN-PRINCIPLES.md
+  sha256: 0a91b8ed3f4577df28d429ad6d394e7cf3f69b61b0e17ad43a9ea262bdd35770
+  document_id: null
+  heading: Engineering Platform Design Principles
+  authority_signals:
+  - line: 4
+    text: 'Authority: Operation Beta planning baseline'
+  - line: 13
+    text: 1. **Single Authority.** Every engineering fact has exactly one authoritative
+  - line: 25
+    text: 7. **Canonical Knowledge.** Generated artifacts remain subordinate to their
+  - line: 26
+    text: canonical sources.
+  - line: 28
+    text: 9. **Ownership.** Every artifact has one engineering owner and one authoritative
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ENGINEERING-PLATFORM-EVOLUTION-PHASE-1.md
+  sha256: 44dabe2c8d460d63345c21e6263d18d8e665569c6431303ab94ed8915ddfa119
+  document_id: null
+  heading: "Engineering Platform Evolution \u2014 Phase 1"
+  authority_signals:
+  - line: 3
+    text: 'Status: controlled post-Operational Alpha implementation contract'
+  - line: 6
+    text: 'Classification: Controlled Architecture and Roadmap'
+  - line: 8
+    text: '## Authority and activation'
+  - line: 21
+    text: 'Phase 1 establishes the following eight controlled standards:'
+  - line: 36
+    text: 5. **Engineering execution ledger.** Establish one append-only canonical
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ENGINEERING-PLATFORM-INVARIANTS.md
+  sha256: a8f5fb374b657c83af771a6d468c386435601e323fe4ab8d3317e694285053c1
+  document_id: null
+  heading: Engineering Platform Invariant Specification
+  authority_signals:
+  - line: 3
+    text: 'Status: BETA-04 normative governance baseline'
+  - line: 4
+    text: 'Authority: Engineering Platform Governance Framework'
+  - line: 15
+    text: '## Normative invariants'
+  - line: 17
+    text: 1. **Canonical state ownership.** Every runtime datum shall have exactly one authoritative owner. A controller shall
+      never become an owner by caching or reconstructing state.
+  - line: 18
+    text: 2. **Canonical resolver.** Every controller shall consume the canonical resolver for mission, admission, execution,
+      lifecycle, readiness, queue, and next-action state. Controller-specific inference is prohibited.
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/FUTURE-KNOWLEDGE-AUDIT.md
+  sha256: 5c6e9cab427e4a1ad9ce8d2421354bd77a6b66b60637faa9405888a4f9a70727
+  document_id: null
+  heading: Future Knowledge Audit Framework
+  authority_signals:
+  - line: 3
+    text: 'Status: BETA-04 normative planning specification'
+  - line: 5
+    text: 'Canonical source: controlled documentation and declared authority owners'
+  - line: 9
+    text: '| Artifact | Classification | Canonical source | Owner | Lifecycle | Maintenance | CAGF suitability |'
+  - line: 11
+    text: '| Mission contract | Normative | Mission Contract authority | Engineering Governance | Controlled | Manual | No;
+      source |'
+  - line: 12
+    text: '| Mission Knowledge Model | Canonical | MKM | EMP / Governance | Operational | Manual | No; source |'
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/INTEGRATED-ENGINEERING-PORTFOLIO-ROADMAP.md
+  sha256: 1d32746964e8df74538b52704ae1ef31e969aa54c36643fd897e03103cf21408
+  document_id: null
+  heading: Integrated Engineering Portfolio Roadmap
+  authority_signals:
+  - line: 36
+    text: controlled documents, EOS, and subsystem roadmaps retain their existing
+  - line: 37
+    text: authority and ownership.
+  - line: 64
+    text: '- `engineering/docs/architecture/ZEUS-CANONICAL-DEVELOPMENT-ROADMAP.md`'
+  - line: 67
+    text: '- `engineering/evidence/operation-beta/CM-01-CM-06-CANONICAL-ZEUS-ROADMAP-INTEGRATION-ASSESSMENT.md`'
+  - line: 75
+    text: '| Concern | Canonical owner | Portfolio role |'
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/OPERATION-BETA-AUTHORITY-MODEL.md
+  sha256: e2f82f4bed73964ee4532cf412c0852063567bdf27ad4b417312b526ba3f597b
+  document_id: null
+  heading: "Operation Beta \u2014 Authority and Projection Model"
+  authority_signals:
+  - line: 1
+    text: "# Operation Beta \u2014 Authority and Projection Model"
+  - line: 3
+    text: 'Status: reconciled authority baseline; BETA-04 published active mission'
+  - line: 5
+    text: '## Zeus authority projection'
+  - line: 7
+    text: The operator-facing authority projection resolves from the published
+  - line: 8
+    text: Operation Beta activation and current mission records. It validates the
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/OPERATION-BETA-CANONICAL-GATE-CATALOG.md
+  sha256: c97fd5357e2ab4fc22a733f71889cf6aeaddba320b5c42bcdaacbafd08003eb1
+  document_id: null
+  heading: Operation Beta Canonical Gate Catalog
+  authority_signals:
+  - line: 1
+    text: '# Operation Beta Canonical Gate Catalog'
+  - line: 6
+    text: '**Authority:** None. Missions, WOPs, approvals, admissions, and execution records remain authoritative.'
+  - line: 7
+    text: '**Machine-readable companion:** ../evidence/operation-beta/OPERATION-BETA-CANONICAL-GATE-CATALOG.yaml'
+  - line: 11
+    text: This catalog decomposes the unified Canonical Zeus Development Roadmap into
+  - line: 13
+    text: source of authority. Historical qualification satisfies a gate only when the
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/OPERATION-BETA-ROADMAP.md
+  sha256: 410c8145fe03578419bf3f1f153401779a0acb8be55b3909122569f36ead68fe
+  document_id: null
+  heading: "Operation Beta \u2014 Mission Roadmap"
+  authority_signals:
+  - line: 3
+    text: 'Status: published planning roadmap; BETA-04 active mission baseline'
+  - line: 4
+    text: 'Authority: `engineering/docs/operations/OPERATION-BETA-CHARTER.md`'
+  - line: 10
+    text: The published current mission is `BETA-04`, recorded by
+  - line: 12
+    text: '`engineering/authority/operation-beta-beta04-activation.yaml`. It is a bounded'
+  - line: 30
+    text: '| 3 | `CAGF-01` | Canonical source ownership and deterministic projection foundation | BETA-00; ZDCL context contract
+      as applicable | Generator contract qualified |'
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/OPERATIONAL-ALPHA-MILESTONE-BASELINE.md
+  sha256: 8b5c25e5f093b785c9db8f69ff36537c38662ff9b2d0a6d1602498ba4f7cf483
+  document_id: null
+  heading: OA-OPERATIONAL-MILESTONE-001
+  authority_signals:
+  - line: 15
+    text: The controlled machine-readable record is
+  - line: 30
+    text: '- Canonical Lifecycle Verification'
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/WOP-SCHEMA-AND-EXECUTION-INTERFACE.md
+  sha256: fdc0584fa30e1cd909df48552ef98f90c07e826a12049fd6514b799284934c91
+  document_id: null
+  heading: Canonical WOP Schema and Execution Interface
+  authority_signals:
+  - line: 1
+    text: '# Canonical WOP Schema and Execution Interface'
+  - line: 3
+    text: '## Canonical contract ownership and convergence'
+  - line: 5
+    text: This document is the canonical owner of the shared semantic Work Order
+  - line: 8
+    text: boundary, and the distinction between package content, authority, and
+  - line: 11
+    text: '| Concern | Canonical owner | Role of this contract |'
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZDCL-01-WOP-CONTRACT.md
+  sha256: 9a4318b093581411691667acb70b6b9f981f2e4063abec6cf96dcc238fbfb0e8
+  document_id: null
+  heading: ZDCL-01 WOP Contract
+  authority_signals:
+  - line: 3
+    text: '`WOP-ZDCL-01-FOUNDATION-001` is the authoritative preparation and execution'
+  - line: 8
+    text: The package is bound to `OB-PLAN-v1.0.0` and the canonical `homelab` repository.
+  - line: 12
+    text: The canonical schema and execution-interface rules are defined in
+  - line: 15
+    text: The package is submitted through the existing Stage 1 authority. Submission
+  - line: 31
+    text: timestamps. Authority derives from the published mission contract and its
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZDCL-AUTONOMOUS-MISSION-DELIVERY-ROADMAP.md
+  sha256: e3fc0b17cc818044e61992b3e07d09d7cf88ff12cf6848ff785ab8c1b99dd44e
+  document_id: null
+  heading: ZDCL Autonomous Mission Delivery Roadmap
+  authority_signals:
+  - line: 3
+    text: "The canonical sequence is: Development WOP submission \u2192 autonomous implementation and correction \u2192 qualification\
+      \ \u2192 publication approval when required \u2192 publication \u2192 EOS synchronization \u2192 canonical Mission Contract\
+      \ activation \u2192 discovery \u2192 "
+  - line: 5
+    text: Canonical mission publication is a lifecycle phase, not a separate operator-managed repair workflow. Each phase
+      consumes the prior receipt-backed identity and produces a durable, verifiable derived projection.
+  - line: 7
+    text: 'Dispatch follow-through is also autonomous: `DISPATCHED` enters a bounded provider-launch transaction, then session
+      verification and `EXECUTING`. Provider adapters are qualified dependencies, not authority sources. Missing or failed
+      adapter'
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZDCL-CANONICAL-MISSION-PUBLICATION-ROADMAP.md
+  sha256: fb547d10950816f4d3c16862b87330a8e628eeb8fc13ce540a774e4f3ed951b0
+  document_id: null
+  heading: ZDCL Canonical Mission Publication Roadmap
+  authority_signals:
+  - line: 1
+    text: '# ZDCL Canonical Mission Publication Roadmap'
+  - line: 6
+    text: "\u2192 canonical Mission Contract activation \u2192 mission discovery"
+  - line: 11
+    text: '`DISPATCHED`; canonical activation and exact-cardinality discovery are the'
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-AUTHORITATIVE-STATE-AND-RECONCILIATION.md
+  sha256: d4ff4e9513e89dafc791cd1c2fff91dd0b0952f30d8803638fcbc8414cb120fc
+  document_id: null
+  heading: Zeus Authoritative State and Reconciliation
+  authority_signals:
+  - line: 1
+    text: '# Zeus Authoritative State and Reconciliation'
+  - line: 6
+    text: 2. Canonical WOP package and immutable manifest.
+  - line: 12
+    text: Paths and filenames are discovery hints, not authority. A requested transaction is matched by exact semantic identity.
+      Package, source, submission, authority, provider, dispatch, repository, and transaction mismatches fail closed. Equivalen
+  - line: 20
+    text: Zeus status and session output expose the transaction, canonical execution identity and operands, admission, execution,
+      reconciliation classification, blockers, and next action. The operator workflow remains `zeus submit`, `zeus resume`,
+      an
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-AUTONOMOUS-CORRECTION-POLICY.md
+  sha256: af5407f6621974232a8788215cd52189fabf64d3ff4bf46ba97babcc8e19b312
+  document_id: null
+  heading: Zeus Autonomous Correction Policy
+  authority_signals:
+  - line: 3
+    text: Zeus automatically diagnoses and repairs missing, partial, stale, equivalent, and interrupted derived state when
+      Stage 1 authority and identity bindings prove one lawful result. The repair plan is deterministic, transaction-scoped,
+      journale
+  - line: 5
+    text: Zeus stops fail-closed for conflicting immutable package, source, authority, transaction, provider, dispatch, or
+      mission identities; ambiguous ownership; invalid lineage; unsynchronized protected state; or non-atomic persistence.
+      Internal i
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-AUTONOMOUS-DISPATCH-AND-PROVIDER-LAUNCH.md
+  sha256: d48d5bf407207293e98d721c0c1aba3ee6469710ecd9d619bbeb33ed81113bdc
+  document_id: null
+  heading: Zeus Autonomous Dispatch and Provider Launch
+  authority_signals:
+  - line: 5
+    text: An absent adapter, invalid acknowledgment, conflicting ownership, exhausted retry policy, or failed session persistence
+      is fail-closed. Zeus never fabricates an acknowledgment, changes Stage 1 receipts, or creates authority. Launch state
+      is
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-AUTONOMOUS-EXECUTION-LIFECYCLE.md
+  sha256: 1eb5cc5e2afa5a71bc41e9f9c2487e7f40c6eedaa6b57e5e05f4c9a1e9768d92
+  document_id: null
+  heading: Zeus Autonomous Execution Lifecycle
+  authority_signals:
+  - line: 3
+    text: Submission hands Zeus an immutable Stage 1 transaction and its receipt chain. The autonomous controller owns derived
+      orchestration from that point until closeout, while Engineering Governance remains the authority source.
+  - line: 5
+    text: The controller is a reconciliation layer over Stage 1, runtime reconciliation, admission supersession, canonical
+      mission activation, EOS validation, and closeout. It does not create authority, rewrite receipts, resubmit a WOP, or
+      approve po
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-AUTONOMOUS-EXECUTION-STATE-MACHINE.md
+  sha256: 712ea8ba4dc55bdd4136f0a440192f7aa9a05dfbb9509419ec99a67af80a46b6
+  document_id: null
+  heading: Zeus Autonomous Execution State Machine
+  authority_signals:
+  - line: 3
+    text: The lifecycle states are source discovery and validation, package creation and verification, registration, authority
+      resolution, admission persistence and verification, provider selection, dispatch, execution and session persistence,
+      monito
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-BETA-CONTROLLER-INTEGRATION.md
+  sha256: 57044ccf1928b1a330ddad380c987bfd1b033b0544ee530c67408c1824a6d0b0
+  document_id: null
+  heading: Zeus Operation Beta Controller Integration
+  authority_signals:
+  - line: 8
+    text: '## Authority and projection boundary'
+  - line: 12
+    text: Registry, EMM, PMCT/gate authority, EOS, Engineering Governance, EMP, and EENS
+  - line: 13
+    text: retain the ownership assigned by the Beta authority model. This controller
+  - line: 23
+    text: Beta verification fails closed when a controlled source is absent, the
+  - line: 57
+    text: zeus mission authority <MISSION_ID>
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-CANONICAL-DEVELOPMENT-ROADMAP.md
+  sha256: 42f0c8d08ac150522bd553be327171d0a6edd55baab5262096c84b05a10a2d51
+  document_id: null
+  heading: Zeus Canonical Development Roadmap
+  authority_signals:
+  - line: 1
+    text: '# Zeus Canonical Development Roadmap'
+  - line: 7
+    text: '**Execution Authority:** None. This roadmap defines planned engineering progression only. Missions, WOPs, approvals,
+      and execution records retain execution authority.'
+  - line: 28
+    text: authority. The current executable mission is `NONE`.
+  - line: 38
+    text: does not create dependency or execution authority. Dependency ordering is
+  - line: 41
+    text: it. A mission's authority is resolved independently from another mission's
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-CANONICAL-MISSION-LIFECYCLE.md
+  sha256: e98dd3128ac9bf5dcddc9c97193aaa9aa2ac2ec1d076cc030104c0e81cc29ac1
+  document_id: null
+  heading: Zeus Canonical Mission Lifecycle
+  authority_signals:
+  - line: 1
+    text: '# Zeus Canonical Mission Lifecycle'
+  - line: 3
+    text: Development WOP execution and canonical Beta mission activation are linked but
+  - line: 4
+    text: separate authority domains. Stage 1 receipts remain authoritative history;
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-CLI-INFORMATION-ARCHITECTURE.md
+  sha256: fbc2faddd5ad31dd904a549953a0a612f8f811b86f47588fc7913795b8709349
+  document_id: null
+  heading: Zeus CLI Information Architecture
+  authority_signals:
+  - line: 15
+    text: mission, change authority, or create a replacement transaction.
+  - line: 31
+    text: The WOP source document remains canonical. Administration projections are
+  - line: 34
+    text: same canonical result object.
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-CONTROLLED-DOCUMENTATION-ARCHITECTURE.md
+  sha256: fea74e78c68e93095311fa5ab0ee40aaa31f1a3fa848108bd89a0645e5bcc32d
+  document_id: null
+  heading: Zeus Controlled Documentation Architecture
+  authority_signals:
+  - line: 1
+    text: '# Zeus Controlled Documentation Architecture'
+  - line: 3
+    text: 'Status: proposed engineering architecture. This document is not controlled,'
+  - line: 4
+    text: approved, active, published, or authoritative. It makes no governance,
+  - line: 5
+    text: authority, ownership, or lifecycle change.
+  - line: 12
+    text: become an alternate source of approval, work authority, controlled-document
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-CONTROLLER-GOVERNANCE.md
+  sha256: 9315f8a9e0b0fc5c82570bf597cda49fdc0cd70c501003d3c63a610d25023d03
+  document_id: null
+  heading: Zeus Controller Governance
+  authority_signals:
+  - line: 3
+    text: 'Status: BETA-04 normative specification'
+  - line: 5
+    text: Zeus controllers shall consume one canonical resolved projection. They shall not search runtime records independently,
+      infer lifecycle, or maintain a controller-owned queue, admission, execution, or mission state.
+  - line: 7
+    text: 'Runtime discovery is also canonical: controllers consume the root selected by'
+  - line: 16
+    text: '- Multiple current records, stale baselines, conflicting authority, and unknown lineage shall fail closed.'
+  - line: 17
+    text: '- Queue, roadmap, readiness, blockers, explain, status, health, metrics, and next-action views shall share the
+      canonical mission projection boundary.'
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-CONTROLLER-PRESENTATION-STANDARD.md
+  sha256: 742fe02691e2faf3fdd1d3331867d577f0aa8063f469d546219dcb65e9948a6a
+  document_id: null
+  heading: Zeus Controller Presentation Standard
+  authority_signals:
+  - line: 5
+    text: 'Normative invariants: `ENGINEERING-PLATFORM-INVARIANTS.md` and'
+  - line: 9
+    text: one resolved authoritative object. Formatting must not perform a second state
+  - line: 10
+    text: calculation or maintain presentation authority.
+  - line: 35
+    text: authority, currently `CAGF-01`.
+  - line: 37
+    text: is not execution authority.
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-DEVELOPMENT-CONTROL-LAYER-DIRECTION.md
+  sha256: b4b7a246783adb4fb29102d2716092e3908a726c145719bda8cbaf7e1539942f
+  document_id: null
+  heading: "Zeus Development Control Layer \u2014 Published Engineering Direction"
+  authority_signals:
+  - line: 4
+    text: 'Authority boundary: subordinate to Engineering Governance, EOS, EMP, and EENS'
+  - line: 11
+    text: preparation. It will not originate governance authority, replace EOS state, or
+  - line: 18
+    text: '| Governance authority and approval | Engineering Governance | Consumes verified authority; never originates it
+      |'
+  - line: 41
+    text: authority, approval, evidence, and lifecycle identities. A missing, stale, or
+  - line: 48
+    text: "1. WOP Execution \u2014 a bounded session authorized by a controlled WOP."
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-DOCTOR-SPECIFICATION.md
+  sha256: a4c7f5828ee7613c2a60d18ecb1cc6f782749ce7efbd9707dae832480c8755f4
+  document_id: null
+  heading: Zeus Doctor Specification
+  authority_signals:
+  - line: 5
+    text: Development authority, controller domains, and the next authorized action.
+  - line: 12
+    text: branch with repository, runtime, Registry, authority, controller, and WOP
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-EXECUTION-LIFECYCLE-STATE-MACHINE.md
+  sha256: 9908a57133ec2c9a404ecb488fc7db2458c1aa8ed37c37542197e9eb2210bf60
+  document_id: null
+  heading: Zeus Execution Lifecycle State Machine
+  authority_signals:
+  - line: 3
+    text: 'The canonical sequence is:'
+  - line: 7
+    text: The Stage 1 state `DISPATCHED` is not operationally complete until `mission-admissions/<admission-id>.json` and
+      `mission-executions/<instance-id>.json` exist, validate their state digests, and are bound to the same receipt-backed
+      transactio
+  - line: 9
+    text: 'Every transition has a previous state, new state, transaction, admission, execution, session, authority snapshot,
+      repository baseline, package/source digests, provider/dispatch binding, persisted/verified artifacts, pre/post state
+      digests, '
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-MISSION-PROJECTION-SPECIFICATION.md
+  sha256: 0c447f8f6c0e6b79950ba2491b7a3cf3dc30c1b09e71c8e1c5bdf7adb19b9ed9
+  document_id: null
+  heading: Zeus Mission Projection Specification
+  authority_signals:
+  - line: 5
+    text: Mission controllers consume one canonical, read-only mission projection. The
+  - line: 19
+    text: Development baseline. The canonical resolver proves repository identity,
+  - line: 45
+    text: '## Canonical repository projection and Git automation contract'
+  - line: 47
+    text: Current repository facts are consumed through the canonical read-only
+  - line: 61
+    text: 'Lifecycle code follows Live Projection First: canonical live projection,'
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-MISSION-QUEUE-AND-SCHEDULING.md
+  sha256: e5268f82a8ea56c24fe28535a6ce92fcdda76f7cd86e92df6962cfe6d2d1d85e
+  document_id: null
+  heading: Zeus Mission Queue and Scheduling Specification
+  authority_signals:
+  - line: 5
+    text: '## Authority and ownership'
+  - line: 7
+    text: The mission queue is a read-only projection of authoritative mission state. It
+  - line: 28
+    text: 'The authoritative submission path is:'
+  - line: 46
+    text: Admission verifies mission, authority, repository, baseline, agent, and
+  - line: 66
+    text: projection and canonical eligible selector. On the current roadmap that
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-OA-16-EXECUTION-START.md
+  sha256: 88155365ab03914ea1ff3003ce8759a659fc87b32848f1aeeb6c55d9202f2887
+  document_id: null
+  heading: ZEUS OA-16 Execution-Start Architecture
+  authority_signals:
+  - line: 9
+    text: The existing EENS EventStore is the lifecycle notification authority. The
+  - line: 18
+    text: EMM, and controlled objective documentation. OA-17 adds a distinct durable
+  - line: 20
+    text: receipt bound to execution, mission, WOP, repository, authority, and operator
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-PROVIDER-LAUNCH-STATE-MACHINE.md
+  sha256: bab8ce8605acc75b6652a1e99fdbcc1c8251fe4bafc68ca91a9e833faa72ffc4
+  document_id: null
+  heading: Zeus Provider Launch State Machine
+  authority_signals: []
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-RUNTIME-DISCOVERY-SPECIFICATION.md
+  sha256: 08efdae20fb2cf184acadb12d78dc94a0d247dd203a56a6f4493dc54fd13d1e6
+  document_id: null
+  heading: Zeus Runtime Discovery Specification
+  authority_signals:
+  - line: 9
+    text: system root. The repository ID is a stable digest of canonical repository path
+  - line: 19
+    text: The repository-bound user-state runtime is authoritative for current Zeus
+  - line: 23
+    text: canonical P2/P3/P4 submission, admission, or mission discovery. An explicit
+  - line: 31
+    text: verification output MUST be resolved from the authoritative live projection
+  - line: 34
+    text: 1. canonical live projection;
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-STAGE1-RUNTIME.md
+  sha256: d76b60440619a3def9ccfb39b37ad9bb8e66f4c3c56818e0f0061f1305c39b70
+  document_id: null
+  heading: Zeus Stage 1 Runtime Architecture
+  authority_signals:
+  - line: 6
+    text: owners of WOP identity, revision, authority, or legacy semantics. Future
+  - line: 11
+    text: Stage 1 consumers follow the Zeus Live Projection First rule. Current mission,
+  - line: 12
+    text: WOP, receipt, repository-baseline, authority, provider/session, lifecycle, and
+  - line: 13
+    text: next-action values are resolved from the canonical live projection first,
+  - line: 14
+    text: receipt-backed derived projection second, authoritative persisted source third,
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/ZEUS-WOP-SUBMISSION-PROCEDURE.md
+  sha256: c90729bd68fba4a7a0814cd86070b37d4a941de0fe4d2ae5b872def1725cceac
+  document_id: null
+  heading: Zeus WOP Submission Procedure
+  authority_signals:
+  - line: 5
+    text: boundary only. It must consume the canonical normalized WOP projection and
+  - line: 9
+    text: '## Authoritative sequence'
+  - line: 12
+    text: Mission authority
+  - line: 21
+    text: 'The canonical operator-facing execution entry point is:'
+  - line: 27
+    text: When a machine-readable `canonical-wop-package/1` package is available, it is
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/architecture/authorization-bundle-contract.md
+  sha256: b6747d34a64b67974f87d8e71c57bb2383e873a3b1f06e17c2ac8bd584671b09
+  document_id: null
+  heading: Authorization Bundle Contract
+  authority_signals:
+  - line: 3
+    text: 'Status: engineering architecture interface; not a controlled-document'
+  - line: 8
+    text: The Authorization Bundle is the single canonical input interface used by
+  - line: 11
+    text: resolution only. It does not grant authority and does not change evaluator,
+  - line: 21
+    text: 'Every canonical bundle is a JSON or YAML mapping with:'
+  - line: 34
+    text: '| `expected_authority` | Optional non-empty authority-node identifier | Compatibility evaluator |'
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/cli/ENGINEERING-CLI-STANDARD.md
+  sha256: f644a7b6f26c5d552c930e5ca54269cb17e0f030b1dbb4cc9ac2ae4a33243580
+  document_id: null
+  heading: Engineering CLI Standard
+  authority_signals:
+  - line: 3
+    text: First-class engineering tools shall provide a canonical executable on `PATH`,
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/cli/PMCT-USER-GUIDE.md
+  sha256: 1724cb68ae90e828f807a1e65513fa4ec1a6274cd3a2409d4932357f5da41791
+  document_id: null
+  heading: PMCT User Guide
+  authority_signals:
+  - line: 5
+    text: '`pmct` is the Progressive Manual Capability Test interface. Its canonical'
+  - line: 32
+    text: prerequisites remain incomplete. Use Authority Publication to reconcile a
+  - line: 35
+    text: their independent authority boundaries.
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/cli/ZEUS-USER-GUIDE.md
+  sha256: d39b2d57e19a3c49f3b54d28640538854370f27252cdc3fd05c70210961c9183
+  document_id: null
+  heading: Zeus User Guide
+  authority_signals:
+  - line: 18
+    text: synchronization authority.
+  - line: 20
+    text: '## Controlled Mission Authority'
+  - line: 22
+    text: '`zeus authority show`, `zeus authority resolve`, and `zeus authority validate`'
+  - line: 23
+    text: expose the current mission authority source, exact Mission Contract, WOP,
+  - line: 29
+    text: Zeus revalidates this authority at OA-02 resume, implementation transition,
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/cli/man/pmct.1
+  sha256: b1f2a1f07af23156c41397868abf7eeed3a133fb91d3297b2501b9fa0d820a3c
+  document_id: null
+  heading: null
+  authority_signals: []
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/cli/man/zeus.1
+  sha256: 3d222ffd47458912b97a94e7bbd11c17dddc2c1682a0bce1f6fcaa65044753e8
+  document_id: null
+  heading: null
+  authority_signals:
+  - line: 10
+    text: Missions remain supervised and authority-bound.
+  - line: 14
+    text: Engineering Work Orders remain controlled records and are not implied by CLI use.
+  - line: 17
+    text: .SH AUTHORITY PUBLICATION
+  - line: 18
+    text: Signed baselines are managed by authority-publishctl.
+  - line: 26
+    text: mission snapshot, mission qualify, and execution resolve consume the canonical
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/operations/GITHUB-PUBLICATION-WORKFLOW.md
+  sha256: 0c39cc8e59364092dc62e69bed9cf8cd7861ca4d2df1f46522d9f4c2dd0659a8
+  document_id: null
+  heading: GitHub Publication Workflow
+  authority_signals:
+  - line: 4
+    text: the Homelab authority repository.
+  - line: 8
+    text: '- `/data/engineering/repositories/homelab` is the pull-only authority checkout.'
+  - line: 12
+    text: is canonical GitHub and its `authority` remote fetches the `/data` checkout.
+  - line: 13
+    text: The `authority` push URL is deliberately non-routable.
+  - line: 31
+    text: After merge, update the authority checkout with `git pull --ff-only`, then run
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/operations/OPERATION-BETA-CHARTER.md
+  sha256: 776375b7359010d326655b9048e43bc56d8ecc8333c2833eabb022fe9a40c4fb
+  document_id: null
+  heading: "Operation Beta \u2014 Engineering Platform Transformation"
+  authority_signals:
+  - line: 13
+    text: Operation Beta transforms Zeus from a deterministic engineering execution system into a self-managing Engineering
+      Platform. It reduces manual effort while preserving authority integrity, deterministic execution, recoverability, scalability,
+  - line: 20
+    text: '| Canonical Authority Generation Framework (CAGF) | Generate qualified derived engineering artifacts from canonical
+      authority wherever practical, without creating authority. | `CAGF-01` onward |'
+  - line: 23
+    text: '## Authority boundaries'
+  - line: 25
+    text: Engineering Governance owns authorization, controlled lifecycle, and publication disposition. EOS owns synchronized
+      Engineering Platform state. The Mission Knowledge Model owns mission sequence and objectives. The Capability Registry
+      owns c
+  - line: 38
+    text: 'Mission identifiers remain grouped by subsystem while sharing the Operation Beta roadmap. Every implementation
+      mission requires its own published objective, authority, scope, qualification boundary, and completion record. This
+      charter does '
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/operations/ZEUS-AUTONOMOUS-DISPATCH-PROCEDURE.md
+  sha256: 647c36a105e1b43b265bd59d13521b22a1818d6e426b0a110d9242d28e5d8a0c
+  document_id: null
+  heading: Zeus Autonomous Dispatch Procedure
+  authority_signals:
+  - line: 3
+    text: The operator workflow ends at `zeus submit <authorized-wop>` unless governance explicitly requires approval. Runtime
+      reconciliation invokes the autonomous dispatch controller after a valid dispatch receipt. The controller validates provider
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/operations/ZEUS-AUTONOMOUS-EXECUTION-PROCEDURE.md
+  sha256: b7096e816eb7ac33a78c850697f5a7a4bc10a319d67a25d4268abdd20c4e2592
+  document_id: null
+  heading: Zeus Autonomous Execution Procedure
+  authority_signals:
+  - line: 3
+    text: The operator workflow is `zeus submit <wop>`. Zeus then validates, packages, admits, dispatches, reconciles runtime,
+      diagnoses recoverable defects, qualifies, prepares publication, requests only policy-required approvals, synchronizes
+      EOS a
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/operations/ZEUS-CANONICAL-MISSION-PUBLICATION-PROCEDURE.md
+  sha256: 69ade7bed04b6a1f72f61f5992aeecf5cf465a48097caa549d1c2f9e35b27901
+  document_id: null
+  heading: Zeus Canonical Mission Publication Procedure
+  authority_signals:
+  - line: 1
+    text: '# Zeus Canonical Mission Publication Procedure'
+  - line: 6
+    text: active Mission Contract, one Beta registry work item, and one digest-bound
+  - line: 10
+    text: canonical discovery with the Development transaction and next action. After
+  - line: 12
+    text: registry entry, package, authority, blocker set, and next action.
+  - line: 17
+    text: 'Git commands. The canonical command family is:'
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/operations/ZEUS-DEVELOPMENT-MODE.md
+  sha256: 10ceee80c9ebd5b0085ec2a24e053fd15f9fff49d59a9d43f688ffe6b74ce7c0
+  document_id: null
+  heading: Zeus Development Mode
+  authority_signals:
+  - line: 13
+    text: operator supplies only Markdown or DOCX source; Zeus owns canonical package
+  - line: 26
+    text: profile. Submission through the authoritative Zeus interface is the governance
+  - line: 31
+    text: lifecycle through authority resolution, admission, execution, qualification,
+  - line: 34
+    text: For a canonical authored WOP with an adjacent immutable traceability record,
+  - line: 40
+    text: The authoritative next action is `EVALUATE_MISSION_ADMISSION`. Legacy package
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/operations/ZEUS-EXECUTION-LIFECYCLE-PROCEDURE.md
+  sha256: 1e044543bec954d2b0556d9b1902860773eba0ed4f0642ce122471831c7b7685
+  document_id: null
+  heading: Zeus Execution Lifecycle Procedure
+  authority_signals:
+  - line: 3
+    text: This controlled procedure defines the prepublication Development lifecycle for a receipt-backed Zeus submission.
+  - line: 5
+    text: '## Authority and persistence'
+  - line: 7
+    text: Authoritative Zeus submission establishes the submitted WOP's work authority
+  - line: 13
+    text: operator work authority. A derived record may be created or repaired only
+  - line: 15
+    text: package, source, authority source, provider, dispatch, and repository
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/operations/ZEUS-GIT-PUBLICATION-BOUNDARY-PROCEDURE.md
+  sha256: 1dcef9dfc56718963557ab2252a407ef994da8e2b1afa4987ef601957434c7cc
+  document_id: null
+  heading: Zeus Git Publication Boundary Procedure
+  authority_signals:
+  - line: 3
+    text: This procedure keeps prepublication work off canonical `main` and makes any
+  - line: 6
+    text: Before committing, verify the canonical repository, non-`main` branch, active
+  - line: 21
+    text: governed publication authority marker, detached HEAD, unexpected refspecs,
+  - line: 22
+    text: unresolved origin, and dirty push state. It does not infer authority from a
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+- path: engineering/docs/operations/ZEUS-WOP-AUTHORING-GUIDE.md
+  sha256: 478de2a4d653624dd4d517de07bd678c3a4bfa2cbc5ee8432e313aaa84098a9e
+  document_id: null
+  heading: Zeus Development WOP Authoring Guide
+  authority_signals:
+  - line: 3
+    text: 'The canonical authoring workflow uses source documents only:'
+  - line: 14
+    text: '`canonical-wop-package/1` representation when it has been generated and'
+  - line: 15
+    text: qualified. The source WOP remains the authoritative human-readable authoring
+  - line: 17
+    text: Zeus may derive the canonical package/provenance during `zeus submit` without
+  - line: 19
+    text: compatibility/convenience path, not a second authority grant.
+  classification: NONCONTROLLED_IMPLEMENTATION_DOCUMENT_AUTHORITY_CANDIDATE
+disposition:
+  controlled_records: ASSESSED
+  missing_index_records: FINDING_C02_F001_NO_CORRECTION
+  metadata_mismatches: FINDING_C02_F002_NO_CORRECTION
+  legacy_publications: ASSESSED_AS_REGISTERED_LEGACY
+  engineering_docs: ASSESSED_AS_NONCONTROLLED_AUTHORITY_CANDIDATES

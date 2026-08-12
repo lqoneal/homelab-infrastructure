@@ -1,0 +1,18 @@
+schema_version: '1.0'
+record_type: CR48_PRECONDITION_ASSESSMENT_AFTER_CR47
+result: PASS
+state:
+  last_completed_item: CR47
+  current_item: CR48
+  blockers: []
+  next_authorized_action: VERIFY_CR48_PRECONDITIONS
+gate:
+  path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR48/GATE.yaml
+  dependency_fields:
+    dependencies:
+    - CR47
+assessment:
+  controlled_state_preconditions_pass: true
+  execution_authorized: false
+  execution_executed: false
+  publication_dependency_not_yet_decided: true

@@ -1,0 +1,25 @@
+schema_version: 1
+gate_id: CR46
+opportunity_id: ZO-026
+execution_stage: 1
+implementation_contract:
+  order: 1
+  opportunity_id: ZO-026
+  title: Zeus Projection Scope and Qualification Instrument Selection
+  objective: Expose projection scope explicitly and allow Zeus to select a canonical qualification primitive appropriate to
+    parent roadmap, nested corrective, result lifecycle, or authority scope.
+  module_owner_paths:
+  - scripts/lib/emp/agent_qualification.py
+  - scripts/lib/emp/canonical_mission_lifecycle.py
+  - scripts/lib/emp/mission_verification_controller.py
+  test_owner_paths:
+  - scripts/tests/test-convergence-roadmap.py
+  - scripts/tests/test-convergence-runtime.py
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py
+  implementation_contract_status: QUALIFIED
+  acceptance_requirement: OBJECTIVE_PROVEN_BY_TARGETED_TESTS_AND_NO_REGRESSION
+execution_state: AUTHORIZED_NOT_EXECUTED
+qualification_state: PENDING
+stage_authorized: false
+commit_authorized: false
+push_authorized: false

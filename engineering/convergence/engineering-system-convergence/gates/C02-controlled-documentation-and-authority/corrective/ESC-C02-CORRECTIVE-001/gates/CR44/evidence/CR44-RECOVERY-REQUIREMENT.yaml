@@ -1,0 +1,28 @@
+schema_version: 1
+gate_id: CR44
+classification: CR44_RECOVERY_REQUIREMENT
+status: BLOCKED_AWAITING_EXPLICIT_RECOVERY_AUTHORITY
+recorded_at: '2026-08-11T15:00:14.862839+00:00'
+failed_commit: 8b651126a19ae5bab21ea5036cd410514e22ee0c
+blocker: CR43_COMMIT_DEPENDENCY_CLOSURE_FAILURE
+dependency: scripts/lib/emp/repository_state_view.py
+current_item_must_remain: CR44
+required_authority:
+- Explicit authority to repair the completed CR43 transaction.
+- Explicit authority to amend the existing single local commit if amendment is selected.
+- Explicit authority for inclusion of the dependency or another validated dependency-closure repair.
+prohibited_until_authorized:
+- Stage scripts/lib/emp/repository_state_view.py
+- Amend the CR43 commit
+- Create a second corrective commit
+- Publish the local commit
+- Advance CR44 state
+- Execute CR45
+- Synchronize EOS implicitly
+required_post_repair_qualification:
+- Immutable committed-tree Zeus startup succeeds.
+- Committed dependency closure is complete.
+- CR42-equivalent qualification passes.
+- Protected-artifact boundary passes.
+- CR44 acceptance criteria all pass.
+zeus_opportunity: ZO-060

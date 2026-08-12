@@ -1,0 +1,241 @@
+schema_version: 1
+gate_id: CR44M1
+title: Recover CR43 Immutable Commit Dependency Closure
+status: PENDING
+purpose: Repair the dependency-incomplete CR43 single-commit transaction under explicit narrowly bounded authority
+  while preserving CR43 historical closeout records and returning control to CR44 for independent post-commit requalification.
+objective: Add the exact qualified repository_state_view dependency to the existing single local CR43 commit, preserve
+  all previously qualified commit content, prove the amended immutable commit is dependency-complete and independently
+  executable, and return execution authority to CR44 without publishing or executing CR44.
+trigger:
+  source_gate: CR44
+  classification: CR43_COMMIT_DEPENDENCY_CLOSURE_FAILURE
+  source_evidence: gates/CR44/evidence/CR44-RECOVERY-REQUIREMENT.yaml
+parent_item: CR44
+repair_target:
+  historical_gate: CR43
+  failed_commit: 8b651126a19ae5bab21ea5036cd410514e22ee0c
+  parent_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+  transaction_semantics: SINGLE_LOCAL_COMMIT
+  historical_result_reopened: false
+  historical_result_rewritten: false
+dependencies:
+- CR43
+entry_conditions:
+- CR44 remains blocked and incomplete.
+- CR44 RESULT.yaml does not exist.
+- CR45 remains unexecuted.
+- The current local commit is exactly 8b651126a19ae5bab21ea5036cd410514e22ee0c.
+- The current local commit parent is exactly f2e85d857dc73210c428d42ef9530ce9ffc4933b.
+- origin/main remains exactly the local commit parent.
+- The Git index is empty.
+- scripts/lib/emp/repository_state_view.py exists in the live worktree and is untracked.
+- scripts/lib/emp/repository_state_view.py SHA-256 equals c791a53a71c3920f314cba879c1b6675feb93d903e2e4d61caf2b6c23e63de83.
+- Immutable execution of the failed commit reproduces the missing repository_state_view dependency.
+- CR43 historical RESULT.yaml and terminal qualification remain present and unmodified.
+authoritative_inputs:
+- gates/CR43/RESULT.yaml
+- gates/CR43/evidence/CR43-TERMINAL-COMMIT-QUALIFICATION.yaml
+- gates/CR44/CR44-EVIDENCE.yaml
+- gates/CR44/evidence/VALIDATION.yaml
+- gates/CR44/evidence/CR44-RECOVERY-REQUIREMENT.yaml
+- ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+- scripts/lib/emp/repository_state_view.py
+frozen_dependency:
+  status: SUPERSEDED_BY_EXPANDED_REPAIR_AUTHORITY
+  original_path: scripts/lib/emp/repository_state_view.py
+  original_sha256: c791a53a71c3920f314cba879c1b6675feb93d903e2e4d61caf2b6c23e63de83
+  content_mutation_authorized: false
+allowed_mutations:
+- gates/CR44M1/**
+- ESC-C02-CORRECTIVE-001/STATE.yaml
+- ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+- ESC-C02-CORRECTIVE-001/HISTORY.md
+- scripts/lib/emp/repository_state_view.py
+- Git index entry for the exact frozen dependency path
+- Existing single local CR43 commit by amend only
+- "ESC-C02-CORRECTIVE-001/ZEUS-CAPABILITY-OPPORTUNITIES.yaml \u2014 additive current-blocker-derived Zeus opportunity\
+  \ registration only"
+authorized_git_actions:
+  stage_exact_dependency: true
+  amend_existing_local_commit: true
+  create_second_commit: false
+  reset_commit: false
+  rewrite_parent: false
+  push: false
+  publish: false
+prohibited_mutations:
+- gates/CR43/RESULT.yaml
+- gates/CR43/evidence/CR43-TERMINAL-COMMIT-QUALIFICATION.yaml
+- gates/CR44/** except CR44M1 authority linkage already established outside the historical result
+- gates/CR45/**
+- Any dependency file other than scripts/lib/emp/repository_state_view.py
+- Content of scripts/lib/emp/repository_state_view.py
+- Any previously committed path not required by the exact amend
+- A second local commit
+- Commit parent replacement
+- History rewriting beyond the single authorized amend
+- Push
+- Publication
+- EOS synchronization or refresh
+- CR44 completion
+- CR45 activation or execution
+- Parent C02 completion or advancement
+manual_procedure:
+- Reverify current HEAD, parent, origin/main, branch, index, CR44 blocker and CR45 absence.
+- Reverify the frozen dependency SHA-256 exactly matches the CR44M1 contract.
+- Reproduce immutable Zeus startup failure from the pre-repair commit.
+- Construct an isolated candidate committed tree containing only the existing commit plus the exact frozen dependency.
+- Prove the candidate changes no previously committed blob except addition of the missing dependency path.
+- Run immutable Zeus startup against the candidate tree before amending the live commit.
+- Require candidate immutable Zeus startup to succeed.
+- Run dependency-closure and relevant CR42-equivalent qualification against the candidate tree.
+- Require all candidate qualification checks to pass before touching the Git index.
+- Stage only scripts/lib/emp/repository_state_view.py.
+- Verify the staged blob digest exactly equals the frozen dependency SHA-256.
+- Verify the index contains exactly one staged path.
+- Amend the existing single local commit without creating a second commit.
+- Verify the amended commit parent remains unchanged.
+- Verify all blobs from the pre-repair commit remain identical and the only added path is the frozen dependency.
+- Create a fresh detached immutable worktree from the amended commit.
+- Require immutable Zeus startup to succeed in that worktree.
+- Repeat the required CR42-equivalent post-commit qualification.
+- Verify no publication, push, EOS synchronization or CR45 execution occurred.
+- Write CR44M1 evidence, SUMMARY.md and RESULT.yaml only after all acceptance criteria pass.
+- Preserve CR43 RESULT.yaml and historical terminal evidence byte-for-byte.
+- Remove the CR43_COMMIT_DEPENDENCY_CLOSURE_FAILURE blocker only after immutable amended-commit qualification passes.
+- Restore corrective current_item to CR44.
+- Stop before executing or completing CR44.
+required_outputs:
+- DEPENDENCY-CLOSURE-RECOVERY.yaml
+- SUMMARY.md
+required_evidence:
+- evidence/BEFORE-AFTER.yaml
+- evidence/CANDIDATE-TREE-QUALIFICATION.yaml
+- evidence/AMENDED-COMMIT-QUALIFICATION.yaml
+- evidence/COMMANDS.md
+- evidence/VALIDATION.yaml
+acceptance_criteria:
+- The exact frozen dependency is present in the amended commit.
+- The dependency blob SHA-256 equals the CR44M1 frozen SHA-256.
+- The amended commit has the same parent as the failed CR43 commit.
+- No second commit is created.
+- Every pre-repair committed blob remains identical.
+- The only newly committed path is scripts/lib/emp/repository_state_view.py.
+- Immutable Zeus startup succeeds from the amended commit without live-worktree assistance.
+- Committed dependency closure is complete.
+- Required CR42-equivalent qualification passes.
+- CR43 historical RESULT.yaml remains unchanged.
+- CR43 historical terminal qualification remains unchanged.
+- CR44 remains incomplete.
+- CR45 remains unexecuted.
+- No push or publication occurs.
+- No EOS synchronization or refresh occurs.
+- Control returns to CR44 and CR44 is not resumed in the same transaction.
+fail_closed_conditions:
+- Frozen dependency digest changes.
+- Candidate tree requires any additional uncommitted dependency.
+- Candidate tree changes any previously committed blob unexpectedly.
+- Candidate immutable Zeus startup fails.
+- Candidate CR42-equivalent qualification fails.
+- Index contains any path other than the exact frozen dependency.
+- Amended commit parent changes.
+- A second commit is created.
+- Post-amend immutable qualification fails.
+- CR43 historical result or terminal evidence changes.
+- Push or publication occurs.
+- EOS synchronization occurs.
+- CR44 completion occurs.
+- CR45 execution occurs.
+stop_boundary: STOP_AFTER_CR44M1
+result_location: gates/CR44M1/RESULT.yaml
+evidence_location: gates/CR44M1/evidence
+next_item: CR44
+human_readable_record:
+  summary: gates/CR44M1/SUMMARY.md
+  history: HISTORY.md
+  required_before_state_advancement: true
+resume_instructions: If current_item is CR44M1, execute only CR44M1. Use expanded_repair_authority as the authoritative
+  repair surface. Before touching the live index, construct a fresh isolated candidate from the failed commit containing
+  exactly the authorized four-path repair set and require immutable Zeus startup, dependency closure, and CR42-equivalent
+  qualification to pass. Only then may the exact four paths be staged and the existing single local commit amended.
+  Stop after CR44M1 closeout and restoration of current_item to CR44. Do not execute CR44 in the same transaction.
+expanded_repair_authority:
+  authority_version: 2
+  failed_commit: 8b651126a19ae5bab21ea5036cd410514e22ee0c
+  parent_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+  exact_repair_path_count: 4
+  added_files:
+  - path: scripts/lib/emp/repository_state_view.py
+    sha256: c791a53a71c3920f314cba879c1b6675feb93d903e2e4d61caf2b6c23e63de83
+    mutation_type: ADD_EXACT_FROZEN_FILE
+    content_mutation_authorized: false
+  - path: scripts/lib/emp/codex_session_timing.py
+    sha256: 8266e221ec2de86f2cd7893e92e04a4204677a78d570cafc31063c85b5b943a4
+    mutation_type: ADD_EXACT_FROZEN_FILE
+    content_mutation_authorized: false
+  modified_files:
+  - path: scripts/lib/emp/publication_candidate_authority.py
+    mutation_type: EXACT_IMPORT_REPLACEMENT_ONLY
+    before_import: from scripts.lib.emp.repository_projection import project as project_repository
+    after_import: from scripts.lib.emp.repository_state_view import project as project_repository
+    before_sha256: 4cd929c3d4ac095c1eb8521454712bc3970153f38ea188ecd347fac09de4254a
+    authorized_after_sha256: 5a71c5db01a6c49366743f78f1a4ae337aacc4ae6570da2152763ffccb1ff158
+    content_mutation_beyond_import_replacement_authorized: false
+  - path: scripts/lib/emp/publication_cohort.py
+    mutation_type: EXACT_IMPORT_REPLACEMENT_ONLY
+    before_import: from scripts.lib.emp.repository_projection import project as project_repository
+    after_import: from scripts.lib.emp.repository_state_view import project as project_repository
+    before_sha256: 206c2cf9ab90c648deefcdb19ef08da48f985bcd316ba67c7e4905765b8242ba
+    authorized_after_sha256: 3cf69f400527b525612c4bb2cce1e4d5fae5129955d700ea947b1b4d47579b69
+    content_mutation_beyond_import_replacement_authorized: false
+  preservation_module_restoration:
+    path: scripts/lib/emp/repository_projection.py
+    authorized: false
+    reason: Canonical repository projection has migrated to repository_state_view.
+  git_authority:
+    stage_exact_four_path_repair_set: true
+    amend_existing_single_local_commit: true
+    create_second_commit: false
+    rewrite_parent: false
+    push: false
+    publish: false
+  qualification_before_live_stage:
+    required: true
+    isolated_candidate_from_failed_commit: true
+    candidate_delta_must_equal_exact_repair_set: true
+    immutable_zeus_startup_must_pass: true
+    dependency_import_closure_must_pass: true
+    cr42_equivalent_qualification_must_pass: true
+  prohibited_effects:
+  - Any path outside the exact four-path repair surface
+  - Any content change to frozen added files
+  - Any modification beyond the exact import replacement in the two committed consumers
+  - Restoration of repository_projection.py
+  - Second commit
+  - Parent rewrite
+  - Push
+  - Publication
+  - EOS synchronization
+  - CR44 completion
+  - CR45 execution
+current_blocker_zeus_opportunity_authority:
+  enabled: true
+  authority_source: "EXECUTION-PROCEDURE.md \xA7 Current-Gate Zeus Capability Opportunity Registration"
+  qualifying_condition: Opportunity is directly derived from a blocker, defect, insufficiency, failed qualification,
+    missing capability, or recovery requirement affecting CR44M1.
+  authorized_register: ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+  mutation_type: ADDITIVE_NEW_OPPORTUNITY_AND_ASSOCIATED_PLANNED_ZEUS_GATE_ONLY
+  requires_semantic_dedup: true
+  requires_current_gate_evidence: true
+  does_not_authorize:
+  - Zeus opportunity implementation
+  - Production repair
+  - Additional production repair paths
+  - Commit amendment by virtue of opportunity registration
+  - Push
+  - Publication
+  - EOS synchronization
+  - CR44M1 completion
+  - CR44 execution
+  - CR45 execution

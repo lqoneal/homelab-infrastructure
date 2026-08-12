@@ -1,0 +1,27 @@
+schema_version: 1
+gate_id: CR44M1
+classification: CURRENT_BLOCKER_ZEUS_OPPORTUNITY_REGISTRATION_AUTHORITY
+result: AUTHORIZED
+authorized_at: '2026-08-11T15:50:53.066707+00:00'
+authority_source: EXECUTION-PROCEDURE.md Current-Gate Zeus Capability Opportunity
+  Registration
+condition:
+  current_gate: CR44M1
+  capability_gap: Zeus qualification context and validation applicability classification
+  directly_derived_from_current_gate_blocker: true
+  semantic_duplicate: false
+authorized_mutations:
+- Add ZO-061 to ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+- Add planned gate ZG-QUALIFICATION-CONTEXT-APPLICABILITY-001
+- Write CR44M1 opportunity evidence
+not_authorized:
+- Four-path production repair execution
+- Any additional production repair path
+- Live staging
+- Commit amendment by this authority alone
+- Push
+- Publication
+- EOS synchronization
+- CR44M1 completion
+- CR44 execution
+- CR45 execution

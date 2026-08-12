@@ -1,0 +1,34 @@
+schema_version: 1
+gate_id: CR46
+classification: RQ2_RQ3_CONTEXT_CORRECT_SCOPE_QUALIFICATION_AUTHORITY
+authorized_at: '2026-08-12T00:39:54.697398+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+basis: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-RQ3-CONTEXT-CORRECT-CANDIDATE-NODE-SCOPES.yaml
+rq1:
+  prior_pass_preserved: true
+  rerun_authorized: false
+rq2:
+  candidate_count: 15
+  qualify_candidate_scope: true
+  test_execution_authorized: false
+  fixture_execution_authorized: false
+rq3:
+  candidate_count: 10
+  qualify_candidate_scope: true
+  test_execution_authorized: false
+  repository_identity_context_execution_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_state_mutation_authorized: false
+fixture_mutation_authorized: false
+stage_authorized: false
+commit_authorized: false
+amend_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+rq2_completion_authorized: false
+rq3_completion_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: QUALIFY_RQ2_15_AND_RQ3_10_CANDIDATE_SCOPES_FOR_EXECUTION_ONLY

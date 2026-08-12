@@ -1,0 +1,38 @@
+schema_version: 1
+gate_id: CR46
+classification: RQ1_RETRY_AUTHORITY_PRESERVING_PREEXISTING_TEST_DELTA
+authorized_at: '2026-08-11T22:13:44.869611+00:00'
+authority_state: AUTHORIZED_NOT_EXECUTED
+source_classification: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ1-PREEXISTING-TEST-DELTA-CLASSIFICATION.yaml
+rq1_corrected_test:
+  path: scripts/tests/test-authority-publication.py
+  required_sha256: 6d8d16dad72b60f087bf294bb6c44dc3b339b3859bf6001511fa4e9d0d7d3b10
+  mutation_authorized: false
+  revert_authorized: false
+preexisting_preserved_test_delta:
+  path: scripts/tests/test-convergence-roadmap.py
+  required_sha256: 4ed9ca065ff55dfc88a070a1a20b2bc7bb43425e03ae100cddc2390aeab58de7
+  classification: PREEXISTING_CR46_AUTHORIZED_TEST_SURFACE
+  mutation_authorized: false
+  revert_authorized: false
+  consumption_by_rq1: false
+authorized_test_execution:
+- RQ1_AUTHORITY_PUBLICATION_13_CASE_RETRY
+rq1_test_count: 13
+rq1_retry_authorized: true
+rq1_test_mutation_authorized: false
+preexisting_test_mutation_authorized: false
+preexisting_test_revert_authorized: false
+production_source_mutation_authorized: false
+existing_cr46_source_mutation_rerun_authorized: false
+rq2_execution_authorized: false
+rq3_execution_authorized: false
+stage_authorized: false
+commit_authorized: false
+amend_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+stop_boundary: STOP_AFTER_RQ1_RETRY
+result: PASS

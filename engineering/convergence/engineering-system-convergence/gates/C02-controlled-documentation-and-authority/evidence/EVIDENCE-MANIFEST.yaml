@@ -1,0 +1,17 @@
+schema_version: 1
+gate_id: C02
+baseline: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+canonical_location: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence
+manifest_policy: SHA256_OF_ALL_C02_EVIDENCE_FILES_EXCLUDING_THIS_MANIFEST_AND_RESULT
+files:
+  - {path: ASSESSMENT-COMMANDS.md, sha256: 4568979e87f41fe308d03ee9d5e89dc44dfebdd288de0a17631aa5bbafd17708}
+  - {path: AUTHORITY-CLAIM-MATRIX.yaml, sha256: 42d14560126274deed54e891cc54383fb8afe2dc2dbd3755baad2cc58dbd2336}
+  - {path: CONTROLLED-DOCUMENT-INVENTORY.yaml, sha256: dc0eee3fac58ae601b778e5e6027b930e82f4ecd3343a01b295de285853f21f3}
+  - {path: DOCUMENT-RUNTIME-DIVERGENCE.yaml, sha256: 295ed121f1d8b2a9a551cb4cad9f3967a6bef069f3a269185d129a2aae170e74}
+  - {path: DUPLICATE-OVERLAP-REGISTER.yaml, sha256: 2196b0879d5a2c153793432e3b9a3c481dd623b958497d3e77f248e8e5ba54af}
+  - {path: FINDINGS.yaml, sha256: f2169ba7006674451df9eaa9e296451109da4d1a72b07d5b0c984b63d2e25860}
+  - {path: IMPLEMENTATION-CONSUMER-MAP.yaml, sha256: 2b550645ede8a57eb14aa77b295efab5cdf4c08215ecb9382d8c8997be891c88}
+  - {path: README.md, sha256: a15339a54da384ad7da55d17a859deccd74894162e84b32f1466b92a79c4bd7c}
+  - {path: STALE-DOCUMENT-REGISTER.yaml, sha256: 0ef8ac9a5f7b50f0cb3e3dc08c3958f450dbb7c10cfa65b0c488bb739b330949}
+  - {path: VALIDATION.yaml, sha256: 63562f3613378facd19f9c05c3c6e087481a391e6f6fcbd4bf639ceb617245a6}
+  - {path: build_inventory.py, sha256: 57e1d2936c5c330fb5474264fbd502584af6e9ba8e23df3207b4fe81ecea033f}

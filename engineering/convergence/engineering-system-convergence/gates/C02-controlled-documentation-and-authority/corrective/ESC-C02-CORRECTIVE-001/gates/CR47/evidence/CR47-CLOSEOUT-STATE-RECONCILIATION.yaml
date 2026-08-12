@@ -1,0 +1,51 @@
+schema_version: "1.0"
+record_type: CR47_CLOSEOUT_STATE_RECONCILIATION
+cr_id: CR47
+result: PASS
+
+core_closeout:
+  result_path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/RESULT.yaml"
+  result_sha256: "3f3b81412dce25d340c42bdbf5736b3f763cd62f8a1079f91e9683708387dcb1"
+  summary_path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/SUMMARY.md"
+  summary_sha256: "ecf39a0a4fb698622fe7ffd3973e7a2d79eb7e3ff853035ec1bc7924b1c33b5a"
+  last_completed_item: CR47
+  current_item: CR48
+  next_authorized_action: VERIFY_CR48_PRECONDITIONS
+  repeated: false
+
+emm_reconciliation:
+  result: PASS
+  complete_drift_count_before: 2
+  complete_drift_count_after: 0
+  atomic_source_count: 2
+
+  sources:
+    "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md":
+      authorized_prior_sha256: "2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a"
+      reconciled_sha256: "53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58"
+
+    "scripts/lib/eos/convergence_roadmap.py":
+      authorized_prior_sha256: "d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc"
+      reconciled_sha256: "205f95746fdcb7933905aed3308e46f992767ddfb58d1f3877670c70b39d30b4"
+
+  binding_manifest: "engineering/convergence/engineering-system-convergence/binding-manifest.yaml"
+  binding_manifest_sha256: "003744aae8f690bcb94819e940272d77683533560ed2433d9f96f010383c2a12"
+
+  transaction_id: "tx-cr47-complete-emm-rebind-001"
+  transaction_record: "engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr47-complete-emm-rebind-001.json"
+  transaction_sha256: "f02784e0aa8b7eb633a02a274c67352b697383c9a89c66be4e8a4f1fd69ac031"
+
+  rebind_result: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-COMPLETE-ATOMIC-EMM-REBIND-RESULT.yaml"
+  rebind_result_sha256: "542683d46267e322ac18ebadb11818ccb12487c9c56841a49cf1044ef6d9cf89"
+
+  roadmap_validation: PASS
+
+successor:
+  cr48_executed: false
+  cr48_result_present: false
+
+publication:
+  stage_executed: false
+  commit_created: false
+  push_performed: false
+  eos_synchronized: false

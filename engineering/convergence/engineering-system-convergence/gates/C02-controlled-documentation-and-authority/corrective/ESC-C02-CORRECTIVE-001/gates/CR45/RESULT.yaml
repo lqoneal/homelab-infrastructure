@@ -1,0 +1,35 @@
+schema_version: 1
+gate_id: CR45
+title: Publish Corrective
+status: COMPLETE
+result: COMPLETE_PASS
+objective: Push qualified corrective commit to origin/main.
+qualification:
+  published_commit: fe824c714da35d987cc7454366aa3abaf046cc31
+  publication: PASS
+  post_push_validation: PASS
+  head_origin_parity: PASS
+  local_ahead: 0
+  local_behind: 0
+  force_push_used: false
+acceptance_criteria:
+- criterion: The qualified corrective commit is published to origin/main.
+  result: PASS
+- criterion: HEAD and origin/main resolve to the exact published commit.
+  result: PASS
+- criterion: Publication occurred as an exact fast-forward without force push.
+  result: PASS
+- criterion: CR46 was not executed in the CR45 transaction.
+  result: PASS
+- criterion: No EOS synchronization occurred.
+  result: PASS
+evidence:
+  resumption_qualification: evidence/POST-CR45M1-RESUMPTION-QUALIFICATION.yaml
+  publication_boundary: evidence/PUBLICATION-EXECUTION-BOUNDARY.yaml
+  publication_result: evidence/PUBLICATION-RESULT.yaml
+  publication_validation: evidence/PUBLICATION-VALIDATION.yaml
+  terminal_completion_authority: evidence/TERMINAL-COMPLETION-AUTHORITY.yaml
+  terminal_qualification: evidence/TERMINAL-QUALIFICATION.yaml
+successor: CR46
+successor_executed: false
+completed_at: '2026-08-11T19:16:16.524898+00:00'

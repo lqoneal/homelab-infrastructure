@@ -1,0 +1,33 @@
+schema_version: 1
+gate_id: CR46
+classification: RQ2_HISTORICAL_PROJECT_STATE_CONTRACT_DIAGNOSIS
+diagnosed_at: '2026-08-11T23:17:46.529893+00:00'
+result: PASS
+block_7m48:
+  candidate_count: 17
+  failed_count: 17
+  common_failure: PROJECT_STATE_AND_CONVERGENCE_ROADMAP_STATE_DISAGREE
+  failure_stage: _validate_project_state
+  rq2_assertion_semantics_reached: false
+  exact_13_identity_recovered: false
+fixture_status:
+  parent_convergence_state_reconstructed: true
+  nested_corrective_state_reconstructed: true
+  emm_binding_manifest_rebound: true
+  project_state_reconstructed: false
+  project_state_reconstruction_required: true
+execution_authority:
+  fixture_mutation: false
+  test_execution: false
+  rq2: false
+  rq3: false
+  production_source_mutation: false
+  test_source_mutation: false
+  live_state_mutation: false
+  stage: false
+  commit: false
+  push: false
+  eos_synchronization: false
+  cr46_completion: false
+  cr47: false
+next: DERIVE_EXACT_HISTORICAL_PROJECT_STATE_REBIND_FROM_VALIDATOR_CONTRACT

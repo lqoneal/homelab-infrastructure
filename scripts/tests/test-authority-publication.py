@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import unittest.mock
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -18,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from scripts.lib.authority.engine import AuthorityGraph  # noqa: E402
+from scripts.lib.emp.runtime_paths import runtime_path
 from scripts.lib.emp.authority_publication import (  # noqa: E402
     AuthorityPublicationError,
     AuthorityPublicationFramework,
@@ -26,6 +28,7 @@ from scripts.lib.emp.authority_publication import (  # noqa: E402
     commissioning_status,
     envelope_identifier,
     hashlib_sha256,
+    ACTIVE_PUBLICATION_POINTER,
 )
 from scripts.lib.emp.authority_resolution import (  # noqa: E402
     AuthorityResolutionRuntime,
@@ -501,7 +504,11 @@ class PublicationQualificationTests(unittest.TestCase):
             "candidate_digest": "fixture-candidate",
             "readiness_digest": "a" * 64,
         }
-        target = authority_activation_target(repository)
+        target = runtime_path(
+            repository,
+            "authority",
+            ACTIVE_PUBLICATION_POINTER,
+        )
         return repository, framework, transaction, candidate, readiness, target, head
 
     def write_qualified_pmct_reconciliation(

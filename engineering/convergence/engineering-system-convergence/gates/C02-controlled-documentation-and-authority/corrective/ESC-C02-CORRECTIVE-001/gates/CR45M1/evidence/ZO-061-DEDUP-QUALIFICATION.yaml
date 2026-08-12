@@ -1,0 +1,14 @@
+schema_version: 1
+gate_id: CR45M1
+classification: ZEUS_OPPORTUNITY_SEMANTIC_DEDUP
+classified_at: '2026-08-11T18:55:13.171884+00:00'
+observation: Zeus must classify validator applicability against the qualification context before treating detached-candidate
+  lifecycle projection failures as candidate content defects.
+classification_result: DEDUP_TO_ZO_061
+opportunity_id: ZO-061
+target_gate: CR46
+execution_class: SECONDARY_CR_MISSION
+new_opportunity_required: false
+register_mutated: false
+implementation_executed: false
+result: PASS

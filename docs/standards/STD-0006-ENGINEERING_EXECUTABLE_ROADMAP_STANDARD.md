@@ -1,7 +1,7 @@
 ---
 document_id: STD-0006
 title: Engineering Executable Roadmap Standard
-version: 1.0
+version: 1.2
 status: Active
 owner: Engineering Governance
 created: 2026-08-09
@@ -481,3 +481,137 @@ any roadmap state transition.
 | STD-0006@1.0 | 2026-08-09 | Draft | Review | Executable Roadmap Standardization operator directive |
 | STD-0006@1.0 | 2026-08-09 | Review | Approved | Homelab Operator |
 | STD-0006@1.0 | 2026-08-09 | Approved | Active | Homelab Operator; persistence remains Pending because commit and push are prohibited |
+
+## Human-Readable Gate Completion Record
+
+An executable roadmap gate MUST persist both a machine-readable completion
+record and a human-readable historical summary.
+
+The minimum completion record is:
+
+- `RESULT.yaml` or the roadmap's equivalent machine-readable result;
+- required machine-readable evidence;
+- validation evidence;
+- `SUMMARY.md` or an equivalent explicitly declared human-readable gate
+  completion record.
+
+The human-readable summary MUST identify:
+
+1. gate identifier and title;
+2. execution result;
+3. objective and achieved outcome;
+4. material actions completed;
+5. material findings and decisions;
+6. validation/qualification result;
+7. authoritative artifacts created or changed;
+8. prohibited mutations confirmed absent;
+9. blockers or unresolved matters;
+10. next authorized roadmap action.
+
+The summary is a projection of authoritative result/evidence and MUST NOT
+silently introduce new execution authority or contradict machine-readable
+records.
+
+A roadmap SHOULD maintain a human-readable cumulative execution history that
+references each completed gate's summary.
+
+For manually executed roadmaps, a gate MUST NOT advance until its human-readable
+summary and cumulative history entry have been persisted.
+
+### Roadmap Versioning
+
+Every authoritative modification to a roadmap definition MUST update the
+roadmap version.
+
+Version changes MUST be persisted in the roadmap itself and must distinguish
+the prior and current version sufficiently for later provenance and resume.
+
+At minimum:
+
+- patch version: recordkeeping, clarification, or compatible planning change;
+- minor version: executable scope, gate-contract, or compatible lifecycle
+  capability expansion;
+- major version: incompatible roadmap semantics, sequencing, authority, or
+  lifecycle change.
+
+Historical completed or active gate definitions remain immutable according to
+their frozen execution generation; roadmap version advancement does not rewrite
+their historical contracts.
+
+## Pre-Creation Conflict Verification
+
+Before any controlled document, roadmap artifact, gate record, human-readable
+summary, cumulative history record, controlled-document-like evidence artifact,
+or other repository document is created, copied, or introduced, the proposed
+artifact MUST pass a pre-creation conflict verification.
+
+The verification MUST occur before the artifact exists in the repository.
+
+The verification sequence is:
+
+1. declare the proposed artifact identity, type, purpose, authority, and
+   intended repository location;
+2. attempt Zeus-native discovery and verification first wherever Zeus exposes
+   the required capability;
+3. search authoritative document registration and indexing surfaces for the
+   proposed identifier and equivalent purpose;
+4. search existing controlled documentation for overlapping or conflicting
+   authority, scope, terminology, or responsibility;
+5. verify repository information-architecture placement;
+6. verify that creation will not duplicate a controlled identifier or cause an
+   existing controlled document to be rediscovered as a second authority;
+7. verify applicable lifecycle, authority, and versioning constraints;
+8. record a deterministic PRE_CREATE_VERIFICATION result;
+9. create the artifact only after PRE_CREATE_VERIFICATION=PASS.
+
+### Zeus-First Verification
+
+Zeus is the preferred verification and discovery interface.
+
+Where Zeus provides a native capability for document, registry, authority,
+roadmap, artifact, identifier, placement, or conflict verification, that
+capability MUST be attempted before lower-level repository inspection.
+
+A Zeus capability failure MUST NOT be silently ignored.
+
+If Zeus is unavailable or does not yet expose the required verification
+surface:
+
+- the missing capability MUST be identified explicitly;
+- the condition MUST be preserved as a convergence/capability finding where
+  applicable;
+- repository-native controlled-document validation and authoritative index
+  inspection MAY serve as a temporary fallback;
+- the fallback MUST be visible in the verification result.
+
+Zeus unavailability alone does not authorize bypassing conflict verification.
+
+### Existing-Document Preference
+
+When an authoritative controlled document already owns the proposed subject,
+the default action is to evaluate modification of that existing document
+rather than create another document.
+
+Creation of a new document requires evidence that:
+
+- no existing document already owns the authority or purpose;
+- the identifier is unique;
+- the repository location is valid;
+- the relationship to existing authority is explicit.
+
+### Controlled Documents in Evidence
+
+A raw copy of a controlled document containing its live controlled identifier
+MUST NOT be stored in a repository location where controlled-document discovery
+can interpret that copy as another authoritative document.
+
+Pre-change evidence SHOULD use digest provenance, Git object identity, patches,
+or explicitly non-controlled representations instead.
+
+### Failure Semantics
+
+Any unresolved identifier collision, authority overlap, placement conflict,
+duplicate-document discovery, or ambiguous ownership causes
+PRE_CREATE_VERIFICATION=FAIL.
+
+No artifact may be created while the result is FAIL or indeterminate.

@@ -1,0 +1,80 @@
+schema_version: 1
+gate_id: CR46
+classification: RQ2_CLASSIFICATION_PLAN_SCHEMA_DIAGNOSIS
+diagnosed_at: '2026-08-11T22:46:16.543415+00:00'
+result: PASS
+block_7m42:
+  result: FAIL_CLOSED
+  failure_class: RQ2_SCHEMA_ASSUMPTION_AND_OVERBROAD_TEST_DISCOVERY
+  historical_family_lookup_failed: true
+  rq2_stage_lookup_failed: true
+  candidate_test_scan_overbroad: true
+  candidate_test_count: 115
+  boundary_written: false
+  rq2_executed: false
+  production_mutated: false
+  tests_mutated: false
+authoritative_inputs:
+  classification_file: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/REGRESSION-VALIDATOR-APPLICABILITY-CLASSIFICATION.yaml
+  classification_root_keys:
+  - classification
+  - classified_at
+  - classified_failure_count
+  - commit_authorized
+  - cr46_completion_authorized
+  - cr47_execution_authorized
+  - eos_synchronization_authorized
+  - failure_families
+  - gate_id
+  - next_action
+  - observed_total_failures
+  - passing_test_count
+  - prior_regression_rc
+  - prior_regression_result
+  - push_authorized
+  - qualification_context_repair_required
+  - result
+  - schema_version
+  - source_implementation_defect_established
+  - source_mutation_rerun_required
+  - stage_authorized
+  - zo061_semantics_applied
+  plan_file: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/CONTEXT-CORRECT-REGRESSION-REQUALIFICATION-PLAN.yaml
+  plan_root_keys:
+  - classification
+  - classified_failure_count
+  - commit_authorized
+  - cr46_completion_authorized
+  - cr47_execution_authorized
+  - eos_synchronization_authorized
+  - execution_order
+  - gate_id
+  - next_action
+  - planned_at
+  - previously_passing_test_count
+  - prior_classification
+  - push_authorized
+  - repository_baseline
+  - requalification_stages
+  - result
+  - schema_version
+  - source_implementation_defect_established
+  - source_mutation_rerun
+  - stage_authorized
+  - zo061_applicability_model
+corrective_boundary:
+  derive_from_actual_schema: true
+  do_not_assume_failure_families_key: true
+  do_not_assume_stages_key: true
+  do_not_use_broad_ast_keyword_scan: true
+  production_source_mutation_authorized: false
+  test_source_mutation_authorized: false
+  rq2_execution_authorized: false
+  rq3_execution_authorized: false
+  stage_authorized: false
+  commit_authorized: false
+  push_authorized: false
+  eos_synchronization_authorized: false
+  cr46_completion_authorized: false
+  cr47_execution_authorized: false
+next: DERIVE_RQ2_BOUNDARY_FROM_ACTUAL_7M3F_7M3G_SCHEMA

@@ -1,0 +1,27 @@
+schema_version: 1
+gate_id: CR46
+classification: POST_CR46_PUBLICATION_BOUNDARY_RETRY_AUTHORITY
+authorized_at: '2026-08-12T07:13:57.743889+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+basis:
+  7m91_classifier_defect: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/BLOCK7M91-PUBLICATION-DELTA-ALLOWLIST-CLASSIFIER-DEFECT.yaml
+  frozen_30_path_surface: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/POST-CR46-FROZEN-30-PATH-PUBLICATION-SURFACE.yaml
+authorized:
+  retry_publication_boundary_derivation: true
+  use_full_frozen_30_path_surface: true
+  derive_path_provenance: true
+  derive_publication_execution_preconditions: true
+  derive_cr47_successor_eligibility_boundary: true
+prohibited:
+  source_mutation: true
+  test_mutation: true
+  state_mutation: true
+  stage: true
+  commit: true
+  push: true
+  eos_synchronization: true
+  cr47_execution: true
+  cr47_result_write: true
+stop_after: POST_CR46_PUBLICATION_AND_CR47_BOUNDARY_DERIVATION
+next: RETRY_POST_CR46_PUBLICATION_AND_CR47_SUCCESSOR_BOUNDARIES_USING_FROZEN_30_PATH_SURFACE

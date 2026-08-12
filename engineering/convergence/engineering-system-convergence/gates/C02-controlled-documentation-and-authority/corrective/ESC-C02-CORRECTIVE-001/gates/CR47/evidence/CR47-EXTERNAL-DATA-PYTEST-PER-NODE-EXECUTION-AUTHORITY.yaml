@@ -1,0 +1,46 @@
+schema_version: "1.0"
+record_type: CR47_EXTERNAL_DATA_PYTEST_PER_NODE_EXECUTION_AUTHORITY
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  recursive_topology_classification: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-BLOCK13-RECURSIVE-TEST-WORKSPACE-CLASSIFICATION.yaml"
+  derivation_authority: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-EXTERNAL-DATA-TMP-DERIVATION-AUTHORITY.yaml"
+  per_node_boundary: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-EXTERNAL-DATA-PYTEST-PER-NODE-BOUNDARY.yaml"
+  per_node_boundary_sha256: "aaeaf269bdc3377120cada32cec97e378f9d6e29a66445eccb09c25737da64a8"
+
+pytest:
+  execution_authorized: true
+  execution_mode: EXACT_PER_NODE
+  node_count: 10
+  timeout_seconds_per_node: 180
+  external_tmp_root: "/data/engineering/tmp/pytest"
+  require_unique_node_workspace: true
+  require_explicit_basetemp: true
+  stop_on_first_failure: true
+  require_immediate_cleanup: true
+  full_suite_execution_authorized: false
+
+retention:
+  node_logs: true
+  node_result_records: true
+  full_temp_tree: false
+
+mutation:
+  source_mutation_authorized: false
+  test_mutation_authorized: false
+  codex_rerun_authorized: false
+
+lifecycle:
+  cr47_result_write_authorized: false
+  cr47_state_advancement_authorized: false
+  cr48_execution_authorized: false
+
+publication:
+  stage_authorized: false
+  commit_authorized: false
+  push_authorized: false
+  eos_sync_authorized: false
+
+next_authorized_action: EXECUTE_CR47_EXACT_PER_NODE_EXTERNAL_DATA_PYTEST_REQUALIFICATION_ONLY

@@ -1,0 +1,75 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ3
+classification: RQ3_CANONICAL_REPOSITORY_DIRTY_WORKTREE_PRECONDITION
+classified_at: '2026-08-12T06:38:34.562798+00:00'
+result: PASS
+rq3_result_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-EXACT-10-NODE-CANONICAL-REPOSITORY-IDENTITY-REQUALIFICATION-RESULT.yaml
+execution_authority: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-EXECUTION-AUTHORITY-AFTER-RECONCILED-RQ2-PASS.yaml
+observed:
+  authorized_node_count: 10
+  passed_node_count: 7
+  failed_node_count: 3
+  failed_reason_code: UNCOMMITTED_WORKING_TREE_DRIFT
+  failed_stage: RECOVERY_BASELINE_TRANSITION
+live_repository:
+  canonical_repository_identity: true
+  canonical_git_context: true
+  tracked_worktree_delta_count: 30
+  tracked_worktree_delta_set_sha256: 2cebf244d52894f4da490d16e608f77a915a47aeb0ab97ce300a4e07eaa1baa6
+  tracked_worktree_delta:
+  - docs/procedures/PROC-0009-EXECUTABLE_ROADMAP_EVALUATION_PROCEDURE.md
+  - docs/project/PROJ-0001-PROJECT_STATE.md
+  - docs/standards/STD-0006-ENGINEERING_EXECUTABLE_ROADMAP_STANDARD.md
+  - engineering/convergence/engineering-system-convergence/binding-manifest.yaml
+  - engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR43/evidence/COMMANDS.md
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/HISTORY.md
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/README.md
+  - engineering/convergence/engineering-system-convergence/roadmap.yaml
+  - engineering/convergence/engineering-system-convergence/schemas/roadmap-evaluation.schema.yaml
+  - engineering/convergence/engineering-system-convergence/STATE.yaml
+  - scripts/engctl
+  - scripts/lib/emp/admission_supersession.py
+  - scripts/lib/emp/agent_qualification.py
+  - scripts/lib/emp/authority_publication.py
+  - scripts/lib/emp/authority_resolution.py
+  - scripts/lib/emp/canonical_mission_aggregate.py
+  - scripts/lib/emp/canonical_mission_lifecycle.py
+  - scripts/lib/emp/codex_adapter.py
+  - scripts/lib/emp/codex_interactive.py
+  - scripts/lib/emp/codex_reconciliation.py
+  - scripts/lib/emp/mission_verification_controller.py
+  - scripts/lib/emp/publication_candidate_authority.py
+  - scripts/lib/emp/publication_transaction.py
+  - scripts/lib/emp/stage1_runtime.py
+  - scripts/lib/eos/convergence_roadmap.py
+  - scripts/tests/test-authority-publication.py
+  - scripts/tests/test-convergence-roadmap.py
+  head_changed_by_7m77: false
+  origin_changed_by_7m77: false
+  index_changed_by_7m77: false
+  validator_changed_by_7m77: false
+  cr46_state_changed_by_7m77: false
+classification_result:
+  source_implementation_defect_established: false
+  test_implementation_defect_established: false
+  rq3_node_scope_defect_established: false
+  canonical_identity_requirement_defect_established: false
+  execution_context_defect_established: true
+  clean_git_worktree_required: true
+  rq3_rerun_required_after_context_repair: true
+  rq3_rerun_authorized: false
+prohibited:
+  source_mutation: true
+  test_mutation: true
+  live_cr46_revert: true
+  live_cr46_stash: true
+  live_cr46_commit: true
+  stage: true
+  push: true
+  cr46_completion: true
+  cr47_execution: true
+next: DERIVE_CLEAN_GIT_CONTEXT_PRESERVING_RQ3_REPOSITORY_IDENTITY_SEMANTICS

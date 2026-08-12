@@ -1,0 +1,20 @@
+schema_version: 1
+classification: CR44M1_STOP_BOUNDARY_REPRESENTATION_CLASSIFICATION
+repository_head: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+gate_id: CR44M1
+observed_stop_boundary: STOP_AFTER_CR44M1
+expected_semantics: STOP_AFTER_CURRENT_RECOVERY_ITEM
+classification_result: SEMANTICALLY_VALID
+block19_failure: VERIFIER_FALSE_NEGATIVE
+failure_cause: BLOCK19_REQUIRED_ONLY_GENERIC_STOP_AFTER_THIS_ITEM_TOKEN
+controlled_contract_defect: false
+gate_mutation_required: false
+accepted_representations:
+- STOP_AFTER_THIS_ITEM
+- STOP_AFTER_<CURRENT_ITEM>
+return_target: CR44
+same_transaction_parent_execution_allowed: false
+terminal_closeout_may_be_retried: true
+publication_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false

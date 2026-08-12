@@ -1,0 +1,57 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ2
+classification: RQ2_EXACT_15_NODE_CONTEXT_CORRECT_HISTORICAL_REQUALIFICATION
+executed_at: '2026-08-12T00:48:36.510294+00:00'
+result: PASS
+rq2_qualified: true
+qualification_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-CONTEXT-CORRECT-EXECUTION-SCOPE-QUALIFICATION.yaml
+execution_authority: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-RQ3-CONTEXT-CORRECT-TEST-EXECUTION-AUTHORITY.yaml
+execution_scope:
+  node_count: 15
+  node_set_sha256: 51375cee31071c1afa002714537e9105012d634548dee640a2e58b6f77aa2089
+  nodes:
+  - scripts/tests/test-convergence-roadmap.py::ConvergenceRoadmapTests::test_live_evaluator_qualifies_esc_and_all_required_gates
+  - scripts/tests/test-convergence-roadmap.py::test_cr18_evaluate_pending_review_is_not_corruption
+  - scripts/tests/test-convergence-roadmap.py::test_cr18_prospective_c03_plus_qualification_remains_pass
+  - scripts/tests/test-convergence-roadmap.py::test_cr19_resume_projection_exposes_pending_review_read_only
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_missing_dependency_blocks
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_never_executes_or_advances
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_ready_for_manual_execution
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_resource_blocked_is_distinct
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_live_shape_is_consistent
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_missing_dependency_is_distinct
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_never_executes_or_advances
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_successor_execution_must_be_prohibited
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo013_live_composite_is_ready
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo013_never_executes_or_reconciles
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo013_reports_manual_blocker
+execution_context:
+  isolated_disk_backed_copy: true
+  historical_parent_gate: C02
+  historical_nested_current_item: CR23
+  historical_next_action: EXECUTE_CR23_IMPLEMENT_LIFECYCLE_PROVENANCE
+  project_state_binding_field_count: 11
+  emm_rebound: true
+  roadmap_validated_before_execution: true
+  zeus_testing: 1
+pytest:
+  return_code: 0
+  expected_test_count: 15
+  log_sha256: 84448169124a82c946cff0c3239da63266aedbf75c322d204dd83203c6eaee69
+live_repository:
+  source_mutated: false
+  test_mutated: false
+  project_state_mutated: false
+  convergence_state_mutated: false
+  staged: false
+  commit_created: false
+  push_performed: false
+  eos_synchronized: false
+successor:
+  rq3_execution_authorized: true
+  rq3_execution_executed: false
+  rq2_completion_authorized: false
+  cr46_completion_authorized: false
+  cr47_execution_authorized: false
+next: DERIVE_RQ3_EXECUTION_AUTHORITY_AFTER_RQ2_PASS

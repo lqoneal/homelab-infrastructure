@@ -1,0 +1,40 @@
+schema_version: 1
+gate_id: CR46
+classification: RQ2_EXACT_17_NODE_CANDIDATE_REPRODUCTION_RESULT
+executed_at: '2026-08-11T23:34:56.737273+00:00'
+result: PASS
+fixture:
+  topology: ISOLATED_DISK_BACKED_COPY
+  parent_current_gate: C02
+  parent_last_completed_gate: C01
+  nested_current_item: CR23
+  next_authorized_action: EXECUTE_CR23_IMPLEMENT_LIFECYCLE_PROVENANCE
+  project_state_binding_field_count: 11
+  project_state_rebound: true
+  emm_rebound: true
+  pretest_roadmap_validation: PASS
+candidate_execution:
+  candidate_count: 17
+  candidate_set_sha256: bc449308230a527cc75be17475b0beb2c6d2950bb1141df79ebe02699162df05
+  pytest_return_code: 1
+  failed_count: 1
+  passed_count: 16
+  failed_node_set_sha256: bceb2dd28b5417deda6d4a8a3bb99258ee82b504e27e689eb1c299b1b4de7aba
+  passed_node_set_sha256: f68a55ae8a6812b6ea9c9033dc3e9e1665d3360cc8069562f6161e7c3d208006
+  classification: RQ2_FAILURE_IDENTITY_REQUIRES_FURTHER_CLASSIFICATION
+  exact_13_failure_count: false
+execution_limits:
+  full_validator_executed: false
+  unlisted_tests_executed: false
+  production_source_mutated: false
+  test_source_mutated: false
+  live_state_mutated: false
+  stage_executed: false
+  commit_created: false
+  push_performed: false
+  eos_synchronization_executed: false
+  rq2_completed: false
+  rq3_executed: false
+  cr46_completed: false
+  cr47_executed: false
+next: DIAGNOSE_REMAINING_RQ2_FAILURE_IDENTITY_DIFFERENCE_ONLY

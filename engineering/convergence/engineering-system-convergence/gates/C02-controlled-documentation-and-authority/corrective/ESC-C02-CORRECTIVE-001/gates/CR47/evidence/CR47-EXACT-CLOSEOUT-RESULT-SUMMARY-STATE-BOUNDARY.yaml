@@ -1,0 +1,75 @@
+schema_version: "1.0"
+record_type: CR47_EXACT_CLOSEOUT_RESULT_SUMMARY_STATE_BOUNDARY
+cr_id: CR47
+result: PASS
+
+result_contract:
+  path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/RESULT.yaml"
+  result: PASS
+  gate: CR47
+  secondary_mission_count: 10
+  projection_function_count: 6
+  qualified_test_node_count: 10
+  failed_test_node_count: 0
+  timeout_node_count: 0
+  cleanup_failure_count: 0
+  unresolved_failure_count: 0
+  harness_topology_defect_established: true
+  harness_topology_recovered: true
+  implementation_defect_established: false
+  test_contract_defect_established: false
+  gate_completed: true
+  state_reconciliation_complete: true
+  cr48_executed: false
+  staged: false
+  committed: false
+  pushed: false
+  eos_synchronized: false
+
+summary_contract:
+  path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/SUMMARY.md"
+  required: true
+  record_secondary_qualification: true
+  record_pytest_topology_incident: true
+  record_final_external_tmp_topology: true
+  record_no_cr48_execution: true
+  record_no_publication_execution: true
+
+corrective_state_transition:
+  path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml"
+  before_last_completed_item: CR46
+  before_current_item: CR47
+  after_last_completed_item: CR47
+  after_current_item: CR48
+  after_blockers: []
+  after_next_authorized_action: VERIFY_CR48_PRECONDITIONS
+
+parent_state:
+  path: "engineering/convergence/engineering-system-convergence/STATE.yaml"
+  current_gate_before: C02
+  current_gate_after: C02
+  gate_advancement_authorized: false
+
+project_state:
+  path: "docs/project/PROJ-0001-PROJECT_STATE.md"
+  current_gate_before: C02
+  current_gate_after: C02
+  gate_advancement_authorized: false
+
+binding_manifest:
+  path: "engineering/convergence/engineering-system-convergence/binding-manifest.yaml"
+  rebind_required_after_closeout_artifact_writes: true
+
+roadmap:
+  path: "engineering/convergence/engineering-system-convergence/roadmap.yaml"
+  final_read_only_validation_required: true
+
+successor:
+  cr48_execution_authorized: false
+  cr48_result_must_remain_absent: true
+
+publication:
+  stage_authorized: false
+  commit_authorized: false
+  push_authorized: false
+  eos_sync_authorized: false

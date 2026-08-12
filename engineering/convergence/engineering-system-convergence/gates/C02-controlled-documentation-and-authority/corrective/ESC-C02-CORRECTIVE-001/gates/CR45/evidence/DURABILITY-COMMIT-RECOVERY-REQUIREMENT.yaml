@@ -1,0 +1,43 @@
+schema_version: 1
+gate_id: CR45
+classification: CR45_DURABILITY_COMMIT_RECOVERY_REQUIREMENT
+classified_at: '2026-08-11T16:56:09.336173+00:00'
+current_item: CR45
+current_head: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+current_parent: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+durability_required: true
+required_durable_path_count: 10
+required_durable_paths:
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR48/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR49/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR50/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR51/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR52/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR55/GATE.yaml
+current_cr45_objective: Push qualified corrective commit to origin/main.
+current_cr45_commit_authority: false
+current_cr45_amend_authority: false
+current_cr45_second_commit_authority: false
+recovery_authority_required: true
+required_recovery_properties:
+  exact_path_allowlist: true
+  candidate_tree_qualification_before_live_commit_mutation: true
+  no_unrelated_dirty_worktree_inclusion: true
+  preserve_remote_parent: true
+  explicit_commit_topology_choice: true
+  immutable_post_commit_qualification: true
+  push_prohibited_during_recovery: true
+  cr46_execution_prohibited: true
+  eos_synchronization_prohibited: true
+allowed_recovery_mechanism: NESTED_CR45_RECOVERY_ITEM
+suggested_recovery_item: CR45M1
+recovery_item_purpose: Make the exact post-qualification authoritative ZO secondary-mission contract surface durable
+  and independently qualified before CR45 publication resumes.
+recovery_item_authoring_authorized: false
+commit_or_amend_execution_authorized: false
+push_authorized: false
+next_action: DERIVE_CR45M1_RECOVERY_ITEM_AUTHORITY

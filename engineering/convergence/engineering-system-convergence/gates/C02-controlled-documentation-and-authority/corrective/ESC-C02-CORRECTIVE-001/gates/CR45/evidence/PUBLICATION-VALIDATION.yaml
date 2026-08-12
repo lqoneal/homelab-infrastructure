@@ -1,0 +1,19 @@
+schema_version: 1
+gate_id: CR45
+classification: CR45_POST_PUBLICATION_VALIDATION
+validated_at: '2026-08-11T19:13:40.040430+00:00'
+qualified_commit: fe824c714da35d987cc7454366aa3abaf046cc31
+checks:
+  push_successful: true
+  origin_main_equals_qualified_commit: true
+  head_equals_origin_main: true
+  local_ahead_zero: true
+  local_behind_zero: true
+  index_empty: true
+  cr45_result_absent: true
+  cr46_not_executed: true
+  eos_synchronization_not_executed: true
+cr45_completion_authorized: false
+cr46_execution_authorized: false
+result: PASS
+next_action: AUTHOR_CR45_TERMINAL_COMPLETION_BOUNDARY

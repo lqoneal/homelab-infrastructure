@@ -1,0 +1,84 @@
+schema_version: 1
+gate_id: CR46
+classification: CR46_EXACT_ZEUS_MUTATION_TEST_ALLOWLIST
+frozen_at: '2026-08-11T19:25:06.107018+00:00'
+repository_baseline: fe824c714da35d987cc7454366aa3abaf046cc31
+execution_order:
+- ZO-026
+- ZO-024
+- ZO-059
+- ZO-061
+- ZO-060
+- ZO-058
+mutation_paths:
+- scripts/lib/emp/admission_supersession.py
+- scripts/lib/emp/agent_qualification.py
+- scripts/lib/emp/authority_publication.py
+- scripts/lib/emp/canonical_mission_aggregate.py
+- scripts/lib/emp/canonical_mission_lifecycle.py
+- scripts/lib/emp/codex_adapter.py
+- scripts/lib/emp/codex_interactive.py
+- scripts/lib/emp/codex_reconciliation.py
+- scripts/lib/emp/mission_verification_controller.py
+- scripts/lib/emp/publication_candidate_authority.py
+- scripts/lib/emp/publication_transaction.py
+- scripts/lib/emp/stage1_runtime.py
+mutation_path_count: 12
+test_paths:
+- scripts/tests/test-admission-freshness-and-supersession.py
+- scripts/tests/test-authority-publication.py
+- scripts/tests/test-authority-resolution-runtime.py
+- scripts/tests/test-authority-wop-compatibility.py
+- scripts/tests/test-controlled-document-semantic-validation.py
+- scripts/tests/test-convergence-roadmap.py
+- scripts/tests/test-convergence-runtime.py
+- scripts/tests/test-mission-activation.py
+- scripts/tests/test-mission-orchestration.py
+- scripts/tests/test-operational-alpha-status.py
+- scripts/tests/test-roadmap-lifecycle.py
+- scripts/tests/test-wop-lifecycle-manager.py
+- scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py
+test_path_count: 13
+preimplementation_sha256:
+  scripts/lib/emp/admission_supersession.py: 9e0b80a2fc4c0eb80f8b745ad6016f27e0e3a39fdb15051066c835b925bb72d7
+  scripts/lib/emp/agent_qualification.py: 9665b5852576ff88a666a2bd8be7df0d064c7ab6f7ace4481b2d98287a66c52f
+  scripts/lib/emp/authority_publication.py: 9044654947372d79e57f1c3def07f554719d0e6018425798d110845728c85173
+  scripts/lib/emp/canonical_mission_aggregate.py: 9d0f32ea0d100319ad1a3794fa78790dc4520fa5dce00354fd314bef2cd9a145
+  scripts/lib/emp/canonical_mission_lifecycle.py: e0c5bacfdec5d77bdb0bc154c73269102beac0c9a6d834c49640ea09b2027a7b
+  scripts/lib/emp/codex_adapter.py: 071c07a345eac2a64c88f00750db7aa14e26a66832e4d771f36ec6b6b56499e4
+  scripts/lib/emp/codex_interactive.py: cda09758d35a58174bd6cd85510712dee64a069a995e79d4757ea9f2f44e7f37
+  scripts/lib/emp/codex_reconciliation.py: c76b19c82c03e437b7aac2080dc138eddff0874881951ad27a28848e2d1e77f9
+  scripts/lib/emp/mission_verification_controller.py: 34b02dceb6479bb873da82481666cf57262be112f97f7ba8a6deedc42e1e3bfa
+  scripts/lib/emp/publication_candidate_authority.py: 5a71c5db01a6c49366743f78f1a4ae337aacc4ae6570da2152763ffccb1ff158
+  scripts/lib/emp/publication_transaction.py: ab2a5edd4103ee16b4f32e049f449d5c863e23b49688a5a31b1632aeff3ca3f0
+  scripts/lib/emp/stage1_runtime.py: 8bb4cb4d653e1fbc1df32c37c0822ad0f9f8493e034e919dd0b120896130a483
+  scripts/tests/test-admission-freshness-and-supersession.py: c0f8896b2409f4c208c3c99f44d52be2a4938a048ed5126364dd550dda5012db
+  scripts/tests/test-authority-publication.py: 0390df86a9c3f89840dd3bcaaa54a7711cf2e7d60e793a9e7df779ff957c4859
+  scripts/tests/test-authority-resolution-runtime.py: a66dc7324554974527f55405d1a1d09ab131082e80af65af1430eed1f885c71c
+  scripts/tests/test-authority-wop-compatibility.py: 637ba01f3cf7c7284a85ec0d882c857a2aed787dfb051dd3ff09b871d08608b2
+  scripts/tests/test-controlled-document-semantic-validation.py: 847b7d55cf2e457254128995aa358b73be43454ab1cc2ce8c7dc6618cb5815d5
+  scripts/tests/test-convergence-roadmap.py: 4ed9ca065ff55dfc88a070a1a20b2bc7bb43425e03ae100cddc2390aeab58de7
+  scripts/tests/test-convergence-runtime.py: 3f55e4dcdfc58ba8ffbebfed95f9aa756e9d96dc968ee8d6137e974f073491c7
+  scripts/tests/test-mission-activation.py: 3a6fc5da645fc659dd0ea6751336933d0f2ced9c727a8cd94d58653e39bb8d2f
+  scripts/tests/test-mission-orchestration.py: 0348d9e0dbffa8a56bfdf2939a08317145759b24638f7794c20af8e9ced0dd54
+  scripts/tests/test-operational-alpha-status.py: d656aa29f7ac5a5eb35e9bb6a3a7366cc0e291ce84fe9f6079496572c1c31801
+  scripts/tests/test-roadmap-lifecycle.py: 537dc6c677bc91bd6a77e7b82035da01619f8f4ffbb0de324801a7651ae333b3
+  scripts/tests/test-wop-lifecycle-manager.py: b7ddfc275dfe9c1c04e9816691368361db229a725ab8003f15c716aab156924a
+  scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py: f08e2f66e1afc0c39dd7121a0301c8096be5b208aea0c0ad21a53e78f0b90568
+constraints:
+- Only listed mutation paths may be modified.
+- Only listed test paths may be modified.
+- No generated cache or archive artifact may enter the transaction.
+- No new module may be created without separately derived authority.
+- Each ZO requires independent evidence before its dependent successor is qualified.
+- No staging, commit, amend, push, EOS synchronization, CR46 completion, or CR47 execution is authorized.
+implementation_authorized: false
+stage_authorized: false
+commit_authorized: false
+amend_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+result: PASS
+next_action: AUTHOR_CR46_SIX_ZO_IMPLEMENTATION_EXECUTION_AUTHORITY

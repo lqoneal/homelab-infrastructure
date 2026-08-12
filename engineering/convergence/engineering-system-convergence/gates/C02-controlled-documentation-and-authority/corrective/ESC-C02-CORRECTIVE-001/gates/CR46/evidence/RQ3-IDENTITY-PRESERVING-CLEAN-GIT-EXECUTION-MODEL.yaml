@@ -1,0 +1,48 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ3
+classification: RQ3_IDENTITY_PRESERVING_CLEAN_GIT_EXECUTION_MODEL
+derived_at: '2026-08-12T06:46:37.804367+00:00'
+result: PASS
+basis:
+  classifier_defect: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/BLOCK7M79-REPOSITORY-IDENTITY-PATH-SENSITIVITY-CLASSIFIER-DEFECT.yaml
+  semantic_derivation_authority: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-REPOSITORY-IDENTITY-SEMANTIC-DERIVATION-AUTHORITY.yaml
+repository_identity_contract:
+  resolved_filesystem_root_is_identity_input: true
+  remote_origin_is_identity_input: true
+  fingerprint_includes_resolved_root: true
+  repository_id_derived_from_root_and_fingerprint: true
+  canonical_repository_identity_equals_resolved_root: true
+  filesystem_path_sensitive: true
+topology_conclusions:
+  simple_independent_clone_valid: false
+  simple_linked_worktree_valid: false
+  live_stash_or_revert_valid: false
+  canonical_path_plus_isolated_git_view: CANDIDATE_REQUIRES_QUALIFICATION
+  mount_namespace_model: DEFERRED_HIGH_COMPLEXITY
+required_execution_semantics:
+  stage1_repository_path: /data/engineering/repositories/homelab
+  rq3_ROOT: /data/engineering/repositories/homelab
+  repository_identity_root: /data/engineering/repositories/homelab
+  qualified_baseline: fe824c714da35d987cc7454366aa3abaf046cc31
+  git_status: CLEAN
+  git_metadata: true
+  origin_main: AVAILABLE
+  live_cr46_worktree: UNCHANGED
+  live_cr46_index: UNCHANGED
+  live_git_admin_state: UNCHANGED
+  runtime_state: TEMPORARY_ISOLATED
+preferred_next_candidate: CANONICAL_PATH_WITH_ISOLATED_GIT_ENVIRONMENT
+candidate_probe_authorized: false
+rq3_test_execution_authorized: false
+rq3_rerun_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_worktree_revert_authorized: false
+live_worktree_stash_authorized: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: AUTHOR_BOUNDED_ISOLATED_GIT_VIEW_QUALIFICATION_AUTHORITY_ONLY

@@ -1,0 +1,470 @@
+schema_version: 1
+gate_id: C02
+baseline: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+classification_vocabulary:
+  - CONSISTENT
+  - CONFLICTING
+  - DUPLICATE_OR_OVERLAPPING
+  - STALE
+  - OBSOLETE
+  - UNDOCUMENTED_IMPLEMENTATION_AUTHORITY
+  - INVESTIGATION_GAP
+claims:
+  - claim_id: C02-AC-001
+    fact: Current convergence program, gate, and next authorized action
+    intended_owner: ESC-ROADMAP-001 with the Project State convergence binding
+    claimed_by:
+      - {path: engineering/convergence/engineering-system-convergence/roadmap.yaml, field: current_gate_and_queue}
+      - {path: engineering/convergence/engineering-system-convergence/STATE.yaml, field: current_gate}
+      - {path: docs/project/PROJ-0001-PROJECT_STATE.md, lines: 9-27, field: convergence_program}
+    consumers:
+      - scripts/lib/eos/convergence_roadmap.py
+      - scripts/lib/eos/context.sh
+      - scripts/engctl
+    observed_behavior: All three sources resolve ESC C02 and BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT.
+    classifications: [CONSISTENT]
+    disposition: RETAIN_OWNER; do not advance during C02.
+    resolution_owner: Engineering Governance
+
+  - claim_id: C02-AC-002
+    fact: Repository controlled-record discovery and index membership
+    intended_owner: DOC-0001
+    claimed_by:
+      - {path: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md, lines: 357-471, field: Controlled Documents}
+      - {path: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md, lines: 661-677, field: Controlled Asset Records}
+      - {path: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md, lines: 576-576, field: authoritative_location}
+    consumers:
+      - scripts/validate_controlled_documents.py
+      - human and automation discovery
+    observed_behavior: 131 of 133 controlled records are indexed; CHAR-0001 and PROC-0008 have identities but no index row.
+    classifications: [CONFLICTING]
+    disposition: RECORD_FOR_LATER_INDEX_RECONCILIATION
+    resolution_owner: Engineering Governance / Document Registrar
+    evidence_refs: [CONTROLLED-DOCUMENT-INVENTORY.yaml, C02-F-001]
+
+  - claim_id: C02-AC-003
+    fact: Indexed title, status, owner, and path agree with controlled sources
+    intended_owner: Controlled source for content and lifecycle; DOC-0001 for discovery
+    claimed_by:
+      - {path: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md, field: indexed_row_metadata}
+      - {path: docs, field: frontmatter}
+    consumers: [scripts/validate_controlled_documents.py, document readers]
+    observed_behavior: Thirteen title/status mismatches exist; no index path or owner mismatch exists.
+    classifications: [CONFLICTING, DUPLICATE_OR_OVERLAPPING]
+    disposition: RECORD_FOR_LATER_METADATA_RECONCILIATION
+    resolution_owner: Engineering Governance / owning document custodians
+    evidence_refs: [CONTROLLED-DOCUMENT-INVENTORY.yaml, C02-F-002]
+
+  - claim_id: C02-AC-004
+    fact: Controlled-document lifecycle vocabulary and operational authority
+    intended_owner: STD-0001, represented by SPEC-0001
+    claimed_by:
+      - {path: docs/standards/STD-0001-ENGINEERING_DOCUMENT_LIFECYCLE_STANDARD.md, lines: 66-92, field: lifecycle_scope}
+      - {path: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md, lines: 435-460, field: lifecycle_representation}
+      - {path: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md, field: status_rows}
+    consumers: [scripts/validate_controlled_documents.py, scripts/lib/document_synchronization.py]
+    observed_behavior: Source metadata uses 53 Active, 40 Draft, 21 Approved, and domain/result states outside the six-state common lifecycle; SPEC-0001 and PROC-0006 are Draft in source but Active in the index.
+    classifications: [CONFLICTING, DUPLICATE_OR_OVERLAPPING]
+    disposition: CLASSIFY_DOMAIN_STATUS_AND_RECONCILE_ONLY_IN_LATER_GATE
+    resolution_owner: Engineering Governance / STD-0001 owner
+    evidence_refs: [CONTROLLED-DOCUMENT-INVENTORY.yaml, C02-F-003]
+
+  - claim_id: C02-AC-005
+    fact: Historical persistence status
+    intended_owner: STD-0002 and Git object identity evidence
+    claimed_by:
+      - {path: docs/standards/STD-0002-ENGINEERING_DOCUMENT_PERSISTENCE_STANDARD.md, field: persistence_model}
+      - {path: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md, lines: 517-553, field: historical_persistence}
+      - {path: docs, field: persistence_status}
+    consumers: [scripts/validate_controlled_documents.py, Git, document qualification workflows]
+    observed_behavior: 49 records claim Pending, 30 Persisted, 42 omit persistence_status, and two use nonstandard Complete; source claims were not independently proven against immutable-object provenance in C02.
+    classifications: [CONFLICTING, INVESTIGATION_GAP]
+    disposition: REQUIRE_LATER_PERSISTENCE_PROVENANCE_RECONCILIATION
+    resolution_owner: Engineering Governance / EOS Program
+    evidence_refs: [CONTROLLED-DOCUMENT-INVENTORY.yaml, C02-F-004]
+
+  - claim_id: C02-AC-006
+    fact: Current engineering mission and phase
+    intended_owner: Project State convergence binding under ESC-ROADMAP-001
+    claimed_by:
+      - {path: docs/project/PROJ-0001-PROJECT_STATE.md, lines: 9-27, claim: Engineering System Convergence / C02}
+      - {path: docs/project/PHASE-0001-ZEUS-OPERATIONAL-ALPHA-AUTHORITY.md, lines: 45-60, claim: Zeus Operational Alpha current}
+      - {path: engineering/registry/work-registry.yaml, lines: 751-807, claim: Operation Beta and Zeus OA active missions}
+      - {path: engineering/missions/operation-beta-current.yaml, lines: 1-8, claim: BETA-04 PUBLISHED_ACTIVE}
+      - {path: engineering/authority/operational-authority-state.yaml, lines: 68-111, claim: Zeus OA mission authority}
+      - {path: /data/engineering/eos/state/EOS-STATE.md, field: mission_and_phase, claim: Zeus OA}
+    consumers:
+      - scripts/lib/eos/context.sh
+      - scripts/lib/emp/registry.py
+      - scripts/lib/eos/state_sync.py
+      - scripts/zeus
+    observed_behavior: "At least four incompatible current generations are simultaneously exposed: ESC C02, Operation Beta BETA-04, Zeus Operational Alpha, and a legacy mission-contract context."
+    classifications: [CONFLICTING, DUPLICATE_OR_OVERLAPPING, STALE]
+    disposition: PROJECT_STATE_ESC_BINDING_CONTROLS_C02; preserve other claims as findings.
+    resolution_owner: Engineering Governance
+    evidence_refs: [DOCUMENT-RUNTIME-DIVERGENCE.yaml, C02-F-005]
+
+  - claim_id: C02-AC-007
+    fact: Current roadmap next action
+    intended_owner: ESC-ROADMAP-001
+    claimed_by:
+      - {path: engineering/convergence/engineering-system-convergence/roadmap.yaml, field: resume_instructions}
+      - {path: docs/project/PROJ-0001-PROJECT_STATE.md, lines: 26-27, field: convergence_program.next_authorized_action}
+      - {path: engineering/operations/zeus-operational-alpha-progress.md, lines: 61-74, claim: OA-08 current/completed}
+      - {path: engineering/operations/zeus-operational-alpha-progress.md, lines: 165-171, claim: OA-01 sole current and not started}
+    consumers: [scripts/lib/eos/convergence_roadmap.py, scripts/lib/eos/context.sh, scripts/zeus]
+    observed_behavior: The ESC pair agrees; the OA progress record internally disagrees and describes non-ESC actions.
+    classifications: [CONFLICTING, STALE]
+    disposition: ESC_ACTION_CONTROLS; reconcile OA progress later.
+    resolution_owner: Engineering Governance / Zeus Operations
+    evidence_refs: [STALE-DOCUMENT-REGISTER.yaml, C02-F-006]
+
+  - claim_id: C02-AC-008
+    fact: Project State historical body authority
+    intended_owner: Project State current frontmatter and explicit convergence binding
+    claimed_by:
+      - {path: docs/project/PROJ-0001-PROJECT_STATE.md, lines: 124-128, claim: older material is historical input}
+      - {path: docs/project/PROJ-0001-PROJECT_STATE.md, lines: 129-end, claim: retained legacy current-state language}
+    consumers: [scripts/lib/eos/context.sh, humans, search-based automation]
+    observed_behavior: The disclaimer is explicit, but extensive retained sections still use current/active/next wording from prior phases.
+    classifications: [DUPLICATE_OR_OVERLAPPING, STALE]
+    disposition: CURRENT_BINDING_CONTROLS; later segregate or label historical sections.
+    resolution_owner: Project State owner
+    evidence_refs: [STALE-DOCUMENT-REGISTER.yaml, C02-F-007]
+
+  - claim_id: C02-AC-009
+    fact: Work Registry authority boundary
+    intended_owner: EMP-0001 and SPEC-0006
+    claimed_by:
+      - {path: docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md, lines: 159-175, claim: management facts only}
+      - {path: docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md, lines: 62-83, claim: coordination only; presence never authorization}
+      - {path: engineering/registry/work-registry.yaml, lines: 613-617, claim: management state only}
+    consumers: [scripts/lib/emp/registry.py, scripts/lib/eos/context.sh]
+    observed_behavior: The documentary boundary is consistent and registry validation passes.
+    classifications: [CONSISTENT]
+    disposition: RETAIN_BOUNDARY
+    resolution_owner: EMP owner
+
+  - claim_id: C02-AC-010
+    fact: Work Registry current-state presentation
+    intended_owner: Work Registry only for EMP coordination state
+    claimed_by:
+      - {path: scripts/lib/emp/registry.py, lines: 872-887, claim: management_current_missions/current_phases/active_work}
+      - {path: scripts/lib/eos/context.sh, lines: 434-520, claim: compares registry current labels to Project State}
+    consumers: [scripts/engctl resume, scripts/engctl registry context]
+    observed_behavior: Runtime elevates authorized/active/blocked management objects into a current-mission/phase view and then reports disagreement with Project State.
+    classifications: [CONFLICTING, UNDOCUMENTED_IMPLEMENTATION_AUTHORITY]
+    disposition: LATER_REPAIR_CONSUMER_LABELS_AND_DERIVATION
+    resolution_owner: EMP / engctl owner
+    evidence_refs: [IMPLEMENTATION-CONSUMER-MAP.yaml, C02-F-008]
+
+  - claim_id: C02-AC-011
+    fact: EOS canonical-versus-derived ownership
+    intended_owner: Repository records; EOS state, manifest, operational state, and repository table are projections/caches
+    claimed_by:
+      - {path: engineering/eos/repository-eos-authority.yaml, lines: 1-69, field: record_authority_matrix}
+      - {path: /data/engineering/eos/state/EOS-STATE.md, field: frontmatter_and_current_state}
+      - {path: /data/engineering/eos/state/EOS-MANIFEST.md, field: projection_manifest}
+      - {path: /data/engineering/eos/runtime/operational-state.json, field: runtime_cache}
+    consumers: [scripts/lib/eos/state_sync.py, scripts/lib/eos/context.sh, scripts/engctl]
+    observed_behavior: The matrix describes projections, but the rendered state uses Active/repository-authority language and is stale at repository commit 6a26d2e while Git is f2e85d8.
+    classifications: [CONFLICTING, DUPLICATE_OR_OVERLAPPING, STALE]
+    disposition: REPOSITORY_SOURCES_CONTROL; later make projection status unmistakable and refresh under C03 authority.
+    resolution_owner: EOS Program
+    evidence_refs: [DOCUMENT-RUNTIME-DIVERGENCE.yaml, C02-F-009]
+
+  - claim_id: C02-AC-012
+    fact: Active checkpoint represents current repository state
+    intended_owner: Git for repository identity; operator selection for checkpoint pointer
+    claimed_by:
+      - {path: /data/engineering/eos/state/ACTIVE-CHECKPOINT, field: checkpoint_id}
+      - {path: /data/engineering/eos/checkpoints, field: active_checkpoint_metadata}
+      - {path: engineering/eos/repository-eos-authority.yaml, lines: 53-69, field: checkpoint_ownership}
+    consumers: [scripts/lib/eos/checkpoint.sh, scripts/lib/eos/context.sh]
+    observed_behavior: Checkpoint integrity passes but selected checkpoint commit 64394a57015f predates the f2e85d857dc7 published baseline and sync validation fails.
+    classifications: [STALE, DUPLICATE_OR_OVERLAPPING]
+    disposition: DO_NOT_REFRESH_IN_C02; C03 reconciliation candidate.
+    resolution_owner: EOS Program / operator
+    evidence_refs: [STALE-DOCUMENT-REGISTER.yaml, C02-F-010]
+
+  - claim_id: C02-AC-013
+    fact: engctl resume is a read-only derived context operation under convergence
+    intended_owner: STD-0004 and active ESC roadmap
+    claimed_by:
+      - {path: docs/standards/STD-0004-ENGINEERING_STATE_FRESHNESS_STANDARD.md, field: resume_and_reconciliation}
+      - {path: scripts/lib/eos/context.sh, lines: 60-103, field: resume_dispatch}
+      - {path: scripts/lib/eos/convergence_roadmap.py, field: resume}
+    consumers: [scripts/engctl resume]
+    observed_behavior: The homelab convergence path is read-only and correctly reconstructs C02; the fallback path automatically synchronizes and refreshes EOS.
+    classifications: [CONFLICTING, UNDOCUMENTED_IMPLEMENTATION_AUTHORITY]
+    disposition: USE_EXPLICIT_CONVERGENCE_PATH_DURING_C02; repair fallback only in C04.
+    resolution_owner: engctl / EOS owner
+    evidence_refs: [DOCUMENT-RUNTIME-DIVERGENCE.yaml, C02-F-011]
+
+  - claim_id: C02-AC-014
+    fact: engctl resume argument contract
+    intended_owner: engctl interface documentation
+    claimed_by:
+      - {path: scripts/engctl, field: resume_argument_routing}
+      - {path: scripts/lib/eos/context.sh, field: project_argument}
+    consumers: [operators]
+    observed_behavior: resume --help is interpreted as a project name and reaches the legacy mutating branch; a read-only filesystem stopped the attempted temporary projection write, and Git remained unchanged.
+    classifications: [CONFLICTING, UNDOCUMENTED_IMPLEMENTATION_AUTHORITY]
+    disposition: RECORD_ONLY; add explicit argument validation in C04.
+    resolution_owner: engctl owner
+    evidence_refs: [DOCUMENT-RUNTIME-DIVERGENCE.yaml, C02-F-012]
+
+  - claim_id: C02-AC-015
+    fact: Active execution/WOP authority
+    intended_owner: Current operator-submitted WOP chain under STD-0003 and PROC-0001
+    claimed_by:
+      - {path: docs/standards/STD-0003-ENGINEERING_WORK_ORDER_STANDARD.md, field: current_wop_authority}
+      - {path: docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md, field: execution_chain}
+      - {path: engineering/execution/execution-interface.yaml, field: active_contract_candidates}
+    consumers: [scripts/engctl execution snapshot, scripts/mission-contractctl, scripts/zeus]
+    observed_behavior: The active legacy mission contract resolves INVALID_CONTRACT with wop.digest mismatch, transactional_authority false, and a pre-ESC baseline.
+    classifications: [CONFLICTING, STALE, OBSOLETE]
+    disposition: NO_EXECUTION; reconcile in C06.
+    resolution_owner: Engineering Governance / execution-interface owner
+    evidence_refs: [DOCUMENT-RUNTIME-DIVERGENCE.yaml, C02-F-013]
+
+  - claim_id: C02-AC-016
+    fact: Invalid mission-contract resolution produces fail-closed command status
+    intended_owner: STD-0003 / execution interface
+    claimed_by:
+      - {path: scripts/mission-contractctl, field: resolve_exit_semantics}
+      - {path: scripts/engctl, field: execution_snapshot_exit_semantics}
+    consumers: [operators, automation]
+    observed_behavior: engctl execution snapshot exits 78 for the invalid contract, while mission-contractctl resolve prints the invalid result but exits 0.
+    classifications: [CONFLICTING, UNDOCUMENTED_IMPLEMENTATION_AUTHORITY]
+    disposition: STANDARDIZE_FAIL_CLOSED_EXIT_IN_C06
+    resolution_owner: execution controller owner
+    evidence_refs: [DOCUMENT-RUNTIME-DIVERGENCE.yaml, C02-F-014]
+
+  - claim_id: C02-AC-017
+    fact: Zeus repository projection implementation exists and is runnable
+    intended_owner: scripts/zeus and the EMP implementation dependency graph
+    claimed_by:
+      - {path: scripts/zeus, line: 105, claim: imports repository_projection.project}
+      - {path: scripts/lib/emp/publication_candidate_authority.py, line: 20, claim: same import}
+      - {path: scripts/lib/emp/mission_verification_controller.py, line: 20, claim: same import}
+    consumers: [scripts/zeus, EMP publication and mission verification]
+    observed_behavior: scripts/lib/emp/repository_projection.py is absent on main but present on the preservation branch; import-time execution is broken.
+    classifications: [CONFLICTING, UNDOCUMENTED_IMPLEMENTATION_AUTHORITY]
+    disposition: PRESERVATION_IS_REFERENCE_ONLY; implementation repair belongs to C08.
+    resolution_owner: Zeus / EMP owner
+    evidence_refs: [DOCUMENT-RUNTIME-DIVERGENCE.yaml, C02-F-015]
+
+  - claim_id: C02-AC-018
+    fact: Zeus documented command contract matches the executable
+    intended_owner: Declared Zeus command contract and scripts/zeus
+    claimed_by:
+      - {path: engineering/docs/cli/ZEUS-USER-GUIDE.md, field: command_interface}
+      - {path: engineering/docs/cli/man/zeus.1, field: command_interface}
+      - {path: scripts/zeus, field: parser}
+    consumers: [operators, conformance validator]
+    observed_behavior: Conformance finds CONTRACT-ZEUS-COMMAND partially conformant; expected --help, --runtime-root, --state, --verbose, -h and observed none.
+    classifications: [CONFLICTING]
+    disposition: RECONCILE_CONTRACT_OR_IMPLEMENTATION_IN_C08
+    resolution_owner: Zeus owner
+    evidence_refs: [DOCUMENT-RUNTIME-DIVERGENCE.yaml, C02-F-016]
+
+  - claim_id: C02-AC-019
+    fact: EMP originates no governance or execution authority
+    intended_owner: EMP-0001 and SPEC-0006
+    claimed_by:
+      - {path: docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md, lines: 77-125, claim: consumes authority}
+      - {path: docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md, lines: 244-264, claim: state boundaries}
+    consumers: [scripts/lib/emp, scripts/engctl, scripts/zeus]
+    observed_behavior: The architectural boundary is clear, but registry/context behavior and legacy authority pipelines expose EMP-managed stale missions as current inputs.
+    classifications: [CONFLICTING, DUPLICATE_OR_OVERLAPPING]
+    disposition: RETAIN_DOCUMENTED_BOUNDARY; reconcile consumers in C07.
+    resolution_owner: EMP owner
+    evidence_refs: [IMPLEMENTATION-CONSUMER-MAP.yaml, C02-F-017]
+
+  - claim_id: C02-AC-020
+    fact: EMP progress/deviation traceability is assured
+    intended_owner: SPEC-0005/SPEC-0001 assurance declarations
+    claimed_by:
+      - {path: scripts/validate_controlled_documents.py, field: assurance_only}
+      - {path: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md, lines: 1132-1157, field: assurance_semantics}
+    consumers: [engineering assurance review]
+    observed_behavior: EP-EMP-PROGRESS-DEVIATION-TRACEABILITY is PARTIALLY_ASSURED; eleven other declared properties are assured.
+    classifications: [CONFLICTING]
+    disposition: RECORD_FOR_C07_AND_C11
+    resolution_owner: EMP / Engineering Assurance
+    evidence_refs: [DOCUMENT-RUNTIME-DIVERGENCE.yaml, C02-F-018]
+
+  - claim_id: C02-AC-021
+    fact: EENS canonical source and authority separation
+    intended_owner: SPEC-0009 for notification architecture; domain producer for source facts; services/eens for implementation source
+    claimed_by:
+      - {path: docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md, lines: 92-119, field: fact_ownership}
+      - {path: docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md, lines: 1031-1065, field: qualified_implementation}
+      - {path: services/eens/README.md, lines: 23-40, field: source_and_deployment}
+    consumers: [services/eens, event producers, EOS automation]
+    observed_behavior: Source/transport authority boundaries and canonical repository location agree.
+    classifications: [CONSISTENT]
+    disposition: RETAIN_OWNER_BOUNDARIES
+    resolution_owner: EENS owner / Engineering Governance
+
+  - claim_id: C02-AC-022
+    fact: EENS documentation and implementation synchronization
+    intended_owner: SPEC-0009 declaration plus services/eens implementation
+    claimed_by:
+      - {path: docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md, field: synchronization_declaration}
+      - {path: services/eens, field: implementation_tree}
+    consumers: [scripts/validate_controlled_documents.py --synchronization]
+    observed_behavior: Both declared document and implementation fingerprints changed; SYNC-EENS-SERVICE-IMPLEMENTATION is OUT_OF_SYNC.
+    classifications: [CONFLICTING]
+    disposition: REQUALIFY_AND_PUBLISH_ONLY_UNDER_C09_OR_C11_AUTHORITY
+    resolution_owner: EENS owner / Engineering Assurance
+    evidence_refs: [DOCUMENT-RUNTIME-DIVERGENCE.yaml, C02-F-019]
+
+  - claim_id: C02-AC-023
+    fact: EENS Operational Alpha readiness
+    intended_owner: SPEC-0009 and services/eens README
+    claimed_by:
+      - {path: docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md, lines: 1031-1065, claim: implemented and qualified}
+      - {path: services/eens/README.md, lines: 23-40, claim: currently qualified}
+      - {path: services/eens/docs/EENS_EMP_Update_Checkpoint.md, lines: 34-92, claim: remaining work and promote to OA}
+    consumers: [humans, EMP/EENS planning]
+    observed_behavior: The checkpoint is a stale planning document that predates the qualified state.
+    classifications: [CONFLICTING, STALE]
+    disposition: TREAT_CHECKPOINT_AS_HISTORICAL; reconcile in C09.
+    resolution_owner: EENS owner
+    evidence_refs: [STALE-DOCUMENT-REGISTER.yaml, C02-F-020]
+
+  - claim_id: C02-AC-024
+    fact: Operation Beta current mission and authority
+    intended_owner: Current Project State/ESC roadmap during convergence
+    claimed_by:
+      - {path: engineering/missions/operation-beta-current.yaml, lines: 1-8, claim: BETA-04 PUBLISHED_ACTIVE}
+      - {path: engineering/authority/operation-beta-beta04-activation.yaml, lines: 1-15, claim: BETA-04 activation}
+      - {path: engineering/docs/architecture/OPERATION-BETA-AUTHORITY-MODEL.md, field: published_authority_model}
+      - {path: engineering/docs/architecture/OPERATION-BETA-ROADMAP.md, field: current_mission}
+      - {path: engineering/docs/operations/OPERATION-BETA-CHARTER.md, field: normative_charter}
+    consumers: [scripts/zeus, scripts/lib/emp, scripts/lib/eos/state_sync.py]
+    observed_behavior: Active Beta publications remain runtime-consumed and disagree with ESC C02; the engineering/docs sources have no controlled identity or DOC-0001 registration.
+    classifications: [CONFLICTING, STALE, OBSOLETE, DUPLICATE_OR_OVERLAPPING]
+    disposition: NO_AUTHORITY_DECISION_IN_C02; classify/reconcile in C05-C08.
+    resolution_owner: Engineering Governance / Zeus owner
+    evidence_refs: [STALE-DOCUMENT-REGISTER.yaml, C02-F-021]
+
+  - claim_id: C02-AC-025
+    fact: Zeus Operational Alpha current phase/progress
+    intended_owner: Current Project State under ESC during convergence
+    claimed_by:
+      - {path: docs/project/PHASE-0001-ZEUS-OPERATIONAL-ALPHA-AUTHORITY.md, lines: 45-60, claim: current authoritative phase}
+      - {path: engineering/authority/operational-authority-state.yaml, field: active_mission_and_phase}
+      - {path: engineering/metadata/operational-alpha-emm.yaml, field: authoritative_entities}
+      - {path: engineering/operations/zeus-operational-alpha-progress.md, lines: 61-95, claim: OA-08/OA-04 current}
+      - {path: engineering/operations/zeus-operational-alpha-progress.md, lines: 165-171, claim: OA-01 current}
+    consumers: [scripts/zeus, scripts/lib/emp, scripts/lib/eos/state_sync.py]
+    observed_behavior: Sources disagree with ESC and with each other about OA gate, WOP, completion, and execution readiness.
+    classifications: [CONFLICTING, STALE, DUPLICATE_OR_OVERLAPPING]
+    disposition: PRESERVE_AS_FINDING; reconcile only in later gates.
+    resolution_owner: Engineering Governance / Zeus owner
+    evidence_refs: [STALE-DOCUMENT-REGISTER.yaml, C02-F-022]
+
+  - claim_id: C02-AC-026
+    fact: engineering/docs records are controlled authority
+    intended_owner: DOC-0001/STD-0000 classification and controlled records under docs/
+    claimed_by:
+      - {path: engineering/docs, field: 51_implementation_facing_documents}
+      - {path: engineering/docs/architecture/ZEUS-CONTROLLED-DOCUMENTATION-ARCHITECTURE.md, lines: 1-17, claim: proposed, non-controlled, non-authoritative}
+      - {path: engineering/docs/architecture/ZEUS-CONTROLLED-DOCUMENTATION-ARCHITECTURE.md, lines: 224-250, claim: future controlled home under docs/zeus}
+    consumers: [scripts/zeus, scripts/lib/emp, operators, engineering tests]
+    observed_behavior: None of the 51 has document_id, yet many self-describe as canonical, normative, published, controlled, or current and are referenced by runtime contracts.
+    classifications: [CONFLICTING, DUPLICATE_OR_OVERLAPPING, UNDOCUMENTED_IMPLEMENTATION_AUTHORITY]
+    disposition: KEEP_NONCONTROLLED_DURING_C02; assign each an explicit later classification.
+    resolution_owner: Engineering Governance / subsystem owners
+    evidence_refs: [CONTROLLED-DOCUMENT-INVENTORY.yaml, C02-F-023]
+
+  - claim_id: C02-AC-027
+    fact: Legacy architecture and roadmap publications are current authority
+    intended_owner: DOC-0001 classification as registered legacy publications
+    claimed_by:
+      - {path: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md, lines: 680-690, claim: legacy artifacts}
+      - {path: docs/architecture.md, field: architecture_facts}
+      - {path: docs/roadmap.md, lines: 7-24, claim: ESC current; remainder historical}
+      - {path: docs/roadmap.md, lines: 38-41, claim: Zeus OA current authoritative}
+    consumers: [humans, search-based discovery]
+    observed_behavior: Registration as legacy is clear, but retained body facts include stale current-state claims and C01-observed infrastructure discrepancies.
+    classifications: [CONFLICTING, STALE, OBSOLETE]
+    disposition: HISTORICAL_ONLY_PENDING_LATER_RECONCILIATION
+    resolution_owner: Engineering Governance
+    evidence_refs: [STALE-DOCUMENT-REGISTER.yaml, C02-F-024]
+
+  - claim_id: C02-AC-028
+    fact: Base controlled-document validation proves complete index and metadata agreement
+    intended_owner: SPEC-0001 validation model and scripts/validate_controlled_documents.py
+    claimed_by:
+      - {path: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md, lines: 630-652, field: validation_requirements}
+      - {path: scripts/validate_controlled_documents.py, field: base_validation}
+    consumers: [roadmap entry checks, CI, operators]
+    observed_behavior: Base validation passes 2958 checks but does not reject the two index omissions or thirteen index/source metadata mismatches found by full enumeration.
+    classifications: [CONFLICTING, UNDOCUMENTED_IMPLEMENTATION_AUTHORITY]
+    disposition: EXTEND_VALIDATION_IN_LATER_DOCUMENTATION_GATE
+    resolution_owner: Engineering Platform / Engineering Governance
+    evidence_refs: [CONTROLLED-DOCUMENT-INVENTORY.yaml, C02-F-025]
+
+  - claim_id: C02-AC-029
+    fact: Declared documentation/implementation synchronization is current
+    intended_owner: Synchronization declarations under SPEC-0001
+    claimed_by:
+      - {path: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md, lines: 885-930, field: synchronization_model}
+      - {path: scripts/validate_controlled_documents.py, field: synchronization_mode}
+    consumers: [Engineering Assurance, publication decisions]
+    observed_behavior: Synchronization validation has 5 OUT_OF_SYNC, 2 DOCUMENT_CHANGED, 1 IMPLEMENTATION_CHANGED, and 1 PASS declarations.
+    classifications: [CONFLICTING, STALE]
+    disposition: REQUALIFY_PER_OWNING_LATER_GATES
+    resolution_owner: Declared documentation and implementation owners
+    evidence_refs: [DOCUMENT-RUNTIME-DIVERGENCE.yaml, C02-F-026]
+
+  - claim_id: C02-AC-030
+    fact: Mandatory implementation is documented
+    intended_owner: SPEC-0001 implementation-coverage declarations
+    claimed_by:
+      - {path: scripts/validate_controlled_documents.py, field: implementation_coverage}
+      - {path: docs/specifications/SPEC-0005-ENGINEERING_CONTROL_FRAMEWORK.md, field: scripts_coverage}
+    consumers: [Engineering Assurance]
+    observed_behavior: Implementation coverage passes 2962 checks and reports all mandatory artifacts declared, but this does not establish synchronization or conformance.
+    classifications: [CONSISTENT]
+    disposition: RETAIN_AS_COVERAGE_EVIDENCE_ONLY
+    resolution_owner: Engineering Platform
+
+  - claim_id: C02-AC-031
+    fact: Repository identity and published baseline
+    intended_owner: Git and ESC roadmap binding
+    claimed_by:
+      - {path: .git, field: HEAD_and_refs}
+      - {path: engineering/convergence/engineering-system-convergence/binding-manifest.yaml, field: published_baseline_bindings}
+    consumers: [scripts/lib/eos/convergence_roadmap.py, scripts/engctl roadmap validate]
+    observed_behavior: main, HEAD, and origin/main all equal f2e85d857dc73210c428d42ef9530ce9ffc4933b at assessment start.
+    classifications: [CONSISTENT]
+    disposition: RETAIN_OWNER
+    resolution_owner: Git / Engineering Governance
+
+  - claim_id: C02-AC-032
+    fact: Preservation branch confers current execution authority
+    intended_owner: C00/C01 preservation contract as read-only reference only
+    claimed_by:
+      - {path: preservation/ob-lifecycle-pre-rebuild-20260809T235039Z, field: historical_reference}
+      - {path: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml, field: preservation_finding}
+    consumers: [C02 historical comparison]
+    observed_behavior: It was used only to confirm the missing repository_projection dependency existed in the preserved generation; no content was copied or executed.
+    classifications: [CONSISTENT]
+    disposition: KEEP_REFERENCE_ONLY
+    resolution_owner: Engineering Governance
+
+summary:
+  authority_claims_assessed: 32
+  consistent_claims: 6
+  conflicting_claims: 24
+  duplicate_or_overlapping_claims: 10
+  stale_claims: 11
+  obsolete_claims: 3
+  undocumented_implementation_authority_claims: 7
+  investigation_gap_claims: 1
+  counting_rule: Counts are non-exclusive; each claim is counted once in every listed classification.

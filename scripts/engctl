@@ -138,7 +138,7 @@ PY
         action="${1:-status}"
         shift || true
         case "$action" in
-            status|show|results|validate|evaluate)
+            status|show|results|validate|evaluate|operator-review)
                 python3 "$CONVERGENCE_ROADMAP" --repository-root "$(eos_project_root homelab)" "$action" "$@"
                 ;;
             gate)

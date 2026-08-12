@@ -1,0 +1,72 @@
+schema_version: 1
+gate_id: CR46
+classification: CR46_CONTEXT_CORRECT_REGRESSION_REQUALIFICATION_PLAN
+planned_at: '2026-08-11T21:49:28.244771+00:00'
+repository_baseline: fe824c714da35d987cc7454366aa3abaf046cc31
+source_mutation_rerun: false
+source_implementation_defect_established: false
+zo061_applicability_model: true
+execution_order:
+- RQ-1-AUTHORITY-PUBLICATION-TEST-CONTEXT
+- RQ-2-HISTORICAL-CONVERGENCE-FIXTURE
+- RQ-3-ZDCL02-ISOLATED-CANDIDATE
+- RQ-4-AGGREGATE-QUALIFICATION
+requalification_stages:
+- stage_id: RQ-1-AUTHORITY-PUBLICATION-TEST-CONTEXT
+  failure_family: AUTHORITY_PUBLICATION_TEMP_TARGET_CONTEXT
+  prior_failure_count: 13
+  validator: scripts/tests/test-authority-publication.py
+  required_context:
+    ZEUS_TESTING: '1'
+    repository_topology: ISOLATED_TEST_REPOSITORY
+    production_target_enforcement: false
+  objective: Re-run authority-publication regression tests under their explicit test-harness context so temporary activation
+    targets do not trip the production-only target guard.
+  acceptance: ALL_TESTS_PASS
+  source_mutation_authorized: false
+- stage_id: RQ-2-HISTORICAL-CONVERGENCE-FIXTURE
+  failure_family: HISTORICAL_CONVERGENCE_STATE_FIXTURE
+  prior_failure_count: 13
+  validator: scripts/tests/test-convergence-roadmap.py
+  required_context:
+    repository_topology: ISOLATED_HISTORICAL_FIXTURE
+    historical_current_item: CR23
+    live_CR46_state_consumption: false
+  objective: Re-run only the failed historical CR18/CR19/CR23 validator cases against a deterministic fixture whose corrective
+    state is rebound to the historical gate expected by those tests.
+  acceptance: ALL_PREVIOUSLY_FAILED_HISTORICAL_CASES_PASS
+  source_mutation_authorized: false
+- stage_id: RQ-3-ZDCL02-ISOLATED-CANDIDATE
+  failure_family: ZDCL02_CLEAN_WORKTREE_PRECONDITION
+  prior_failure_count: 3
+  validator: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py
+  required_context:
+    repository_topology: ISOLATED_CLEAN_CANDIDATE
+    candidate_content: IDENTICAL_TO_CURRENT_CR46_12_MODULE_IMPLEMENTATION
+    live_dirty_worktree: false
+  objective: Re-run the three failed Stage1 recovery tests against an isolated clean candidate containing the exact CR46 source
+    implementation so working-tree drift does not mask lifecycle behavior.
+  acceptance: ALL_THREE_PREVIOUSLY_FAILED_ZDCL02_CASES_PASS
+  source_mutation_authorized: false
+- stage_id: RQ-4-AGGREGATE-QUALIFICATION
+  objective: Aggregate the 231 prior passes, six focused ZO qualifications, and context-correct rerun results into one CR46
+    qualification determination.
+  acceptance:
+  - SIX_ZO_FOCUSED_QUALIFICATION_PASS
+  - AUTHORITY_PUBLICATION_CONTEXT_RERUN_PASS
+  - HISTORICAL_CONVERGENCE_CONTEXT_RERUN_PASS
+  - ZDCL02_ISOLATED_CANDIDATE_RERUN_PASS
+  - NO_UNCLASSIFIED_REGRESSION_FAILURES
+  - NO_SOURCE_MUTATION_OUTSIDE_EXISTING_CR46_DELTA
+  source_mutation_authorized: false
+prior_classification: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/REGRESSION-VALIDATOR-APPLICABILITY-CLASSIFICATION.yaml
+classified_failure_count: 29
+previously_passing_test_count: 231
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+result: PASS
+next_action: AUTHOR_CONTEXT_CORRECT_REQUALIFICATION_EXECUTION_AUTHORITY

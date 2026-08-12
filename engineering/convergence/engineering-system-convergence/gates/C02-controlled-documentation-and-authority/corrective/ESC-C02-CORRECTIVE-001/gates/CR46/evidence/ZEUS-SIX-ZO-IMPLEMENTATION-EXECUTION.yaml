@@ -1,0 +1,22 @@
+schema_version: 1
+gate_id: CR46
+classification: CR46_SIX_ZO_IMPLEMENTATION_EXECUTION
+prepared_at: '2026-08-11T19:37:30.364657+00:00'
+repository_baseline: fe824c714da35d987cc7454366aa3abaf046cc31
+execution_order:
+- ZO-026
+- ZO-024
+- ZO-059
+- ZO-061
+- ZO-060
+- ZO-058
+execution_state: READY_FOR_SOURCE_IMPLEMENTATION
+implementation_authorized: true
+source_mutation_executed: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next_action: EXECUTE_ACTUAL_SIX_ZO_SOURCE_IMPLEMENTATION_WITHIN_FROZEN_ALLOWLIST

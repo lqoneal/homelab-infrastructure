@@ -1,0 +1,25 @@
+schema_version: 1
+gate_id: CR46
+opportunity_id: ZO-059
+execution_stage: 3
+implementation_contract:
+  order: 3
+  opportunity_id: ZO-059
+  title: Zeus Gate Definition and Execution Provenance Classification
+  objective: Allow Zeus to distinguish prospective gate-definition presence from actual execution, result-backed completion,
+    current-gate activity, and successor execution so roadmap artifacts cannot be misclassified as lifecycle progress.
+  module_owner_paths:
+  - scripts/lib/emp/codex_adapter.py
+  - scripts/lib/emp/stage1_runtime.py
+  - scripts/lib/emp/authority_publication.py
+  test_owner_paths:
+  - scripts/tests/test-convergence-roadmap.py
+  - scripts/tests/test-operational-alpha-status.py
+  - scripts/tests/test-roadmap-lifecycle.py
+  implementation_contract_status: QUALIFIED
+  acceptance_requirement: OBJECTIVE_PROVEN_BY_TARGETED_TESTS_AND_NO_REGRESSION
+execution_state: AUTHORIZED_NOT_EXECUTED
+qualification_state: PENDING
+stage_authorized: false
+commit_authorized: false
+push_authorized: false

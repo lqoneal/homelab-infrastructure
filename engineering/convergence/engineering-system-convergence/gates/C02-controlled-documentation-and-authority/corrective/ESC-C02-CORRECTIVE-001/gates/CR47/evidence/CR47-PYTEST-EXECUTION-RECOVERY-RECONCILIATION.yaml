@@ -1,0 +1,37 @@
+schema_version: "1.0"
+record_type: CR47_PYTEST_EXECUTION_RECOVERY_RECONCILIATION
+cr_id: CR47
+result: PASS
+
+history:
+  system_tmp_capacity_failure: true
+  system_tmp_capacity_recovered: true
+  repository_local_tmp_attempted: true
+  repository_local_tmp_topology_safe: false
+  recursive_copy_growth_established: true
+  interrupted_recursive_run_cleaned: true
+  external_data_tmp_selected: true
+  per_node_execution_selected: true
+
+final_execution_topology:
+  root: "/data/engineering/tmp/pytest"
+  outside_repository: true
+  same_data_filesystem: true
+  exact_per_node: true
+  timeout_seconds_per_node: 180
+  immediate_cleanup: true
+
+final_result:
+  executed_node_count: 10
+  passed_node_count: 10
+  failed_node_count: 0
+  timeout_node_count: 0
+  cleanup_failure_count: 0
+  residual_test_workspace_count: 0
+
+conclusion:
+  original_test_failures_substantive: false
+  implementation_defect_established: false
+  test_contract_defect_established: false
+  harness_topology_defect_established: true
+  harness_topology_recovered: true

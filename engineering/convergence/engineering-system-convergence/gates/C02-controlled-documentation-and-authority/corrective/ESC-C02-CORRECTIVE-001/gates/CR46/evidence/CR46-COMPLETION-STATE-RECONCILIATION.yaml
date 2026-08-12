@@ -1,0 +1,54 @@
+schema_version: 1
+gate_id: CR46
+classification: CR46_COMPLETION_STATE_RECONCILIATION
+reconciled_at: '2026-08-12T07:09:25.659458+00:00'
+result: PASS
+basis:
+  regression_requalification: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ1-RQ2-RQ3-CONTEXT-CORRECT-REQUALIFICATION-RECONCILIATION.yaml
+  finalization_authority: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/CR46-PARTIAL-COMPLETION-FINALIZATION-AUTHORITY.yaml
+completion:
+  cr46_result: PASS
+  rq1: PASS
+  rq2: PASS
+  rq3: PASS
+  regression_requalification: PASS
+  qualified_failure_family_count: 3
+  unresolved_failure_family_count: 0
+  state_reconciliation: PASS
+  roadmap_validation: PASS
+  binding_manifest_validation: PASS
+  last_completed_item: CR46
+  current_item: CR47
+  cr47_executed: false
+recovery:
+  core_completion_rerun: false
+  state_advancement_repeated: false
+  parent_state_reconciliation_repeated: false
+  project_state_reconciliation_repeated: false
+  binding_manifest_rebind_repeated: false
+controlled_records:
+  cr46_result:
+    path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/RESULT.yaml
+    sha256: 45bc80e1f4bd0907894bd0a7c81c889de02445d6890728da1f39d16073912a2b
+  corrective_state:
+    path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml
+    sha256: f1956da903d4fbf8d36a8ba32ea0ec4c8c9e6fe6e14a71b8889d22a13f19c0a2
+  parent_state:
+    path: engineering/convergence/engineering-system-convergence/STATE.yaml
+    sha256: c3b1c02c7cfb803078310bdaaa453d4fad05e108082a6f4dd38f9bc5a453bf54
+  project_state:
+    path: docs/project/PROJ-0001-PROJECT_STATE.md
+    sha256: 7f464acde3d88a92e200eac037c478bb013ccd275828d07b1c99bbdab2d8470c
+  binding_manifest:
+    path: engineering/convergence/engineering-system-convergence/binding-manifest.yaml
+    sha256: f95ebc12f97c52e7033baf73b35ce2add46e9b8c4445f79c6896568d7771ab69
+publication:
+  stage_executed: false
+  commit_created: false
+  push_performed: false
+  eos_synchronization_executed: false
+successor:
+  cr47_current_item: true
+  cr47_executed: false
+  cr47_execution_authorized: false
+next: DERIVE_POST_CR46_PUBLICATION_AND_CR47_SUCCESSOR_AUTHORITY_ONLY

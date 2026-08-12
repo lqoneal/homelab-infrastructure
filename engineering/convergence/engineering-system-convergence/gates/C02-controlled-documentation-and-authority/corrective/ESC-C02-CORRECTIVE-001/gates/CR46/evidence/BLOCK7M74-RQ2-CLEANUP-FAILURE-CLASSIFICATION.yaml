@@ -1,0 +1,32 @@
+schema_version: 1
+gate_id: CR46
+classification: BLOCK7M74_POST_QUALIFICATION_ISOLATED_WORKSPACE_CLEANUP_FAILURE
+classified_at: '2026-08-12T00:51:35.719440+00:00'
+result: PASS
+rq2_result_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-EXACT-15-NODE-CONTEXT-CORRECT-REQUALIFICATION-RESULT.yaml
+rq2_substantive_result: PASS
+rq2_qualified: true
+block_7m74_transaction_result: FAIL_CLOSED
+failure_stage: ISOLATED_WORKSPACE_CLEANUP
+failure_class: TEST_CREATED_NONWRITABLE_AUTHORITY_PUBLICATION_RESIDUE
+workspace: /data/engineering/tmp/cr46-rq2-15-node.1965485
+permission_residue:
+  nonwritable_directory_count: 33
+  nonwritable_file_count: 242
+  authority_publication_object_count: 275
+rq2_test_execution_defect_established: false
+rq2_fixture_defect_established: false
+rq2_rerun_required: false
+production_source_defect_established: false
+test_source_defect_established: false
+live_repository_mutation: false
+cleanup_recovery_required: true
+cleanup_scope: EXACT_RESIDUAL_7M74_ISOLATED_WORKSPACE_ONLY
+sudo_required: false
+rq3_execution_authorized_during_cleanup: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: RECOVER_EXACT_7M74_ISOLATED_WORKSPACE_PERMISSIONS_AND_DELETE_ONLY

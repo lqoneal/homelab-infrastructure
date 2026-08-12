@@ -1,0 +1,35 @@
+schema_version: 1
+gate_id: CR44M1
+classification: POST_AMEND_IMMUTABLE_QUALIFICATION
+result: PASS
+qualified_at: '2026-08-11T16:00:05.700570+00:00'
+failed_commit: 8b651126a19ae5bab21ea5036cd410514e22ee0c
+amended_commit: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+parent_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+qualified_candidate_commit: 7c1ca16b490c68b5506f9bb4cc76e566ca8a8c0a
+qualified_candidate_tree: 7f343db98b1e61f864d5fbb117ba3bf295f01024
+qualification:
+  amended_parent_preserved: true
+  single_commit_semantics_preserved: true
+  amended_tree_equals_qualified_candidate_tree: true
+  exact_four_path_delta: true
+  four_committed_blobs_match_candidate: true
+  all_non_repair_content_preserved: true
+  immutable_zeus_startup: PASS
+  import_closure: PASS
+  controlled_document_semantics: PASS
+  convergence_runtime: PASS
+  applicable_repair_tests: PASS
+not_applicable:
+  published_platform_verification: NOT_APPLICABLE_PREPUBLICATION
+  published_eos_parity: NOT_APPLICABLE_PREPUBLICATION
+  postcommit_parent_c02_aggregate: NOT_APPLICABLE_TO_IMMUTABLE_AMENDED_TRANSACTION_TREE
+  stale_publication_transaction_fixture: NOT_APPLICABLE_UNTIL_FIXTURE_RECONCILIATION
+repository_effects:
+  push_performed: false
+  publication_performed: false
+  eos_synchronization_performed: false
+  cr44m1_completed: false
+  cr44_executed: false
+  cr45_executed: false
+next_action: AUTHOR_CR44M1_TERMINAL_CLOSEOUT_BOUNDARY

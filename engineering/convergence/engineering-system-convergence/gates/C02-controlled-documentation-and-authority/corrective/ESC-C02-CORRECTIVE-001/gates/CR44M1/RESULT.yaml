@@ -1,0 +1,45 @@
+schema_version: 1
+gate_id: CR44M1
+title: Repair CR43 Immutable Commit Dependency Closure
+status: COMPLETE
+result: COMPLETE_PASS
+objective: Repair the CR43 local commit so the immutable commit is dependency-complete and executable without relying
+  on dirty live-worktree masking.
+qualification:
+  failed_commit: 8b651126a19ae5bab21ea5036cd410514e22ee0c
+  amended_commit: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+  parent_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+  qualified_candidate_commit: 7c1ca16b490c68b5506f9bb4cc76e566ca8a8c0a
+  qualified_candidate_tree: 7f343db98b1e61f864d5fbb117ba3bf295f01024
+  resolved_blocker: CR43_COMMIT_DEPENDENCY_CLOSURE_FAILURE
+  exact_four_path_repair: PASS
+  dependency_closure: PASS
+  immutable_zeus_startup: PASS
+  import_closure: PASS
+  applicable_cr42_equivalent_qualification: PASS
+  post_amend_immutable_qualification: PASS
+  non_repair_content_preserved: true
+  single_commit_semantics_preserved: true
+  stop_boundary: PASS
+acceptance_criteria:
+- criterion: The CR43 commit dependency-closure defect is repaired.
+  result: PASS
+- criterion: The amended commit is independently executable and dependency-complete.
+  result: PASS
+- criterion: Only the exact authorized four-path repair entered the amendment.
+  result: PASS
+- criterion: The original parent and single-commit semantics are preserved.
+  result: PASS
+- criterion: No push, publication, EOS synchronization, CR44 execution, or CR45 execution occurred.
+  result: PASS
+evidence:
+  pre_amend_qualification: evidence/APPLICABLE-CR42-EQUIVALENT-QUALIFICATION.yaml
+  amend_authority: evidence/LIVE-FOUR-PATH-AMEND-AUTHORITY.yaml
+  post_amend_qualification: evidence/POST-AMEND-IMMUTABLE-QUALIFICATION.yaml
+  stop_boundary_classification: evidence/STOP-BOUNDARY-REPRESENTATION-CLASSIFICATION.yaml
+  closeout_authority: evidence/TERMINAL-CLOSEOUT-AUTHORITY.yaml
+  terminal_qualification: evidence/TERMINAL-QUALIFICATION.yaml
+  zeus_opportunity: evidence/ZO-061-QUALIFICATION.yaml
+successor: CR44
+successor_executed: false
+completed_at: '2026-08-11T16:18:42.847806+00:00'

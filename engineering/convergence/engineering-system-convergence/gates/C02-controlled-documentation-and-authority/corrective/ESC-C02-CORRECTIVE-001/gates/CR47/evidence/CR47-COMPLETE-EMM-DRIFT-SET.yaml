@@ -1,0 +1,15 @@
+schema_version: '1.0'
+record_type: CR47_COMPLETE_EMM_DRIFT_SET
+cr_id: CR47
+result: PASS
+source_count: 41
+drift_count: 2
+sources:
+- path: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md
+  status: DRIFT
+  bound_sha256: 2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a
+  current_sha256: 53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58
+- path: scripts/lib/eos/convergence_roadmap.py
+  status: DRIFT
+  bound_sha256: d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc
+  current_sha256: 205f95746fdcb7933905aed3308e46f992767ddfb58d1f3877670c70b39d30b4

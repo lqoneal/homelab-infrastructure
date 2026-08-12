@@ -1,0 +1,52 @@
+schema_version: 1
+gate_id: CR46
+classification: RQ1_RQ2_RQ3_CONTEXT_CORRECT_REGRESSION_REQUALIFICATION_RECONCILIATION
+reconciled_at: '2026-08-12T06:59:37.278486+00:00'
+result: PASS
+requalification_complete: true
+rq1:
+  result: PASS
+  qualified: true
+  execution: PRIOR_PASS_PRESERVED
+  result_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ1-AFTER-PRODUCTION-RESOLVER-CORRECTIVE-RESULT.yaml
+  boundary_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ1-CONTEXT-CORRECT-EXECUTION-BOUNDARY.yaml
+  rerun_required: false
+rq2:
+  result: PASS
+  qualified: true
+  execution: EXACT_15_NODE_CONTEXT_CORRECT_HISTORICAL_FIXTURE
+  result_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-EXACT-15-NODE-CONTEXT-CORRECT-REQUALIFICATION-RESULT.yaml
+  reconciliation_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-EXACT-15-NODE-REQUALIFICATION-RECONCILIATION.yaml
+  boundary_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-CONTEXT-CORRECT-EXECUTION-BOUNDARY.yaml
+  node_count: 15
+  rerun_required: false
+  cleanup_recovered: true
+rq3:
+  result: PASS
+  qualified: true
+  execution: EXACT_10_NODE_CANONICAL_PATH_ISOLATED_GIT_VIEW
+  result_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-EXACT-10-NODE-ISOLATED-GIT-VIEW-REQUALIFICATION-RESULT.yaml
+  boundary_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-CONTEXT-CORRECT-EXECUTION-BOUNDARY.yaml
+  node_count: 10
+  rerun_required: false
+execution_scope:
+  aggregate_scope_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-RQ3-CONTEXT-CORRECT-EXECUTION-SCOPE-QUALIFICATION.yaml
+  rq2_execution_scope_qualified: true
+  rq2_node_count: 15
+  rq3_execution_scope_qualified: true
+  rq3_node_count: 10
+aggregate:
+  required_failure_family_count: 3
+  qualified_failure_family_count: 3
+  unresolved_failure_family_count: 0
+  regression_requalification: PASS
+  source_implementation_defect_remaining: false
+  test_implementation_defect_remaining: false
+  execution_scope_defect_remaining: false
+  qualification_context_defect_remaining: false
+completion:
+  cr46_completion_eligible: true
+  cr46_completion_executed: false
+  cr47_execution_eligible: false
+  cr47_executed: false
+next: DERIVE_CR46_COMPLETION_AUTHORITY_ONLY

@@ -1,0 +1,35 @@
+schema_version: "1.0"
+record_type: CR47_BLOCK9_VERIFIER_DEFECT_CLASSIFICATION
+cr_id: CR47
+result: PASS
+
+block9_failure:
+  class: ACTIVE_PYTEST_PROCESS_DETECTOR_SELF_MATCH_FALSE_POSITIVE
+  legacy_detector_count: 1
+  actual_pytest_process_count: 0
+
+effects:
+  system_tmp_cleanup_skipped: true
+  repository_tmp_creation_skipped: true
+  repository_tmp_create_failure_established: false
+  pytest_execution_attempted: false
+  implementation_defect_established: false
+  test_implementation_defect_established: false
+
+preserved:
+  implementation_sha256: "205f95746fdcb7933905aed3308e46f992767ddfb58d1f3877670c70b39d30b4"
+  test_sha256: "6aaf549a1951ce6f787170b75153370f14c1c27cb700554e8573274da15fc797"
+  cr47_result_written: false
+  cr47_state_advanced: false
+  cr48_executed: false
+  stage_executed: false
+  commit_executed: false
+  push_executed: false
+  eos_sync_executed: false
+
+recovery:
+  delete_only_operator_owned_abandoned_system_pytest_root: true
+  use_repository_local_tmp: true
+  repository_tmp_root: "/data/engineering/repositories/homelab/tmp"
+  rerun_codex: false
+  rerun_tests_only: true

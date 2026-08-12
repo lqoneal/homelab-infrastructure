@@ -1,0 +1,30 @@
+schema_version: 1
+gate_id: CR46
+classification: BLOCK7M91_PUBLICATION_DELTA_ALLOWLIST_CLASSIFIER_DEFECT
+classified_at: '2026-08-12T07:13:57.644350+00:00'
+result: PASS
+failure:
+  block: 7M91
+  stage: INVENTORY_CURRENT_UNPUBLISHED_CR46_DELTA
+  class: PUBLICATION_DELTA_ALLOWLIST_CLASSIFIER_DEFECT
+  repository_mutation_failure: false
+  publication_execution_failure: false
+  cr47_execution_failure: false
+frozen_surface:
+  expected_path_count: 30
+  expected_path_set_sha256: 2cebf244d52894f4da490d16e608f77a915a47aeb0ab97ce300a4e07eaa1baa6
+  current_path_count: 30
+  current_path_set_sha256: 2cebf244d52894f4da490d16e608f77a915a47aeb0ab97ce300a4e07eaa1baa6
+  path_set_changed: false
+classification_result:
+  tracked_delta_drift: false
+  foreign_tracked_path_established: false
+  narrow_allowlist_was_valid: false
+  full_accumulated_corrective_surface_requires_provenance_qualification: true
+execution:
+  stage_executed: false
+  commit_created: false
+  push_performed: false
+  eos_synchronization_executed: false
+  cr47_executed: false
+next: QUALIFY_FULL_FROZEN_30_PATH_PUBLICATION_SURFACE

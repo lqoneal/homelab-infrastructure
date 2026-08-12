@@ -1,0 +1,226 @@
+schema_version: 1
+gate_id: C02
+baseline: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+entries:
+  - authority_id: ESC-ROADMAP-001
+    source_paths:
+      - engineering/convergence/engineering-system-convergence/roadmap.yaml
+      - engineering/convergence/engineering-system-convergence/STATE.yaml
+      - engineering/convergence/engineering-system-convergence/binding-manifest.yaml
+      - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/GATE.yaml
+    intended_fact: Queue, current gate, frozen gate contract, next action, published bindings
+    consumers:
+      - {path: scripts/lib/eos/convergence_roadmap.py, behavior: validate/evaluate/status/gate/resume}
+      - {path: scripts/lib/eos/context.sh, behavior: select convergence resume path}
+      - {path: scripts/engctl, behavior: roadmap command routing}
+    follows_documented_owner: true
+    observed_behavior: C02 is current and activation-frozen; validation/status are read-only.
+
+  - authority_id: PROJ-0001
+    source_paths: [docs/project/PROJ-0001-PROJECT_STATE.md]
+    intended_fact: Current project mission, phase, gate binding, state, and next action
+    consumers:
+      - {path: scripts/lib/eos/context.sh, behavior: project-state parsing and authority comparison}
+      - {path: scripts/lib/eos/state_sync.py, behavior: render EOS-STATE projection}
+      - {path: scripts/lib/eos/convergence_roadmap.py, behavior: binding validation}
+      - {path: engineering/registry/work-registry.yaml, behavior: referenced source record}
+    follows_documented_owner: partial
+    observed_behavior: ESC binding consumers follow it; registry references it while retaining incompatible active missions.
+
+  - authority_id: DOC-0001
+    source_paths: [docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md]
+    intended_fact: Controlled record discovery and repository documentation architecture
+    consumers:
+      - {path: scripts/validate_controlled_documents.py, behavior: selected framework/index validation}
+      - {actor: humans_and_automation, behavior: document discovery}
+    follows_documented_owner: partial
+    observed_behavior: Validator passes despite two controlled IDs absent from index and thirteen index/source metadata mismatches.
+
+  - authority_id: STD-0001
+    source_paths:
+      - docs/standards/STD-0001-ENGINEERING_DOCUMENT_LIFECYCLE_STANDARD.md
+      - docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md
+    intended_fact: Controlled-document lifecycle transitions and representation
+    consumers:
+      - {path: scripts/validate_controlled_documents.py, behavior: metadata and semantic lifecycle checks}
+      - {path: scripts/lib/document_synchronization.py, behavior: lifecycle-aware declarations}
+    follows_documented_owner: partial
+    observed_behavior: Base validation accepts source/index disagreement and domain statuses mixed with lifecycle states.
+
+  - authority_id: STD-0002
+    source_paths:
+      - docs/standards/STD-0002-ENGINEERING_DOCUMENT_PERSISTENCE_STANDARD.md
+      - docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md
+    intended_fact: Historical persistence and immutable Git identity
+    consumers:
+      - {path: scripts/validate_controlled_documents.py, behavior: persistence metadata checks}
+      - {actor: Git, behavior: immutable object store}
+    follows_documented_owner: partial
+    observed_behavior: Metadata is accepted with 42 missing and two nonstandard values; C02 did not independently prove each persisted claim.
+
+  - authority_id: STD-0003_PROC-0001
+    source_paths:
+      - docs/standards/STD-0003-ENGINEERING_WORK_ORDER_STANDARD.md
+      - docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md
+      - engineering/execution/execution-interface.yaml
+    intended_fact: WOP/work execution authority and procedure
+    consumers:
+      - {path: scripts/engctl, behavior: execution snapshot}
+      - {path: scripts/mission-contractctl, behavior: legacy contract resolution}
+      - {path: scripts/zeus, behavior: admission and execution}
+      - {path: scripts/lib/emp/wop_service.py, behavior: WOP management}
+    follows_documented_owner: false
+    observed_behavior: A stale legacy contract is selected, wop.digest mismatches, and command exit semantics disagree.
+
+  - authority_id: STD-0004
+    source_paths:
+      - docs/standards/STD-0004-ENGINEERING_STATE_FRESHNESS_STANDARD.md
+      - scripts/lib/eos/context.sh
+    intended_fact: Freshness, reconciliation, and read-only derived resume context
+    consumers:
+      - {path: scripts/engctl, behavior: resume}
+      - {path: scripts/lib/eos/state_sync.py, behavior: EOS synchronization}
+      - {path: scripts/lib/emp/registry.py, behavior: management context contribution}
+    follows_documented_owner: partial
+    observed_behavior: Convergence path validates without mutation; fallback path auto-synchronizes and refreshes EOS.
+
+  - authority_id: WORK_REGISTRY
+    source_paths:
+      - engineering/registry/work-registry.yaml
+      - docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md
+      - docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md
+    intended_fact: EMP coordination and management state only
+    consumers:
+      - {path: scripts/lib/emp/registry.py, lines: 872-887, behavior: current mission/phase/work selection}
+      - {path: scripts/lib/eos/context.sh, behavior: resume comparison and reporting}
+      - {path: scripts/lib/eos/state_sync.py, behavior: EOS projection input}
+      - {path: scripts/engctl, behavior: registry validate/context/status}
+    follows_documented_owner: false
+    observed_behavior: Data validates, but stale management-active objects are presented as current context and conflict with Project State.
+
+  - authority_id: EOS_AUTHORITY_MATRIX
+    source_paths: [engineering/eos/repository-eos-authority.yaml]
+    intended_fact: Repository canonical sources versus EOS projections/caches/checkpoints
+    consumers:
+      - {path: scripts/lib/eos/state_sync.py, behavior: render and compare projections}
+      - {path: scripts/lib/eos/context.sh, behavior: status/resume}
+      - {path: scripts/lib/eos/checkpoint.sh, behavior: checkpoint integrity and selection}
+    follows_documented_owner: partial
+    observed_behavior: Ownership matrix is explicit, but stale projections retain active/authority language and structural validation passes independently of sync.
+
+  - authority_id: GIT_REPOSITORY_IDENTITY
+    source_paths: [.git/HEAD, refs/remotes/origin/main]
+    intended_fact: Current repository commit/branch/upstream identity
+    consumers:
+      - {path: scripts/lib/eos/convergence_roadmap.py, behavior: published baseline validation}
+      - {path: scripts/lib/eos/state_sync.py, behavior: projected repository identity}
+      - {path: scripts/lib/eos/checkpoint.sh, behavior: checkpoint comparison}
+      - {path: scripts/lib/emp/repository_projection.py, behavior: intended repository projection}
+    follows_documented_owner: partial
+    observed_behavior: Roadmap sees current f2e85d8; EOS/checkpoint retain older values; repository_projection.py is absent.
+
+  - authority_id: OPERATION_BETA
+    source_paths:
+      - engineering/missions/operation-beta-current.yaml
+      - engineering/authority/operation-beta-beta04-activation.yaml
+      - engineering/docs/architecture/OPERATION-BETA-AUTHORITY-MODEL.md
+      - engineering/docs/architecture/OPERATION-BETA-ROADMAP.md
+      - engineering/docs/operations/OPERATION-BETA-CHARTER.md
+    intended_fact: Historical Operation Beta mission and activation context
+    consumers:
+      - {path: scripts/zeus, behavior: beta commands and authority selection}
+      - {path: scripts/lib/emp, behavior: beta mission lifecycle and execution}
+      - {path: scripts/lib/eos/state_sync.py, behavior: operation_beta_current_mission projection}
+      - {path: engineering/registry/work-registry.yaml, behavior: active mission/work references}
+    follows_documented_owner: false
+    observed_behavior: Runtime-consumed records remain PUBLISHED_ACTIVE/current and cite non-controlled authority documents despite ESC C02.
+
+  - authority_id: ZEUS_OA
+    source_paths:
+      - docs/project/PHASE-0001-ZEUS-OPERATIONAL-ALPHA-AUTHORITY.md
+      - engineering/authority/operational-authority-state.yaml
+      - engineering/metadata/operational-alpha-emm.yaml
+      - engineering/operations/zeus-operational-alpha-progress.md
+      - engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001
+    intended_fact: Historical OA phase, gate, WOP, progress, and verified receipts
+    consumers:
+      - {path: scripts/zeus, behavior: gate/eligibility/resume}
+      - {path: scripts/lib/emp, behavior: progressive OA and verification}
+      - {path: scripts/lib/eos/state_sync.py, behavior: operational projection}
+      - {path: scripts/lib/eos/context.sh, behavior: resume context}
+    follows_documented_owner: false
+    observed_behavior: OA-01/OA-04/OA-08 claims and a stale active phase cannot resolve to one current fact.
+
+  - authority_id: ZEUS_COMMAND_CONTRACT
+    source_paths:
+      - engineering/docs/cli/ZEUS-USER-GUIDE.md
+      - engineering/docs/cli/man/zeus.1
+      - scripts/zeus
+    intended_fact: Zeus command interface
+    consumers:
+      - {actor: operators, behavior: invoke Zeus}
+      - {path: scripts/validate_controlled_documents.py, behavior: conformance validation}
+    follows_documented_owner: false
+    observed_behavior: Command contract is partially conformant and executable import fails because repository_projection.py is missing.
+
+  - authority_id: EMP_ARCHITECTURE
+    source_paths:
+      - docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md
+      - docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md
+    intended_fact: EMP management ownership and non-authority boundary
+    consumers:
+      - {path: scripts/lib/emp, behavior: portfolio, registry, mission, WOP, evidence, and execution services}
+      - {path: scripts/engctl, behavior: global EMP routing}
+      - {path: scripts/zeus, behavior: EMP-backed lifecycle services}
+    follows_documented_owner: partial
+    observed_behavior: Architecture is explicit; context selection and stale legacy pipelines exceed or blur it, and progress-deviation traceability is only partially assured.
+
+  - authority_id: EENS_SPECIFICATION
+    source_paths:
+      - docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md
+      - services/eens/README.md
+    intended_fact: Notification architecture, event boundaries, canonical implementation source, and qualified deployment distinction
+    consumers:
+      - {path: services/eens, behavior: event/notification service implementation}
+      - {actor: engineering_producers, behavior: publish source-owned facts}
+      - {actor: EOS_automation, behavior: consume events without owning source fact}
+    follows_documented_owner: partial
+    observed_behavior: Authority boundary agrees; synchronization fingerprints are out of sync and one planning checkpoint remains stale.
+
+  - authority_id: CONTROLLED_DOCUMENT_VALIDATOR
+    source_paths:
+      - docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md
+      - scripts/validate_controlled_documents.py
+    intended_fact: Structural, semantic, synchronization, coverage, conformance, and assurance evidence
+    consumers:
+      - {actor: roadmap_and_gate_entry_checks, behavior: base validation}
+      - {actor: Engineering_Assurance, behavior: extended reports}
+    follows_documented_owner: partial
+    observed_behavior: Base and coverage pass; semantic-all, synchronization, conformance, and assurance expose pre-existing failures; base misses two index omissions and thirteen row mismatches.
+
+  - authority_id: ENGINEERING_DOCS
+    source_paths: [engineering/docs]
+    intended_fact: Implementation-facing explanatory material unless separately controlled
+    consumers:
+      - {path: scripts/zeus, behavior: contract and operational references}
+      - {path: scripts/lib/emp, behavior: architecture/procedure references}
+      - {path: engineering/tests, behavior: expected behavior and contract references}
+      - {actor: operators, behavior: CLI and operation guidance}
+    follows_documented_owner: false
+    observed_behavior: All 51 files lack controlled identity; many still carry authority-bearing language and live runtime references.
+
+  - authority_id: PRESERVATION_BRANCH
+    source_paths: [preservation/ob-lifecycle-pre-rebuild-20260809T235039Z]
+    intended_fact: Historical comparison only
+    consumers:
+      - {actor: C02_assessment, behavior: confirm missing repository_projection historical reference}
+    follows_documented_owner: true
+    observed_behavior: Read-only comparison only; no execution, merge, copy, or authority inheritance.
+
+summary:
+  mapped_authority_groups: 18
+  fully_follow_documented_owner: 2
+  partially_follow_documented_owner: 10
+  do_not_follow_documented_owner: 6
+  untraced_material_consumers: 0
+  external_runtime_gap: Qualified LOpi EENS deployment was not inspected; repository authority/source boundary was assessed.

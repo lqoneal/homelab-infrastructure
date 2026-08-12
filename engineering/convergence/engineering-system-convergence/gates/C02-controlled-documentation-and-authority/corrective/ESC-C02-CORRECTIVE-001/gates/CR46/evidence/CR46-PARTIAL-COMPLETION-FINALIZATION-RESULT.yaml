@@ -1,0 +1,21 @@
+schema_version: 1
+gate_id: CR46
+classification: CR46_PARTIAL_COMPLETION_FINALIZATION_RESULT
+finalized_at: '2026-08-12T07:09:25.718408+00:00'
+result: PASS
+authority: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/CR46-PARTIAL-COMPLETION-FINALIZATION-AUTHORITY.yaml
+cr46_result: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/RESULT.yaml
+completion_reconciliation: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/CR46-COMPLETION-STATE-RECONCILIATION.yaml
+terminal_state:
+  cr46: PASS
+  state_reconciliation: PASS
+  roadmap_validation: PASS
+  binding_manifest_validation: PASS
+  last_completed_item: CR46
+  current_item: CR47
+  cr47_executed: false
+  stage_executed: false
+  commit_created: false
+  push_performed: false
+  eos_synchronization_executed: false
+next: DERIVE_POST_CR46_PUBLICATION_AND_CR47_SUCCESSOR_AUTHORITY_ONLY

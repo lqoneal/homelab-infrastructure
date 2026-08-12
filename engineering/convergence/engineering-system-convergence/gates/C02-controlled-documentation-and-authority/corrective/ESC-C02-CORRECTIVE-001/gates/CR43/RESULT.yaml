@@ -1,0 +1,57 @@
+schema_version: 1
+gate_id: CR43
+title: Create Corrective Commit
+objective: Commit only qualified lifecycle corrective and evidence.
+status: COMPLETE
+result: COMPLETE_PASS
+qualification:
+  final_local_commit: 8b651126a19ae5bab21ea5036cd410514e22ee0c
+  original_interrupted_commit: 91505033340f0595c2ceb52ee29a32963ae2a5bb
+  parent_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+  single_local_commit: true
+  single_commit_semantics_preserved: true
+  final_commit_path_count: 473
+  original_qualified_path_count: 35
+  corrective_amend_delta_path_count: 438
+  outside_root_provenance: PASS
+  outside_root_blob_equivalence: PASS
+  amend_delta_corrective_only: PASS
+  required_output: PASS
+  required_evidence: PASS
+  dependency_cr42: PASS
+  protected_mutation_boundary: PASS
+  unrelated_dirty_worktree_preserved: true
+  push_performed: false
+  eos_synchronized: false
+  c02_advanced: false
+  successor_executed: false
+acceptance_criteria:
+- criterion: The stated objective is fully satisfied.
+  result: PASS
+- criterion: All required outputs exist and validate.
+  result: PASS
+- criterion: No prohibited mutation occurred.
+  result: PASS
+- criterion: All dependencies remain valid.
+  result: PASS
+- criterion: The next item is not executed.
+  result: PASS
+- criterion: Every applicable ordered manual-procedure step has reproducible evidence.
+  result: PASS
+- criterion: Gate-specific outcomes are independently reproducible from durable repository state.
+  result: PASS
+- criterion: Pre/post authority and protected-state comparisons prove the mutation boundary.
+  result: PASS
+- criterion: Interruption or failure did not silently authorize successor execution.
+  result: PASS
+evidence:
+  primary: CR43-EVIDENCE.yaml
+  validation: evidence/VALIDATION.yaml
+  recovery: evidence/CR43-COMMIT-RECOVERY-QUALIFICATION-2L11.yaml
+  recovery_closure: evidence/CR43-RECOVERY-CLOSURE.yaml
+  terminal_commit_qualification: evidence/CR43-TERMINAL-COMMIT-QUALIFICATION.yaml
+  commands: evidence/COMMANDS.md
+  zeus_opportunities: evidence/CR43-ZEUS-DEVELOPMENT-OPPORTUNITIES.yaml
+successor: CR44
+successor_executed: false
+completed_at: '2026-08-11T14:21:25.899284+00:00'

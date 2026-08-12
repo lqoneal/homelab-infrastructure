@@ -1,0 +1,11 @@
+ZO_ID	NODE	RC	CLASSIFICATION	DURATION_SECONDS	TMP_BYTES	TMP_FILES	TMP_DIRS	CLEANUP_RC
+ZO-012	test_cr47_zo012_authority_surface_contract	0	PASS	1.741	69498219	5595	869	0
+ZO-018	test_cr47_zo018_missing_result_diagnostic	0	PASS	0.911	69490973	5595	869	0
+ZO-019	test_cr47_zo019_result_diagnostic_is_bounded_to_active_gate	0	PASS	0.921	69499296	5597	869	0
+ZO-020	test_cr47_zo020_wrong_gate_result_diagnostic	0	PASS	0.996	69499886	5598	869	0
+ZO-021	test_cr47_zo021_result_authority_identity_projection	0	PASS	0.891	69500389	5599	869	0
+ZO-023	test_cr47_zo023_stale_result_diagnostic	0	PASS	0.944	69500969	5600	869	0
+ZO-028	test_cr47_zo028_acceptance_target_authority_projection	0	PASS	0.908	69501467	5601	869	0
+ZO-029	test_cr47_zo029_acceptance_boundary_diagnostic_projection	0	PASS	1.064	69502025	5602	869	0
+ZO-031	test_cr47_zo031_acceptance_prerequisite_projection	0	PASS	0.985	69502579	5603	869	0
+ZO-032	test_cr47_zo032_acceptance_readiness_diagnostic_projection	0	PASS	0.980	69503134	5604	869	0

@@ -1,0 +1,39 @@
+schema_version: "1.0"
+record_type: CR47_CLOSEOUT_AUTHORITY_AFTER_SECONDARY_QUALIFICATION
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  secondary_qualification: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-SECONDARY-IMPLEMENTATION-QUALIFICATION.yaml"
+  secondary_qualification_sha256: "b6593dbf93e4af5ef1347bf1394dfe689279165b5d6469ee225efd5530c8ba1e"
+  pytest_recovery_reconciliation: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-PYTEST-EXECUTION-RECOVERY-RECONCILIATION.yaml"
+  pytest_recovery_reconciliation_sha256: "d03d6176187fe973ee384d4275bc3d80b3a2dee8ce7ad0a496918d1d6b367449"
+
+qualification:
+  secondary_mission_count: 10
+  projection_function_count: 6
+  qualified_test_node_count: 10
+  failed_test_node_count: 0
+  timeout_node_count: 0
+  cleanup_failure_count: 0
+  unresolved_secondary_failure_count: 0
+
+authorized:
+  derive_primary_cr47_closeout_contract: true
+  derive_cr47_result_content: true
+  derive_cr47_state_reconciliation: true
+  derive_required_summary_closeout: true
+  derive_post_cr47_publication_boundary: true
+
+not_yet_authorized:
+  write_cr47_result: true
+  advance_cr47_state: true
+  write_cr47_summary: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+  execute_cr48: true
+
+next_authorized_action: DERIVE_EXACT_CR47_CLOSEOUT_RESULT_SUMMARY_AND_STATE_RECONCILIATION_BOUNDARY_ONLY

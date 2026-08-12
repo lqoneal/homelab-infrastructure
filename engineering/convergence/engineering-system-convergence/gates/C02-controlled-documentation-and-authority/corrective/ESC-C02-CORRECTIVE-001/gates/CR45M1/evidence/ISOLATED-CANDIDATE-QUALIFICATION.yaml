@@ -1,0 +1,22 @@
+schema_version: 1
+gate_id: CR45M1
+classification: ISOLATED_DURABILITY_CANDIDATE_CONTENT_QUALIFICATION
+qualified_at: '2026-08-11T18:55:14.137546+00:00'
+base_commit: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+exact_ten_path_delta: PASS
+frozen_digest_equivalence: PASS
+yaml_structure: PASS
+immutable_zeus_startup: PASS
+import_closure: PASS
+queued_zo_secondary_cr_bindings: PASS
+validator_applicability:
+  roadmap_validate: NOT_APPLICABLE_AS_PASS_FAIL_CANDIDATE_CONTENT_VALIDATOR
+  classification: CONTEXT_SENSITIVE_NOT_CANDIDATE_CONTENT_DEFECT
+  future_zeus_capability: ZO-061
+roadmap_validation: NOT_APPLICABLE_AS_DETACHED_CANDIDATE_PASS_FAIL_VALIDATOR
+topology_decision: AMEND_EXISTING_LOCAL_CORRECTIVE_COMMIT
+content_qualification: PASS
+candidate_rebuild_required: false
+live_repository_mutated: false
+result: PASS
+next_action: AUTHOR_EXACT_TEN_PATH_STAGE_AND_AMEND_AUTHORITY

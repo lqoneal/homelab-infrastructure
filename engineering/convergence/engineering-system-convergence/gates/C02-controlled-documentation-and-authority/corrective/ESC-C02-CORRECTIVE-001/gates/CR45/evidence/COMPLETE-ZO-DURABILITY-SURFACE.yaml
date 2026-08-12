@@ -1,0 +1,91 @@
+schema_version: 1
+gate_id: CR45
+classification: COMPLETE_ZO_DURABILITY_SURFACE
+classified_at: '2026-08-11T16:54:41.250761+00:00'
+qualified_commit: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+records:
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+  live_exists: true
+  tracked_now: true
+  present_in_qualified_commit: true
+  matches_qualified_commit: false
+  git_status: M engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+  requires_durability: true
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+  live_exists: true
+  tracked_now: true
+  present_in_qualified_commit: true
+  matches_qualified_commit: false
+  git_status: M engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+  requires_durability: true
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/GATE.yaml
+  live_exists: true
+  tracked_now: false
+  present_in_qualified_commit: false
+  matches_qualified_commit: false
+  git_status: ?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/GATE.yaml
+  requires_durability: true
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/GATE.yaml
+  live_exists: true
+  tracked_now: false
+  present_in_qualified_commit: false
+  matches_qualified_commit: false
+  git_status: ?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/GATE.yaml
+  requires_durability: true
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR48/GATE.yaml
+  live_exists: true
+  tracked_now: false
+  present_in_qualified_commit: false
+  matches_qualified_commit: false
+  git_status: ?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR48/GATE.yaml
+  requires_durability: true
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR49/GATE.yaml
+  live_exists: true
+  tracked_now: false
+  present_in_qualified_commit: false
+  matches_qualified_commit: false
+  git_status: ?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR49/GATE.yaml
+  requires_durability: true
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR50/GATE.yaml
+  live_exists: true
+  tracked_now: false
+  present_in_qualified_commit: false
+  matches_qualified_commit: false
+  git_status: ?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR50/GATE.yaml
+  requires_durability: true
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR51/GATE.yaml
+  live_exists: true
+  tracked_now: false
+  present_in_qualified_commit: false
+  matches_qualified_commit: false
+  git_status: ?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR51/GATE.yaml
+  requires_durability: true
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR52/GATE.yaml
+  live_exists: true
+  tracked_now: false
+  present_in_qualified_commit: false
+  matches_qualified_commit: false
+  git_status: ?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR52/GATE.yaml
+  requires_durability: true
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR55/GATE.yaml
+  live_exists: true
+  tracked_now: false
+  present_in_qualified_commit: false
+  matches_qualified_commit: false
+  git_status: ?? engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR55/GATE.yaml
+  requires_durability: true
+required_paths:
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR48/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR49/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR50/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR51/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR52/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR55/GATE.yaml
+required_path_count: 10
+tracked_and_untracked_evaluated: true
+result: PASS
+mutation_executed: false

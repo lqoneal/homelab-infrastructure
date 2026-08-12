@@ -1,0 +1,35 @@
+schema_version: "1.0"
+record_type: CR47_EXTERNAL_DATA_TMP_DERIVATION_AUTHORITY
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  classification: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-BLOCK13-RECURSIVE-TEST-WORKSPACE-CLASSIFICATION.yaml"
+
+authorized:
+  derive_external_tmp_root_contract: true
+  verify_create_write_delete_capability: true
+  derive_per_node_test_execution_plan: true
+  derive_per_node_timeout_policy: true
+  derive_mandatory_cleanup_policy: true
+
+candidate:
+  root: "/data/engineering/tmp/pytest"
+  must_be_outside_repository: true
+  must_be_on_data_filesystem: true
+
+not_authorized:
+  execute_pytest: true
+  mutate_source: true
+  mutate_tests: true
+  rerun_codex: true
+  write_cr47_result: true
+  advance_cr47_state: true
+  execute_cr48: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+
+next_authorized_action: DERIVE_EXTERNAL_DATA_PYTEST_TMP_AND_PER_NODE_REQUALIFICATION_BOUNDARY_ONLY

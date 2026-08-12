@@ -1,0 +1,48 @@
+schema_version: 1
+gate_id: CR44
+classification: CR44_TERMINAL_COMPLETION_AUTHORITY
+result: AUTHORIZED_NOT_EXECUTED
+authorized_at: '2026-08-11T16:26:09.885933+00:00'
+qualification_target: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+parent_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+qualification_tree: 7f343db98b1e61f864d5fbb117ba3bf295f01024
+qualification:
+  primary_evidence: PASS
+  validation: PASS
+  validator_applicability: PASS
+  immutable_zeus_startup: PASS
+  import_closure: PASS
+  controlled_document_semantics: PASS
+  convergence_runtime: PASS
+  repair_specific_tests: PASS
+  protected_artifact_preservation: PASS
+incident_recovery:
+  block24_initial_failure: SHELL_PATH_RESOLUTION_LOSS
+  root_cause: Shell loop used reserved variable PATH as artifact iterator
+  qualification_invalidated: false
+  mutation_before_failure: false
+  recovery: Standard shell PATH restored before Block 24B
+authorized_terminal_mutations:
+- Write CR44 terminal qualification evidence
+- Write CR44 RESULT.yaml
+- Reconcile CR44 command evidence if required
+- Reconcile corrective HISTORY.md
+- Set last_completed_item to CR44
+- Advance current_item from CR44 to CR45
+- Set next_authorized_action to CR45-only continuation
+prohibited_effects:
+- Execute CR45
+- Write CR45 RESULT.yaml
+- Create or amend a commit
+- Push
+- Publish
+- Synchronize EOS
+- Modify production repair content
+- Execute queued Zeus opportunity implementation
+return_semantics:
+  current_item_after_closeout: CR45
+  cr45_execution_in_same_transaction: false
+  push: false
+  publication: false
+  eos_synchronization: false
+next_action: EXECUTE_CR44_TERMINAL_COMPLETION_ONLY

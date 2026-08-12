@@ -1,0 +1,59 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ3
+classification: RQ3_CLEAN_GIT_EXECUTION_TOPOLOGY
+classified_at: '2026-08-12T06:41:15.472443+00:00'
+result: PASS
+basis:
+  dirty_context_classification: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-CLEAN-WORKTREE-PRECONDITION-CLASSIFICATION.yaml
+  derivation_authority: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-CLEAN-GIT-CONTEXT-DERIVATION-AUTHORITY.yaml
+requirements:
+  qualified_baseline: fe824c714da35d987cc7454366aa3abaf046cc31
+  clean_git_worktree: true
+  git_metadata: true
+  rq3_node_count: 10
+  rq3_node_set_unchanged: true
+  temporary_runtime_state_isolation: true
+  live_cr46_worktree_unchanged: true
+identity_analysis:
+  runtime_identity_path_sensitive: false
+  rq3_stage1_root_symbol_bound: true
+  simple_worktree_preserves_exact_root: false
+  simple_clone_preserves_exact_root: false
+candidate_topologies:
+  live_dirty_repository:
+    preserves_exact_ROOT_path: true
+    preserves_canonical_git_repository: true
+    clean_git_state: false
+    satisfies_recovery_precondition: false
+  git_worktree:
+    clean_git_state_possible: true
+    different_filesystem_root: true
+    preserves_exact_ROOT_path: false
+    preserves_runtime_path_identity_if_path_sensitive: true
+    requires_git_administrative_metadata_mutation_to_create: true
+  independent_clean_clone:
+    clean_git_state_possible: true
+    different_filesystem_root: true
+    preserves_exact_ROOT_path: false
+    preserves_runtime_path_identity_if_path_sensitive: true
+    mutates_live_git_metadata: false
+simple_git_worktree_execution_valid: false
+simple_clean_clone_execution_valid: true
+selected_status: INDEPENDENT_CLEAN_GIT_CONTEXT_CANDIDATE
+rq3_test_execution_authorized: false
+rq3_rerun_authorized: false
+git_worktree_creation_authorized: false
+git_clone_execution_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_state_mutation_authorized: false
+live_worktree_revert_authorized: false
+live_worktree_stash_authorized: false
+live_worktree_commit_authorized: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: QUALIFY_INDEPENDENT_CLEAN_GIT_RQ3_EXECUTION_CONTEXT_ONLY

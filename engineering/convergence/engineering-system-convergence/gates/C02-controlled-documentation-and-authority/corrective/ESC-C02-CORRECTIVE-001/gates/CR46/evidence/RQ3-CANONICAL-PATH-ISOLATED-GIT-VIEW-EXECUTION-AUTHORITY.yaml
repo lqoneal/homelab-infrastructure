@@ -1,0 +1,37 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ3
+classification: RQ3_EXECUTION_AUTHORITY_USING_QUALIFIED_ISOLATED_GIT_VIEW
+authorized_at: '2026-08-12T06:49:00.530722+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+basis: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-CANONICAL-PATH-ISOLATED-GIT-VIEW-QUALIFICATION.yaml
+execution:
+  authorized: true
+  mode: EXACT_10_NODE_CANONICAL_PATH_ISOLATED_GIT_VIEW
+  node_count: 10
+  canonical_repository_root: /data/engineering/repositories/homelab
+  qualified_baseline: fe824c714da35d987cc7454366aa3abaf046cc31
+  repository_id: homelab-6bd83f9079d6fc57
+  temporary_git_metadata_required: true
+  temporary_git_index_required: true
+  temporary_clean_worktree_tree_required: true
+  git_dir_override_required: true
+  git_work_tree_override_required: true
+  git_index_file_override_required: true
+  temporary_runtime_state_isolation_required: true
+  live_cr46_worktree_preservation_required: true
+  stop_after_rq3_result: true
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_worktree_mutation_authorized: false
+live_index_mutation_authorized: false
+git_admin_mutation_authorized: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+rq3_completion_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: EXECUTE_RQ3_EXACT_10_NODE_USING_QUALIFIED_ISOLATED_GIT_VIEW_ONLY

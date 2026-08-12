@@ -1,0 +1,39 @@
+schema_version: "1.0"
+record_type: CR47_BLOCK20_PARTIAL_CLOSEOUT_VERIFIER_DEFECT_CLASSIFICATION
+cr_id: CR47
+result: PASS
+
+block20:
+  core_closeout_executed: true
+  cr47_result_written: true
+  cr47_summary_written: true
+  corrective_state_reconciled: true
+  last_completed_item: CR47
+  current_item: CR48
+  cr48_executed: false
+
+failure_1:
+  component: EMM_REBIND
+  class: NONEXISTENT_ENGCTL_ROADMAP_BIND_ACTION
+  command_attempted: "engctl roadmap bind"
+  command_supported: false
+  substantive_cr47_failure: false
+
+failure_2:
+  component: SUMMARY_VERIFICATION
+  class: LINE_BOUND_GREP_FALSE_NEGATIVE
+  summary_content_defect: false
+  summary_rewrite_required: false
+  semantic_requalification: PASS
+
+emm_resolution:
+  state: "REBIND_REQUIRED"
+  current_roadmap_validation_rc: 1
+  direct_roadmap_validation_rc: 3
+
+preserved:
+  rewrite_cr47_result_required: false
+  rewrite_cr47_summary_required: false
+  repeat_corrective_state_transition_required: false
+  cr48_execution_authorized: false
+  publication_authorized: false

@@ -1,0 +1,45 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ2
+classification: RQ2_CONTEXT_CORRECT_CANDIDATE_NODE_SCOPE
+derived_at: '2026-08-12T00:39:54.488044+00:00'
+result: PASS
+basis: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-CONTEXT-CORRECT-EXECUTION-BOUNDARY.yaml
+validator:
+  path: scripts/tests/test-convergence-roadmap.py
+  sha256: 4ed9ca065ff55dfc88a070a1a20b2bc7bb43425e03ae100cddc2390aeab58de7
+historical_reference_failure_count: 13
+replay_failure_count: 15
+candidate_scope:
+  node_count: 15
+  node_set_sha256: 51375cee31071c1afa002714537e9105012d634548dee640a2e58b6f77aa2089
+  nodes:
+  - scripts/tests/test-convergence-roadmap.py::ConvergenceRoadmapTests::test_live_evaluator_qualifies_esc_and_all_required_gates
+  - scripts/tests/test-convergence-roadmap.py::test_cr18_evaluate_pending_review_is_not_corruption
+  - scripts/tests/test-convergence-roadmap.py::test_cr18_prospective_c03_plus_qualification_remains_pass
+  - scripts/tests/test-convergence-roadmap.py::test_cr19_resume_projection_exposes_pending_review_read_only
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_missing_dependency_blocks
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_never_executes_or_advances
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_ready_for_manual_execution
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_resource_blocked_is_distinct
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_live_shape_is_consistent
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_missing_dependency_is_distinct
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_never_executes_or_advances
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_successor_execution_must_be_prohibited
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo013_live_composite_is_ready
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo013_never_executes_or_reconciles
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo013_reports_manual_blocker
+  derivation: ALL_15_REPLAY_FAILURES_DIRECT_OR_TRANSITIVE_HISTORICAL_CONVERGENCE_CONTEXT
+context_proof:
+  direct_context_count: 14
+  transitive_context_count: 1
+  transitive_node: scripts/tests/test-convergence-roadmap.py::ConvergenceRoadmapTests::test_live_evaluator_qualifies_esc_and_all_required_gates
+  historical_cr23_fixture_required: true
+  project_state_binding_field_count: 11
+  emm_rebind_required: true
+execution_scope_qualified: false
+test_execution_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_state_mutation_authorized: false
+next: QUALIFY_RQ2_CANDIDATE_SCOPE_FOR_EXECUTION

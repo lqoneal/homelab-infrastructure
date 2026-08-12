@@ -1,0 +1,35 @@
+schema_version: "1.0"
+record_type: CR47_EXACT_EMM_REBIND_AUTHORITY
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  derived_contract: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-EXACT-EMM-REBIND-CONTRACT.yaml"
+  derived_contract_sha256: "67020fcc8258ca716ae11d43a62466344f56b07ffe0b532fef26d94b133a4a61"
+  block21_finalization_authority: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-PARTIAL-CLOSEOUT-FINALIZATION-AUTHORITY.yaml"
+
+authorized:
+  update_exactly_one_binding_manifest_source_digest: true
+  target_source: "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md"
+  write_exactly_one_emm_rebind_transaction: true
+  follow_existing_transaction_schema: true
+  run_read_only_roadmap_validation_after_rebind: true
+  write_cr47_closeout_reconciliation_evidence_after_validation: true
+
+prohibited:
+  modify_any_other_binding_source: true
+  rewrite_cr47_result: true
+  rewrite_cr47_summary: true
+  repeat_corrective_state_transition: true
+  execute_cr48: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+
+stop_after:
+  emm_rebind_and_cr47_finalization: true
+
+next_authorized_action:
+  EXECUTE_EXACT_ONE_SOURCE_EMM_REBIND_AND_FINALIZE_EXISTING_CR47_CLOSEOUT_ONLY

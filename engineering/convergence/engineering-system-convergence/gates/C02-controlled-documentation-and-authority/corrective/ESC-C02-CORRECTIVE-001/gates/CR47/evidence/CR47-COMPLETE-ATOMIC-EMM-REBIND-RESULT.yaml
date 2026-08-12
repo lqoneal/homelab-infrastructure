@@ -1,0 +1,43 @@
+schema_version: "1.0"
+record_type: CR47_COMPLETE_ATOMIC_EMM_REBIND_RESULT
+cr_id: CR47
+result: PASS
+
+execution:
+  canonical_function: apply_emm_rebind_transaction
+  transaction_id: "tx-cr47-complete-emm-rebind-001"
+  atomic: true
+  source_count: 2
+
+authorized_mutations:
+  "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md": "2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a"
+  "scripts/lib/eos/convergence_roadmap.py": "d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc"
+
+transitions:
+  "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md":
+    old_sha256: "2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a"
+    new_sha256: "53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58"
+
+  "scripts/lib/eos/convergence_roadmap.py":
+    old_sha256: "d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc"
+    new_sha256: "205f95746fdcb7933905aed3308e46f992767ddfb58d1f3877670c70b39d30b4"
+
+validation:
+  post_rebind_emm_drift_count: 0
+  roadmap_validation: PASS
+
+artifacts:
+  binding_manifest: "engineering/convergence/engineering-system-convergence/binding-manifest.yaml"
+  binding_manifest_sha256: "003744aae8f690bcb94819e940272d77683533560ed2433d9f96f010383c2a12"
+  transaction_record: "engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr47-complete-emm-rebind-001.json"
+  transaction_sha256: "f02784e0aa8b7eb633a02a274c67352b697383c9a89c66be4e8a4f1fd69ac031"
+
+preserved:
+  cr47_result_rewritten: false
+  cr47_summary_rewritten: false
+  corrective_state_transition_repeated: false
+  cr48_executed: false
+  stage_executed: false
+  commit_created: false
+  push_performed: false
+  eos_synchronized: false

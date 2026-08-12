@@ -1,0 +1,23 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ1
+classification: RQ1_CONTEXT_CORRECT_EXECUTION_BOUNDARY
+derived_at: '2026-08-12T00:33:11.165986+00:00'
+result: PASS
+validator:
+  path: scripts/tests/test-authority-publication.py
+  sha256: 392ce0853bd8fd1bd8d70b75b009b649cd24cdc1e5f36b1184d106e53b302701
+  qualified_test_count: 13
+prior_qualification:
+  result_path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ1-AFTER-PRODUCTION-RESOLVER-CORRECTIVE-RESULT.yaml
+  result: PASS
+  qualified: true
+required_context:
+  runtime_publication_target: CANONICAL_RUNTIME_PATH
+  authoritative_source_resolver: RUNTIME_PATH_ABSTRACTION
+  canonical_repository_context_required: true
+execution_needed: false
+rerun_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+resolution: PRIOR_PASS_PRESERVED_NO_RERUN_REQUIRED

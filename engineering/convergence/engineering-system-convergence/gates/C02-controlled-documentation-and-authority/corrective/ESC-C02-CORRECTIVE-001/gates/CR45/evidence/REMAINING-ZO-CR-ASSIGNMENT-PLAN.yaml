@@ -1,0 +1,63 @@
+schema_version: 1
+gate_id: CR45
+classification: REMAINING_ZEUS_OPPORTUNITY_CR_ASSIGNMENT_PLAN
+generated_at: '2026-08-11T16:49:23.715752+00:00'
+rules:
+  identity: PRESERVE_ZO_ID
+  execution_class: SECONDARY_CR_MISSION
+  completed_gate_reopening: false
+  assignment_rule: EARLIEST_SEMANTICALLY_APPROPRIATE_FUTURE_MUTABLE_CR_GATE
+assignments:
+- opportunity_id: ZO-015
+  target_gate: CR51
+  execution_class: SECONDARY_CR_MISSION
+  assignment_basis: Coupled state-projection transaction discovery belongs to post-transition verification after
+    C02-to-C03 advancement.
+- opportunity_id: ZO-043
+  target_gate: CR55
+  execution_class: SECONDARY_CR_MISSION
+  assignment_basis: Terminal gate completion projection belongs to final corrective closeout after all transition
+    publication work completes.
+- opportunity_id: ZO-044
+  target_gate: CR55
+  execution_class: SECONDARY_CR_MISSION
+  assignment_basis: Terminal lifecycle boundary diagnostics belong to final corrective closeout.
+- opportunity_id: ZO-046
+  target_gate: CR52
+  execution_class: SECONDARY_CR_MISSION
+  assignment_basis: Frozen gate integrity projection belongs directly to historical-integrity verification.
+- opportunity_id: ZO-047
+  target_gate: CR52
+  execution_class: SECONDARY_CR_MISSION
+  assignment_basis: Protected gate mutation diagnostics belong directly to historical-integrity verification.
+- opportunity_id: ZO-049
+  target_gate: CR55
+  execution_class: SECONDARY_CR_MISSION
+  assignment_basis: Resume read-only integrity projection belongs to final cold-resume verification.
+- opportunity_id: ZO-050
+  target_gate: CR55
+  execution_class: SECONDARY_CR_MISSION
+  assignment_basis: Resume determinism diagnostics belong to final cold-resume verification.
+- opportunity_id: ZO-052
+  target_gate: CR55
+  execution_class: SECONDARY_CR_MISSION
+  assignment_basis: EOS side-effect boundary projection is terminal closeout evidence after all authorized lifecycle
+    effects are complete.
+- opportunity_id: ZO-053
+  target_gate: CR55
+  execution_class: SECONDARY_CR_MISSION
+  assignment_basis: EOS mutation-authority diagnostics are terminal closeout verification of authorized versus prohibited
+    synchronization effects.
+- opportunity_id: ZO-055
+  target_gate: CR55
+  execution_class: SECONDARY_CR_MISSION
+  assignment_basis: Full regression qualification belongs to final corrective closeout after all corrective lifecycle
+    work is complete.
+- opportunity_id: ZO-056
+  target_gate: CR55
+  execution_class: SECONDARY_CR_MISSION
+  assignment_basis: Regression failure localization belongs with final regression qualification at corrective closeout.
+assignment_count: 11
+register_mutated: false
+target_gate_contracts_mutated: false
+result: PASS

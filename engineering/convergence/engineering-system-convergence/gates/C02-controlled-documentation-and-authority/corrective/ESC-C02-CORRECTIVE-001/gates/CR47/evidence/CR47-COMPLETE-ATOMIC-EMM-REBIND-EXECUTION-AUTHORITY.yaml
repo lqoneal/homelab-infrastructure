@@ -1,0 +1,66 @@
+schema_version: "1.0"
+record_type: CR47_COMPLETE_ATOMIC_EMM_REBIND_EXECUTION_AUTHORITY
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  complete_drift_inventory: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-COMPLETE-EMM-DRIFT-SET.yaml"
+  complete_drift_inventory_sha256: "83014cb767316ead023f21d7b97d7b83615867e0b6fcdd594a27b189c4700f39"
+  atomic_rebind_contract: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-COMPLETE-ATOMIC-EMM-REBIND-CONTRACT.yaml"
+  atomic_rebind_contract_sha256: "8e64c7a6becad8841704d79fe6848fe934f1d4d449f35639ae9f258808df1fb1"
+  derivation_authority: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-COMPLETE-EMM-DRIFT-RECONCILIATION-DERIVATION-AUTHORITY.yaml"
+
+canonical_call:
+  function: apply_emm_rebind_transaction
+  repository_root: /data/engineering/repositories/homelab
+  transaction_id: "tx-cr47-complete-emm-rebind-001"
+
+  authorized_mutations:
+    "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md": "2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a"
+    "scripts/lib/eos/convergence_roadmap.py": "d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc"
+
+expected_transition:
+  exact_source_count: 2
+
+  sources:
+    "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md":
+      old_sha256: "2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a"
+      new_sha256: "53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58"
+
+    "scripts/lib/eos/convergence_roadmap.py":
+      old_sha256: "d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc"
+      new_sha256: "205f95746fdcb7933905aed3308e46f992767ddfb58d1f3877670c70b39d30b4"
+
+authorized:
+  execute_single_atomic_canonical_rebind: true
+  mutate_binding_manifest_for_exact_two_sources: true
+  write_exactly_one_rebind_transaction: true
+  run_roadmap_validation_after_rebind: true
+  write_cr47_rebind_result: true
+  write_cr47_closeout_reconciliation: true
+
+required_immediately_before_execution:
+  rerun_complete_emm_drift_inventory: true
+  exact_drift_count: 2
+  exact_path_set_required: true
+  exact_prior_digest_set_required: true
+  exact_live_digest_set_required: true
+
+prohibited:
+  execute_if_drift_set_changes: true
+  modify_any_third_binding_source: true
+  rewrite_cr47_result: true
+  rewrite_cr47_summary: true
+  repeat_corrective_state_transition: true
+  execute_cr48: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+
+stop_after:
+  atomic_emm_rebind_validation_and_cr47_finalization: true
+
+next_authorized_action:
+  EXECUTE_COMPLETE_TWO_SOURCE_ATOMIC_EMM_REBIND_AND_FINALIZE_CR47_ONLY

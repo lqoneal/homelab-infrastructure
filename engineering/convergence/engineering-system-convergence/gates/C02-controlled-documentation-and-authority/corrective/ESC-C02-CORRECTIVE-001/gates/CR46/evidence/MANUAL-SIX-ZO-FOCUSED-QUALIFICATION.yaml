@@ -1,0 +1,67 @@
+schema_version: 1
+gate_id: CR46
+classification: CR46_MANUAL_SIX_ZO_FOCUSED_QUALIFICATION
+execution_order:
+- ZO-026
+- ZO-024
+- ZO-059
+- ZO-061
+- ZO-060
+- ZO-058
+opportunities:
+  ZO-026:
+    result: PASS
+    checks:
+      projection_scope_explicit: true
+      instrument_deterministic: true
+      selection_digest_present: true
+      unsupported_scope_fails_closed: true
+  ZO-024:
+    result: PASS
+    checks:
+      result_provenance_exposed: true
+      expected_authority_exposed: true
+      bound_authority_exposed: true
+      freshness_match: true
+      stale_result_detected: true
+  ZO-059:
+    result: PASS
+    checks:
+      definition_not_execution: true
+      definition_implies_execution_false: true
+      current_gate_classified: true
+      result_backed_completion: true
+  ZO-061:
+    result: PASS
+    checks:
+      validator_class_explicit: true
+      applicable_before_defect: true
+      not_applicable_justified: true
+      not_applicable_not_defect: true
+      ambiguous_fails_closed: true
+  ZO-060:
+    result: PASS
+    checks:
+      immutable_commit_pass: true
+      exact_commit_binding: true
+      missing_dependency_detected: true
+      live_worktree_masking_detected: true
+      incomplete_commit_fails: true
+      read_only: true
+  ZO-058:
+    result: PASS
+    checks:
+      dirty_inventory_complete: true
+      unauthorized_distinguished: true
+      contamination_fails_closed: true
+      exact_staging_allowlist: true
+      interrupted_commit_classified: true
+      single_commit_relationship: true
+      read_only: true
+all_six_focused_qualified: true
+result: PASS
+stage_executed: false
+commit_created: false
+push_performed: false
+eos_synchronization_executed: false
+cr47_executed: false

@@ -1516,3 +1516,194 @@ class Stage1Runtime:
             for path in sorted(root.rglob("*")) if path.is_file()
         ]
         return _digest(entries)
+
+# --- CR46 ZO-024 / ZO-059: freshness and gate-provenance projections ---
+def result_freshness_provenance(
+    result_record: Mapping[str, Any],
+    *,
+    active_gate_id: str,
+    authority_digest: str | None = None,
+    authority_revision: Any = None,
+    lifecycle_revision: Any = None,
+) -> dict[str, Any]:
+    """Expose deterministic result freshness against current authority."""
+    record = dict(result_record or {})
+
+    provenance = (
+        record.get("provenance")
+        if isinstance(record.get("provenance"), Mapping)
+        else {}
+    )
+
+    bound_gate = (
+        record.get("gate_id")
+        or record.get("gate")
+        or provenance.get("gate_id")
+    )
+
+    bound_authority_digest = (
+        record.get("authority_digest")
+        or provenance.get("authority_digest")
+    )
+
+    bound_authority_revision = (
+        record.get("authority_revision")
+        if record.get("authority_revision") is not None
+        else provenance.get("authority_revision")
+    )
+
+    bound_lifecycle_revision = (
+        record.get("lifecycle_revision")
+        if record.get("lifecycle_revision") is not None
+        else provenance.get("lifecycle_revision")
+    )
+
+    checks = {
+        "gate":
+            str(bound_gate or "").upper()
+            == str(active_gate_id or "").upper(),
+
+        "authority_digest":
+            True
+            if authority_digest is None
+            else bound_authority_digest == authority_digest,
+
+        "authority_revision":
+            True
+            if authority_revision is None
+            else bound_authority_revision == authority_revision,
+
+        "lifecycle_revision":
+            True
+            if lifecycle_revision is None
+            else bound_lifecycle_revision == lifecycle_revision,
+    }
+
+    missing = []
+
+    if not bound_gate:
+        missing.append("gate")
+
+    if authority_digest is not None and bound_authority_digest is None:
+        missing.append("authority_digest")
+
+    if authority_revision is not None and bound_authority_revision is None:
+        missing.append("authority_revision")
+
+    if lifecycle_revision is not None and bound_lifecycle_revision is None:
+        missing.append("lifecycle_revision")
+
+    fresh = not missing and all(checks.values())
+
+    return {
+        "result": "PASS",
+        "read_only": True,
+        "active_gate_id": active_gate_id,
+        "result_gate_id": bound_gate,
+
+        "authority_provenance": {
+            "expected_digest": authority_digest,
+            "result_bound_digest": bound_authority_digest,
+            "expected_revision": authority_revision,
+            "result_bound_revision": bound_authority_revision,
+        },
+
+        "lifecycle_provenance": {
+            "expected_revision": lifecycle_revision,
+            "result_bound_revision": bound_lifecycle_revision,
+        },
+
+        "freshness_checks": checks,
+        "missing_bindings": missing,
+        "freshness": "FRESH" if fresh else "STALE_OR_UNBOUND",
+        "fresh": fresh,
+
+        "next_authorized_action": (
+            "CONTINUE_CURRENT_LIFECYCLE"
+            if fresh
+            else "REQUALIFY_RESULT_AGAINST_CURRENT_AUTHORITY"
+        ),
+    }
+
+
+def classify_gate_execution_provenance(
+    gate_id: str,
+    *,
+    gate_definition_present: bool,
+    result_record: Mapping[str, Any] | None = None,
+    current_gate_id: str | None = None,
+    successor_result_record: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Separate gate definition from actual lifecycle execution provenance."""
+    gate = str(gate_id or "").upper()
+    current = str(current_gate_id or "").upper()
+
+    result = dict(result_record or {})
+    successor = dict(successor_result_record or {})
+
+    result_present = bool(result_record)
+
+    result_gate = str(
+        result.get("gate_id")
+        or result.get("gate")
+        or ""
+    ).upper()
+
+    result_backed = (
+        result_present
+        and (not result_gate or result_gate == gate)
+    )
+
+    if result_backed:
+        execution_state = "RESULT_BACKED_COMPLETION"
+
+    elif gate and current == gate:
+        execution_state = "CURRENT_GATE_ACTIVE"
+
+    elif gate_definition_present:
+        execution_state = "PROSPECTIVE_DEFINITION_ONLY"
+
+    else:
+        execution_state = "ABSENT"
+
+    successor_executed = bool(successor_result_record)
+
+    return {
+        "result": "PASS",
+        "read_only": True,
+        "gate_id": gate,
+
+        "gate_definition":
+            "PRESENT"
+            if gate_definition_present
+            else "ABSENT",
+
+        "current_gate_id": current_gate_id,
+
+        "result_present": result_present,
+        "result_backed_completion": result_backed,
+
+        "execution_state": execution_state,
+
+        "successor_execution": (
+            "RESULT_BACKED"
+            if successor_executed
+            else "NOT_ESTABLISHED"
+        ),
+
+        "successor_result_identity": (
+            successor.get("gate_id") or successor.get("gate")
+            if successor_executed
+            else None
+        ),
+
+        "definition_implies_execution": False,
+
+        "provenance_authority": (
+            "RESULT_RECORD"
+            if result_backed
+            else "CURRENT_STATE"
+            if execution_state == "CURRENT_GATE_ACTIVE"
+            else "GATE_DEFINITION_ONLY"
+        ),
+    }

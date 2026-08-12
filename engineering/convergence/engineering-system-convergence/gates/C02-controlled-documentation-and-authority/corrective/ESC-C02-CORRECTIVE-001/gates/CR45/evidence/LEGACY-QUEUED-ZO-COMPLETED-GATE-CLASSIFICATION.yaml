@@ -1,0 +1,160 @@
+schema_version: 1
+gate_id: CR45
+classification: LEGACY_QUEUED_ZO_COMPLETED_GATE_CLASSIFICATION
+generated_at: '2026-08-11T16:47:44.387676+00:00'
+record_count: 15
+records:
+- opportunity_id: ZO-001
+  title: Zeus Repository Projection and Pre-Creation Verification
+  status: QUEUED
+  target_gate: CR13
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits:
+  - gates/CR13/CLI-CONTRACT.yaml
+  - gates/CR13/SUMMARY.md
+  - gates/CR13/evidence/COMMANDS.md
+  evidence_hit_count: 3
+  classification: EXECUTION_EVIDENCE_PRESENT_RESULT_NOT_RECONCILED
+- opportunity_id: ZO-002
+  title: Zeus Lifecycle Interruption Classification
+  status: QUEUED
+  target_gate: CR14
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits:
+  - gates/CR14/SUMMARY.md
+  - gates/CR14/evidence/COMMANDS.md
+  - gates/CR14/evidence/ZEUS-CAPABILITY-REVIEW.yaml
+  evidence_hit_count: 3
+  classification: EXECUTION_EVIDENCE_PRESENT_RESULT_NOT_RECONCILED
+- opportunity_id: ZO-003
+  title: Zeus Replay Identity and Recovery Recommendation
+  status: QUEUED
+  target_gate: CR14
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits:
+  - gates/CR14/SUMMARY.md
+  - gates/CR14/evidence/COMMANDS.md
+  - gates/CR14/evidence/ZEUS-CAPABILITY-REVIEW.yaml
+  evidence_hit_count: 3
+  classification: EXECUTION_EVIDENCE_PRESENT_RESULT_NOT_RECONCILED
+- opportunity_id: ZO-004
+  title: Zeus Read-Only Recovery Status and Resume Projection
+  status: QUEUED
+  target_gate: CR14
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits:
+  - gates/CR14/SUMMARY.md
+  - gates/CR14/evidence/COMMANDS.md
+  - gates/CR14/evidence/ZEUS-CAPABILITY-REVIEW.yaml
+  evidence_hit_count: 3
+  classification: EXECUTION_EVIDENCE_PRESENT_RESULT_NOT_RECONCILED
+- opportunity_id: ZO-015
+  title: Zeus Coupled State Projection Transaction Discovery
+  status: QUEUED
+  target_gate: CR24
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits: []
+  evidence_hit_count: 0
+  classification: NO_EXECUTION_EVIDENCE_FOUND
+- opportunity_id: ZO-043
+  title: Zeus Terminal Gate Completion Projection
+  status: QUEUED
+  target_gate: CR36
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits: []
+  evidence_hit_count: 0
+  classification: NO_EXECUTION_EVIDENCE_FOUND
+- opportunity_id: ZO-044
+  title: Zeus Terminal Lifecycle Boundary Diagnostic Projection
+  status: QUEUED
+  target_gate: CR36
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits: []
+  evidence_hit_count: 0
+  classification: NO_EXECUTION_EVIDENCE_FOUND
+- opportunity_id: ZO-046
+  title: Zeus Frozen Gate Integrity Projection
+  status: QUEUED
+  target_gate: CR37
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits: []
+  evidence_hit_count: 0
+  classification: NO_EXECUTION_EVIDENCE_FOUND
+- opportunity_id: ZO-047
+  title: Zeus Protected Gate Mutation Diagnostic Projection
+  status: QUEUED
+  target_gate: CR37
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits: []
+  evidence_hit_count: 0
+  classification: NO_EXECUTION_EVIDENCE_FOUND
+- opportunity_id: ZO-049
+  title: Zeus Resume Read-Only Integrity Projection
+  status: QUEUED
+  target_gate: CR38
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits: []
+  evidence_hit_count: 0
+  classification: NO_EXECUTION_EVIDENCE_FOUND
+- opportunity_id: ZO-050
+  title: Zeus Resume Determinism Diagnostic Projection
+  status: QUEUED
+  target_gate: CR38
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits: []
+  evidence_hit_count: 0
+  classification: NO_EXECUTION_EVIDENCE_FOUND
+- opportunity_id: ZO-052
+  title: Zeus EOS Side-Effect Boundary Projection
+  status: QUEUED
+  target_gate: CR39
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits: []
+  evidence_hit_count: 0
+  classification: NO_EXECUTION_EVIDENCE_FOUND
+- opportunity_id: ZO-053
+  title: Zeus EOS Mutation Authority Diagnostic Projection
+  status: QUEUED
+  target_gate: CR39
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits: []
+  evidence_hit_count: 0
+  classification: NO_EXECUTION_EVIDENCE_FOUND
+- opportunity_id: ZO-055
+  title: Zeus Full Regression Qualification Projection
+  status: QUEUED
+  target_gate: CR40
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits: []
+  evidence_hit_count: 0
+  classification: NO_EXECUTION_EVIDENCE_FOUND
+- opportunity_id: ZO-056
+  title: Zeus Regression Failure Localization Projection
+  status: QUEUED
+  target_gate: CR40
+  target_gate_complete: true
+  result_mentions_opportunity: false
+  evidence_hits: []
+  evidence_hit_count: 0
+  classification: NO_EXECUTION_EVIDENCE_FOUND
+summary:
+  EXECUTED_AND_RESULT_ACKNOWLEDGED: 0
+  EXECUTION_EVIDENCE_PRESENT_RESULT_NOT_RECONCILED: 4
+  NO_EXECUTION_EVIDENCE_FOUND: 11
+register_mutated: false
+completed_gate_mutated: false
+result: PASS

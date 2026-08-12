@@ -1,0 +1,34 @@
+schema_version: "1.0"
+record_type: CR47_BLOCK24_AUTHORIZED_MUTATIONS_SEMANTIC_CORRECTION
+cr_id: CR47
+result: PASS
+
+block24:
+  argument_contract_created: true
+  retry_authority_created: true
+  execution_occurred: false
+
+defect:
+  class: AUTHORIZED_MUTATIONS_NEW_DIGEST_USED_INSTEAD_OF_PRIOR_DIGEST
+  canonical_parameter_semantics: PATH_TO_AUTHORIZED_PRIOR_DIGEST
+  incorrect_value: "53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58"
+  correct_value: "2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a"
+
+source_state:
+  path: "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md"
+  current_sha256: "53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58"
+
+binding_state:
+  bound_sha256: "2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a"
+
+authority:
+  block24_retry_authority_valid_for_execution: false
+  corrected_authority_required: true
+
+preserved:
+  binding_manifest_mutated: false
+  transaction_written: false
+  cr47_result_rewritten: false
+  cr47_summary_rewritten: false
+  corrective_state_transition_repeated: false
+  cr48_executed: false

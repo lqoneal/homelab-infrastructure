@@ -1,0 +1,196 @@
+schema_version: 1
+gate_id: C02
+baseline: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+observations:
+  - divergence_id: C02-DR-001
+    documented_model: DOC-0001 is authoritative discovery and each current controlled record is indexed.
+    sources:
+      - {path: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md, section: Controlled Documents}
+      - {path: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md, lines: 576-576}
+    implementation_or_observation: Full enumeration found CHAR-0001 and PROC-0008 with controlled identities but no DOC-0001 row.
+    observed_behavior: Base validator exits 0 and reports 2958 PASS, 0 FAIL.
+    classification: DOCUMENT_AND_VALIDATOR_DIVERGENCE
+    impact: Controlled records are not deterministically discoverable through the claimed authoritative index.
+    evidence_ref: CONTROLLED-DOCUMENT-INVENTORY.yaml
+    resolution_owner: Engineering Governance / validator owner
+
+  - divergence_id: C02-DR-002
+    documented_model: Index metadata agrees with source-owned identity/lifecycle facts.
+    sources:
+      - {path: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md, section: indexed rows}
+      - {path: docs, section: source frontmatter}
+    implementation_or_observation: Thirteen title/status mismatches, including SPEC-0001 and PROC-0006 indexed Active while source status is Draft.
+    observed_behavior: Base validator does not fail.
+    classification: DOCUMENT_AND_VALIDATOR_DIVERGENCE
+    impact: Draft content can appear operationally Active at discovery time.
+    evidence_ref: CONTROLLED-DOCUMENT-INVENTORY.yaml
+    resolution_owner: Engineering Governance / validator owner
+
+  - divergence_id: C02-DR-003
+    documented_model: Work Registry is authoritative only for EMP coordination and never replaces project/current mission authority.
+    sources:
+      - {path: docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md, lines: 159-175}
+      - {path: docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md, lines: 244-248}
+      - {path: docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md, lines: 62-83}
+    implementation_or_observation: registry.py lines 872-887 selects authorized/active/blocked missions/phases as management_current; resume compares them as competing current context.
+    observed_behavior: Context exposes Operation Beta and Zeus OA as current and reports authority disagreement with Project State C02.
+    classification: DOCUMENT_RUNTIME_AUTHORITY_DIVERGENCE
+    impact: Management-state selection behaves as a competing current-state source.
+    resolution_owner: EMP / engctl owner
+
+  - divergence_id: C02-DR-004
+    documented_model: EOS state and operational files are derived projections/caches of repository sources.
+    sources:
+      - {path: engineering/eos/repository-eos-authority.yaml, lines: 1-69}
+    implementation_or_observation: EOS-STATE and operational cache retain repository commit 6a26d2e, old Project State/mission/phase/WOP, and active/authority language.
+    observed_behavior: eos sync-validate exits 1 for EOS-STATE and EOS-MANIFEST drift; eos operational reports drift and active checkpoint 64394a5.
+    classification: DOCUMENT_RUNTIME_CURRENCY_DIVERGENCE
+    impact: Derived state looks authoritative/current while materially stale.
+    resolution_owner: EOS Program
+
+  - divergence_id: C02-DR-005
+    documented_model: EOS structural/lifecycle/checkpoint validation establishes integrity, not source synchronization.
+    sources:
+      - {path: engineering/eos/repository-eos-authority.yaml, lines: 71-82}
+    implementation_or_observation: eos validate and active checkpoint validate pass while synchronization and operational validation report drift.
+    observed_behavior: Multiple PASS surfaces coexist with a stale active projection/checkpoint.
+    classification: AMBIGUOUS_RUNTIME_VALIDATION_SEMANTICS
+    impact: Operators can mistake integrity PASS for current-state agreement.
+    resolution_owner: EOS Program
+
+  - divergence_id: C02-DR-006
+    documented_model: Resume is a read-only derived reconstruction for active convergence.
+    sources:
+      - {path: docs/standards/STD-0004-ENGINEERING_STATE_FRESHNESS_STANDARD.md, section: resume}
+      - {path: engineering/convergence/engineering-system-convergence/roadmap.yaml, field: read_only}
+    implementation_or_observation: context.sh uses a read-only convergence path for homelab but fallback path automatically calls eos_synchronize and eos_operational_refresh.
+    observed_behavior: Direct convergence roadmap resume correctly returns C02; fallback behavior is mutation-capable.
+    classification: DOCUMENT_RUNTIME_MODE_DIVERGENCE
+    impact: Resume side effects depend on routing, not an explicit sync/refresh command.
+    resolution_owner: engctl / EOS owner
+
+  - divergence_id: C02-DR-007
+    documented_model: CLI help/options are parsed without selecting a project or mutating state.
+    sources:
+      - {path: scripts/engctl, section: resume routing}
+      - {path: scripts/lib/eos/context.sh, lines: 60-103}
+    implementation_or_observation: engctl resume --help treats --help as a project name and reaches legacy synchronization.
+    observed_behavior: Attempted temporary projection write failed with OSError because the external target was read-only; Git and EOS repository paths remained unchanged.
+    classification: UNDOCUMENTED_ARGUMENT_AND_SIDE_EFFECT_BEHAVIOR
+    impact: A conventional help request can enter a mutating code path.
+    resolution_owner: engctl owner
+
+  - divergence_id: C02-DR-008
+    documented_model: Active execution authority must have a valid WOP/digest and fail closed.
+    sources:
+      - {path: docs/standards/STD-0003-ENGINEERING_WORK_ORDER_STANDARD.md, section: authority chain}
+      - {path: docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md, section: execution chain}
+    implementation_or_observation: execution-interface selects an old mission contract/WOP whose digest does not match the published content.
+    observed_behavior: engctl execution snapshot exits 78, resolution INVALID_CONTRACT, transactional_authority false, unresolved wop.digest mismatch.
+    classification: DOCUMENT_RUNTIME_AUTHORITY_DIVERGENCE
+    impact: No valid execution authority can be reconstructed from the legacy active context.
+    resolution_owner: Engineering Governance / execution owner
+
+  - divergence_id: C02-DR-009
+    documented_model: Invalid authority resolution fails closed consistently for automation.
+    sources:
+      - {path: scripts/engctl, section: execution snapshot}
+      - {path: scripts/mission-contractctl, section: resolve}
+    implementation_or_observation: Both report INVALID_CONTRACT, but engctl exits 78 and mission-contractctl exits 0.
+    observed_behavior: Output agrees; process semantics disagree.
+    classification: IMPLEMENTATION_INTERFACE_DIVERGENCE
+    impact: Automation can accept an invalid authority resolution based on exit status.
+    resolution_owner: execution controller owner
+
+  - divergence_id: C02-DR-010
+    documented_model: Zeus executable and linked EMP services are importable from the published baseline.
+    sources:
+      - {path: scripts/zeus, line: 105}
+      - {path: scripts/lib/emp/publication_candidate_authority.py, line: 20}
+      - {path: scripts/lib/emp/mission_verification_controller.py, line: 20}
+    implementation_or_observation: scripts/lib/emp/repository_projection.py is absent; preservation branch contains the referenced implementation.
+    observed_behavior: Import chain is broken before command behavior can execute.
+    classification: DOCUMENTED_IMPLEMENTATION_DEPENDENCY_MISSING
+    impact: Zeus and dependent EMP flows cannot run from current main.
+    resolution_owner: Zeus / EMP owner
+
+  - divergence_id: C02-DR-011
+    documented_model: Declared Zeus command interface matches scripts/zeus.
+    sources:
+      - {path: engineering/docs/cli/ZEUS-USER-GUIDE.md, section: command interface}
+      - {path: engineering/docs/cli/man/zeus.1, section: options}
+    implementation_or_observation: CONTRACT-ZEUS-COMMAND expects --help, --runtime-root, --state, --verbose, -h; conformance observes none.
+    observed_behavior: Conformance summary is 9 conformant and 1 partially conformant, exit 1.
+    classification: DOCUMENT_RUNTIME_INTERFACE_DIVERGENCE
+    impact: Operator contract and actual parser cannot be treated as equivalent.
+    resolution_owner: Zeus owner
+
+  - divergence_id: C02-DR-012
+    documented_model: Synchronization declarations represent qualified document/implementation pairs.
+    sources:
+      - {path: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md, lines: 885-930}
+      - {path: scripts/validate_controlled_documents.py, section: synchronization}
+    implementation_or_observation: Five OUT_OF_SYNC, two DOCUMENT_CHANGED, and one IMPLEMENTATION_CHANGED pairs; only one PASS.
+    observed_behavior: Synchronization validation exits 1.
+    classification: DECLARATION_RUNTIME_DIVERGENCE
+    impact: Published fingerprints do not represent current documents/implementations.
+    affected_pairs:
+      - SYNC-EENS-SERVICE-IMPLEMENTATION
+      - SYNC-ENGINEERING-CONTROL-FRAMEWORK-SCRIPTS
+      - SYNC-INFRASTRUCTURE-CONFIGURATION
+      - SYNC-SPEC-0001-VALIDATOR
+      - SYNC-ZEUS-GATES-GATE-CONTROLLER
+      - SYNC-ZEUS-ROADMAP-CONTROLLER
+      - SYNC-ZEUS-VERIFICATION-ZEUS
+      - SYNC-ZEUS-WOP-EMP-CONTROLLER
+    resolution_owner: Declared document and implementation owners
+
+  - divergence_id: C02-DR-013
+    documented_model: EMP progress/deviation traceability property is fully evidenced.
+    sources:
+      - {path: scripts/validate_controlled_documents.py, section: assurance}
+      - {path: docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md, lines: 1132-1157}
+    implementation_or_observation: EP-EMP-PROGRESS-DEVIATION-TRACEABILITY is PARTIALLY_ASSURED; other eleven properties are assured.
+    observed_behavior: assurance-only validation exits 1.
+    classification: DECLARED_ASSURANCE_DIVERGENCE
+    impact: EMP progress/deviation traceability lacks complete assurance evidence.
+    resolution_owner: EMP / Engineering Assurance
+
+  - divergence_id: C02-DR-014
+    documented_model: EENS Operational Alpha is implemented/qualified and repository source is services/eens.
+    sources:
+      - {path: docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md, lines: 1031-1065}
+      - {path: services/eens/README.md, lines: 23-40}
+    implementation_or_observation: EENS implementation exists and coverage is declared, but the synchronization pair is OUT_OF_SYNC and an internal checkpoint still calls for OA promotion.
+    observed_behavior: Coverage passes; synchronization fails.
+    classification: DOCUMENT_RUNTIME_CURRENCY_DIVERGENCE
+    impact: Existence is proven, but qualification currency cannot be inferred from declared fingerprints.
+    resolution_owner: EENS owner / Engineering Assurance
+
+  - divergence_id: C02-DR-015
+    documented_model: Operation Beta and OA authority/progress records agree with Project State before runtime use.
+    sources:
+      - {path: docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md, lines: 244-248}
+      - {path: engineering/missions/operation-beta-current.yaml}
+      - {path: engineering/authority/operational-authority-state.yaml}
+      - {path: engineering/operations/zeus-operational-alpha-progress.md}
+    implementation_or_observation: Legacy records remain current/active, carry old baselines, and disagree internally and with C02.
+    observed_behavior: engctl resume/context and EOS expose the disagreement; no consumer performs authoritative reconciliation.
+    classification: DOCUMENT_RUNTIME_GENERATION_DIVERGENCE
+    impact: Stale historical context is projected as current operational state.
+    resolution_owner: Engineering Governance / EMP / Zeus / EOS owners
+
+pre_existing_validation_results:
+  controlled_documents_base: {exit_code: 0, pass: 2958, fail: 0}
+  semantic_all: {exit_code: 1, pass: 3869, fail: 190}
+  synchronization:
+    exit_code: 1
+    summary: {OUT_OF_SYNC: 5, DOCUMENT_CHANGED: 2, IMPLEMENTATION_CHANGED: 1, PASS: 1, MISSING_ARTIFACT: 0}
+  implementation_coverage: {exit_code: 0, pass: 2962, fail: 0, undocumented_mandatory_artifacts: 0}
+  conformance: {exit_code: 1, conformant: 9, partially_conformant: 1}
+  assurance: {exit_code: 1, assured: 11, partially_assured: 1}
+summary:
+  divergence_observations: 15
+  authority_or_currency: 9
+  interface_or_validator: 6
+  correction_performed: false

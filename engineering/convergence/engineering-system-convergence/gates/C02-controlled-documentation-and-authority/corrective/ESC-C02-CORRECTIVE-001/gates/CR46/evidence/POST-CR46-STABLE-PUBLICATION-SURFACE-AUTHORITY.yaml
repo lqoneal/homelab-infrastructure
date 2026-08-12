@@ -1,0 +1,25 @@
+schema_version: 1
+gate_id: CR46
+classification: POST_CR46_STABLE_PUBLICATION_SURFACE_AUTHORITY
+authorized_at: '2026-08-12T07:31:41.671835+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+basis:
+  stable_publication_surface: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/POST-CR46-STABLE-PUBLICATION-SURFACE.yaml
+  7m96_ordering_defect: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/BLOCK7M96-PUBLICATION-CANDIDATE-SELF-INCLUSION-ORDERING-DEFECT.yaml
+frozen_surface:
+  path_count: 246
+  path_set_sha256: a07fb1e67b92aad02674b41a3d8e5001dd8c459952134bce06873ad3a9a92603
+authorized:
+  derive_exact_publication_execution_authority: true
+  verify_frozen_surface_before_authority: true
+prohibited:
+  surface_mutation: true
+  stage: true
+  commit: true
+  push: true
+  eos_synchronization: true
+  cr47_execution: true
+  cr47_result_write: true
+stop_after: EXACT_PUBLICATION_EXECUTION_AUTHORITY_DERIVATION
+next: DERIVE_EXACT_PUBLICATION_EXECUTION_AUTHORITY_FROM_STABLE_SURFACE_ONLY

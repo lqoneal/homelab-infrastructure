@@ -1,0 +1,21 @@
+schema_version: 1
+gate_id: CR46
+classification: RQ1_UNITTEST_MOCK_HARNESS_CLASSIFICATION
+classified_at: '2026-08-11T21:53:43.432249+00:00'
+prior_rq1_evidence: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ1-AUTHORITY-PUBLICATION-TEST-CONTEXT.yaml
+failure_class: PYTEST_TEST_HARNESS_IMPORT_PRECONDITION
+observed_error: 'AttributeError: module ''unittest'' has no attribute ''mock'''
+root_cause: test-authority-publication.py references unittest.mock before its explicit import; the explicit import resides
+  in the __main__ execution path and is not reached by pytest
+production_source_defect_established: false
+cr46_implementation_defect_established: false
+test_source_mutation_required_for_requalification: false
+context_only_recovery: PRELOAD_UNITTEST_MOCK_BEFORE_PYTEST_IMPORTS_TEST_MODULE
+rq1_retry_authorized: true
+rq2_execution_authorized_in_same_transaction: false
+rq3_execution_authorized_in_same_transaction: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+cr47_execution_authorized: false
+result: PASS

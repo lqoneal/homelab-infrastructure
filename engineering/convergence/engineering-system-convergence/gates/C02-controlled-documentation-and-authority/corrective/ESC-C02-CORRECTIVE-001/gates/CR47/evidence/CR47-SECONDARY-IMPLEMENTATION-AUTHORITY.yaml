@@ -1,0 +1,79 @@
+schema_version: "1.0"
+record_type: CR47_SECONDARY_IMPLEMENTATION_AUTHORITY
+cr_id: CR47
+result: PASS
+
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+authority_basis:
+  corrective_current_item: CR47
+  predecessor_completed_item: CR46
+  cr47_preconditions: PASS
+  secondary_mission_count: 10
+  derived_projection_function_count: 6
+  derived_test_contract_count: 10
+  inherited_dirty_baseline_count: 247
+  inherited_dirty_baseline_sha256: "8cfbd22797165455e2f4345be45a62a73369e285c504c8d26eb2f263e30348c4"
+
+mutation_allowlist:
+  path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-SECONDARY-IMPLEMENTATION-ALLOWLIST.yaml"
+  sha256: "47280f81711c399f9e191550484d6a3298fbc2dd89258faf00934a6808f38db9"
+
+authorized_secondary_missions:
+  - ZO-012
+  - ZO-018
+  - ZO-019
+  - ZO-020
+  - ZO-021
+  - ZO-023
+  - ZO-028
+  - ZO-029
+  - ZO-031
+  - ZO-032
+
+authorized_source_mutation:
+  - "scripts/lib/eos/convergence_roadmap.py"
+
+authorized_test_mutation:
+  - "scripts/tests/test-convergence-roadmap.py"
+
+authorized_projection_functions:
+  - project_authority_surface_contract
+  - project_result_authority_identity
+  - project_result_lifecycle_diagnostic
+  - project_acceptance_target_authority
+  - project_acceptance_prerequisites
+  - project_acceptance_readiness
+
+required_test_contract_count: 10
+
+implementation_execution_authorized: true
+source_mutation_authorized: true
+test_mutation_authorized: true
+
+lifecycle_test_mutation_authorized: false
+lifecycle_primitive_mutation_authorized: false
+codex_adapter_mutation_authorized: false
+publication_module_mutation_authorized: false
+gate_approval_mutation_authorized: false
+
+cr47_result_write_authorized: false
+cr47_state_advancement_authorized: false
+
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+eos_sync_authorized: false
+cr48_execution_authorized: false
+
+required_execution_invariants:
+  - preserve all existing canonical lifecycle semantics
+  - projections remain read-only
+  - projections consume existing authoritative lifecycle primitives
+  - no acceptance receipt may be created
+  - no lifecycle advancement may occur
+  - no successor execution may occur
+  - identical repository state must yield deterministic projection output
+  - mutations must remain inside the exact allowlist
+
+next_authorized_action: EXECUTE_CR47_SECONDARY_IMPLEMENTATION_WITHIN_EXACT_ALLOWLIST

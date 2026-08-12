@@ -1,0 +1,62 @@
+schema_version: 1
+gate_id: CR45M1
+classification: LIVE_TEN_PATH_STAGE_AND_AMEND_AUTHORITY
+authorized_at: '2026-08-11T18:56:39.921223+00:00'
+current_commit: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+required_parent: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+topology_decision: AMEND_EXISTING_LOCAL_CORRECTIVE_COMMIT
+execution_state: AUTHORIZED_NOT_EXECUTED
+exact_repair_path_count: 10
+exact_repair_surface:
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+  sha256: 59d19487278a385da15269b572b23bc33c3231934bd218093f04dcde3e3ebc76
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+  sha256: a94ed65634a054e89330984b23b8edf3bd66c3d9f791a86e43a4f5ff0798c00b
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/GATE.yaml
+  sha256: dc16ba71cd2ee22ba4fedad7477ea5567568fb0b55a1ebae38bd69027a9d2dd5
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/GATE.yaml
+  sha256: c6f4739f017cc411f0cc9aa596972271478ce1753e04a825538d530d7dae024b
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR48/GATE.yaml
+  sha256: ff84278cdb5a7ff7381d9158423f0a052f5850d39aaf0ebeea6a0028066e47a8
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR49/GATE.yaml
+  sha256: 87168e29542470b9e1a1aa6b711f1777ebadd9cdcfab1ca43eec641d5e7f3b29
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR50/GATE.yaml
+  sha256: fbd6f597ce45febf797ca606f3a815c4bc090b98b874777550d98ded031b28dc
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR51/GATE.yaml
+  sha256: 8f2fbae6b61a62d3b29627cca95b07521c9ef7abad5ae0d3b1f22ef06a87548a
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR52/GATE.yaml
+  sha256: f7f91892fe6aca4317345b1c1c779ed41811d3c08525ac7aa0035e749bc91daf
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR55/GATE.yaml
+  sha256: 9c54c782887ab60489a9647b982d242c172d0798576dd76fe919d664e298c86d
+stage_authority:
+  authorized: true
+  exact_paths_only: true
+  path_count: 10
+content_mutation_authority:
+  authorized: false
+  reason: Live content already equals independently qualified frozen candidate content.
+commit_authority:
+  amend_existing_commit: true
+  new_second_commit: false
+  preserve_parent: true
+  preserve_single_commit_semantics: true
+  commit_message_change_authorized: false
+post_amend_requirements:
+  immutable_commit_qualification: true
+  exact_delta_qualification: true
+  zeus_startup: true
+  import_closure: true
+  queued_zo_binding_validation: true
+  non_repair_content_preservation: true
+prohibited_actions:
+- stage_any_path_outside_exact_surface
+- modify_live_content
+- create_second_commit
+- push
+- publication
+- EOS_synchronization
+- complete_CR45
+- execute_CR46
+stop_after_execution: POST_AMEND_QUALIFICATION_ONLY
+cr45m1_closeout_same_transaction_authorized: false
+result: AUTHORIZED_NOT_EXECUTED

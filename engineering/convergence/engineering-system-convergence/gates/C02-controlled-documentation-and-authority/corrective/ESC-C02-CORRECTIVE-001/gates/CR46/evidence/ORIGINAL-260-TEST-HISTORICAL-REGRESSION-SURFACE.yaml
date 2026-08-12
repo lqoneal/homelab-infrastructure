@@ -1,0 +1,71 @@
+schema_version: 1
+gate_id: CR46
+classification: ORIGINAL_260_TEST_HISTORICAL_REGRESSION_SURFACE
+qualified_at: '2026-08-11T23:54:56.911197+00:00'
+result: PASS
+surface:
+  path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/ORIGINAL-260-TEST-HISTORICAL-REGRESSION-SURFACE.txt
+  sha256: 9a1e1ebd08ff69160ed26c066085f239ecb51c494a63b2289492a9cb41250489
+  file_count: 13
+  test_count: 260
+  files:
+  - path: scripts/tests/test-admission-freshness-and-supersession.py
+    collect_rc: 0
+    test_count: 3
+    sha256: c0f8896b2409f4c208c3c99f44d52be2a4938a048ed5126364dd550dda5012db
+  - path: scripts/tests/test-authority-publication.py
+    collect_rc: 0
+    test_count: 23
+    sha256: 392ce0853bd8fd1bd8d70b75b009b649cd24cdc1e5f36b1184d106e53b302701
+  - path: scripts/tests/test-authority-resolution-runtime.py
+    collect_rc: 0
+    test_count: 8
+    sha256: a66dc7324554974527f55405d1a1d09ab131082e80af65af1430eed1f885c71c
+  - path: scripts/tests/test-authority-wop-compatibility.py
+    collect_rc: 0
+    test_count: 18
+    sha256: 637ba01f3cf7c7284a85ec0d882c857a2aed787dfb051dd3ff09b871d08608b2
+  - path: scripts/tests/test-controlled-document-semantic-validation.py
+    collect_rc: 0
+    test_count: 8
+    sha256: 847b7d55cf2e457254128995aa358b73be43454ab1cc2ce8c7dc6618cb5815d5
+  - path: scripts/tests/test-convergence-roadmap.py
+    collect_rc: 0
+    test_count: 123
+    sha256: 4ed9ca065ff55dfc88a070a1a20b2bc7bb43425e03ae100cddc2390aeab58de7
+  - path: scripts/tests/test-convergence-runtime.py
+    collect_rc: 0
+    test_count: 11
+    sha256: 3f55e4dcdfc58ba8ffbebfed95f9aa756e9d96dc968ee8d6137e974f073491c7
+  - path: scripts/tests/test-mission-activation.py
+    collect_rc: 0
+    test_count: 8
+    sha256: 3a6fc5da645fc659dd0ea6751336933d0f2ced9c727a8cd94d58653e39bb8d2f
+  - path: scripts/tests/test-mission-orchestration.py
+    collect_rc: 0
+    test_count: 13
+    sha256: 0348d9e0dbffa8a56bfdf2939a08317145759b24638f7794c20af8e9ced0dd54
+  - path: scripts/tests/test-operational-alpha-status.py
+    collect_rc: 0
+    test_count: 4
+    sha256: d656aa29f7ac5a5eb35e9bb6a3a7366cc0e291ce84fe9f6079496572c1c31801
+  - path: scripts/tests/test-roadmap-lifecycle.py
+    collect_rc: 0
+    test_count: 10
+    sha256: 537dc6c677bc91bd6a77e7b82035da01619f8f4ffbb0de324801a7651ae333b3
+  - path: scripts/tests/test-wop-lifecycle-manager.py
+    collect_rc: 0
+    test_count: 20
+    sha256: b7ddfc275dfe9c1c04e9816691368361db229a725ab8003f15c716aab156924a
+  - path: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py
+    collect_rc: 0
+    test_count: 11
+    sha256: f08e2f66e1afc0c39dd7121a0301c8096be5b208aea0c0ad21a53e78f0b90568
+provenance:
+  source: CR46_FROZEN_TEST_ALLOWLIST
+  matches_original_regression_total: true
+  original_regression_total: 260
+  original_pass_count: 231
+  original_failure_count: 29
+execution_authorized: false
+next: AUTHOR_ORIGINAL_260_TEST_ISOLATED_REPLAY_EXECUTION_AUTHORITY

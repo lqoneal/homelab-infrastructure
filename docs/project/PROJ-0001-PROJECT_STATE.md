@@ -1,7 +1,7 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: 10.5
+version: '11.1'
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
@@ -20,84 +20,84 @@ source_of_truth: true
 convergence_program:
   program_id: ENGINEERING-SYSTEM-CONVERGENCE
   roadmap_id: ESC-ROADMAP-001
-  roadmap_version: 2.0.0
+  roadmap_version: 2.0.2
   roadmap_path: engineering/convergence/engineering-system-convergence/roadmap.yaml
   state_path: engineering/convergence/engineering-system-convergence/STATE.yaml
   current_gate: C02
-  next_authorized_action: BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT
+  next_authorized_action: Read corrective STATE.yaml. If current_item is CR47, verify CR47 dependencies and execute only CR47.
   executable_qualification: PASS
   evaluation_standard: STD-0006@1.0
   evaluation_procedure: PROC-0009@1.0
   evaluation_result: engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml
 declared_deferrals:
-  - legacy-document-migration
-  - repository-wide-persistence-remediation
-  - repair-yaml-header-remediation
+- legacy-document-migration
+- repository-wide-persistence-remediation
+- repair-yaml-header-remediation
 relationships:
-  - type: indexed_by
-    target: DOC-0001
-  - type: related_to
-    target: EGR-000001
-  - type: related_to
-    target: EGR-000002
-  - type: related_to
-    target: EWO-000016
-  - type: related_to
-    target: EWO-000017
-  - type: related_to
-    target: EWO-000018
-  - type: related_to
-    target: EWO-000019
-  - type: related_to
-    target: EGR-000003
-  - type: related_to
-    target: EWO-000020
-  - type: related_to
-    target: EGR-000004
-  - type: related_to
-    target: EWO-000021
-  - type: related_to
-    target: EWO-000022
-  - type: related_to
-    target: EWO-000023
-  - type: related_to
-    target: EOS-0003
-  - type: related_to
-    target: PHASE-0001
-  - type: related_to
-    target: MILESTONE-0003
-  - type: related_to
-    target: MILESTONE-0004
-  - type: related_to
-    target: MILESTONE-0005
-  - type: related_to
-    target: MILESTONE-0006
-  - type: related_to
-    target: MILESTONE-0007
-  - type: related_to
-    target: MILESTONE-0010
-  - type: related_to
-    target: EMP-0001
-  - type: related_to
-    target: SPEC-0006
-  - type: related_to
-    target: SPEC-0007
-  - type: related_to
-    target: SERVICE-0002
-  - type: governed_by
-    target: STD-0004
-  - type: conforms_to
-    target: STD-0006
-  - type: related_to
-    target: PROC-0009
-  - type: related_to
-    target: PROC-0003
+- type: indexed_by
+  target: DOC-0001
+- type: related_to
+  target: EGR-000001
+- type: related_to
+  target: EGR-000002
+- type: related_to
+  target: EWO-000016
+- type: related_to
+  target: EWO-000017
+- type: related_to
+  target: EWO-000018
+- type: related_to
+  target: EWO-000019
+- type: related_to
+  target: EGR-000003
+- type: related_to
+  target: EWO-000020
+- type: related_to
+  target: EGR-000004
+- type: related_to
+  target: EWO-000021
+- type: related_to
+  target: EWO-000022
+- type: related_to
+  target: EWO-000023
+- type: related_to
+  target: EOS-0003
+- type: related_to
+  target: PHASE-0001
+- type: related_to
+  target: MILESTONE-0003
+- type: related_to
+  target: MILESTONE-0004
+- type: related_to
+  target: MILESTONE-0005
+- type: related_to
+  target: MILESTONE-0006
+- type: related_to
+  target: MILESTONE-0007
+- type: related_to
+  target: MILESTONE-0010
+- type: related_to
+  target: EMP-0001
+- type: related_to
+  target: SPEC-0006
+- type: related_to
+  target: SPEC-0007
+- type: related_to
+  target: SERVICE-0002
+- type: governed_by
+  target: STD-0004
+- type: conforms_to
+  target: STD-0006
+- type: related_to
+  target: PROC-0009
+- type: related_to
+  target: PROC-0003
 tags:
-  - project-state
-  - checkpoint
-  - resume
-  - emp-phase-1.3
-  - eos
+- project-state
+- checkpoint
+- resume
+- emp-phase-1.3
+- eos
 ---
 
 # Project State
@@ -110,179 +110,20 @@ It summarizes the current project state and identifies the next approved enginee
 
 ## Current Convergence Resume Point
 
-The current repository-authoritative planning program is
-`ENGINEERING-SYSTEM-CONVERGENCE`, roadmap `ESC-ROADMAP-001`, at
-`engineering/convergence/engineering-system-convergence/roadmap.yaml`.
-`STATE.yaml` records C00 and C01 complete, C02 current, and
-`BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT` as the next
-authorized action. Roadmap Version 2.0.0 is execution-sufficiency qualified
-under STD-0006 and PROC-0009; its reviewed qualification is stored under the
-roadmap hardening evidence tree. C02 is assessment-only; it does not authorize document
-correction, EOS synchronization, Zeus repair, subsystem modification,
-publication, or later-gate implementation.
+The authoritative convergence program remains
+`ENGINEERING-SYSTEM-CONVERGENCE`, roadmap `ESC-ROADMAP-001`, with parent
+gate C02 current and C00/C01 complete.
 
-The older material below is retained as historical engineering context and as
-input to C02-C16. Where it claims a different current mission or phase, it does
-not supersede the convergence binding in this document's frontmatter. Existing
-Work Registry disagreement remains an observed C01 finding for later assessment
-and must not be silently repaired by resume.
+C02 assessment execution is complete and its result is preserved for operator
+review. The active bounded corrective is currently CR16 — Implement Validation
+Semantics under `ESC-C02-CORRECTIVE-001`.
 
----
+The parent ESC state therefore projects
+`EXECUTE_CR16_IMPLEMENT_VALIDATION_SEMANTICS` as the current authorized
+corrective action.
 
-# Last Updated
-
-**Date:** 2026-07-15
-
-**Convergence closeout update (2026-07-30):** `MILESTONE-0011` records
-`ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0` as the certified Zeus Operational
-Alpha runtime implementation baseline. The associated independent
-qualification is `WOP-RUNTIME-CERTIFICATION-002`; repository-controlled
-records and read-only runtime consistency are reconciled. No live runtime
-state was changed by closeout, and OA-01 remains blocked pending its separate
-authoritative execution prerequisites.
-
-**Session Summary:**
-
-- Qualified, inventoried, and registered AST-000010 without storage writes,
-  repair, data movement, destructive testing, or unsupported financial facts.
-- Published STD-0005 as the single preservation-first and evidence-first
-  Engineering Hardware Lifecycle authority.
-- Established and validated the administrator-authenticated Engineering
-  Storage Qualification Capability on `thaDuke` with `smartmontools`,
-  `exfatprogs`, and the existing `util-linux` and udev toolchain.
-- Reconciled INF-0001 and PROC-0003 as the existing authorities for platform
-  capability and non-destructive storage qualification; capability validation
-  made no qualification or registration claim about any attached asset.
-
-- Published MILESTONE-0005 as the qualified Engineering Platform Foundation
-  1.0 boundary and transitioned the platform from construction to operation.
-- Preserved the SprinterOS persistent MMC storage I/O investigation as the
-  then-current mission candidate; the milestone created no execution or
-  corrective-action authority.
-- Completed the first STD-0004 Engineering State Reconciliation across
-  Homelab Project State, SprinterOS Project and Sprint State, EOS operational
-  state, checkpoints, and resume context.
-- Published PROC-0003 and STD-0004, reconciled lifecycle, Work Initiation, and
-  resume architecture, and migrated shared recovery authority to Homelab.
-- Reconciled the qualified recovery capability, protected evidence, completed
-  Raspberry Pi platform update, and observed persistent MMC storage condition.
-
-- Established permanent per-login Engineering Platform SSH-agent management
-  through Ubuntu's native systemd user service, stable socket reuse, protected
-  identity loading, and explicit controller diagnostics.
-
-- Qualified the canonical repository, Governance Foundation publication, Mission 0 publication, EMP Phase 1.1 through 1.3 implementation, repository integrity, and complete working-tree boundary.
-- Verified the Work Registry, operational management services, `engctl` routing, Engineering Context Reconstruction, controlled-document validation, EOS runtime, and aggregate Engineering Platform validation.
-- Published MILESTONE-0004 as the EMP Foundation 1.0 operational qualification and baseline record.
-- Preserved Governance Foundation 1.0, Mission 0 runtime ownership, controlled-document authority, EWO-000016, and the deferred `repair_yaml_header.py` boundary.
-- Authorized controlled portfolio transition to SprinterOS product development while retaining Private AI Assistant and EMP enhancements as deferred work.
-
----
-
-# 1. Project Summary
-
-**Project Name:** Homelab Infrastructure
-
-**Project Vision:**
-
-Build the Engineering Operating System foundation for AI Assistant, SprinterOS, business automation, data storage, backups, local services, and future engineering platforms.
-
-**Current Overall Goal:**
-
-Operate the bounded Zeus Operational Alpha foundation with a qualified
-repository-local runtime and operator interface while preserving the separation
-between presentation, orchestration state, and every approval or execution
-authority.
-
-Mission ZEUS-P1-OPERATOR-INTERFACE qualifies only the global launcher and
-first-100-invocation orientation. It does not dispatch a mission, grant
-approval, relax WOP admission, or create execution authority.
-
-ZEUS-P2-022 distinguishes immutable authoritative engineering, repository,
-and operational decision state from explicitly documented bounded runtime
-presentation telemetry. Operator-interface `invocation_count` remains
-non-authoritative and cannot participate in PMCT or engineering decisions.
-
-ZEUS-P2-023 implements verification-first human gate acceptance. The first
-`zeus approve OA-XX` invocation prints a dynamically resolved verification
-command and stops. `zeus verify OA-XX` creates checksummed, fully bound proof
-without acceptance. A second approval invocation revalidates the binding and
-requires explicit confirmation before the internal receipt primitive may
-persist acceptance.
-
-ZEUS-P2-025 removes the publication fixed point by moving activation to an
-ignored create-only, read-only-after-publication runtime store with an
-integrity-bound pointer.
-It also establishes append-only, checksummed successor receipts. The historical
-OA-01 receipt remains unchanged but is stale for the current HEAD, so it does
-not authorize OA-02; current-baseline verification and a governed successor
-approval remain required.
-
----
-
-# 2. Current Phase
-
-**Current Phase:**
-
-Zeus Operational Alpha
-
-**Phase Objective:**
-
-Preserve the PHASE-0001 Zeus Operational Alpha authority boundary while
-qualifying bounded operator access to the already implemented supervised
-orchestration interface.
-
-MISSION-000007 EENS Repository Convergence is completed historical work. EENS
-Operational Alpha remains implemented and qualified on LOpi, with
-`services/eens` as canonical source. Its history, evidence, milestones,
-provenance, runtime behavior, and deferred HNS boundary remain intact.
-
-The ZEUS-P1 operator-interface mission is complete in the current worktree:
-launcher reconciliation, orientation state, regression qualification,
-operational documentation, and closeout evidence are present. The next mission
-must remain separately authorized and must not infer approval or execution
-authority from this interface.
-
-GH-EOS-INTEGRATION-001 resolved the final GH-ZEUS-CLOSEOUT-001 validation
-blocker by making repository records the sole engineering authority and EOS
-state a deterministic projection. Repository, synchronization, EOS runtime,
-integrated platform, and resume qualification pass. Zeus Assurance and the
-Engineering Execution Interface are the reconciled baseline; mission assurance
-remains deterministic and read-only, all revised controlled documents remain
-Draft, and EENS implementation has not begun.
-
----
-
-# 3. Current Environment
-
-**Engineering Workstation**
-
-`EWRI-001`
-
-**Hostname**
-
-`thaDuke`
-
-**EOS Workspace**
-
-`/data/engineering`
-
-**Homelab Repository**
-
-`/data/engineering/repositories/homelab`
-
-**Shared Libraries**
-
-`/data/engineering/repositories/shared-libraries`
-
-**Controller**
-
-`/data/engineering/repositories/homelab/scripts/homelabctl`
-
----
-
-# 4. Current Status
-
+This projection does not accept or complete C02 and does not activate or
+execute C03.
 ## Completed
 
 - Verified Phase 0.1 backup.
@@ -746,6 +587,14 @@ When resuming this project:
 | 10.3 | 2026-07-31 | Recorded OA-INFRA-BASELINE-001 at the qualified corrected OA-10 publication commit and bound future Operational Alpha resume and initiation to its inheritance rules. |
 | 10.4 | 2026-08-09 | Established ENGINEERING-SYSTEM-CONVERGENCE and bound Project State to ESC-ROADMAP-001 Version 1.0.0 with C00/C01 complete and C02 current. |
 | 10.5 | 2026-08-09 | Advanced ESC-ROADMAP-001 to Version 2.0.0 and recorded PASS executable-roadmap qualification under STD-0006 and PROC-0009 without advancing or executing C02. |
+| 10.6 | 2026-08-10 | Reconciled the Engineering System Convergence Project State projection to ESC-ROADMAP-001 Version 2.0.2 and the active CR16 validation-semantics corrective position without completing C02 or activating C03. |
+| 10.7 | 2026-08-10 | Staged CR16M2 to reconcile the stale persisted execution qualification with the qualified live C02 pending-review execution-sufficiency result; C02 remains current and incomplete, CR16 remains incomplete, and CR17/C03 remain unexecuted. |
+| 10.8 | 2026-08-10 | Staged CR16M2M1 after diagnostic evidence proved the canonical live roadmap 2.0.2 evaluation remains PASS / executable YES and the temporary NOT_EXECUTABLE result is caused solely by stale persisted-evaluation comparison. |
+| 10.7 | 2026-08-10 | Recorded completed CR16 qualification and advanced the active corrective execution point to CR17 Implement Status Projection without executing CR17 or completing C02. |
+| 10.8 | 2026-08-10 | Completed CR17 status-projection qualification and advanced the active corrective execution point to CR18 Implement Evaluation Semantics without executing CR18 or completing C02. |
+| 10.9 | 2026-08-10 | Completed CR18 review-aware evaluation semantics and advanced the active corrective execution point to CR19 Implement Read-Only Resume Projection without executing CR19 or completing C02. |
+| 11.0 | 2026-08-10 | Completed CR19 read-only resume projection and advanced the active corrective execution point to CR20 Implement Acceptance Transaction without executing CR20 or completing C02. |
+| 11.1 | 2026-08-10 | Completed CR20 canonical durable operator-review transaction and advanced the active corrective execution point to CR21 Implement Advancement Transaction without executing CR21 or completing C02. |
 
 ## Operational Mission Activation
 

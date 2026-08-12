@@ -1,0 +1,23 @@
+schema_version: 1
+gate_id: CR46
+classification: POST_CR46_PUBLICATION_SURFACE_REQUALIFICATION_AUTHORITY
+authorized_at: '2026-08-12T07:26:09.091769+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+basis: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/POST-CR46-FOREIGN-PATH-DELETION-RESULT.yaml
+authorized:
+  requalify_current_untracked_c02_surface: true
+  derive_complete_publication_candidate: true
+  derive_exact_publication_execution_authority: true
+prohibited:
+  additional_file_deletion: true
+  source_mutation: true
+  test_mutation: true
+  controlled_state_mutation: true
+  stage: true
+  commit: true
+  push: true
+  eos_synchronization: true
+  cr47_execution: true
+stop_after: PUBLICATION_CANDIDATE_AND_EXECUTION_AUTHORITY_DERIVATION
+next: DERIVE_COMPLETE_POST_CR46_PUBLICATION_CANDIDATE_AFTER_FOREIGN_PATH_DELETION

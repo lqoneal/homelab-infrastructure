@@ -1,0 +1,62 @@
+schema_version: "1.0"
+record_type: POST_CR47_STABLE_CLOSED_PUBLICATION_EXECUTION_AUTHORITY
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  block33_classification: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-BLOCK33-PUBLICATION-SURFACE-SELF-EXPANSION-CLASSIFICATION.yaml"
+  block33_classification_sha256: "f64771fcd32f2aa88eb5492dcf5ee5f4847baa53629880a784a45ea9f2bc65a4"
+  frozen_candidate: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-STABLE-CLOSED-PUBLICATION-CANDIDATE.yaml"
+  frozen_candidate_sha256: "a60fb8c9a737d1a788f8b714acaeffd231a6f6b601bbe92d154c009466ce0b7e"
+
+stable_closure:
+  path_count: 305
+  path_set_sha256: "013c0e1842bc49d027b817dadb568abdfbfe450142faabb0db32a46c35e3e35a"
+  all_publication_control_paths_precreated_before_freeze: true
+
+excluded_path:
+  path: "engineering/planning/2026-08-12-eens-architecture-resolution-options.md"
+  sha256: "87ea60ac65d8a770d9734ae51288c9600a78c90a36711fda263d00097194df53"
+  disposition: PRESERVE_BUT_EXCLUDE_FROM_CR47_PUBLICATION
+  must_remain_present: true
+  must_remain_unchanged: true
+  must_remain_unstaged: true
+
+pre_execution_requirements:
+  rerun_candidate_inventory: true
+  exact_path_count: 305
+  exact_path_set_sha256: "013c0e1842bc49d027b817dadb568abdfbfe450142faabb0db32a46c35e3e35a"
+  unbound_path_count: 0
+  roadmap_validation: PASS
+  emm_drift_count: 0
+  excluded_path_unstaged: true
+  index_empty_before_stage: true
+  cr48_executed: false
+
+authorized:
+  stage_exact_stable_closed_candidate_only: true
+  verify_staged_path_set_equals_frozen_candidate: true
+  create_single_publication_commit: true
+  push_single_publication_commit_to_origin_main: true
+  synchronize_eos_only_after_successful_push: true
+  verify_post_publication_repository_eos_parity: true
+
+required:
+  no_amend: true
+  stop_on_candidate_change: true
+  stop_on_staged_path_mismatch: true
+  stop_on_commit_failure: true
+  stop_on_push_failure: true
+  cr48_remains_unexecuted: true
+
+prohibited:
+  stage_excluded_path: true
+  modify_excluded_path: true
+  delete_excluded_path: true
+  move_excluded_path: true
+  amend: true
+  execute_cr48: true
+
+next_authorized_action:
+  EXECUTE_STABLE_CLOSED_POST_CR47_PUBLICATION_WITH_EENS_PATH_EXCLUDED_ONLY

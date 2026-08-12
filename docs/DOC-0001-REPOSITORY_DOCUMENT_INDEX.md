@@ -1,20 +1,20 @@
 ---
 document_id: DOC-0001
 title: Repository Document Index
-version: 2.79
+version: 2.80
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-08-09
-phase: Engineering System Convergence C02 Corrective
+last_updated: 2026-08-12
+phase: Engineering System Convergence C02 Planning
 domain: Repository Governance
 classification: Repository Document Index
-predecessor_revision: DOC-0001@2.78
+predecessor_revision: DOC-0001@2.79
 successor_revision: null
-approval_status: Approved
+approval_status: Pending
 approval_authority: Homelab Operator
-approval_reference: EXECUTABLE ROADMAP STANDARDIZATION AND ESC-ROADMAP-001 HARDENING directive
-approval_date: 2026-08-09
+approval_reference: WOP and EENS maturity roadmap controlled-document development directive
+approval_date: 2026-08-12
 persistence_status: Pending
 source_of_truth: true
 declared_deferrals: []
@@ -51,6 +51,10 @@ relationships:
     target: STD-0005
   - type: indexes
     target: STD-0006
+  - type: indexes
+    target: SPEC-0015
+  - type: indexes
+    target: SPEC-0016
   - type: indexes
     target: TPL-0004
   - type: indexes
@@ -386,6 +390,8 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | SPEC-0012 | Production Execution Foundation | Active | Lawrence O'Neal | `docs/specifications/SPEC-0012-PRODUCTION-EXECUTION-FOUNDATION.md` |
 | SPEC-0013 | Controlled Mission Assurance Language | Draft | EOS Program | `docs/specifications/SPEC-0013-CONTROLLED-MISSION-ASSURANCE-LANGUAGE.md` |
 | SPEC-0014 | Operational Alpha Convergence Authority Model | Active | Homelab Infrastructure | `docs/specifications/SPEC-0014-OPERATIONAL-ALPHA-CONVERGENCE-AUTHORITY.md` |
+| SPEC-0015 | WOP Package Maturity Roadmap | Draft | Homelab Infrastructure | `docs/specifications/SPEC-0015-WOP-PACKAGE-MATURITY-ROADMAP.md` |
+| SPEC-0016 | EENS Maturity Roadmap | Draft | Homelab Infrastructure | `docs/specifications/SPEC-0016-EENS-MATURITY-ROADMAP.md` |
 | SERVICE-0001 | EOS Core Services Catalog | Draft | EOS Program | `docs/services/SERVICE-0001-EOS_CORE_SERVICES_CATALOG.md` |
 | SERVICE-0002 | EMP Management Services Catalog | Active | Engineering Management Platform | `docs/services/SERVICE-0002-EMP_MANAGEMENT_SERVICES_CATALOG.md` |
 | GEN-0001 | Engineering Operating System Genesis Record | Active | Engineering Governance | `docs/genesis/GEN-0001-GENESIS_GOVERNANCE_RECORD.md` |
@@ -905,3 +911,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.77 | 2026-07-30 | Registered MILESTONE-0011 and the certified `ZEUS-CONVERGENCE-RUNTIME-BASELINE-1.0` registry trace; Operational Alpha remains blocked at OA-01 until its separately controlled execution prerequisites exist. |
 | 2.78 | 2026-07-31 | Reconciled Operational Alpha initiation to the published WOP and convergence-authority model; historical EWOs no longer gate repository-governed Operational Alpha execution. |
 | 2.79 | 2026-08-09 | Registered STD-0006 and PROC-0009 as the reusable executable-roadmap construction and evaluation authorities, with ESC-ROADMAP-001 as the first bound executable qualification. |
+| 2.80 | 2026-08-12 | Registered Draft SPEC-0015 and SPEC-0016 as planning-only WOP and EENS maturity roadmaps; both remain in development, non-executable, unapproved, and unauthorized for implementation, with EENS architecture selection and WOP/EENS contract freeze pending. |

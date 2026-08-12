@@ -1,0 +1,55 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ3
+classification: RQ3_EXECUTION_AUTHORITY_AFTER_RECONCILED_RQ2_PASS
+authorized_at: '2026-08-12T06:34:17.078725+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+basis:
+  rq2_reconciliation: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-EXACT-15-NODE-REQUALIFICATION-RECONCILIATION.yaml
+  rq3_scope_qualification: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-CONTEXT-CORRECT-EXECUTION-SCOPE-QUALIFICATION.yaml
+predecessor:
+  rq2_result: PASS
+  rq2_qualified: true
+  rq2_rerun_required: false
+  rq2_cleanup_recovered: true
+execution:
+  authorized: true
+  mode: EXACT_10_NODE_CANONICAL_REPOSITORY_IDENTITY_CONTEXT
+  validator_path: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py
+  validator_sha256: f08e2f66e1afc0c39dd7121a0301c8096be5b208aea0c0ad21a53e78f0b90568
+  node_count: 10
+  node_set_sha256: 036dd8d820ec5388f71ac06cb3e7ccf6b3c608f51a4a4cde4ef6ca47684237b3
+  nodes:
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_all_transaction_identifiers_resolve_same_record
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_digest_projection_and_state_digest_are_deterministic
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_duplicate_submission_is_idempotent
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_healthy_submission_creates_one_snapshot_and_receipt_backed_dispatch
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_incomplete_provider_selection_and_launch_ack_are_not_authoritative
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_projection_persistence_failure_blocks_submission_before_success
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_provider_output_cannot_advance_without_receipts
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_receiptless_dispatch_rolls_back_and_preserves_evidence
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_recovery_does_not_invoke_execution_and_requires_new_snapshot
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_replayed_dispatch_repairs_missing_derived_projections_without_resubmission
+  canonical_repository_root: /data/engineering/repositories/homelab
+  canonical_branch: main
+  qualified_baseline: fe824c714da35d987cc7454366aa3abaf046cc31
+  git_metadata_required: true
+  canonical_repository_identity_required: true
+  canonical_git_repository_context_required: true
+  temporary_runtime_state_isolation_required: true
+  live_repository_content_mutation: false
+  stop_after_rq3_execution: true
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_state_mutation_authorized: false
+repository_content_mutation_authorized: false
+stage_authorized: false
+commit_authorized: false
+amend_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+rq3_completion_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: EXECUTE_RQ3_EXACT_10_NODE_CANONICAL_REPOSITORY_IDENTITY_REQUALIFICATION_ONLY

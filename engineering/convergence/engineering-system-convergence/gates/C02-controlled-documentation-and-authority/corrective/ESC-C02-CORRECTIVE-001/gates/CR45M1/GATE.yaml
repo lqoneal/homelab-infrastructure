@@ -1,0 +1,108 @@
+schema_version: 1
+gate_id: CR45M1
+title: Durabilize Post-Qualification Zeus CR Mission Contracts
+status: PENDING
+purpose: Make the exact post-qualification authoritative Zeus opportunity and secondary-CR-mission contract surface
+  durable and independently qualified before CR45 publication resumes.
+objective: Construct and qualify an exact ten-path durability candidate, then perform only the separately authorized
+  commit-topology mutation needed to make that surface durable.
+parent_item: CR45
+next_item: CR45
+entry_conditions:
+- Corrective STATE.yaml identifies CR45M1 as current.
+- CR45 remains incomplete.
+- CR46 remains unexecuted.
+- HEAD remains the CR44-qualified local commit at recovery entry.
+- origin/main remains the expected remote parent.
+- The exact ten-path durability surface matches the frozen digests.
+authority_basis:
+  qualified_head: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+  expected_remote_parent: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+  durability_surface_source: gates/CR45/evidence/COMPLETE-ZO-DURABILITY-SURFACE.yaml
+  recovery_requirement_source: gates/CR45/evidence/DURABILITY-COMMIT-RECOVERY-REQUIREMENT.yaml
+  zeus_observation_dedup: ZO-058
+frozen_durability_surface:
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+  sha256: 59d19487278a385da15269b572b23bc33c3231934bd218093f04dcde3e3ebc76
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+  sha256: a94ed65634a054e89330984b23b8edf3bd66c3d9f791a86e43a4f5ff0798c00b
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/GATE.yaml
+  sha256: dc16ba71cd2ee22ba4fedad7477ea5567568fb0b55a1ebae38bd69027a9d2dd5
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/GATE.yaml
+  sha256: c6f4739f017cc411f0cc9aa596972271478ce1753e04a825538d530d7dae024b
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR48/GATE.yaml
+  sha256: ff84278cdb5a7ff7381d9158423f0a052f5850d39aaf0ebeea6a0028066e47a8
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR49/GATE.yaml
+  sha256: 87168e29542470b9e1a1aa6b711f1777ebadd9cdcfab1ca43eec641d5e7f3b29
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR50/GATE.yaml
+  sha256: fbd6f597ce45febf797ca606f3a815c4bc090b98b874777550d98ded031b28dc
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR51/GATE.yaml
+  sha256: 8f2fbae6b61a62d3b29627cca95b07521c9ef7abad5ae0d3b1f22ef06a87548a
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR52/GATE.yaml
+  sha256: f7f91892fe6aca4317345b1c1c779ed41811d3c08525ac7aa0035e749bc91daf
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR55/GATE.yaml
+  sha256: 9c54c782887ab60489a9647b982d242c172d0798576dd76fe919d664e298c86d
+allowed_mutations:
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR48/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR49/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR50/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR51/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR52/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR55/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR45M1/**
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/HISTORY.md
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+prohibited_mutations:
+- Any file outside the exact durability surface except CR45M1 evidence and corrective roadmap/state/history authority
+  records.
+- Content mutation of the ten frozen durability files after recovery activation unless separately reauthorized.
+- Unrelated dirty-worktree content.
+- CR46 execution.
+- EOS synchronization.
+- Push or publication.
+- Reset, checkout, discard, restore, or cleanup of unrelated worktree state.
+execution_phases:
+- Verify exact frozen ten-path live content.
+- Build a clean isolated candidate from the current qualified commit plus only the ten authorized paths.
+- Verify the isolated candidate delta is exact.
+- Qualify controlled-document semantics, Zeus startup/import closure, runtime behavior, and queued-ZO/secondary-CR
+  bindings from the candidate.
+- Derive explicit amend-versus-second-commit authority from corrective single-commit semantics.
+- Do not mutate the live index or commit until that topology decision is separately authorized.
+- After separately authorized commit mutation, qualify the resulting immutable commit.
+- Write CR45M1 terminal evidence/result and return current_item to CR45.
+commit_authority:
+  stage_authorized_at_contract_creation: false
+  amend_authorized_at_contract_creation: false
+  second_commit_authorized_at_contract_creation: false
+  commit_topology_requires_separate_qualification: true
+side_effect_authority:
+  push: false
+  publication: false
+  eos_synchronization: false
+  cr46_execution: false
+required_outputs:
+- CR45M1-EVIDENCE.yaml
+required_evidence:
+- COMMANDS.md or equivalent command record
+- VALIDATION.yaml or equivalent validation record
+- isolated candidate qualification
+- commit-topology qualification
+- post-commit immutable qualification if commit mutation is later authorized
+acceptance_criteria:
+- Only the exact ten-path authoritative durability surface enters the qualified candidate.
+- No unrelated dirty-worktree content enters the candidate or commit.
+- Queued ZO assignments remain valid secondary CR missions.
+- ZO-058 remains the deduplicated repository-transaction capability.
+- Commit topology is explicitly qualified before live commit mutation.
+- Any resulting durable commit is independently executable and qualified.
+- No push, EOS synchronization, CR46 execution, or unrelated mutation occurs.
+- CR45M1 closes back to CR45 only.
+stop_boundary: STOP_AFTER_CR45M1
+resume_instructions: Read STATE.yaml and gates/CR45M1/GATE.yaml. If current_item is CR45M1, execute only CR45M1.
+  Stop after CR45M1 closeout and restoration of current_item to CR45. Do not execute CR45 or CR46 in the same transaction.

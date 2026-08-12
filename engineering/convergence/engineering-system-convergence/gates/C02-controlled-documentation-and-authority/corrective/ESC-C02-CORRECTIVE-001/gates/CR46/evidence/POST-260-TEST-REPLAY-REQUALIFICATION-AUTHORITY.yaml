@@ -1,0 +1,24 @@
+schema_version: 1
+gate_id: CR46
+classification: POST_260_TEST_REPLAY_REQUALIFICATION_AUTHORITY
+authorized_at: '2026-08-12T00:07:12.656401+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+basis: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/ORIGINAL-260-TEST-REPLAY-CONTEXT-CLASSIFICATION.yaml
+authorized_next_work:
+  derive_rq1_context_boundary: true
+  derive_rq2_historical_cr23_boundary: true
+  derive_rq3_repository_identity_boundary: true
+test_execution_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_state_mutation_authorized: false
+rq2_completion_authorized: false
+rq3_completion_authorized: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: DERIVE_RQ1_RQ2_RQ3_CONTEXT_CORRECT_EXECUTION_BOUNDARIES_ONLY

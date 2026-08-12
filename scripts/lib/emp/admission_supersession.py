@@ -436,3 +436,62 @@ def resolve_for_resume(root: Path | str, admission_store: Path | str,
         raise AdmissionSupersessionError("successor admission artifact baseline is stale")
     return {"admission_id": terminal["admission_id"], "admission": terminal,
             "predecessor": predecessor, "lineage": chain, "replayed": len(chain) > 1}
+
+# --- CR46 ZO-024 / ZO-061 / ZO-060: admission owner projections ---
+def result_freshness_projection(
+    result_record: Mapping[str, Any],
+    *,
+    active_gate_id: str,
+    authority_digest: str | None = None,
+    authority_revision: Any = None,
+    lifecycle_revision: Any = None,
+) -> dict[str, Any]:
+    from scripts.lib.emp.stage1_runtime import result_freshness_provenance
+
+    return {
+        **result_freshness_provenance(
+            result_record,
+            active_gate_id=active_gate_id,
+            authority_digest=authority_digest,
+            authority_revision=authority_revision,
+            lifecycle_revision=lifecycle_revision,
+        ),
+        "owner_surface": "admission_supersession",
+    }
+
+
+def validation_applicability_projection(
+    validator_class: str,
+    **context: Any,
+) -> dict[str, Any]:
+    from scripts.lib.emp.codex_reconciliation import (
+        classify_validation_applicability,
+    )
+
+    return {
+        **classify_validation_applicability(
+            validator_class,
+            **context,
+        ),
+        "owner_surface": "admission_supersession",
+    }
+
+
+def immutable_commit_dependency_projection(
+    root: Path | str,
+    commit: str,
+    *,
+    entrypoints: list[str] | tuple[str, ...] = (),
+) -> dict[str, Any]:
+    from scripts.lib.emp.publication_candidate_authority import (
+        qualify_immutable_commit_dependency_closure,
+    )
+
+    return {
+        **qualify_immutable_commit_dependency_closure(
+            root,
+            commit,
+            entrypoints=entrypoints,
+        ),
+        "owner_surface": "admission_supersession",
+    }

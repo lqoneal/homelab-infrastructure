@@ -16,6 +16,7 @@ from typing import Any, Mapping
 import yaml
 
 from scripts.lib.authority.engine import AuthorityGraph, AuthorityValidationError
+from scripts.lib.emp.runtime_paths import runtime_path
 
 
 class AuthorityResolutionError(ValueError):
@@ -78,7 +79,7 @@ def authoritative_source_path(repository_root: Path | str) -> Path:
     source remains a migration fallback until the first runtime publication.
     """
     root = Path(repository_root).resolve()
-    runtime = root / AUTHORITY_RUNTIME_RELATIVE_PATH
+    runtime = runtime_path(root, "authority")
     pointer = runtime / ACTIVE_PUBLICATION_POINTER
     if pointer.is_file():
         try:

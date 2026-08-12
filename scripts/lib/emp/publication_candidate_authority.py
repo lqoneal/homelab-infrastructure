@@ -521,3 +521,362 @@ def resolve(root: Path | str, mission_id: str, *, runtime_root: Path | str | Non
         "drift_inputs": [],
         "next_authorized_action": "PREPARE_PUBLICATION_CANDIDATE" if result == "PASS" else "RESOLVE_PUBLICATION_CANDIDATE_AUTHORITY", "read_only": True,
     }
+
+# --- CR46 ZO-060: immutable commit dependency-closure qualification ---
+def qualify_immutable_commit_dependency_closure(
+    root: Path | str,
+    commit: str,
+    *,
+    entrypoints: list[str] | tuple[str, ...] = (),
+) -> dict[str, Any]:
+    """Qualify Python dependency closure from an immutable Git commit."""
+    import ast
+    import io
+    import subprocess
+    import sys
+    import tarfile
+    import tempfile
+
+    repository = Path(root).resolve()
+
+    def git(*args: str) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            ["git", "-C", str(repository), *args],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+    resolved = git(
+        "rev-parse",
+        "--verify",
+        f"{commit}^{{commit}}",
+    )
+
+    if resolved.returncode:
+        return {
+            "result": "FAIL",
+            "read_only": True,
+            "commit": commit,
+            "blockers": [{
+                "code": "IMMUTABLE_COMMIT_UNRESOLVED",
+                "message": resolved.stderr.strip(),
+            }],
+            "next_authorized_action":
+                "RESOLVE_CANDIDATE_COMMIT",
+        }
+
+    commit_id = resolved.stdout.strip()
+
+    listing = git(
+        "ls-tree",
+        "-r",
+        "--name-only",
+        commit_id,
+    )
+
+    if listing.returncode:
+        return {
+            "result": "FAIL",
+            "read_only": True,
+            "commit": commit_id,
+            "blockers": [{
+                "code": "IMMUTABLE_COMMIT_INSPECTION_FAILED",
+                "message": listing.stderr.strip(),
+            }],
+            "next_authorized_action":
+                "RESOLVE_CANDIDATE_COMMIT",
+        }
+
+    committed_paths = {
+        line
+        for line in listing.stdout.splitlines()
+        if line
+    }
+
+    dirty = git(
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all",
+    )
+
+    live_dirty_paths = []
+
+    for line in dirty.stdout.splitlines():
+        payload = line[3:] if len(line) >= 4 else ""
+
+        if " -> " in payload:
+            payload = payload.split(" -> ", 1)[1]
+
+        if payload:
+            live_dirty_paths.append(payload)
+
+    archive = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(repository),
+            "archive",
+            "--format=tar",
+            commit_id,
+        ],
+        capture_output=True,
+        check=False,
+    )
+
+    if archive.returncode:
+        return {
+            "result": "FAIL",
+            "read_only": True,
+            "commit": commit_id,
+            "blockers": [{
+                "code": "IMMUTABLE_ARCHIVE_FAILED",
+                "message":
+                    archive.stderr.decode(
+                        "utf-8",
+                        "replace",
+                    ),
+            }],
+            "next_authorized_action":
+                "RESOLVE_CANDIDATE_COMMIT",
+        }
+
+    missing = []
+    masked = []
+    parsed_files = 0
+
+    def module_candidates(module: str):
+        rel = module.replace(".", "/")
+        return (
+            f"{rel}.py",
+            f"{rel}/__init__.py",
+        )
+
+    with tempfile.TemporaryDirectory(
+        prefix="zeus-immutable-commit-"
+    ) as raw:
+
+        snapshot = Path(raw)
+
+        with tarfile.open(
+            fileobj=io.BytesIO(archive.stdout),
+            mode="r:",
+        ) as stream:
+            stream.extractall(snapshot)
+
+        top_level = {
+            path.split("/", 1)[0]
+            for path in committed_paths
+            if "/" in path
+        }
+
+        top_level |= {
+            path.split("/", 1)[0]
+            for path in live_dirty_paths
+            if "/" in path
+        }
+
+        for rel in sorted(
+            path
+            for path in committed_paths
+            if path.endswith(".py")
+        ):
+            source_path = snapshot / rel
+
+            try:
+                tree = ast.parse(
+                    source_path.read_text(
+                        encoding="utf-8"
+                    ),
+                    filename=rel,
+                )
+
+            except (OSError, UnicodeError, SyntaxError) as error:
+                missing.append({
+                    "source": rel,
+                    "dependency": None,
+                    "reason":
+                        f"PYTHON_PARSE_FAILED:{error}",
+                })
+                continue
+
+            parsed_files += 1
+
+            for node in ast.walk(tree):
+                modules = []
+
+                if isinstance(node, ast.Import):
+                    modules.extend(
+                        alias.name
+                        for alias in node.names
+                    )
+
+                elif (
+                    isinstance(node, ast.ImportFrom)
+                    and node.level == 0
+                    and node.module
+                ):
+                    modules.append(node.module)
+
+                for module in modules:
+                    top = module.split(".", 1)[0]
+
+                    if top not in top_level:
+                        continue
+
+                    file_candidate, package_candidate = (
+                        module_candidates(module)
+                    )
+
+                    if (
+                        file_candidate in committed_paths
+                        or package_candidate in committed_paths
+                    ):
+                        continue
+
+                    live_file = repository / file_candidate
+                    live_package = repository / package_candidate
+
+                    item = {
+                        "source": rel,
+                        "dependency": module,
+                        "expected_paths": [
+                            file_candidate,
+                            package_candidate,
+                        ],
+                    }
+
+                    missing.append(item)
+
+                    if (
+                        live_file.is_file()
+                        or live_package.is_file()
+                    ):
+                        masked.append({
+                            **item,
+                            "live_worktree_masking": True,
+                        })
+
+        selected = list(entrypoints)
+
+        if not selected and "scripts/zeus" in committed_paths:
+            selected = ["scripts/zeus"]
+
+        entrypoint_results = []
+
+        for rel in selected:
+            if rel not in committed_paths:
+                entrypoint_results.append({
+                    "path": rel,
+                    "result": "FAIL",
+                    "reason": "ENTRYPOINT_NOT_COMMITTED",
+                })
+                continue
+
+            target = snapshot / rel
+
+            source = target.read_text(
+                encoding="utf-8",
+                errors="ignore",
+            )
+
+            if (
+                target.suffix == ".py"
+                or source.startswith("#!")
+            ):
+                check = subprocess.run(
+                    [
+                        sys.executable,
+                        "-m",
+                        "py_compile",
+                        str(target),
+                    ],
+                    cwd=snapshot,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+
+                entrypoint_results.append({
+                    "path": rel,
+                    "result":
+                        "PASS"
+                        if check.returncode == 0
+                        else "FAIL",
+                    "reason":
+                        check.stderr.strip()
+                        if check.returncode
+                        else None,
+                })
+
+            else:
+                entrypoint_results.append({
+                    "path": rel,
+                    "result": "PASS",
+                    "reason": None,
+                })
+
+    startup_pass = all(
+        item["result"] == "PASS"
+        for item in entrypoint_results
+    )
+
+    result = (
+        "PASS"
+        if not missing and startup_pass
+        else "FAIL"
+    )
+
+    return {
+        "result": result,
+        "read_only": True,
+
+        "qualification_class":
+            "IMMUTABLE_COMMIT_DEPENDENCY_CLOSURE",
+
+        "commit": commit_id,
+        "commit_digest": commit_id,
+
+        "committed_path_count":
+            len(committed_paths),
+
+        "python_files_parsed":
+            parsed_files,
+
+        "missing_committed_dependencies":
+            missing,
+
+        "missing_dependency_count":
+            len(missing),
+
+        "live_worktree_masking":
+            masked,
+
+        "live_worktree_masking_detected":
+            bool(masked),
+
+        "live_dirty_paths":
+            sorted(live_dirty_paths),
+
+        "entrypoint_results":
+            entrypoint_results,
+
+        "immutable_startup":
+            "PASS"
+            if startup_pass
+            else "FAIL",
+
+        "dependency_closure":
+            "PASS"
+            if not missing
+            else "FAIL",
+
+        "qualification_bound_to_exact_commit":
+            True,
+
+        "next_authorized_action": (
+            "CONTINUE_PUBLICATION_QUALIFICATION"
+            if result == "PASS"
+            else "REPAIR_COMMITTED_DEPENDENCY_CLOSURE"
+        ),
+    }

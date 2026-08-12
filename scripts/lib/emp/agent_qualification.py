@@ -411,3 +411,28 @@ def runtime_registry_path(repository: Path) -> Path:
     path = _record_root(root) / "effective-registry.json"
     _atomic(path, value)
     return path
+
+# --- CR46 ZO-026: owner projection over canonical instrument selection ---
+def qualification_instrument_projection(
+    repository: Path,
+    projection_scope: str,
+    *,
+    context: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    from scripts.lib.emp.mission_verification_controller import (
+        select_qualification_instrument,
+    )
+
+    root = repository.resolve()
+
+    return {
+        **select_qualification_instrument(
+            projection_scope,
+            context={
+                "repository": str(root),
+                **dict(context or {}),
+            },
+        ),
+        "owner_surface": "agent_qualification",
+        "repository": str(root),
+    }

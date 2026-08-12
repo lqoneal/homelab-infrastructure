@@ -1,0 +1,32 @@
+schema_version: 1
+gate_id: CR45
+classification: LEGACY_ZO_STATUS_AND_SECONDARY_MISSION_RECONCILIATION
+reconciled_at: '2026-08-11T16:50:49.520974+00:00'
+historical_status_reconciled:
+- ZO-001
+- ZO-002
+- ZO-003
+- ZO-004
+prospectively_reassigned:
+  CR51:
+  - ZO-015
+  CR52:
+  - ZO-046
+  - ZO-047
+  CR55:
+  - ZO-043
+  - ZO-044
+  - ZO-049
+  - ZO-050
+  - ZO-052
+  - ZO-053
+  - ZO-055
+  - ZO-056
+rules:
+  zo_identity_preserved: true
+  execution_class: SECONDARY_CR_MISSION
+  completed_gate_reopened: false
+  future_mutable_cr_assignment: true
+push_performed: false
+cr46_executed: false
+result: PASS

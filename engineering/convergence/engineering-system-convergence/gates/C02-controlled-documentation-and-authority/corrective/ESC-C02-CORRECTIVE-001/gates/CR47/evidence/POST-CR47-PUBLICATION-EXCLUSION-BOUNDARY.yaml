@@ -1,0 +1,23 @@
+schema_version: '1.0'
+record_type: POST_CR47_PUBLICATION_EXCLUSION_BOUNDARY
+cr_id: CR47
+result: PASS
+live_surface:
+  count: 301
+  sha256: 1f502295119f3917cc80aa5088491cecab5031b0606ed45f89624ba988619d60
+excluded:
+  count: 1
+  paths:
+  - engineering/planning/2026-08-12-eens-architecture-resolution-options.md
+  reason: PRESERVE_BUT_EXCLUDE_FROM_CR47_PUBLICATION
+publication_candidate:
+  count: 300
+  sha256: 2fa432766c106e0b58b8459f7134f72026541ce60931dcc9db51e44b25ae3263
+  unbound_count: 0
+  unbound_paths: []
+execution:
+  stage_authorized: false
+  commit_authorized: false
+  push_authorized: false
+  eos_sync_authorized: false
+  cr48_authorized: false

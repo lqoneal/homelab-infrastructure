@@ -1,0 +1,45 @@
+schema_version: "1.0"
+record_type: CR47_SECONDARY_TEST_REQUALIFICATION_RESULT
+cr_id: CR47
+result: FAIL
+
+block7_failure_classification:
+  original_failure: PYTEST_TMP_RESOURCE_EXHAUSTION
+  implementation_defect_established: false
+  test_implementation_defect_established_before_requalification: false
+
+pytest_environment:
+  system_tmp_used: false
+  repository_tmp_root: "/data/engineering/repositories/homelab/tmp"
+  run_tmp: "/data/engineering/repositories/homelab/tmp/cr47-pytest-20260812T091755Z-2046230"
+  tmpdir_exported: true
+  pytest_basetemp_explicit: true
+
+qualification:
+  exact_ten_test_rc: 90
+  full_roadmap_test_rc: 90
+  exact_ten_tests: FAIL
+  full_roadmap_test: FAIL
+
+implementation:
+  implementation_sha256: "205f95746fdcb7933905aed3308e46f992767ddfb58d1f3877670c70b39d30b4"
+  test_sha256: "6aaf549a1951ce6f787170b75153370f14c1c27cb700554e8573274da15fc797"
+  codex_rerun: false
+  source_mutation_during_requalification: false
+  test_mutation_during_requalification: false
+
+temporary_artifacts:
+  bytes_before_cleanup: 0
+  file_count_before_cleanup: 0
+  directory_count_before_cleanup: 0
+  archive_required: false
+  deletion_required: true
+
+prohibitions:
+  cr47_result_write: true
+  cr47_state_advance: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+  cr48_execute: true

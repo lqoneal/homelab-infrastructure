@@ -1,0 +1,25 @@
+schema_version: 1
+gate_id: CR46
+opportunity_id: ZO-061
+execution_stage: 4
+implementation_contract:
+  order: 4
+  opportunity_id: ZO-061
+  title: Zeus Qualification Context and Validation Applicability Classification
+  objective: Enable Zeus to classify qualification checks by lifecycle phase, repository topology, publication state, EOS
+    state, and test-harness context so non-applicable validation failures cannot be misclassified as candidate semantic defects.
+  module_owner_paths:
+  - scripts/lib/emp/codex_reconciliation.py
+  - scripts/lib/emp/admission_supersession.py
+  - scripts/lib/emp/authority_publication.py
+  test_owner_paths:
+  - scripts/tests/test-convergence-roadmap.py
+  - scripts/tests/test-authority-publication.py
+  - scripts/tests/test-controlled-document-semantic-validation.py
+  implementation_contract_status: QUALIFIED
+  acceptance_requirement: OBJECTIVE_PROVEN_BY_TARGETED_TESTS_AND_NO_REGRESSION
+execution_state: AUTHORIZED_NOT_EXECUTED
+qualification_state: PENDING
+stage_authorized: false
+commit_authorized: false
+push_authorized: false

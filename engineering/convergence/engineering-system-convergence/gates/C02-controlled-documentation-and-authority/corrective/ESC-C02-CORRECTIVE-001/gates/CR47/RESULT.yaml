@@ -1,0 +1,42 @@
+schema_version: "1.0"
+record_type: CORRECTIVE_GATE_RESULT
+gate: CR47
+result: PASS
+
+secondary_implementation:
+  mission_count: 10
+  projection_function_count: 6
+  qualified_test_node_count: 10
+  failed_test_node_count: 0
+  timeout_node_count: 0
+  cleanup_failure_count: 0
+  unresolved_failure_count: 0
+
+pytest_recovery:
+  system_tmp_capacity_failure_observed: true
+  system_tmp_capacity_recovered: true
+  repository_local_tmp_topology_rejected: true
+  recursive_repository_copy_established: true
+  harness_topology_defect_established: true
+  harness_topology_recovered: true
+  implementation_defect_established: false
+  test_contract_defect_established: false
+  final_execution_mode: EXACT_PER_NODE
+  external_tmp_root: /data/engineering/tmp/pytest
+  residual_test_workspace_count: 0
+
+completion:
+  gate_completed: true
+  summary_required: true
+  state_reconciliation_required: true
+  state_reconciliation_complete: true
+  cr48_executed: false
+  staged: false
+  committed: false
+  pushed: false
+  eos_synchronized: false
+
+evidence:
+  secondary_qualification: evidence/CR47-SECONDARY-IMPLEMENTATION-QUALIFICATION.yaml
+  pytest_recovery_reconciliation: evidence/CR47-PYTEST-EXECUTION-RECOVERY-RECONCILIATION.yaml
+  closeout_boundary: evidence/CR47-EXACT-CLOSEOUT-RESULT-SUMMARY-STATE-BOUNDARY.yaml

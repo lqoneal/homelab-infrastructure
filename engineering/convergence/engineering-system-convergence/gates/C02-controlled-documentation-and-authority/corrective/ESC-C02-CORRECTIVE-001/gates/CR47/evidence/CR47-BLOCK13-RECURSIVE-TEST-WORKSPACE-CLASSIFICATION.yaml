@@ -1,0 +1,43 @@
+schema_version: "1.0"
+record_type: CR47_RECURSIVE_TEST_WORKSPACE_CLASSIFICATION
+cr_id: CR47
+result: PASS
+
+block13:
+  state: INTERRUPTED
+  visible_failure_markers: 2
+  run_tmp_bytes: 22052932222
+  run_tmp_files: 1542012
+  run_tmp_directories: 245138
+
+fixture_growth:
+  zo012_approx_gb: 3.4
+  zo018_approx_gb: 6.7
+  zo019_approx_gb: 16.0
+  monotonic_explosive_growth: true
+
+current_tmp_topology:
+  repository_root: "/data/engineering/repositories/homelab"
+  pytest_tmp_root: "/data/engineering/repositories/homelab/tmp"
+  pytest_tmp_inside_repository: true
+  topology_safe_for_repository_copy_fixture: false
+
+classification:
+  system_tmp_capacity_defect_resolved: true
+  repository_local_storage_capacity_sufficient: true
+  test_harness_topology_defect_established: true
+  implementation_defect_established: false
+  test_contract_defect_established: false
+  pytest_rerun_authorized: false
+
+candidate_safe_topology:
+  pytest_tmp_root: "/data/engineering/tmp/pytest"
+  outside_repository_root: true
+  device: "/dev/sdb1"
+  available_kb: 1813968500
+
+required_next_step:
+  derive_external_tmp_execution_contract: true
+  execute_tests: false
+  mutate_source: false
+  mutate_tests: false

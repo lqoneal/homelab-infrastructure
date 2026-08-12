@@ -1,0 +1,28 @@
+schema_version: "1.0"
+record_type: CR47_PYTEST_TMP_CLEANUP_RESULT
+cr_id: CR47
+result: PASS
+
+system_tmp:
+  prior_pytest_root: "/tmp/pytest-of-loneal"
+  residue_present_before: true
+  residue_bytes_before: 856025154
+  residue_files_before: 556805
+  cleanup_executed: false
+  residue_present_after: true
+
+repository_tmp:
+  root: "/data/engineering/repositories/homelab/tmp"
+  run_path: "/data/engineering/repositories/homelab/tmp/cr47-pytest-20260812T091755Z-2046230"
+  bytes_before_cleanup: 0
+  files_before_cleanup: 0
+  directories_before_cleanup: 0
+  cleanup_executed: false
+  run_path_present_after: false
+
+retention_policy:
+  pytest_temp_tree_archived: false
+  pytest_temp_tree_deleted: true
+  durable_test_logs_retained: true
+  exact_test_log: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-SECONDARY-EXACT-10-TEST-REQUALIFICATION.log"
+  full_test_log: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-SECONDARY-FULL-ROADMAP-REQUALIFICATION.log"

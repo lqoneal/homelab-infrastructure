@@ -1,0 +1,13 @@
+schema_version: 1
+gate_id: CR46
+stage_id: RQ-3-ZDCL02-ISOLATED-CANDIDATE
+qualified_at: '2026-08-11T21:52:09.131635+00:00'
+production_baseline: fe824c714da35d987cc7454366aa3abaf046cc31
+temporary_candidate_commit: null
+temporary_candidate_parent: null
+temporary_candidate_only: true
+test_count: 3
+return_code: 90
+result: FAIL
+production_commit_created: false
+production_source_mutation_executed: false

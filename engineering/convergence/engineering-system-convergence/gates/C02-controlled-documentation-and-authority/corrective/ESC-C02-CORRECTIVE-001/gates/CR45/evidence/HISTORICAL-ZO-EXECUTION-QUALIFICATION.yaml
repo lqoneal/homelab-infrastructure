@@ -1,0 +1,25 @@
+schema_version: 1
+gate_id: CR45
+classification: HISTORICAL_ZEUS_OPPORTUNITY_EXECUTION_QUALIFICATION
+qualified_at: '2026-08-11T16:49:23.523454+00:00'
+records:
+- opportunity_id: ZO-001
+  historical_gate: CR13
+  classification: EXECUTED_EVIDENCE_QUALIFIED
+  required_register_disposition: IMPLEMENTED_QUALIFIED
+- opportunity_id: ZO-002
+  historical_gate: CR14
+  classification: EXECUTED_EVIDENCE_QUALIFIED
+  required_register_disposition: IMPLEMENTED_QUALIFIED
+- opportunity_id: ZO-003
+  historical_gate: CR14
+  classification: EXECUTED_EVIDENCE_QUALIFIED
+  required_register_disposition: IMPLEMENTED_QUALIFIED
+- opportunity_id: ZO-004
+  historical_gate: CR14
+  classification: EXECUTED_EVIDENCE_QUALIFIED
+  required_register_disposition: IMPLEMENTED_QUALIFIED
+qualified_count: 4
+completed_gate_mutation_required: false
+register_status_reconciliation_required: true
+result: PASS

@@ -1,0 +1,62 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ3
+classification: RQ3_EXACT_10_NODE_CANONICAL_PATH_ISOLATED_GIT_VIEW_REQUALIFICATION
+executed_at: '2026-08-12T06:53:17.812827+00:00'
+result: PASS
+rq3_qualified: true
+execution_authority: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-CANONICAL-PATH-ISOLATED-GIT-VIEW-EXECUTION-AUTHORITY.yaml
+execution_model_qualification: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-CANONICAL-PATH-ISOLATED-GIT-VIEW-QUALIFICATION.yaml
+scope_qualification: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-CONTEXT-CORRECT-EXECUTION-SCOPE-QUALIFICATION.yaml
+execution:
+  mode: EXACT_10_NODE_CANONICAL_PATH_ISOLATED_GIT_VIEW
+  node_count: 10
+  node_set_sha256: 036dd8d820ec5388f71ac06cb3e7ccf6b3c608f51a4a4cde4ef6ca47684237b3
+  nodes:
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_all_transaction_identifiers_resolve_same_record
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_digest_projection_and_state_digest_are_deterministic
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_duplicate_submission_is_idempotent
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_healthy_submission_creates_one_snapshot_and_receipt_backed_dispatch
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_incomplete_provider_selection_and_launch_ack_are_not_authoritative
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_projection_persistence_failure_blocks_submission_before_success
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_provider_output_cannot_advance_without_receipts
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_receiptless_dispatch_rolls_back_and_preserves_evidence
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_recovery_does_not_invoke_execution_and_requires_new_snapshot
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_replayed_dispatch_repairs_missing_derived_projections_without_resubmission
+execution_context:
+  canonical_repository_root: /data/engineering/repositories/homelab
+  canonical_repository_id: homelab-6bd83f9079d6fc57
+  qualified_baseline: fe824c714da35d987cc7454366aa3abaf046cc31
+  git_metadata: TEMPORARY_COPY
+  git_index: TEMPORARY
+  git_work_tree: TEMPORARY_QUALIFIED_BASELINE_TREE
+  git_status: CLEAN
+  git_head: fe824c714da35d987cc7454366aa3abaf046cc31
+  git_branch: main
+  git_origin_main: fe824c714da35d987cc7454366aa3abaf046cc31
+  home: TEMPORARY
+  xdg_state: TEMPORARY
+  xdg_cache: TEMPORARY
+  xdg_config: TEMPORARY
+  zeus_testing: 1
+pytest:
+  return_code: 0
+  expected_test_count: 10
+  log_sha256: 022b468d2957d45a8eaf3d4d0309c7c49c841f9378255d9912801ec6720bad72
+live_repository_preservation:
+  tracked_delta_count: 30
+  tracked_delta_set_sha256: 2cebf244d52894f4da490d16e608f77a915a47aeb0ab97ce300a4e07eaa1baa6
+  worktree_delta_preserved: true
+  index_preserved: true
+  git_admin_worktree_state_preserved: true
+  head_preserved: true
+  origin_main_preserved: true
+  branch_preserved: true
+  source_mutated: false
+  test_mutated: false
+  state_mutated: false
+successor:
+  rq3_completion_authorized: false
+  cr46_completion_authorized: false
+  cr47_execution_authorized: false
+next: RECONCILE_RQ1_RQ2_RQ3_CONTEXT_CORRECT_REQUALIFICATION_RESULTS

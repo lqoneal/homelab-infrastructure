@@ -1,0 +1,25 @@
+{
+  "authorized_mutations": {
+    "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md": "2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a",
+    "scripts/lib/eos/convergence_roadmap.py": "d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc"
+  },
+  "post_manifest_sha256": "003744aae8f690bcb94819e940272d77683533560ed2433d9f96f010383c2a12",
+  "pre_manifest_sha256": "f95ebc12f97c52e7033baf73b35ce2add46e9b8c4445f79c6896568d7771ab69",
+  "recorded_at": "2026-08-12T10:43:49Z",
+  "schema_version": 1,
+  "sources": [
+    {
+      "new_sha256": "53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58",
+      "old_sha256": "2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a",
+      "path": "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md"
+    },
+    {
+      "new_sha256": "205f95746fdcb7933905aed3308e46f992767ddfb58d1f3877670c70b39d30b4",
+      "old_sha256": "d2d2acd45e2659a288d3d174c73111e01d2383a6b6406c2bb7a9c30dd799d5cc",
+      "path": "scripts/lib/eos/convergence_roadmap.py"
+    }
+  ],
+  "status": "RECONCILIATION_COMPLETE",
+  "transaction_id": "tx-cr47-complete-emm-rebind-001",
+  "transaction_type": "EMM_REBIND"
+}

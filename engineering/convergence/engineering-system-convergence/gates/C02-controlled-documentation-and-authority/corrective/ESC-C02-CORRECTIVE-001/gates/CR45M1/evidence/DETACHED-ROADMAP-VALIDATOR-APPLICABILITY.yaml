@@ -1,0 +1,21 @@
+schema_version: 1
+gate_id: CR45M1
+classification: DETACHED_ROADMAP_VALIDATOR_APPLICABILITY
+classified_at: '2026-08-11T18:55:13.023959+00:00'
+candidate_base_commit: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+validator: scripts/engctl roadmap validate
+observed_failure: C02 has a result but is not completed
+validator_class: LIVE_OR_POSTCOMMIT_LIFECYCLE_CONSISTENCY_VALIDATOR
+candidate_context: DETACHED_PREPUBLICATION_DURABILITY_CANDIDATE
+cr45m1_objective: QUALIFY_EXACT_POSTQUALIFICATION_DURABILITY_CONTENT_BEFORE_COMMIT_AMENDMENT
+applicability: NOT_APPLICABLE_AS_PASS_FAIL_CANDIDATE_CONTENT_VALIDATOR
+reason: The detached candidate intentionally contains the immutable qualified commit plus only the exact ten authorized
+  durability paths. It does not contain the later live corrective control-state progression. The roadmap validator
+  therefore observes a lifecycle projection mismatch that is external to the ten-path candidate content rather than
+  a defect in that content.
+candidate_content_defect: false
+candidate_rebuild_required: false
+live_state_copy_into_candidate_authorized: false
+validator_failure_may_block_content_qualification: false
+future_zeus_capability: ZO-061
+result: PASS

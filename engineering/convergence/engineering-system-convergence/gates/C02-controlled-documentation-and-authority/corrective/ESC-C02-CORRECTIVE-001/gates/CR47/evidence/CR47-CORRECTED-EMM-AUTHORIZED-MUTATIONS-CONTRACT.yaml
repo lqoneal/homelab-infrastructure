@@ -1,0 +1,24 @@
+schema_version: '1.0'
+record_type: CR47_CORRECTED_EMM_AUTHORIZED_MUTATIONS_CONTRACT
+cr_id: CR47
+result: PASS
+canonical_function: apply_emm_rebind_transaction
+semantics:
+  mapping: repository_relative_path -> authorized_prior_digest
+  new_digest_is_derived_from_live_source: true
+authorized_mutations:
+  docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md: 2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a
+expected_transition:
+  path: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md
+  old_sha256: 2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a
+  new_sha256: 53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58
+constraints:
+  exact_mutation_count: 1
+  modify_other_binding_sources: false
+  write_exactly_one_transaction: true
+  run_post_rebind_validation: true
+  execute_cr48: false
+  stage: false
+  commit: false
+  push: false
+  eos_sync: false

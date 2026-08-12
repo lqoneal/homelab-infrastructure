@@ -1,0 +1,82 @@
+schema_version: 1
+gate_id: CR44M1
+classification: EXPANDED_FROZEN_REPAIR_AUTHORITY
+result: AUTHORIZED_NOT_EXECUTED
+authorized_at: '2026-08-11T15:23:11.097670+00:00'
+failed_commit: 8b651126a19ae5bab21ea5036cd410514e22ee0c
+parent_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+exact_repair_path_count: 4
+repair_surface:
+  authority_version: 2
+  failed_commit: 8b651126a19ae5bab21ea5036cd410514e22ee0c
+  parent_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+  exact_repair_path_count: 4
+  added_files:
+  - path: scripts/lib/emp/repository_state_view.py
+    sha256: c791a53a71c3920f314cba879c1b6675feb93d903e2e4d61caf2b6c23e63de83
+    mutation_type: ADD_EXACT_FROZEN_FILE
+    content_mutation_authorized: false
+  - path: scripts/lib/emp/codex_session_timing.py
+    sha256: 8266e221ec2de86f2cd7893e92e04a4204677a78d570cafc31063c85b5b943a4
+    mutation_type: ADD_EXACT_FROZEN_FILE
+    content_mutation_authorized: false
+  modified_files:
+  - path: scripts/lib/emp/publication_candidate_authority.py
+    mutation_type: EXACT_IMPORT_REPLACEMENT_ONLY
+    before_import: from scripts.lib.emp.repository_projection import project as project_repository
+    after_import: from scripts.lib.emp.repository_state_view import project as project_repository
+    before_sha256: 4cd929c3d4ac095c1eb8521454712bc3970153f38ea188ecd347fac09de4254a
+    authorized_after_sha256: 5a71c5db01a6c49366743f78f1a4ae337aacc4ae6570da2152763ffccb1ff158
+    content_mutation_beyond_import_replacement_authorized: false
+  - path: scripts/lib/emp/publication_cohort.py
+    mutation_type: EXACT_IMPORT_REPLACEMENT_ONLY
+    before_import: from scripts.lib.emp.repository_projection import project as project_repository
+    after_import: from scripts.lib.emp.repository_state_view import project as project_repository
+    before_sha256: 206c2cf9ab90c648deefcdb19ef08da48f985bcd316ba67c7e4905765b8242ba
+    authorized_after_sha256: 3cf69f400527b525612c4bb2cce1e4d5fae5129955d700ea947b1b4d47579b69
+    content_mutation_beyond_import_replacement_authorized: false
+  preservation_module_restoration:
+    path: scripts/lib/emp/repository_projection.py
+    authorized: false
+    reason: Canonical repository projection has migrated to repository_state_view.
+  git_authority:
+    stage_exact_four_path_repair_set: true
+    amend_existing_single_local_commit: true
+    create_second_commit: false
+    rewrite_parent: false
+    push: false
+    publish: false
+  qualification_before_live_stage:
+    required: true
+    isolated_candidate_from_failed_commit: true
+    candidate_delta_must_equal_exact_repair_set: true
+    immutable_zeus_startup_must_pass: true
+    dependency_import_closure_must_pass: true
+    cr42_equivalent_qualification_must_pass: true
+  prohibited_effects:
+  - Any path outside the exact four-path repair surface
+  - Any content change to frozen added files
+  - Any modification beyond the exact import replacement in the two committed consumers
+  - Restoration of repository_projection.py
+  - Second commit
+  - Parent rewrite
+  - Push
+  - Publication
+  - EOS synchronization
+  - CR44 completion
+  - CR45 execution
+source_findings:
+- CR44M1 Block 1 proved repository_state_view alone was insufficient.
+- CR44M1 Block 3 proved repository_projection is a stale preserved implementation rather than the canonical repair
+  target.
+- CR44M1 Block 4 proved repository_state_view API compatibility.
+- CR44M1 Block 5 qualified the complete four-path repair surface.
+execution_state:
+  live_stage_executed: false
+  live_source_mutation_executed: false
+  live_amend_executed: false
+  second_commit_created: false
+  push_performed: false
+  publication_performed: false
+  eos_synchronization_executed: false
+next_action: BUILD_FRESH_ISOLATED_FOUR_PATH_CANDIDATE_AND_QUALIFY_BEFORE_LIVE_STAGING

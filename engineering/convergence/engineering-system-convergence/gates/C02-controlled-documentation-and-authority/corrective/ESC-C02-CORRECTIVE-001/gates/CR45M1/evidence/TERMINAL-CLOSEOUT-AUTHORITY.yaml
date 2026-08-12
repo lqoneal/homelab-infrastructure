@@ -1,0 +1,37 @@
+schema_version: 1
+gate_id: CR45M1
+classification: CR45M1_TERMINAL_CLOSEOUT_AUTHORITY
+authorized_at: '2026-08-11T19:08:18.025439+00:00'
+execution_state: AUTHORIZED_NOT_EXECUTED
+previous_commit: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+amended_commit: fe824c714da35d987cc7454366aa3abaf046cc31
+parent_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+qualification:
+  exact_ten_path_amendment: PASS
+  immutable_post_amend_qualification: PASS
+  single_commit_semantics_preserved: true
+  parent_preserved: true
+  zeus_startup: PASS
+  import_closure: PASS
+  queued_zo_assignments: PASS
+  procedure_semantics: PASS
+authorized_closeout_mutations:
+- write_CR45M1_terminal_qualification
+- write_CR45M1_RESULT
+- reconcile_CR45M1_command_evidence
+- restore_corrective_current_item_to_CR45
+- set_last_completed_item_CR45M1
+- reconcile_corrective_history
+return_target: CR45
+stop_boundary: STOP_AFTER_CR45M1
+same_transaction_parent_execution: false
+prohibited_actions:
+- additional_stage
+- additional_amend
+- create_second_commit
+- push
+- publication
+- EOS_synchronization
+- execute_CR45_after_return
+- execute_CR46
+result: AUTHORIZED_NOT_EXECUTED

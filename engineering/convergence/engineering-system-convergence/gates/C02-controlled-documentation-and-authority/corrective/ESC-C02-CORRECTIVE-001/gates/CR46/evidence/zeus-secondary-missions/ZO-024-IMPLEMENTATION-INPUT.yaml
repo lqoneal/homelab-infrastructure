@@ -1,0 +1,25 @@
+schema_version: 1
+gate_id: CR46
+opportunity_id: ZO-024
+execution_stage: 2
+implementation_contract:
+  order: 2
+  opportunity_id: ZO-024
+  title: Zeus Result Freshness and Provenance Projection
+  objective: Expose the canonical freshness and provenance relationship between a result, active gate state, authority surface,
+    and lifecycle revision.
+  module_owner_paths:
+  - scripts/lib/emp/stage1_runtime.py
+  - scripts/lib/emp/admission_supersession.py
+  - scripts/lib/emp/authority_publication.py
+  test_owner_paths:
+  - scripts/tests/test-convergence-roadmap.py
+  - scripts/tests/test-admission-freshness-and-supersession.py
+  - scripts/tests/test-authority-resolution-runtime.py
+  implementation_contract_status: QUALIFIED
+  acceptance_requirement: OBJECTIVE_PROVEN_BY_TARGETED_TESTS_AND_NO_REGRESSION
+execution_state: AUTHORIZED_NOT_EXECUTED
+qualification_state: PENDING
+stage_authorized: false
+commit_authorized: false
+push_authorized: false

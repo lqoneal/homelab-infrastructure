@@ -1,0 +1,13 @@
+scripts/tests/test-admission-freshness-and-supersession.py
+scripts/tests/test-authority-publication.py
+scripts/tests/test-authority-resolution-runtime.py
+scripts/tests/test-authority-wop-compatibility.py
+scripts/tests/test-controlled-document-semantic-validation.py
+scripts/tests/test-convergence-roadmap.py
+scripts/tests/test-convergence-runtime.py
+scripts/tests/test-mission-activation.py
+scripts/tests/test-mission-orchestration.py
+scripts/tests/test-operational-alpha-status.py
+scripts/tests/test-roadmap-lifecycle.py
+scripts/tests/test-wop-lifecycle-manager.py
+scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py

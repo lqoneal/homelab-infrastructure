@@ -1,0 +1,52 @@
+schema_version: "1.0"
+record_type: CR47_CORRECTED_EMM_REBIND_EXECUTION_AUTHORITY
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  semantic_correction: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-BLOCK24-AUTHORIZED-MUTATIONS-SEMANTIC-CORRECTION.yaml"
+  semantic_correction_sha256: "d613657dd34df0fba26e54e38408fcaa4f3efbf573069a96192641dfad9629fb"
+  corrected_argument_contract: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-CORRECTED-EMM-AUTHORIZED-MUTATIONS-CONTRACT.yaml"
+  corrected_argument_contract_sha256: "265ec45a634318fae7250109167ede42f5017889ad307553f676b5a3b38ea14f"
+
+canonical_call:
+  function: apply_emm_rebind_transaction
+  repository_root: /data/engineering/repositories/homelab
+  transaction_id: "tx-cr47-closeout-emm-rebind-001"
+  authorized_mutations:
+    "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md": "2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a"
+
+expected_transition:
+  source_path: "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md"
+  bound_old_sha256: "2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a"
+  live_new_sha256: "53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58"
+
+authorized:
+  execute_canonical_rebind_once: true
+  exact_mutation_count: 1
+  write_exactly_one_transaction: true
+  run_roadmap_validation_after_rebind: true
+  write_cr47_rebind_result: true
+  write_cr47_closeout_reconciliation: true
+
+invalidated:
+  block24_retry_authority_for_execution: true
+
+prohibited:
+  use_new_digest_as_authorized_mutation_value: true
+  modify_other_binding_sources: true
+  rewrite_cr47_result: true
+  rewrite_cr47_summary: true
+  repeat_corrective_state_transition: true
+  execute_cr48: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+
+stop_after:
+  emm_rebind_validation_and_cr47_finalization: true
+
+next_authorized_action:
+  EXECUTE_CORRECTED_CANONICAL_EMM_REBIND_AND_FINALIZE_CR47_ONLY

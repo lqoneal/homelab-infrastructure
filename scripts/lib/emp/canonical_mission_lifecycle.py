@@ -233,3 +233,27 @@ def mission_list(root: Path | str) -> dict[str, Any]:
     base["canonical_submission_discovery"] = canonical
     base["canonical_mission_reconciliation"] = discovery
     return base
+
+# --- CR46 ZO-026: lifecycle owner projection over canonical instrument selection ---
+def qualification_instrument_projection(
+    root: Path | str,
+    projection_scope: str,
+    *,
+    context: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    from scripts.lib.emp.mission_verification_controller import (
+        select_qualification_instrument,
+    )
+
+    repository = Path(root).resolve()
+
+    return {
+        **select_qualification_instrument(
+            projection_scope,
+            context={
+                "repository": str(repository),
+                **dict(context or {}),
+            },
+        ),
+        "owner_surface": "canonical_mission_lifecycle",
+    }

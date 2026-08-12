@@ -1,11 +1,11 @@
 schema_version: 2
 roadmap_id: ESC-ROADMAP-001
-roadmap_version: 2.0.0
+roadmap_version: 2.0.2
 program_id: ENGINEERING-SYSTEM-CONVERGENCE
 program_title: Engineering System Convergence
 classification: AUTHORITATIVE_EXECUTABLE_ROADMAP
 roadmap_class: EXECUTABLE
-purpose: Establish a durable, repository-authoritative assessment and convergence sequence that can be resumed without conversational history.
+purpose: "Establish a durable, repository-authoritative assessment and convergence sequence that can be resumed without conversational history. Current blocking maturity corrective: ESC-C02-CORRECTIVE-001, triggered by C02-F-027, must complete before C02 can close and C03 can activate."
 authority_model:
   planning_owner: Engineering Governance through this roadmap
   gate_state_owner: STATE.yaml under this roadmap root

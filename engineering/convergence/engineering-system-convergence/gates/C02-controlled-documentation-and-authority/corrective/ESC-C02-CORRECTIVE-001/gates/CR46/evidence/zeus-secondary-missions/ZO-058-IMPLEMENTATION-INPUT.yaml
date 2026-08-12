@@ -1,0 +1,26 @@
+schema_version: 1
+gate_id: CR46
+opportunity_id: ZO-058
+execution_stage: 6
+implementation_contract:
+  order: 6
+  opportunity_id: ZO-058
+  title: Zeus Bounded Repository Transaction Closure and Commit Recovery
+  objective: Allow Zeus to classify a mixed dirty worktree, resolve the exact authorized transaction closure, exclude protected
+    and deferred work, recover an interrupted single-commit transaction, and verify the candidate tree before commit or amendment
+    without inventing mutation authority.
+  module_owner_paths:
+  - scripts/lib/emp/publication_transaction.py
+  - scripts/lib/emp/canonical_mission_aggregate.py
+  - scripts/lib/emp/codex_interactive.py
+  test_owner_paths:
+  - scripts/tests/test-authority-publication.py
+  - scripts/tests/test-convergence-roadmap.py
+  - scripts/tests/test-mission-activation.py
+  implementation_contract_status: QUALIFIED
+  acceptance_requirement: OBJECTIVE_PROVEN_BY_TARGETED_TESTS_AND_NO_REGRESSION
+execution_state: AUTHORIZED_NOT_EXECUTED
+qualification_state: PENDING
+stage_authorized: false
+commit_authorized: false
+push_authorized: false

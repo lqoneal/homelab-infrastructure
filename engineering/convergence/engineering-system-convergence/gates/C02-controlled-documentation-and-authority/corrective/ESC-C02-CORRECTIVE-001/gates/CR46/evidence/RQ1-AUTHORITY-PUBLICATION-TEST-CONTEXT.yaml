@@ -1,0 +1,11 @@
+schema_version: 1
+gate_id: CR46
+stage_id: RQ-1-AUTHORITY-PUBLICATION-TEST-CONTEXT
+qualified_at: '2026-08-11T21:52:09.034421+00:00'
+environment:
+  ZEUS_TESTING: '1'
+  repository_topology: LIVE_SOURCE_WITH_ISOLATED_TEST_REPOSITORIES
+test_count: 13
+return_code: 1
+result: FAIL
+production_source_mutation_executed: false

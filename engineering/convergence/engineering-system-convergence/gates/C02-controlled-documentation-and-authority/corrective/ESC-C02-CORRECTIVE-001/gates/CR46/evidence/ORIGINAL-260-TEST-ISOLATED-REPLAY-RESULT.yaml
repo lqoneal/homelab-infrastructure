@@ -1,0 +1,30 @@
+schema_version: 1
+gate_id: CR46
+classification: ORIGINAL_260_TEST_ISOLATED_REPLAY_RESULT
+executed_at: '2026-08-12T00:05:18.858361+00:00'
+result: PASS
+surface:
+  path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/ORIGINAL-260-TEST-HISTORICAL-REGRESSION-SURFACE.txt
+  sha256: 9a1e1ebd08ff69160ed26c066085f239ecb51c494a63b2289492a9cb41250489
+  file_count: 13
+  collection_count: 260
+  collection_parity: true
+replay:
+  pytest_return_code: 1
+  failed_node_count: 60
+  passed_node_count: 200
+  reference_failed_count: 29
+  reference_passed_count: 231
+  classification: CURRENT_REPLAY_EXCEEDS_ORIGINAL_FAILURE_SET
+  failed_node_file: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/ORIGINAL-260-TEST-REPLAY-FAILED-NODES.txt
+  failed_node_set_sha256: 2ca52d91548b38b44f888f06d6668a00a2bcd231fbf51792114c28536a4bcd21
+  failure_family_file: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/ORIGINAL-260-TEST-REPLAY-FAILURE-FAMILIES.yaml
+qualification_boundary:
+  rq2_completion_established: false
+  rq3_completion_established: false
+  stage_authorized: false
+  commit_authorized: false
+  push_authorized: false
+  cr46_completion_authorized: false
+  cr47_authorized: false
+next: CLASSIFY_260_TEST_REPLAY_FAILURES_AGAINST_RQ1_RQ2_RQ3_ONLY

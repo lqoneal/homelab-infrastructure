@@ -1,0 +1,50 @@
+schema_version: "1.0"
+record_type: CR47_SECONDARY_TEST_REQUALIFICATION_RETRY_RESULT
+cr_id: CR47
+result: FAIL
+
+block9_recovery:
+  verifier_defect: ACTIVE_PYTEST_PROCESS_DETECTOR_SELF_MATCH_FALSE_POSITIVE
+  classification: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-BLOCK9-ACTIVE-PYTEST-VERIFIER-DEFECT.yaml"
+  block9_result_preserved: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-SECONDARY-TEST-REQUALIFICATION-RESULT.yaml"
+  block9_cleanup_record_preserved: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-PYTEST-TMP-CLEANUP-RESULT.yaml"
+
+implementation:
+  implementation_sha256: "205f95746fdcb7933905aed3308e46f992767ddfb58d1f3877670c70b39d30b4"
+  test_sha256: "6aaf549a1951ce6f787170b75153370f14c1c27cb700554e8573274da15fc797"
+  codex_rerun: false
+  source_mutation: false
+  test_mutation: false
+
+pytest_environment:
+  system_tmp_used_for_retry: false
+  repository_tmp_root: "/data/engineering/repositories/homelab/tmp"
+  run_tmp: "/data/engineering/repositories/homelab/tmp/cr47-pytest-retry-20260812T092503Z-2046230"
+  tmpdir_exported: true
+  explicit_basetemp: true
+
+qualification:
+  exact_ten_test_rc: 90
+  exact_ten_tests: FAIL
+  full_roadmap_test_rc: 90
+  full_roadmap_test: FAIL
+
+temporary_artifacts:
+  archive_required: false
+  mandatory_cleanup: true
+  bytes_before_cleanup: 0
+  file_count_before_cleanup: 0
+  directory_count_before_cleanup: 0
+
+durable_evidence:
+  exact_test_log: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-SECONDARY-EXACT-10-TEST-REQUALIFICATION-RETRY.log"
+  full_test_log: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-SECONDARY-FULL-ROADMAP-REQUALIFICATION-RETRY.log"
+
+prohibitions:
+  cr47_result_write: true
+  cr47_state_advancement: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+  cr48_execution: true

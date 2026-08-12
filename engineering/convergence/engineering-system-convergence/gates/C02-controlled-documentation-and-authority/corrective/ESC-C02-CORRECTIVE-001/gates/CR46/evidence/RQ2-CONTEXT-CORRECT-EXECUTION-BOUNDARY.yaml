@@ -1,0 +1,49 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ2
+classification: RQ2_HISTORICAL_CR23_CONTEXT_CORRECT_EXECUTION_BOUNDARY
+derived_at: '2026-08-12T00:33:11.219465+00:00'
+result: PASS
+validator:
+  path: scripts/tests/test-convergence-roadmap.py
+  sha256: 4ed9ca065ff55dfc88a070a1a20b2bc7bb43425e03ae100cddc2390aeab58de7
+  historical_failure_reference_count: 13
+validated_fixture_basis:
+  result_path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-CORRECTED-ISOLATED-ROADMAP-VALIDATION-RESULT.yaml
+  result: PASS
+  repository_topology: ISOLATED_DISK_BACKED_COPY
+  parent_current_gate: C02
+  parent_last_completed_gate: C01
+  nested_current_item: CR23
+  next_authorized_action: EXECUTE_CR23_IMPLEMENT_LIFECYCLE_PROVENANCE
+  project_state_rebound: true
+  project_state_binding_field_count: 11
+  emm_rebound: true
+  constructor_form: ConvergenceRoadmap(repo)
+  constructor_resolution: PASS
+  roadmap_validate: PASS
+  read_only: true
+  project_state_validation_barrier: CLEARED
+  pytest_executed: false
+  rq2_executed: false
+required_execution_context:
+  disk_backed_isolated_copy: true
+  parent_current_gate: C02
+  parent_last_completed_gate: C01
+  nested_current_item: CR23
+  next_authorized_action: EXECUTE_CR23_IMPLEMENT_LIFECYCLE_PROVENANCE
+  historical_project_state_rebind: true
+  project_state_binding_field_count: 11
+  emm_rebind_after_project_state_change: true
+  canonical_roadmap_constructor: ConvergenceRoadmap(repo)
+  roadmap_validate_required: PASS
+  project_state_validation_barrier_required: CLEARED
+node_scope:
+  historical_reference_failure_count: 13
+  exact_original_node_ids_persisted: false
+  derive_context_correct_candidate_nodes_before_execution: true
+  test_execution_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_state_mutation_authorized: false
+resolution: HISTORICAL_FIXTURE_QUALIFIED_NODE_SCOPE_DERIVATION_REQUIRED

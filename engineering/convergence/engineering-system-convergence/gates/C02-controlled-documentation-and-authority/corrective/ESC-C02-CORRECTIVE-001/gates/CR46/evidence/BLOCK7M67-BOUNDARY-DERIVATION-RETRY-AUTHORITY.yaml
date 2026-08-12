@@ -1,0 +1,41 @@
+schema_version: 1
+gate_id: CR46
+classification: BLOCK7M67_BOUNDARY_DERIVATION_RETRY_AUTHORITY
+authorized_at: '2026-08-12T00:30:25.175550+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+recovery_basis: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/BLOCK7M67-RQ2-VALIDATION-SCHEMA-CLASSIFICATION.yaml
+preserved_inputs:
+  replay_context_classification: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/ORIGINAL-260-TEST-REPLAY-CONTEXT-CLASSIFICATION.yaml
+  post_replay_authority: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/POST-260-TEST-REPLAY-REQUALIFICATION-AUTHORITY.yaml
+  rq1_pass_result: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ1-AFTER-PRODUCTION-RESOLVER-CORRECTIVE-RESULT.yaml
+  rq2_validation_result: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-CORRECTED-ISOLATED-ROADMAP-VALIDATION-RESULT.yaml
+authorized_work:
+  derive_rq1_boundary: true
+  derive_rq2_boundary: true
+  derive_rq3_boundary: true
+  derive_aggregate_boundary: true
+  derive_node_scope_authority: true
+rq2_validation_contract:
+  top_level_result_must_equal: PASS
+  consume_actual_record_schema: true
+  do_not_require_noncanonical_top_level_field:
+  - project_state_validation_barrier
+  - rq2_execution_authorized
+test_execution_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_state_mutation_authorized: false
+rq1_rerun_authorized: false
+rq2_execution_authorized: false
+rq3_execution_authorized: false
+rq2_completion_authorized: false
+rq3_completion_authorized: false
+stage_authorized: false
+commit_authorized: false
+amend_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: RETRY_RQ1_RQ2_RQ3_CONTEXT_CORRECT_BOUNDARY_DERIVATION_ONLY

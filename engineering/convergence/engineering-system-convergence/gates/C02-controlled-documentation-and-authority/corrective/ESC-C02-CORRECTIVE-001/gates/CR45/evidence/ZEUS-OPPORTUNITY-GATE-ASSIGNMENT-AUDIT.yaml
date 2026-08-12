@@ -1,0 +1,572 @@
+schema_version: 1
+gate_id: CR45
+classification: ZEUS_CAPABILITY_OPPORTUNITY_GATE_ASSIGNMENT_AUDIT
+audited_at: '2026-08-11T16:34:56.311209+00:00'
+opportunity_count: 61
+planned_zeus_gate_count: 1
+filesystem_gate_count: 61
+requirement: Every Zeus development opportunity must be assigned to a specific existing implementation gate.
+records:
+- opportunity_id: ZO-001
+  status: QUEUED
+  assigned_gate: CR13
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR13
+- opportunity_id: ZO-002
+  status: QUEUED
+  assigned_gate: CR14
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR14
+- opportunity_id: ZO-003
+  status: QUEUED
+  assigned_gate: CR14
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR14
+- opportunity_id: ZO-004
+  status: QUEUED
+  assigned_gate: CR14
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR14
+- opportunity_id: ZO-005
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR23
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR23
+- opportunity_id: ZO-006
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR23
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR23
+- opportunity_id: ZO-007
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR23
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR23
+- opportunity_id: ZO-008
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR23
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR23
+- opportunity_id: ZO-009
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR23
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR23
+- opportunity_id: ZO-010
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR23
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR23
+- opportunity_id: ZO-011
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR23
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR23
+- opportunity_id: ZO-012
+  status: QUEUED
+  assigned_gate: CR23
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR23
+- opportunity_id: ZO-013
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR23
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR23
+- opportunity_id: ZO-014
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR24
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR24
+  - CR24
+- opportunity_id: ZO-015
+  status: QUEUED
+  assigned_gate: CR24
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR24
+  - CR24
+- opportunity_id: ZO-016
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR26
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR26
+  - CR25
+- opportunity_id: ZO-017
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR27
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR27
+  - CR26
+- opportunity_id: ZO-018
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-019
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-020
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-021
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-022
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR28
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR28
+  - CR27
+- opportunity_id: ZO-023
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-024
+  status: QUEUED
+  assigned_gate: ZG-RESULT-FRESHNESS-PROVENANCE-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-FRESHNESS-PROVENANCE-001
+  - ZG-RESULT-FRESHNESS-PROVENANCE-001
+  - ZG-RESULT-FRESHNESS-PROVENANCE-001
+- opportunity_id: ZO-025
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR29
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR29
+  - CR28
+- opportunity_id: ZO-026
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-027
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR30
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR30
+  - CR29
+- opportunity_id: ZO-028
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-029
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-030
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR31
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR31
+  - CR30
+- opportunity_id: ZO-031
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-032
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-033
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR32
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR32
+  - CR31
+- opportunity_id: ZO-034
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-035
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-036
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR33
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR33
+  - CR32
+- opportunity_id: ZO-037
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-038
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-039
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR34
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR34
+  - CR33
+- opportunity_id: ZO-040
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-041
+  status: QUEUED
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-042
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR35
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR35
+  - CR34
+- opportunity_id: ZO-043
+  status: QUEUED
+  assigned_gate: CR36
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR36
+  - CR36
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-044
+  status: QUEUED
+  assigned_gate: CR36
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR36
+  - CR36
+  - ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-045
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR36
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR36
+  - CR35
+- opportunity_id: ZO-046
+  status: QUEUED
+  assigned_gate: CR37
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR37
+  - CR37
+- opportunity_id: ZO-047
+  status: QUEUED
+  assigned_gate: CR37
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR37
+  - CR37
+- opportunity_id: ZO-048
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR37
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR37
+  - CR36
+- opportunity_id: ZO-049
+  status: QUEUED
+  assigned_gate: CR38
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR38
+  - CR38
+- opportunity_id: ZO-050
+  status: QUEUED
+  assigned_gate: CR38
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR38
+  - CR38
+- opportunity_id: ZO-051
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR38
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR38
+  - CR37
+- opportunity_id: ZO-052
+  status: QUEUED
+  assigned_gate: CR39
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR39
+  - CR39
+- opportunity_id: ZO-053
+  status: QUEUED
+  assigned_gate: CR39
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR39
+  - CR39
+- opportunity_id: ZO-054
+  status: IMPLEMENTED_QUALIFIED
+  assigned_gate: CR39
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR39
+  - CR38
+- opportunity_id: ZO-055
+  status: QUEUED
+  assigned_gate: CR40
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR40
+  - CR40
+- opportunity_id: ZO-056
+  status: QUEUED
+  assigned_gate: CR40
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR40
+  - CR40
+- opportunity_id: ZO-057
+  status: EXISTING_CAPABILITY_CANDIDATE
+  assigned_gate: CR40
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - CR40
+  - CR40
+- opportunity_id: ZO-058
+  status: QUEUED
+  assigned_gate: ZG-REPOSITORY-TRANSACTION-INTEGRITY-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-REPOSITORY-TRANSACTION-INTEGRITY-001
+  - ZG-REPOSITORY-TRANSACTION-INTEGRITY-001
+  - ZG-REPOSITORY-TRANSACTION-INTEGRITY-001
+- opportunity_id: ZO-059
+  status: QUEUED
+  assigned_gate: ZG-GATE-EXECUTION-PROVENANCE-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-GATE-EXECUTION-PROVENANCE-001
+  - ZG-GATE-EXECUTION-PROVENANCE-001
+  - ZG-GATE-EXECUTION-PROVENANCE-001
+- opportunity_id: ZO-060
+  status: QUEUED
+  assigned_gate: ZG-COMMIT-DEPENDENCY-CLOSURE-001
+  assignment_specific: true
+  assigned_gate_exists: false
+  all_declared_gate_bindings:
+  - ZG-COMMIT-DEPENDENCY-CLOSURE-001
+  - ZG-COMMIT-DEPENDENCY-CLOSURE-001
+  - ZG-COMMIT-DEPENDENCY-CLOSURE-001
+- opportunity_id: ZO-061
+  status: QUEUED
+  assigned_gate: ZG-QUALIFICATION-CONTEXT-APPLICABILITY-001
+  assignment_specific: true
+  assigned_gate_exists: true
+  all_declared_gate_bindings:
+  - ZG-QUALIFICATION-CONTEXT-APPLICABILITY-001
+  - ZG-QUALIFICATION-CONTEXT-APPLICABILITY-001
+  - ZG-QUALIFICATION-CONTEXT-APPLICABILITY-001
+failure_count: 20
+failures:
+- opportunity_id: ZO-018
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-019
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-020
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-021
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-023
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-024
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-FRESHNESS-PROVENANCE-001
+- opportunity_id: ZO-026
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-028
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-029
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-031
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-032
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-034
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-035
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-037
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-038
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-040
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-041
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+- opportunity_id: ZO-058
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-REPOSITORY-TRANSACTION-INTEGRITY-001
+- opportunity_id: ZO-059
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-GATE-EXECUTION-PROVENANCE-001
+- opportunity_id: ZO-060
+  failure: ASSIGNED_GATE_NOT_FOUND_IN_PLANNED_OR_EXECUTION_STRUCTURE
+  assigned_gate: ZG-COMMIT-DEPENDENCY-CLOSURE-001
+result: FAIL
+publication_gate_blocked: true
+required_action: RECONCILE_EACH_FAILED_OPPORTUNITY_TO_A_SPECIFIC_EXISTING_OR_NEWLY_PLANNED_GATE

@@ -1,0 +1,24 @@
+schema_version: 1
+gate_id: CR45M1
+record_type: NESTED_RECOVERY_ACTIVATION_AUTHORITY
+recorded_at: '2026-08-11T17:02:30.474039+00:00'
+qualified_commit_before_activation: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+origin_main_before_activation: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+authority_source:
+- gates/CR45/evidence/DURABILITY-COMMIT-RECOVERY-REQUIREMENT.yaml
+- gates/CR45M1/GATE.yaml
+- gates/CR45M1/evidence/ROADMAP-REPRESENTATION-CLASSIFICATION.yaml
+roadmap_representation:
+  collection: maturity_items
+  precedent: CR44M1
+  item: CR45M1
+parent_item: CR45
+return_target: CR45
+activation_result: AUTHORIZED_NOT_EXECUTED
+authorized_next_transaction: EXECUTE_CR45M1_ONLY
+prohibited_same_transaction_actions:
+- resume_or_complete_CR45
+- execute_CR46
+- push
+- publication
+- EOS_synchronization

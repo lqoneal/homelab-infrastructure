@@ -1,0 +1,57 @@
+schema_version: "1.0"
+record_type: CR47_SECONDARY_IMPLEMENTATION_MUTATION_ALLOWLIST
+cr_id: CR47
+result: PASS
+
+authority_state: DERIVED_NOT_EXECUTED
+
+secondary_missions:
+  - ZO-012
+  - ZO-018
+  - ZO-019
+  - ZO-020
+  - ZO-021
+  - ZO-023
+  - ZO-028
+  - ZO-029
+  - ZO-031
+  - ZO-032
+
+implementation_paths:
+  - scripts/lib/eos/convergence_roadmap.py
+
+test_paths:
+  - scripts/tests/test-convergence-roadmap.py
+
+evidence_paths:
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/**
+
+closeout_paths:
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/RESULT.yaml
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml
+
+explicitly_excluded_paths:
+  - scripts/tests/test-roadmap-lifecycle.py
+  - scripts/lib/emp/codex_adapter.py
+  - scripts/lib/eos/publication.py
+  - scripts/lib/eos/gate_approval.py
+
+projection_functions:
+  - project_authority_surface_contract
+  - project_result_authority_identity
+  - project_result_lifecycle_diagnostic
+  - project_acceptance_target_authority
+  - project_acceptance_prerequisites
+  - project_acceptance_readiness
+
+required_test_contract_count: 10
+
+lifecycle_primitive_mutation_authorized: false
+codex_adapter_mutation_authorized: false
+publication_module_mutation_authorized: false
+gate_approval_mutation_authorized: false
+cr48_execution_authorized: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+eos_sync_authorized: false

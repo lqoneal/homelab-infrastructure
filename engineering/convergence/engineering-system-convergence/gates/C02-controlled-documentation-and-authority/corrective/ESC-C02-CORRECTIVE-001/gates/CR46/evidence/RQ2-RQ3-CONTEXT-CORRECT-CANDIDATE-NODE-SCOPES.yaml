@@ -1,0 +1,31 @@
+schema_version: 1
+gate_id: CR46
+classification: RQ2_RQ3_CONTEXT_CORRECT_CANDIDATE_NODE_SCOPES
+derived_at: '2026-08-12T00:39:54.648645+00:00'
+result: PASS
+rq1:
+  status: PRESERVED_PASS
+  rerun_required: false
+rq2:
+  scope_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-CONTEXT-CORRECT-CANDIDATE-NODE-SCOPE.yaml
+  candidate_count: 15
+  candidate_node_set_sha256: 51375cee31071c1afa002714537e9105012d634548dee640a2e58b6f77aa2089
+  execution_scope_qualified: false
+rq3:
+  scope_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-CONTEXT-CORRECT-CANDIDATE-NODE-SCOPE.yaml
+  candidate_count: 10
+  candidate_node_set_sha256: 036dd8d820ec5388f71ac06cb3e7ccf6b3c608f51a4a4cde4ef6ca47684237b3
+  execution_scope_qualified: false
+test_execution_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_state_mutation_authorized: false
+rq2_completion_authorized: false
+rq3_completion_authorized: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: QUALIFY_RQ2_15_AND_RQ3_10_CANDIDATE_SCOPES_FOR_EXECUTION_ONLY

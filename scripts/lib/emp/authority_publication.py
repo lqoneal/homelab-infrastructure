@@ -1250,3 +1250,59 @@ def hashlib_sha256(value: bytes) -> str:
     import hashlib
 
     return hashlib.sha256(value).hexdigest()
+
+# --- CR46 ZO-024 / ZO-059 / ZO-061: authority owner projections ---
+def result_freshness_projection(
+    result_record: Mapping[str, Any],
+    *,
+    active_gate_id: str,
+    authority_digest: str | None = None,
+    authority_revision: Any = None,
+    lifecycle_revision: Any = None,
+) -> dict[str, Any]:
+    from scripts.lib.emp.stage1_runtime import result_freshness_provenance
+
+    return {
+        **result_freshness_provenance(
+            result_record,
+            active_gate_id=active_gate_id,
+            authority_digest=authority_digest,
+            authority_revision=authority_revision,
+            lifecycle_revision=lifecycle_revision,
+        ),
+        "owner_surface": "authority_publication",
+    }
+
+
+def gate_execution_provenance_projection(
+    gate_id: str,
+    **context: Any,
+) -> dict[str, Any]:
+    from scripts.lib.emp.stage1_runtime import (
+        classify_gate_execution_provenance,
+    )
+
+    return {
+        **classify_gate_execution_provenance(
+            gate_id,
+            **context,
+        ),
+        "owner_surface": "authority_publication",
+    }
+
+
+def validation_applicability_projection(
+    validator_class: str,
+    **context: Any,
+) -> dict[str, Any]:
+    from scripts.lib.emp.codex_reconciliation import (
+        classify_validation_applicability,
+    )
+
+    return {
+        **classify_validation_applicability(
+            validator_class,
+            **context,
+        ),
+        "owner_surface": "authority_publication",
+    }

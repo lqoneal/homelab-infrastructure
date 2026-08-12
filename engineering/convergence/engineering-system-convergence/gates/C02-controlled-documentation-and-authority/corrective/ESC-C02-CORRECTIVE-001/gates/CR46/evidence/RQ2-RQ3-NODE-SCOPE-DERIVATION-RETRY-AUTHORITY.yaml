@@ -1,0 +1,33 @@
+schema_version: 1
+gate_id: CR46
+classification: RQ2_RQ3_TRANSITIVE_SEMANTICS_SCOPE_DERIVATION_RETRY_AUTHORITY
+authorized_at: '2026-08-12T00:37:07.069554+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+basis: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/BLOCK7M70-RQ2-RQ3-NODE-SCOPE-DERIVATION-DIAGNOSIS.yaml
+rq1:
+  prior_pass_preserved: true
+  rerun_authorized: false
+rq2:
+  derive_candidate_scope_using_direct_and_transitive_helper_semantics: true
+  include_omitted_live_evaluator_node_if_helper_context_proven: true
+  test_execution_authorized: false
+rq3:
+  derive_candidate_scope_using_transitive_helper_semantics: true
+  inspect_class_fixture_and_setup_semantics: true
+  candidate_scope_may_be_all_10_replay_failures_if_shared_identity_fixture_applies: true
+  test_execution_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_state_mutation_authorized: false
+fixture_mutation_authorized: false
+stage_authorized: false
+commit_authorized: false
+amend_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+rq2_completion_authorized: false
+rq3_completion_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: RETRY_RQ2_RQ3_SCOPE_DERIVATION_USING_TRANSITIVE_HELPER_AND_FIXTURE_SEMANTICS_ONLY

@@ -1,0 +1,44 @@
+schema_version: "1.0"
+record_type: POST_CR47_FOREIGN_PATH_DISPOSITION_DERIVATION_AUTHORITY
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  classification: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-FOREIGN-PLANNING-PATH-CLASSIFICATION.yaml"
+  classification_sha256: "9b83c78244a45e7ae735b97cf0bbe97d42f362efa8d625148be00fda00469a88"
+  block30_publication_boundary: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-PUBLICATION-BOUNDARY.yaml"
+  block30_cr48_preflight: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR48-PRECONDITION-ASSESSMENT-AFTER-CR47.yaml"
+
+authorized:
+  determine_file_provenance: true
+  determine_repository_information_architecture_owner: true
+  determine_preservation_requirement: true
+  determine_cr47_publication_eligibility: true
+  derive_exact_disposition: true
+  rederive_publication_surface_after_disposition: true
+
+allowed_disposition_results:
+  - INCLUDE_IN_CURRENT_PUBLICATION
+  - PRESERVE_BUT_EXCLUDE_FROM_CR47_PUBLICATION
+  - DELETE_AS_DISPOSABLE_OR_ACCIDENTAL
+  - FAIL_CLOSED_UNRESOLVED
+
+required:
+  preserve_unique_engineering_content_unless_deletion_is_qualified: true
+  prevent_unrelated_work_from_being_laundered_into_cr47: true
+  establish_authority_before_move_or_delete: true
+  maintain_cr48_unexecuted_state: true
+
+prohibited:
+  modify_foreign_file: true
+  delete_foreign_file: true
+  move_foreign_file: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+  execute_cr48: true
+
+next_authorized_action:
+  DERIVE_EXACT_DISPOSITION_FOR_SOLE_FOREIGN_EENS_PLANNING_PATH_ONLY

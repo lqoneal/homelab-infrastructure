@@ -1,0 +1,43 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ3
+classification: RQ3_REPOSITORY_IDENTITY_SEMANTIC_DERIVATION_AUTHORITY
+authorized_at: '2026-08-12T06:44:07.422408+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+basis: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/BLOCK7M79-REPOSITORY-IDENTITY-PATH-SENSITIVITY-CLASSIFIER-DEFECT.yaml
+authorized_analysis:
+  inspect_repository_identity_resolver: true
+  derive_repository_id_inputs: true
+  derive_repository_identity_inputs: true
+  derive_repository_fingerprint_inputs: true
+  determine_filesystem_path_sensitivity: true
+  determine_git_remote_identity_role: true
+  determine_git_common_dir_role: true
+  determine_git_worktree_compatibility: true
+  determine_clean_clone_compatibility: true
+required_preservation:
+  qualified_baseline: fe824c714da35d987cc7454366aa3abaf046cc31
+  rq3_node_count: 10
+  rq3_node_set: UNCHANGED
+  git_metadata: true
+  clean_worktree: true
+  live_cr46_worktree: UNCHANGED
+rq3_test_execution_authorized: false
+rq3_rerun_authorized: false
+git_clone_execution_authorized: false
+git_worktree_creation_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_state_mutation_authorized: false
+live_worktree_revert_authorized: false
+live_worktree_stash_authorized: false
+live_worktree_commit_authorized: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+rq3_completion_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: DERIVE_ACTUAL_REPOSITORY_IDENTITY_SEMANTICS_FROM_REPOSITORY_IDENTITY_RESOLVER_ONLY

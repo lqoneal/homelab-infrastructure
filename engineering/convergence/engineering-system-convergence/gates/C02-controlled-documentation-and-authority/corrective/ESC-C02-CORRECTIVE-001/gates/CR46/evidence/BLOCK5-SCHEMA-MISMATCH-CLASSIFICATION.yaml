@@ -1,0 +1,19 @@
+schema_version: 1
+gate_id: CR46
+classification: CR46_BLOCK5_SCHEMA_MISMATCH_CLASSIFICATION
+classified_at: '2026-08-11T19:31:17.844252+00:00'
+classification_result: VERIFIER_SCHEMA_MISMATCH
+candidate_defect: false
+implementation_defect: false
+block5_failure_causes:
+- FROZEN_DIGEST_FIELD_SHAPE_ASSUMPTION_MISMATCH
+- OWNERSHIP_FIELD_SHAPE_ASSUMPTION_MISMATCH
+ownership_record_contains_all_six_zo: true
+digest_mapping_candidates:
+- preimplementation_sha256
+failed_contract_empty_owner_count: 6
+implementation_executed: false
+implementation_authority_written: false
+repository_mutation_detected: false
+retry_block5_contract_resolution_authorized: true
+result: PASS

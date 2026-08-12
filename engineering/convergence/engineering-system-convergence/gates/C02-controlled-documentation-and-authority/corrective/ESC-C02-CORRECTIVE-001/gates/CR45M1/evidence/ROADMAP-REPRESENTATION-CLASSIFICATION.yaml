@@ -1,0 +1,28 @@
+schema_version: 1
+gate_id: CR45M1
+classification: CR45M1_ROADMAP_REPRESENTATION_CLASSIFICATION
+classified_at: '2026-08-11T17:01:44.234522+00:00'
+block2l_failure: ROADMAP_SCHEMA_ASSUMPTION_FAILURE
+block2l_gate_contract_valid: true
+state_activation_executed: false
+history_reconciliation_executed: false
+existing_nested_item_locations:
+- object_path: $.maturity_items
+  index: 0
+  value: CR16M2
+  container_type: list
+- object_path: $.maturity_items
+  index: 1
+  value: CR16M2M1
+  container_type: list
+- &id001
+  object_path: $.maturity_items
+  index: 2
+  value: CR44M1
+  container_type: list
+cr44m1_locations:
+- *id001
+classification_result: USE_CR44M1_CANONICAL_REPRESENTATION
+roadmap_mutation_executed: false
+state_mutation_executed: false
+next_action: RECONCILE_CR45M1_USING_CR44M1_ROADMAP_REPRESENTATION

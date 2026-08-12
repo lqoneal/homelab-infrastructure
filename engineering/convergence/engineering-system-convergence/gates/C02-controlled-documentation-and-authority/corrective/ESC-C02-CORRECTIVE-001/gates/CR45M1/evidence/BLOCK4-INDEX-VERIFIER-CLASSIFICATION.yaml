@@ -1,0 +1,14 @@
+schema_version: 1
+gate_id: CR45M1
+classification: BLOCK4_INDEX_VERIFIER_CLASSIFICATION
+classified_at: '2026-08-11T19:01:57.764979+00:00'
+original_failure: SORT_ORDER_DEPENDENT_COMM_COMPARISON
+original_verifier: comm plus cmp over separately sorted path lists
+corrected_verifier: set equality over exact staged and authorized path sets
+staged_index_exact: true
+staged_blob_digests_match: true
+unauthorized_staged_content: false
+amend_executed: false
+classification_result: VERIFIER_FALSE_NEGATIVE
+resume_amend_authority_preserved: true
+result: PASS

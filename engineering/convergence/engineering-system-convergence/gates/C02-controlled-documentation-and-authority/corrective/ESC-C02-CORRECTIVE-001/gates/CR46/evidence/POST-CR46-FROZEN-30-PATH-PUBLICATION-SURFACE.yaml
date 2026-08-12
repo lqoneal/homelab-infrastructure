@@ -1,0 +1,56 @@
+schema_version: 1
+gate_id: CR46
+classification: POST_CR46_FROZEN_30_PATH_PUBLICATION_SURFACE
+qualified_at: '2026-08-12T07:13:57.690495+00:00'
+result: PASS
+repository:
+  prepublication_head: fe824c714da35d987cc7454366aa3abaf046cc31
+  prepublication_origin_main: fe824c714da35d987cc7454366aa3abaf046cc31
+  branch: main
+  index_empty: true
+surface:
+  tracked_path_count: 30
+  tracked_path_set_sha256: 2cebf244d52894f4da490d16e608f77a915a47aeb0ab97ce300a4e07eaa1baa6
+  tracked_paths:
+  - docs/procedures/PROC-0009-EXECUTABLE_ROADMAP_EVALUATION_PROCEDURE.md
+  - docs/project/PROJ-0001-PROJECT_STATE.md
+  - docs/standards/STD-0006-ENGINEERING_EXECUTABLE_ROADMAP_STANDARD.md
+  - engineering/convergence/engineering-system-convergence/binding-manifest.yaml
+  - engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR43/evidence/COMMANDS.md
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/HISTORY.md
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ROADMAP.yaml
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/README.md
+  - engineering/convergence/engineering-system-convergence/roadmap.yaml
+  - engineering/convergence/engineering-system-convergence/schemas/roadmap-evaluation.schema.yaml
+  - engineering/convergence/engineering-system-convergence/STATE.yaml
+  - scripts/engctl
+  - scripts/lib/emp/admission_supersession.py
+  - scripts/lib/emp/agent_qualification.py
+  - scripts/lib/emp/authority_publication.py
+  - scripts/lib/emp/authority_resolution.py
+  - scripts/lib/emp/canonical_mission_aggregate.py
+  - scripts/lib/emp/canonical_mission_lifecycle.py
+  - scripts/lib/emp/codex_adapter.py
+  - scripts/lib/emp/codex_interactive.py
+  - scripts/lib/emp/codex_reconciliation.py
+  - scripts/lib/emp/mission_verification_controller.py
+  - scripts/lib/emp/publication_candidate_authority.py
+  - scripts/lib/emp/publication_transaction.py
+  - scripts/lib/emp/stage1_runtime.py
+  - scripts/lib/eos/convergence_roadmap.py
+  - scripts/tests/test-authority-publication.py
+  - scripts/tests/test-convergence-roadmap.py
+  frozen_surface_preserved: true
+  tracked_delta_drift: false
+qualification:
+  all_tracked_paths_classified: true
+  full_surface_requires_publication_provenance_resolution: true
+  publication_execution_authorized: false
+  stage_authorized: false
+  commit_authorized: false
+  push_authorized: false
+  eos_synchronization_authorized: false
+  cr47_execution_authorized: false
+next: RETRY_POST_CR46_PUBLICATION_BOUNDARY_DERIVATION_USING_FROZEN_30_PATH_SURFACE

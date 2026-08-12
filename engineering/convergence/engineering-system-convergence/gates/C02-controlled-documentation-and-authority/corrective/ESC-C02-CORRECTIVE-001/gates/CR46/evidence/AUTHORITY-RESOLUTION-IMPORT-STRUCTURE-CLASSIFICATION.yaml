@@ -1,0 +1,30 @@
+schema_version: 1
+gate_id: CR46
+classification: 7M3X_IMPORT_ANCHOR_VERIFIER_DEFECT
+classified_at: '2026-08-11T22:28:46.651973+00:00'
+source:
+  path: scripts/lib/emp/authority_resolution.py
+  sha256: 636b5e90bf9aa07bf195141d79efcddb32be715db2b17f25d366ff72508242da
+  mutation_executed: false
+failed_transaction:
+  block: 7M3X
+  failure: EMP_IMPORT_ANCHOR_NOT_FOUND
+  production_mutation_executed: false
+  reported_mutation_flag_false_positive: true
+import_structure:
+  top_level_import_count: 12
+  last_import_end_line: 18
+  safe_insertion_model: AFTER_EXISTING_TOP_LEVEL_IMPORT_BLOCK
+  required_import: from scripts.lib.emp.runtime_paths import runtime_path
+corrective_semantics_preserved:
+  authorized_function: authoritative_source_path
+  replacement: runtime = runtime_path(root, "authority")
+  production_mutation_authority_preserved: true
+source_mutation_authorized_in_this_block: false
+rq1_retry_authorized: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+cr47_authorized: false
+result: PASS
+next_action: RETRY_BOUNDED_PRODUCTION_RESOLVER_CORRECTIVE_USING_AST_IMPORT_BOUNDARY

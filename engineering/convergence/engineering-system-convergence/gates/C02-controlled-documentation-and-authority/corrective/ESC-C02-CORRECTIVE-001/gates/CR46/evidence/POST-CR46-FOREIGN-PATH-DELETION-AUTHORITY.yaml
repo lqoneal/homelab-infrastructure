@@ -1,0 +1,25 @@
+schema_version: 1
+gate_id: CR46
+classification: POST_CR46_FOREIGN_PATH_DELETION_AUTHORITY
+authorized_at: '2026-08-12T07:26:08.899311+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+basis: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/BLOCK7M94-GIT-QUOTED-PATH-VERIFIER-DEFECT.yaml
+authorized:
+  delete_exact_path: :USERPROFILE\Downloads\MANUAL-PATCH-INPUT.txt
+  delete_exact_path_only: true
+  verify_path_absent_after_delete: true
+  reinventorize_untracked_surface_after_delete: true
+  write_deletion_result: true
+prohibited:
+  delete_any_other_path: true
+  tracked_source_mutation: true
+  test_mutation: true
+  controlled_state_mutation: true
+  stage: true
+  commit: true
+  push: true
+  eos_synchronization: true
+  cr47_execution: true
+stop_after: FOREIGN_PATH_DELETION_AND_REINVENTORY
+next: DELETE_EXACT_FOREIGN_PATH_ONLY

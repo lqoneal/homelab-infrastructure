@@ -1,0 +1,48 @@
+schema_version: 1
+gate_id: CR46
+classification: RQ1_RETRY_AUTHORITY_AFTER_PRODUCTION_RESOLVER_CORRECTIVE
+authorized_at: '2026-08-11T22:42:16.052425+00:00'
+authority_state: AUTHORIZED_NOT_EXECUTED
+source_corrective_result: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/AUTHORITATIVE-SOURCE-RUNTIME-RESOLVER-CORRECTIVE-RESULT.yaml
+production_dependencies:
+- path: scripts/lib/emp/authority_resolution.py
+  required_sha256: b3e7df80107f4a013ef6af5108e8f26ca12f2aa5301337632ec007fdbabe3885
+  mutation_authorized: false
+- path: scripts/lib/emp/authority_publication.py
+  required_sha256: 09b7d4e529d287bb001165d909ca2a9e7b94e1ed82c1cd98fc1a85eb48e84bee
+  mutation_authorized: false
+test_dependencies:
+- path: scripts/tests/test-authority-publication.py
+  required_sha256: 392ce0853bd8fd1bd8d70b75b009b649cd24cdc1e5f36b1184d106e53b302701
+  mutation_authorized: false
+  revert_authorized: false
+- path: scripts/tests/test-convergence-roadmap.py
+  required_sha256: 4ed9ca065ff55dfc88a070a1a20b2bc7bb43425e03ae100cddc2390aeab58de7
+  mutation_authorized: false
+  revert_authorized: false
+qualified_runtime_contract:
+  writer: runtime_path(self.root, authority, ACTIVE_PUBLICATION_POINTER)
+  reader: runtime_path(root, authority)
+  writer_reader_contract: CONVERGED
+  rq1_fixture_target: runtime_path(repository, authority, ACTIVE_PUBLICATION_POINTER)
+authorized_execution:
+  stage: RQ1_AUTHORITY_PUBLICATION
+  test_count: 13
+  environment:
+    ZEUS_TESTING: '1'
+  test_execution_authorized: true
+  temporary_test_directory_authorized: true
+  production_source_mutation_authorized: false
+  test_source_mutation_authorized: false
+rq1_retry_authorized: true
+rq2_execution_authorized: false
+rq3_execution_authorized: false
+stage_authorized: false
+commit_authorized: false
+amend_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+stop_boundary: STOP_AFTER_RQ1_RETRY
+result: PASS

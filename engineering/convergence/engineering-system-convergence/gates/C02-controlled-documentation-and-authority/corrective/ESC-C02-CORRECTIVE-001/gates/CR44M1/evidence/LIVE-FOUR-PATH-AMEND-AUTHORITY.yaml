@@ -1,0 +1,63 @@
+schema_version: 1
+gate_id: CR44M1
+classification: EXACT_LIVE_FOUR_PATH_STAGE_AMEND_EXECUTION_AUTHORITY
+result: AUTHORIZED_NOT_EXECUTED
+authorized_at: '2026-08-11T15:56:18.900547+00:00'
+failed_commit: 8b651126a19ae5bab21ea5036cd410514e22ee0c
+parent_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+qualified_candidate_commit: 7c1ca16b490c68b5506f9bb4cc76e566ca8a8c0a
+repair_path_count: 4
+repair_paths:
+- path: scripts/lib/emp/repository_state_view.py
+  qualified_sha256: c791a53a71c3920f314cba879c1b6675feb93d903e2e4d61caf2b6c23e63de83
+  live_sha256_at_authorization: c791a53a71c3920f314cba879c1b6675feb93d903e2e4d61caf2b6c23e63de83
+  content_match: true
+- path: scripts/lib/emp/codex_session_timing.py
+  qualified_sha256: 8266e221ec2de86f2cd7893e92e04a4204677a78d570cafc31063c85b5b943a4
+  live_sha256_at_authorization: 8266e221ec2de86f2cd7893e92e04a4204677a78d570cafc31063c85b5b943a4
+  content_match: true
+- path: scripts/lib/emp/publication_candidate_authority.py
+  qualified_sha256: 5a71c5db01a6c49366743f78f1a4ae337aacc4ae6570da2152763ffccb1ff158
+  live_sha256_at_authorization: 5a71c5db01a6c49366743f78f1a4ae337aacc4ae6570da2152763ffccb1ff158
+  content_match: true
+- path: scripts/lib/emp/publication_cohort.py
+  qualified_sha256: 3cf69f400527b525612c4bb2cce1e4d5fae5129955d700ea947b1b4d47579b69
+  live_sha256_at_authorization: 3cf69f400527b525612c4bb2cce1e4d5fae5129955d700ea947b1b4d47579b69
+  content_match: true
+execution_authority:
+  stage_exact_four_paths: true
+  amend_existing_failed_commit: true
+  preserve_parent_commit: true
+  preserve_single_commit_semantics: true
+  copy_or_modify_content_during_execution: false
+  create_second_commit: false
+  push: false
+  publication: false
+  eos_synchronization: false
+  complete_cr44m1_in_same_transaction: false
+  execute_cr44_in_same_transaction: false
+  execute_cr45: false
+execution_preconditions:
+- HEAD remains failed_commit
+- HEAD parent remains parent_commit
+- origin/main remains parent_commit
+- index remains empty
+- all four live paths remain byte-identical to qualified candidate
+- candidate remains clean and at qualified_candidate_commit
+- CR44M1 remains current item
+- CR44M1 RESULT remains absent
+- CR44 RESULT remains absent
+- CR45 RESULT remains absent
+required_post_amend_qualification:
+- new HEAD differs from failed_commit
+- new HEAD parent equals parent_commit
+- HEAD^ tree relation preserves single-commit semantics
+- new commit delta relative to failed_commit equals exact four-path repair set
+- new commit tree for all four repair paths equals qualified candidate tree
+- all non-repair blobs equal failed_commit
+- Zeus startup passes from amended commit
+- applicable CR42-equivalent qualification remains PASS
+- no push occurred
+- no EOS synchronization occurred
+- CR44M1 remains current until explicit closeout
+next_action: STAGE_EXACT_FOUR_PATHS_AND_AMEND_EXISTING_FAILED_COMMIT_ONLY

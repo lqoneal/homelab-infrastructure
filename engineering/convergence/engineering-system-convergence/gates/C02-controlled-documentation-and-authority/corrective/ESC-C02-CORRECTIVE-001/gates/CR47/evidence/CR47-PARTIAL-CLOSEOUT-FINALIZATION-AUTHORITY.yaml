@@ -1,0 +1,39 @@
+schema_version: "1.0"
+record_type: CR47_PARTIAL_CLOSEOUT_FINALIZATION_AUTHORITY
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  classification: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-BLOCK20-PARTIAL-CLOSEOUT-VERIFIER-DEFECT-CLASSIFICATION.yaml"
+  prior_closeout_boundary: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-EXACT-CLOSEOUT-RESULT-SUMMARY-STATE-BOUNDARY.yaml"
+  prior_closeout_execution_authority: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-EXACT-CLOSEOUT-EXECUTION-AUTHORITY.yaml"
+
+preserve_without_reexecution:
+  cr47_result: true
+  cr47_summary: true
+  corrective_state_transition: true
+  parent_gate_c02: true
+  project_gate_c02: true
+
+authorized:
+  resolve_actual_emm_reconciliation_if_required: true
+  run_final_read_only_roadmap_validation: true
+  write_cr47_closeout_reconciliation_evidence: true
+  verify_cr47_terminal_state: true
+
+conditional:
+  emm_rebind_required: true
+  emm_already_valid: false
+
+prohibited:
+  rewrite_cr47_result: true
+  rewrite_cr47_summary: true
+  repeat_corrective_state_transition: true
+  execute_cr48: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+
+next_authorized_action: FINALIZE_EXISTING_CR47_CLOSEOUT_WITH_ACTUAL_EMM_CONTRACT_ONLY

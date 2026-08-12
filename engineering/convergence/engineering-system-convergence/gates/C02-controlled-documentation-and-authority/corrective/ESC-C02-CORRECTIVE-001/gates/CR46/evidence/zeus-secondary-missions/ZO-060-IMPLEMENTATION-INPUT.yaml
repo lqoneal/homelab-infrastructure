@@ -1,0 +1,26 @@
+schema_version: 1
+gate_id: CR46
+opportunity_id: ZO-060
+execution_stage: 5
+implementation_contract:
+  order: 5
+  opportunity_id: ZO-060
+  title: Zeus Immutable Commit Dependency-Closure Qualification
+  objective: Require Zeus to prove that a candidate or amended commit is dependency-complete and independently executable
+    from its immutable committed tree before qualification, publication, or lifecycle advancement, including detection of
+    missing committed dependencies that are masked by tracked, modified, staged, ignored, or untracked live-worktree files.
+  module_owner_paths:
+  - scripts/lib/emp/publication_candidate_authority.py
+  - scripts/lib/emp/admission_supersession.py
+  - scripts/lib/emp/codex_adapter.py
+  test_owner_paths:
+  - scripts/tests/test-authority-wop-compatibility.py
+  - scripts/tests/test-mission-orchestration.py
+  - scripts/tests/test-wop-lifecycle-manager.py
+  implementation_contract_status: QUALIFIED
+  acceptance_requirement: OBJECTIVE_PROVEN_BY_TARGETED_TESTS_AND_NO_REGRESSION
+execution_state: AUTHORIZED_NOT_EXECUTED
+qualification_state: PENDING
+stage_authorized: false
+commit_authorized: false
+push_authorized: false

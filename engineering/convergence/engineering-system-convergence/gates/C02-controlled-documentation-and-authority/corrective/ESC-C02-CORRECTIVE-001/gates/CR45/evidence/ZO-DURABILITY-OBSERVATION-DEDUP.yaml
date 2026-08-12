@@ -1,0 +1,23 @@
+schema_version: 1
+gate_id: CR45
+classification: ZO_DURABILITY_OBSERVATION_DEDUP
+classified_at: '2026-08-11T16:56:09.126597+00:00'
+observation: Durability and publication-candidate qualification must include authoritative untracked files, not
+  only tracked git diff paths.
+zo058_coverage:
+  UNTRACKED_WORKTREE: true
+  REPOSITORY_TRANSACTION: true
+  EXACT_STAGING: true
+  CONTAMINATION: true
+  FAIL_CLOSED: true
+zo060_coverage:
+  DEPENDENCY_COMPLETE: true
+  IMMUTABLE_COMMIT: true
+  WORKTREE_MASKING: true
+classification_result: DEDUP_TO_ZO_058
+deduplicated_opportunity: ZO-058
+existing_target_gate: CR46
+execution_class: SECONDARY_CR_MISSION
+new_opportunity_required: false
+register_mutated: false
+implementation_executed: false

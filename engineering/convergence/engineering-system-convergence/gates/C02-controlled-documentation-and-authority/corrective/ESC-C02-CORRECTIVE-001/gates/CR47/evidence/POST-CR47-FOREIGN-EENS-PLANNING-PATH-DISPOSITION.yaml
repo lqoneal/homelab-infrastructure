@@ -1,0 +1,47 @@
+schema_version: "1.0"
+record_type: POST_CR47_FOREIGN_EENS_PLANNING_PATH_DISPOSITION
+cr_id: CR47
+result: PASS
+
+path:
+  value: "engineering/planning/2026-08-12-eens-architecture-resolution-options.md"
+  sha256: "87ea60ac65d8a770d9734ae51288c9600a78c90a36711fda263d00097194df53"
+  size_bytes: 11956
+
+classification:
+  content_class: EENS_ARCHITECTURE_PLANNING_OR_ASSESSMENT
+  substantive_engineering_content: true
+  cr47_membership_established: false
+  cr47_publication_authority_established: false
+
+disposition:
+  value: PRESERVE_BUT_EXCLUDE_FROM_CR47_PUBLICATION
+
+preservation:
+  required: true
+  reason: substantive_unique_engineering_planning_content
+
+repository_information_architecture:
+  current_location: engineering/planning
+  current_location_acceptable_for_preservation: true
+  relocation_required_now: false
+
+cr47:
+  include_in_publication: false
+  reason: unrelated_EENS_planning_must_not_be_laundered_into_CR47_closeout
+
+mutation:
+  modify_file: false
+  delete_file: false
+  move_file: false
+
+successor:
+  cr48_preconditions_previously_passed: true
+  cr48_executed: false
+
+publication:
+  publication_exclusion_required: true
+  stage_executed: false
+  commit_created: false
+  push_performed: false
+  eos_synchronized: false

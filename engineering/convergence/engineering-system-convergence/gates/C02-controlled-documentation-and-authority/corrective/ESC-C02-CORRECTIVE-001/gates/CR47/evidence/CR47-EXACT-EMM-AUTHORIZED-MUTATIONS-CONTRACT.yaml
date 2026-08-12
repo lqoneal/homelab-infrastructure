@@ -1,0 +1,21 @@
+schema_version: '1.0'
+record_type: CR47_EXACT_EMM_AUTHORIZED_MUTATIONS_CONTRACT
+cr_id: CR47
+result: PASS
+canonical_function: apply_emm_rebind_transaction
+canonical_signature: '(repository_root: Path | str, *, authorized_mutations: dict[str,
+  str], transaction_id: str)'
+authorized_mutations:
+  docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md: 53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58
+constraints:
+  exact_mutation_count: 1
+  target_source: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md
+  new_sha256: 53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58
+  modify_other_binding_sources: false
+  write_transaction: true
+  run_post_rebind_validation: true
+  execute_cr48: false
+  stage: false
+  commit: false
+  push: false
+  eos_sync: false

@@ -1,0 +1,13 @@
+CR47 BLOCK13 PARTIAL PYTEST FAILURE SUMMARY
+===========================================
+
+Run tmp: /data/engineering/repositories/homelab/tmp/cr47-requal-20260812T093926Z-2046230
+Execution state: INTERRUPTED
+Visible pytest progress before interrupt: FF
+Exact phase completed: NO
+Full validator started: NO
+Implementation SHA256: 205f95746fdcb7933905aed3308e46f992767ddfb58d1f3877670c70b39d30b4
+Test SHA256: 6aaf549a1951ce6f787170b75153370f14c1c27cb700554e8573274da15fc797
+
+--- exact-test log tail ---
+FF

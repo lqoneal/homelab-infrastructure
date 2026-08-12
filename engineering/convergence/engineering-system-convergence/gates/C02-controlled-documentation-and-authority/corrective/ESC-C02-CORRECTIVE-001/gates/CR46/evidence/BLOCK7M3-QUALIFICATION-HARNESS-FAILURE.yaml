@@ -1,0 +1,20 @@
+schema_version: 1
+gate_id: CR46
+classification: CR46_BLOCK7M3_QUALIFICATION_HARNESS_FAILURE
+classified_at: '2026-08-11T21:19:50.883401+00:00'
+failure_class: EVIDENCE_HARNESS_NAMEERROR
+failed_symbol: sys
+failed_operation: focused qualification evidence write
+source_implementation_defect: false
+focused_assertions_before_failure: ALL_VISIBLE_PASS
+source_mutation_preserved: true
+mutation_boundary_preserved: true
+regression_suite_executed: false
+rerun_source_mutation_authorized: false
+rerun_qualification_authorized: true
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+cr47_execution_authorized: false
+result: PASS

@@ -1,0 +1,38 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ3
+classification: BLOCK7M79_REPOSITORY_IDENTITY_PATH_SENSITIVITY_CLASSIFIER_DEFECT
+classified_at: '2026-08-12T06:44:07.371342+00:00'
+result: PASS
+prior_topology_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-CLEAN-GIT-EXECUTION-TOPOLOGY-CLASSIFICATION.yaml
+repository_identity_module: scripts/lib/emp/repository_identity.py
+observed_contradiction:
+  direct_runtime_probe_path_sensitive: true
+  static_classifier_path_sensitive: false
+  contradiction: true
+failure_class: SHALLOW_RUNTIME_PATHS_SOURCE_HEURISTIC
+reason: runtime_paths._identity delegates repository identity derivation to repository_identity.resolve; the 7M79 static classifier inspected runtime_paths source text rather than the transitive
+  identity implementation
+topology_effect:
+  simple_clean_clone_validity_established: false
+  simple_git_worktree_validity_established: false
+  prior_clean_clone_selection_qualified: false
+  rq3_execution_context_resolved: false
+source_implementation_defect_established: false
+test_implementation_defect_established: false
+rq3_scope_defect_established: false
+production_identity_contract_defect_established: false
+verifier_defect_established: true
+rq3_rerun_authorized: false
+git_clone_execution_authorized: false
+git_worktree_creation_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_worktree_revert_authorized: false
+live_worktree_stash_authorized: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: DERIVE_ACTUAL_REPOSITORY_IDENTITY_SEMANTICS_FROM_REPOSITORY_IDENTITY_RESOLVER_ONLY

@@ -1,0 +1,309 @@
+schema_version: 1
+gate_id: CR46
+classification: BLOCK7M70_NODE_SCOPE_DERIVATION_HEURISTIC_DIAGNOSIS
+classified_at: '2026-08-12T00:37:06.997979+00:00'
+result: PASS
+rq2:
+  validator: scripts/tests/test-convergence-roadmap.py
+  replay_failure_count: 15
+  direct_semantic_match_count: 14
+  direct_semantic_omitted_count: 1
+  omitted_node: scripts/tests/test-convergence-roadmap.py::ConvergenceRoadmapTests::test_live_evaluator_qualifies_esc_and_all_required_gates
+  helper_trace:
+    records:
+    - node: scripts/tests/test-convergence-roadmap.py::ConvergenceRoadmapTests::test_live_evaluator_qualifies_esc_and_all_required_gates
+      trace:
+      - function: test_live_evaluator_qualifies_esc_and_all_required_gates
+        depth: 0
+        matched_tokens:
+        - evaluate
+        calls:
+        - assertEqual
+        - assertTrue
+        - evaluate
+        - range
+      context_semantics_found: true
+  omitted_node_helper_context_established: true
+  provisional_context_scope_count: 15
+  execution_scope_qualified: false
+rq3:
+  validator: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py
+  replay_failure_count: 10
+  direct_semantic_match_count: 0
+  helper_mediated_identity_candidate_count: 5
+  helper_trace:
+    records:
+    - node: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_all_transaction_identifiers_resolve_same_record
+      repository_identity_semantics_found: false
+      trace:
+      - function: test_all_transaction_identifiers_resolve_same_record
+        depth: 0
+        identity_tokens: []
+        calls:
+        - Path
+        - TemporaryDirectory
+        - _runtime
+        - assertEqual
+        - resolve_transaction
+        - submit_development
+      - function: _runtime
+        depth: 1
+        identity_tokens: []
+        calls:
+        - Stage1Runtime
+    - node: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_digest_projection_and_state_digest_are_deterministic
+      repository_identity_semantics_found: false
+      trace:
+      - function: test_digest_projection_and_state_digest_are_deterministic
+        depth: 0
+        identity_tokens: []
+        calls:
+        - Path
+        - TemporaryDirectory
+        - _runtime
+        - assertEqual
+        - assertNotEqual
+        - submit_development
+      - function: _runtime
+        depth: 1
+        identity_tokens: []
+        calls:
+        - Stage1Runtime
+    - node: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_duplicate_submission_is_idempotent
+      repository_identity_semantics_found: false
+      trace:
+      - function: test_duplicate_submission_is_idempotent
+        depth: 0
+        identity_tokens: []
+        calls:
+        - Path
+        - TemporaryDirectory
+        - _runtime
+        - assertEqual
+        - assertTrue
+        - submit_development
+      - function: _runtime
+        depth: 1
+        identity_tokens: []
+        calls:
+        - Stage1Runtime
+    - node: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_healthy_submission_creates_one_snapshot_and_receipt_backed_dispatch
+      repository_identity_semantics_found: true
+      trace:
+      - function: test_healthy_submission_creates_one_snapshot_and_receipt_backed_dispatch
+        depth: 0
+        identity_tokens: []
+        calls:
+        - Path
+        - TemporaryDirectory
+        - _registry
+        - _runtime
+        - assertEqual
+        - assertTrue
+        - automatic_executor
+        - exists
+        - loads
+        - read_text
+        - removeprefix
+        - str
+        - submit_development
+      - function: _registry
+        depth: 1
+        identity_tokens:
+        - repository
+        - repo
+        calls:
+        - dumps
+        - str
+        - write_text
+      - function: _runtime
+        depth: 1
+        identity_tokens: []
+        calls:
+        - Stage1Runtime
+    - node: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_incomplete_provider_selection_and_launch_ack_are_not_authoritative
+      repository_identity_semantics_found: false
+      trace:
+      - function: test_incomplete_provider_selection_and_launch_ack_are_not_authoritative
+        depth: 0
+        identity_tokens: []
+        calls:
+        - Path
+        - TemporaryDirectory
+        - _runtime
+        - assertEqual
+        - assertRaises
+        - deepcopy
+        - find
+        - resume_transaction
+        - save
+        - submit_development
+      - function: _runtime
+        depth: 1
+        identity_tokens: []
+        calls:
+        - Stage1Runtime
+    - node: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_projection_persistence_failure_blocks_submission_before_success
+      repository_identity_semantics_found: true
+      trace:
+      - function: test_projection_persistence_failure_blocks_submission_before_success
+        depth: 0
+        identity_tokens: []
+        calls:
+        - Path
+        - TemporaryDirectory
+        - ValueError
+        - _registry
+        - _runtime
+        - assertEqual
+        - assertFalse
+        - automatic_executor
+        - exists
+        - submit_development
+      - function: _registry
+        depth: 1
+        identity_tokens:
+        - repository
+        - repo
+        calls:
+        - dumps
+        - str
+        - write_text
+      - function: _runtime
+        depth: 1
+        identity_tokens: []
+        calls:
+        - Stage1Runtime
+    - node: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_provider_output_cannot_advance_without_receipts
+      repository_identity_semantics_found: false
+      trace:
+      - function: test_provider_output_cannot_advance_without_receipts
+        depth: 0
+        identity_tokens: []
+        calls:
+        - Path
+        - TemporaryDirectory
+        - _runtime
+        - assertEqual
+        - assertNotIn
+        - submit_development
+      - function: _runtime
+        depth: 1
+        identity_tokens: []
+        calls:
+        - Stage1Runtime
+    - node: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_receiptless_dispatch_rolls_back_and_preserves_evidence
+      repository_identity_semantics_found: true
+      trace:
+      - function: test_receiptless_dispatch_rolls_back_and_preserves_evidence
+        depth: 0
+        identity_tokens: []
+        calls:
+        - Path
+        - TemporaryDirectory
+        - _registry
+        - _runtime
+        - any
+        - assertEqual
+        - assertTrue
+        - automatic_executor
+        - deepcopy
+        - get
+        - pop
+        - resume_transaction
+        - save
+        - submit_development
+      - function: _registry
+        depth: 1
+        identity_tokens:
+        - repository
+        - repo
+        calls:
+        - dumps
+        - str
+        - write_text
+      - function: _runtime
+        depth: 1
+        identity_tokens: []
+        calls:
+        - Stage1Runtime
+    - node: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_recovery_does_not_invoke_execution_and_requires_new_snapshot
+      repository_identity_semantics_found: true
+      trace:
+      - function: test_recovery_does_not_invoke_execution_and_requires_new_snapshot
+        depth: 0
+        identity_tokens: []
+        calls:
+        - Path
+        - TemporaryDirectory
+        - _registry
+        - _runtime
+        - append
+        - assertEqual
+        - assertNotEqual
+        - assertTrue
+        - automatic_executor
+        - clear
+        - deepcopy
+        - pop
+        - resume_transaction
+        - save
+        - submit_development
+      - function: _registry
+        depth: 1
+        identity_tokens:
+        - repository
+        - repo
+        calls:
+        - dumps
+        - str
+        - write_text
+      - function: _runtime
+        depth: 1
+        identity_tokens: []
+        calls:
+        - Stage1Runtime
+    - node: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_replayed_dispatch_repairs_missing_derived_projections_without_resubmission
+      repository_identity_semantics_found: true
+      trace:
+      - function: test_replayed_dispatch_repairs_missing_derived_projections_without_resubmission
+        depth: 0
+        identity_tokens: []
+        calls:
+        - Path
+        - TemporaryDirectory
+        - _registry
+        - _runtime
+        - assertEqual
+        - assertTrue
+        - automatic_executor
+        - exists
+        - submit_development
+        - unlink
+      - function: _registry
+        depth: 1
+        identity_tokens:
+        - repository
+        - repo
+        calls:
+        - dumps
+        - str
+        - write_text
+      - function: _runtime
+        depth: 1
+        identity_tokens: []
+        calls:
+        - Stage1Runtime
+  empty_scope_established: false
+  derivation_heuristic_defect: true
+  source_defect_established: false
+  test_defect_established: false
+  execution_scope_qualified: false
+block_7m70:
+  result: FAIL_CLOSED
+  scope_records_written: false
+  test_execution_executed: false
+  source_mutation_executed: false
+  test_mutation_executed: false
+  live_state_mutation_executed: false
+next: RETRY_RQ2_RQ3_SCOPE_DERIVATION_USING_TRANSITIVE_HELPER_AND_FIXTURE_SEMANTICS

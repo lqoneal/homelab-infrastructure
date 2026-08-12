@@ -1,0 +1,12 @@
+schema_version: 1
+gate_id: CR44M1
+classification: ZEUS_QUALIFICATION_CONTEXT_OPPORTUNITY_REGISTRATION
+recorded_at: '2026-08-11T15:50:53.271086+00:00'
+opportunity_id: ZO-061
+target_gate: ZG-QUALIFICATION-CONTEXT-APPLICABILITY-001
+source_condition: Current-gate qualification blocker exposed inability to classify
+  validator applicability by execution context.
+registration_authority: CURRENT_BLOCKER_ZEUS_OPPORTUNITY_REGISTRATION_AUTHORITY
+blocks_current_gate: false
+implementation_authorized: false
+production_repair_authorized: false

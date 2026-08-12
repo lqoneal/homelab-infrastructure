@@ -1,0 +1,49 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ3
+classification: RQ3_CANONICAL_PATH_ISOLATED_GIT_VIEW_QUALIFICATION
+qualified_at: '2026-08-12T06:49:00.479785+00:00'
+result: PASS
+basis:
+  execution_model: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-IDENTITY-PRESERVING-CLEAN-GIT-EXECUTION-MODEL.yaml
+  qualification_authority: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-ISOLATED-GIT-VIEW-QUALIFICATION-AUTHORITY.yaml
+execution_model: CANONICAL_PATH_PLUS_ISOLATED_GIT_VIEW
+canonical_repository:
+  path: /data/engineering/repositories/homelab
+  repository_identity: git@github.com:lqoneal/homelab-infrastructure.git
+  repository_id: homelab-6bd83f9079d6fc57
+  repository_fingerprint: 6bd83f9079d6fc5780ca2cb9a93060778a899cd97e82ef3d708f91a42dbda02d
+  qualified_baseline: fe824c714da35d987cc7454366aa3abaf046cc31
+isolated_git_view:
+  git_dir: TEMPORARY_COPY
+  git_index: TEMPORARY
+  git_work_tree: TEMPORARY_BASELINE_TREE
+  status_clean: true
+  head: fe824c714da35d987cc7454366aa3abaf046cc31
+  branch: main
+  origin_main: fe824c714da35d987cc7454366aa3abaf046cc31
+  stage1_git_canonical_path_compatible: true
+identity_preservation:
+  python_repository_path_canonical: true
+  repository_identity_preserved: true
+  repository_id_preserved: true
+  repository_fingerprint_preserved: true
+  runtime_namespace_preserved: true
+live_repository_preservation:
+  worktree_unchanged: true
+  index_unchanged: true
+  git_admin_worktree_state_unchanged: true
+  head_unchanged: true
+  origin_main_unchanged: true
+rq3_execution_model_qualified: true
+rq3_test_execution_authorized: false
+rq3_rerun_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_worktree_mutation_authorized: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: AUTHOR_RQ3_EXECUTION_AUTHORITY_USING_QUALIFIED_ISOLATED_GIT_VIEW

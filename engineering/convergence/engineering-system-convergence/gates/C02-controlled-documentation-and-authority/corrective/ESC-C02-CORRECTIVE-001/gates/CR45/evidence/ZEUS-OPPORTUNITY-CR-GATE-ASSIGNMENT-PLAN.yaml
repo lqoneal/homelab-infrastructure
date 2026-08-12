@@ -1,0 +1,143 @@
+schema_version: 1
+classification: ZEUS_OPPORTUNITY_CR_GATE_ASSIGNMENT_PLAN
+generated_at: '2026-08-11T16:42:39.425422+00:00'
+rules:
+  opportunity_identity: PRESERVE_ZO_ID
+  execution_location: SPECIFIC_CR_GATE
+  execution_class: SECONDARY_CR_MISSION
+  standalone_zg_gate_model: NOT_USED
+  generic_deferred_assignment: NOT_ALLOWED
+  completed_cr_gate_retroactive_mutation: NOT_ALLOWED
+assignments:
+- opportunity_id: ZO-018
+  title: Zeus Missing-Result Lifecycle Diagnostic Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR47
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-019
+  title: Zeus Targeted Lifecycle Diagnostic Reduction
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR47
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-020
+  title: Zeus Wrong-Gate Result Diagnostic Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR47
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-021
+  title: Zeus Result Authority Identity Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR47
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-023
+  title: Zeus Stale Result Diagnostic Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR47
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-024
+  title: Zeus Result Freshness and Provenance Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-FRESHNESS-PROVENANCE-001
+  assigned_cr_gate: CR46
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-026
+  title: Zeus Projection Scope and Qualification Instrument Selection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR46
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-028
+  title: Zeus Acceptance Target Authority Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR47
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-029
+  title: Zeus Acceptance Boundary Diagnostic Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR47
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-031
+  title: Zeus Acceptance Prerequisite Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR47
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-032
+  title: Zeus Acceptance Readiness Diagnostic Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR47
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-034
+  title: Zeus Acceptance Replay Classification Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR48
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-035
+  title: Zeus Acceptance Receipt Idempotency Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR49
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-037
+  title: Zeus Acceptance Interruption Recovery Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR48
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-038
+  title: Zeus Partial Acceptance Transaction Diagnostic Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR48
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-040
+  title: Zeus Advancement Replay Classification Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR50
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-041
+  title: Zeus Advancement Idempotency and Successor Projection
+  status: QUEUED
+  previous_target_gate: ZG-RESULT-LIFECYCLE-DIAGNOSTICS-001
+  assigned_cr_gate: CR50
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-058
+  title: Zeus Bounded Repository Transaction Closure and Commit Recovery
+  status: QUEUED
+  previous_target_gate: ZG-REPOSITORY-TRANSACTION-INTEGRITY-001
+  assigned_cr_gate: CR46
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-059
+  title: Zeus Gate Definition and Execution Provenance Classification
+  status: QUEUED
+  previous_target_gate: ZG-GATE-EXECUTION-PROVENANCE-001
+  assigned_cr_gate: CR46
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-060
+  title: Zeus Immutable Commit Dependency-Closure Qualification
+  status: QUEUED
+  previous_target_gate: ZG-COMMIT-DEPENDENCY-CLOSURE-001
+  assigned_cr_gate: CR46
+  execution_class: SECONDARY_CR_MISSION
+- opportunity_id: ZO-061
+  title: Zeus Qualification Context and Validation Applicability Classification
+  status: QUEUED
+  previous_target_gate: ZG-QUALIFICATION-CONTEXT-APPLICABILITY-001
+  assigned_cr_gate: CR46
+  execution_class: SECONDARY_CR_MISSION
+assignment_count: 21
+unmapped_legacy_assignments: []
+extra_mapping_entries: []
+result: PASS
+register_mutated: false
+cr_gate_contracts_mutated: false

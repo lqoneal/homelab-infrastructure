@@ -1,0 +1,49 @@
+schema_version: 1
+gate_id: CR46
+classification: ORIGINAL_260_TEST_ISOLATED_REPLAY_EXECUTION_AUTHORITY
+authorized_at: '2026-08-11T23:54:56.965997+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+historical_surface_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/ORIGINAL-260-TEST-HISTORICAL-REGRESSION-SURFACE.yaml
+historical_surface:
+  path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/ORIGINAL-260-TEST-HISTORICAL-REGRESSION-SURFACE.txt
+  sha256: 9a1e1ebd08ff69160ed26c066085f239ecb51c494a63b2289492a9cb41250489
+  file_count: 13
+  expected_collection_count: 260
+original_result_reference:
+  passed: 231
+  failed: 29
+  total: 260
+  rq1_failure_count: 13
+  rq2_failure_count: 13
+  rq3_failure_count: 3
+authorized_execution:
+  create_disk_backed_isolated_repository_copy: true
+  temp_root: /data/engineering/tmp
+  set_zeus_testing_1: true
+  verify_13_file_surface_digest: true
+  verify_collection_count_260: true
+  execute_exact_13_file_surface: true
+  capture_full_pytest_output: true
+  capture_all_failed_node_ids: true
+  capture_failed_nodes_by_test_file: true
+  capture_pass_fail_summary: true
+acceptance:
+  execution_scope_must_equal_13_files: true
+  collection_count_must_equal_260_before_execution: true
+  do_not_require_reproduced_failure_count_29: true
+  purpose: RECOVER_ORIGINAL_FAILURE_IDENTITIES_AND_REQUALIFY_REGRESSION_CONTEXT
+production_source_mutation_authorized: false
+test_source_mutation_authorized: false
+live_state_mutation_authorized: false
+stage_authorized: false
+commit_authorized: false
+amend_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+rq2_completion_authorized: false
+rq3_completion_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+stop_boundary: STOP_AFTER_260_TEST_ISOLATED_REPLAY_AND_EXACT_FAILURE_IDENTITY_CAPTURE
+next: EXECUTE_ORIGINAL_260_TEST_ISOLATED_REPLAY_ONLY

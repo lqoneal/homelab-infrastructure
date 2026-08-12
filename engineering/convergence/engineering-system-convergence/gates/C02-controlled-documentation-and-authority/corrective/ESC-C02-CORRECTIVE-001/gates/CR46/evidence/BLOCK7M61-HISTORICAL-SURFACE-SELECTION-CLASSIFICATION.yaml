@@ -1,0 +1,41 @@
+schema_version: 1
+gate_id: CR46
+classification: BLOCK7M61_HISTORICAL_SURFACE_SELECTION_CLASSIFICATION
+classified_at: '2026-08-11T23:54:56.859062+00:00'
+result: PASS
+block_7m61:
+  result: FAIL_CLOSED
+  failure_class: HISTORICAL_SURFACE_SELECTION_MODEL_TOO_BROAD
+  directory_collection_count: 1
+  current_collectable_hyphenated_file_count: 158
+  current_explicit_collection_count: 1414
+  surface_selection_verifier_defect: true
+  test_framework_defect: false
+  historical_surface_delta_established: false
+recovered_historical_surface:
+  source: ZEUS_EXACT_MUTATION_TEST_ALLOWLIST
+  path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/ORIGINAL-260-TEST-HISTORICAL-REGRESSION-SURFACE.txt
+  sha256: 9a1e1ebd08ff69160ed26c066085f239ecb51c494a63b2289492a9cb41250489
+  file_count: 13
+  test_count: 260
+  collection_parity: true
+original_regression:
+  passed: 231
+  failed: 29
+  total: 260
+  failure_families:
+    RQ1: 13
+    RQ2: 13
+    RQ3: 3
+execution:
+  pytest_test_execution: false
+  pytest_collection_only: true
+  rq2_execution: false
+  rq3_execution: false
+  source_mutation: false
+  test_mutation: false
+  stage: false
+  commit: false
+  push: false
+  cr47: false
+next: AUTHOR_ORIGINAL_260_TEST_ISOLATED_REPLAY_EXECUTION_AUTHORITY

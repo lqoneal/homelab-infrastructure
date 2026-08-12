@@ -1,0 +1,40 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ3
+classification: RQ3_CLEAN_GIT_CONTEXT_DERIVATION_AUTHORITY
+authorized_at: '2026-08-12T06:38:34.616479+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+basis: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-CLEAN-WORKTREE-PRECONDITION-CLASSIFICATION.yaml
+authorized_analysis:
+  derive_clean_git_execution_context: true
+  inspect_git_worktree_semantics: true
+  inspect_repository_identity_semantics: true
+  inspect_runtime_repository_identity_derivation: true
+  determine_whether_git_worktree_preserves_required_identity: true
+  determine_whether_clean_detached_worktree_at_qualified_baseline_is_valid: true
+required_preservation:
+  qualified_baseline: fe824c714da35d987cc7454366aa3abaf046cc31
+  git_metadata: true
+  clean_worktree: true
+  canonical_repository_semantics: true
+  rq3_exact_node_count: 10
+  rq3_node_set: UNCHANGED
+  temporary_runtime_state_isolation: true
+  live_cr46_worktree: UNCHANGED
+rq3_test_execution_authorized: false
+rq3_rerun_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_state_mutation_authorized: false
+live_worktree_revert_authorized: false
+live_worktree_stash_authorized: false
+live_worktree_commit_authorized: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+rq3_completion_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: DERIVE_CLEAN_GIT_CONTEXT_PRESERVING_RQ3_REPOSITORY_IDENTITY_SEMANTICS_ONLY

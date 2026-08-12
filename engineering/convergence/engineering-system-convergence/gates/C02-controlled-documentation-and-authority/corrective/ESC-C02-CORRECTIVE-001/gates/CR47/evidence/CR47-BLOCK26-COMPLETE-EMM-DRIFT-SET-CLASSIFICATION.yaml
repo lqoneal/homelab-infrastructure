@@ -1,0 +1,34 @@
+schema_version: "1.0"
+record_type: CR47_BLOCK26_COMPLETE_EMM_DRIFT_SET_CLASSIFICATION
+cr_id: CR47
+result: PASS
+
+block26:
+  canonical_rebind_invoked: true
+  canonical_rebind_completed: false
+  transaction_written: false
+  binding_manifest_reconciled: false
+
+failure:
+  class: INCOMPLETE_AUTHORIZED_EMM_DRIFT_SET
+  rejected_unexplained_source: "scripts/lib/eos/convergence_roadmap.py"
+  canonical_preflight_behavior: FAIL_CLOSED_ON_ANY_UNAUTHORIZED_DRIFT
+
+complete_drift:
+  inventory: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-COMPLETE-EMM-DRIFT-SET.yaml"
+  drift_count: 2
+
+provenance:
+  "scripts/lib/eos/convergence_roadmap.py": CR47_AUTHORIZED_IMPLEMENTATION_OWNER
+  "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md": CR47_CLOSEOUT_DOCUMENT_INDEX
+
+substantive_classification:
+  cr47_implementation_defect_established: false
+  emm_rebind_primitive_defect_established: false
+  incomplete_reconciliation_scope_established: true
+
+preserved:
+  cr47_result: PASS
+  current_item: CR48
+  cr48_executed: false
+  publication_executed: false

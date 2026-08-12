@@ -1,0 +1,155 @@
+schema_version: 1
+gate_id: C02
+baseline: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+entries:
+  - stale_id: C02-S-001
+    path: docs/project/PROJ-0001-PROJECT_STATE.md
+    identity: PROJ-0001
+    field_or_section: lines 129-end, retained pre-convergence project history
+    current_owner: convergence_program frontmatter, lines 19-31
+    stale_claim: Numerous retained sections describe earlier missions, phases, tasks, and resume actions using current/active wording.
+    consumer_impact: Search-based readers and context reconstruction can confuse historical narration with the explicit C02 binding.
+    classification: STALE_HISTORICAL_CONTEXT_IN_CURRENT_RECORD
+    disposition_recommendation: Segregate or consistently label historical sections in a later authorized revision.
+    resolution_owner: Project State owner
+
+  - stale_id: C02-S-002
+    path: docs/project/PHASE-0001-ZEUS-OPERATIONAL-ALPHA-AUTHORITY.md
+    identity: PHASE-0001
+    field_or_section: lines 45-60
+    current_owner: ESC-ROADMAP-001 and PROJ-0001 convergence binding
+    stale_claim: Zeus Operational Alpha remains current authoritative mission and current phase.
+    consumer_impact: Competes with C02 in registry, resume, EOS, and Zeus authority resolution.
+    classification: STALE_ACTIVE_CONTROLLED_AUTHORITY
+    disposition_recommendation: Reconcile lifecycle/currentness only under a later gate.
+    resolution_owner: Engineering Governance
+
+  - stale_id: C02-S-003
+    path: docs/roadmap.md
+    identity: registered legacy publication
+    field_or_section: lines 38-41
+    current_owner: ESC-ROADMAP-001
+    stale_claim: Historical mission body still calls Zeus Operational Alpha current authoritative after lines 7-24 mark ESC current and the remainder historical.
+    consumer_impact: Internal contradiction can be projected as current by readers that skip the disclaimer.
+    classification: STALE_LEGACY_PUBLICATION
+    disposition_recommendation: Preserve history but remove current-state ambiguity in a later gate.
+    resolution_owner: Engineering Governance
+
+  - stale_id: C02-S-004
+    path: docs/architecture.md
+    identity: registered legacy publication
+    field_or_section: infrastructure and platform facts
+    current_owner: current infrastructure records and observed C01 baseline
+    stale_claim: C01 found architecture facts that disagree with current infrastructure observations.
+    consumer_impact: Legacy architecture remains discoverable and may be mistaken for a current baseline.
+    classification: STALE_LEGACY_PUBLICATION
+    disposition_recommendation: Classify, replace, or archive after the owning architecture gate.
+    resolution_owner: Infrastructure Engineering / Engineering Governance
+    evidence_ref: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence/discovery/06-infrastructure-document-candidates.txt
+
+  - stale_id: C02-S-005
+    path: engineering/registry/work-registry.yaml
+    identity: EMP Work Registry revision 86
+    field_or_section: missions 751-807; phase 1042 onward; active work 1294 and 3395 onward
+    current_owner: EMP management state, subordinate to referenced authoritative records
+    stale_claim: Operation Beta BETA-04 and Zeus Operational Alpha remain active, with old active work and a source reference to PROJ-0001 that no longer supports those facts.
+    consumer_impact: engctl registry context presents both as management-current and resume reports authority disagreement.
+    classification: STALE_RUNTIME_CONSUMED_MANAGEMENT_STATE
+    disposition_recommendation: Reconcile source references and management state in C05/C07, not C02.
+    resolution_owner: EMP owner
+
+  - stale_id: C02-S-006
+    path: engineering/missions/operation-beta-current.yaml
+    identity: BETA-04 current-mission record
+    field_or_section: lines 1-8
+    current_owner: Current Project State/ESC roadmap
+    stale_claim: status PUBLISHED_ACTIVE and current Operation Beta mission.
+    consumer_impact: Feeds EOS and Zeus/EMP legacy generation alongside C02.
+    classification: STALE_RUNTIME_CONSUMED_AUTHORITY
+    disposition_recommendation: Reconcile currentness and successor history in later authority gates.
+    resolution_owner: Engineering Governance / Zeus owner
+
+  - stale_id: C02-S-007
+    path: engineering/authority/operation-beta-beta04-activation.yaml
+    identity: BETA-04 activation record
+    field_or_section: mission and authority_chain
+    current_owner: Current Project State/ESC roadmap
+    stale_claim: BETA-04 activation remains the operative authority chain and points through non-controlled engineering/docs publications.
+    consumer_impact: Supplies an apparently published activation to runtime authority resolution.
+    classification: STALE_RUNTIME_CONSUMED_AUTHORITY
+    disposition_recommendation: Preserve evidence and reconcile authority chain in C05-C08.
+    resolution_owner: Engineering Governance
+
+  - stale_id: C02-S-008
+    path: engineering/authority/operational-authority-state.yaml
+    identity: operational authority state
+    field_or_section: missions 68-111; status at line 152
+    current_owner: Current Project State/ESC roadmap and current Git identity
+    stale_claim: Zeus Operational Alpha is operational/active under a pre-ESC repository baseline.
+    consumer_impact: Legacy Zeus/EMP code may treat stale operational state as an active authority input.
+    classification: STALE_RUNTIME_CONSUMED_AUTHORITY
+    disposition_recommendation: Reconcile only under C05-C08 authority.
+    resolution_owner: Zeus / EMP owner
+
+  - stale_id: C02-S-009
+    path: engineering/operations/zeus-operational-alpha-progress.md
+    identity: Zeus OA progress projection
+    field_or_section: lines 4-9, 61-95, and 165-171
+    current_owner: Current Project State/ESC roadmap; authoritative execution evidence for historic OA facts
+    stale_claim: Simultaneously reports global validation pass, OA-08 current/completed, OA-04 current, and OA-01 sole current/not started.
+    consumer_impact: Internally inconsistent progress is cited by authority and execution consumers.
+    classification: STALE_AND_INTERNALLY_CONTRADICTORY_PROJECTION
+    disposition_recommendation: Derive one historical/current view from verified receipts in C05-C08.
+    resolution_owner: Zeus Operations
+
+  - stale_id: C02-S-010
+    path: /data/engineering/eos/state/EOS-STATE.md
+    identity: EOS-STATE projection
+    field_or_section: repository identity, Project State version, mission, phase, registry, WOP
+    current_owner: Git, PROJ-0001, Work Registry, and current execution source records respectively
+    stale_claim: Repository commit 6a26d2e, PROJ-0001@10.3, Zeus OA phase, and legacy WOP state.
+    consumer_impact: EOS status and resume expose a coherent-looking but old platform snapshot.
+    classification: STALE_DERIVED_PROJECTION
+    disposition_recommendation: Synchronize only in C03 after operator review/authorization.
+    resolution_owner: EOS Program
+
+  - stale_id: C02-S-011
+    path: /data/engineering/eos/state/ACTIVE-CHECKPOINT
+    identity: active EOS checkpoint pointer
+    field_or_section: selected checkpoint and checkpoint metadata
+    current_owner: Operator selection; Git owns current repository identity
+    stale_claim: Active checkpoint commit 64394a57015f predates current f2e85d857dc7.
+    consumer_impact: Checkpoint integrity passes while repository/EOS synchronization fails.
+    classification: STALE_DERIVED_RUNTIME_STATE
+    disposition_recommendation: Reconcile in C03; do not refresh in C02.
+    resolution_owner: EOS Program / operator
+
+  - stale_id: C02-S-012
+    path: services/eens/docs/EENS_EMP_Update_Checkpoint.md
+    identity: EENS planning checkpoint
+    field_or_section: lines 34-92
+    current_owner: SPEC-0009 and services/eens README
+    stale_claim: Lists remaining work before Operational Alpha and instructs promotion to OA although EENS is now described as implemented and qualified.
+    consumer_impact: Misstates EENS maturity to EMP/EENS planners.
+    classification: STALE_SUBSYSTEM_PLANNING_RECORD
+    disposition_recommendation: Mark historical or supersede under C09 authority.
+    resolution_owner: EENS owner
+
+  - stale_id: C02-S-013
+    path: engineering/execution/execution-interface.yaml
+    identity: active legacy mission-contract selection
+    field_or_section: active candidate and WOP digest binding
+    current_owner: Current operator-submitted WOP/ESC execution authority
+    stale_claim: Selects MC-MISSION-CONTRACT-PUBLICATION-001 and GH-ZEUS-OA-PROGRESSIVE-001 from a pre-ESC baseline.
+    consumer_impact: execution snapshot fails with INVALID_CONTRACT and wop.digest mismatch.
+    classification: STALE_EXECUTION_AUTHORITY
+    disposition_recommendation: Reconcile in C06; do not repair in C02.
+    resolution_owner: Engineering Governance / execution controller owner
+
+summary:
+  stale_entries: 13
+  runtime_consumed: 9
+  controlled_records: 2
+  registered_legacy_publications: 2
+  derived_or_management_records: 9
+  correction_performed: false

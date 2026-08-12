@@ -1,0 +1,34 @@
+schema_version: 1
+gate_id: CR46
+classification: PRODUCTION_AUTHORITATIVE_SOURCE_RESOLVER_CONTRACT_MISMATCH
+classified_at: '2026-08-11T22:23:58.018598+00:00'
+rq1_status:
+  test_count: 13
+  passed: 8
+  failed: 5
+  common_failure: active publication pointer did not resolve to the new artifact
+writer_contract:
+  runtime_pointer_resolver: runtime_path(repository, authority, ACTIVE_PUBLICATION_POINTER)
+reader_contract:
+  current_pointer_resolver: repository / AUTHORITY_RUNTIME_RELATIVE_PATH / ACTIVE_PUBLICATION_POINTER
+  uses_runtime_path: false
+contract_split_established: true
+rq1_fixture_defect_remaining: false
+rq1_test_harness_defect_remaining: false
+production_source_defect_established: true
+production_source_mutation_required: true
+candidate_source_surface:
+- scripts/lib/emp/authority_resolution.py
+production_source_mutation_authorized: false
+rq1_test_mutation_authorized: false
+rq1_retry_authorized: false
+rq2_execution_authorized: false
+rq3_execution_authorized: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+result: PASS
+next_action: DERIVE_BOUNDED_AUTHORITATIVE_SOURCE_RUNTIME_RESOLVER_CORRECTIVE_AUTHORITY

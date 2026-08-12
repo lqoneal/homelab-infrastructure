@@ -1,0 +1,26 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ3
+classification: RQ3_CANONICAL_REPOSITORY_IDENTITY_CONTEXT_EXECUTION_BOUNDARY
+derived_at: '2026-08-12T00:33:11.271976+00:00'
+result: PASS
+validator:
+  path: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py
+  sha256: f08e2f66e1afc0c39dd7121a0301c8096be5b208aea0c0ad21a53e78f0b90568
+  historical_failure_reference_count: 3
+  isolated_replay_failure_count: 10
+required_execution_context:
+  canonical_repository_identity: true
+  canonical_git_repository_context: true
+  preserve_live_repository_content: true
+  live_repository_mutation: false
+  temporary_runtime_state_isolation: true
+node_scope:
+  historical_reference_failure_count: 3
+  exact_original_node_ids_persisted: false
+  derive_context_correct_candidate_nodes_before_execution: true
+  test_execution_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_state_mutation_authorized: false
+resolution: CANONICAL_REPOSITORY_IDENTITY_REQUIRED_NODE_SCOPE_DERIVATION_REQUIRED

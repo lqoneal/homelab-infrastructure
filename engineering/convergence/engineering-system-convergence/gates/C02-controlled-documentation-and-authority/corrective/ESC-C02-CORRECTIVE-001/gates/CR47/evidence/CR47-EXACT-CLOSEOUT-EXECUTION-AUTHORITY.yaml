@@ -1,0 +1,46 @@
+schema_version: "1.0"
+record_type: CR47_EXACT_CLOSEOUT_EXECUTION_AUTHORITY
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  closeout_boundary: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-EXACT-CLOSEOUT-RESULT-SUMMARY-STATE-BOUNDARY.yaml"
+  closeout_boundary_sha256: "05785537169579f948553d9fbb07f5b146413373c923c4df513738e4464ec5c0"
+  secondary_qualification: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-SECONDARY-IMPLEMENTATION-QUALIFICATION.yaml"
+  pytest_recovery_reconciliation: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-PYTEST-EXECUTION-RECOVERY-RECONCILIATION.yaml"
+  prior_closeout_authority: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-CLOSEOUT-AUTHORITY-AFTER-SECONDARY-QUALIFICATION.yaml"
+
+authorized:
+  write_cr47_result: true
+  write_cr47_summary: true
+  reconcile_corrective_state: true
+  reconcile_parent_state: true
+  reconcile_project_state: true
+  rebind_binding_manifest: true
+  run_final_read_only_roadmap_validation: true
+
+required_terminal_state:
+  cr47_result: PASS
+  cr47_summary_present: true
+  last_completed_item: CR47
+  current_item: CR48
+  parent_current_gate: C02
+  project_current_gate: C02
+  roadmap_validation: PASS
+  binding_manifest_validation: PASS
+  cr48_executed: false
+
+not_authorized:
+  execute_cr48: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+  advance_parent_gate_beyond_c02: true
+
+stop_after:
+  cr47_closeout_and_state_reconciliation: true
+
+next_authorized_action_after_success:
+  DERIVE_POST_CR47_PUBLICATION_AND_CR48_SUCCESSOR_AUTHORITY_ONLY

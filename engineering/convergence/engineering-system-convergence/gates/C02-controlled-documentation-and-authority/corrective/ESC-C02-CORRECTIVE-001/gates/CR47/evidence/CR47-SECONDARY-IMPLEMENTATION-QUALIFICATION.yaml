@@ -1,0 +1,44 @@
+schema_version: "1.0"
+record_type: CR47_SECONDARY_IMPLEMENTATION_QUALIFICATION
+cr_id: CR47
+result: PASS
+
+implementation:
+  source_path: "scripts/lib/eos/convergence_roadmap.py"
+  source_sha256: "205f95746fdcb7933905aed3308e46f992767ddfb58d1f3877670c70b39d30b4"
+  test_path: "scripts/tests/test-convergence-roadmap.py"
+  test_sha256: "6aaf549a1951ce6f787170b75153370f14c1c27cb700554e8573274da15fc797"
+
+scope:
+  secondary_mission_count: 10
+  projection_function_count: 6
+  qualified_test_node_count: 10
+
+qualification:
+  implementation_authority: PASS
+  exact_allowlist: PASS
+  per_node_test_requalification: PASS
+  passed_node_count: 10
+  failed_node_count: 0
+  timeout_node_count: 0
+  cleanup_failure_count: 0
+  external_workspace_leakage: false
+
+defect_classification:
+  implementation_defect_established: false
+  test_contract_defect_established: false
+  test_harness_topology_defect_established: true
+  topology_defect_recovered: true
+
+prohibitions_preserved:
+  source_mutation_after_implementation: false
+  test_mutation_after_implementation: false
+  cr47_result_write: false
+  cr47_state_advancement: false
+  cr48_execution: false
+  stage: false
+  commit: false
+  push: false
+  eos_sync: false
+
+next_action: DERIVE_CR47_CLOSEOUT_AUTHORITY

@@ -1,0 +1,43 @@
+schema_version: 1
+gate_id: CR46
+classification: BLOCK7M84_CORRECTED_RECONCILIATION_RETRY_AUTHORITY
+authorized_at: '2026-08-12T06:57:01.902073+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+basis: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/BLOCK7M84-RECONCILIATION-SCHEMA-VERIFIER-DEFECT.yaml
+authorized:
+  read_actual_rq1_boundary_schema: true
+  read_actual_rq2_reconciliation_schema: true
+  read_actual_aggregate_scope_schema: true
+  reconcile_rq1_pass: true
+  reconcile_rq2_pass: true
+  reconcile_rq3_pass: true
+  write_aggregate_reconciliation: true
+  derive_cr46_completion_authority_if_and_only_if_all_three_requalifications_pass: true
+required:
+  rq1: PASS
+  rq1_rerun_required: false
+  rq2: PASS
+  rq2_rerun_required: false
+  rq2_cleanup_recovered: true
+  rq3: PASS
+  rq3_rerun_required: false
+  rq2_execution_scope_qualified: true
+  rq3_execution_scope_qualified: true
+  unresolved_failure_family_count: 0
+prohibited:
+  pytest: true
+  rq1_rerun: true
+  rq2_rerun: true
+  rq3_rerun: true
+  source_mutation: true
+  test_mutation: true
+  live_state_mutation: true
+  stage: true
+  commit: true
+  push: true
+  eos_synchronization: true
+  cr46_completion_execution: true
+  cr47_execution: true
+stop_after: CORRECTED_RECONCILIATION_AND_CR46_COMPLETION_AUTHORITY_DERIVATION
+next: RETRY_RQ1_RQ2_RQ3_RECONCILIATION_USING_ACTUAL_SCHEMAS_ONLY

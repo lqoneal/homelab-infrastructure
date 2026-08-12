@@ -1,0 +1,84 @@
+failed_node_count: 60
+failed_validator_count: 7
+validators:
+- path: scripts/tests/test-admission-freshness-and-supersession.py
+  failed_count: 3
+  failed_nodes:
+  - scripts/tests/test-admission-freshness-and-supersession.py::AdmissionFreshnessTests::test_new_admission_binds_submission_and_current_baseline
+  - scripts/tests/test-admission-freshness-and-supersession.py::AdmissionFreshnessTests::test_replacement_records_lineage_without_mutating_history
+  - scripts/tests/test-admission-freshness-and-supersession.py::AdmissionFreshnessTests::test_stale_admission_cannot_start_execution
+- path: scripts/tests/test-authority-publication.py
+  failed_count: 6
+  failed_nodes:
+  - scripts/tests/test-authority-publication.py::PublicationQualificationTests::test_active_pointer_failure_modes_reject_invalid_state
+  - scripts/tests/test-authority-publication.py::PublicationQualificationTests::test_bad_baseline_prevents_activation
+  - scripts/tests/test-authority-publication.py::PublicationQualificationTests::test_complete_signed_publication_activates_and_runtime_accepts
+  - scripts/tests/test-authority-publication.py::PublicationQualificationTests::test_runtime_never_self_enables_staged_candidate
+  - scripts/tests/test-authority-publication.py::PublicationQualificationTests::test_runtime_publication_pointer_is_integrity_checked
+  - scripts/tests/test-authority-publication.py::PublicationQualificationTests::test_signed_revocation_disables_without_deleting_history
+- path: scripts/tests/test-authority-resolution-runtime.py
+  failed_count: 7
+  failed_nodes:
+  - scripts/tests/test-authority-resolution-runtime.py::AuthorityResolutionRuntimeTests::test_incomplete_source_state_fails_closed
+  - scripts/tests/test-authority-resolution-runtime.py::AuthorityResolutionRuntimeTests::test_operational_cli_has_no_manual_authority_inputs
+  - scripts/tests/test-authority-resolution-runtime.py::AuthorityResolutionRuntimeTests::test_operational_wop_uses_only_resolved_values
+  - scripts/tests/test-authority-resolution-runtime.py::AuthorityResolutionRuntimeTests::test_owner_lifecycle_scope_and_authentication_fail_closed
+  - scripts/tests/test-authority-resolution-runtime.py::AuthorityResolutionRuntimeTests::test_placeholder_and_tampered_seal_fail_closed
+  - scripts/tests/test-authority-resolution-runtime.py::AuthorityResolutionRuntimeTests::test_repository_and_authority_disagreement_fail_closed
+  - scripts/tests/test-authority-resolution-runtime.py::AuthorityResolutionRuntimeTests::test_resolves_and_seals_complete_bundle
+- path: scripts/tests/test-convergence-roadmap.py
+  failed_count: 15
+  failed_nodes:
+  - scripts/tests/test-convergence-roadmap.py::ConvergenceRoadmapTests::test_live_evaluator_qualifies_esc_and_all_required_gates
+  - scripts/tests/test-convergence-roadmap.py::test_cr18_evaluate_pending_review_is_not_corruption
+  - scripts/tests/test-convergence-roadmap.py::test_cr18_prospective_c03_plus_qualification_remains_pass
+  - scripts/tests/test-convergence-roadmap.py::test_cr19_resume_projection_exposes_pending_review_read_only
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_missing_dependency_blocks
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_never_executes_or_advances
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_ready_for_manual_execution
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_resource_blocked_is_distinct
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_live_shape_is_consistent
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_missing_dependency_is_distinct
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_never_executes_or_advances
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_successor_execution_must_be_prohibited
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo013_live_composite_is_ready
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo013_never_executes_or_reconciles
+  - scripts/tests/test-convergence-roadmap.py::test_cr23_zo013_reports_manual_blocker
+- path: scripts/tests/test-operational-alpha-status.py
+  failed_count: 2
+  failed_nodes:
+  - scripts/tests/test-operational-alpha-status.py::OperationalAlphaStatusTests::test_cli_resolves_current_operation_beta_authority
+  - scripts/tests/test-operational-alpha-status.py::OperationalAlphaStatusTests::test_dispatcher_status_uses_convergence_prerequisites_not_pmct
+- path: scripts/tests/test-wop-lifecycle-manager.py
+  failed_count: 17
+  failed_nodes:
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_all_six_transitions_reach_ready_deterministically
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_approval_lifecycle_is_immutable_and_fail_closed
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_blocked_and_deferred_queue_entries_are_not_selected
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_cli_validates_and_resumes_persisted_state
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_evidence_tracking_does_not_qualify
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_expired_reservation_blocks_ready
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_invalid_skip_reverse_and_dispatch_fail_closed
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_persistence_is_deterministic
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_prerequisites_fail_closed
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_queue_dependency_graph_controls_selection
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_queue_selection_is_deterministic
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_reconciliation_is_planning_only
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_required_approval_blocks_authorized_state
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_reservation_is_planning_only_and_must_match
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_restart_and_resume_reconstruct_identically
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_tampered_event_is_rejected_on_restart
+  - scripts/tests/test-wop-lifecycle-manager.py::WopLifecycleManagerTests::test_wop_dependencies_fail_closed
+- path: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py
+  failed_count: 10
+  failed_nodes:
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_all_transaction_identifiers_resolve_same_record
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_digest_projection_and_state_digest_are_deterministic
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_duplicate_submission_is_idempotent
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_healthy_submission_creates_one_snapshot_and_receipt_backed_dispatch
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_incomplete_provider_selection_and_launch_ack_are_not_authoritative
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_projection_persistence_failure_blocks_submission_before_success
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_provider_output_cannot_advance_without_receipts
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_receiptless_dispatch_rolls_back_and_preserves_evidence
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_recovery_does_not_invoke_execution_and_requires_new_snapshot
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_replayed_dispatch_repairs_missing_derived_projections_without_resubmission

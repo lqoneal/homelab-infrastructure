@@ -1,0 +1,52 @@
+schema_version: 1
+gate_id: CR44M1
+classification: CR44M1_TERMINAL_CLOSEOUT_AUTHORITY
+result: AUTHORIZED_NOT_EXECUTED
+authorized_at: '2026-08-11T16:15:06.693617+00:00'
+failed_commit: 8b651126a19ae5bab21ea5036cd410514e22ee0c
+amended_commit: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+parent_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+qualified_candidate_commit: 7c1ca16b490c68b5506f9bb4cc76e566ca8a8c0a
+qualified_candidate_tree: 7f343db98b1e61f864d5fbb117ba3bf295f01024
+resolved_blocker: CR43_COMMIT_DEPENDENCY_CLOSURE_FAILURE
+stop_boundary_qualification:
+  observed: STOP_AFTER_CR44M1
+  semantic_class: STOP_AFTER_CURRENT_RECOVERY_ITEM
+  accepted: true
+  block19_false_negative: true
+  gate_contract_mutation_required: false
+qualification:
+  pre_amend_candidate_qualification: PASS
+  exact_live_four_path_amend: PASS
+  post_amend_immutable_qualification: PASS
+  dependency_closure_repaired: true
+  single_commit_semantics_preserved: true
+  non_repair_content_preserved: true
+  zo061_registered: true
+authorized_closeout_mutations:
+- Write CR44M1 terminal qualification evidence
+- Write CR44M1 RESULT.yaml
+- Reconcile CR44M1 command evidence if required
+- Reconcile corrective HISTORY.md
+- Remove CR43_COMMIT_DEPENDENCY_CLOSURE_FAILURE from corrective STATE.yaml
+- Restore current_item from CR44M1 to CR44
+- Set next_authorized_action to CR44-only continuation
+prohibited_closeout_effects:
+- Execute CR44
+- Write CR44 RESULT.yaml
+- Execute CR45
+- Create another commit
+- Amend current commit again
+- Push
+- Publish
+- Synchronize EOS
+- Modify repaired production files
+- Execute ZO-061 implementation
+return_semantics:
+  current_item_after_closeout: CR44
+  cr44_execution_in_same_transaction: false
+  cr45_execution: false
+  push: false
+  publication: false
+  eos_synchronization: false
+next_action: EXECUTE_CR44M1_TERMINAL_CLOSEOUT_ONLY

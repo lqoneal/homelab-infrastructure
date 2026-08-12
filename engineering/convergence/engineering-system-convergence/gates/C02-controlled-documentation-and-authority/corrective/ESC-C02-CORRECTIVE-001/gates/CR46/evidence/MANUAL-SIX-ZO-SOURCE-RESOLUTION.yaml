@@ -1,0 +1,3672 @@
+schema_version: 1
+gate_id: CR46
+classification: CR46_MANUAL_SIX_ZO_SOURCE_RESOLUTION
+resolved_at: '2026-08-11T19:40:37.129993+00:00'
+execution_order:
+- ZO-026
+- ZO-024
+- ZO-059
+- ZO-061
+- ZO-060
+- ZO-058
+implementation_model: MANUAL_BOUNDED_COMMAND_BLOCK
+zo_contracts:
+- stage: 1
+  opportunity_id: ZO-026
+  title: Zeus Projection Scope and Qualification Instrument Selection
+  objective: Expose projection scope explicitly and allow Zeus to select a canonical qualification primitive appropriate to
+    parent roadmap, nested corrective, result lifecycle, or authority scope.
+  module_paths:
+  - scripts/lib/emp/agent_qualification.py
+  - scripts/lib/emp/canonical_mission_lifecycle.py
+  - scripts/lib/emp/mission_verification_controller.py
+  test_paths:
+  - scripts/tests/test-convergence-roadmap.py
+  - scripts/tests/test-convergence-runtime.py
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py
+  module_surfaces:
+  - path: scripts/lib/emp/agent_qualification.py
+    symbols:
+    - name: AgentQualificationError
+      kind: ClassDef
+      line: 21
+      end_line: 22
+    - name: _canonical
+      kind: FunctionDef
+      line: 25
+      end_line: 26
+    - name: _sha
+      kind: FunctionDef
+      line: 29
+      end_line: 30
+    - name: _atomic
+      kind: FunctionDef
+      line: 33
+      end_line: 48
+    - name: _record_root
+      kind: FunctionDef
+      line: 51
+      end_line: 52
+    - name: _fingerprint
+      kind: FunctionDef
+      line: 55
+      end_line: 66
+    - name: _binding
+      kind: FunctionDef
+      line: 69
+      end_line: 108
+    - name: qualification_inputs
+      kind: FunctionDef
+      line: 111
+      end_line: 159
+    - name: candidate
+      kind: FunctionDef
+      line: 162
+      end_line: 189
+    - name: _load_records
+      kind: FunctionDef
+      line: 192
+      end_line: 207
+    - name: registry
+      kind: FunctionDef
+      line: 210
+      end_line: 247
+    - name: select
+      kind: FunctionDef
+      line: 250
+      end_line: 297
+    - name: qualify
+      kind: FunctionDef
+      line: 300
+      end_line: 363
+    - name: revoke
+      kind: FunctionDef
+      line: 366
+      end_line: 399
+    - name: runtime_registry_path
+      kind: FunctionDef
+      line: 402
+      end_line: 413
+  - path: scripts/lib/emp/canonical_mission_lifecycle.py
+    symbols:
+    - name: CanonicalMissionLifecycleError
+      kind: ClassDef
+      line: 31
+      end_line: 32
+    - name: _digest
+      kind: FunctionDef
+      line: 35
+      end_line: 36
+    - name: _sha
+      kind: FunctionDef
+      line: 39
+      end_line: 40
+    - name: _atomic
+      kind: FunctionDef
+      line: 43
+      end_line: 54
+    - name: derive_linkage
+      kind: FunctionDef
+      line: 57
+      end_line: 94
+    - name: _stage1_candidates
+      kind: FunctionDef
+      line: 97
+      end_line: 112
+    - name: discover
+      kind: FunctionDef
+      line: 115
+      end_line: 139
+    - name: view
+      kind: FunctionDef
+      line: 142
+      end_line: 158
+    - name: activate
+      kind: FunctionDef
+      line: 161
+      end_line: 217
+    - name: mission_list
+      kind: FunctionDef
+      line: 220
+      end_line: 235
+  - path: scripts/lib/emp/mission_verification_controller.py
+    symbols:
+    - name: MissionVerificationError
+      kind: ClassDef
+      line: 30
+      end_line: 37
+    - name: _load
+      kind: FunctionDef
+      line: 40
+      end_line: 47
+    - name: _one
+      kind: FunctionDef
+      line: 50
+      end_line: 62
+    - name: _safe_path
+      kind: FunctionDef
+      line: 65
+      end_line: 75
+    - name: _artifact
+      kind: FunctionDef
+      line: 78
+      end_line: 83
+    - name: _git
+      kind: FunctionDef
+      line: 86
+      end_line: 87
+    - name: _repository
+      kind: FunctionDef
+      line: 90
+      end_line: 112
+    - name: _authority
+      kind: FunctionDef
+      line: 115
+      end_line: 130
+    - name: _wop
+      kind: FunctionDef
+      line: 133
+      end_line: 146
+    - name: verify
+      kind: FunctionDef
+      line: 149
+      end_line: 512
+    - name: render
+      kind: FunctionDef
+      line: 515
+      end_line: 521
+  test_surfaces:
+  - path: scripts/tests/test-convergence-roadmap.py
+    symbols:
+    - name: ConvergenceRoadmapTests
+      kind: ClassDef
+      line: 29
+      end_line: 373
+    - name: test_cr17_status_projection_awaiting_operator_review
+      kind: FunctionDef
+      line: 377
+      end_line: 389
+    - name: test_cr17_status_projection_current_without_result
+      kind: FunctionDef
+      line: 392
+      end_line: 469
+    - name: test_cr18_evaluate_pending_review_is_not_corruption
+      kind: FunctionDef
+      line: 472
+      end_line: 486
+    - name: test_cr18_historical_c00_c02_provenance_remains_not_applicable
+      kind: FunctionDef
+      line: 489
+      end_line: 504
+    - name: test_cr18_prospective_c03_plus_qualification_remains_pass
+      kind: FunctionDef
+      line: 507
+      end_line: 523
+    - name: test_cr18_evaluation_is_read_only
+      kind: FunctionDef
+      line: 526
+      end_line: 556
+    - name: test_cr19_resume_projection_exposes_pending_review_read_only
+      kind: FunctionDef
+      line: 559
+      end_line: 577
+    - name: test_cr20_operator_review_accept_reject_replay_and_fail_closed
+      kind: FunctionDef
+      line: 652
+      end_line: 812
+    - name: test_cr20_review_receipt_does_not_advance_live_roadmap
+      kind: FunctionDef
+      line: 815
+      end_line: 853
+    - name: test_cr21_advancement_success_and_replay
+      kind: FunctionDef
+      line: 971
+      end_line: 1053
+    - name: test_cr21_advancement_rejects_bad_bindings
+      kind: FunctionDef
+      line: 1056
+      end_line: 1141
+    - name: test_cr21_conflicting_committed_replay_fails_closed
+      kind: FunctionDef
+      line: 1145
+      end_line: 1191
+    - name: test_cr21_interrupted_transaction_recovers_exactly
+      kind: FunctionDef
+      line: 1194
+      end_line: 1285
+    - name: test_cr21_interrupted_after_state_promotion_finalizes_receipt
+      kind: FunctionDef
+      line: 1289
+      end_line: 1375
+    - name: test_cr21_missing_authoritative_successor_fails_closed
+      kind: FunctionDef
+      line: 1379
+      end_line: 1449
+    - name: test_cr21_conflicting_successor_dependency_fails_closed
+      kind: FunctionDef
+      line: 1452
+      end_line: 1525
+    - name: test_cr21_advancement_never_mutates_live_repository
+      kind: FunctionDef
+      line: 1529
+      end_line: 1574
+    - name: test_cr22_machine_classification_contract
+      kind: FunctionDef
+      line: 1578
+      end_line: 1672
+    - name: test_cr22_unrecoverable_partial_state_fails_closed
+      kind: FunctionDef
+      line: 1675
+      end_line: 1774
+    - name: test_cr22_recovery_classification_contract
+      kind: FunctionDef
+      line: 1777
+      end_line: 1843
+    - name: test_cr23_advancement_provenance_contract
+      kind: FunctionDef
+      line: 1847
+      end_line: 1938
+    - name: test_cr23_operator_review_provenance_contract
+      kind: FunctionDef
+      line: 1941
+      end_line: 2021
+    - name: test_cr23_provenance_replay_is_identity_stable
+      kind: FunctionDef
+      line: 2024
+      end_line: 2078
+    - name: test_cr23_review_replay_is_identity_stable
+      kind: FunctionDef
+      line: 2081
+      end_line: 2135
+    - name: test_cr23_real_parent_state_never_mutated_by_isolated_provenance
+      kind: FunctionDef
+      line: 2138
+      end_line: 2185
+    - name: test_cr23_zo005_emm_awareness_bound_clean
+      kind: FunctionDef
+      line: 2189
+      end_line: 2223
+    - name: test_cr23_zo005_emm_awareness_bound_drifted
+      kind: FunctionDef
+      line: 2226
+      end_line: 2274
+    - name: test_cr23_zo005_emm_awareness_unbound
+      kind: FunctionDef
+      line: 2277
+      end_line: 2309
+    - name: test_cr23_zo005_emm_awareness_missing_bound_source
+      kind: FunctionDef
+      line: 2312
+      end_line: 2373
+    - name: test_cr23_zo005_emm_awareness_is_read_only
+      kind: FunctionDef
+      line: 2376
+      end_line: 2422
+    - name: test_cr23_zo005_does_not_call_rebind
+      kind: FunctionDef
+      line: 2425
+      end_line: 2462
+    - name: test_cr20_operator_review_cli_accept_replay_and_conflict
+      kind: FunctionDef
+      line: 2465
+      end_line: 2580
+    - name: test_cr20_fresh_projection_recovers_persisted_operator_decision
+      kind: FunctionDef
+      line: 2584
+      end_line: 2625
+    - name: test_cr20_fresh_projection_recovers_rejected_decision
+      kind: FunctionDef
+      line: 2629
+      end_line: 2670
+    - name: test_cr20_tampered_persisted_receipt_fails_closed
+      kind: FunctionDef
+      line: 2673
+      end_line: 2721
+    - name: test_cr20_conflicting_persisted_receipts_fail_closed
+      kind: FunctionDef
+      line: 2724
+      end_line: 2782
+    - name: test_current_gate_valid_result_derives_pending_review
+      kind: FunctionDef
+      line: 2814
+      end_line: 2871
+    - name: test_current_gate_result_does_not_imply_acceptance_or_completion
+      kind: FunctionDef
+      line: 2874
+      end_line: 2929
+    - name: test_cr23_emm_rebind_exact_authorized_mutation
+      kind: FunctionDef
+      line: 3003
+      end_line: 3058
+    - name: test_cr23_emm_rebind_exact_replay
+      kind: FunctionDef
+      line: 3061
+      end_line: 3098
+    - name: test_cr23_emm_rebind_conflicting_replay_fails_closed
+      kind: FunctionDef
+      line: 3101
+      end_line: 3139
+    - name: test_cr23_emm_rebind_unauthorized_drift_fails_closed
+      kind: FunctionDef
+      line: 3142
+      end_line: 3195
+    - name: test_cr23_emm_rebind_unbound_source_fails_closed
+      kind: FunctionDef
+      line: 3198
+      end_line: 3239
+    - name: test_cr23_emm_rebind_requires_exact_drift_set
+      kind: FunctionDef
+      line: 3242
+      end_line: 3294
+    - name: test_cr23_zo010_bound_clean
+      kind: FunctionDef
+      line: 3299
+      end_line: 3365
+    - name: test_cr23_zo010_bound_drifted
+      kind: FunctionDef
+      line: 3368
+      end_line: 3442
+    - name: test_cr23_zo010_unbound_existing_source
+      kind: FunctionDef
+      line: 3445
+      end_line: 3482
+    - name: test_cr23_zo010_unbound_missing_source
+      kind: FunctionDef
+      line: 3485
+      end_line: 3518
+    - name: test_cr23_zo010_bound_missing_source
+      kind: FunctionDef
+      line: 3521
+      end_line: 3569
+    - name: test_cr23_zo010_introspection_is_byte_read_only
+      kind: FunctionDef
+      line: 3572
+      end_line: 3625
+    - name: test_cr23_zo011_resource_preflight_ready
+      kind: FunctionDef
+      line: 3629
+      end_line: 3678
+    - name: test_cr23_zo011_resource_preflight_blocked
+      kind: FunctionDef
+      line: 3681
+      end_line: 3729
+    - name: test_cr23_zo011_missing_workspace_parent_resolves_existing_ancestor
+      kind: FunctionDef
+      line: 3732
+      end_line: 3765
+    - name: test_cr23_zo011_required_reserve_is_conservative
+      kind: FunctionDef
+      line: 3768
+      end_line: 3810
+    - name: test_cr23_zo011_resource_preflight_is_read_only
+      kind: FunctionDef
+      line: 3813
+      end_line: 3851
+    - name: test_cr23_zo011_never_classifies_resource_block_as_semantic_failure
+      kind: FunctionDef
+      line: 3854
+      end_line: 3898
+    - name: test_cr23_zo009_successor_action_resolves_exactly_one
+      kind: FunctionDef
+      line: 4046
+      end_line: 4104
+    - name: test_cr23_zo009_missing_successor_action_fails_closed
+      kind: FunctionDef
+      line: 4107
+      end_line: 4173
+    - name: test_cr23_zo009_action_surface_is_structured_resume_only
+      kind: FunctionDef
+      line: 4176
+      end_line: 4223
+    - name: test_cr23_zo009_missing_successor_is_canonically_rejected
+      kind: FunctionDef
+      line: 4225
+      end_line: 4280
+    - name: test_cr23_zo009_terminal_gate_exposes_no_successor_action
+      kind: FunctionDef
+      line: 4282
+      end_line: 4333
+    - name: test_cr23_zo009_terminal_successor_is_canonically_rejected
+      kind: FunctionDef
+      line: 4335
+      end_line: 4392
+    - name: test_cr23_zo009_projection_is_read_only
+      kind: FunctionDef
+      line: 4394
+      end_line: 4459
+    - name: test_cr23_zo006_current_gate_projects_executable
+      kind: FunctionDef
+      line: 4464
+      end_line: 4500
+    - name: test_cr23_zo006_completed_gate_is_not_executable
+      kind: FunctionDef
+      line: 4503
+      end_line: 4534
+    - name: test_cr23_zo006_future_gate_is_not_current
+      kind: FunctionDef
+      line: 4537
+      end_line: 4571
+    - name: test_cr23_zo006_blocked_gate_projects_blocked
+      kind: FunctionDef
+      line: 4574
+      end_line: 4624
+    - name: test_cr23_zo006_consumes_zo009_successor_authority
+      kind: FunctionDef
+      line: 4627
+      end_line: 4674
+    - name: test_cr23_zo006_projection_is_read_only
+      kind: FunctionDef
+      line: 4677
+      end_line: 4734
+    - name: test_cr23_zo006_never_executes_successor
+      kind: FunctionDef
+      line: 4737
+      end_line: 4790
+    - name: test_cr23_zo007_ready_for_manual_execution
+      kind: FunctionDef
+      line: 4804
+      end_line: 4849
+    - name: test_cr23_zo007_wrong_current_item_blocks
+      kind: FunctionDef
+      line: 4852
+      end_line: 4913
+    - name: test_cr23_zo007_missing_dependency_blocks
+      kind: FunctionDef
+      line: 4916
+      end_line: 4963
+    - name: test_cr23_zo007_parent_not_executable_blocks
+      kind: FunctionDef
+      line: 4966
+      end_line: 5024
+    - name: test_cr23_zo007_resource_blocked_is_distinct
+      kind: FunctionDef
+      line: 5027
+      end_line: 5084
+    - name: test_cr23_zo007_contract_identity_mismatch_fails_closed
+      kind: FunctionDef
+      line: 5087
+      end_line: 5142
+    - name: test_cr23_zo007_projection_is_read_only
+      kind: FunctionDef
+      line: 5145
+      end_line: 5218
+    - name: test_cr23_zo007_never_executes_or_advances
+      kind: FunctionDef
+      line: 5221
+      end_line: 5301
+    - name: test_cr23_zo008_live_shape_is_consistent
+      kind: FunctionDef
+      line: 5321
+      end_line: 5371
+    - name: test_cr23_zo008_parent_gate_mismatch_is_distinct
+      kind: FunctionDef
+      line: 5374
+      end_line: 5410
+    - name: test_cr23_zo008_nested_current_item_mismatch_blocks
+      kind: FunctionDef
+      line: 5413
+      end_line: 5470
+    - name: test_cr23_zo008_missing_dependency_is_distinct
+      kind: FunctionDef
+      line: 5473
+      end_line: 5514
+    - name: test_cr23_zo008_parent_authority_mismatch_is_distinct
+      kind: FunctionDef
+      line: 5517
+      end_line: 5572
+    - name: test_cr23_zo008_successor_execution_must_be_prohibited
+      kind: FunctionDef
+      line: 5575
+      end_line: 5628
+    - name: test_cr23_zo008_projection_is_read_only
+      kind: FunctionDef
+      line: 5631
+      end_line: 5700
+    - name: test_cr23_zo008_never_executes_or_advances
+      kind: FunctionDef
+      line: 5703
+      end_line: 5783
+    - name: test_cr23_zo013_live_composite_is_ready
+      kind: FunctionDef
+      line: 5818
+      end_line: 5859
+    - name: test_cr23_zo013_reports_exact_emm_blocker
+      kind: FunctionDef
+      line: 5862
+      end_line: 5916
+    - name: test_cr23_zo013_reports_exact_resource_blocker
+      kind: FunctionDef
+      line: 5919
+      end_line: 5974
+    - name: test_cr23_zo013_reports_nested_blocker
+      kind: FunctionDef
+      line: 5977
+      end_line: 6032
+    - name: test_cr23_zo013_reports_manual_blocker
+      kind: FunctionDef
+      line: 6035
+      end_line: 6090
+    - name: test_cr23_zo013_preserves_multiple_distinct_blockers
+      kind: FunctionDef
+      line: 6093
+      end_line: 6168
+    - name: test_cr23_zo013_projection_is_read_only
+      kind: FunctionDef
+      line: 6171
+      end_line: 6238
+    - name: test_cr23_zo013_never_executes_or_reconciles
+      kind: FunctionDef
+      line: 6241
+      end_line: 6319
+  - path: scripts/tests/test-convergence-runtime.py
+    symbols:
+    - name: ConvergenceRuntimeTests
+      kind: ClassDef
+      line: 21
+      end_line: 361
+  - path: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py
+    symbols:
+    - name: ZDCL02ContinuityQualificationTests
+      kind: ClassDef
+      line: 17
+      end_line: 200
+  source_resolution: PASS
+- stage: 2
+  opportunity_id: ZO-024
+  title: Zeus Result Freshness and Provenance Projection
+  objective: Expose the canonical freshness and provenance relationship between a result, active gate state, authority surface,
+    and lifecycle revision.
+  module_paths:
+  - scripts/lib/emp/stage1_runtime.py
+  - scripts/lib/emp/admission_supersession.py
+  - scripts/lib/emp/authority_publication.py
+  test_paths:
+  - scripts/tests/test-convergence-roadmap.py
+  - scripts/tests/test-admission-freshness-and-supersession.py
+  - scripts/tests/test-authority-resolution-runtime.py
+  module_surfaces:
+  - path: scripts/lib/emp/stage1_runtime.py
+    symbols:
+    - name: Stage1Error
+      kind: ClassDef
+      line: 26
+      end_line: 31
+    - name: _canonical
+      kind: FunctionDef
+      line: 69
+      end_line: 70
+    - name: _digest
+      kind: FunctionDef
+      line: 73
+      end_line: 74
+    - name: _dispatch_receipt_valid
+      kind: FunctionDef
+      line: 77
+      end_line: 113
+    - name: _authority_snapshot
+      kind: FunctionDef
+      line: 116
+      end_line: 143
+    - name: _utc
+      kind: FunctionDef
+      line: 146
+      end_line: 150
+    - name: _atomic_json
+      kind: FunctionDef
+      line: 153
+      end_line: 165
+    - name: Stage1Store
+      kind: ClassDef
+      line: 168
+      end_line: 259
+    - name: EensPublisher
+      kind: ClassDef
+      line: 262
+      end_line: 287
+    - name: _package_root
+      kind: FunctionDef
+      line: 291
+      end_line: 315
+    - name: _first
+      kind: FunctionDef
+      line: 318
+      end_line: 320
+    - name: _load_mapping
+      kind: FunctionDef
+      line: 323
+      end_line: 330
+    - name: validate_package
+      kind: FunctionDef
+      line: 333
+      end_line: 425
+    - name: Stage1Runtime
+      kind: ClassDef
+      line: 428
+      end_line: 1518
+  - path: scripts/lib/emp/admission_supersession.py
+    symbols:
+    - name: AdmissionSupersessionError
+      kind: ClassDef
+      line: 19
+      end_line: 20
+    - name: _authoritative_stage1_package_digest
+      kind: FunctionDef
+      line: 23
+      end_line: 40
+    - name: _validate_lineage_package_digest
+      kind: FunctionDef
+      line: 43
+      end_line: 63
+    - name: _authoritative_stage1_source_digest
+      kind: FunctionDef
+      line: 66
+      end_line: 83
+    - name: _authoritative_stage1_authority_snapshot_digest
+      kind: FunctionDef
+      line: 86
+      end_line: 112
+    - name: _validate_lineage_authority_snapshot_digest
+      kind: FunctionDef
+      line: 115
+      end_line: 132
+    - name: _validate_execution_authority_snapshot_digest
+      kind: FunctionDef
+      line: 135
+      end_line: 143
+    - name: _validate_lineage_source_digest
+      kind: FunctionDef
+      line: 146
+      end_line: 160
+    - name: _validate_execution_source_digest
+      kind: FunctionDef
+      line: 163
+      end_line: 170
+    - name: _git
+      kind: FunctionDef
+      line: 184
+      end_line: 188
+    - name: _git_bool
+      kind: FunctionDef
+      line: 191
+      end_line: 192
+    - name: classify_transition
+      kind: FunctionDef
+      line: 195
+      end_line: 218
+    - name: _successor_id
+      kind: FunctionDef
+      line: 221
+      end_line: 227
+    - name: _receipt
+      kind: FunctionDef
+      line: 230
+      end_line: 237
+    - name: _atomic_json_updates
+      kind: FunctionDef
+      line: 240
+      end_line: 261
+    - name: resolve_for_start
+      kind: FunctionDef
+      line: 264
+      end_line: 358
+    - name: resolve_for_resume
+      kind: FunctionDef
+      line: 361
+      end_line: 438
+  - path: scripts/lib/emp/authority_publication.py
+    symbols:
+    - name: AuthorityPublicationError
+      kind: ClassDef
+      line: 33
+      end_line: 34
+    - name: publication_template
+      kind: FunctionDef
+      line: 117
+      end_line: 127
+    - name: validate_publication_payload
+      kind: FunctionDef
+      line: 130
+      end_line: 154
+    - name: prepare_publication_envelope
+      kind: FunctionDef
+      line: 157
+      end_line: 183
+    - name: commissioning_status
+      kind: FunctionDef
+      line: 186
+      end_line: 349
+    - name: trust_policy_path
+      kind: FunctionDef
+      line: 352
+      end_line: 357
+    - name: load_mapping
+      kind: FunctionDef
+      line: 360
+      end_line: 367
+    - name: envelope_material
+      kind: FunctionDef
+      line: 370
+      end_line: 371
+    - name: envelope_identifier
+      kind: FunctionDef
+      line: 374
+      end_line: 380
+    - name: OwnerTrustPolicy
+      kind: ClassDef
+      line: 383
+      end_line: 436
+    - name: AuthorityPublicationFramework
+      kind: ClassDef
+      line: 439
+      end_line: 1246
+    - name: hashlib_sha256
+      kind: FunctionDef
+      line: 1249
+      end_line: 1252
+  test_surfaces:
+  - path: scripts/tests/test-convergence-roadmap.py
+    symbols:
+    - name: ConvergenceRoadmapTests
+      kind: ClassDef
+      line: 29
+      end_line: 373
+    - name: test_cr17_status_projection_awaiting_operator_review
+      kind: FunctionDef
+      line: 377
+      end_line: 389
+    - name: test_cr17_status_projection_current_without_result
+      kind: FunctionDef
+      line: 392
+      end_line: 469
+    - name: test_cr18_evaluate_pending_review_is_not_corruption
+      kind: FunctionDef
+      line: 472
+      end_line: 486
+    - name: test_cr18_historical_c00_c02_provenance_remains_not_applicable
+      kind: FunctionDef
+      line: 489
+      end_line: 504
+    - name: test_cr18_prospective_c03_plus_qualification_remains_pass
+      kind: FunctionDef
+      line: 507
+      end_line: 523
+    - name: test_cr18_evaluation_is_read_only
+      kind: FunctionDef
+      line: 526
+      end_line: 556
+    - name: test_cr19_resume_projection_exposes_pending_review_read_only
+      kind: FunctionDef
+      line: 559
+      end_line: 577
+    - name: test_cr20_operator_review_accept_reject_replay_and_fail_closed
+      kind: FunctionDef
+      line: 652
+      end_line: 812
+    - name: test_cr20_review_receipt_does_not_advance_live_roadmap
+      kind: FunctionDef
+      line: 815
+      end_line: 853
+    - name: test_cr21_advancement_success_and_replay
+      kind: FunctionDef
+      line: 971
+      end_line: 1053
+    - name: test_cr21_advancement_rejects_bad_bindings
+      kind: FunctionDef
+      line: 1056
+      end_line: 1141
+    - name: test_cr21_conflicting_committed_replay_fails_closed
+      kind: FunctionDef
+      line: 1145
+      end_line: 1191
+    - name: test_cr21_interrupted_transaction_recovers_exactly
+      kind: FunctionDef
+      line: 1194
+      end_line: 1285
+    - name: test_cr21_interrupted_after_state_promotion_finalizes_receipt
+      kind: FunctionDef
+      line: 1289
+      end_line: 1375
+    - name: test_cr21_missing_authoritative_successor_fails_closed
+      kind: FunctionDef
+      line: 1379
+      end_line: 1449
+    - name: test_cr21_conflicting_successor_dependency_fails_closed
+      kind: FunctionDef
+      line: 1452
+      end_line: 1525
+    - name: test_cr21_advancement_never_mutates_live_repository
+      kind: FunctionDef
+      line: 1529
+      end_line: 1574
+    - name: test_cr22_machine_classification_contract
+      kind: FunctionDef
+      line: 1578
+      end_line: 1672
+    - name: test_cr22_unrecoverable_partial_state_fails_closed
+      kind: FunctionDef
+      line: 1675
+      end_line: 1774
+    - name: test_cr22_recovery_classification_contract
+      kind: FunctionDef
+      line: 1777
+      end_line: 1843
+    - name: test_cr23_advancement_provenance_contract
+      kind: FunctionDef
+      line: 1847
+      end_line: 1938
+    - name: test_cr23_operator_review_provenance_contract
+      kind: FunctionDef
+      line: 1941
+      end_line: 2021
+    - name: test_cr23_provenance_replay_is_identity_stable
+      kind: FunctionDef
+      line: 2024
+      end_line: 2078
+    - name: test_cr23_review_replay_is_identity_stable
+      kind: FunctionDef
+      line: 2081
+      end_line: 2135
+    - name: test_cr23_real_parent_state_never_mutated_by_isolated_provenance
+      kind: FunctionDef
+      line: 2138
+      end_line: 2185
+    - name: test_cr23_zo005_emm_awareness_bound_clean
+      kind: FunctionDef
+      line: 2189
+      end_line: 2223
+    - name: test_cr23_zo005_emm_awareness_bound_drifted
+      kind: FunctionDef
+      line: 2226
+      end_line: 2274
+    - name: test_cr23_zo005_emm_awareness_unbound
+      kind: FunctionDef
+      line: 2277
+      end_line: 2309
+    - name: test_cr23_zo005_emm_awareness_missing_bound_source
+      kind: FunctionDef
+      line: 2312
+      end_line: 2373
+    - name: test_cr23_zo005_emm_awareness_is_read_only
+      kind: FunctionDef
+      line: 2376
+      end_line: 2422
+    - name: test_cr23_zo005_does_not_call_rebind
+      kind: FunctionDef
+      line: 2425
+      end_line: 2462
+    - name: test_cr20_operator_review_cli_accept_replay_and_conflict
+      kind: FunctionDef
+      line: 2465
+      end_line: 2580
+    - name: test_cr20_fresh_projection_recovers_persisted_operator_decision
+      kind: FunctionDef
+      line: 2584
+      end_line: 2625
+    - name: test_cr20_fresh_projection_recovers_rejected_decision
+      kind: FunctionDef
+      line: 2629
+      end_line: 2670
+    - name: test_cr20_tampered_persisted_receipt_fails_closed
+      kind: FunctionDef
+      line: 2673
+      end_line: 2721
+    - name: test_cr20_conflicting_persisted_receipts_fail_closed
+      kind: FunctionDef
+      line: 2724
+      end_line: 2782
+    - name: test_current_gate_valid_result_derives_pending_review
+      kind: FunctionDef
+      line: 2814
+      end_line: 2871
+    - name: test_current_gate_result_does_not_imply_acceptance_or_completion
+      kind: FunctionDef
+      line: 2874
+      end_line: 2929
+    - name: test_cr23_emm_rebind_exact_authorized_mutation
+      kind: FunctionDef
+      line: 3003
+      end_line: 3058
+    - name: test_cr23_emm_rebind_exact_replay
+      kind: FunctionDef
+      line: 3061
+      end_line: 3098
+    - name: test_cr23_emm_rebind_conflicting_replay_fails_closed
+      kind: FunctionDef
+      line: 3101
+      end_line: 3139
+    - name: test_cr23_emm_rebind_unauthorized_drift_fails_closed
+      kind: FunctionDef
+      line: 3142
+      end_line: 3195
+    - name: test_cr23_emm_rebind_unbound_source_fails_closed
+      kind: FunctionDef
+      line: 3198
+      end_line: 3239
+    - name: test_cr23_emm_rebind_requires_exact_drift_set
+      kind: FunctionDef
+      line: 3242
+      end_line: 3294
+    - name: test_cr23_zo010_bound_clean
+      kind: FunctionDef
+      line: 3299
+      end_line: 3365
+    - name: test_cr23_zo010_bound_drifted
+      kind: FunctionDef
+      line: 3368
+      end_line: 3442
+    - name: test_cr23_zo010_unbound_existing_source
+      kind: FunctionDef
+      line: 3445
+      end_line: 3482
+    - name: test_cr23_zo010_unbound_missing_source
+      kind: FunctionDef
+      line: 3485
+      end_line: 3518
+    - name: test_cr23_zo010_bound_missing_source
+      kind: FunctionDef
+      line: 3521
+      end_line: 3569
+    - name: test_cr23_zo010_introspection_is_byte_read_only
+      kind: FunctionDef
+      line: 3572
+      end_line: 3625
+    - name: test_cr23_zo011_resource_preflight_ready
+      kind: FunctionDef
+      line: 3629
+      end_line: 3678
+    - name: test_cr23_zo011_resource_preflight_blocked
+      kind: FunctionDef
+      line: 3681
+      end_line: 3729
+    - name: test_cr23_zo011_missing_workspace_parent_resolves_existing_ancestor
+      kind: FunctionDef
+      line: 3732
+      end_line: 3765
+    - name: test_cr23_zo011_required_reserve_is_conservative
+      kind: FunctionDef
+      line: 3768
+      end_line: 3810
+    - name: test_cr23_zo011_resource_preflight_is_read_only
+      kind: FunctionDef
+      line: 3813
+      end_line: 3851
+    - name: test_cr23_zo011_never_classifies_resource_block_as_semantic_failure
+      kind: FunctionDef
+      line: 3854
+      end_line: 3898
+    - name: test_cr23_zo009_successor_action_resolves_exactly_one
+      kind: FunctionDef
+      line: 4046
+      end_line: 4104
+    - name: test_cr23_zo009_missing_successor_action_fails_closed
+      kind: FunctionDef
+      line: 4107
+      end_line: 4173
+    - name: test_cr23_zo009_action_surface_is_structured_resume_only
+      kind: FunctionDef
+      line: 4176
+      end_line: 4223
+    - name: test_cr23_zo009_missing_successor_is_canonically_rejected
+      kind: FunctionDef
+      line: 4225
+      end_line: 4280
+    - name: test_cr23_zo009_terminal_gate_exposes_no_successor_action
+      kind: FunctionDef
+      line: 4282
+      end_line: 4333
+    - name: test_cr23_zo009_terminal_successor_is_canonically_rejected
+      kind: FunctionDef
+      line: 4335
+      end_line: 4392
+    - name: test_cr23_zo009_projection_is_read_only
+      kind: FunctionDef
+      line: 4394
+      end_line: 4459
+    - name: test_cr23_zo006_current_gate_projects_executable
+      kind: FunctionDef
+      line: 4464
+      end_line: 4500
+    - name: test_cr23_zo006_completed_gate_is_not_executable
+      kind: FunctionDef
+      line: 4503
+      end_line: 4534
+    - name: test_cr23_zo006_future_gate_is_not_current
+      kind: FunctionDef
+      line: 4537
+      end_line: 4571
+    - name: test_cr23_zo006_blocked_gate_projects_blocked
+      kind: FunctionDef
+      line: 4574
+      end_line: 4624
+    - name: test_cr23_zo006_consumes_zo009_successor_authority
+      kind: FunctionDef
+      line: 4627
+      end_line: 4674
+    - name: test_cr23_zo006_projection_is_read_only
+      kind: FunctionDef
+      line: 4677
+      end_line: 4734
+    - name: test_cr23_zo006_never_executes_successor
+      kind: FunctionDef
+      line: 4737
+      end_line: 4790
+    - name: test_cr23_zo007_ready_for_manual_execution
+      kind: FunctionDef
+      line: 4804
+      end_line: 4849
+    - name: test_cr23_zo007_wrong_current_item_blocks
+      kind: FunctionDef
+      line: 4852
+      end_line: 4913
+    - name: test_cr23_zo007_missing_dependency_blocks
+      kind: FunctionDef
+      line: 4916
+      end_line: 4963
+    - name: test_cr23_zo007_parent_not_executable_blocks
+      kind: FunctionDef
+      line: 4966
+      end_line: 5024
+    - name: test_cr23_zo007_resource_blocked_is_distinct
+      kind: FunctionDef
+      line: 5027
+      end_line: 5084
+    - name: test_cr23_zo007_contract_identity_mismatch_fails_closed
+      kind: FunctionDef
+      line: 5087
+      end_line: 5142
+    - name: test_cr23_zo007_projection_is_read_only
+      kind: FunctionDef
+      line: 5145
+      end_line: 5218
+    - name: test_cr23_zo007_never_executes_or_advances
+      kind: FunctionDef
+      line: 5221
+      end_line: 5301
+    - name: test_cr23_zo008_live_shape_is_consistent
+      kind: FunctionDef
+      line: 5321
+      end_line: 5371
+    - name: test_cr23_zo008_parent_gate_mismatch_is_distinct
+      kind: FunctionDef
+      line: 5374
+      end_line: 5410
+    - name: test_cr23_zo008_nested_current_item_mismatch_blocks
+      kind: FunctionDef
+      line: 5413
+      end_line: 5470
+    - name: test_cr23_zo008_missing_dependency_is_distinct
+      kind: FunctionDef
+      line: 5473
+      end_line: 5514
+    - name: test_cr23_zo008_parent_authority_mismatch_is_distinct
+      kind: FunctionDef
+      line: 5517
+      end_line: 5572
+    - name: test_cr23_zo008_successor_execution_must_be_prohibited
+      kind: FunctionDef
+      line: 5575
+      end_line: 5628
+    - name: test_cr23_zo008_projection_is_read_only
+      kind: FunctionDef
+      line: 5631
+      end_line: 5700
+    - name: test_cr23_zo008_never_executes_or_advances
+      kind: FunctionDef
+      line: 5703
+      end_line: 5783
+    - name: test_cr23_zo013_live_composite_is_ready
+      kind: FunctionDef
+      line: 5818
+      end_line: 5859
+    - name: test_cr23_zo013_reports_exact_emm_blocker
+      kind: FunctionDef
+      line: 5862
+      end_line: 5916
+    - name: test_cr23_zo013_reports_exact_resource_blocker
+      kind: FunctionDef
+      line: 5919
+      end_line: 5974
+    - name: test_cr23_zo013_reports_nested_blocker
+      kind: FunctionDef
+      line: 5977
+      end_line: 6032
+    - name: test_cr23_zo013_reports_manual_blocker
+      kind: FunctionDef
+      line: 6035
+      end_line: 6090
+    - name: test_cr23_zo013_preserves_multiple_distinct_blockers
+      kind: FunctionDef
+      line: 6093
+      end_line: 6168
+    - name: test_cr23_zo013_projection_is_read_only
+      kind: FunctionDef
+      line: 6171
+      end_line: 6238
+    - name: test_cr23_zo013_never_executes_or_reconciles
+      kind: FunctionDef
+      line: 6241
+      end_line: 6319
+  - path: scripts/tests/test-admission-freshness-and-supersession.py
+    symbols:
+    - name: AdmissionFreshnessTests
+      kind: ClassDef
+      line: 36
+      end_line: 99
+  - path: scripts/tests/test-authority-resolution-runtime.py
+    symbols:
+    - name: AuthorityResolutionRuntimeTests
+      kind: ClassDef
+      line: 165
+      end_line: 350
+  source_resolution: PASS
+- stage: 3
+  opportunity_id: ZO-059
+  title: Zeus Gate Definition and Execution Provenance Classification
+  objective: Allow Zeus to distinguish prospective gate-definition presence from actual execution, result-backed completion,
+    current-gate activity, and successor execution so roadmap artifacts cannot be misclassified as lifecycle progress.
+  module_paths:
+  - scripts/lib/emp/codex_adapter.py
+  - scripts/lib/emp/stage1_runtime.py
+  - scripts/lib/emp/authority_publication.py
+  test_paths:
+  - scripts/tests/test-convergence-roadmap.py
+  - scripts/tests/test-operational-alpha-status.py
+  - scripts/tests/test-roadmap-lifecycle.py
+  module_surfaces:
+  - path: scripts/lib/emp/codex_adapter.py
+    symbols:
+    - name: CodexAdapterError
+      kind: ClassDef
+      line: 44
+      end_line: 49
+    - name: _execution_verification_error
+      kind: FunctionDef
+      line: 52
+      end_line: 59
+    - name: _runtime
+      kind: FunctionDef
+      line: 62
+      end_line: 65
+    - name: _session_path
+      kind: FunctionDef
+      line: 68
+      end_line: 74
+    - name: _load
+      kind: FunctionDef
+      line: 77
+      end_line: 86
+    - name: _save
+      kind: FunctionDef
+      line: 89
+      end_line: 94
+    - name: _append_event
+      kind: FunctionDef
+      line: 97
+      end_line: 116
+    - name: _authority
+      kind: FunctionDef
+      line: 119
+      end_line: 127
+    - name: _package
+      kind: FunctionDef
+      line: 130
+      end_line: 181
+    - name: _existing
+      kind: FunctionDef
+      line: 184
+      end_line: 197
+    - name: _all_sessions
+      kind: FunctionDef
+      line: 200
+      end_line: 203
+    - name: current_session
+      kind: FunctionDef
+      line: 206
+      end_line: 208
+    - name: resolve_session_binding
+      kind: FunctionDef
+      line: 211
+      end_line: 262
+    - name: runtime_liveness
+      kind: FunctionDef
+      line: 265
+      end_line: 298
+    - name: _liveness_fingerprint
+      kind: FunctionDef
+      line: 301
+      end_line: 318
+    - name: _provider_liveness_snapshot
+      kind: FunctionDef
+      line: 321
+      end_line: 336
+    - name: supersede_session
+      kind: FunctionDef
+      line: 339
+      end_line: 459
+    - name: reconcile_session_history
+      kind: FunctionDef
+      line: 462
+      end_line: 582
+    - name: _process_alive
+      kind: FunctionDef
+      line: 585
+      end_line: 592
+    - name: _provider_control_ready
+      kind: FunctionDef
+      line: 595
+      end_line: 606
+    - name: _startup_paths
+      kind: FunctionDef
+      line: 609
+      end_line: 626
+    - name: _marker_provider_pid
+      kind: FunctionDef
+      line: 629
+      end_line: 638
+    - name: _prepare_codex_home
+      kind: FunctionDef
+      line: 641
+      end_line: 651
+    - name: _launch_handshake
+      kind: FunctionDef
+      line: 654
+      end_line: 679
+    - name: session_identifier
+      kind: FunctionDef
+      line: 682
+      end_line: 686
+    - name: _result
+      kind: FunctionDef
+      line: 689
+      end_line: 728
+    - name: status
+      kind: FunctionDef
+      line: 731
+      end_line: 758
+    - name: _active_path
+      kind: FunctionDef
+      line: 761
+      end_line: 768
+    - name: _monitoring_path
+      kind: FunctionDef
+      line: 771
+      end_line: 778
+    - name: _read_active
+      kind: FunctionDef
+      line: 781
+      end_line: 790
+    - name: _write_projection
+      kind: FunctionDef
+      line: 793
+      end_line: 799
+    - name: _control_request
+      kind: FunctionDef
+      line: 802
+      end_line: 837
+    - name: begin_controlled_mission_work
+      kind: FunctionDef
+      line: 840
+      end_line: 953
+    - name: start
+      kind: FunctionDef
+      line: 956
+      end_line: 1024
+    - name: resume
+      kind: FunctionDef
+      line: 1027
+      end_line: 1035
+    - name: stop
+      kind: FunctionDef
+      line: 1038
+      end_line: 1051
+    - name: logs
+      kind: FunctionDef
+      line: 1054
+      end_line: 1059
+    - name: artifacts
+      kind: FunctionDef
+      line: 1062
+      end_line: 1063
+    - name: verify
+      kind: FunctionDef
+      line: 1066
+      end_line: 1075
+  - path: scripts/lib/emp/stage1_runtime.py
+    symbols:
+    - name: Stage1Error
+      kind: ClassDef
+      line: 26
+      end_line: 31
+    - name: _canonical
+      kind: FunctionDef
+      line: 69
+      end_line: 70
+    - name: _digest
+      kind: FunctionDef
+      line: 73
+      end_line: 74
+    - name: _dispatch_receipt_valid
+      kind: FunctionDef
+      line: 77
+      end_line: 113
+    - name: _authority_snapshot
+      kind: FunctionDef
+      line: 116
+      end_line: 143
+    - name: _utc
+      kind: FunctionDef
+      line: 146
+      end_line: 150
+    - name: _atomic_json
+      kind: FunctionDef
+      line: 153
+      end_line: 165
+    - name: Stage1Store
+      kind: ClassDef
+      line: 168
+      end_line: 259
+    - name: EensPublisher
+      kind: ClassDef
+      line: 262
+      end_line: 287
+    - name: _package_root
+      kind: FunctionDef
+      line: 291
+      end_line: 315
+    - name: _first
+      kind: FunctionDef
+      line: 318
+      end_line: 320
+    - name: _load_mapping
+      kind: FunctionDef
+      line: 323
+      end_line: 330
+    - name: validate_package
+      kind: FunctionDef
+      line: 333
+      end_line: 425
+    - name: Stage1Runtime
+      kind: ClassDef
+      line: 428
+      end_line: 1518
+  - path: scripts/lib/emp/authority_publication.py
+    symbols:
+    - name: AuthorityPublicationError
+      kind: ClassDef
+      line: 33
+      end_line: 34
+    - name: publication_template
+      kind: FunctionDef
+      line: 117
+      end_line: 127
+    - name: validate_publication_payload
+      kind: FunctionDef
+      line: 130
+      end_line: 154
+    - name: prepare_publication_envelope
+      kind: FunctionDef
+      line: 157
+      end_line: 183
+    - name: commissioning_status
+      kind: FunctionDef
+      line: 186
+      end_line: 349
+    - name: trust_policy_path
+      kind: FunctionDef
+      line: 352
+      end_line: 357
+    - name: load_mapping
+      kind: FunctionDef
+      line: 360
+      end_line: 367
+    - name: envelope_material
+      kind: FunctionDef
+      line: 370
+      end_line: 371
+    - name: envelope_identifier
+      kind: FunctionDef
+      line: 374
+      end_line: 380
+    - name: OwnerTrustPolicy
+      kind: ClassDef
+      line: 383
+      end_line: 436
+    - name: AuthorityPublicationFramework
+      kind: ClassDef
+      line: 439
+      end_line: 1246
+    - name: hashlib_sha256
+      kind: FunctionDef
+      line: 1249
+      end_line: 1252
+  test_surfaces:
+  - path: scripts/tests/test-convergence-roadmap.py
+    symbols:
+    - name: ConvergenceRoadmapTests
+      kind: ClassDef
+      line: 29
+      end_line: 373
+    - name: test_cr17_status_projection_awaiting_operator_review
+      kind: FunctionDef
+      line: 377
+      end_line: 389
+    - name: test_cr17_status_projection_current_without_result
+      kind: FunctionDef
+      line: 392
+      end_line: 469
+    - name: test_cr18_evaluate_pending_review_is_not_corruption
+      kind: FunctionDef
+      line: 472
+      end_line: 486
+    - name: test_cr18_historical_c00_c02_provenance_remains_not_applicable
+      kind: FunctionDef
+      line: 489
+      end_line: 504
+    - name: test_cr18_prospective_c03_plus_qualification_remains_pass
+      kind: FunctionDef
+      line: 507
+      end_line: 523
+    - name: test_cr18_evaluation_is_read_only
+      kind: FunctionDef
+      line: 526
+      end_line: 556
+    - name: test_cr19_resume_projection_exposes_pending_review_read_only
+      kind: FunctionDef
+      line: 559
+      end_line: 577
+    - name: test_cr20_operator_review_accept_reject_replay_and_fail_closed
+      kind: FunctionDef
+      line: 652
+      end_line: 812
+    - name: test_cr20_review_receipt_does_not_advance_live_roadmap
+      kind: FunctionDef
+      line: 815
+      end_line: 853
+    - name: test_cr21_advancement_success_and_replay
+      kind: FunctionDef
+      line: 971
+      end_line: 1053
+    - name: test_cr21_advancement_rejects_bad_bindings
+      kind: FunctionDef
+      line: 1056
+      end_line: 1141
+    - name: test_cr21_conflicting_committed_replay_fails_closed
+      kind: FunctionDef
+      line: 1145
+      end_line: 1191
+    - name: test_cr21_interrupted_transaction_recovers_exactly
+      kind: FunctionDef
+      line: 1194
+      end_line: 1285
+    - name: test_cr21_interrupted_after_state_promotion_finalizes_receipt
+      kind: FunctionDef
+      line: 1289
+      end_line: 1375
+    - name: test_cr21_missing_authoritative_successor_fails_closed
+      kind: FunctionDef
+      line: 1379
+      end_line: 1449
+    - name: test_cr21_conflicting_successor_dependency_fails_closed
+      kind: FunctionDef
+      line: 1452
+      end_line: 1525
+    - name: test_cr21_advancement_never_mutates_live_repository
+      kind: FunctionDef
+      line: 1529
+      end_line: 1574
+    - name: test_cr22_machine_classification_contract
+      kind: FunctionDef
+      line: 1578
+      end_line: 1672
+    - name: test_cr22_unrecoverable_partial_state_fails_closed
+      kind: FunctionDef
+      line: 1675
+      end_line: 1774
+    - name: test_cr22_recovery_classification_contract
+      kind: FunctionDef
+      line: 1777
+      end_line: 1843
+    - name: test_cr23_advancement_provenance_contract
+      kind: FunctionDef
+      line: 1847
+      end_line: 1938
+    - name: test_cr23_operator_review_provenance_contract
+      kind: FunctionDef
+      line: 1941
+      end_line: 2021
+    - name: test_cr23_provenance_replay_is_identity_stable
+      kind: FunctionDef
+      line: 2024
+      end_line: 2078
+    - name: test_cr23_review_replay_is_identity_stable
+      kind: FunctionDef
+      line: 2081
+      end_line: 2135
+    - name: test_cr23_real_parent_state_never_mutated_by_isolated_provenance
+      kind: FunctionDef
+      line: 2138
+      end_line: 2185
+    - name: test_cr23_zo005_emm_awareness_bound_clean
+      kind: FunctionDef
+      line: 2189
+      end_line: 2223
+    - name: test_cr23_zo005_emm_awareness_bound_drifted
+      kind: FunctionDef
+      line: 2226
+      end_line: 2274
+    - name: test_cr23_zo005_emm_awareness_unbound
+      kind: FunctionDef
+      line: 2277
+      end_line: 2309
+    - name: test_cr23_zo005_emm_awareness_missing_bound_source
+      kind: FunctionDef
+      line: 2312
+      end_line: 2373
+    - name: test_cr23_zo005_emm_awareness_is_read_only
+      kind: FunctionDef
+      line: 2376
+      end_line: 2422
+    - name: test_cr23_zo005_does_not_call_rebind
+      kind: FunctionDef
+      line: 2425
+      end_line: 2462
+    - name: test_cr20_operator_review_cli_accept_replay_and_conflict
+      kind: FunctionDef
+      line: 2465
+      end_line: 2580
+    - name: test_cr20_fresh_projection_recovers_persisted_operator_decision
+      kind: FunctionDef
+      line: 2584
+      end_line: 2625
+    - name: test_cr20_fresh_projection_recovers_rejected_decision
+      kind: FunctionDef
+      line: 2629
+      end_line: 2670
+    - name: test_cr20_tampered_persisted_receipt_fails_closed
+      kind: FunctionDef
+      line: 2673
+      end_line: 2721
+    - name: test_cr20_conflicting_persisted_receipts_fail_closed
+      kind: FunctionDef
+      line: 2724
+      end_line: 2782
+    - name: test_current_gate_valid_result_derives_pending_review
+      kind: FunctionDef
+      line: 2814
+      end_line: 2871
+    - name: test_current_gate_result_does_not_imply_acceptance_or_completion
+      kind: FunctionDef
+      line: 2874
+      end_line: 2929
+    - name: test_cr23_emm_rebind_exact_authorized_mutation
+      kind: FunctionDef
+      line: 3003
+      end_line: 3058
+    - name: test_cr23_emm_rebind_exact_replay
+      kind: FunctionDef
+      line: 3061
+      end_line: 3098
+    - name: test_cr23_emm_rebind_conflicting_replay_fails_closed
+      kind: FunctionDef
+      line: 3101
+      end_line: 3139
+    - name: test_cr23_emm_rebind_unauthorized_drift_fails_closed
+      kind: FunctionDef
+      line: 3142
+      end_line: 3195
+    - name: test_cr23_emm_rebind_unbound_source_fails_closed
+      kind: FunctionDef
+      line: 3198
+      end_line: 3239
+    - name: test_cr23_emm_rebind_requires_exact_drift_set
+      kind: FunctionDef
+      line: 3242
+      end_line: 3294
+    - name: test_cr23_zo010_bound_clean
+      kind: FunctionDef
+      line: 3299
+      end_line: 3365
+    - name: test_cr23_zo010_bound_drifted
+      kind: FunctionDef
+      line: 3368
+      end_line: 3442
+    - name: test_cr23_zo010_unbound_existing_source
+      kind: FunctionDef
+      line: 3445
+      end_line: 3482
+    - name: test_cr23_zo010_unbound_missing_source
+      kind: FunctionDef
+      line: 3485
+      end_line: 3518
+    - name: test_cr23_zo010_bound_missing_source
+      kind: FunctionDef
+      line: 3521
+      end_line: 3569
+    - name: test_cr23_zo010_introspection_is_byte_read_only
+      kind: FunctionDef
+      line: 3572
+      end_line: 3625
+    - name: test_cr23_zo011_resource_preflight_ready
+      kind: FunctionDef
+      line: 3629
+      end_line: 3678
+    - name: test_cr23_zo011_resource_preflight_blocked
+      kind: FunctionDef
+      line: 3681
+      end_line: 3729
+    - name: test_cr23_zo011_missing_workspace_parent_resolves_existing_ancestor
+      kind: FunctionDef
+      line: 3732
+      end_line: 3765
+    - name: test_cr23_zo011_required_reserve_is_conservative
+      kind: FunctionDef
+      line: 3768
+      end_line: 3810
+    - name: test_cr23_zo011_resource_preflight_is_read_only
+      kind: FunctionDef
+      line: 3813
+      end_line: 3851
+    - name: test_cr23_zo011_never_classifies_resource_block_as_semantic_failure
+      kind: FunctionDef
+      line: 3854
+      end_line: 3898
+    - name: test_cr23_zo009_successor_action_resolves_exactly_one
+      kind: FunctionDef
+      line: 4046
+      end_line: 4104
+    - name: test_cr23_zo009_missing_successor_action_fails_closed
+      kind: FunctionDef
+      line: 4107
+      end_line: 4173
+    - name: test_cr23_zo009_action_surface_is_structured_resume_only
+      kind: FunctionDef
+      line: 4176
+      end_line: 4223
+    - name: test_cr23_zo009_missing_successor_is_canonically_rejected
+      kind: FunctionDef
+      line: 4225
+      end_line: 4280
+    - name: test_cr23_zo009_terminal_gate_exposes_no_successor_action
+      kind: FunctionDef
+      line: 4282
+      end_line: 4333
+    - name: test_cr23_zo009_terminal_successor_is_canonically_rejected
+      kind: FunctionDef
+      line: 4335
+      end_line: 4392
+    - name: test_cr23_zo009_projection_is_read_only
+      kind: FunctionDef
+      line: 4394
+      end_line: 4459
+    - name: test_cr23_zo006_current_gate_projects_executable
+      kind: FunctionDef
+      line: 4464
+      end_line: 4500
+    - name: test_cr23_zo006_completed_gate_is_not_executable
+      kind: FunctionDef
+      line: 4503
+      end_line: 4534
+    - name: test_cr23_zo006_future_gate_is_not_current
+      kind: FunctionDef
+      line: 4537
+      end_line: 4571
+    - name: test_cr23_zo006_blocked_gate_projects_blocked
+      kind: FunctionDef
+      line: 4574
+      end_line: 4624
+    - name: test_cr23_zo006_consumes_zo009_successor_authority
+      kind: FunctionDef
+      line: 4627
+      end_line: 4674
+    - name: test_cr23_zo006_projection_is_read_only
+      kind: FunctionDef
+      line: 4677
+      end_line: 4734
+    - name: test_cr23_zo006_never_executes_successor
+      kind: FunctionDef
+      line: 4737
+      end_line: 4790
+    - name: test_cr23_zo007_ready_for_manual_execution
+      kind: FunctionDef
+      line: 4804
+      end_line: 4849
+    - name: test_cr23_zo007_wrong_current_item_blocks
+      kind: FunctionDef
+      line: 4852
+      end_line: 4913
+    - name: test_cr23_zo007_missing_dependency_blocks
+      kind: FunctionDef
+      line: 4916
+      end_line: 4963
+    - name: test_cr23_zo007_parent_not_executable_blocks
+      kind: FunctionDef
+      line: 4966
+      end_line: 5024
+    - name: test_cr23_zo007_resource_blocked_is_distinct
+      kind: FunctionDef
+      line: 5027
+      end_line: 5084
+    - name: test_cr23_zo007_contract_identity_mismatch_fails_closed
+      kind: FunctionDef
+      line: 5087
+      end_line: 5142
+    - name: test_cr23_zo007_projection_is_read_only
+      kind: FunctionDef
+      line: 5145
+      end_line: 5218
+    - name: test_cr23_zo007_never_executes_or_advances
+      kind: FunctionDef
+      line: 5221
+      end_line: 5301
+    - name: test_cr23_zo008_live_shape_is_consistent
+      kind: FunctionDef
+      line: 5321
+      end_line: 5371
+    - name: test_cr23_zo008_parent_gate_mismatch_is_distinct
+      kind: FunctionDef
+      line: 5374
+      end_line: 5410
+    - name: test_cr23_zo008_nested_current_item_mismatch_blocks
+      kind: FunctionDef
+      line: 5413
+      end_line: 5470
+    - name: test_cr23_zo008_missing_dependency_is_distinct
+      kind: FunctionDef
+      line: 5473
+      end_line: 5514
+    - name: test_cr23_zo008_parent_authority_mismatch_is_distinct
+      kind: FunctionDef
+      line: 5517
+      end_line: 5572
+    - name: test_cr23_zo008_successor_execution_must_be_prohibited
+      kind: FunctionDef
+      line: 5575
+      end_line: 5628
+    - name: test_cr23_zo008_projection_is_read_only
+      kind: FunctionDef
+      line: 5631
+      end_line: 5700
+    - name: test_cr23_zo008_never_executes_or_advances
+      kind: FunctionDef
+      line: 5703
+      end_line: 5783
+    - name: test_cr23_zo013_live_composite_is_ready
+      kind: FunctionDef
+      line: 5818
+      end_line: 5859
+    - name: test_cr23_zo013_reports_exact_emm_blocker
+      kind: FunctionDef
+      line: 5862
+      end_line: 5916
+    - name: test_cr23_zo013_reports_exact_resource_blocker
+      kind: FunctionDef
+      line: 5919
+      end_line: 5974
+    - name: test_cr23_zo013_reports_nested_blocker
+      kind: FunctionDef
+      line: 5977
+      end_line: 6032
+    - name: test_cr23_zo013_reports_manual_blocker
+      kind: FunctionDef
+      line: 6035
+      end_line: 6090
+    - name: test_cr23_zo013_preserves_multiple_distinct_blockers
+      kind: FunctionDef
+      line: 6093
+      end_line: 6168
+    - name: test_cr23_zo013_projection_is_read_only
+      kind: FunctionDef
+      line: 6171
+      end_line: 6238
+    - name: test_cr23_zo013_never_executes_or_reconciles
+      kind: FunctionDef
+      line: 6241
+      end_line: 6319
+  - path: scripts/tests/test-operational-alpha-status.py
+    symbols:
+    - name: OperationalAlphaStatusTests
+      kind: ClassDef
+      line: 24
+      end_line: 129
+  - path: scripts/tests/test-roadmap-lifecycle.py
+    symbols:
+    - name: test_result_classification
+      kind: FunctionDef
+      line: 53
+      end_line: 88
+    - name: test_result_does_not_imply_acceptance
+      kind: FunctionDef
+      line: 91
+      end_line: 104
+    - name: test_explicit_accept_reject
+      kind: FunctionDef
+      line: 107
+      end_line: 123
+    - name: test_rejected_cannot_complete
+      kind: FunctionDef
+      line: 126
+      end_line: 134
+    - name: test_acceptance_does_not_execute_successor
+      kind: FunctionDef
+      line: 137
+      end_line: 146
+    - name: test_terminal_does_not_fabricate_successor
+      kind: FunctionDef
+      line: 149
+      end_line: 167
+    - name: test_nonterminal_requires_successor
+      kind: FunctionDef
+      line: 170
+      end_line: 178
+    - name: test_exact_replay
+      kind: FunctionDef
+      line: 181
+      end_line: 198
+    - name: test_conflicting_replay_fails_closed
+      kind: FunctionDef
+      line: 201
+      end_line: 211
+    - name: test_invalid_result_cannot_enter_review
+      kind: FunctionDef
+      line: 214
+      end_line: 220
+  source_resolution: PASS
+- stage: 4
+  opportunity_id: ZO-061
+  title: Zeus Qualification Context and Validation Applicability Classification
+  objective: Enable Zeus to classify qualification checks by lifecycle phase, repository topology, publication state, EOS
+    state, and test-harness context so non-applicable validation failures cannot be misclassified as candidate semantic defects.
+  module_paths:
+  - scripts/lib/emp/codex_reconciliation.py
+  - scripts/lib/emp/admission_supersession.py
+  - scripts/lib/emp/authority_publication.py
+  test_paths:
+  - scripts/tests/test-convergence-roadmap.py
+  - scripts/tests/test-authority-publication.py
+  - scripts/tests/test-controlled-document-semantic-validation.py
+  module_surfaces:
+  - path: scripts/lib/emp/codex_reconciliation.py
+    symbols:
+    - name: ReconciliationError
+      kind: ClassDef
+      line: 36
+      end_line: 39
+    - name: _runtime
+      kind: FunctionDef
+      line: 42
+      end_line: 51
+    - name: process_identity
+      kind: FunctionDef
+      line: 54
+      end_line: 91
+    - name: _canonical_identity
+      kind: FunctionDef
+      line: 94
+      end_line: 109
+    - name: _start_time_match
+      kind: FunctionDef
+      line: 112
+      end_line: 135
+    - name: _identity_matches
+      kind: FunctionDef
+      line: 138
+      end_line: 148
+    - name: _process_identity_result
+      kind: FunctionDef
+      line: 151
+      end_line: 167
+    - name: _resolve_codex_home
+      kind: FunctionDef
+      line: 170
+      end_line: 183
+    - name: _socket_open
+      kind: FunctionDef
+      line: 186
+      end_line: 196
+    - name: _discover_listeners
+      kind: FunctionDef
+      line: 199
+      end_line: 214
+    - name: _termination_units
+      kind: FunctionDef
+      line: 217
+      end_line: 265
+    - name: _ownership
+      kind: FunctionDef
+      line: 268
+      end_line: 388
+    - name: _dimensions
+      kind: FunctionDef
+      line: 391
+      end_line: 417
+    - name: _load_record
+      kind: FunctionDef
+      line: 420
+      end_line: 429
+    - name: _record_digest
+      kind: FunctionDef
+      line: 432
+      end_line: 434
+    - name: _inventory
+      kind: FunctionDef
+      line: 437
+      end_line: 489
+    - name: _inventory_v2
+      kind: FunctionDef
+      line: 492
+      end_line: 571
+    - name: _receipt_path
+      kind: FunctionDef
+      line: 574
+      end_line: 575
+    - name: _reconciliation_id
+      kind: FunctionDef
+      line: 578
+      end_line: 580
+    - name: _jsonable
+      kind: FunctionDef
+      line: 583
+      end_line: 591
+    - name: _stable
+      kind: FunctionDef
+      line: 599
+      end_line: 607
+    - name: _stable_digest
+      kind: FunctionDef
+      line: 610
+      end_line: 611
+    - name: _process_tree
+      kind: FunctionDef
+      line: 614
+      end_line: 631
+    - name: _proc_pids
+      kind: FunctionDef
+      line: 634
+      end_line: 636
+    - name: _process_identity_safe
+      kind: FunctionDef
+      line: 639
+      end_line: 643
+    - name: _historical_orphan_ownership
+      kind: FunctionDef
+      line: 646
+      end_line: 690
+    - name: _canonical_termination_units
+      kind: FunctionDef
+      line: 693
+      end_line: 745
+    - name: _action_plan
+      kind: FunctionDef
+      line: 748
+      end_line: 782
+    - name: _plan_blockers
+      kind: FunctionDef
+      line: 785
+      end_line: 790
+    - name: _plan_digest
+      kind: FunctionDef
+      line: 793
+      end_line: 814
+    - name: _update_session_record
+      kind: FunctionDef
+      line: 817
+      end_line: 835
+    - name: _verify_terminal
+      kind: FunctionDef
+      line: 838
+      end_line: 851
+    - name: _preserved_targets
+      kind: FunctionDef
+      line: 854
+      end_line: 874
+    - name: _find_receipt_by_plan_digest
+      kind: FunctionDef
+      line: 877
+      end_line: 879
+    - name: _completed_receipt_matches
+      kind: FunctionDef
+      line: 882
+      end_line: 901
+    - name: _replay_failure_response
+      kind: FunctionDef
+      line: 904
+      end_line: 920
+    - name: _has_applied_reconciliation
+      kind: FunctionDef
+      line: 923
+      end_line: 939
+    - name: reconcile
+      kind: FunctionDef
+      line: 942
+      end_line: 1191
+    - name: _response
+      kind: FunctionDef
+      line: 1194
+      end_line: 1301
+    - name: _legacy_reconcile
+      kind: FunctionDef
+      line: 1304
+      end_line: 1368
+    - name: inventory
+      kind: FunctionDef
+      line: 1371
+      end_line: 1373
+  - path: scripts/lib/emp/admission_supersession.py
+    symbols:
+    - name: AdmissionSupersessionError
+      kind: ClassDef
+      line: 19
+      end_line: 20
+    - name: _authoritative_stage1_package_digest
+      kind: FunctionDef
+      line: 23
+      end_line: 40
+    - name: _validate_lineage_package_digest
+      kind: FunctionDef
+      line: 43
+      end_line: 63
+    - name: _authoritative_stage1_source_digest
+      kind: FunctionDef
+      line: 66
+      end_line: 83
+    - name: _authoritative_stage1_authority_snapshot_digest
+      kind: FunctionDef
+      line: 86
+      end_line: 112
+    - name: _validate_lineage_authority_snapshot_digest
+      kind: FunctionDef
+      line: 115
+      end_line: 132
+    - name: _validate_execution_authority_snapshot_digest
+      kind: FunctionDef
+      line: 135
+      end_line: 143
+    - name: _validate_lineage_source_digest
+      kind: FunctionDef
+      line: 146
+      end_line: 160
+    - name: _validate_execution_source_digest
+      kind: FunctionDef
+      line: 163
+      end_line: 170
+    - name: _git
+      kind: FunctionDef
+      line: 184
+      end_line: 188
+    - name: _git_bool
+      kind: FunctionDef
+      line: 191
+      end_line: 192
+    - name: classify_transition
+      kind: FunctionDef
+      line: 195
+      end_line: 218
+    - name: _successor_id
+      kind: FunctionDef
+      line: 221
+      end_line: 227
+    - name: _receipt
+      kind: FunctionDef
+      line: 230
+      end_line: 237
+    - name: _atomic_json_updates
+      kind: FunctionDef
+      line: 240
+      end_line: 261
+    - name: resolve_for_start
+      kind: FunctionDef
+      line: 264
+      end_line: 358
+    - name: resolve_for_resume
+      kind: FunctionDef
+      line: 361
+      end_line: 438
+  - path: scripts/lib/emp/authority_publication.py
+    symbols:
+    - name: AuthorityPublicationError
+      kind: ClassDef
+      line: 33
+      end_line: 34
+    - name: publication_template
+      kind: FunctionDef
+      line: 117
+      end_line: 127
+    - name: validate_publication_payload
+      kind: FunctionDef
+      line: 130
+      end_line: 154
+    - name: prepare_publication_envelope
+      kind: FunctionDef
+      line: 157
+      end_line: 183
+    - name: commissioning_status
+      kind: FunctionDef
+      line: 186
+      end_line: 349
+    - name: trust_policy_path
+      kind: FunctionDef
+      line: 352
+      end_line: 357
+    - name: load_mapping
+      kind: FunctionDef
+      line: 360
+      end_line: 367
+    - name: envelope_material
+      kind: FunctionDef
+      line: 370
+      end_line: 371
+    - name: envelope_identifier
+      kind: FunctionDef
+      line: 374
+      end_line: 380
+    - name: OwnerTrustPolicy
+      kind: ClassDef
+      line: 383
+      end_line: 436
+    - name: AuthorityPublicationFramework
+      kind: ClassDef
+      line: 439
+      end_line: 1246
+    - name: hashlib_sha256
+      kind: FunctionDef
+      line: 1249
+      end_line: 1252
+  test_surfaces:
+  - path: scripts/tests/test-convergence-roadmap.py
+    symbols:
+    - name: ConvergenceRoadmapTests
+      kind: ClassDef
+      line: 29
+      end_line: 373
+    - name: test_cr17_status_projection_awaiting_operator_review
+      kind: FunctionDef
+      line: 377
+      end_line: 389
+    - name: test_cr17_status_projection_current_without_result
+      kind: FunctionDef
+      line: 392
+      end_line: 469
+    - name: test_cr18_evaluate_pending_review_is_not_corruption
+      kind: FunctionDef
+      line: 472
+      end_line: 486
+    - name: test_cr18_historical_c00_c02_provenance_remains_not_applicable
+      kind: FunctionDef
+      line: 489
+      end_line: 504
+    - name: test_cr18_prospective_c03_plus_qualification_remains_pass
+      kind: FunctionDef
+      line: 507
+      end_line: 523
+    - name: test_cr18_evaluation_is_read_only
+      kind: FunctionDef
+      line: 526
+      end_line: 556
+    - name: test_cr19_resume_projection_exposes_pending_review_read_only
+      kind: FunctionDef
+      line: 559
+      end_line: 577
+    - name: test_cr20_operator_review_accept_reject_replay_and_fail_closed
+      kind: FunctionDef
+      line: 652
+      end_line: 812
+    - name: test_cr20_review_receipt_does_not_advance_live_roadmap
+      kind: FunctionDef
+      line: 815
+      end_line: 853
+    - name: test_cr21_advancement_success_and_replay
+      kind: FunctionDef
+      line: 971
+      end_line: 1053
+    - name: test_cr21_advancement_rejects_bad_bindings
+      kind: FunctionDef
+      line: 1056
+      end_line: 1141
+    - name: test_cr21_conflicting_committed_replay_fails_closed
+      kind: FunctionDef
+      line: 1145
+      end_line: 1191
+    - name: test_cr21_interrupted_transaction_recovers_exactly
+      kind: FunctionDef
+      line: 1194
+      end_line: 1285
+    - name: test_cr21_interrupted_after_state_promotion_finalizes_receipt
+      kind: FunctionDef
+      line: 1289
+      end_line: 1375
+    - name: test_cr21_missing_authoritative_successor_fails_closed
+      kind: FunctionDef
+      line: 1379
+      end_line: 1449
+    - name: test_cr21_conflicting_successor_dependency_fails_closed
+      kind: FunctionDef
+      line: 1452
+      end_line: 1525
+    - name: test_cr21_advancement_never_mutates_live_repository
+      kind: FunctionDef
+      line: 1529
+      end_line: 1574
+    - name: test_cr22_machine_classification_contract
+      kind: FunctionDef
+      line: 1578
+      end_line: 1672
+    - name: test_cr22_unrecoverable_partial_state_fails_closed
+      kind: FunctionDef
+      line: 1675
+      end_line: 1774
+    - name: test_cr22_recovery_classification_contract
+      kind: FunctionDef
+      line: 1777
+      end_line: 1843
+    - name: test_cr23_advancement_provenance_contract
+      kind: FunctionDef
+      line: 1847
+      end_line: 1938
+    - name: test_cr23_operator_review_provenance_contract
+      kind: FunctionDef
+      line: 1941
+      end_line: 2021
+    - name: test_cr23_provenance_replay_is_identity_stable
+      kind: FunctionDef
+      line: 2024
+      end_line: 2078
+    - name: test_cr23_review_replay_is_identity_stable
+      kind: FunctionDef
+      line: 2081
+      end_line: 2135
+    - name: test_cr23_real_parent_state_never_mutated_by_isolated_provenance
+      kind: FunctionDef
+      line: 2138
+      end_line: 2185
+    - name: test_cr23_zo005_emm_awareness_bound_clean
+      kind: FunctionDef
+      line: 2189
+      end_line: 2223
+    - name: test_cr23_zo005_emm_awareness_bound_drifted
+      kind: FunctionDef
+      line: 2226
+      end_line: 2274
+    - name: test_cr23_zo005_emm_awareness_unbound
+      kind: FunctionDef
+      line: 2277
+      end_line: 2309
+    - name: test_cr23_zo005_emm_awareness_missing_bound_source
+      kind: FunctionDef
+      line: 2312
+      end_line: 2373
+    - name: test_cr23_zo005_emm_awareness_is_read_only
+      kind: FunctionDef
+      line: 2376
+      end_line: 2422
+    - name: test_cr23_zo005_does_not_call_rebind
+      kind: FunctionDef
+      line: 2425
+      end_line: 2462
+    - name: test_cr20_operator_review_cli_accept_replay_and_conflict
+      kind: FunctionDef
+      line: 2465
+      end_line: 2580
+    - name: test_cr20_fresh_projection_recovers_persisted_operator_decision
+      kind: FunctionDef
+      line: 2584
+      end_line: 2625
+    - name: test_cr20_fresh_projection_recovers_rejected_decision
+      kind: FunctionDef
+      line: 2629
+      end_line: 2670
+    - name: test_cr20_tampered_persisted_receipt_fails_closed
+      kind: FunctionDef
+      line: 2673
+      end_line: 2721
+    - name: test_cr20_conflicting_persisted_receipts_fail_closed
+      kind: FunctionDef
+      line: 2724
+      end_line: 2782
+    - name: test_current_gate_valid_result_derives_pending_review
+      kind: FunctionDef
+      line: 2814
+      end_line: 2871
+    - name: test_current_gate_result_does_not_imply_acceptance_or_completion
+      kind: FunctionDef
+      line: 2874
+      end_line: 2929
+    - name: test_cr23_emm_rebind_exact_authorized_mutation
+      kind: FunctionDef
+      line: 3003
+      end_line: 3058
+    - name: test_cr23_emm_rebind_exact_replay
+      kind: FunctionDef
+      line: 3061
+      end_line: 3098
+    - name: test_cr23_emm_rebind_conflicting_replay_fails_closed
+      kind: FunctionDef
+      line: 3101
+      end_line: 3139
+    - name: test_cr23_emm_rebind_unauthorized_drift_fails_closed
+      kind: FunctionDef
+      line: 3142
+      end_line: 3195
+    - name: test_cr23_emm_rebind_unbound_source_fails_closed
+      kind: FunctionDef
+      line: 3198
+      end_line: 3239
+    - name: test_cr23_emm_rebind_requires_exact_drift_set
+      kind: FunctionDef
+      line: 3242
+      end_line: 3294
+    - name: test_cr23_zo010_bound_clean
+      kind: FunctionDef
+      line: 3299
+      end_line: 3365
+    - name: test_cr23_zo010_bound_drifted
+      kind: FunctionDef
+      line: 3368
+      end_line: 3442
+    - name: test_cr23_zo010_unbound_existing_source
+      kind: FunctionDef
+      line: 3445
+      end_line: 3482
+    - name: test_cr23_zo010_unbound_missing_source
+      kind: FunctionDef
+      line: 3485
+      end_line: 3518
+    - name: test_cr23_zo010_bound_missing_source
+      kind: FunctionDef
+      line: 3521
+      end_line: 3569
+    - name: test_cr23_zo010_introspection_is_byte_read_only
+      kind: FunctionDef
+      line: 3572
+      end_line: 3625
+    - name: test_cr23_zo011_resource_preflight_ready
+      kind: FunctionDef
+      line: 3629
+      end_line: 3678
+    - name: test_cr23_zo011_resource_preflight_blocked
+      kind: FunctionDef
+      line: 3681
+      end_line: 3729
+    - name: test_cr23_zo011_missing_workspace_parent_resolves_existing_ancestor
+      kind: FunctionDef
+      line: 3732
+      end_line: 3765
+    - name: test_cr23_zo011_required_reserve_is_conservative
+      kind: FunctionDef
+      line: 3768
+      end_line: 3810
+    - name: test_cr23_zo011_resource_preflight_is_read_only
+      kind: FunctionDef
+      line: 3813
+      end_line: 3851
+    - name: test_cr23_zo011_never_classifies_resource_block_as_semantic_failure
+      kind: FunctionDef
+      line: 3854
+      end_line: 3898
+    - name: test_cr23_zo009_successor_action_resolves_exactly_one
+      kind: FunctionDef
+      line: 4046
+      end_line: 4104
+    - name: test_cr23_zo009_missing_successor_action_fails_closed
+      kind: FunctionDef
+      line: 4107
+      end_line: 4173
+    - name: test_cr23_zo009_action_surface_is_structured_resume_only
+      kind: FunctionDef
+      line: 4176
+      end_line: 4223
+    - name: test_cr23_zo009_missing_successor_is_canonically_rejected
+      kind: FunctionDef
+      line: 4225
+      end_line: 4280
+    - name: test_cr23_zo009_terminal_gate_exposes_no_successor_action
+      kind: FunctionDef
+      line: 4282
+      end_line: 4333
+    - name: test_cr23_zo009_terminal_successor_is_canonically_rejected
+      kind: FunctionDef
+      line: 4335
+      end_line: 4392
+    - name: test_cr23_zo009_projection_is_read_only
+      kind: FunctionDef
+      line: 4394
+      end_line: 4459
+    - name: test_cr23_zo006_current_gate_projects_executable
+      kind: FunctionDef
+      line: 4464
+      end_line: 4500
+    - name: test_cr23_zo006_completed_gate_is_not_executable
+      kind: FunctionDef
+      line: 4503
+      end_line: 4534
+    - name: test_cr23_zo006_future_gate_is_not_current
+      kind: FunctionDef
+      line: 4537
+      end_line: 4571
+    - name: test_cr23_zo006_blocked_gate_projects_blocked
+      kind: FunctionDef
+      line: 4574
+      end_line: 4624
+    - name: test_cr23_zo006_consumes_zo009_successor_authority
+      kind: FunctionDef
+      line: 4627
+      end_line: 4674
+    - name: test_cr23_zo006_projection_is_read_only
+      kind: FunctionDef
+      line: 4677
+      end_line: 4734
+    - name: test_cr23_zo006_never_executes_successor
+      kind: FunctionDef
+      line: 4737
+      end_line: 4790
+    - name: test_cr23_zo007_ready_for_manual_execution
+      kind: FunctionDef
+      line: 4804
+      end_line: 4849
+    - name: test_cr23_zo007_wrong_current_item_blocks
+      kind: FunctionDef
+      line: 4852
+      end_line: 4913
+    - name: test_cr23_zo007_missing_dependency_blocks
+      kind: FunctionDef
+      line: 4916
+      end_line: 4963
+    - name: test_cr23_zo007_parent_not_executable_blocks
+      kind: FunctionDef
+      line: 4966
+      end_line: 5024
+    - name: test_cr23_zo007_resource_blocked_is_distinct
+      kind: FunctionDef
+      line: 5027
+      end_line: 5084
+    - name: test_cr23_zo007_contract_identity_mismatch_fails_closed
+      kind: FunctionDef
+      line: 5087
+      end_line: 5142
+    - name: test_cr23_zo007_projection_is_read_only
+      kind: FunctionDef
+      line: 5145
+      end_line: 5218
+    - name: test_cr23_zo007_never_executes_or_advances
+      kind: FunctionDef
+      line: 5221
+      end_line: 5301
+    - name: test_cr23_zo008_live_shape_is_consistent
+      kind: FunctionDef
+      line: 5321
+      end_line: 5371
+    - name: test_cr23_zo008_parent_gate_mismatch_is_distinct
+      kind: FunctionDef
+      line: 5374
+      end_line: 5410
+    - name: test_cr23_zo008_nested_current_item_mismatch_blocks
+      kind: FunctionDef
+      line: 5413
+      end_line: 5470
+    - name: test_cr23_zo008_missing_dependency_is_distinct
+      kind: FunctionDef
+      line: 5473
+      end_line: 5514
+    - name: test_cr23_zo008_parent_authority_mismatch_is_distinct
+      kind: FunctionDef
+      line: 5517
+      end_line: 5572
+    - name: test_cr23_zo008_successor_execution_must_be_prohibited
+      kind: FunctionDef
+      line: 5575
+      end_line: 5628
+    - name: test_cr23_zo008_projection_is_read_only
+      kind: FunctionDef
+      line: 5631
+      end_line: 5700
+    - name: test_cr23_zo008_never_executes_or_advances
+      kind: FunctionDef
+      line: 5703
+      end_line: 5783
+    - name: test_cr23_zo013_live_composite_is_ready
+      kind: FunctionDef
+      line: 5818
+      end_line: 5859
+    - name: test_cr23_zo013_reports_exact_emm_blocker
+      kind: FunctionDef
+      line: 5862
+      end_line: 5916
+    - name: test_cr23_zo013_reports_exact_resource_blocker
+      kind: FunctionDef
+      line: 5919
+      end_line: 5974
+    - name: test_cr23_zo013_reports_nested_blocker
+      kind: FunctionDef
+      line: 5977
+      end_line: 6032
+    - name: test_cr23_zo013_reports_manual_blocker
+      kind: FunctionDef
+      line: 6035
+      end_line: 6090
+    - name: test_cr23_zo013_preserves_multiple_distinct_blockers
+      kind: FunctionDef
+      line: 6093
+      end_line: 6168
+    - name: test_cr23_zo013_projection_is_read_only
+      kind: FunctionDef
+      line: 6171
+      end_line: 6238
+    - name: test_cr23_zo013_never_executes_or_reconciles
+      kind: FunctionDef
+      line: 6241
+      end_line: 6319
+  - path: scripts/tests/test-authority-publication.py
+    symbols:
+    - name: PublicationQualificationTests
+      kind: ClassDef
+      line: 49
+      end_line: 882
+  - path: scripts/tests/test-controlled-document-semantic-validation.py
+    symbols:
+    - name: SemanticValidationTests
+      kind: ClassDef
+      line: 24
+      end_line: 183
+  source_resolution: PASS
+- stage: 5
+  opportunity_id: ZO-060
+  title: Zeus Immutable Commit Dependency-Closure Qualification
+  objective: Require Zeus to prove that a candidate or amended commit is dependency-complete and independently executable
+    from its immutable committed tree before qualification, publication, or lifecycle advancement, including detection of
+    missing committed dependencies that are masked by tracked, modified, staged, ignored, or untracked live-worktree files.
+  module_paths:
+  - scripts/lib/emp/publication_candidate_authority.py
+  - scripts/lib/emp/admission_supersession.py
+  - scripts/lib/emp/codex_adapter.py
+  test_paths:
+  - scripts/tests/test-authority-wop-compatibility.py
+  - scripts/tests/test-mission-orchestration.py
+  - scripts/tests/test-wop-lifecycle-manager.py
+  module_surfaces:
+  - path: scripts/lib/emp/publication_candidate_authority.py
+    symbols:
+    - name: CandidateAuthorityError
+      kind: ClassDef
+      line: 30
+      end_line: 34
+    - name: _text
+      kind: FunctionDef
+      line: 37
+      end_line: 41
+    - name: _display_path
+      kind: FunctionDef
+      line: 44
+      end_line: 48
+    - name: _frontmatter
+      kind: FunctionDef
+      line: 51
+      end_line: 61
+    - name: _normalise_path
+      kind: FunctionDef
+      line: 64
+      end_line: 74
+    - name: _expand_path
+      kind: FunctionDef
+      line: 77
+      end_line: 84
+    - name: _manifest_paths
+      kind: FunctionDef
+      line: 87
+      end_line: 130
+    - name: _context
+      kind: FunctionDef
+      line: 133
+      end_line: 138
+    - name: _qualification
+      kind: FunctionDef
+      line: 141
+      end_line: 153
+    - name: _publication_state
+      kind: FunctionDef
+      line: 156
+      end_line: 166
+    - name: _source_records
+      kind: FunctionDef
+      line: 169
+      end_line: 271
+    - name: _explicit_manifest_identity
+      kind: FunctionDef
+      line: 274
+      end_line: 295
+    - name: _path_publication_state
+      kind: FunctionDef
+      line: 298
+      end_line: 308
+    - name: resolve
+      kind: FunctionDef
+      line: 311
+      end_line: 523
+  - path: scripts/lib/emp/admission_supersession.py
+    symbols:
+    - name: AdmissionSupersessionError
+      kind: ClassDef
+      line: 19
+      end_line: 20
+    - name: _authoritative_stage1_package_digest
+      kind: FunctionDef
+      line: 23
+      end_line: 40
+    - name: _validate_lineage_package_digest
+      kind: FunctionDef
+      line: 43
+      end_line: 63
+    - name: _authoritative_stage1_source_digest
+      kind: FunctionDef
+      line: 66
+      end_line: 83
+    - name: _authoritative_stage1_authority_snapshot_digest
+      kind: FunctionDef
+      line: 86
+      end_line: 112
+    - name: _validate_lineage_authority_snapshot_digest
+      kind: FunctionDef
+      line: 115
+      end_line: 132
+    - name: _validate_execution_authority_snapshot_digest
+      kind: FunctionDef
+      line: 135
+      end_line: 143
+    - name: _validate_lineage_source_digest
+      kind: FunctionDef
+      line: 146
+      end_line: 160
+    - name: _validate_execution_source_digest
+      kind: FunctionDef
+      line: 163
+      end_line: 170
+    - name: _git
+      kind: FunctionDef
+      line: 184
+      end_line: 188
+    - name: _git_bool
+      kind: FunctionDef
+      line: 191
+      end_line: 192
+    - name: classify_transition
+      kind: FunctionDef
+      line: 195
+      end_line: 218
+    - name: _successor_id
+      kind: FunctionDef
+      line: 221
+      end_line: 227
+    - name: _receipt
+      kind: FunctionDef
+      line: 230
+      end_line: 237
+    - name: _atomic_json_updates
+      kind: FunctionDef
+      line: 240
+      end_line: 261
+    - name: resolve_for_start
+      kind: FunctionDef
+      line: 264
+      end_line: 358
+    - name: resolve_for_resume
+      kind: FunctionDef
+      line: 361
+      end_line: 438
+  - path: scripts/lib/emp/codex_adapter.py
+    symbols:
+    - name: CodexAdapterError
+      kind: ClassDef
+      line: 44
+      end_line: 49
+    - name: _execution_verification_error
+      kind: FunctionDef
+      line: 52
+      end_line: 59
+    - name: _runtime
+      kind: FunctionDef
+      line: 62
+      end_line: 65
+    - name: _session_path
+      kind: FunctionDef
+      line: 68
+      end_line: 74
+    - name: _load
+      kind: FunctionDef
+      line: 77
+      end_line: 86
+    - name: _save
+      kind: FunctionDef
+      line: 89
+      end_line: 94
+    - name: _append_event
+      kind: FunctionDef
+      line: 97
+      end_line: 116
+    - name: _authority
+      kind: FunctionDef
+      line: 119
+      end_line: 127
+    - name: _package
+      kind: FunctionDef
+      line: 130
+      end_line: 181
+    - name: _existing
+      kind: FunctionDef
+      line: 184
+      end_line: 197
+    - name: _all_sessions
+      kind: FunctionDef
+      line: 200
+      end_line: 203
+    - name: current_session
+      kind: FunctionDef
+      line: 206
+      end_line: 208
+    - name: resolve_session_binding
+      kind: FunctionDef
+      line: 211
+      end_line: 262
+    - name: runtime_liveness
+      kind: FunctionDef
+      line: 265
+      end_line: 298
+    - name: _liveness_fingerprint
+      kind: FunctionDef
+      line: 301
+      end_line: 318
+    - name: _provider_liveness_snapshot
+      kind: FunctionDef
+      line: 321
+      end_line: 336
+    - name: supersede_session
+      kind: FunctionDef
+      line: 339
+      end_line: 459
+    - name: reconcile_session_history
+      kind: FunctionDef
+      line: 462
+      end_line: 582
+    - name: _process_alive
+      kind: FunctionDef
+      line: 585
+      end_line: 592
+    - name: _provider_control_ready
+      kind: FunctionDef
+      line: 595
+      end_line: 606
+    - name: _startup_paths
+      kind: FunctionDef
+      line: 609
+      end_line: 626
+    - name: _marker_provider_pid
+      kind: FunctionDef
+      line: 629
+      end_line: 638
+    - name: _prepare_codex_home
+      kind: FunctionDef
+      line: 641
+      end_line: 651
+    - name: _launch_handshake
+      kind: FunctionDef
+      line: 654
+      end_line: 679
+    - name: session_identifier
+      kind: FunctionDef
+      line: 682
+      end_line: 686
+    - name: _result
+      kind: FunctionDef
+      line: 689
+      end_line: 728
+    - name: status
+      kind: FunctionDef
+      line: 731
+      end_line: 758
+    - name: _active_path
+      kind: FunctionDef
+      line: 761
+      end_line: 768
+    - name: _monitoring_path
+      kind: FunctionDef
+      line: 771
+      end_line: 778
+    - name: _read_active
+      kind: FunctionDef
+      line: 781
+      end_line: 790
+    - name: _write_projection
+      kind: FunctionDef
+      line: 793
+      end_line: 799
+    - name: _control_request
+      kind: FunctionDef
+      line: 802
+      end_line: 837
+    - name: begin_controlled_mission_work
+      kind: FunctionDef
+      line: 840
+      end_line: 953
+    - name: start
+      kind: FunctionDef
+      line: 956
+      end_line: 1024
+    - name: resume
+      kind: FunctionDef
+      line: 1027
+      end_line: 1035
+    - name: stop
+      kind: FunctionDef
+      line: 1038
+      end_line: 1051
+    - name: logs
+      kind: FunctionDef
+      line: 1054
+      end_line: 1059
+    - name: artifacts
+      kind: FunctionDef
+      line: 1062
+      end_line: 1063
+    - name: verify
+      kind: FunctionDef
+      line: 1066
+      end_line: 1075
+  test_surfaces:
+  - path: scripts/tests/test-authority-wop-compatibility.py
+    symbols:
+    - name: RejectingSignatureVerifier
+      kind: ClassDef
+      line: 40
+      end_line: 42
+    - name: AuthorityWopCompatibilityTests
+      kind: ClassDef
+      line: 45
+      end_line: 298
+  - path: scripts/tests/test-mission-orchestration.py
+    symbols:
+    - name: OrchestrationTests
+      kind: ClassDef
+      line: 15
+      end_line: 89
+  - path: scripts/tests/test-wop-lifecycle-manager.py
+    symbols:
+    - name: WopLifecycleManagerTests
+      kind: ClassDef
+      line: 39
+      end_line: 456
+  source_resolution: PASS
+- stage: 6
+  opportunity_id: ZO-058
+  title: Zeus Bounded Repository Transaction Closure and Commit Recovery
+  objective: Allow Zeus to classify a mixed dirty worktree, resolve the exact authorized transaction closure, exclude protected
+    and deferred work, recover an interrupted single-commit transaction, and verify the candidate tree before commit or amendment
+    without inventing mutation authority.
+  module_paths:
+  - scripts/lib/emp/publication_transaction.py
+  - scripts/lib/emp/canonical_mission_aggregate.py
+  - scripts/lib/emp/codex_interactive.py
+  test_paths:
+  - scripts/tests/test-authority-publication.py
+  - scripts/tests/test-convergence-roadmap.py
+  - scripts/tests/test-mission-activation.py
+  module_surfaces:
+  - path: scripts/lib/emp/publication_transaction.py
+    symbols:
+    - name: PublicationTransactionError
+      kind: ClassDef
+      line: 69
+      end_line: 74
+    - name: _now
+      kind: FunctionDef
+      line: 77
+      end_line: 78
+    - name: _run_git
+      kind: FunctionDef
+      line: 81
+      end_line: 91
+    - name: _git
+      kind: FunctionDef
+      line: 94
+      end_line: 101
+    - name: _runtime
+      kind: FunctionDef
+      line: 104
+      end_line: 107
+    - name: _tx_dir
+      kind: FunctionDef
+      line: 110
+      end_line: 111
+    - name: _tx_path
+      kind: FunctionDef
+      line: 114
+      end_line: 117
+    - name: _save
+      kind: FunctionDef
+      line: 120
+      end_line: 122
+    - name: _load_transaction
+      kind: FunctionDef
+      line: 125
+      end_line: 146
+    - name: _safe_load
+      kind: FunctionDef
+      line: 149
+      end_line: 154
+    - name: _receipt_path
+      kind: FunctionDef
+      line: 157
+      end_line: 158
+    - name: _receipt_errors
+      kind: FunctionDef
+      line: 161
+      end_line: 203
+    - name: _transaction_integrity
+      kind: FunctionDef
+      line: 206
+      end_line: 239
+    - name: _resolve_next_action
+      kind: FunctionDef
+      line: 242
+      end_line: 259
+    - name: _active_transactions
+      kind: FunctionDef
+      line: 262
+      end_line: 270
+    - name: _immutable_receipt
+      kind: FunctionDef
+      line: 273
+      end_line: 306
+    - name: _record_milestone
+      kind: FunctionDef
+      line: 309
+      end_line: 343
+    - name: _file_digest
+      kind: FunctionDef
+      line: 346
+      end_line: 353
+    - name: _manifest_paths
+      kind: FunctionDef
+      line: 356
+      end_line: 388
+    - name: _classify_paths
+      kind: FunctionDef
+      line: 391
+      end_line: 413
+    - name: _revalidate_authority
+      kind: FunctionDef
+      line: 416
+      end_line: 493
+    - name: inspect
+      kind: FunctionDef
+      line: 496
+      end_line: 514
+    - name: _mission_inspect
+      kind: FunctionDef
+      line: 517
+      end_line: 560
+    - name: classify
+      kind: FunctionDef
+      line: 563
+      end_line: 577
+    - name: prepare
+      kind: FunctionDef
+      line: 580
+      end_line: 654
+    - name: _require_state
+      kind: FunctionDef
+      line: 657
+      end_line: 659
+    - name: verify
+      kind: FunctionDef
+      line: 662
+      end_line: 744
+    - name: stage
+      kind: FunctionDef
+      line: 747
+      end_line: 782
+    - name: commit
+      kind: FunctionDef
+      line: 785
+      end_line: 801
+    - name: push
+      kind: FunctionDef
+      line: 804
+      end_line: 828
+    - name: synchronize
+      kind: FunctionDef
+      line: 831
+      end_line: 849
+    - name: qualify
+      kind: FunctionDef
+      line: 852
+      end_line: 862
+    - name: status
+      kind: FunctionDef
+      line: 865
+      end_line: 884
+    - name: mission_projection
+      kind: FunctionDef
+      line: 887
+      end_line: 944
+    - name: resume
+      kind: FunctionDef
+      line: 947
+      end_line: 973
+    - name: abort
+      kind: FunctionDef
+      line: 976
+      end_line: 992
+    - name: run
+      kind: FunctionDef
+      line: 995
+      end_line: 1007
+    - name: render
+      kind: FunctionDef
+      line: 1010
+      end_line: 1021
+  - path: scripts/lib/emp/canonical_mission_aggregate.py
+    symbols:
+    - name: MissionAggregateError
+      kind: ClassDef
+      line: 23
+      end_line: 27
+    - name: _digest
+      kind: FunctionDef
+      line: 44
+      end_line: 45
+    - name: _load
+      kind: FunctionDef
+      line: 48
+      end_line: 55
+    - name: _records
+      kind: FunctionDef
+      line: 58
+      end_line: 69
+    - name: _validate_records
+      kind: FunctionDef
+      line: 72
+      end_line: 83
+    - name: _identities
+      kind: FunctionDef
+      line: 86
+      end_line: 95
+    - name: _family
+      kind: FunctionDef
+      line: 98
+      end_line: 116
+    - name: _historical_sessions
+      kind: FunctionDef
+      line: 119
+      end_line: 126
+    - name: aggregate
+      kind: FunctionDef
+      line: 129
+      end_line: 209
+    - name: view
+      kind: FunctionDef
+      line: 212
+      end_line: 213
+  - path: scripts/lib/emp/codex_interactive.py
+    symbols:
+    - name: InteractiveCodexError
+      kind: ClassDef
+      line: 43
+      end_line: 48
+    - name: direct_launcher_path
+      kind: FunctionDef
+      line: 51
+      end_line: 71
+    - name: _AttachedProvider
+      kind: ClassDef
+      line: 74
+      end_line: 99
+    - name: _runtime
+      kind: FunctionDef
+      line: 102
+      end_line: 103
+    - name: _path
+      kind: FunctionDef
+      line: 106
+      end_line: 113
+    - name: _load
+      kind: FunctionDef
+      line: 116
+      end_line: 122
+    - name: _save
+      kind: FunctionDef
+      line: 125
+      end_line: 132
+    - name: _append_event
+      kind: FunctionDef
+      line: 135
+      end_line: 151
+    - name: _sessions
+      kind: FunctionDef
+      line: 154
+      end_line: 167
+    - name: _authoritative_session
+      kind: FunctionDef
+      line: 170
+      end_line: 182
+    - name: _existing
+      kind: FunctionDef
+      line: 185
+      end_line: 208
+    - name: _alive
+      kind: FunctionDef
+      line: 211
+      end_line: 218
+    - name: codex_capabilities
+      kind: FunctionDef
+      line: 221
+      end_line: 242
+    - name: _free_loopback_port
+      kind: FunctionDef
+      line: 245
+      end_line: 253
+    - name: _terminal_size
+      kind: FunctionDef
+      line: 256
+      end_line: 262
+    - name: terminal_size
+      kind: FunctionDef
+      line: 265
+      end_line: 280
+    - name: strip_bracketed_paste
+      kind: FunctionDef
+      line: 283
+      end_line: 285
+    - name: _text
+      kind: FunctionDef
+      line: 288
+      end_line: 297
+    - name: render_event
+      kind: FunctionDef
+      line: 300
+      end_line: 308
+    - name: terminal_mode
+      kind: FunctionDef
+      line: 312
+      end_line: 327
+    - name: _set_terminal_size
+      kind: FunctionDef
+      line: 330
+      end_line: 336
+    - name: _context
+      kind: FunctionDef
+      line: 339
+      end_line: 349
+    - name: session_identifier
+      kind: FunctionDef
+      line: 352
+      end_line: 361
+    - name: direct_launcher_preflight
+      kind: FunctionDef
+      line: 364
+      end_line: 415
+    - name: _package
+      kind: FunctionDef
+      line: 421
+      end_line: 426
+    - name: _result
+      kind: FunctionDef
+      line: 429
+      end_line: 478
+    - name: _make_session
+      kind: FunctionDef
+      line: 481
+      end_line: 545
+    - name: _legacy_shell
+      kind: FunctionDef
+      line: 548
+      end_line: 786
+    - name: establish_remote_endpoint
+      kind: FunctionDef
+      line: 789
+      end_line: 876
+    - name: _remote_broker
+      kind: FunctionDef
+      line: 879
+      end_line: 882
+    - name: _direct_shell
+      kind: FunctionDef
+      line: 885
+      end_line: 943
+    - name: shell
+      kind: FunctionDef
+      line: 946
+      end_line: 1094
+    - name: diagnose
+      kind: FunctionDef
+      line: 1097
+      end_line: 1134
+    - name: status
+      kind: FunctionDef
+      line: 1137
+      end_line: 1177
+    - name: record_request_decision
+      kind: FunctionDef
+      line: 1180
+      end_line: 1196
+    - name: resolve_request
+      kind: FunctionDef
+      line: 1199
+      end_line: 1206
+    - name: stop
+      kind: FunctionDef
+      line: 1209
+      end_line: 1226
+    - name: attach
+      kind: FunctionDef
+      line: 1229
+      end_line: 1243
+    - name: logs
+      kind: FunctionDef
+      line: 1246
+      end_line: 1250
+    - name: artifacts
+      kind: FunctionDef
+      line: 1253
+      end_line: 1255
+  test_surfaces:
+  - path: scripts/tests/test-authority-publication.py
+    symbols:
+    - name: PublicationQualificationTests
+      kind: ClassDef
+      line: 49
+      end_line: 882
+  - path: scripts/tests/test-convergence-roadmap.py
+    symbols:
+    - name: ConvergenceRoadmapTests
+      kind: ClassDef
+      line: 29
+      end_line: 373
+    - name: test_cr17_status_projection_awaiting_operator_review
+      kind: FunctionDef
+      line: 377
+      end_line: 389
+    - name: test_cr17_status_projection_current_without_result
+      kind: FunctionDef
+      line: 392
+      end_line: 469
+    - name: test_cr18_evaluate_pending_review_is_not_corruption
+      kind: FunctionDef
+      line: 472
+      end_line: 486
+    - name: test_cr18_historical_c00_c02_provenance_remains_not_applicable
+      kind: FunctionDef
+      line: 489
+      end_line: 504
+    - name: test_cr18_prospective_c03_plus_qualification_remains_pass
+      kind: FunctionDef
+      line: 507
+      end_line: 523
+    - name: test_cr18_evaluation_is_read_only
+      kind: FunctionDef
+      line: 526
+      end_line: 556
+    - name: test_cr19_resume_projection_exposes_pending_review_read_only
+      kind: FunctionDef
+      line: 559
+      end_line: 577
+    - name: test_cr20_operator_review_accept_reject_replay_and_fail_closed
+      kind: FunctionDef
+      line: 652
+      end_line: 812
+    - name: test_cr20_review_receipt_does_not_advance_live_roadmap
+      kind: FunctionDef
+      line: 815
+      end_line: 853
+    - name: test_cr21_advancement_success_and_replay
+      kind: FunctionDef
+      line: 971
+      end_line: 1053
+    - name: test_cr21_advancement_rejects_bad_bindings
+      kind: FunctionDef
+      line: 1056
+      end_line: 1141
+    - name: test_cr21_conflicting_committed_replay_fails_closed
+      kind: FunctionDef
+      line: 1145
+      end_line: 1191
+    - name: test_cr21_interrupted_transaction_recovers_exactly
+      kind: FunctionDef
+      line: 1194
+      end_line: 1285
+    - name: test_cr21_interrupted_after_state_promotion_finalizes_receipt
+      kind: FunctionDef
+      line: 1289
+      end_line: 1375
+    - name: test_cr21_missing_authoritative_successor_fails_closed
+      kind: FunctionDef
+      line: 1379
+      end_line: 1449
+    - name: test_cr21_conflicting_successor_dependency_fails_closed
+      kind: FunctionDef
+      line: 1452
+      end_line: 1525
+    - name: test_cr21_advancement_never_mutates_live_repository
+      kind: FunctionDef
+      line: 1529
+      end_line: 1574
+    - name: test_cr22_machine_classification_contract
+      kind: FunctionDef
+      line: 1578
+      end_line: 1672
+    - name: test_cr22_unrecoverable_partial_state_fails_closed
+      kind: FunctionDef
+      line: 1675
+      end_line: 1774
+    - name: test_cr22_recovery_classification_contract
+      kind: FunctionDef
+      line: 1777
+      end_line: 1843
+    - name: test_cr23_advancement_provenance_contract
+      kind: FunctionDef
+      line: 1847
+      end_line: 1938
+    - name: test_cr23_operator_review_provenance_contract
+      kind: FunctionDef
+      line: 1941
+      end_line: 2021
+    - name: test_cr23_provenance_replay_is_identity_stable
+      kind: FunctionDef
+      line: 2024
+      end_line: 2078
+    - name: test_cr23_review_replay_is_identity_stable
+      kind: FunctionDef
+      line: 2081
+      end_line: 2135
+    - name: test_cr23_real_parent_state_never_mutated_by_isolated_provenance
+      kind: FunctionDef
+      line: 2138
+      end_line: 2185
+    - name: test_cr23_zo005_emm_awareness_bound_clean
+      kind: FunctionDef
+      line: 2189
+      end_line: 2223
+    - name: test_cr23_zo005_emm_awareness_bound_drifted
+      kind: FunctionDef
+      line: 2226
+      end_line: 2274
+    - name: test_cr23_zo005_emm_awareness_unbound
+      kind: FunctionDef
+      line: 2277
+      end_line: 2309
+    - name: test_cr23_zo005_emm_awareness_missing_bound_source
+      kind: FunctionDef
+      line: 2312
+      end_line: 2373
+    - name: test_cr23_zo005_emm_awareness_is_read_only
+      kind: FunctionDef
+      line: 2376
+      end_line: 2422
+    - name: test_cr23_zo005_does_not_call_rebind
+      kind: FunctionDef
+      line: 2425
+      end_line: 2462
+    - name: test_cr20_operator_review_cli_accept_replay_and_conflict
+      kind: FunctionDef
+      line: 2465
+      end_line: 2580
+    - name: test_cr20_fresh_projection_recovers_persisted_operator_decision
+      kind: FunctionDef
+      line: 2584
+      end_line: 2625
+    - name: test_cr20_fresh_projection_recovers_rejected_decision
+      kind: FunctionDef
+      line: 2629
+      end_line: 2670
+    - name: test_cr20_tampered_persisted_receipt_fails_closed
+      kind: FunctionDef
+      line: 2673
+      end_line: 2721
+    - name: test_cr20_conflicting_persisted_receipts_fail_closed
+      kind: FunctionDef
+      line: 2724
+      end_line: 2782
+    - name: test_current_gate_valid_result_derives_pending_review
+      kind: FunctionDef
+      line: 2814
+      end_line: 2871
+    - name: test_current_gate_result_does_not_imply_acceptance_or_completion
+      kind: FunctionDef
+      line: 2874
+      end_line: 2929
+    - name: test_cr23_emm_rebind_exact_authorized_mutation
+      kind: FunctionDef
+      line: 3003
+      end_line: 3058
+    - name: test_cr23_emm_rebind_exact_replay
+      kind: FunctionDef
+      line: 3061
+      end_line: 3098
+    - name: test_cr23_emm_rebind_conflicting_replay_fails_closed
+      kind: FunctionDef
+      line: 3101
+      end_line: 3139
+    - name: test_cr23_emm_rebind_unauthorized_drift_fails_closed
+      kind: FunctionDef
+      line: 3142
+      end_line: 3195
+    - name: test_cr23_emm_rebind_unbound_source_fails_closed
+      kind: FunctionDef
+      line: 3198
+      end_line: 3239
+    - name: test_cr23_emm_rebind_requires_exact_drift_set
+      kind: FunctionDef
+      line: 3242
+      end_line: 3294
+    - name: test_cr23_zo010_bound_clean
+      kind: FunctionDef
+      line: 3299
+      end_line: 3365
+    - name: test_cr23_zo010_bound_drifted
+      kind: FunctionDef
+      line: 3368
+      end_line: 3442
+    - name: test_cr23_zo010_unbound_existing_source
+      kind: FunctionDef
+      line: 3445
+      end_line: 3482
+    - name: test_cr23_zo010_unbound_missing_source
+      kind: FunctionDef
+      line: 3485
+      end_line: 3518
+    - name: test_cr23_zo010_bound_missing_source
+      kind: FunctionDef
+      line: 3521
+      end_line: 3569
+    - name: test_cr23_zo010_introspection_is_byte_read_only
+      kind: FunctionDef
+      line: 3572
+      end_line: 3625
+    - name: test_cr23_zo011_resource_preflight_ready
+      kind: FunctionDef
+      line: 3629
+      end_line: 3678
+    - name: test_cr23_zo011_resource_preflight_blocked
+      kind: FunctionDef
+      line: 3681
+      end_line: 3729
+    - name: test_cr23_zo011_missing_workspace_parent_resolves_existing_ancestor
+      kind: FunctionDef
+      line: 3732
+      end_line: 3765
+    - name: test_cr23_zo011_required_reserve_is_conservative
+      kind: FunctionDef
+      line: 3768
+      end_line: 3810
+    - name: test_cr23_zo011_resource_preflight_is_read_only
+      kind: FunctionDef
+      line: 3813
+      end_line: 3851
+    - name: test_cr23_zo011_never_classifies_resource_block_as_semantic_failure
+      kind: FunctionDef
+      line: 3854
+      end_line: 3898
+    - name: test_cr23_zo009_successor_action_resolves_exactly_one
+      kind: FunctionDef
+      line: 4046
+      end_line: 4104
+    - name: test_cr23_zo009_missing_successor_action_fails_closed
+      kind: FunctionDef
+      line: 4107
+      end_line: 4173
+    - name: test_cr23_zo009_action_surface_is_structured_resume_only
+      kind: FunctionDef
+      line: 4176
+      end_line: 4223
+    - name: test_cr23_zo009_missing_successor_is_canonically_rejected
+      kind: FunctionDef
+      line: 4225
+      end_line: 4280
+    - name: test_cr23_zo009_terminal_gate_exposes_no_successor_action
+      kind: FunctionDef
+      line: 4282
+      end_line: 4333
+    - name: test_cr23_zo009_terminal_successor_is_canonically_rejected
+      kind: FunctionDef
+      line: 4335
+      end_line: 4392
+    - name: test_cr23_zo009_projection_is_read_only
+      kind: FunctionDef
+      line: 4394
+      end_line: 4459
+    - name: test_cr23_zo006_current_gate_projects_executable
+      kind: FunctionDef
+      line: 4464
+      end_line: 4500
+    - name: test_cr23_zo006_completed_gate_is_not_executable
+      kind: FunctionDef
+      line: 4503
+      end_line: 4534
+    - name: test_cr23_zo006_future_gate_is_not_current
+      kind: FunctionDef
+      line: 4537
+      end_line: 4571
+    - name: test_cr23_zo006_blocked_gate_projects_blocked
+      kind: FunctionDef
+      line: 4574
+      end_line: 4624
+    - name: test_cr23_zo006_consumes_zo009_successor_authority
+      kind: FunctionDef
+      line: 4627
+      end_line: 4674
+    - name: test_cr23_zo006_projection_is_read_only
+      kind: FunctionDef
+      line: 4677
+      end_line: 4734
+    - name: test_cr23_zo006_never_executes_successor
+      kind: FunctionDef
+      line: 4737
+      end_line: 4790
+    - name: test_cr23_zo007_ready_for_manual_execution
+      kind: FunctionDef
+      line: 4804
+      end_line: 4849
+    - name: test_cr23_zo007_wrong_current_item_blocks
+      kind: FunctionDef
+      line: 4852
+      end_line: 4913
+    - name: test_cr23_zo007_missing_dependency_blocks
+      kind: FunctionDef
+      line: 4916
+      end_line: 4963
+    - name: test_cr23_zo007_parent_not_executable_blocks
+      kind: FunctionDef
+      line: 4966
+      end_line: 5024
+    - name: test_cr23_zo007_resource_blocked_is_distinct
+      kind: FunctionDef
+      line: 5027
+      end_line: 5084
+    - name: test_cr23_zo007_contract_identity_mismatch_fails_closed
+      kind: FunctionDef
+      line: 5087
+      end_line: 5142
+    - name: test_cr23_zo007_projection_is_read_only
+      kind: FunctionDef
+      line: 5145
+      end_line: 5218
+    - name: test_cr23_zo007_never_executes_or_advances
+      kind: FunctionDef
+      line: 5221
+      end_line: 5301
+    - name: test_cr23_zo008_live_shape_is_consistent
+      kind: FunctionDef
+      line: 5321
+      end_line: 5371
+    - name: test_cr23_zo008_parent_gate_mismatch_is_distinct
+      kind: FunctionDef
+      line: 5374
+      end_line: 5410
+    - name: test_cr23_zo008_nested_current_item_mismatch_blocks
+      kind: FunctionDef
+      line: 5413
+      end_line: 5470
+    - name: test_cr23_zo008_missing_dependency_is_distinct
+      kind: FunctionDef
+      line: 5473
+      end_line: 5514
+    - name: test_cr23_zo008_parent_authority_mismatch_is_distinct
+      kind: FunctionDef
+      line: 5517
+      end_line: 5572
+    - name: test_cr23_zo008_successor_execution_must_be_prohibited
+      kind: FunctionDef
+      line: 5575
+      end_line: 5628
+    - name: test_cr23_zo008_projection_is_read_only
+      kind: FunctionDef
+      line: 5631
+      end_line: 5700
+    - name: test_cr23_zo008_never_executes_or_advances
+      kind: FunctionDef
+      line: 5703
+      end_line: 5783
+    - name: test_cr23_zo013_live_composite_is_ready
+      kind: FunctionDef
+      line: 5818
+      end_line: 5859
+    - name: test_cr23_zo013_reports_exact_emm_blocker
+      kind: FunctionDef
+      line: 5862
+      end_line: 5916
+    - name: test_cr23_zo013_reports_exact_resource_blocker
+      kind: FunctionDef
+      line: 5919
+      end_line: 5974
+    - name: test_cr23_zo013_reports_nested_blocker
+      kind: FunctionDef
+      line: 5977
+      end_line: 6032
+    - name: test_cr23_zo013_reports_manual_blocker
+      kind: FunctionDef
+      line: 6035
+      end_line: 6090
+    - name: test_cr23_zo013_preserves_multiple_distinct_blockers
+      kind: FunctionDef
+      line: 6093
+      end_line: 6168
+    - name: test_cr23_zo013_projection_is_read_only
+      kind: FunctionDef
+      line: 6171
+      end_line: 6238
+    - name: test_cr23_zo013_never_executes_or_reconciles
+      kind: FunctionDef
+      line: 6241
+      end_line: 6319
+  - path: scripts/tests/test-mission-activation.py
+    symbols:
+    - name: MissionActivationTests
+      kind: ClassDef
+      line: 15
+      end_line: 232
+  source_resolution: PASS
+all_six_source_surfaces_resolved: true
+source_mutation_executed: false
+stage_executed: false
+commit_created: false
+push_performed: false
+eos_synchronization_executed: false
+cr46_completion_executed: false
+cr47_executed: false
+result: PASS

@@ -1,0 +1,29 @@
+schema_version: "1.0"
+record_type: CR47_BLOCK23_AUTHORIZED_MUTATIONS_CONTRACT_CLASSIFICATION
+cr_id: CR47
+result: PASS
+
+block23:
+  failure_stage: CANONICAL_REBIND_ARGUMENT_RESOLUTION
+  failure_class: REQUIRED_AUTHORIZED_MUTATIONS_ARGUMENT_NOT_RESOLVED
+  canonical_function: apply_emm_rebind_transaction
+  canonical_signature: "(repository_root: Path | str, *, authorized_mutations: dict[str, str], transaction_id: str) -> dict[str, Any]"
+
+execution:
+  rebind_invoked: false
+  binding_manifest_mutated: false
+  transaction_written: false
+  roadmap_validation_executed: false
+
+substantive_classification:
+  emm_rebind_defect_established: false
+  cr47_completion_defect_established: false
+  verifier_or_invocation_contract_defect: true
+  retry_required: true
+
+preserved:
+  target_source_sha256: "53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58"
+  binding_manifest_old_sha256: "2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a"
+  cr47_result: PASS
+  current_item: CR48
+  cr48_executed: false

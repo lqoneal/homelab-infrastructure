@@ -1,0 +1,37 @@
+schema_version: 1
+gate_id: CR43
+classification: TERMINAL_LOCAL_COMMIT_QUALIFICATION
+result: PASS
+qualified_at: '2026-08-11T14:21:25.899284+00:00'
+objective: Commit only qualified lifecycle corrective and evidence.
+final_corrective_commit: 8b651126a19ae5bab21ea5036cd410514e22ee0c
+original_interrupted_commit: 91505033340f0595c2ceb52ee29a32963ae2a5bb
+parent_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+origin_main_at_closeout: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+topology:
+  single_local_commit: true
+  push_performed: false
+  second_commit_created: false
+  single_commit_semantics_preserved: true
+content_provenance:
+  original_commit_path_count: 35
+  corrective_amend_delta_path_count: 438
+  final_commit_path_count: 473
+  outside_corrective_path_count: 35
+  outside_corrective_paths_equal_original_commit: true
+  outside_corrective_blobs_equal_original_commit: true
+  amend_delta_inside_corrective_tree_only: true
+evidence_semantics:
+  committed_pre_amend_evidence_preserved_as_historical: true
+  historical_evidence_rewritten: false
+  terminal_qualification_is_post_commit_closeout_evidence: true
+mutation_boundary:
+  protected_parent_c02_mutated_by_closeout: false
+  unrelated_dirty_worktree_preserved: true
+  index_empty_before_closeout: true
+  eos_synchronization_performed: false
+  cr44_executed: false
+  c02_advanced: false
+zeus_development_opportunities:
+- ZO-058
+- ZO-059

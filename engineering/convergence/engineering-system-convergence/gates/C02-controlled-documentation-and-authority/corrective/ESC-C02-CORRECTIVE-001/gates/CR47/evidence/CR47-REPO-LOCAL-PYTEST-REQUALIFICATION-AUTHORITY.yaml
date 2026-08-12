@@ -1,0 +1,45 @@
+schema_version: "1.0"
+record_type: CR47_REPOSITORY_LOCAL_TEST_REQUALIFICATION_AUTHORITY
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+implementation:
+  source_path: "scripts/lib/eos/convergence_roadmap.py"
+  source_sha256: "205f95746fdcb7933905aed3308e46f992767ddfb58d1f3877670c70b39d30b4"
+  test_path: "scripts/tests/test-convergence-roadmap.py"
+  test_sha256: "6aaf549a1951ce6f787170b75153370f14c1c27cb700554e8573274da15fc797"
+  codex_rerun_required: false
+
+pytest:
+  execution_authorized: true
+  execution_mode: TEST_ONLY
+  repository_tmp_root: "/data/engineering/repositories/homelab/tmp"
+  system_tmp_prohibited: true
+  tmpdir_required: true
+  tmp_required: true
+  temp_required: true
+  explicit_basetemp_required: true
+  exact_ten_tests_first: true
+  full_roadmap_test_after_exact_pass: true
+  mandatory_cleanup_after_each_test_phase: true
+  mandatory_final_run_cleanup: true
+  full_tmp_tree_archive_required: false
+  durable_test_logs_required: true
+
+mutation:
+  source_mutation_authorized: false
+  test_mutation_authorized: false
+
+lifecycle:
+  cr47_result_write_authorized: false
+  cr47_state_advancement_authorized: false
+  cr48_execution_authorized: false
+
+publication:
+  stage_authorized: false
+  commit_authorized: false
+  push_authorized: false
+  eos_sync_authorized: false
+
+next_authorized_action: EXECUTE_CR47_REPOSITORY_LOCAL_TEST_REQUALIFICATION_ONLY

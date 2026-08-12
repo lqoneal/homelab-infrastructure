@@ -1,0 +1,36 @@
+schema_version: '1.0'
+record_type: CR47_EXACT_EMM_REBIND_CONTRACT
+cr_id: CR47
+result: PASS
+manifest:
+  path: engineering/convergence/engineering-system-convergence/binding-manifest.yaml
+  target_source: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md
+  entry_trail:
+  - sources
+  - '35'
+  digest_key: sha256
+  old_sha256: 2f676d03e64f82dc2e34e02326414f7b6441432780b9f2016f0396d93b854a8a
+  new_sha256: 53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58
+  exact_source_count: 1
+existing_transaction_contract:
+  transaction_root: engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions
+  example_transactions:
+  - engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/CR43-PROJECT-STATE-CONTINUATION-REPAIR-20260811T123440Z.json
+  - engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/CR42-TO-CR43-EMM-REBIND-20260811T123046Z.json
+  - engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/CR41-TO-CR42-EMM-REBIND-20260811T115305Z.json
+  - engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/CR40-EMM-REBIND-20260811T113149Z.json
+  - engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-cr37-live-closeout-001.json
+  must_follow_existing_repository_schema: true
+  new_transaction_required: true
+execution_boundary:
+  update_only_target_manifest_digest: true
+  write_one_rebind_transaction: true
+  run_roadmap_validate_after_rebind: true
+  rewrite_cr47_result: false
+  rewrite_cr47_summary: false
+  repeat_cr47_state_transition: false
+  execute_cr48: false
+  stage: false
+  commit: false
+  push: false
+  eos_sync: false

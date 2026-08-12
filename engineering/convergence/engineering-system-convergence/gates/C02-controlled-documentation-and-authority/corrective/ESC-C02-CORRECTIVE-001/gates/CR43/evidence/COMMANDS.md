@@ -97,3 +97,26 @@ including the terminal evidence materialized by this block.
 
 Amendment remains unauthorized until the prospective amended tree is
 independently verified.
+
+## CR43 terminal closeout reconciliation
+
+- Final qualified local corrective commit: `8b651126a19ae5bab21ea5036cd410514e22ee0c`
+- Original interrupted local commit: `91505033340f0595c2ceb52ee29a32963ae2a5bb`
+- Parent/origin-main commit: `f2e85d857dc73210c428d42ef9530ce9ffc4933b`
+- Original qualified commit path set: 35 paths.
+- Corrective amendment delta: 438 paths.
+- Final local corrective commit: 473 paths.
+- All 35 paths outside the corrective tree are provenance-preserved from the
+  original qualified commit with identical blob identities.
+- The amendment itself changes only corrective-tree paths.
+- Existing unrelated dirty worktree content was preserved and excluded from
+  this closeout transaction.
+- The Block-16 publication diagnostic artifact was removed because CR43
+  explicitly prohibits push.
+- No push occurred.
+- No EOS synchronization or refresh occurred.
+- CR44 was not executed.
+- C02 was not accepted or advanced.
+- Terminal post-commit qualification:
+  `evidence/CR43-TERMINAL-COMMIT-QUALIFICATION.yaml`
+

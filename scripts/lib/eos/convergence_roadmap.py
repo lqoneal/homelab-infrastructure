@@ -13,6 +13,29 @@ import argparse
 import hashlib
 import sys
 from pathlib import Path
+try:
+    from scripts.lib.eos.roadmap_lifecycle import (
+        LifecycleError,
+        LifecycleState,
+        ResultClass,
+        ResultFacts,
+        classify_result,
+        pending_review_transition,
+        result_recorded_transition,
+    )
+except ModuleNotFoundError as exc:
+    if exc.name != "scripts":
+        raise
+
+    from roadmap_lifecycle import (
+        LifecycleError,
+        LifecycleState,
+        ResultClass,
+        ResultFacts,
+        classify_result,
+        pending_review_transition,
+        result_recorded_transition,
+    )
 from typing import Any
 
 import jsonschema
@@ -327,7 +350,69 @@ class ConvergenceRoadmap:
                         self._validate_evidence_manifest(gate_id, evidence_path)
                 results[gate_id] = result
             elif result_path.exists():
-                raise RoadmapError(f"{gate_id} has a result but is not completed")
+                result = _load_yaml(result_path, f"{gate_id} result")
+
+                _reject_runtime_identifiers(
+                    result,
+                    f"result.{gate_id}",
+                )
+
+                if result.get("gate_id") != gate_id:
+                    raise RoadmapError(
+                        f"{gate_id} result identity mismatch"
+                    )
+
+                result_value = result.get("result")
+
+                result_class = classify_result(
+                    ResultFacts(
+                        exists=True,
+                        identity_valid=True,
+                        schema_valid=(
+                            isinstance(result_value, str)
+                            and bool(result_value)
+                        ),
+                        evidence_valid=(
+                            isinstance(result.get("evidence"), list)
+                            and bool(result["evidence"])
+                            and all(
+                                isinstance(item, dict)
+                                and bool(item.get("path"))
+                                for item in result["evidence"]
+                            )
+                        ),
+                        final=(
+                            result_value in TERMINAL_RESULTS
+                        ),
+                    )
+                )
+
+                if result_class is not ResultClass.VALID_FINAL:
+                    raise RoadmapError(
+                        f"{gate_id} current result is not "
+                        f"reviewable: {result_class.value}"
+                    )
+
+                try:
+                    recorded_state = result_recorded_transition(
+                        LifecycleState.CURRENT,
+                        result_class,
+                    )
+
+                    review_state = pending_review_transition(
+                        recorded_state,
+                        result_class,
+                    )
+                except LifecycleError as exc:
+                    raise RoadmapError(str(exc)) from exc
+
+                if review_state is not                         LifecycleState.AWAITING_OPERATOR_REVIEW:
+                    raise RoadmapError(
+                        f"{gate_id} failed to derive "
+                        "AWAITING_OPERATOR_REVIEW"
+                    )
+
+                results[gate_id] = result
 
         if state["last_completed_gate"] != (completed[-1] if completed else None):
             raise RoadmapError("last_completed_gate disagrees with completed_gates")
@@ -343,8 +428,35 @@ class ConvergenceRoadmap:
             )
 
         current_gate = gates[current]
-        if state["next_authorized_action"] != current_gate["resume_instructions"]["next_authorized_action"]:
-            raise RoadmapError("state and current gate next authorized action disagree")
+
+        # The frozen gate resume instruction describes the execution-time
+        # action for a CURRENT gate that has not yet produced a result.
+        #
+        # Once validation has accepted a terminal result for the current
+        # gate, the lifecycle is RESULT_RECORDED /
+        # AWAITING_OPERATOR_REVIEW.  At that point the execution-time
+        # resume instruction is no longer the applicable next-action
+        # invariant.  CR16 validates that lifecycle condition read-only;
+        # later lifecycle/CLI gates own review-action projection and
+        # mutating operator decisions.
+        if current not in results:
+            if (
+                state["next_authorized_action"]
+                != current_gate["resume_instructions"][
+                    "next_authorized_action"
+                ]
+            ):
+                raise RoadmapError(
+                    "state and current gate next authorized action disagree"
+                )
+        elif not isinstance(
+            state.get("next_authorized_action"),
+            str,
+        ) or not state["next_authorized_action"].strip():
+            raise RoadmapError(
+                "pending-review state requires a durable "
+                "next authorized action"
+            )
 
         self._validate_project_state(roadmap, state)
         self._validate_manifest(roadmap, state, gates)
@@ -557,6 +669,17 @@ class ConvergenceRoadmap:
         if roadmap["roadmap_class"] == "PLANNING_ONLY":
             all_warnings.append("Roadmap class PLANNING_ONLY is structurally valid but cannot be executable.")
         executable = executable_claim and not all_blockers
+
+        current_result = resolved["results"].get(
+            resolved["state"]["current_gate"]
+        )
+
+        lifecycle_state = (
+            "AWAITING_OPERATOR_REVIEW"
+            if current_result is not None
+            else "CURRENT"
+        )
+
         result: dict[str, Any] = {
             "schema_version": 1,
             "roadmap_id": roadmap["roadmap_id"],
@@ -568,6 +691,8 @@ class ConvergenceRoadmap:
             },
             "evaluated_at": evaluated_at,
             "structural_result": "PASS",
+            "lifecycle_state": lifecycle_state,
+            "next_authorized_action": resolved["state"]["next_authorized_action"],
             **dimension_results,
             "gate_results": gate_results,
             "warnings": all_warnings,
@@ -689,6 +814,59 @@ class ConvergenceRoadmap:
         state = resolved["state"]
         roadmap = resolved["roadmap"]
         gate = resolved["gates"][state["current_gate"]]
+        current_result = resolved["results"].get(state["current_gate"])
+
+        if current_result is None:
+            lifecycle_state = "CURRENT"
+            execution_result_state = "ABSENT"
+            review_required = False
+            review_state = "NOT_REQUIRED"
+            operator_decision = "NONE"
+            completion_state = "INCOMPLETE"
+        else:
+            gate_definition_path = _safe_repository_path(
+                self.repository_root,
+                next(
+                    item["definition"]
+                    for item in roadmap["gates"]
+                    if item["gate_id"] == state["current_gate"]
+                ),
+                "current gate definition",
+            )
+
+            result_path = _safe_repository_path(
+                self.repository_root,
+                gate["result_location"],
+                "current gate result",
+            )
+
+            receipt = _resolve_operator_review_receipt(
+                self.repository_root,
+                roadmap_id=roadmap["roadmap_id"],
+                roadmap_version=str(roadmap["roadmap_version"]),
+                gate_id=state["current_gate"],
+                gate_definition_path=gate_definition_path,
+                result_path=result_path,
+            )
+
+            execution_result_state = "VALID_FINAL"
+            completion_state = "INCOMPLETE"
+
+            if receipt is None:
+                lifecycle_state = "AWAITING_OPERATOR_REVIEW"
+                review_required = True
+                review_state = "AWAITING_OPERATOR_REVIEW"
+                operator_decision = "NONE"
+            else:
+                operator_decision = receipt["decision"]
+                lifecycle_state = (
+                    "ACCEPTED"
+                    if operator_decision == "ACCEPT"
+                    else "REJECTED"
+                )
+                review_required = False
+                review_state = lifecycle_state
+
         return {
             "result": "PASS",
             "program_id": roadmap["program_id"],
@@ -700,6 +878,12 @@ class ConvergenceRoadmap:
             "program_state": state["program_state"],
             "current_gate": state["current_gate"],
             "current_gate_title": gate["title"],
+            "lifecycle_state": lifecycle_state,
+            "execution_result_state": execution_result_state,
+            "review_required": review_required,
+            "review_state": review_state,
+            "operator_decision": operator_decision,
+            "completion_state": completion_state,
             "last_completed_gate": state["last_completed_gate"],
             "completed_gates": state["completed_gates"],
             "blocked_gates": state["blocked_gates"],
@@ -739,6 +923,3193 @@ def _raise(message: str) -> bool:
     raise RoadmapError(message)
 
 
+def _active_gate_projection_context(
+    repository_root: Path | str,
+) -> dict[str, Any]:
+    """Resolve the minimum canonical authority needed by CR47 projections."""
+    repository_root = Path(repository_root).resolve()
+    roadmap_root = repository_root / ROADMAP_RELATIVE_ROOT
+    roadmap = _load_yaml(roadmap_root / ROADMAP_FILE, "roadmap definition")
+    state = _load_yaml(roadmap_root / STATE_FILE, "roadmap state")
+    gate_id = state.get("current_gate")
+    if not isinstance(gate_id, str) or not gate_id:
+        raise RoadmapError("active gate authority is missing")
+    references = [
+        item for item in roadmap.get("gates", [])
+        if isinstance(item, dict) and item.get("gate_id") == gate_id
+    ]
+    if len(references) != 1:
+        raise RoadmapError("active gate authority cannot be uniquely resolved")
+    reference = references[0]
+    definition_path = _safe_repository_path(
+        repository_root, reference.get("definition"), "active gate definition",
+    )
+    gate = _load_yaml(definition_path, "active gate definition")
+    if gate.get("gate_id") != gate_id:
+        raise RoadmapError("active gate definition identity mismatch")
+    if gate.get("result_location") != reference.get("result"):
+        raise RoadmapError("active gate result authority is ambiguous")
+    result_path = _safe_repository_path(
+        repository_root, gate.get("result_location"), "active gate result",
+    )
+    return {
+        "repository_root": repository_root,
+        "roadmap_root": roadmap_root,
+        "roadmap": roadmap,
+        "state": state,
+        "gate_id": gate_id,
+        "reference": reference,
+        "gate": gate,
+        "definition_path": definition_path,
+        "result_path": result_path,
+    }
+
+
+def project_authority_surface_contract(
+    repository_root: Path | str = DEFAULT_REPOSITORY_ROOT,
+    *,
+    field: str = "result_location",
+) -> dict[str, Any]:
+    """Identify which canonical surface owns an active-gate field."""
+    context = _active_gate_projection_context(repository_root)
+    owners = {
+        "current_gate": (context["roadmap_root"] / STATE_FILE, "ROADMAP_STATE"),
+        "result_location": (context["definition_path"], "GATE_DEFINITION"),
+        "evidence_location": (context["definition_path"], "GATE_DEFINITION"),
+        "next_gate": (context["definition_path"], "GATE_DEFINITION"),
+        "status": (context["definition_path"], "GATE_DEFINITION"),
+    }
+    if field not in owners:
+        raise RoadmapError(f"no canonical authority surface for field: {field}")
+    source, kind = owners[field]
+    value = (
+        context["state"][field]
+        if field == "current_gate"
+        else context["gate"].get(field)
+    )
+    if value is None:
+        raise RoadmapError(f"canonical authority field is missing: {field}")
+    return {
+        "result": "PASS",
+        "projection": "AUTHORITY_SURFACE_CONTRACT",
+        "gate_id": context["gate_id"],
+        "field": field,
+        "value": value,
+        "authority_surface": str(source),
+        "authority_kind": kind,
+        "roadmap_reference_role": "LOCATOR_PROVENANCE",
+        "ownership": "AUTHORITATIVE",
+        "read_only": True,
+    }
+
+
+def project_result_authority_identity(
+    repository_root: Path | str = DEFAULT_REPOSITORY_ROOT,
+    *,
+    result_path: Path | str | None = None,
+) -> dict[str, Any]:
+    """Project the canonical active-gate/result identity relationship."""
+    context = _active_gate_projection_context(repository_root)
+    path = context["result_path"] if result_path is None else Path(result_path)
+    if not path.is_absolute():
+        path = _safe_repository_path(
+            context["repository_root"], str(path), "inspected result",
+        )
+    else:
+        path = path.resolve()
+        if context["repository_root"] not in path.parents:
+            raise RoadmapError("inspected result escapes repository root")
+    declared_gate = None
+    if path.is_file():
+        declared_gate = _load_yaml(path, "inspected result").get("gate_id")
+        if not isinstance(declared_gate, str) or not declared_gate:
+            raise RoadmapError("result-declared gate identity is missing")
+    return {
+        "result": "PASS",
+        "projection": "RESULT_AUTHORITY_IDENTITY",
+        "active_gate_id": context["gate_id"],
+        "result_declared_gate_id": declared_gate,
+        "identity_state": (
+            "RESULT_ABSENT" if declared_gate is None else
+            "MATCH" if declared_gate == context["gate_id"] else "MISMATCH"
+        ),
+        "identity_matches": (
+            None if declared_gate is None else declared_gate == context["gate_id"]
+        ),
+        "canonical_result_path": str(context["result_path"]),
+        "inspected_result_path": str(path),
+        "authority_surface": str(context["definition_path"]),
+        "authority_kind": "GATE_DEFINITION",
+        "read_only": True,
+    }
+
+
+def project_result_lifecycle_diagnostic(
+    repository_root: Path | str = DEFAULT_REPOSITORY_ROOT,
+    *,
+    result_path: Path | str | None = None,
+) -> dict[str, Any]:
+    """Return a bounded canonical lifecycle diagnostic for the active gate."""
+    context = _active_gate_projection_context(repository_root)
+    identity = project_result_authority_identity(
+        repository_root, result_path=result_path,
+    )
+    path = Path(identity["inspected_result_path"])
+    value = _load_yaml(path, "inspected result") if path.is_file() else {}
+    declared_digest = value.get("starting_state", {}).get("gate_contract_sha256")
+    stale = (
+        isinstance(declared_digest, str)
+        and declared_digest != _sha256(context["definition_path"])
+    )
+    facts = ResultFacts(
+        exists=path.is_file(),
+        identity_valid=identity["identity_state"] == "MATCH",
+        schema_valid=isinstance(value.get("result"), str) and bool(value.get("result")),
+        evidence_valid=(
+            isinstance(value.get("evidence"), list)
+            and bool(value.get("evidence"))
+            and all(isinstance(item, dict) and bool(item.get("path")) for item in value["evidence"])
+        ),
+        final=value.get("result") in TERMINAL_RESULTS,
+        stale=stale,
+    )
+    result_class = classify_result(facts)
+    classification = (
+        "WRONG_GATE_RESULT" if result_class is ResultClass.INVALID
+        and identity["identity_state"] == "MISMATCH" else result_class.value
+    )
+    actions = {
+        "ABSENT": context["state"].get("next_authorized_action"),
+        "WRONG_GATE_RESULT": "REMOVE_OR_REPLACE_WRONG_GATE_RESULT",
+        "STALE": "REGENERATE_RESULT_AGAINST_CURRENT_GATE_AUTHORITY",
+        "INVALID": "CORRECT_RESULT_TO_CANONICAL_CONTRACT",
+        "NONFINAL": "COMPLETE_ACTIVE_GATE_RESULT",
+        "VALID_FINAL": "REQUEST_OPERATOR_REVIEW",
+        "CONFLICTING": "RESOLVE_CONFLICTING_RESULT_AUTHORITY",
+    }
+    return {
+        "result": "PASS",
+        "projection": "RESULT_LIFECYCLE_DIAGNOSTIC",
+        "active_gate_id": context["gate_id"],
+        "classification": classification,
+        "canonical_result_class": result_class.value,
+        "blocking_dependency": None if classification == "VALID_FINAL" else "ACTIVE_GATE_RESULT",
+        "recommended_action": actions[classification],
+        "identity": identity,
+        "stale_authority": (
+            None if not stale else {
+                "declared_gate_definition_digest": declared_digest,
+                "current_gate_definition_digest": _sha256(context["definition_path"]),
+            }
+        ),
+        "diagnostic_scope": "ACTIVE_GATE_ONLY",
+        "read_only": True,
+        "state_advanced": False,
+        "successor_executed": False,
+    }
+
+
+def project_acceptance_target_authority(
+    repository_root: Path | str = DEFAULT_REPOSITORY_ROOT,
+    *,
+    target_gate_id: str | None = None,
+) -> dict[str, Any]:
+    """Project whether an acceptance request targets the active gate."""
+    context = _active_gate_projection_context(repository_root)
+    target = context["gate_id"] if target_gate_id is None else target_gate_id
+    if not isinstance(target, str) or not target:
+        raise RoadmapError("acceptance target identity is missing")
+    matches = target == context["gate_id"]
+    return {
+        "result": "PASS",
+        "projection": "ACCEPTANCE_TARGET_AUTHORITY",
+        "active_gate_id": context["gate_id"],
+        "target_gate_id": target,
+        "target_matches_active_gate": matches,
+        "classification": "AUTHORIZED_TARGET" if matches else "WRONG_CURRENT_GATE",
+        "authority_surface": str(context["roadmap_root"] / STATE_FILE),
+        "authority_kind": "ROADMAP_STATE",
+        "read_only": True,
+    }
+
+
+def project_acceptance_prerequisites(
+    repository_root: Path | str = DEFAULT_REPOSITORY_ROOT,
+    *,
+    target_gate_id: str | None = None,
+    result_path: Path | str | None = None,
+) -> dict[str, Any]:
+    """Project canonical preconditions without creating acceptance authority."""
+    context = _active_gate_projection_context(repository_root)
+    target = project_acceptance_target_authority(
+        repository_root, target_gate_id=target_gate_id,
+    )
+    diagnostic = project_result_lifecycle_diagnostic(
+        repository_root, result_path=result_path,
+    )
+    transition_valid = False
+    if diagnostic["canonical_result_class"] == ResultClass.VALID_FINAL.value:
+        try:
+            recorded = result_recorded_transition(LifecycleState.CURRENT, ResultClass.VALID_FINAL)
+            transition_valid = pending_review_transition(recorded, ResultClass.VALID_FINAL) is LifecycleState.AWAITING_OPERATOR_REVIEW
+        except LifecycleError:
+            transition_valid = False
+    checks = [
+        {"prerequisite": "TARGET_IS_ACTIVE_GATE", "satisfied": target["target_matches_active_gate"]},
+        {"prerequisite": "RESULT_IS_VALID_FINAL", "satisfied": diagnostic["classification"] == "VALID_FINAL"},
+        {"prerequisite": "AWAITING_OPERATOR_REVIEW", "satisfied": transition_valid},
+    ]
+    missing = [item["prerequisite"] for item in checks if not item["satisfied"]]
+    return {
+        "result": "PASS",
+        "projection": "ACCEPTANCE_PREREQUISITES",
+        "target_gate_id": target["target_gate_id"],
+        "prerequisites": checks,
+        "missing_prerequisites": missing,
+        "all_satisfied": not missing,
+        "acceptance_receipt_created": False,
+        "read_only": True,
+    }
+
+
+def project_acceptance_readiness(
+    repository_root: Path | str = DEFAULT_REPOSITORY_ROOT,
+    *,
+    target_gate_id: str | None = None,
+    result_path: Path | str | None = None,
+) -> dict[str, Any]:
+    """Compose acceptance boundary and prerequisite projections."""
+    prerequisites = project_acceptance_prerequisites(
+        repository_root,
+        target_gate_id=target_gate_id,
+        result_path=result_path,
+    )
+    blockers = list(prerequisites["missing_prerequisites"])
+    return {
+        "result": "PASS",
+        "projection": "ACCEPTANCE_READINESS",
+        "target_gate_id": prerequisites["target_gate_id"],
+        "ready": not blockers,
+        "classification": "READY_FOR_EXPLICIT_ACCEPTANCE" if not blockers else "NOT_READY",
+        "blockers": blockers,
+        "next_authorized_action": (
+            "REQUEST_EXPLICIT_OPERATOR_ACCEPTANCE" if not blockers
+            else project_result_lifecycle_diagnostic(
+                repository_root, result_path=result_path,
+            )["recommended_action"]
+        ),
+        "prerequisites": prerequisites,
+        "acceptance_executed": False,
+        "acceptance_receipt_created": False,
+        "state_advanced": False,
+        "successor_executed": False,
+        "read_only": True,
+    }
+
+
+
+
+
+
+def inspect_emm_binding_scope(
+    repository_root: Path | str,
+    *,
+    source_path: str,
+) -> dict[str, Any]:
+    """Return read-only EMM binding and drift status for one path."""
+
+    repository_root = Path(repository_root).resolve()
+
+    if (
+        not isinstance(source_path, str)
+        or not source_path.strip()
+    ):
+        raise RoadmapError("missing EMM source path")
+
+    candidate = _safe_repository_path(
+        repository_root,
+        source_path,
+        "EMM inspection source",
+    )
+
+    roadmap_root = (
+        repository_root
+        / ROADMAP_RELATIVE_ROOT
+    )
+
+    manifest_path = roadmap_root / MANIFEST_FILE
+
+    manifest = _load_yaml(
+        manifest_path,
+        "EMM binding manifest",
+    )
+
+    sources = manifest.get("sources")
+
+    if not isinstance(sources, list):
+        raise RoadmapError(
+            "EMM binding manifest sources are malformed"
+        )
+
+    matches = [
+        entry
+        for entry in sources
+        if (
+            isinstance(entry, dict)
+            and entry.get("path") == source_path
+        )
+    ]
+
+    if len(matches) > 1:
+        raise RoadmapError(
+            "duplicate EMM binding source: "
+            + source_path
+        )
+
+    source_exists = candidate.is_file()
+
+    if not matches:
+        return {
+            "result": "PASS",
+            "classification": "UNBOUND_BY_POLICY",
+            "source_path": source_path,
+            "bound": False,
+            "source_exists": source_exists,
+            "expected_sha256": None,
+            "actual_sha256": (
+                _sha256(candidate)
+                if source_exists
+                else None
+            ),
+            "drifted": False,
+            "rebind_eligible": False,
+            "read_only": True,
+        }
+
+    entry = matches[0]
+
+    if set(entry) != {"path", "sha256"}:
+        raise RoadmapError(
+            "EMM binding entry is malformed"
+        )
+
+    expected = entry["sha256"]
+
+    if not source_exists:
+        return {
+            "result": "PASS",
+            "classification": "MISSING_SOURCE",
+            "source_path": source_path,
+            "bound": True,
+            "source_exists": False,
+            "expected_sha256": expected,
+            "actual_sha256": None,
+            "drifted": False,
+            "rebind_eligible": False,
+            "read_only": True,
+        }
+
+    actual = _sha256(candidate)
+
+    drifted = actual != expected
+
+    return {
+        "result": "PASS",
+        "classification": (
+            "BOUND_DRIFTED"
+            if drifted
+            else "BOUND_CLEAN"
+        ),
+        "source_path": source_path,
+        "bound": True,
+        "source_exists": True,
+        "expected_sha256": expected,
+        "actual_sha256": actual,
+        "drifted": drifted,
+        "rebind_eligible": drifted,
+        "read_only": True,
+    }
+
+
+
+
+
+
+
+
+
+def project_composite_execution_preflight(
+    repository_root: Path | str,
+    *,
+    parent_gate_id: str,
+    corrective_root_path: str,
+    manual_gate_id: str,
+    manual_contract_path: str,
+    source_path: str,
+    temporary_workspace: str | None = None,
+) -> dict[str, Any]:
+    """Compose qualified Zeus projections without re-deriving authority."""
+
+    repository_root = Path(repository_root).resolve()
+
+    successor = project_successor_action_contract(
+        repository_root,
+        gate_id=parent_gate_id,
+    )
+
+    maturity = project_executable_roadmap_maturity(
+        repository_root,
+        gate_id=parent_gate_id,
+    )
+
+    emm_scope = inspect_emm_binding_scope(
+        repository_root,
+        source_path=source_path,
+    )
+
+    emm_awareness = project_emm_reconciliation_awareness(
+        repository_root,
+        source_path=source_path,
+    )
+
+    resource = project_qualification_resource_preflight(
+        repository_root,
+        temporary_workspace=temporary_workspace,
+        fixture_copy_multiplier=8,
+        minimum_extra_bytes=2 * 1024**3,
+    )
+
+    nested = project_nested_corrective_reconciliation(
+        repository_root,
+        parent_gate_id=parent_gate_id,
+        corrective_root_path=corrective_root_path,
+        manual_gate_id=manual_gate_id,
+        manual_contract_path=manual_contract_path,
+    )
+
+    manual = project_manual_gate_execution_preflight(
+        repository_root,
+        parent_gate_id=parent_gate_id,
+        manual_gate_id=manual_gate_id,
+        manual_contract_path=manual_contract_path,
+        temporary_workspace=temporary_workspace,
+    )
+
+    components = {
+        "ZO-005": emm_awareness,
+        "ZO-006": maturity,
+        "ZO-007": manual,
+        "ZO-008": nested,
+        "ZO-009": successor,
+        "ZO-010": emm_scope,
+        "ZO-011": resource,
+    }
+
+    blockers = []
+
+    if emm_scope.get("classification") == "MISSING_SOURCE":
+        blockers.append({
+            "dependency": "ZO-010",
+            "classification":
+                emm_scope.get("classification"),
+        })
+
+    if emm_awareness.get("reconciliation_required") is True:
+        blockers.append({
+            "dependency": "ZO-005",
+            "classification":
+                emm_awareness.get("classification"),
+        })
+
+    if resource.get("classification") != "READY":
+        blockers.append({
+            "dependency": "ZO-011",
+            "classification":
+                resource.get("classification"),
+        })
+
+    if nested.get("consistent") is not True:
+        blockers.append({
+            "dependency": "ZO-008",
+            "classification":
+                nested.get("classification"),
+        })
+
+    if maturity.get("classification") != "CURRENT_EXECUTABLE":
+        blockers.append({
+            "dependency": "ZO-006",
+            "classification":
+                maturity.get("classification"),
+        })
+
+    if manual.get("ready") is not True:
+        blockers.append({
+            "dependency": "ZO-007",
+            "classification":
+                manual.get("classification"),
+        })
+
+    if (
+        successor.get("classification")
+        != "EXECUTABLE_SUCCESSOR_ACTION_RESOLVED"
+    ):
+        blockers.append({
+            "dependency": "ZO-009",
+            "classification":
+                successor.get("classification"),
+        })
+
+    if blockers:
+        first = blockers[0]
+
+        classification = "BLOCKED"
+        ready = False
+        blocking_dependency = first["dependency"]
+        blocking_classification = first["classification"]
+        recommended_action = (
+            "RESOLVE_" + blocking_dependency.replace("-", "_")
+        )
+
+    else:
+        classification = "READY"
+        ready = True
+        blocking_dependency = None
+        blocking_classification = None
+        recommended_action = (
+            manual.get("classification")
+        )
+
+    return {
+        "result": "PASS",
+        "projection":
+            "ZEUS_COMPOSITE_EXECUTION_PREFLIGHT",
+        "classification":
+            classification,
+        "ready":
+            ready,
+        "blocking_dependency":
+            blocking_dependency,
+        "blocking_classification":
+            blocking_classification,
+        "blocking_dependencies":
+            blockers,
+        "component_order": [
+            "ZO-010",
+            "ZO-005",
+            "ZO-011",
+            "ZO-008",
+            "ZO-006",
+            "ZO-007",
+            "ZO-009",
+        ],
+        "components":
+            components,
+        "parent_gate_id":
+            parent_gate_id,
+        "manual_gate_id":
+            manual_gate_id,
+        "nested_current_item":
+            nested.get("nested_current_item"),
+        "next_nested_item":
+            nested.get("next_item"),
+        "successor_gate":
+            successor.get("successor_gate"),
+        "next_authorized_action":
+            successor.get("next_authorized_action"),
+        "recommended_action":
+            recommended_action,
+        "execution_performed":
+            False,
+        "state_advanced":
+            False,
+        "parent_gate_advanced":
+            False,
+        "successor_executed":
+            False,
+        "automatic_reconciliation":
+            False,
+        "read_only":
+            True,
+    }
+
+
+def project_nested_corrective_reconciliation(
+    repository_root: Path | str,
+    *,
+    parent_gate_id: str,
+    corrective_root_path: str,
+    manual_gate_id: str,
+    manual_contract_path: str,
+) -> dict[str, Any]:
+    """Project consistency between parent and nested corrective state."""
+
+    repository_root = Path(repository_root).resolve()
+
+    if not isinstance(parent_gate_id, str) or not parent_gate_id.strip():
+        raise RoadmapError("missing parent_gate_id")
+
+    if not isinstance(corrective_root_path, str) or not corrective_root_path.strip():
+        raise RoadmapError("missing corrective_root_path")
+
+    if not isinstance(manual_gate_id, str) or not manual_gate_id.strip():
+        raise RoadmapError("missing manual_gate_id")
+
+    if not isinstance(manual_contract_path, str) or not manual_contract_path.strip():
+        raise RoadmapError("missing manual_contract_path")
+
+    resolver = ConvergenceRoadmap(repository_root)
+
+    validated = resolver.validate()
+
+    parent_state = validated.get("state")
+
+    if not isinstance(parent_state, dict):
+        raise RoadmapError(
+            "validated parent roadmap state unavailable"
+        )
+
+    parent_current_gate = parent_state.get(
+        "current_gate"
+    )
+
+    if parent_current_gate != parent_gate_id:
+        return {
+            "result": "PASS",
+            "projection":
+                "ZEUS_NESTED_CORRECTIVE_RECONCILIATION",
+            "classification":
+                "PARENT_GATE_MISMATCH",
+            "consistent": False,
+            "blocking_dependency":
+                "PARENT_ROADMAP_STATE",
+            "parent_gate_id":
+                parent_gate_id,
+            "parent_current_gate":
+                parent_current_gate,
+            "nested_current_item":
+                None,
+            "execution_performed":
+                False,
+            "state_advanced":
+                False,
+            "parent_gate_advanced":
+                False,
+            "successor_executed":
+                False,
+            "read_only":
+                True,
+        }
+
+    corrective_root = _safe_repository_path(
+        repository_root,
+        corrective_root_path,
+        "corrective root",
+    )
+
+    corrective_state_path = (
+        corrective_root
+        / "STATE.yaml"
+    )
+
+    corrective_roadmap_path = (
+        corrective_root
+        / "ROADMAP.yaml"
+    )
+
+    if not corrective_state_path.is_file():
+        raise RoadmapError(
+            "nested corrective STATE.yaml missing"
+        )
+
+    if not corrective_roadmap_path.is_file():
+        raise RoadmapError(
+            "nested corrective ROADMAP.yaml missing"
+        )
+
+    corrective_state = _load_yaml(
+        corrective_state_path,
+        "nested corrective state",
+    )
+
+    corrective_roadmap = _load_yaml(
+        corrective_roadmap_path,
+        "nested corrective roadmap",
+    )
+
+    corrective_roadmap_id = corrective_roadmap.get(
+        "roadmap_id"
+    )
+
+    if not corrective_roadmap_id:
+        raise RoadmapError(
+            "nested corrective roadmap identity missing"
+        )
+
+    manual_contract_abs = _safe_repository_path(
+        repository_root,
+        manual_contract_path,
+        "manual execution contract",
+    )
+
+    manual_contract = _load_yaml(
+        manual_contract_abs,
+        "manual execution contract",
+    )
+
+    if manual_contract.get("gate_id") != manual_gate_id:
+        raise RoadmapError(
+            "manual gate identity mismatch"
+        )
+
+    authority = manual_contract.get(
+        "authority"
+    )
+
+    if not isinstance(authority, dict):
+        raise RoadmapError(
+            "manual execution authority missing"
+        )
+
+    required_parent = authority.get(
+        "parent_gate"
+    )
+
+    if required_parent != parent_gate_id:
+        return {
+            "result": "PASS",
+            "projection":
+                "ZEUS_NESTED_CORRECTIVE_RECONCILIATION",
+            "classification":
+                "NESTED_PARENT_AUTHORITY_MISMATCH",
+            "consistent": False,
+            "blocking_dependency":
+                "MANUAL_CONTRACT_AUTHORITY",
+            "parent_gate_id":
+                parent_gate_id,
+            "manual_parent_gate":
+                required_parent,
+            "nested_current_item":
+                corrective_state.get("current_item"),
+            "execution_performed":
+                False,
+            "state_advanced":
+                False,
+            "parent_gate_advanced":
+                False,
+            "successor_executed":
+                False,
+            "read_only":
+                True,
+        }
+
+    required_current_item = authority.get(
+        "current_item_required"
+    )
+
+    current_item = corrective_state.get(
+        "current_item"
+    )
+
+    if current_item != required_current_item:
+        return {
+            "result": "PASS",
+            "projection":
+                "ZEUS_NESTED_CORRECTIVE_RECONCILIATION",
+            "classification":
+                "NESTED_CURRENT_ITEM_MISMATCH",
+            "consistent": False,
+            "blocking_dependency":
+                "NESTED_CORRECTIVE_STATE",
+            "parent_gate_id":
+                parent_gate_id,
+            "parent_current_gate":
+                parent_current_gate,
+            "nested_current_item":
+                current_item,
+            "required_current_item":
+                required_current_item,
+            "execution_performed":
+                False,
+            "state_advanced":
+                False,
+            "parent_gate_advanced":
+                False,
+            "successor_executed":
+                False,
+            "read_only":
+                True,
+        }
+
+    dependency_gate = authority.get(
+        "dependency_required"
+    )
+
+    if not isinstance(dependency_gate, str) or not dependency_gate.strip():
+        raise RoadmapError(
+            "nested dependency authority missing"
+        )
+
+    dependency_result_path = (
+        corrective_root
+        / "gates"
+        / dependency_gate
+        / "RESULT.yaml"
+    )
+
+    if not dependency_result_path.is_file():
+        return {
+            "result": "PASS",
+            "projection":
+                "ZEUS_NESTED_CORRECTIVE_RECONCILIATION",
+            "classification":
+                "NESTED_DEPENDENCY_NOT_COMPLETE",
+            "consistent": False,
+            "blocking_dependency":
+                "NESTED_DEPENDENCY_RESULT",
+            "dependency_gate":
+                dependency_gate,
+            "dependency_result":
+                "MISSING",
+            "nested_current_item":
+                current_item,
+            "execution_performed":
+                False,
+            "state_advanced":
+                False,
+            "parent_gate_advanced":
+                False,
+            "successor_executed":
+                False,
+            "read_only":
+                True,
+        }
+
+    dependency_result = _load_yaml(
+        dependency_result_path,
+        "nested dependency result",
+    )
+
+    dependency_complete = (
+        dependency_result.get("status") == "COMPLETE"
+        and dependency_result.get("result") == "PASS"
+    )
+
+    if not dependency_complete:
+        return {
+            "result": "PASS",
+            "projection":
+                "ZEUS_NESTED_CORRECTIVE_RECONCILIATION",
+            "classification":
+                "NESTED_DEPENDENCY_NOT_COMPLETE",
+            "consistent": False,
+            "blocking_dependency":
+                "NESTED_DEPENDENCY_RESULT",
+            "dependency_gate":
+                dependency_gate,
+            "dependency_result":
+                "NOT_COMPLETE_PASS",
+            "nested_current_item":
+                current_item,
+            "execution_performed":
+                False,
+            "state_advanced":
+                False,
+            "parent_gate_advanced":
+                False,
+            "successor_executed":
+                False,
+            "read_only":
+                True,
+        }
+
+    next_item = authority.get(
+        "next_item"
+    )
+
+    transition = manual_contract.get(
+        "state_transition"
+    )
+
+    if not isinstance(transition, dict):
+        raise RoadmapError(
+            "manual state transition missing"
+        )
+
+    if transition.get("from") != current_item:
+        raise RoadmapError(
+            "nested transition source mismatch"
+        )
+
+    if transition.get("to") != next_item:
+        raise RoadmapError(
+            "nested transition target mismatch"
+        )
+
+    if transition.get("execute_successor") is not False:
+        raise RoadmapError(
+            "nested contract permits successor execution"
+        )
+
+    parent_result_path = (
+        repository_root
+        / "engineering/convergence/"
+          "engineering-system-convergence"
+        / "gates"
+        / "C02-controlled-documentation-and-authority"
+        / "RESULT.yaml"
+    )
+
+    parent_result = (
+        _load_yaml(
+            parent_result_path,
+            "parent gate result",
+        )
+        if parent_result_path.is_file()
+        else None
+    )
+
+    parent_completed = False
+
+    if isinstance(parent_result, dict):
+        parent_completed = (
+            parent_result.get("status") == "COMPLETE"
+            and parent_result.get("result") == "PASS"
+        )
+
+    # A nested corrective may be active under a parent gate that has
+    # assessment/result evidence, but nested readiness must never be
+    # interpreted as parent advancement.
+    return {
+        "result": "PASS",
+        "projection":
+            "ZEUS_NESTED_CORRECTIVE_RECONCILIATION",
+        "classification":
+            "NESTED_CORRECTIVE_CONSISTENT",
+        "consistent": True,
+        "blocking_dependency": None,
+        "parent_gate_id":
+            parent_gate_id,
+        "parent_current_gate":
+            parent_current_gate,
+        "parent_result_present":
+            parent_result is not None,
+        "parent_result_complete_pass":
+            parent_completed,
+        "corrective_roadmap_id":
+            corrective_roadmap_id,
+        "corrective_root_path":
+            corrective_root_path,
+        "manual_gate_id":
+            manual_gate_id,
+        "manual_contract_path":
+            manual_contract_path,
+        "nested_current_item":
+            current_item,
+        "dependency_gate":
+            dependency_gate,
+        "dependency_result":
+            "COMPLETE_PASS",
+        "next_item":
+            next_item,
+        "state_transition":
+            transition,
+        "nested_ready_implies_parent_advance":
+            False,
+        "execution_performed":
+            False,
+        "state_advanced":
+            False,
+        "parent_gate_advanced":
+            False,
+        "successor_executed":
+            False,
+        "read_only":
+            True,
+    }
+
+
+def project_manual_gate_execution_preflight(
+    repository_root: Path | str,
+    *,
+    parent_gate_id: str,
+    manual_gate_id: str,
+    manual_contract_path: str,
+    temporary_workspace: str | None = None,
+) -> dict[str, Any]:
+    """Project read-only readiness for one bounded manual gate."""
+
+    repository_root = Path(repository_root).resolve()
+
+    if not isinstance(parent_gate_id, str) or not parent_gate_id.strip():
+        raise RoadmapError("missing parent_gate_id")
+
+    if not isinstance(manual_gate_id, str) or not manual_gate_id.strip():
+        raise RoadmapError("missing manual_gate_id")
+
+    if not isinstance(manual_contract_path, str) or not manual_contract_path.strip():
+        raise RoadmapError("missing manual_contract_path")
+
+    maturity = project_executable_roadmap_maturity(
+        repository_root,
+        gate_id=parent_gate_id,
+    )
+
+    if maturity.get("classification") != "CURRENT_EXECUTABLE":
+        return {
+            "result": "PASS",
+            "projection":
+                "ZEUS_MANUAL_GATE_EXECUTION_PREFLIGHT",
+            "classification":
+                "PARENT_NOT_EXECUTABLE",
+            "ready": False,
+            "blocking_dependency":
+                "ZO-006",
+            "blocking_classification":
+                maturity.get("classification"),
+            "parent_maturity": maturity,
+            "manual_gate_id": manual_gate_id,
+            "manual_contract_path":
+                manual_contract_path,
+            "execution_performed": False,
+            "state_advanced": False,
+            "successor_executed": False,
+            "read_only": True,
+        }
+
+    contract_path = _safe_repository_path(
+        repository_root,
+        manual_contract_path,
+        "manual execution contract",
+    )
+
+    contract = _load_yaml(
+        contract_path,
+        "manual execution contract",
+    )
+
+    if not isinstance(contract, dict):
+        raise RoadmapError(
+            "manual execution contract must be structured"
+        )
+
+    if contract.get("gate_id") != manual_gate_id:
+        raise RoadmapError(
+            "manual execution contract gate identity mismatch"
+        )
+
+    if contract.get("execution_mode") != "MANUAL_BOUNDED":
+        raise RoadmapError(
+            "manual execution contract is not MANUAL_BOUNDED"
+        )
+
+    authority = contract.get("authority")
+
+    if not isinstance(authority, dict):
+        raise RoadmapError(
+            "manual execution authority is unavailable"
+        )
+
+    required_authority = {
+        "gate_contract",
+        "corrective_roadmap",
+        "corrective_state",
+        "parent_gate",
+        "current_item_required",
+        "dependency_required",
+        "next_item",
+    }
+
+    missing_authority = sorted(
+        key
+        for key in required_authority
+        if not authority.get(key)
+    )
+
+    if missing_authority:
+        raise RoadmapError(
+            "manual execution authority incomplete: "
+            + ", ".join(missing_authority)
+        )
+
+    if authority["parent_gate"] != parent_gate_id:
+        raise RoadmapError(
+            "manual execution parent authority mismatch"
+        )
+
+    corrective_root = contract_path.parent.parent.parent
+
+    state_path = (
+        corrective_root
+        / authority["corrective_state"]
+    )
+
+    corrective_state = _load_yaml(
+        state_path,
+        "corrective state",
+    )
+
+    current_item = corrective_state.get(
+        "current_item"
+    )
+
+    required_current_item = authority[
+        "current_item_required"
+    ]
+
+    if current_item != required_current_item:
+        return {
+            "result": "PASS",
+            "projection":
+                "ZEUS_MANUAL_GATE_EXECUTION_PREFLIGHT",
+            "classification":
+                "WRONG_CURRENT_ITEM",
+            "ready": False,
+            "blocking_dependency":
+                "MANUAL_CONTRACT_STATE",
+            "blocking_classification":
+                "WRONG_CURRENT_ITEM",
+            "current_item": current_item,
+            "required_current_item":
+                required_current_item,
+            "parent_maturity": maturity,
+            "manual_gate_id": manual_gate_id,
+            "manual_contract_path":
+                manual_contract_path,
+            "execution_performed": False,
+            "state_advanced": False,
+            "successor_executed": False,
+            "read_only": True,
+        }
+
+    dependency_id = authority[
+        "dependency_required"
+    ]
+
+    dependency_result_path = (
+        corrective_root
+        / "gates"
+        / dependency_id
+        / "RESULT.yaml"
+    )
+
+    if not dependency_result_path.is_file():
+        return {
+            "result": "PASS",
+            "projection":
+                "ZEUS_MANUAL_GATE_EXECUTION_PREFLIGHT",
+            "classification":
+                "DEPENDENCY_NOT_COMPLETE",
+            "ready": False,
+            "blocking_dependency":
+                "MANUAL_GATE_DEPENDENCY",
+            "blocking_classification":
+                "RESULT_MISSING",
+            "dependency_gate":
+                dependency_id,
+            "parent_maturity": maturity,
+            "manual_gate_id": manual_gate_id,
+            "manual_contract_path":
+                manual_contract_path,
+            "execution_performed": False,
+            "state_advanced": False,
+            "successor_executed": False,
+            "read_only": True,
+        }
+
+    dependency_result = _load_yaml(
+        dependency_result_path,
+        "manual gate dependency result",
+    )
+
+    if not (
+        dependency_result.get("status") == "COMPLETE"
+        and dependency_result.get("result") == "PASS"
+    ):
+        return {
+            "result": "PASS",
+            "projection":
+                "ZEUS_MANUAL_GATE_EXECUTION_PREFLIGHT",
+            "classification":
+                "DEPENDENCY_NOT_COMPLETE",
+            "ready": False,
+            "blocking_dependency":
+                "MANUAL_GATE_DEPENDENCY",
+            "blocking_classification":
+                "RESULT_NOT_COMPLETE_PASS",
+            "dependency_gate":
+                dependency_id,
+            "parent_maturity": maturity,
+            "manual_gate_id": manual_gate_id,
+            "manual_contract_path":
+                manual_contract_path,
+            "execution_performed": False,
+            "state_advanced": False,
+            "successor_executed": False,
+            "read_only": True,
+        }
+
+    emm = project_emm_reconciliation_awareness(
+        repository_root,
+        source_path="scripts/lib/eos/convergence_roadmap.py",
+    )
+
+    # Global EMM integrity must be checked separately from one source's
+    # local binding scope.
+    resolver = ConvergenceRoadmap(repository_root)
+    resolver.validate()
+
+    if emm.get("reconciliation_required") is True:
+        return {
+            "result": "PASS",
+            "projection":
+                "ZEUS_MANUAL_GATE_EXECUTION_PREFLIGHT",
+            "classification":
+                "EMM_RECONCILIATION_REQUIRED",
+            "ready": False,
+            "blocking_dependency":
+                "ZO-005",
+            "blocking_classification":
+                emm.get("classification"),
+            "emm_awareness": emm,
+            "parent_maturity": maturity,
+            "manual_gate_id": manual_gate_id,
+            "manual_contract_path":
+                manual_contract_path,
+            "execution_performed": False,
+            "state_advanced": False,
+            "successor_executed": False,
+            "read_only": True,
+        }
+
+    if temporary_workspace is None:
+        temporary_workspace = str(
+            repository_root.parent
+            / "tmp/zeus-manual-preflight"
+        )
+
+    resource = project_qualification_resource_preflight(
+        repository_root,
+        temporary_workspace=temporary_workspace,
+        fixture_copy_multiplier=8,
+        minimum_extra_bytes=2 * 1024**3,
+    )
+
+    if resource.get("classification") != "READY":
+        return {
+            "result": "PASS",
+            "projection":
+                "ZEUS_MANUAL_GATE_EXECUTION_PREFLIGHT",
+            "classification":
+                "RESOURCE_BLOCKED",
+            "ready": False,
+            "blocking_dependency":
+                "ZO-011",
+            "blocking_classification":
+                resource.get("classification"),
+            "resource_preflight": resource,
+            "parent_maturity": maturity,
+            "manual_gate_id": manual_gate_id,
+            "manual_contract_path":
+                manual_contract_path,
+            "execution_performed": False,
+            "state_advanced": False,
+            "successor_executed": False,
+            "read_only": True,
+        }
+
+    state_transition = contract.get(
+        "state_transition"
+    )
+
+    if not isinstance(state_transition, dict):
+        raise RoadmapError(
+            "manual execution state transition missing"
+        )
+
+    if state_transition.get("from") != manual_gate_id:
+        raise RoadmapError(
+            "manual execution transition source mismatch"
+        )
+
+    if state_transition.get("execute_successor") is not False:
+        raise RoadmapError(
+            "manual execution contract must prohibit successor execution"
+        )
+
+    next_item = authority.get("next_item")
+
+    if state_transition.get("to") != next_item:
+        raise RoadmapError(
+            "manual execution transition target mismatch"
+        )
+
+    return {
+        "result": "PASS",
+        "projection":
+            "ZEUS_MANUAL_GATE_EXECUTION_PREFLIGHT",
+        "classification":
+            "READY_FOR_MANUAL_EXECUTION",
+        "ready": True,
+        "blocking_dependency": None,
+        "blocking_classification": None,
+        "parent_gate": parent_gate_id,
+        "parent_maturity": maturity,
+        "manual_gate_id": manual_gate_id,
+        "manual_contract_path":
+            manual_contract_path,
+        "manual_contract_id":
+            contract.get("contract_id"),
+        "execution_mode":
+            contract.get("execution_mode"),
+        "current_item":
+            current_item,
+        "dependency_gate":
+            dependency_id,
+        "dependency_result":
+            "COMPLETE_PASS",
+        "emm_awareness": emm,
+        "resource_preflight": resource,
+        "next_item": next_item,
+        "state_transition":
+            state_transition,
+        "execution_performed": False,
+        "state_advanced": False,
+        "successor_executed": False,
+        "read_only": True,
+    }
+
+
+def project_executable_roadmap_maturity(
+    repository_root: Path | str,
+    *,
+    gate_id: str,
+) -> dict[str, Any]:
+    """Project read-only executable maturity for one validated gate."""
+
+    repository_root = Path(repository_root).resolve()
+
+    resolver = ConvergenceRoadmap(repository_root)
+    resolved = resolver.validate()
+
+    state = resolved.get("state")
+
+    if not isinstance(state, dict):
+        raise RoadmapError(
+            "validated roadmap state unavailable"
+        )
+
+    current_gate = state.get("current_gate")
+
+    completed = set(
+        state.get("completed_gates", [])
+    )
+
+    blocked = set(
+        state.get("blocked_gates", [])
+    )
+
+    successor_projection = project_successor_action_contract(
+        repository_root,
+        gate_id=gate_id,
+    )
+
+    terminal = bool(
+        successor_projection["terminal"]
+    )
+
+    is_current = gate_id == current_gate
+    is_completed = gate_id in completed
+    is_blocked = gate_id in blocked
+
+    if is_blocked:
+        classification = "BLOCKED"
+        executable = False
+        recommended_action = "RESOLVE_BLOCKERS"
+
+    elif is_completed:
+        classification = "COMPLETE"
+        executable = False
+        recommended_action = "NONE_GATE_COMPLETE"
+
+    elif not is_current:
+        classification = "NOT_CURRENT"
+        executable = False
+        recommended_action = "WAIT_FOR_GATE_ACTIVATION"
+
+    elif terminal:
+        classification = "TERMINAL_CURRENT"
+        executable = False
+        recommended_action = (
+            successor_projection.get(
+                "terminal_resume_action"
+            )
+            or "NONE_TERMINAL"
+        )
+
+    elif (
+        successor_projection.get(
+            "classification"
+        )
+        == "EXECUTABLE_SUCCESSOR_ACTION_RESOLVED"
+    ):
+        classification = "CURRENT_EXECUTABLE"
+        executable = True
+        recommended_action = (
+            successor_projection[
+                "next_authorized_action"
+            ]
+        )
+
+    else:
+        raise RoadmapError(
+            "validated gate has unresolved maturity projection"
+        )
+
+    return {
+        "result": "PASS",
+        "projection":
+            "ZEUS_EXECUTABLE_ROADMAP_MATURITY",
+        "gate_id": gate_id,
+        "current_gate": current_gate,
+        "is_current": is_current,
+        "is_completed": is_completed,
+        "is_blocked": is_blocked,
+        "terminal": terminal,
+        "classification": classification,
+        "executable": executable,
+        "successor_gate":
+            successor_projection.get(
+                "successor_gate"
+            ),
+        "next_authorized_action":
+            successor_projection.get(
+                "next_authorized_action"
+            ),
+        "recommended_action":
+            recommended_action,
+        "authority_surface":
+            successor_projection.get(
+                "authority_surface"
+            ),
+        "authority_kind":
+            successor_projection.get(
+                "authority_kind"
+            ),
+        "action_surface":
+            successor_projection.get(
+                "action_surface"
+            ),
+        "successor_executed": False,
+        "read_only": True,
+    }
+
+
+def project_successor_action_contract(
+    repository_root: Path | str,
+    *,
+    gate_id: str,
+) -> dict[str, Any]:
+    """Project successor authority from a canonically valid roadmap."""
+
+    repository_root = Path(repository_root).resolve()
+
+    if not isinstance(gate_id, str) or not gate_id.strip():
+        raise RoadmapError("missing gate_id")
+
+    resolver = ConvergenceRoadmap(repository_root)
+
+    # Structural/schema/lifecycle contract validity belongs to the
+    # canonical resolver. ZO-009 never attempts to reinterpret an
+    # invalid gate graph.
+    resolver.validate()
+
+    roadmap = _load_yaml(
+        resolver.roadmap_path,
+        "roadmap definition",
+    )
+
+    entries = [
+        item
+        for item in roadmap.get("gates", [])
+        if (
+            isinstance(item, dict)
+            and item.get("gate_id") == gate_id
+        )
+    ]
+
+    if len(entries) != 1:
+        raise RoadmapError(
+            "gate locator is not uniquely resolvable: "
+            + gate_id
+        )
+
+    entry = entries[0]
+
+    definition = entry.get("definition")
+
+    if not isinstance(definition, str) or not definition.strip():
+        raise RoadmapError(
+            "gate definition locator unavailable"
+        )
+
+    gate_path = _safe_repository_path(
+        repository_root,
+        definition,
+        "gate definition",
+    )
+
+    gate = _load_yaml(
+        gate_path,
+        "gate definition",
+    )
+
+    if gate.get("gate_id") != gate_id:
+        raise RoadmapError(
+            "gate definition identity mismatch"
+        )
+
+    successor = gate.get("next_gate")
+
+    terminal_value = gate.get("terminal")
+
+    # Historical/activation contracts do not necessarily expose the
+    # version-2 terminal object. Canonical validation has already
+    # established their next_gate legality.
+    terminal = (
+        isinstance(terminal_value, dict)
+        and bool(terminal_value.get("is_terminal"))
+    )
+
+    resume = gate.get("resume_instructions") or {}
+
+    if not isinstance(resume, dict):
+        raise RoadmapError(
+            "gate resume_instructions must be structured"
+        )
+
+    gate_resume_action = resume.get(
+        "next_authorized_action"
+    )
+
+    if terminal:
+        return {
+            "result": "PASS",
+            "projection":
+                "ZEUS_SUCCESSOR_ACTION_CONTRACT",
+            "authority_surface": definition,
+            "authority_kind": "GATE_DEFINITION",
+            "action_surface":
+                "resume_instructions.next_authorized_action",
+            "gate_id": gate_id,
+            "terminal": True,
+            "successor_gate": None,
+            "next_authorized_action": None,
+            "terminal_resume_action":
+                gate_resume_action,
+            "continuation_authority":
+                terminal_value.get(
+                    "continuation_authority"
+                ),
+            "continuation_action":
+                terminal_value.get(
+                    "continuation_action"
+                ),
+            "action_count": 0,
+            "classification":
+                "TERMINAL_NO_ROADMAP_SUCCESSOR",
+            "executable_successor": False,
+            "successor_executed": False,
+            "read_only": True,
+        }
+
+    if not isinstance(successor, str) or not successor.strip():
+        # This should normally be unreachable because canonical
+        # validation owns this invariant, but preserve local
+        # defensive failure.
+        raise RoadmapError(
+            "canonically valid nonterminal gate has no successor"
+        )
+
+    successor_entries = [
+        item
+        for item in roadmap.get("gates", [])
+        if (
+            isinstance(item, dict)
+            and item.get("gate_id") == successor
+        )
+    ]
+
+    if len(successor_entries) != 1:
+        raise RoadmapError(
+            "successor locator is not uniquely resolvable"
+        )
+
+    successor_definition = successor_entries[0].get(
+        "definition"
+    )
+
+    if (
+        not isinstance(successor_definition, str)
+        or not successor_definition.strip()
+    ):
+        raise RoadmapError(
+            "successor definition locator unavailable"
+        )
+
+    successor_path = _safe_repository_path(
+        repository_root,
+        successor_definition,
+        "successor gate definition",
+    )
+
+    successor_gate = _load_yaml(
+        successor_path,
+        "successor gate definition",
+    )
+
+    if successor_gate.get("gate_id") != successor:
+        raise RoadmapError(
+            "successor gate identity mismatch"
+        )
+
+    successor_resume = successor_gate.get(
+        "resume_instructions"
+    )
+
+    if not isinstance(successor_resume, dict):
+        raise RoadmapError(
+            "successor resume_instructions must be structured"
+        )
+
+    action = successor_resume.get(
+        "next_authorized_action"
+    )
+
+    if not isinstance(action, str) or not action.strip():
+        raise RoadmapError(
+            "successor has no structured "
+            "resume_instructions.next_authorized_action"
+        )
+
+    return {
+        "result": "PASS",
+        "projection":
+            "ZEUS_SUCCESSOR_ACTION_CONTRACT",
+        "authority_surface":
+            successor_definition,
+        "authority_kind":
+            "GATE_DEFINITION",
+        "action_surface":
+            "resume_instructions.next_authorized_action",
+        "gate_id": gate_id,
+        "terminal": False,
+        "successor_gate": successor,
+        "next_authorized_action": action.strip(),
+        "terminal_resume_action": None,
+        "continuation_authority": None,
+        "continuation_action": None,
+        "action_count": 1,
+        "classification":
+            "EXECUTABLE_SUCCESSOR_ACTION_RESOLVED",
+        "executable_successor": True,
+        "successor_executed": False,
+        "read_only": True,
+    }
+
+
+def project_qualification_resource_preflight(
+    repository_root: Path | str,
+    *,
+    temporary_workspace: Path | str,
+    fixture_copy_multiplier: int = 8,
+    minimum_extra_bytes: int = 2 * 1024**3,
+) -> dict[str, Any]:
+    """Project read-only qualification resource readiness."""
+
+    import shutil
+    import subprocess
+
+    repository_root = Path(repository_root).resolve()
+    temporary_workspace = Path(temporary_workspace).resolve()
+
+    if fixture_copy_multiplier < 1:
+        raise RoadmapError(
+            "fixture_copy_multiplier must be positive"
+        )
+
+    if minimum_extra_bytes < 0:
+        raise RoadmapError(
+            "minimum_extra_bytes cannot be negative"
+        )
+
+    if not repository_root.is_dir():
+        raise RoadmapError(
+            "qualification repository root is unavailable"
+        )
+
+    # The selected workspace itself need not exist yet.
+    # Resource inspection uses the nearest existing parent.
+    probe = temporary_workspace
+
+    while not probe.exists():
+        parent = probe.parent
+
+        if parent == probe:
+            raise RoadmapError(
+                "qualification temporary filesystem cannot be resolved"
+            )
+
+        probe = parent
+
+    if not probe.is_dir():
+        raise RoadmapError(
+            "qualification temporary filesystem probe is not a directory"
+        )
+
+    size = subprocess.run(
+        [
+            "du",
+            "-sb",
+            str(repository_root),
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    if size.returncode != 0:
+        raise RoadmapError(
+            "qualification repository size inspection failed"
+        )
+
+    try:
+        repository_bytes = int(
+            size.stdout.split()[0]
+        )
+    except (IndexError, ValueError) as error:
+        raise RoadmapError(
+            "qualification repository size is invalid"
+        ) from error
+
+    usage = shutil.disk_usage(probe)
+
+    required_reserve_bytes = max(
+        repository_bytes * fixture_copy_multiplier,
+        repository_bytes + minimum_extra_bytes,
+    )
+
+    ready = usage.free >= required_reserve_bytes
+
+    return {
+        "result": "PASS",
+        "projection":
+            "ZEUS_QUALIFICATION_RESOURCE_PREFLIGHT",
+        "classification":
+            "READY" if ready else "RESOURCE_BLOCKED",
+        "resource":
+            None if ready else "TEMPORARY_STORAGE",
+        "repository_root": str(repository_root),
+        "repository_bytes": repository_bytes,
+        "temporary_workspace": str(temporary_workspace),
+        "filesystem_probe": str(probe),
+        "filesystem_total_bytes": usage.total,
+        "filesystem_used_bytes": usage.used,
+        "filesystem_free_bytes": usage.free,
+        "fixture_copy_multiplier":
+            fixture_copy_multiplier,
+        "minimum_extra_bytes":
+            minimum_extra_bytes,
+        "required_reserve_bytes":
+            required_reserve_bytes,
+        "ready": ready,
+        "semantic_test_failure": False,
+        "qualification_executed": False,
+        "recommended_action": (
+            "USE_SELECTED_WORKSPACE"
+            if ready
+            else "SELECT_ALTERNATE_AUTHORIZED_WORKSPACE"
+        ),
+        "read_only": True,
+    }
+
+
+def project_emm_reconciliation_awareness(
+    repository_root: Path,
+    *,
+    source_path: str,
+) -> dict[str, Any]:
+    """Project read-only Zeus EMM reconciliation awareness.
+
+    This projection consumes canonical EMM binding-scope
+    introspection. It never performs reconciliation.
+    """
+
+    inspection = inspect_emm_binding_scope(
+        repository_root,
+        source_path=source_path,
+    )
+
+    classification = inspection["classification"]
+
+    action_map = {
+        "BOUND_CLEAN": "NONE_REQUIRED",
+        "BOUND_DRIFTED": "EMM_RECONCILIATION_REQUIRED",
+        "MISSING_SOURCE": "FAIL_CLOSED_MISSING_SOURCE",
+        "UNBOUND_BY_POLICY": "NONE_UNBOUND_BY_POLICY",
+    }
+
+    if classification not in action_map:
+        raise RoadmapError(
+            "unsupported EMM binding classification: "
+            + str(classification)
+        )
+
+    reconciliation_required = (
+        classification == "BOUND_DRIFTED"
+    )
+
+    return {
+        "result": "PASS",
+        "projection": "ZEUS_EMM_RECONCILIATION_AWARENESS",
+        "source_path": inspection["source_path"],
+        "classification": classification,
+        "bound": inspection["bound"],
+        "source_exists": inspection["source_exists"],
+        "expected_sha256": inspection["expected_sha256"],
+        "actual_sha256": inspection["actual_sha256"],
+        "drifted": inspection["drifted"],
+        "rebind_eligible": inspection["rebind_eligible"],
+        "reconciliation_required":
+            reconciliation_required,
+        "recommended_action": action_map[classification],
+        "canonical_reconciliation_primitive":
+            "apply_emm_rebind_transaction",
+        "automatic_reconciliation": False,
+        "read_only": True,
+    }
+
+
+def apply_emm_rebind_transaction(
+    repository_root: Path | str,
+    *,
+    authorized_mutations: dict[str, str],
+    transaction_id: str,
+) -> dict[str, Any]:
+    """Atomically reconcile exactly authorized EMM source mutations."""
+
+    import json
+    import os
+    from datetime import datetime, timezone
+
+    repository_root = Path(repository_root).resolve()
+
+    if not isinstance(transaction_id, str) or not transaction_id.strip():
+        raise RoadmapError("missing transaction_id")
+
+    if (
+        not isinstance(authorized_mutations, dict)
+        or not authorized_mutations
+    ):
+        raise RoadmapError("authorized mutation set must be non-empty")
+
+    normalized: dict[str, str] = {}
+
+    for relative, old_digest in authorized_mutations.items():
+        path = _safe_repository_path(
+            repository_root,
+            relative,
+            "authorized EMM mutation",
+        )
+
+        if not path.is_file():
+            raise RoadmapError(
+                f"authorized EMM source missing: {relative}"
+            )
+
+        if (
+            not isinstance(old_digest, str)
+            or len(old_digest) != 64
+        ):
+            raise RoadmapError(
+                f"invalid authorized prior digest: {relative}"
+            )
+
+        normalized[relative] = old_digest
+
+    roadmap_root = repository_root / ROADMAP_RELATIVE_ROOT
+    manifest_path = roadmap_root / MANIFEST_FILE
+
+    manifest = _load_yaml(
+        manifest_path,
+        "EMM binding manifest",
+    )
+
+    entries = manifest.get("sources")
+
+    if not isinstance(entries, list) or not entries:
+        raise RoadmapError("EMM binding manifest has no sources")
+
+    by_path: dict[str, str] = {}
+
+    for entry in entries:
+        if (
+            not isinstance(entry, dict)
+            or set(entry) != {"path", "sha256"}
+        ):
+            raise RoadmapError(
+                "EMM binding manifest source is malformed"
+            )
+
+        relative = entry["path"]
+        digest = entry["sha256"]
+
+        if relative in by_path:
+            raise RoadmapError(
+                f"duplicate EMM binding source: {relative}"
+            )
+
+        by_path[relative] = digest
+
+    unknown = sorted(set(normalized) - set(by_path))
+
+    if unknown:
+        raise RoadmapError(
+            "authorized mutation is not EMM-bound: "
+            + ", ".join(unknown)
+        )
+
+    actual: dict[str, str] = {}
+    drift: dict[str, tuple[str, str]] = {}
+
+    for relative, expected in by_path.items():
+        path = _safe_repository_path(
+            repository_root,
+            relative,
+            "EMM binding source",
+        )
+
+        if not path.is_file():
+            raise RoadmapError(
+                f"EMM binding source missing: {relative}"
+            )
+
+        digest = _sha256(path)
+        actual[relative] = digest
+
+        if digest != expected:
+            drift[relative] = (expected, digest)
+
+    unauthorized = sorted(set(drift) - set(normalized))
+
+    if unauthorized:
+        raise RoadmapError(
+            "unauthorized or unexplained EMM source drift: "
+            + ", ".join(unauthorized)
+        )
+
+    for relative, prior in normalized.items():
+        bound = by_path[relative]
+
+        if bound != prior and bound != actual[relative]:
+            raise RoadmapError(
+                f"authorized prior digest mismatch: {relative}"
+            )
+
+    transaction_dir = (
+        roadmap_root
+        / "runtime/emm-rebind-transactions"
+    )
+
+    transaction_path = (
+        transaction_dir
+        / f"{transaction_id}.json"
+    )
+
+    requested_identity = {
+        "transaction_type": "EMM_REBIND",
+        "transaction_id": transaction_id,
+        "authorized_mutations": dict(sorted(normalized.items())),
+    }
+
+    if transaction_path.is_file():
+        try:
+            committed = json.loads(
+                transaction_path.read_text()
+            )
+        except (OSError, ValueError) as error:
+            raise RoadmapError(
+                "existing EMM transaction is malformed"
+            ) from error
+
+        for key, expected in requested_identity.items():
+            if committed.get(key) != expected:
+                raise RoadmapError(
+                    "conflicting EMM transaction replay"
+                )
+
+        post_digest = committed.get(
+            "post_manifest_sha256"
+        )
+
+        if (
+            not isinstance(post_digest, str)
+            or _sha256(manifest_path) != post_digest
+        ):
+            raise RoadmapError(
+                "committed EMM transaction post-manifest mismatch"
+            )
+
+        for item in committed.get("sources", []):
+            relative = item.get("path")
+            new_digest = item.get("new_sha256")
+
+            if (
+                relative not in actual
+                or actual[relative] != new_digest
+            ):
+                raise RoadmapError(
+                    "committed EMM transaction source mismatch"
+                )
+
+        return {
+            "result": "ALREADY_RECONCILED",
+            "transaction_id": transaction_id,
+            "post_manifest_sha256": post_digest,
+            "sources": committed.get("sources", []),
+        }
+
+    if not drift:
+        raise RoadmapError(
+            "authorized mutation set contains no pending EMM drift"
+        )
+
+    missing_authorized_drift = sorted(
+        relative
+        for relative in normalized
+        if relative not in drift
+    )
+
+    if missing_authorized_drift:
+        raise RoadmapError(
+            "authorized mutation set does not exactly match drift: "
+            + ", ".join(missing_authorized_drift)
+        )
+
+    pre_manifest_bytes = manifest_path.read_bytes()
+    pre_manifest_digest = hashlib.sha256(
+        pre_manifest_bytes
+    ).hexdigest()
+
+    updated_sources = []
+
+    source_records = []
+
+    for entry in entries:
+        relative = entry["path"]
+
+        if relative in normalized:
+            old_digest = entry["sha256"]
+            new_digest = actual[relative]
+
+            updated_sources.append(
+                {
+                    "path": relative,
+                    "sha256": new_digest,
+                }
+            )
+
+            source_records.append(
+                {
+                    "path": relative,
+                    "old_sha256": old_digest,
+                    "new_sha256": new_digest,
+                }
+            )
+        else:
+            updated_sources.append(dict(entry))
+
+    updated_manifest = dict(manifest)
+    updated_manifest["sources"] = updated_sources
+
+    post_manifest_bytes = yaml.safe_dump(
+        updated_manifest,
+        sort_keys=False,
+    ).encode("utf-8")
+
+    post_manifest_digest = hashlib.sha256(
+        post_manifest_bytes
+    ).hexdigest()
+
+    transaction_record = {
+        "schema_version": 1,
+        **requested_identity,
+        "status": "PENDING_RECONCILIATION",
+        "pre_manifest_sha256": pre_manifest_digest,
+        "post_manifest_sha256": post_manifest_digest,
+        "sources": source_records,
+        "recorded_at": (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        ),
+    }
+
+    transaction_dir.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    transaction_tmp = transaction_path.with_suffix(".tmp")
+    manifest_tmp = manifest_path.with_suffix(".tmp")
+
+    if transaction_tmp.exists():
+        transaction_tmp.unlink()
+
+    if manifest_tmp.exists():
+        manifest_tmp.unlink()
+
+    transaction_tmp.write_text(
+        json.dumps(
+            transaction_record,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n"
+    )
+
+    manifest_tmp.write_bytes(post_manifest_bytes)
+
+    try:
+        os.replace(manifest_tmp, manifest_path)
+
+        transaction_record["status"] = "RECONCILIATION_COMPLETE"
+
+        transaction_tmp.write_text(
+            json.dumps(
+                transaction_record,
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n"
+        )
+
+        os.replace(
+            transaction_tmp,
+            transaction_path,
+        )
+    finally:
+        if manifest_tmp.exists():
+            manifest_tmp.unlink()
+
+        if transaction_tmp.exists():
+            transaction_tmp.unlink()
+
+    if _sha256(manifest_path) != post_manifest_digest:
+        raise RoadmapError(
+            "EMM post-manifest identity mismatch"
+        )
+
+    for item in source_records:
+        relative = item["path"]
+
+        if _sha256(repository_root / relative) != item["new_sha256"]:
+            raise RoadmapError(
+                f"EMM post-rebind source mismatch: {relative}"
+            )
+
+    return {
+        "result": "PASS",
+        "transaction_id": transaction_id,
+        "pre_manifest_sha256": pre_manifest_digest,
+        "post_manifest_sha256": post_manifest_digest,
+        "sources": source_records,
+    }
+
+
+def _resolve_operator_review_receipt(
+    repository_root: Path,
+    *,
+    roadmap_id: str,
+    roadmap_version: str,
+    gate_id: str,
+    gate_definition_path: Path,
+    result_path: Path,
+) -> dict[str, Any] | None:
+    import hashlib
+    import json
+
+    receipt_dir = (
+        repository_root
+        / "engineering/convergence/engineering-system-convergence"
+        / "receipts/operator-review"
+    )
+
+    if not receipt_dir.is_dir():
+        return None
+
+    gate_digest = hashlib.sha256(
+        gate_definition_path.read_bytes()
+    ).hexdigest()
+
+    result_digest = hashlib.sha256(
+        result_path.read_bytes()
+    ).hexdigest()
+
+    matching = []
+
+    for receipt_path in sorted(receipt_dir.glob("*.json")):
+        try:
+            receipt = json.loads(receipt_path.read_text())
+        except (OSError, ValueError) as error:
+            raise RoadmapError(
+                f"invalid operator review receipt: {receipt_path}"
+            ) from error
+
+        if receipt.get("receipt_type") != "OPERATOR_REVIEW_DECISION":
+            continue
+
+        same_target = (
+            receipt.get("roadmap_id") == roadmap_id
+            and str(receipt.get("roadmap_version")) == str(roadmap_version)
+            and receipt.get("gate_id") == gate_id
+        )
+
+        if not same_target:
+            continue
+
+        if receipt.get("gate_definition_digest") != gate_digest:
+            raise RoadmapError(
+                "persisted operator review gate digest mismatch"
+            )
+
+        if receipt.get("result_digest") != result_digest:
+            raise RoadmapError(
+                "persisted operator review result digest mismatch"
+            )
+
+        if receipt.get("result_class") != "VALID_FINAL":
+            raise RoadmapError(
+                "persisted operator review result class invalid"
+            )
+
+        decision = receipt.get("decision")
+
+        if decision not in {"ACCEPT", "REJECT"}:
+            raise RoadmapError(
+                "persisted operator review decision invalid"
+            )
+
+        if not receipt.get("operator_identity"):
+            raise RoadmapError(
+                "persisted operator review authority missing"
+            )
+
+        if not receipt.get("transaction_id"):
+            raise RoadmapError(
+                "persisted operator review transaction missing"
+            )
+
+        if not receipt.get("receipt_id"):
+            raise RoadmapError(
+                "persisted operator review receipt identity missing"
+            )
+
+        matching.append(receipt)
+
+    if not matching:
+        return None
+
+    decisions = {x["decision"] for x in matching}
+
+    if len(decisions) != 1:
+        raise RoadmapError(
+            "conflicting persisted operator review decisions"
+        )
+
+    receipt_ids = {x["receipt_id"] for x in matching}
+
+    if len(receipt_ids) != 1:
+        raise RoadmapError(
+            "duplicate persisted operator review authority"
+        )
+
+    return matching[0]
+
+
+
+
+def apply_gate_advancement_transaction(
+    repository_root: Path,
+    *,
+    roadmap_id: str,
+    roadmap_version: str,
+    gate_id: str,
+    gate_definition_digest: str,
+    result_digest: str,
+    acceptance_receipt_id: str,
+    acceptance_receipt_digest: str,
+    pre_state_digest: str,
+    transaction_id: str,
+) -> dict[str, Any]:
+    """Apply one explicit, receipt-backed atomic gate advancement."""
+
+    from datetime import datetime, timezone
+    import hashlib
+    import json
+    import os
+    import tempfile
+
+    try:
+        from scripts.lib.eos.roadmap_lifecycle import (
+            AdvancementBinding,
+            LifecycleState,
+            complete_accepted_gate,
+        )
+    except ModuleNotFoundError as error:
+        if error.name != "scripts":
+            raise
+
+        from roadmap_lifecycle import (
+            AdvancementBinding,
+            LifecycleState,
+            complete_accepted_gate,
+        )
+
+    # Exact committed replay must be recognized before current-state
+    # roadmap validation. A successful advancement intentionally changes
+    # current_gate, so validating the old gate as current would reject a
+    # legitimate replay before its immutable transaction can be checked.
+    root = Path(repository_root).resolve()
+
+    roadmap_root = (
+        root
+        / "engineering/convergence/engineering-system-convergence"
+    )
+
+    transaction_dir = (
+        roadmap_root
+        / "runtime/advancement-transactions"
+    )
+
+    transaction_path = (
+        transaction_dir
+        / f"{transaction_id}.json"
+    )
+
+    recovering_pre_state_transaction = False
+
+    if transaction_path.is_file():
+        try:
+            committed = json.loads(
+                transaction_path.read_text()
+            )
+        except (OSError, json.JSONDecodeError) as exc:
+            raise RoadmapError(
+                "existing advancement transaction is unreadable"
+            ) from exc
+
+        expected_replay = {
+            "transaction_id": transaction_id,
+            "roadmap_id": roadmap_id,
+            "roadmap_version": str(roadmap_version),
+            "gate_id": gate_id,
+            "gate_definition_digest":
+                gate_definition_digest,
+            "result_digest": result_digest,
+            "acceptance_receipt_id":
+                acceptance_receipt_id,
+            "acceptance_receipt_digest":
+                acceptance_receipt_digest,
+            "pre_state_digest": pre_state_digest,
+        }
+
+        conflicts = [
+            key
+            for key, expected in expected_replay.items()
+            if str(committed.get(key)) != str(expected)
+        ]
+
+        if conflicts:
+            raise RoadmapError(
+                "conflicting advancement transaction replay: "
+                + ", ".join(sorted(conflicts))
+            )
+
+        transaction_status = committed.get("status")
+
+        if transaction_status not in {
+            "PENDING_RECONCILIATION",
+            "ADVANCEMENT_COMPLETE",
+        }:
+            raise RoadmapError(
+                "existing advancement transaction status is invalid"
+            )
+
+        state_path = roadmap_root / "STATE.yaml"
+
+        if not state_path.is_file():
+            raise RoadmapError(
+                "authoritative state missing during advancement recovery"
+            )
+
+        current_state_bytes = state_path.read_bytes()
+        current_state_digest = hashlib.sha256(
+            current_state_bytes
+        ).hexdigest()
+
+        recorded_pre_digest = committed.get(
+            "pre_state_digest"
+        )
+        recorded_post_digest = committed.get(
+            "post_state_digest"
+        )
+
+        if transaction_status == "ADVANCEMENT_COMPLETE":
+            if current_state_digest != recorded_post_digest:
+                raise RoadmapError(
+                    "committed advancement post-state does not match"
+                )
+
+            return {
+                "result": "PASS",
+                "lifecycle_state": "COMPLETED",
+                "completed_gate": gate_id,
+                "successor_gate": committed.get(
+                    "successor_gate"
+                ),
+                "transaction_id": transaction_id,
+                "classification": "ALREADY_APPLIED",
+                "already_applied": True,
+                "recovered": False,
+            }
+
+        # PENDING_RECONCILIATION has exactly two recoverable states:
+        #
+        # 1. STATE.yaml still equals the recorded pre-state. Fall through
+        #    and deterministically execute the exact recorded transaction.
+        #
+        # 2. STATE.yaml already equals the recorded post-state. The state
+        #    promotion succeeded and only transaction finalization was
+        #    interrupted; finalize the receipt without applying state again.
+        if current_state_digest == recorded_post_digest:
+            committed["status"] = "ADVANCEMENT_COMPLETE"
+
+            fd, temporary_name = tempfile.mkstemp(
+                prefix="." + transaction_path.name + ".",
+                dir=str(transaction_path.parent),
+            )
+
+            temporary = Path(temporary_name)
+
+            try:
+                with os.fdopen(fd, "wb") as handle:
+                    handle.write(
+                        (
+                            json.dumps(
+                                committed,
+                                indent=2,
+                                sort_keys=True,
+                            )
+                            + "\n"
+                        ).encode("utf-8")
+                    )
+                    handle.flush()
+                    os.fsync(handle.fileno())
+
+                os.replace(
+                    temporary,
+                    transaction_path,
+                )
+            finally:
+                if temporary.exists():
+                    temporary.unlink()
+
+            return {
+                "result": "PASS",
+                "lifecycle_state": "COMPLETED",
+                "completed_gate": gate_id,
+                "successor_gate": committed.get(
+                    "successor_gate"
+                ),
+                "transaction_id": transaction_id,
+                "classification": "RECOVERED",
+                "already_applied": True,
+                "recovered": True,
+                "recovery_mode":
+                    "FINALIZED_POST_STATE_TRANSACTION",
+            }
+
+        if current_state_digest != recorded_pre_digest:
+            raise RoadmapError(
+                "pending advancement state matches neither "
+                "recorded pre-state nor post-state"
+            )
+
+        recovering_pre_state_transaction = True
+
+        # Exact pre-state remains authoritative. Continue through the normal
+        # advancement path below using the already-validated immutable
+        # transaction identity.
+    resolver = ConvergenceRoadmap(repository_root)
+    projection = resolver.projection()
+
+    if projection["roadmap_id"] != roadmap_id:
+        raise RoadmapError("roadmap identity mismatch")
+
+    if str(projection["roadmap_version"]) != str(roadmap_version):
+        raise RoadmapError("roadmap version mismatch")
+
+    if projection["current_gate"] != gate_id:
+        raise RoadmapError("gate identity mismatch")
+
+    gate_path = Path(projection["gate_definition"])
+    result_path = Path(projection["gate_result"])
+
+    if not gate_path.is_file():
+        raise RoadmapError("gate definition unavailable")
+
+    if not result_path.is_file():
+        raise RoadmapError("gate result unavailable")
+
+    actual_gate_digest = hashlib.sha256(
+        gate_path.read_bytes()
+    ).hexdigest()
+
+    actual_result_digest = hashlib.sha256(
+        result_path.read_bytes()
+    ).hexdigest()
+
+    if actual_gate_digest != gate_definition_digest:
+        raise RoadmapError("gate definition digest mismatch")
+
+    if actual_result_digest != result_digest:
+        raise RoadmapError("result digest mismatch")
+
+    review_receipt = _resolve_operator_review_receipt(
+        repository_root,
+        roadmap_id=roadmap_id,
+        roadmap_version=str(roadmap_version),
+        gate_id=gate_id,
+        gate_definition_path=gate_path,
+        result_path=result_path,
+    )
+
+    if review_receipt is None:
+        raise RoadmapError("valid ACCEPT receipt is missing")
+
+    if review_receipt.get("decision") != "ACCEPT":
+        raise RoadmapError("gate is not accepted")
+
+    if review_receipt.get("lifecycle_state") != "ACCEPTED":
+        raise RoadmapError("acceptance receipt lifecycle state invalid")
+
+    if review_receipt.get("receipt_id") != acceptance_receipt_id:
+        raise RoadmapError("acceptance receipt identity mismatch")
+
+    receipt_dir = (
+        repository_root
+        / "engineering/convergence/engineering-system-convergence"
+        / "receipts/operator-review"
+    )
+
+    matching_receipts = [
+        path
+        for path in sorted(receipt_dir.glob("*.json"))
+        if json.loads(path.read_text()).get("receipt_id")
+        == acceptance_receipt_id
+    ]
+
+    if len(matching_receipts) != 1:
+        raise RoadmapError(
+            "acceptance receipt cannot be uniquely resolved"
+        )
+
+    actual_receipt_digest = hashlib.sha256(
+        matching_receipts[0].read_bytes()
+    ).hexdigest()
+
+    if actual_receipt_digest != acceptance_receipt_digest:
+        raise RoadmapError("acceptance receipt digest mismatch")
+
+    for label, value in (
+        ("acceptance_receipt_id", acceptance_receipt_id),
+        ("acceptance_receipt_digest", acceptance_receipt_digest),
+        ("pre_state_digest", pre_state_digest),
+        ("transaction_id", transaction_id),
+    ):
+        if not isinstance(value, str) or not value.strip():
+            raise RoadmapError(f"missing {label}")
+
+    roadmap = resolver.validate()
+
+    completed = set(roadmap["state"]["completed_gates"])
+    blocked = set(roadmap["state"].get("blocked_gates", []))
+
+    current_definition = roadmap["gates"].get(gate_id)
+
+    if current_definition is None:
+        raise RoadmapError(
+            "current gate absent from authoritative roadmap"
+        )
+
+    terminal_contract = current_definition.get("terminal") or {}
+    terminal = bool(terminal_contract.get("is_terminal"))
+    successor = current_definition.get("next_gate")
+
+    if terminal:
+        if successor is not None:
+            raise RoadmapError(
+                "terminal gate cannot define successor"
+            )
+    else:
+        if not successor:
+            raise RoadmapError(
+                "nonterminal gate has no authoritative successor"
+            )
+
+        successor_definition = roadmap["gates"].get(successor)
+
+        if successor_definition is None:
+            raise RoadmapError(
+                "authoritative successor gate is unavailable"
+            )
+
+        if successor in completed:
+            raise RoadmapError(
+                "authoritative successor is already complete"
+            )
+
+        if successor in blocked:
+            raise RoadmapError(
+                "authoritative successor is blocked"
+            )
+
+        dependencies = successor_definition.get(
+            "dependencies",
+            [],
+        )
+
+        unsatisfied = [
+            dependency
+            for dependency in dependencies
+            if (
+                dependency not in completed
+                and dependency != gate_id
+            )
+        ]
+
+        if unsatisfied:
+            raise RoadmapError(
+                "authoritative successor dependencies "
+                "are unsatisfied"
+            )
+
+    binding = AdvancementBinding(
+        roadmap_id=roadmap_id,
+        roadmap_version=str(roadmap_version),
+        gate_id=gate_id,
+        gate_definition_digest=gate_definition_digest,
+        result_digest=result_digest,
+        acceptance_receipt_id=acceptance_receipt_id,
+        acceptance_receipt_digest=acceptance_receipt_digest,
+        transaction_id=transaction_id,
+    )
+
+    target, resolved_successor = complete_accepted_gate(
+        LifecycleState.ACCEPTED,
+        binding,
+        successor_gate=successor,
+        terminal=terminal,
+    )
+
+    # Persist the qualified advancement as one recoverable transaction.
+    #
+    # The transaction receipt is written first. The authoritative roadmap
+    # state is then promoted atomically. A fresh resolver must therefore
+    # either observe the old state plus a recoverable transaction receipt,
+    # or the complete new state. Successor execution is intentionally
+    # outside this transaction.
+    root = Path(repository_root).resolve()
+
+    roadmap_root = (
+        root
+        / "engineering/convergence/engineering-system-convergence"
+    )
+    state_path = roadmap_root / "STATE.yaml"
+
+    transaction_dir = (
+        roadmap_root
+        / "runtime/advancement-transactions"
+    )
+    transaction_dir.mkdir(parents=True, exist_ok=True)
+
+    transaction_path = (
+        transaction_dir
+        / f"{transaction_id}.json"
+    )
+
+    pre_state_bytes = state_path.read_bytes()
+    actual_pre_state_digest = hashlib.sha256(
+        pre_state_bytes
+    ).hexdigest()
+
+    if actual_pre_state_digest != pre_state_digest:
+        raise RoadmapError("pre-state digest mismatch")
+
+    completed_gate = gate_id
+    successor_gate = resolved_successor
+
+    state_value = yaml.safe_load(
+        pre_state_bytes.decode("utf-8")
+    )
+
+    if completed_gate in state_value["completed_gates"]:
+        raise RoadmapError(
+            "gate already completed without matching transaction replay"
+        )
+
+    if state_value["current_gate"] != completed_gate:
+        raise RoadmapError("current gate mismatch before commit")
+
+    pending = list(state_value["pending_gates"])
+
+    if completed_gate not in pending:
+        raise RoadmapError(
+            "completed gate missing from pending gate set"
+        )
+
+    if not terminal and successor_gate not in pending:
+        raise RoadmapError(
+            "successor missing from pending gate set"
+        )
+
+    state_value["completed_gates"] = (
+        list(state_value["completed_gates"])
+        + [completed_gate]
+    )
+
+    state_value["pending_gates"] = [
+        item for item in pending
+        if item != completed_gate
+    ]
+
+    state_value["current_gate"] = (
+        None if terminal else successor_gate
+    )
+    state_value["last_completed_gate"] = completed_gate
+
+    completed_definition = resolver.validate()["gates"][
+        completed_gate
+    ]
+
+    state_value["last_result"] = (
+        completed_definition["result_location"]
+    )
+
+    evidence_root = Path(
+        completed_definition["evidence_location"]
+    )
+
+    evidence_manifest = (
+        evidence_root / "EVIDENCE-MANIFEST.yaml"
+    )
+
+    if not (
+        root / evidence_manifest
+    ).is_file():
+        raise RoadmapError(
+            "completed gate evidence manifest missing"
+        )
+
+    state_value["last_evidence"] = str(evidence_manifest)
+
+    if terminal:
+        state_value["next_authorized_action"] = "NONE"
+    else:
+        successor_definition = roadmap["gates"][
+            successor_gate
+        ]
+
+        resume = successor_definition.get(
+            "resume_instructions"
+        )
+
+        if isinstance(resume, dict):
+            next_action = resume.get(
+                "next_authorized_action"
+            )
+        else:
+            next_action = None
+
+        if not next_action:
+            next_action = successor_definition.get(
+                "next_authorized_action"
+            )
+
+        if not next_action:
+            raise RoadmapError(
+                "authoritative successor next action unavailable"
+            )
+
+        state_value["next_authorized_action"] = next_action
+
+    from datetime import datetime, timezone
+
+    state_value["updated_at"] = (
+        datetime.now(timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
+
+    post_state_bytes = yaml.safe_dump(
+        state_value,
+        sort_keys=False,
+    ).encode("utf-8")
+
+    post_state_digest = hashlib.sha256(
+        post_state_bytes
+    ).hexdigest()
+
+    transaction_record = {
+        "schema_version": 1,
+        "transaction_type": "GATE_ADVANCEMENT",
+        "transaction_id": transaction_id,
+        "roadmap_id": roadmap_id,
+        "roadmap_version": str(roadmap_version),
+        "gate_id": gate_id,
+        "gate_definition_digest": gate_definition_digest,
+        "result_digest": result_digest,
+        "acceptance_receipt_id":
+            acceptance_receipt_id,
+        "acceptance_receipt_digest":
+            acceptance_receipt_digest,
+        "pre_state_digest": pre_state_digest,
+        "post_state_digest": post_state_digest,
+        "lifecycle_state": target.value,
+        "successor_gate": successor_gate,
+        "terminal_state": terminal,
+        "next_authorized_action":
+            state_value["next_authorized_action"],
+        "status": "PENDING_RECONCILIATION",
+    }
+
+    transaction_bytes = (
+        json.dumps(
+            transaction_record,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n"
+    ).encode("utf-8")
+
+    def atomic_write(path: Path, data: bytes) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+        fd, temporary_name = tempfile.mkstemp(
+            prefix="." + path.name + ".",
+            dir=str(path.parent),
+        )
+
+        temporary = Path(temporary_name)
+
+        try:
+            with os.fdopen(fd, "wb") as handle:
+                handle.write(data)
+                handle.flush()
+                os.fsync(handle.fileno())
+
+            os.replace(temporary, path)
+
+        finally:
+            if temporary.exists():
+                temporary.unlink()
+
+    # Record transaction provenance before authoritative mutation.
+    atomic_write(
+        transaction_path,
+        transaction_bytes,
+    )
+
+    # Commit the complete parent-roadmap transition atomically.
+    atomic_write(
+        state_path,
+        post_state_bytes,
+    )
+
+    transaction_record["status"] = "ADVANCEMENT_COMPLETE"
+
+    atomic_write(
+        transaction_path,
+        (
+            json.dumps(
+                transaction_record,
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n"
+        ).encode("utf-8"),
+    )
+
+    return {
+        "result": "PASS",
+        "transaction_id": transaction_id,
+        "gate_id": gate_id,
+        "lifecycle_state": target.value,
+        "acceptance_receipt_id": acceptance_receipt_id,
+        "successor_gate": resolved_successor,
+        "terminal_state": terminal,
+        "classification": (
+            "RECOVERED"
+            if recovering_pre_state_transaction
+            else "APPLIED"
+        ),
+        "already_applied": False,
+        "recovered": recovering_pre_state_transaction,
+        "durable_state_written": False,
+        "read_only": False,
+    }
+
+
+def apply_operator_review_transaction(
+    repository_root: Path,
+    *,
+    roadmap_id: str,
+    roadmap_version: str,
+    gate_id: str,
+    gate_definition_digest: str,
+    result_digest: str,
+    operator_identity: str,
+    decision: str,
+    transaction_id: str,
+) -> dict[str, Any]:
+    """Apply one explicit, receipt-backed operator review decision."""
+
+    from datetime import datetime, timezone
+    import hashlib
+    import json
+
+    try:
+        from scripts.lib.eos.roadmap_lifecycle import (
+            LifecycleState,
+            OperatorDecision,
+            ResultClass,
+            ReviewBinding,
+            apply_operator_decision,
+        )
+    except ModuleNotFoundError as error:
+        if error.name != "scripts":
+            raise
+
+        from roadmap_lifecycle import (
+            LifecycleState,
+            OperatorDecision,
+            ResultClass,
+            ReviewBinding,
+            apply_operator_decision,
+        )
+
+    resolver = ConvergenceRoadmap(repository_root)
+    projection = resolver.projection()
+
+    if projection["roadmap_id"] != roadmap_id:
+        raise RoadmapError("roadmap identity mismatch")
+
+    if str(projection["roadmap_version"]) != str(roadmap_version):
+        raise RoadmapError("roadmap version mismatch")
+
+    if projection["current_gate"] != gate_id:
+        raise RoadmapError("gate identity mismatch")
+
+    if projection["execution_result_state"] != "VALID_FINAL":
+        raise RoadmapError("operator review requires VALID_FINAL result")
+
+    if decision not in {"ACCEPT", "REJECT"}:
+        raise RoadmapError("unsupported operator decision")
+
+    for label, value in (
+        ("operator_identity", operator_identity),
+        ("transaction_id", transaction_id),
+    ):
+        if not isinstance(value, str) or not value.strip():
+            raise RoadmapError(f"missing {label}")
+
+    gate_path = Path(projection["gate_definition"])
+    result_path = Path(projection["gate_result"])
+
+    if not gate_path.is_file():
+        raise RoadmapError("gate definition unavailable")
+
+    if not result_path.is_file():
+        raise RoadmapError("review result unavailable")
+
+    actual_gate_digest = hashlib.sha256(
+        gate_path.read_bytes()
+    ).hexdigest()
+
+    actual_result_digest = hashlib.sha256(
+        result_path.read_bytes()
+    ).hexdigest()
+
+    if actual_gate_digest != gate_definition_digest:
+        raise RoadmapError("gate definition digest mismatch")
+
+    if actual_result_digest != result_digest:
+        raise RoadmapError("result digest mismatch")
+
+    receipt_dir = (
+        repository_root
+        / "engineering/convergence/engineering-system-convergence"
+        / "receipts/operator-review"
+    )
+    receipt_dir.mkdir(parents=True, exist_ok=True)
+
+    receipt_path = receipt_dir / f"{transaction_id}.json"
+
+    requested_identity = {
+        "transaction_id": transaction_id,
+        "roadmap_id": roadmap_id,
+        "roadmap_version": str(roadmap_version),
+        "gate_id": gate_id,
+        "gate_definition_digest": gate_definition_digest,
+        "result_path": str(result_path),
+        "result_digest": result_digest,
+        "result_class": "VALID_FINAL",
+        "decision": decision,
+        "operator_identity": operator_identity,
+    }
+
+    if receipt_path.exists():
+        prior = json.loads(receipt_path.read_text())
+
+        comparable = {
+            key: prior.get(key)
+            for key in requested_identity
+        }
+
+        if comparable != requested_identity:
+            raise RoadmapError("conflicting transaction replay")
+
+        return {
+            "result": "PASS",
+            "decision_receipt_id": prior["receipt_id"],
+            "transaction_id": transaction_id,
+            "decision": decision,
+            "lifecycle_state": prior["lifecycle_state"],
+            "classification": "ALREADY_APPLIED",
+            "already_applied": True,
+            "next_authorized_action":
+                prior["next_authorized_action"],
+        }
+
+    for existing_path in sorted(receipt_dir.glob("*.json")):
+        existing = json.loads(existing_path.read_text())
+
+        same_review_target = (
+            existing.get("roadmap_id") == roadmap_id
+            and str(existing.get("roadmap_version")) == str(roadmap_version)
+            and existing.get("gate_id") == gate_id
+            and existing.get("gate_definition_digest")
+                == gate_definition_digest
+            and existing.get("result_digest") == result_digest
+        )
+
+        if not same_review_target:
+            continue
+
+        existing_decision = existing.get("decision")
+
+        if existing_decision != decision:
+            raise RoadmapError(
+                "conflicting prior operator decision"
+            )
+
+        return {
+            "result": "PASS",
+            "decision_receipt_id": existing["receipt_id"],
+            "transaction_id": existing["transaction_id"],
+            "decision": existing_decision,
+            "lifecycle_state": existing["lifecycle_state"],
+            "classification": "ALREADY_APPLIED",
+            "already_applied": True,
+            "next_authorized_action":
+                existing["next_authorized_action"],
+        }
+
+    if projection["lifecycle_state"] != "AWAITING_OPERATOR_REVIEW":
+        raise RoadmapError(
+            "operator review requires AWAITING_OPERATOR_REVIEW"
+        )
+
+    binding = ReviewBinding(
+        roadmap_id=roadmap_id,
+        roadmap_version=str(roadmap_version),
+        gate_id=gate_id,
+        gate_definition_digest=gate_definition_digest,
+        result_digest=result_digest,
+        operator_identity=operator_identity,
+        transaction_id=transaction_id,
+    )
+
+    target = apply_operator_decision(
+        LifecycleState.AWAITING_OPERATOR_REVIEW,
+        ResultClass.VALID_FINAL,
+        OperatorDecision[decision],
+        binding,
+    )
+
+    decided_at = datetime.now(timezone.utc).isoformat()
+
+    receipt_seed = {
+        **requested_identity,
+        "decided_at": decided_at,
+        "lifecycle_state": target.value,
+    }
+
+    receipt_digest = hashlib.sha256(
+        json.dumps(
+            receipt_seed,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+    ).hexdigest()
+
+    receipt_id = "ORR-" + receipt_digest[:24].upper()
+
+    receipt = {
+        "receipt_type": "OPERATOR_REVIEW_DECISION",
+        "receipt_id": receipt_id,
+        **receipt_seed,
+        "next_authorized_action":
+            "EXECUTE_CR21_IMPLEMENT_ATOMIC_ADVANCEMENT"
+            if decision == "ACCEPT"
+            else "RECONCILE_REJECTED_GATE_RESULT",
+    }
+
+    tmp = receipt_path.with_suffix(".tmp")
+
+    if tmp.exists():
+        tmp.unlink()
+
+    tmp.write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n"
+    )
+    tmp.replace(receipt_path)
+
+    return {
+        "result": "PASS",
+        "decision_receipt_id": receipt_id,
+        "transaction_id": transaction_id,
+        "decision": decision,
+        "lifecycle_state": target.value,
+        "classification": "APPLIED",
+        "already_applied": False,
+        "next_authorized_action":
+            receipt["next_authorized_action"],
+    }
+
+
+
 def _format_status(value: dict[str, Any], heading: str = "ENGINEERING SYSTEM CONVERGENCE ROADMAP") -> str:
     completed = ", ".join(value["completed_gates"]) or "none"
     blocked = ", ".join(value["blocked_gates"]) or "none"
@@ -757,9 +4128,15 @@ def _format_status(value: dict[str, Any], heading: str = "ENGINEERING SYSTEM CON
         f"Roadmap: {value['roadmap']}",
         f"Roadmap State: {value['roadmap_state']}",
         f"Current Gate: {value['current_gate']} — {value['current_gate_title']}",
+        f"Lifecycle State: {value['lifecycle_state']}",
+        f"Execution Result State: {value['execution_result_state']}",
+        f"Review Required: {'YES' if value['review_required'] else 'NO'}",
+        f"Review State: {value['review_state']}",
+        f"Operator Decision: {value['operator_decision']}",
+        f"Completion State: {value['completion_state']}",
         f"Last Completed Gate: {value['last_completed_gate'] or 'none'}",
         f"Completed: {completed}",
-        f"Blockers: {blocked}",
+        f"Blocked Gates: {blocked}",
         f"Next Authorized Action: {value['next_authorized_action']}",
         f"Queue Authority: {value['queue_authority']} ({value['queue_role']})",
         f"Future Queue Authority: {value['future_queue_authority']} ({value['future_queue_role']})",
@@ -784,6 +4161,21 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     subparsers.add_parser("validate")
     subparsers.add_parser("evaluate")
     subparsers.add_parser("resume")
+
+    review_parser = subparsers.add_parser("operator-review")
+    review_parser.add_argument("--roadmap-id", required=True)
+    review_parser.add_argument("--roadmap-version", required=True)
+    review_parser.add_argument("--gate-id", required=True)
+    review_parser.add_argument("--gate-definition-digest", required=True)
+    review_parser.add_argument("--result-digest", required=True)
+    review_parser.add_argument("--operator-identity", required=True)
+    review_parser.add_argument(
+        "--decision",
+        required=True,
+        choices=("ACCEPT", "REJECT"),
+    )
+    review_parser.add_argument("--transaction-id", required=True)
+
     gate_parser = subparsers.add_parser("gate")
     gate_parser.add_argument("gate_id")
     return parser.parse_args(argv)
@@ -811,6 +4203,29 @@ def main(argv: list[str] | None = None) -> int:
             print(yaml.safe_dump(evaluation, sort_keys=False).rstrip())
             if resolved["roadmap"]["roadmap_class"] in EXECUTABLE_CLASSES and not evaluation["executable"]:
                 return 1
+        elif args.command == "operator-review":
+            result = apply_operator_review_transaction(
+                resolver.repository_root,
+                roadmap_id=args.roadmap_id,
+                roadmap_version=args.roadmap_version,
+                gate_id=args.gate_id,
+                gate_definition_digest=args.gate_definition_digest,
+                result_digest=args.result_digest,
+                operator_identity=args.operator_identity,
+                decision=args.decision,
+                transaction_id=args.transaction_id,
+            )
+            print(
+                yaml.safe_dump(
+                    {
+                        **result,
+                        "command": "operator-review",
+                        "roadmap_id": args.roadmap_id,
+                        "read_only": False,
+                    },
+                    sort_keys=False,
+                ).rstrip()
+            )
         elif args.command == "show":
             print(yaml.safe_dump(resolved["roadmap"], sort_keys=False).rstrip())
         elif args.command == "gate":

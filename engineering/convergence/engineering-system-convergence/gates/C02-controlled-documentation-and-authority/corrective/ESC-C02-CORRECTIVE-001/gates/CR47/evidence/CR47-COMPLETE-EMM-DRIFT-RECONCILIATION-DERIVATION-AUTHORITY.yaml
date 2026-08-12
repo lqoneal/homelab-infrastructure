@@ -1,0 +1,39 @@
+schema_version: "1.0"
+record_type: CR47_COMPLETE_EMM_DRIFT_RECONCILIATION_DERIVATION_AUTHORITY
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  block26_classification: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-BLOCK26-COMPLETE-EMM-DRIFT-SET-CLASSIFICATION.yaml"
+  complete_drift_inventory: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-COMPLETE-EMM-DRIFT-SET.yaml"
+  complete_drift_inventory_sha256: "83014cb767316ead023f21d7b97d7b83615867e0b6fcdd594a27b189c4700f39"
+
+authorized:
+  derive_authority_for_each_current_drift_source: true
+  verify_prior_digest_for_each_source: true
+  verify_cr47_or_controlled_provenance_for_each_source: true
+  derive_complete_authorized_mutations_map: true
+  derive_single_atomic_emm_rebind_transaction: true
+
+required:
+  include_every_current_emm_drift_source: true
+  use_bound_prior_digest_for_each_authorized_mutation: true
+  reject_any_unresolved_source_provenance: true
+  rerun_complete_drift_inventory_immediately_before_execution: true
+
+prohibited:
+  execute_emm_rebind: true
+  modify_binding_manifest: true
+  write_rebind_transaction: true
+  rewrite_cr47_result: true
+  rewrite_cr47_summary: true
+  repeat_corrective_state_transition: true
+  execute_cr48: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+
+next_authorized_action:
+  DERIVE_COMPLETE_ATOMIC_EMM_REBIND_AUTHORITY_FOR_ALL_CURRENT_DRIFT_ONLY

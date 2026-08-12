@@ -1,0 +1,54 @@
+schema_version: 1
+gate_id: CR46
+classification: CR46_REGRESSION_VALIDATOR_APPLICABILITY_CLASSIFICATION
+classified_at: '2026-08-11T21:48:15.064259+00:00'
+prior_regression_result: FAIL
+prior_regression_rc: 1
+observed_total_failures: 29
+classified_failure_count: 29
+passing_test_count: 231
+failure_families:
+- family_id: AUTHORITY_PUBLICATION_TEMP_TARGET_CONTEXT
+  test_file: scripts/tests/test-authority-publication.py
+  failure_count: 13
+  observed_failure: production activation target must be the repository-fixed runtime pointer
+  classification: VALIDATOR_CONTEXT_MISMATCH
+  candidate_semantic_defect: false
+  applicability: NOT_APPLICABLE_AS_RUN
+  basis: Tests use temporary publication targets while production target enforcement remained active.
+  required_context: TEST_HARNESS_WITH_EXPLICIT_TESTING_CONTEXT
+  rerun_requirement: RERUN_WITH_ZEUS_TESTING_1_IN_ISOLATED_TEST_CONTEXT
+- family_id: HISTORICAL_CONVERGENCE_STATE_FIXTURE
+  test_file: scripts/tests/test-convergence-roadmap.py
+  failure_count: 13
+  observed_failure: CR18/CR19/CR23 expectations evaluated against later live corrective current_item
+  classification: HISTORICAL_VALIDATOR_STATE_MISMATCH
+  candidate_semantic_defect: false
+  applicability: NOT_APPLICABLE_TO_LIVE_CR46_STATE
+  basis: Historical tests require a fixture pinned to their historical corrective state; the live repository has legitimately
+    advanced.
+  required_context: HISTORICAL_STATE_ISOLATED_FIXTURE
+  rerun_requirement: RERUN_AGAINST_HISTORICAL_STATE_FIXTURE_OR_CLASSIFY_NOT_APPLICABLE
+- family_id: ZDCL02_CLEAN_WORKTREE_PRECONDITION
+  test_file: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py
+  failure_count: 3
+  observed_failure: UNCOMMITTED_WORKING_TREE_DRIFT
+  classification: LIVE_DIRTY_WORKTREE_CONTEXT_MISMATCH
+  candidate_semantic_defect: false
+  applicability: NOT_APPLICABLE_TO_AUTHORIZED_DIRTY_CR46_WORKTREE
+  basis: CR46 intentionally contains twelve authorized unstaged implementation mutations; Stage1 recovery correctly fail-closes
+    on a dirty live repository.
+  required_context: ISOLATED_CANDIDATE_OR_CLEAN_COMMITTED_SNAPSHOT
+  rerun_requirement: RERUN_FROM_ISOLATED_CANDIDATE_WITH_IDENTICAL_CR46_SOURCE_CONTENT
+zo061_semantics_applied: true
+source_implementation_defect_established: false
+source_mutation_rerun_required: false
+qualification_context_repair_required: true
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+result: PASS
+next_action: AUTHOR_CONTEXT_CORRECT_REGRESSION_REQUALIFICATION_PLAN

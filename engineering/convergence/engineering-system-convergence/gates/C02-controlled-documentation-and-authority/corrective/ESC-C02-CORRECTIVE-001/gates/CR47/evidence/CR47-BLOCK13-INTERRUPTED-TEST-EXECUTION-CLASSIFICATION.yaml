@@ -1,0 +1,41 @@
+schema_version: "1.0"
+record_type: CR47_BLOCK13_INTERRUPTED_TEST_EXECUTION_CLASSIFICATION
+cr_id: CR47
+result: PASS
+
+execution:
+  block: CR47_BLOCK13
+  state: INTERRUPTED
+  exact_test_phase_started: true
+  exact_test_phase_completed: false
+  full_validator_started: false
+  operator_interrupt: true
+  visible_failure_markers_before_interrupt: 2
+
+environment:
+  pytest_tmp_mode: REPOSITORY_LOCAL
+  system_tmp_failure_recurred: false
+  run_tmp: "/data/engineering/repositories/homelab/tmp/cr47-requal-20260812T093926Z-2046230"
+  run_tmp_bytes_before_cleanup: 22052932222
+  run_tmp_files_before_cleanup: 1542012
+  run_tmp_directories_before_cleanup: 245138
+  run_tmp_cleaned: true
+
+implementation:
+  source_sha256: "205f95746fdcb7933905aed3308e46f992767ddfb58d1f3877670c70b39d30b4"
+  test_sha256: "6aaf549a1951ce6f787170b75153370f14c1c27cb700554e8573274da15fc797"
+  implementation_defect_established: false
+  test_contract_defect_established: false
+  codex_rerun_required: false
+
+evidence:
+  exact_log: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-EXACT-10-TEST-REQUALIFICATION.log"
+  failure_summary: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-BLOCK13-PARTIAL-PYTEST-FAILURE-SUMMARY.txt"
+
+next_required_diagnosis:
+  identify_first_failed_nodes: true
+  identify_hung_or_long_running_node: true
+  distinguish_assertion_failure_from_fixture_recursion_or_wait: true
+  execute_tests: false
+  mutate_source: false
+  mutate_tests: false

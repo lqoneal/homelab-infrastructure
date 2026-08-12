@@ -1,0 +1,40 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ3
+classification: RQ3_CONTEXT_CORRECT_CANDIDATE_NODE_SCOPE
+derived_at: '2026-08-12T00:39:54.543459+00:00'
+result: PASS
+basis: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-CONTEXT-CORRECT-EXECUTION-BOUNDARY.yaml
+validator:
+  path: scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py
+  sha256: f08e2f66e1afc0c39dd7121a0301c8096be5b208aea0c0ad21a53e78f0b90568
+historical_reference_failure_count: 3
+replay_failure_count: 10
+candidate_scope:
+  node_count: 10
+  node_set_sha256: 036dd8d820ec5388f71ac06cb3e7ccf6b3c608f51a4a4cde4ef6ca47684237b3
+  nodes:
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_all_transaction_identifiers_resolve_same_record
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_digest_projection_and_state_digest_are_deterministic
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_duplicate_submission_is_idempotent
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_healthy_submission_creates_one_snapshot_and_receipt_backed_dispatch
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_incomplete_provider_selection_and_launch_ack_are_not_authoritative
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_projection_persistence_failure_blocks_submission_before_success
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_provider_output_cannot_advance_without_receipts
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_receiptless_dispatch_rolls_back_and_preserves_evidence
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_recovery_does_not_invoke_execution_and_requires_new_snapshot
+  - scripts/tests/test-zdcl02-end-to-end-lifecycle-continuity.py::ZDCL02ContinuityQualificationTests::test_replayed_dispatch_repairs_missing_derived_projections_without_resubmission
+  derivation: ALL_10_REPLAY_FAILURES_INHERIT_CANONICAL_REPOSITORY_SYMBOL_THROUGH_SHARED_RUNTIME_HELPER
+context_proof:
+  shared_runtime_helper: _runtime
+  runtime_constructor: Stage1Runtime(ROOT,...)
+  module_repository_symbol: ROOT
+  all_failed_nodes_call_runtime: true
+  all_failed_nodes_inherit_root_repository: true
+  shared_fixture_root_bound: true
+execution_scope_qualified: false
+test_execution_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_state_mutation_authorized: false
+next: QUALIFY_RQ3_CANDIDATE_SCOPE_FOR_EXECUTION

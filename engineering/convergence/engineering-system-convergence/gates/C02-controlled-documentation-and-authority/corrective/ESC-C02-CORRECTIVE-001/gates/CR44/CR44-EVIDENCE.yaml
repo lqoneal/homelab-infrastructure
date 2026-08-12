@@ -1,0 +1,27 @@
+schema_version: 1
+gate_id: CR44
+classification: CR44_POST_COMMIT_REQUALIFICATION_EVIDENCE
+objective: Repeat qualification against local commit.
+qualification_target: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+parent_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+tree: 7f343db98b1e61f864d5fbb117ba3bf295f01024
+result: PASS
+qualification:
+  immutable_commit_identity: PASS
+  immutable_zeus_startup: PASS
+  import_closure: PASS
+  controlled_document_semantics: PASS
+  convergence_runtime: PASS
+  repair_specific_tests: PASS
+  protected_artifact_preservation: PASS
+  validator_applicability: PASS
+side_effects:
+  cr44_result_written: false
+  state_advanced: false
+  cr45_executed: false
+  commit_created: false
+  commit_amended: false
+  push_performed: false
+  publication_performed: false
+  eos_synchronization_performed: false
+next_action: AUTHOR_CR44_TERMINAL_COMPLETION_BOUNDARY

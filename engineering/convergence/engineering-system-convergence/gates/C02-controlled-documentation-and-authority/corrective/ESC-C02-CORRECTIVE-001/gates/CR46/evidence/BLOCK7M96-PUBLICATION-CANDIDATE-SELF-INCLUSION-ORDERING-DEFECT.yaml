@@ -1,0 +1,35 @@
+schema_version: 1
+gate_id: CR46
+classification: BLOCK7M96_PUBLICATION_CANDIDATE_SELF_INCLUSION_ORDERING_DEFECT
+classified_at: '2026-08-12T07:31:41.339215+00:00'
+result: PASS
+failure:
+  block: 7M96
+  stage: VERIFY_CANDIDATE_IS_EXACT_CURRENT_REPOSITORY_DELTA_SURFACE
+  class: PUBLICATION_CANDIDATE_SELF_INCLUSION_ORDERING_DEFECT
+  repository_drift_defect: false
+  candidate_substantive_defect: false
+  publication_execution_defect: false
+root_cause:
+  inventory_frozen_before_control_artifact_write: true
+  untracked_surface_record_written_after_inventory: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/POST-CR46-C02-UNTRACKED-PUBLICATION-SURFACE.yaml
+  candidate_record_written_after_inventory: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/POST-CR46-COMPLETE-PUBLICATION-CANDIDATE.yaml
+  those_records_became_new_untracked_paths: true
+  final_live_surface_comparison_after_write: true
+repository:
+  tracked_path_count: 30
+  tracked_path_set_sha256: 2cebf244d52894f4da490d16e608f77a915a47aeb0ab97ce300a4e07eaa1baa6
+  tracked_delta_drift: false
+  foreign_untracked_path_count: 0
+required_corrective:
+  write_derivation_artifacts_first: true
+  perform_final_post_write_inventory: true
+  freeze_final_stable_publication_surface: true
+  derive_execution_authority_only_from_final_stable_surface: true
+execution:
+  stage_executed: false
+  commit_created: false
+  push_performed: false
+  eos_synchronization_executed: false
+  cr47_executed: false
+next: DERIVE_FINAL_POST_WRITE_STABLE_PUBLICATION_SURFACE_ONLY

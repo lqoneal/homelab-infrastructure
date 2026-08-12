@@ -1,0 +1,17 @@
+schema_version: 1
+gate_id: CR46
+classification: CR46_BLOCK6_CONTRACT_RESOLUTION_FIELD_CLASSIFICATION
+classified_at: '2026-08-11T19:34:55.625046+00:00'
+classification_result: VERIFIER_FIELD_NAME_MISMATCH
+failed_verifier_field: all_six_resolved
+canonical_record_field: all_six_contracts_resolved
+canonical_field_value: true
+implementation_contract_defect: false
+implementation_authority_defect: false
+allowlist_defect: false
+source_mutation_executed: false
+staging_executed: false
+commit_created: false
+push_performed: false
+retry_block6_authorized: true
+result: PASS

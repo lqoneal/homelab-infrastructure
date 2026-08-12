@@ -1,0 +1,43 @@
+schema_version: "1.0"
+record_type: CR47_EXACT_EMM_REBIND_RETRY_AUTHORITY
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  block23_classification: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-BLOCK23-AUTHORIZED-MUTATIONS-CONTRACT-CLASSIFICATION.yaml"
+  argument_contract: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-EXACT-EMM-AUTHORIZED-MUTATIONS-CONTRACT.yaml"
+  argument_contract_sha256: "515d41456ae96876237a502fea6be76f1749c36840da5dc5d7d3d0931bba3df3"
+  prior_rebind_authority: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-EXACT-EMM-REBIND-AUTHORITY.yaml"
+
+canonical_call:
+  function: apply_emm_rebind_transaction
+  repository_root: /data/engineering/repositories/homelab
+  transaction_id: tx-cr47-closeout-emm-rebind-001
+  authorized_mutations:
+    "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md": "53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58"
+
+authorized:
+  execute_canonical_rebind_once: true
+  exact_mutation_count: 1
+  write_exactly_one_transaction: true
+  validate_roadmap_after_rebind: true
+  finalize_existing_cr47_closeout: true
+
+prohibited:
+  alter_authorized_mutation_map: true
+  modify_other_binding_sources: true
+  rewrite_cr47_result: true
+  rewrite_cr47_summary: true
+  repeat_corrective_state_transition: true
+  execute_cr48: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+
+stop_after:
+  emm_rebind_validation_and_cr47_finalization: true
+
+next_authorized_action:
+  EXECUTE_CANONICAL_EMM_REBIND_WITH_EXACT_AUTHORIZED_MUTATIONS_MAP_ONLY

@@ -1,0 +1,29 @@
+schema_version: 1
+gate_id: CR45M1
+classification: CR45M1_TERMINAL_QUALIFICATION
+result: PASS
+qualified_at: '2026-08-11T19:09:55.361727+00:00'
+previous_commit: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+amended_commit: fe824c714da35d987cc7454366aa3abaf046cc31
+parent_commit: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+qualification:
+  exact_ten_path_durability_surface: PASS
+  exact_ten_path_amend_delta: PASS
+  frozen_digest_equivalence: PASS
+  single_commit_semantics_preserved: true
+  parent_preserved: true
+  commit_message_preserved: true
+  immutable_zeus_startup: PASS
+  import_closure: PASS
+  queued_zo_secondary_cr_bindings: PASS
+  procedure_semantics: PASS
+  validator_context_classification: PASS
+  unauthorized_amend_content: ABSENT
+side_effects:
+  additional_commit_created: false
+  additional_amend_executed: false
+  push_performed: false
+  publication_performed: false
+  eos_synchronization_performed: false
+  cr45_executed: false
+  cr46_executed: false

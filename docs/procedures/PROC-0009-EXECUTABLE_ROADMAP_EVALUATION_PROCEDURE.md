@@ -1,7 +1,7 @@
 ---
 document_id: PROC-0009
 title: Executable Roadmap Evaluation Procedure
-version: 1.0
+version: 1.2
 status: Active
 owner: Engineering Governance
 created: 2026-08-09
@@ -462,3 +462,64 @@ ambiguity.
 | PROC-0009@1.0 | 2026-08-09 | Draft | Review | Executable Roadmap Standardization operator directive |
 | PROC-0009@1.0 | 2026-08-09 | Review | Approved | Homelab Operator |
 | PROC-0009@1.0 | 2026-08-09 | Approved | Active | Homelab Operator; persistence remains Pending because commit and push are prohibited |
+
+## Human-Readable Completion and Version Evaluation
+
+For every completed gate, roadmap evaluation MUST verify that the gate has a
+human-readable completion summary in addition to its machine-readable result
+and required evidence.
+
+For manually executed roadmap gates, evaluation MUST verify before state
+advancement that:
+
+1. the result has been validated;
+2. `SUMMARY.md` or the declared equivalent exists;
+3. the summary is consistent with the result/evidence;
+4. the cumulative roadmap history has been updated;
+5. the next authorized action is explicitly identified.
+
+When evaluating an authoritative roadmap modification, the evaluator MUST also
+verify that roadmap versioning advanced appropriately and that the persisted
+roadmap version agrees with any associated roadmap state projection.
+
+A roadmap modification without the required version advancement is not an
+acceptable executable-roadmap update.
+
+Human-readable summaries are not substitutes for machine-readable evidence.
+Any contradiction between the summary and machine-readable authority is a
+fail-closed evaluation condition.
+
+## Pre-Creation Verification Procedure
+
+Before creating or copying any roadmap-controlled or controlled-document-like
+artifact:
+
+1. identify the intended artifact before writing it;
+2. attempt all applicable Zeus-native discovery and verification commands;
+3. record Zeus availability and the verification surfaces actually used;
+4. query authoritative document/index/registry information for identity and
+   purpose overlap;
+5. inspect existing controlled documentation for conflicting or redundant
+   authority;
+6. validate intended repository placement;
+7. validate controlled identifier uniqueness;
+8. determine whether an existing document should be revised instead of a new
+   document being created;
+9. record PRE_CREATE_VERIFICATION=PASS or FAIL;
+10. only after PASS may the creation operation execute.
+
+If Zeus cannot perform an applicable check, the evaluator must record the
+specific Zeus capability gap before using repository-native fallback
+verification.
+
+Fallback verification must include the authoritative controlled-document
+validator and repository discovery/index inspection appropriate to the
+artifact.
+
+A document created before this verification has completed is nonconforming and
+must not be accepted merely because later validation succeeds.
+
+For evidence preservation, do not copy controlled documents with live document
+identifiers into discoverable repository evidence paths. Prefer digests, Git
+identities, diffs, or another representation that cannot be mistaken for a
+second controlled authority.

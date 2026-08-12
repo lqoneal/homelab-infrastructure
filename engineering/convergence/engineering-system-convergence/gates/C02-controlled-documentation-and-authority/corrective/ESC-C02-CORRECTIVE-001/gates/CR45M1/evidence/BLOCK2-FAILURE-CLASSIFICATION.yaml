@@ -1,0 +1,17 @@
+schema_version: 1
+gate_id: CR45M1
+classification: BLOCK2_FAILURE_CLASSIFICATION
+classified_at: '2026-08-11T18:53:11.528848+00:00'
+failures:
+- failure: ROADMAP_VALIDATOR_FAILURE
+  classification: INVALID_COMMAND_INVOCATION
+  incorrect_command: scripts/engctl convergence roadmap validate
+  correct_command: scripts/engctl roadmap validate
+  candidate_content_defect: false
+- failure: COMMIT_TOPOLOGY_DERIVATION_FAILURE
+  classification: OVERLY_NARROW_LITERAL_SEMANTIC_DETECTION
+  candidate_content_defect: false
+  corrected_topology_result: AMEND_EXISTING_LOCAL_CORRECTIVE_COMMIT
+block2_live_mutation_occurred: false
+block2_candidate_preserved: true
+result: PASS

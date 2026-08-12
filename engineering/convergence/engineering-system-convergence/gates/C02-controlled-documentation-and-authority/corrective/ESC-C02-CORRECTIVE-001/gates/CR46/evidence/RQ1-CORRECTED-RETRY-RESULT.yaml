@@ -1,0 +1,30 @@
+schema_version: 1
+gate_id: CR46
+classification: RQ1_CORRECTED_RETRY_RESULT
+executed_at: '2026-08-11T22:14:53.230444+00:00'
+test_count: 13
+test_context:
+  ZEUS_TESTING: '1'
+  canonical_runtime_pointer: .zeus/runtime/authority/active-publication.json
+  unittest_mock_normal_import: true
+rq1_test:
+  path: scripts/tests/test-authority-publication.py
+  sha256: 6d8d16dad72b60f087bf294bb6c44dc3b339b3859bf6001511fa4e9d0d7d3b10
+  mutated_during_retry: false
+preexisting_preserved_test:
+  path: scripts/tests/test-convergence-roadmap.py
+  sha256: 4ed9ca065ff55dfc88a070a1a20b2bc7bb43425e03ae100cddc2390aeab58de7
+  mutated_during_retry: false
+  consumed_by_rq1: false
+return_code: 1
+result: FAIL
+production_source_mutation_executed: false
+rq2_executed: false
+rq3_executed: false
+stage_executed: false
+commit_created: false
+push_performed: false
+eos_synchronization_executed: false
+cr46_completion_executed: false
+cr47_executed: false
+next_action: DIAGNOSE_RQ1_CORRECTED_RETRY_ONLY

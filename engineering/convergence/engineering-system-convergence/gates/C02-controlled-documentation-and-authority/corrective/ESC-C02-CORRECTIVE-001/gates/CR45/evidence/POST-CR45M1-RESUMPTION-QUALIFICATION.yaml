@@ -1,0 +1,22 @@
+schema_version: 1
+gate_id: CR45
+classification: POST_CR45M1_PUBLICATION_RESUMPTION_QUALIFICATION
+qualified_at: '2026-08-11T19:11:02.120927+00:00'
+qualified_commit: fe824c714da35d987cc7454366aa3abaf046cc31
+origin_main: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+qualification:
+  cr45m1_complete_pass: true
+  single_local_corrective_commit: true
+  local_ahead_by_one: true
+  local_behind_by_zero: true
+  parent_equals_origin_main: true
+  immutable_zeus_startup: PASS
+  import_closure: PASS
+  queued_zo_secondary_cr_assignments: PASS
+  index_empty: true
+  active_blockers: 0
+publication_execution_authorized: false
+push_executed: false
+cr46_executed: false
+result: PASS
+next_action: DERIVE_EXACT_CR45_PUBLICATION_EXECUTION_BOUNDARY

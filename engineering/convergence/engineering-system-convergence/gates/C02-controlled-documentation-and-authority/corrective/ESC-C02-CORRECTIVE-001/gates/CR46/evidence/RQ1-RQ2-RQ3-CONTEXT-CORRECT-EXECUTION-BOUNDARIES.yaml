@@ -1,0 +1,26 @@
+schema_version: 1
+gate_id: CR46
+classification: RQ1_RQ2_RQ3_CONTEXT_CORRECT_EXECUTION_BOUNDARIES
+derived_at: '2026-08-12T00:33:11.371385+00:00'
+result: PASS
+boundaries:
+  RQ1: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ1-CONTEXT-CORRECT-EXECUTION-BOUNDARY.yaml
+  RQ2: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-CONTEXT-CORRECT-EXECUTION-BOUNDARY.yaml
+  RQ3: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ3-CONTEXT-CORRECT-EXECUTION-BOUNDARY.yaml
+resolution:
+  RQ1: PRIOR_PASS_PRESERVED_NO_RERUN
+  RQ2: HISTORICAL_CR23_FIXTURE_QUALIFIED_EXACT_NODE_SCOPE_REQUIRED
+  RQ3: CANONICAL_REPOSITORY_IDENTITY_CONTEXT_REQUIRED_EXACT_NODE_SCOPE_REQUIRED
+test_execution_authorized: false
+source_mutation_authorized: false
+test_mutation_authorized: false
+live_state_mutation_authorized: false
+rq2_completion_authorized: false
+rq3_completion_authorized: false
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+next: DERIVE_EXACT_RQ2_AND_RQ3_CONTEXT_CORRECT_NODE_SCOPES_ONLY

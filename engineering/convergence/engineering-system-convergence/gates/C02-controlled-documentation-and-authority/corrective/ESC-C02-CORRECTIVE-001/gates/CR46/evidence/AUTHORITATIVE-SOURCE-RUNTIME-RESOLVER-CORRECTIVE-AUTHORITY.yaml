@@ -1,0 +1,52 @@
+schema_version: 1
+gate_id: CR46
+classification: AUTHORITATIVE_SOURCE_RUNTIME_RESOLVER_CORRECTIVE_AUTHORITY
+authorized_at: '2026-08-11T22:25:13.157254+00:00'
+authority_state: AUTHORIZED_NOT_EXECUTED
+source_diagnosis: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ1-RUNTIME-PUBLICATION-RESOLVER-CONSISTENCY-CLASSIFICATION.yaml
+authorized_production_source:
+  path: scripts/lib/emp/authority_resolution.py
+  required_pre_mutation_sha256: 636b5e90bf9aa07bf195141d79efcddb32be715db2b17f25d366ff72508242da
+reference_only_production_source:
+  path: scripts/lib/emp/authority_publication.py
+  required_sha256: 09b7d4e529d287bb001165d909ca2a9e7b94e1ed82c1cd98fc1a85eb48e84bee
+  mutation_authorized: false
+protected_tests:
+- path: scripts/tests/test-authority-publication.py
+  required_sha256: 392ce0853bd8fd1bd8d70b75b009b649cd24cdc1e5f36b1184d106e53b302701
+  mutation_authorized: false
+  revert_authorized: false
+- path: scripts/tests/test-convergence-roadmap.py
+  required_sha256: 4ed9ca065ff55dfc88a070a1a20b2bc7bb43425e03ae100cddc2390aeab58de7
+  mutation_authorized: false
+  revert_authorized: false
+authorized_correction:
+  function: authoritative_source_path
+  objective: Make the authoritative-source reader resolve the same physical runtime authority store used by production publication.
+  current_semantic: runtime = root / AUTHORITY_RUNTIME_RELATIVE_PATH
+  required_semantic: runtime = runtime_path(root, "authority")
+  pointer_semantic: pointer = runtime / ACTIVE_PUBLICATION_POINTER
+  runtime_path_import_authorized: true
+  legacy_fallback_semantics_preserved: true
+  pointer_integrity_validation_preserved: true
+  manifest_integrity_validation_preserved: true
+  artifact_integrity_validation_preserved: true
+  authority_activation_target_change_authorized: false
+  authority_publication_change_authorized: false
+  unrelated_resolution_logic_change_authorized: false
+production_source_mutation_authorized: true
+production_mutation_path_count: 1
+rq1_test_mutation_authorized: false
+convergence_test_mutation_authorized: false
+rq1_retry_authorized_in_same_transaction: false
+rq2_execution_authorized: false
+rq3_execution_authorized: false
+stage_authorized: false
+commit_authorized: false
+amend_authorized: false
+push_authorized: false
+eos_synchronization_authorized: false
+cr46_completion_authorized: false
+cr47_execution_authorized: false
+stop_boundary: STOP_AFTER_AUTHORITATIVE_SOURCE_RUNTIME_RESOLVER_CORRECTIVE
+result: PASS

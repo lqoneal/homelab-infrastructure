@@ -1,0 +1,14 @@
+schema_version: 1
+gate_id: CR46
+stage_id: RQ-1-AUTHORITY-PUBLICATION-TEST-CONTEXT
+qualified_at: '2026-08-11T22:11:28.133837+00:00'
+test_count: 13
+context:
+  ZEUS_TESTING: '1'
+  unittest_mock_normal_import: true
+  canonical_runtime_pointer: .zeus/runtime/authority/active-publication.json
+return_code: 90
+result: FAIL
+production_source_mutation_executed: false
+rq2_executed: false
+rq3_executed: false

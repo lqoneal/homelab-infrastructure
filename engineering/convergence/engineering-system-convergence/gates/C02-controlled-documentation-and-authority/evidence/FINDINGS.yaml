@@ -1,0 +1,438 @@
+schema_version: 1
+gate_id: C02
+baseline: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+result_semantics: COMPLETE_WITH_FINDINGS
+findings:
+  - finding_id: C02-F-001
+    title: Two controlled records are absent from the authoritative index
+    category: CONTROLLED_DOCUMENT_IDENTITY
+    severity: HIGH
+    sources:
+      - docs/charters/CHAR-0001-ENGINEERING_CHARTER.md
+      - docs/procedures/PROC-0008-ENGINEERING_GOVERNANCE_DECISION_PROCEDURE.md
+      - docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md#Controlled-Documents
+    observed: Both sources have document_id metadata; neither has a DOC-0001 row.
+    consumer: scripts/validate_controlled_documents.py and deterministic discovery
+    impact: Controlled records are undiscoverable through the claimed single index.
+    evidence: CONTROLLED-DOCUMENT-INVENTORY.yaml
+    recommendation: Add deterministic completeness enforcement and reconcile index membership in a later authorized documentation gate.
+    resolution_owner: Engineering Governance / Document Registrar
+    proposed_gate: C05
+
+  - finding_id: C02-F-002
+    title: Thirteen DOC-0001 title/status values disagree with source metadata
+    category: CONTROLLED_DOCUMENT_INDEX
+    severity: HIGH
+    sources:
+      - docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md
+      - controlled source paths enumerated in CONTROLLED-DOCUMENT-INVENTORY.yaml
+    observed: Includes SPEC-0001 and PROC-0006 indexed Active while source status is Draft, plus asset/EWO/STD title or status differences.
+    consumer: document readers and controlled-document validator
+    impact: Index discovery can promote a different lifecycle fact than the owning source.
+    evidence: CONTROLLED-DOCUMENT-INVENTORY.yaml#index_source_metadata_mismatches
+    recommendation: Define source-owned fields and generate or validate their index projection.
+    resolution_owner: Engineering Governance / document owners
+    proposed_gate: C05
+
+  - finding_id: C02-F-003
+    title: Lifecycle and domain status share ambiguous representations
+    category: LIFECYCLE_AUTHORITY
+    severity: HIGH
+    sources:
+      - docs/standards/STD-0001-ENGINEERING_DOCUMENT_LIFECYCLE_STANDARD.md
+      - docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md
+      - docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md
+    observed: Source statuses include six-state lifecycle values plus approval/completion, asset condition, procurement, and result states.
+    consumer: validators, index readers, lifecycle workflows
+    impact: Operational condition can be confused with controlled-document lifecycle authority.
+    evidence: CONTROLLED-DOCUMENT-INVENTORY.yaml#status_counts
+    recommendation: Separate lifecycle, approval, result, and domain-operational status semantics.
+    resolution_owner: Engineering Governance
+    proposed_gate: C05
+
+  - finding_id: C02-F-004
+    title: Persistence claims are incomplete or nonstandard and not fully proven
+    category: PERSISTENCE_AUTHORITY
+    severity: HIGH
+    sources:
+      - docs/standards/STD-0002-ENGINEERING_DOCUMENT_PERSISTENCE_STANDARD.md
+      - docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md
+      - controlled source frontmatter
+    observed: 49 Pending, 30 Persisted, 42 missing, and two Complete values; C02 did not reconstruct immutable-object provenance for each claim.
+    consumer: qualification and historical reconstruction
+    impact: Persistence metadata cannot uniformly prove durable historical publication.
+    evidence: CONTROLLED-DOCUMENT-INVENTORY.yaml#persistence_status_counts
+    recommendation: Create a deterministic persistence provenance audit in a later maturity gate.
+    resolution_owner: Engineering Governance / EOS Program
+    proposed_gate: NEW_MATURITY_GATE_DOCUMENT_PERSISTENCE_PROVENANCE
+
+  - finding_id: C02-F-005
+    title: Four historical generations compete for current mission/phase authority
+    category: AUTHORITY_CONFLICT
+    severity: CRITICAL
+    sources:
+      - docs/project/PROJ-0001-PROJECT_STATE.md
+      - docs/project/PHASE-0001-ZEUS-OPERATIONAL-ALPHA-AUTHORITY.md
+      - engineering/registry/work-registry.yaml
+      - engineering/missions/operation-beta-current.yaml
+      - engineering/authority/operational-authority-state.yaml
+      - engineering/execution/execution-interface.yaml
+      - /data/engineering/eos/state/EOS-STATE.md
+    observed: ESC C02, Operation Beta BETA-04, Zeus OA, and a legacy mission contract are all exposed as current/active.
+    consumer: engctl resume, EOS, EMP, Zeus
+    impact: No non-roadmap consumer can safely infer one current engineering context.
+    evidence: AUTHORITY-CLAIM-MATRIX.yaml#C02-AC-006
+    recommendation: Make ESC/Project State the canonical current fact and rebuild subordinate projections in C03-C08.
+    resolution_owner: Engineering Governance
+    proposed_gate: C05
+
+  - finding_id: C02-F-006
+    title: Zeus OA progress record contains mutually exclusive next actions
+    category: STALE_AUTHORITY
+    severity: HIGH
+    sources: [engineering/operations/zeus-operational-alpha-progress.md]
+    observed: OA-08 current/completed, OA-04 current, and OA-01 sole current/not started appear in one record.
+    consumer: Zeus/EMP/EOS resume and authority consumers
+    impact: Progress cannot serve as a reliable current-state input.
+    evidence: STALE-DOCUMENT-REGISTER.yaml#C02-S-009
+    recommendation: Generate progress from verified receipts and one selected authority generation.
+    resolution_owner: Zeus Operations
+    proposed_gate: C08
+
+  - finding_id: C02-F-007
+    title: Project State mixes explicit C02 binding with extensive current-tense historical state
+    category: STALE_CONTEXT
+    severity: MEDIUM
+    sources: [docs/project/PROJ-0001-PROJECT_STATE.md]
+    observed: Lines 124-128 disclaim older content, but the retained body continues to use current/active/next language.
+    consumer: humans, search-based automation, resume reconstruction
+    impact: Correct frontmatter can be overridden by naive body extraction or reader interpretation.
+    evidence: STALE-DOCUMENT-REGISTER.yaml#C02-S-001
+    recommendation: Structurally separate current state from historical narrative.
+    resolution_owner: Project State owner
+    proposed_gate: C05
+
+  - finding_id: C02-F-008
+    title: Registry implementation promotes management state into current-context selection
+    category: IMPLEMENTATION_AUTHORITY
+    severity: HIGH
+    sources:
+      - scripts/lib/emp/registry.py
+      - scripts/lib/eos/context.sh
+      - docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md
+    observed: authorized/active/blocked management objects are labeled management_current and compared to Project State as current mission/phase.
+    consumer: engctl registry context and resume
+    impact: Management-only state becomes a competing operational-current projection.
+    evidence: IMPLEMENTATION-CONSUMER-MAP.yaml#WORK_REGISTRY
+    recommendation: Preserve management labels and derive project current state only from its owner.
+    resolution_owner: EMP / engctl owner
+    proposed_gate: C07
+
+  - finding_id: C02-F-009
+    title: EOS projections are stale and insufficiently distinguished from authority
+    category: EOS_AUTHORITY
+    severity: HIGH
+    sources:
+      - engineering/eos/repository-eos-authority.yaml
+      - /data/engineering/eos/state/EOS-STATE.md
+      - /data/engineering/eos/state/EOS-MANIFEST.md
+      - /data/engineering/eos/runtime/operational-state.json
+    observed: Derived records carry active/current/repository-authority language while retaining old baselines and mission state.
+    consumer: engctl EOS status/resume and platform health
+    impact: A stale projection can look like an authoritative current record.
+    evidence: DOCUMENT-RUNTIME-DIVERGENCE.yaml#C02-DR-004
+    recommendation: Clarify projection schema and regenerate only under C03 authority.
+    resolution_owner: EOS Program
+    proposed_gate: C03
+
+  - finding_id: C02-F-010
+    title: Checkpoint integrity PASS does not establish repository currency
+    category: EOS_VALIDATION
+    severity: MEDIUM
+    sources: [/data/engineering/eos/state/ACTIVE-CHECKPOINT, /data/engineering/eos/checkpoints]
+    observed: Checkpoint 64394a5 validates internally but predates current f2e85d8 and synchronization fails.
+    consumer: engctl EOS checkpoint/status/resume
+    impact: Operators may interpret integrity PASS as current alignment.
+    evidence: DOCUMENT-RUNTIME-DIVERGENCE.yaml#C02-DR-005
+    recommendation: Report integrity and currency as separate mandatory dimensions.
+    resolution_owner: EOS Program
+    proposed_gate: C03
+
+  - finding_id: C02-F-011
+    title: engctl resume has read-only convergence and mutating legacy modes
+    category: ENGCTL_RESUME
+    severity: CRITICAL
+    sources: [scripts/lib/eos/context.sh, scripts/lib/eos/convergence_roadmap.py]
+    observed: Active convergence avoids mutation; fallback resume automatically synchronizes and refreshes EOS.
+    consumer: operators and automation
+    impact: Resume side effects are routing-dependent and can alter derived state.
+    evidence: DOCUMENT-RUNTIME-DIVERGENCE.yaml#C02-DR-006
+    recommendation: Make resume uniformly read-only and expose synchronization/refresh as explicit commands.
+    resolution_owner: engctl / EOS owner
+    proposed_gate: C04
+
+  - finding_id: C02-F-012
+    title: resume --help is parsed as a project and enters legacy synchronization
+    category: ENGCTL_INTERFACE
+    severity: HIGH
+    sources: [scripts/engctl, scripts/lib/eos/context.sh]
+    observed: A help probe reached eos_synchronize; external read-only filesystem rejected the temporary write and repository state remained unchanged.
+    consumer: operators and shell automation
+    impact: Conventional help usage can attempt state mutation.
+    evidence: DOCUMENT-RUNTIME-DIVERGENCE.yaml#C02-DR-007
+    recommendation: Add explicit option parsing/help and reject option-like project names.
+    resolution_owner: engctl owner
+    proposed_gate: C04
+
+  - finding_id: C02-F-013
+    title: Active legacy execution contract has wop.digest mismatch
+    category: EXECUTION_AUTHORITY
+    severity: CRITICAL
+    sources: [engineering/execution/execution-interface.yaml, legacy active mission contract]
+    observed: engctl execution snapshot reports INVALID_CONTRACT, transactional_authority false, and unresolved wop.digest mismatch.
+    consumer: engctl, mission-contractctl, Zeus/EMP execution
+    impact: The selected legacy context cannot authorize execution.
+    evidence: DOCUMENT-RUNTIME-DIVERGENCE.yaml#C02-DR-008
+    recommendation: Reconcile or retire the legacy selection in C06 without modifying C02 findings.
+    resolution_owner: Engineering Governance / execution owner
+    proposed_gate: C06
+
+  - finding_id: C02-F-014
+    title: Invalid contract resolution has inconsistent exit semantics
+    category: EXECUTION_INTERFACE
+    severity: HIGH
+    sources: [scripts/engctl, scripts/mission-contractctl]
+    observed: engctl execution snapshot exits 78; mission-contractctl resolve prints INVALID_CONTRACT but exits 0.
+    consumer: automation
+    impact: Invalid authority can be misclassified as successful resolution.
+    evidence: DOCUMENT-RUNTIME-DIVERGENCE.yaml#C02-DR-009
+    recommendation: Standardize fail-closed status and machine-readable error classification.
+    resolution_owner: execution controller owner
+    proposed_gate: C06
+
+  - finding_id: C02-F-015
+    title: Zeus imports a missing repository projection module
+    category: ZEUS_IMPLEMENTATION
+    severity: CRITICAL
+    sources:
+      - scripts/zeus
+      - scripts/lib/emp/publication_candidate_authority.py
+      - scripts/lib/emp/mission_verification_controller.py
+    observed: scripts/lib/emp/repository_projection.py is absent on main and exists only on the preservation reference branch.
+    consumer: Zeus and EMP publication/verification flows
+    impact: Import-time failure blocks the executable and dependent flows.
+    evidence: DOCUMENT-RUNTIME-DIVERGENCE.yaml#C02-DR-010
+    recommendation: Reconstruct or replace the dependency only under C08 implementation authority.
+    resolution_owner: Zeus / EMP owner
+    proposed_gate: C08
+
+  - finding_id: C02-F-016
+    title: Zeus command contract is only partially conformant
+    category: ZEUS_CONFORMANCE
+    severity: HIGH
+    sources: [engineering/docs/cli/ZEUS-USER-GUIDE.md, engineering/docs/cli/man/zeus.1, scripts/zeus]
+    observed: Five documented options are expected and none are observed by conformance evaluation.
+    consumer: operators and contract validator
+    impact: Documented invocation semantics do not match executable behavior.
+    evidence: DOCUMENT-RUNTIME-DIVERGENCE.yaml#C02-DR-011
+    recommendation: Decide the owning interface and reconcile docs/code in C08.
+    resolution_owner: Zeus owner
+    proposed_gate: C08
+
+  - finding_id: C02-F-017
+    title: EMP authority boundary is documented but blurred by legacy consumers
+    category: EMP_AUTHORITY
+    severity: HIGH
+    sources:
+      - docs/emp/EMP-0001-ENGINEERING_MANAGEMENT_PLATFORM_ARCHITECTURE.md
+      - docs/specifications/SPEC-0006-ENGINEERING_WORK_REGISTRY_MODEL.md
+      - scripts/lib/emp
+    observed: EMP says it consumes authority and owns management facts only; stale mission/authority pipelines and context selection still act on EMP-managed state.
+    consumer: engctl, Zeus, EOS, EMP services
+    impact: EMP can appear to originate or select authority it should only reference.
+    evidence: IMPLEMENTATION-CONSUMER-MAP.yaml#EMP_ARCHITECTURE
+    recommendation: Enforce one authority input boundary and retain EMP-only management ownership.
+    resolution_owner: EMP owner
+    proposed_gate: C07
+
+  - finding_id: C02-F-018
+    title: EMP progress/deviation traceability is partially assured
+    category: EMP_ASSURANCE
+    severity: HIGH
+    sources: [controlled-document assurance declarations and validator]
+    observed: EP-EMP-PROGRESS-DEVIATION-TRACEABILITY is PARTIALLY_ASSURED; assurance-only exits 1.
+    consumer: Engineering Assurance and operator review
+    impact: Progress/deviation claims lack full traceability evidence.
+    evidence: DOCUMENT-RUNTIME-DIVERGENCE.yaml#C02-DR-013
+    recommendation: Complete evidence and requalify under C07/C11.
+    resolution_owner: EMP / Engineering Assurance
+    proposed_gate: C11
+
+  - finding_id: C02-F-019
+    title: EENS document and implementation fingerprints are out of sync
+    category: EENS_SYNCHRONIZATION
+    severity: HIGH
+    sources: [docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md, services/eens]
+    observed: Both sides changed relative to the declared qualified fingerprints.
+    consumer: synchronization/qualification decisions
+    impact: Current qualification currency cannot be inferred, although implementation existence and authority separation are established.
+    evidence: DOCUMENT-RUNTIME-DIVERGENCE.yaml#C02-DR-014
+    recommendation: Independently requalify and publish only under C09/C11 authority.
+    resolution_owner: EENS owner / Engineering Assurance
+    proposed_gate: C09
+
+  - finding_id: C02-F-020
+    title: EENS checkpoint still describes pre-Operational-Alpha work
+    category: EENS_STALE_DOCUMENTATION
+    severity: MEDIUM
+    sources: [services/eens/docs/EENS_EMP_Update_Checkpoint.md, docs/specifications/SPEC-0009-NOTIFICATION_SERVICE_SPECIFICATION.md, services/eens/README.md]
+    observed: Checkpoint says remaining work/promote to OA while canonical sources say implemented and qualified.
+    consumer: EMP/EENS planning readers
+    impact: Subsystem maturity is misrepresented.
+    evidence: STALE-DOCUMENT-REGISTER.yaml#C02-S-012
+    recommendation: Mark historical or supersede in C09.
+    resolution_owner: EENS owner
+    proposed_gate: C09
+
+  - finding_id: C02-F-021
+    title: Operation Beta remains active through non-controlled authority publications
+    category: LEGACY_AUTHORITY
+    severity: CRITICAL
+    sources:
+      - engineering/missions/operation-beta-current.yaml
+      - engineering/authority/operation-beta-beta04-activation.yaml
+      - engineering/docs/architecture/OPERATION-BETA-AUTHORITY-MODEL.md
+      - engineering/docs/architecture/OPERATION-BETA-ROADMAP.md
+      - engineering/docs/operations/OPERATION-BETA-CHARTER.md
+    observed: BETA-04 is PUBLISHED_ACTIVE/current and its authority chain cites unindexed engineering/docs sources.
+    consumer: Zeus, EMP, EOS, Work Registry
+    impact: Obsolete authority remains runtime-consumed and conflicts with ESC.
+    evidence: AUTHORITY-CLAIM-MATRIX.yaml#C02-AC-024
+    recommendation: Preserve history, explicitly retire currentness, and replace runtime references with controlled owners.
+    resolution_owner: Engineering Governance / Zeus owner
+    proposed_gate: C05
+
+  - finding_id: C02-F-022
+    title: Zeus OA phase and progress claims are stale and internally inconsistent
+    category: LEGACY_AUTHORITY
+    severity: CRITICAL
+    sources:
+      - docs/project/PHASE-0001-ZEUS-OPERATIONAL-ALPHA-AUTHORITY.md
+      - engineering/authority/operational-authority-state.yaml
+      - engineering/metadata/operational-alpha-emm.yaml
+      - engineering/operations/zeus-operational-alpha-progress.md
+    observed: Active/current OA authority conflicts with ESC and disagrees among OA-01/OA-04/OA-08 projections.
+    consumer: Zeus, EMP, EOS, resume
+    impact: Runtime eligibility and current-phase reconstruction cannot safely use the legacy set.
+    evidence: AUTHORITY-CLAIM-MATRIX.yaml#C02-AC-025
+    recommendation: Reconstruct OA history from verified receipts and one canonical current owner.
+    resolution_owner: Engineering Governance / Zeus owner
+    proposed_gate: C08
+
+  - finding_id: C02-F-023
+    title: Fifty-one engineering/docs files have ambiguous authority classification
+    category: UNINDEXED_AUTHORITY_CANDIDATES
+    severity: HIGH
+    sources: [engineering/docs]
+    observed: No file has document_id; many say canonical/normative/published/current, while the Zeus documentation architecture says this area is non-controlled.
+    consumer: Zeus, EMP, tests, operators
+    impact: Requirements and authority can be consumed without controlled identity, lifecycle, or index provenance.
+    evidence: CONTROLLED-DOCUMENT-INVENTORY.yaml#engineering_docs_authority_candidates
+    recommendation: Assign explicit class/disposition and move only separately authorized controlled candidates.
+    resolution_owner: Engineering Governance / subsystem owners
+    proposed_gate: NEW_MATURITY_GATE_ENGINEERING_DOC_CLASSIFICATION
+
+  - finding_id: C02-F-024
+    title: Registered legacy publications retain stale current-state claims
+    category: OBSOLETE_AUTHORITY
+    severity: HIGH
+    sources: [docs/architecture.md, docs/roadmap.md, docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md]
+    observed: DOC-0001 calls both legacy, yet their bodies retain stale architecture/current-mission assertions.
+    consumer: humans and search-based automation
+    impact: Legacy context can be mistaken for current authority.
+    evidence: STALE-DOCUMENT-REGISTER.yaml#C02-S-003
+    recommendation: Preserve historical value while eliminating current-state ambiguity.
+    resolution_owner: Engineering Governance
+    proposed_gate: C05
+
+  - finding_id: C02-F-025
+    title: Base validator does not enforce claimed index completeness or row agreement
+    category: VALIDATION_GAP
+    severity: HIGH
+    sources: [scripts/validate_controlled_documents.py, docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md]
+    observed: Base validation passes 2958 checks despite findings C02-F-001 and C02-F-002.
+    consumer: roadmap entry, CI, operator confidence
+    impact: A PASS does not prove the repository documentation architecture it appears to validate.
+    evidence: CONTROLLED-DOCUMENT-INVENTORY.yaml
+    recommendation: Add deterministic all-record index and source-projection checks.
+    resolution_owner: Engineering Platform / Engineering Governance
+    proposed_gate: NEW_MATURITY_GATE_DOCUMENT_VALIDATION_COVERAGE
+
+  - finding_id: C02-F-026
+    title: Extended validation reports material pre-existing drift and incompleteness
+    category: VALIDATION_FINDINGS
+    severity: HIGH
+    sources: [scripts/validate_controlled_documents.py]
+    observed: semantic-all has 190 failures; synchronization has eight non-PASS pairs; Zeus conformance is partial; EMP assurance is partial; implementation coverage passes.
+    consumer: Engineering Assurance, later gate planning
+    impact: Publication/synchronization/conformance/assurance currency is not established by the base PASS.
+    evidence: DOCUMENT-RUNTIME-DIVERGENCE.yaml#pre_existing_validation_results
+    recommendation: Route each failure to its owning later gate; do not fix during C02.
+    resolution_owner: Engineering Governance / relevant subsystem owners
+    proposed_gate: C11
+
+  - finding_id: C02-F-027
+    title: Frozen C02 result publication and current-gate validation are incompatible
+    category: ROADMAP_RESULT_TRANSITION
+    severity: HIGH
+    sources:
+      - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/GATE.yaml
+      - scripts/lib/eos/convergence_roadmap.py
+      - engineering/convergence/engineering-system-convergence/STATE.yaml
+    observed: The frozen gate requires RESULT.yaml before operator review, while convergence_roadmap.py lines 306-330 rejects any result for a gate not already completed; C02 state advancement is outside this assessment.
+    consumer: engctl roadmap validate/status and operator review
+    impact: The required result makes roadmap validation fail closed until an authorized state transition occurs.
+    evidence: VALIDATION.yaml#roadmap_validation
+    recommendation: Define an explicit assessment-result-pending-review state or an atomic operator acceptance transition without rewriting the frozen C02 contract.
+    resolution_owner: Engineering Governance / roadmap controller owner
+    proposed_gate: NEW_MATURITY_GATE_ASSESSMENT_RESULT_PUBLICATION
+
+investigation_gaps:
+  - gap_id: C02-GAP-001
+    scope: External qualified EENS deployment on LOpi
+    reason: C02 repository authority assessment did not authorize or require remote host mutation/inspection; repository source and deployment distinction were traced.
+    impact: Runtime deployment currency was not independently verified.
+    recommendation: Verify non-mutating deployment identity and synchronization in C09.
+  - gap_id: C02-GAP-002
+    scope: Per-record immutable Git persistence provenance for all 133 controlled records
+    reason: Metadata inventory was complete, but reconstructing each historical publication decision/object lineage exceeds this assessment's bounded procedure.
+    impact: Persisted claims are inventoried but not independently proven.
+    recommendation: Add a persistence provenance maturity gate.
+  - gap_id: C02-GAP-003
+    scope: Semantic intent of every line in 51 engineering/docs candidates
+    reason: Every file, identity absence, digest, heading, and authority signals were inventoried; material live authority chains were traced, but exhaustive prose adjudication would require authority decisions prohibited by C02.
+    impact: Non-material explanatory overlaps may remain.
+    recommendation: Classify each candidate under a dedicated maturity gate.
+
+recommendations:
+  pending_gate_changes:
+    C03: Reconcile EOS canonical/projection schema, currency, checkpoint semantics, and explicit sync behavior.
+    C04: Make resume read-only, repair option routing, and separate sync/refresh commands.
+    C05: Reconcile Project State, registry, roadmap, legacy phase/Beta authority, index completeness, and current-state projections.
+    C06: Reconcile WOP/mission-contract generations, digest binding, and fail-closed exit semantics.
+    C07: Enforce EMP management-only authority and complete progress/deviation traceability.
+    C08: Restore/rewrite Zeus projection dependency, reconcile OA authority/progress, and command conformance.
+    C09: Requalify EENS synchronization and classify stale checkpoint documentation.
+    C11: Route synchronization/conformance/assurance evidence to independent qualification.
+  maturity_gates:
+    - DOCUMENT_PERSISTENCE_PROVENANCE
+    - ENGINEERING_DOC_CLASSIFICATION
+    - DOCUMENT_VALIDATION_COVERAGE
+    - ASSESSMENT_RESULT_PUBLICATION
+
+summary:
+  total_findings: 27
+  severity_counts: {CRITICAL: 6, HIGH: 18, MEDIUM: 3, LOW: 0}
+  investigation_gaps: 3
+  assessment_blockers: 0
+  corrections_performed: 0

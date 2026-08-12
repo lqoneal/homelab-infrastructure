@@ -1073,3 +1073,40 @@ def verify(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
     if package["package_digest"] != session.get("package_digest"):
         raise CodexAdapterError("SESSION_INPUT_MISMATCH", "current execution package differs from Codex session binding")
     return _result(session)
+
+# --- CR46 ZO-059 / ZO-060: provider-facing read-only projections ---
+def gate_execution_provenance_projection(
+    gate_id: str,
+    **context: Any,
+) -> dict[str, Any]:
+    from scripts.lib.emp.stage1_runtime import (
+        classify_gate_execution_provenance,
+    )
+
+    return {
+        **classify_gate_execution_provenance(
+            gate_id,
+            **context,
+        ),
+        "owner_surface": "codex_adapter",
+    }
+
+
+def immutable_commit_dependency_projection(
+    root: Path | str,
+    commit: str,
+    *,
+    entrypoints: list[str] | tuple[str, ...] = (),
+) -> dict[str, Any]:
+    from scripts.lib.emp.publication_candidate_authority import (
+        qualify_immutable_commit_dependency_closure,
+    )
+
+    return {
+        **qualify_immutable_commit_dependency_closure(
+            root,
+            commit,
+            entrypoints=entrypoints,
+        ),
+        "owner_surface": "codex_adapter",
+    }

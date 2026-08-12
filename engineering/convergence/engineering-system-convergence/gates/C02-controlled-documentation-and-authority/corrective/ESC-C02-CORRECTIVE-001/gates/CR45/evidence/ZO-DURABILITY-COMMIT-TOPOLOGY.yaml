@@ -1,0 +1,31 @@
+schema_version: 1
+gate_id: CR45
+classification: ZO_DURABILITY_COMMIT_TOPOLOGY
+classified_at: '2026-08-11T16:54:41.381622+00:00'
+current_head: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+current_parent: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+required_durable_path_count: 10
+required_durable_paths:
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR48/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR49/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR50/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR51/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR52/GATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR55/GATE.yaml
+procedure_contains_single_commit_semantics: false
+cr43_objective: Commit only qualified lifecycle corrective and evidence.
+cr45_objective: Push qualified corrective commit to origin/main.
+cr45_push_objective: true
+cr45_explicit_commit_authority_detected: true
+classification_result: COMMIT_OR_AMEND_AUTHORITY_REQUIRES_EXPLICIT_DERIVATION
+amend_authorized: false
+second_commit_authorized: false
+push_authorized: false
+reason: The durability surface changes the repository state that must govern future CR execution, but existing CR45
+  authority is a push objective. Commit topology must therefore be explicitly authorized before staging, amendment,
+  or new commit creation.
+next_action: DERIVE_EXPLICIT_CR45_DURABILITY_RECOVERY_AUTHORITY

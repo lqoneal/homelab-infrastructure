@@ -1,0 +1,24 @@
+schema_version: 1
+gate_id: CR45
+classification: CR45_PUBLICATION_TOPOLOGY_DIAGNOSTIC_AND_ZEUS_PAIRING
+recorded_at: '2026-08-11T16:34:56.552154+00:00'
+publication_candidate: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+expected_remote_parent: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+correct_git_semantics:
+  command: git rev-list --left-right --count origin/main...HEAD
+  left_count_meaning: REMOTE_ONLY
+  right_count_meaning: LOCAL_ONLY
+  observed_remote_only: 0
+  observed_local_only: 1
+prior_manual_verifier_defect:
+  classification: LEFT_RIGHT_COUNT_LABELS_REVERSED
+  repository_mutation: false
+  publication_executed: false
+  fail_closed: true
+zeus_development_pairing:
+  opportunity_id: ZO-058
+  specific_gate: ZG-REPOSITORY-TRANSACTION-INTEGRITY-001
+  new_opportunity_required: false
+  reason: Directionally correct local/remote topology interpretation and fail-closed publication transaction qualification
+    are repository transaction integrity semantics.
+result: PASS

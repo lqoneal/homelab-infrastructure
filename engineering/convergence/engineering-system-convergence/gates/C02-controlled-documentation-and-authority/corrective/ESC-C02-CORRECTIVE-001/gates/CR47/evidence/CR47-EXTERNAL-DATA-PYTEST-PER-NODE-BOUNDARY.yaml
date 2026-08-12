@@ -1,0 +1,67 @@
+schema_version: "1.0"
+record_type: CR47_EXTERNAL_DATA_PYTEST_PER_NODE_BOUNDARY
+cr_id: CR47
+result: PASS
+
+topology:
+  repository_root: "/data/engineering/repositories/homelab"
+  pytest_root: "/data/engineering/tmp/pytest"
+  pytest_root_inside_repository: false
+  device: "/dev/sdb1"
+  system_tmp_used: false
+
+execution:
+  mode: EXACT_PER_NODE
+  node_count: 10
+  timeout_seconds_per_node: 180
+  stop_on_first_failure: true
+  stop_on_timeout: true
+  stop_on_cleanup_failure: true
+  full_suite_execution_in_same_transaction: false
+
+nodes:
+  - zo_id: ZO-012
+    node: "scripts/tests/test-convergence-roadmap.py::test_cr47_zo012_authority_surface_contract"
+  - zo_id: ZO-018
+    node: "scripts/tests/test-convergence-roadmap.py::test_cr47_zo018_missing_result_diagnostic"
+  - zo_id: ZO-019
+    node: "scripts/tests/test-convergence-roadmap.py::test_cr47_zo019_result_diagnostic_is_bounded_to_active_gate"
+  - zo_id: ZO-020
+    node: "scripts/tests/test-convergence-roadmap.py::test_cr47_zo020_wrong_gate_result_diagnostic"
+  - zo_id: ZO-021
+    node: "scripts/tests/test-convergence-roadmap.py::test_cr47_zo021_result_authority_identity_projection"
+  - zo_id: ZO-023
+    node: "scripts/tests/test-convergence-roadmap.py::test_cr47_zo023_stale_result_diagnostic"
+  - zo_id: ZO-028
+    node: "scripts/tests/test-convergence-roadmap.py::test_cr47_zo028_acceptance_target_authority_projection"
+  - zo_id: ZO-029
+    node: "scripts/tests/test-convergence-roadmap.py::test_cr47_zo029_acceptance_boundary_diagnostic_projection"
+  - zo_id: ZO-031
+    node: "scripts/tests/test-convergence-roadmap.py::test_cr47_zo031_acceptance_prerequisite_projection"
+  - zo_id: ZO-032
+    node: "scripts/tests/test-convergence-roadmap.py::test_cr47_zo032_acceptance_readiness_diagnostic_projection"
+
+temporary_storage:
+  unique_workspace_per_node: true
+  tmpdir_export_required: true
+  tmp_export_required: true
+  temp_export_required: true
+  explicit_basetemp_required: true
+  permission_recovery_before_delete_if_needed: true
+  cleanup_immediately_after_node: true
+  archive_full_temp_tree: false
+
+evidence:
+  retain_node_log: true
+  retain_exit_code: true
+  retain_duration_seconds: true
+  retain_precleanup_bytes: true
+  retain_precleanup_file_count: true
+  retain_precleanup_directory_count: true
+
+mutation:
+  source_mutation_authorized: false
+  test_mutation_authorized: false
+  cr47_result_write_authorized: false
+  cr47_state_advancement_authorized: false
+  cr48_execution_authorized: false

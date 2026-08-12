@@ -519,3 +519,68 @@ def render(value: dict[str, Any]) -> str:
     def status(key: str) -> str: return checks.get(key, "PASS" if key == "provider_selection" and lifecycle.get("provider_selected") else "FAIL")
     repository = value.get("repository", {})
     return "\n".join(("Zeus Mission Verification", "-------------------------", f"Result              : {value.get('result')}", f"mission_verification: {value.get('mission_verification', value.get('result'))}", f"Mission             : {value.get('mission_id')}", "Operation           : BETA", f"Authority           : {value.get('authority', {}).get('integrity', 'FAIL')}", f"OA authority        : {value.get('authority', {}).get('oa_authority', 'UNKNOWN')}", f"Repository identity : {repository.get('identity')}", f"Repository baseline : {repository.get('baseline')}", f"Current published baseline : {repository.get('published_baseline')}", f"Mission provenance baseline: {repository.get('mission_provenance_baseline')}", f"Baseline relationship       : {repository.get('mission_baseline_relationship')}", f"Published baseline parity  : {repository.get('baseline')}", f"Mission provenance          : {value.get('checks', {}).get('mission_provenance')}", f"Runtime identity    : {value.get('runtime', {}).get('identity')}", f"WOP                 : {status('wop')}", f"Submission          : {status('submission')}", f"Admission           : {status('admission')}", f"Bootstrap           : {status('bootstrap')}", f"Execution record    : {status('execution_record')}", f"Provider readiness  : {status('provider_readiness')}", f"Provider selection  : {status('provider_selection')}", f"Dispatch verification: {status('dispatch_verification')}", f"Artifact integrity  : {status('artifact_integrity')}", f"Artifact cardinality: {status('artifact_cardinality')}", f"Replay              : {replay.get('submission')}", f"Provider selected   : {'YES' if lifecycle.get('provider_selected') else 'NO'}", f"Dispatch created   : {'YES' if lifecycle.get('dispatch_created') else 'NO'}", f"Provider session    : {'YES' if lifecycle.get('provider_session_created') else 'NO'}", f"Execution started   : {'YES' if lifecycle.get('execution_started') else 'NO'}", f"Blockers            : {'NONE' if not value.get('blockers') else ', '.join(item.get('code', 'UNKNOWN') for item in value['blockers'])}", f"Next action         : {value.get('next_authorized_action')}", "Read-only           : YES", "read_only: true", ""))
+
+# --- CR46 ZO-026: projection scope / qualification instrument selection ---
+QUALIFICATION_SCOPE_INSTRUMENTS = {
+    "PARENT_ROADMAP": "ROADMAP_LIFECYCLE_QUALIFICATION",
+    "NESTED_CORRECTIVE": "NESTED_CORRECTIVE_QUALIFICATION",
+    "RESULT_LIFECYCLE": "RESULT_LIFECYCLE_QUALIFICATION",
+    "AUTHORITY": "AUTHORITY_SURFACE_QUALIFICATION",
+}
+
+
+def select_qualification_instrument(
+    projection_scope: str,
+    *,
+    context: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Select one canonical read-only qualification primitive for a projection scope."""
+    aliases = {
+        "PARENT": "PARENT_ROADMAP",
+        "ROADMAP": "PARENT_ROADMAP",
+        "CORRECTIVE": "NESTED_CORRECTIVE",
+        "NESTED": "NESTED_CORRECTIVE",
+        "RESULT": "RESULT_LIFECYCLE",
+        "RESULTS": "RESULT_LIFECYCLE",
+        "AUTHORITY_SCOPE": "AUTHORITY",
+    }
+
+    requested = str(projection_scope or "").strip().upper().replace("-", "_")
+    scope = aliases.get(requested, requested)
+
+    instrument = QUALIFICATION_SCOPE_INSTRUMENTS.get(scope)
+
+    if instrument is None:
+        return {
+            "result": "FAIL",
+            "read_only": True,
+            "projection_scope": requested or None,
+            "qualification_instrument": None,
+            "blockers": [{
+                "code": "QUALIFICATION_SCOPE_UNSUPPORTED",
+                "message": f"unsupported projection scope: {projection_scope!r}",
+            }],
+            "next_authorized_action": "RESOLVE_QUALIFICATION_SCOPE",
+        }
+
+    material = {
+        "projection_scope": scope,
+        "qualification_instrument": instrument,
+        "context": dict(context or {}),
+    }
+
+    return {
+        "result": "PASS",
+        "read_only": True,
+        **material,
+        "selection_digest": hashlib.sha256(
+            json.dumps(
+                material,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode()
+        ).hexdigest(),
+        "blockers": [],
+        "next_authorized_action":
+            "RUN_SELECTED_QUALIFICATION_INSTRUMENT",
+    }

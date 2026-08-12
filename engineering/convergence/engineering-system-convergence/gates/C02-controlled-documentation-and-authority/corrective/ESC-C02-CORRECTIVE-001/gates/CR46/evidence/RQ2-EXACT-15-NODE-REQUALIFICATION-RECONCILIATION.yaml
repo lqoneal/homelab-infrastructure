@@ -1,0 +1,35 @@
+schema_version: 1
+gate_id: CR46
+requalification_id: RQ2
+classification: RQ2_EXACT_15_NODE_REQUALIFICATION_RECONCILIATION
+reconciled_at: '2026-08-12T00:51:35.850221+00:00'
+result: PASS
+substantive_result_record: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/RQ2-EXACT-15-NODE-CONTEXT-CORRECT-REQUALIFICATION-RESULT.yaml
+cleanup_failure_classification: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/BLOCK7M74-RQ2-CLEANUP-FAILURE-CLASSIFICATION.yaml
+rq2:
+  execution_completed: true
+  pytest_expected_count: 15
+  pytest_return_code: 0
+  result: PASS
+  qualified: true
+  rerun_required: false
+block_7m74:
+  transaction_result: FAIL_CLOSED
+  failure_stage: ISOLATED_WORKSPACE_CLEANUP
+  qualification_failure: false
+  cleanup_failure: true
+  cleanup_recovered: true
+rq3:
+  successor_eligibility: true
+  execution_executed: false
+  fresh_execution_authority_required: true
+source_mutation_executed: false
+test_mutation_executed: false
+live_state_mutation_executed: false
+stage_executed: false
+commit_created: false
+push_performed: false
+eos_synchronization_executed: false
+cr46_completion_executed: false
+cr47_executed: false
+next: DERIVE_RQ3_EXECUTION_AUTHORITY_AFTER_RECONCILED_RQ2_PASS

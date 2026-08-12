@@ -5,10 +5,9 @@ roadmap_type: MATURITY_CORRECTIVE
 parent_roadmap: ESC-ROADMAP-001
 parent_gate: C02
 trigger_finding: C02-F-027
-purpose: 'Resolve the roadmap-controller lifecycle defect that prevents a legitimate completed assessment
-  result from existing while the current gate awaits explicit operator review. Establish a generic result-review-acceptance-
-  completion-next-gate lifecycle without modifying the frozen C02 contract or repairing any substantive
-  C02 finding.
+purpose: 'Resolve the roadmap-controller lifecycle defect that prevents a legitimate completed assessment result
+  from existing while the current gate awaits explicit operator review. Establish a generic result-review-acceptance-
+  completion-next-gate lifecycle without modifying the frozen C02 contract or repairing any substantive C02 finding.
 
   '
 execution_model: MANUAL_ONE_ITEM_AT_A_TIME
@@ -32,8 +31,8 @@ hard_boundaries:
 - Operator acceptance must be explicit and persisted.
 - Gate completion and next-gate activation must be deterministic and atomic.
 - No commit or push is permitted except at the specifically authorized publication items.
-manual_execution_rule: 'Execute exactly one CR item at a time. After each item, inspect evidence, verify
-  acceptance criteria, record RESULT.yaml, advance corrective STATE.yaml, and stop before the next item.
+manual_execution_rule: 'Execute exactly one CR item at a time. After each item, inspect evidence, verify acceptance
+  criteria, record RESULT.yaml, advance corrective STATE.yaml, and stop before the next item.
 
   '
 phases:
@@ -128,8 +127,8 @@ current_executable_horizon:
   last_item: CR55
   result: EXECUTABLE
   deferred_items: []
-  deferred_rule: CR21-CR55 manual-execution contracts have been maturity-hardened. The expanded horizon
-    is not EXECUTABLE until binding reconciliation and complete STD-0006 / PROC-0009 qualification pass.
+  deferred_rule: CR21-CR55 manual-execution contracts have been maturity-hardened. The expanded horizon is not EXECUTABLE
+    until binding reconciliation and complete STD-0006 / PROC-0009 qualification pass.
   qualification:
     result: PASS
     qualified_at: '2026-08-10T13:26:01Z'
@@ -141,7 +140,7 @@ current_executable_horizon:
     convergence_regression: PASS
     roadmap_lifecycle_regression: PASS
     canonical_roadmap_validation: PASS
-roadmap_version: 1.1.1
+roadmap_version: 1.1.3
 version_history:
 - version: 1.0.0
   previous_version: UNVERSIONED
@@ -151,45 +150,55 @@ version_history:
 - version: 1.0.1
   previous_version: 1.0.0
   effective_at: '2026-08-10T04:31:50Z'
-  change: Established mandatory Zeus-first pre-creation conflict verification with explicit repository
-    fallback when Zeus capability is unavailable.
+  change: Established mandatory Zeus-first pre-creation conflict verification with explicit repository fallback
+    when Zeus capability is unavailable.
 - version: 1.0.2
   previous_version: 1.0.1
   effective_at: '2026-08-10T04:36:43Z'
-  change: Queued ZO-001 Zeus Repository Projection and Pre-Creation Verification into future mutable gate
-    CR13.
+  change: Queued ZO-001 Zeus Repository Projection and Pre-Creation Verification into future mutable gate CR13.
 - version: 1.0.3
   previous_version: 1.0.2
   effective_at: '2026-08-10T08:50:15Z'
-  change: Queued CR12-derived Zeus opportunities ZO-002 through ZO-004 into future mutable gate CR14;
-    CR13 remained frozen and unmodified.
+  change: Queued CR12-derived Zeus opportunities ZO-002 through ZO-004 into future mutable gate CR14; CR13 remained
+    frozen and unmodified.
 - version: 1.0.4
   previous_version: 1.0.3
   effective_at: '2026-08-10T08:54:43Z'
-  change: Inserted CR12M1 maturity corrective for C02-F-028, preserving completed CR12 and active CR13
-    definitions unchanged.
+  change: Inserted CR12M1 maturity corrective for C02-F-028, preserving completed CR12 and active CR13 definitions
+    unchanged.
 - version: 1.0.5
   previous_version: 1.0.4
   effective_at: '2026-08-10T09:23:04Z'
-  change: Inserted CR16M1 to reconcile parent ESC and controlled Project State projection drift exposed
-    during CR16 regression qualification.
+  change: Inserted CR16M1 to reconcile parent ESC and controlled Project State projection drift exposed during CR16
+    regression qualification.
 - version: 1.1.0
   previous_version: 1.0.7
   effective_at: '2026-08-10T13:12:39Z'
-  change: Maturity-hardened the remaining CR21-CR55 execution path for deterministic manual execution.
-    Preserved current CR21 GATE.yaml and added an additive current-gate execution supplement; hardened
-    pending CR22-CR55 contracts prospectively; expanded the intended execution horizon through CR55 subject
-    to full requalification.
+  change: Maturity-hardened the remaining CR21-CR55 execution path for deterministic manual execution. Preserved
+    current CR21 GATE.yaml and added an additive current-gate execution supplement; hardened pending CR22-CR55 contracts
+    prospectively; expanded the intended execution horizon through CR55 subject to full requalification.
 - version: 1.1.1
   previous_version: 1.1.0
   effective_at: '2026-08-10T13:19:15Z'
-  change: Prospectively extended pending CR23 with ESC-EMM-AUTO-REBIND-001 and Zeus development opportunities
-    ZO-005 through ZO-007. The change requires automatic authorized EMM reconciliation plus Zeus-native
-    read-only EMM, roadmap-maturity, and manual-gate preflight visibility. CR21 and parent C02 execution
-    state remain unchanged.
+  change: Prospectively extended pending CR23 with ESC-EMM-AUTO-REBIND-001 and Zeus development opportunities ZO-005
+    through ZO-007. The change requires automatic authorized EMM reconciliation plus Zeus-native read-only EMM,
+    roadmap-maturity, and manual-gate preflight visibility. CR21 and parent C02 execution state remain unchanged.
+- version: 1.1.2
+  previous_version: 1.1.1
+  effective_at: '2026-08-11T15:04:05Z'
+  change: Inserted CR44M1 as an explicitly authorized nested recovery item for CR43 immutable commit dependency-closure
+    failure. CR43 historical result remains preserved; CR44 remains incomplete and resumes only after CR44M1 closes.
+- version: 1.1.3
+  previous_version: 1.1.2
+  effective_at: '2026-08-11T17:02:30.345600+00:00'
+  change: Inserted CR45M1 as an explicitly authorized nested durability recovery item for CR45. CR45 remains incomplete;
+    CR45M1 may execute only its bounded durability recovery contract and must return control to CR45 without executing
+    CR45 in the same transaction.
 maturity_items:
 - CR16M2
 - CR16M2M1
+- CR44M1
+- CR45M1
 maturity_hardening:
   revision: 1.1.1
   established_at: '2026-08-10T13:12:39Z'

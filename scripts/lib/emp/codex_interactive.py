@@ -1253,3 +1253,29 @@ def logs(repository: Path | str, mission_id: str | None = None, *, session_id: s
 def artifacts(repository: Path | str, mission_id: str | None = None, *, session_id: str | None = None,
               latest: bool = False, active: bool = False, runtime_root: Path | str | None = None) -> dict[str, Any]:
     return status(repository, mission_id, session_id=session_id, latest=latest, active=active, runtime_root=runtime_root)
+
+# --- CR46 ZO-058: interactive owner transaction-closure projection ---
+def repository_transaction_closure_projection(
+    root: Path | str,
+    *,
+    allowed_paths: list[str] | tuple[str, ...],
+    protected_paths: list[str] | tuple[str, ...] = (),
+    deferred_paths: list[str] | tuple[str, ...] = (),
+    base_commit: str | None = None,
+    single_commit_required: bool = False,
+) -> dict[str, Any]:
+    from scripts.lib.emp.publication_transaction import (
+        classify_repository_transaction_closure,
+    )
+
+    return {
+        **classify_repository_transaction_closure(
+            root,
+            allowed_paths=allowed_paths,
+            protected_paths=protected_paths,
+            deferred_paths=deferred_paths,
+            base_commit=base_commit,
+            single_commit_required=single_commit_required,
+        ),
+        "owner_surface": "codex_interactive",
+    }

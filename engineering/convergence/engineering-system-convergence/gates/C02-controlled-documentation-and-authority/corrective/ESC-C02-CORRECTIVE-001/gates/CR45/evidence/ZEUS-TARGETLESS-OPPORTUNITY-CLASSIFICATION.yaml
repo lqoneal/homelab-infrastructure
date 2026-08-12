@@ -1,0 +1,55 @@
+schema_version: 1
+classification: ZEUS_TARGETLESS_OPPORTUNITY_CLASSIFICATION
+generated_at: '2026-08-11T16:43:50.860834+00:00'
+rule:
+  queued_opportunity: MUST_BE_ASSIGNED_TO_SPECIFIC_CR_GATE
+  implemented_qualified_historical_record: DO_NOT_RETROACTIVELY_MUTATE_WITHOUT_SEPARATE_AUTHORITY
+  identity: PRESERVE_ZO_ID
+  execution_model: SECONDARY_CR_MISSION
+records:
+- opportunity_id: ZO-008
+  title: Zeus Nested Corrective Projection Reconciliation
+  status: IMPLEMENTED_QUALIFIED
+  existing_target_gate: null
+  classification: HISTORICAL_IMPLEMENTED_RECORD
+  target_assignment_mutation_required: false
+- opportunity_id: ZO-009
+  title: Zeus Successor Action Contract Enforcement
+  status: IMPLEMENTED_QUALIFIED
+  existing_target_gate: null
+  classification: HISTORICAL_IMPLEMENTED_RECORD
+  target_assignment_mutation_required: false
+- opportunity_id: ZO-010
+  title: Zeus EMM Binding Scope Introspection
+  status: IMPLEMENTED_QUALIFIED
+  existing_target_gate: null
+  classification: HISTORICAL_IMPLEMENTED_RECORD
+  target_assignment_mutation_required: false
+- opportunity_id: ZO-011
+  title: Zeus Qualification Resource Preflight
+  status: IMPLEMENTED_QUALIFIED
+  existing_target_gate: null
+  classification: HISTORICAL_IMPLEMENTED_RECORD
+  target_assignment_mutation_required: false
+- opportunity_id: ZO-012
+  title: Zeus Authority-Surface Contract Introspection
+  status: QUEUED
+  existing_target_gate: null
+  classification: EXECUTABLE_REQUIRES_CR_ASSIGNMENT
+  target_assignment_mutation_required: true
+- opportunity_id: ZO-013
+  title: Zeus Composite Preflight Dependency Projection
+  status: IMPLEMENTED_QUALIFIED
+  existing_target_gate: null
+  classification: HISTORICAL_IMPLEMENTED_RECORD
+  target_assignment_mutation_required: false
+queued_requiring_assignment:
+- ZO-012
+historical_preserved:
+- ZO-008
+- ZO-009
+- ZO-010
+- ZO-011
+- ZO-013
+result: PASS
+register_mutated: false

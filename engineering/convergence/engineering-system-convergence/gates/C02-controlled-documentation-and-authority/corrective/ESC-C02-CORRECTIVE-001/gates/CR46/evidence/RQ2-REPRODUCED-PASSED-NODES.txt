@@ -1,0 +1,16 @@
+scripts/tests/test-convergence-roadmap.py::test_cr19_resume_projection_exposes_pending_review_read_only
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_ready_for_manual_execution
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_wrong_current_item_blocks
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_missing_dependency_blocks
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_parent_not_executable_blocks
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_resource_blocked_is_distinct
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_contract_identity_mismatch_fails_closed
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_projection_is_read_only
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo007_never_executes_or_advances
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_live_shape_is_consistent
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_nested_current_item_mismatch_blocks
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_missing_dependency_is_distinct
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_parent_authority_mismatch_is_distinct
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_successor_execution_must_be_prohibited
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_projection_is_read_only
+scripts/tests/test-convergence-roadmap.py::test_cr23_zo008_never_executes_or_advances

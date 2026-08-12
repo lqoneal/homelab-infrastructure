@@ -1,0 +1,33 @@
+schema_version: 1
+gate_id: CR46
+classification: BLOCK7M94_GIT_DISPLAY_QUOTED_PATH_VERIFIER_DEFECT
+classified_at: '2026-08-12T07:26:08.849247+00:00'
+result: PASS
+failure:
+  block: 7M94
+  stage: INSPECT_EXACT_FOREIGN_PATH_BEFORE_AUTHORIZED_DELETION
+  class: GIT_DISPLAY_QUOTED_PATH_CONSUMED_AS_FILESYSTEM_PATH
+  root_cause: git ls-files default quoted display output was treated as a literal filesystem path
+  correct_path_transport: git ls-files -z
+foreign_file:
+  raw_path: :USERPROFILE\Downloads\MANUAL-PATCH-INPUT.txt
+  exists: true
+  is_file: true
+  size_bytes: 584239
+  sha256: 532d32f3e3791456b43042a1ac9fbefd8d7f66d1fa09b225b57e89742c94606e
+  operator_classification: MISTAKE
+  operator_deletion_authorized: true
+7m94_execution:
+  actual_delete_execution: false
+  reported_delete_executed_flag: true
+  reported_delete_flag_false_positive: true
+  stage_executed: false
+  commit_created: false
+  push_performed: false
+  eos_synchronization_executed: false
+  cr47_executed: false
+repository:
+  tracked_path_count: 30
+  tracked_path_set_sha256: 2cebf244d52894f4da490d16e608f77a915a47aeb0ab97ce300a4e07eaa1baa6
+  tracked_delta_drift: false
+next: DELETE_EXACT_OPERATOR_AUTHORIZED_FOREIGN_PATH_USING_RAW_NUL_SAFE_IDENTITY

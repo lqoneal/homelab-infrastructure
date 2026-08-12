@@ -1019,3 +1019,237 @@ def render(value: Mapping[str, Any]) -> str:
         f"Next action   : {value.get('next_authorized_action', 'UNRESOLVED')}",
         f"Read-only     : {'YES' if value.get('read_only') else 'NO'}",
     ))
+
+# --- CR46 ZO-058: bounded repository transaction closure classification ---
+def classify_repository_transaction_closure(
+    root: Path | str,
+    *,
+    allowed_paths: list[str] | tuple[str, ...],
+    protected_paths: list[str] | tuple[str, ...] = (),
+    deferred_paths: list[str] | tuple[str, ...] = (),
+    base_commit: str | None = None,
+    single_commit_required: bool = False,
+) -> dict[str, Any]:
+    """Classify exact transaction closure without performing repository mutation."""
+    repository = Path(root).resolve()
+
+    def git(*args: str) -> str:
+        result = subprocess.run(
+            ["git", "-C", str(repository), *args],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        if result.returncode:
+            raise PublicationTransactionError(
+                "REPOSITORY_TRANSACTION_INSPECTION_FAILED",
+                result.stderr.strip()
+                or f"git {' '.join(args)} failed",
+            )
+
+        return result.stdout.strip()
+
+    def normalize(path: str) -> str:
+        return (
+            str(Path(path))
+            .replace("\\", "/")
+            .lstrip("./")
+        )
+
+    def within(
+        path: str,
+        prefixes: list[str] | tuple[str, ...],
+    ) -> bool:
+
+        candidate = normalize(path)
+
+        for raw in prefixes:
+            prefix = normalize(raw).rstrip("/")
+
+            if (
+                candidate == prefix
+                or candidate.startswith(prefix + "/")
+            ):
+                return True
+
+        return False
+
+    tracked = sorted(
+        filter(
+            None,
+            git("diff", "--name-only").splitlines(),
+        )
+    )
+
+    staged = sorted(
+        filter(
+            None,
+            git(
+                "diff",
+                "--cached",
+                "--name-only",
+            ).splitlines(),
+        )
+    )
+
+    untracked = sorted(
+        filter(
+            None,
+            git(
+                "ls-files",
+                "--others",
+                "--exclude-standard",
+            ).splitlines(),
+        )
+    )
+
+    candidates = sorted(
+        set(tracked)
+        | set(staged)
+        | set(untracked)
+    )
+
+    classification = []
+    authorized = []
+    unauthorized = []
+
+    for path in candidates:
+
+        if within(path, protected_paths):
+            cls = "PROTECTED"
+
+        elif within(path, deferred_paths):
+            cls = "DEFERRED"
+
+        elif within(path, allowed_paths):
+            cls = "AUTHORIZED"
+            authorized.append(path)
+
+        else:
+            cls = "UNAUTHORIZED"
+
+        if cls != "AUTHORIZED":
+            unauthorized.append(path)
+
+        classification.append({
+            "path": path,
+            "classification": cls,
+        })
+
+    head = git("rev-parse", "HEAD")
+
+    count = int(
+        git("rev-list", "--count", "HEAD")
+    )
+
+    parent = (
+        git("rev-parse", "HEAD^")
+        if count > 1
+        else None
+    )
+
+    remote = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(repository),
+            "rev-parse",
+            "origin/main",
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    origin = (
+        remote.stdout.strip()
+        if remote.returncode == 0
+        else None
+    )
+
+    interrupted = False
+    relationship = "NOT_REQUESTED"
+
+    if base_commit:
+        base = git(
+            "rev-parse",
+            "--verify",
+            f"{base_commit}^{{commit}}",
+        )
+
+        if head == base:
+            relationship = "AT_BASE"
+
+        elif parent == base:
+            relationship = "ONE_LOCAL_COMMIT_FROM_BASE"
+
+            interrupted = (
+                bool(authorized)
+                and single_commit_required
+            )
+
+        else:
+            relationship = "DIVERGENT_OR_MULTI_COMMIT"
+
+    contamination = bool(unauthorized)
+
+    return {
+        "result":
+            "FAIL"
+            if contamination
+            else "PASS",
+
+        "read_only": True,
+
+        "classification":
+            "BOUNDED_REPOSITORY_TRANSACTION_CLOSURE",
+
+        "head": head,
+        "parent": parent,
+        "origin_main": origin,
+        "base_commit": base_commit,
+        "base_relationship": relationship,
+
+        "single_commit_required":
+            bool(single_commit_required),
+
+        "interrupted_commit_recovery":
+            interrupted,
+
+        "tracked_modified_paths":
+            tracked,
+
+        "staged_paths":
+            staged,
+
+        "untracked_paths":
+            untracked,
+
+        "path_inventory":
+            classification,
+
+        "authorized_dirty_paths":
+            authorized,
+
+        "unauthorized_or_excluded_paths":
+            unauthorized,
+
+        "exact_staging_allowlist":
+            sorted(authorized),
+
+        "contamination_detected":
+            contamination,
+
+        "mutation_performed": False,
+        "stage_performed": False,
+        "commit_performed": False,
+        "amend_performed": False,
+        "push_performed": False,
+
+        "next_authorized_action": (
+            "RESOLVE_TRANSACTION_CONTAMINATION"
+            if contamination
+            else "AUTHORIZE_EXACT_TRANSACTION_CLOSURE"
+        ),
+    }

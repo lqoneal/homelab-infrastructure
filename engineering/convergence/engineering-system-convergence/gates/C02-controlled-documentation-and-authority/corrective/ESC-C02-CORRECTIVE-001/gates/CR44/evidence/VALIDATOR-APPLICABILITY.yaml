@@ -1,0 +1,27 @@
+schema_version: 1
+gate_id: CR44
+classification: CR44_VALIDATOR_APPLICABILITY
+qualification_target: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+classified_at: '2026-08-11T16:23:13.160067+00:00'
+applicable:
+  immutable_commit_identity: true
+  immutable_zeus_startup: true
+  python_import_closure: true
+  controlled_document_semantics: true
+  convergence_runtime: true
+  publication_candidate_authority_tests: true
+  publication_cohort_tests: true
+  protected_artifact_preservation: true
+  local_commit_content_integrity: true
+context_sensitive:
+  roadmap_validation: Requires separation of immutable amended-commit content from live post-commit lifecycle records.
+  roadmap_evaluation: Requires separation of immutable amended-commit content from live post-commit lifecycle records.
+not_applicable_without_later_authority:
+  published_main_parity: true
+  eos_synchronization_parity: true
+  published_platform_verification: true
+  push_verification: true
+  publication_verification: true
+classification_result: PASS
+ambiguous_applicable_validator_count: 0
+zeus_future_capability: ZO-061

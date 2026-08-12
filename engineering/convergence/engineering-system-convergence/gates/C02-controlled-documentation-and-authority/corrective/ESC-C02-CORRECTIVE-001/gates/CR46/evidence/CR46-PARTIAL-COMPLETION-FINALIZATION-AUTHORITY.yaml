@@ -1,0 +1,36 @@
+schema_version: 1
+gate_id: CR46
+classification: CR46_PARTIAL_COMPLETION_FINALIZATION_AUTHORITY
+authorized_at: '2026-08-12T07:07:12.814822+00:00'
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+basis: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR46/evidence/BLOCK7M88-PATH-SERIALIZATION-VERIFIER-DEFECT.yaml
+authorized:
+  finalize_existing_cr46_result: true
+  write_completion_state_reconciliation_evidence: true
+  perform_final_read_only_completion_verification: true
+  derive_post_cr46_publication_successor_boundary: true
+prohibited:
+  rewrite_cr46_core_result: true
+  repeat_corrective_state_advancement: true
+  repeat_parent_state_reconciliation: true
+  repeat_project_state_reconciliation: true
+  repeat_binding_manifest_rebind: true
+  pytest: true
+  rq1_rerun: true
+  rq2_rerun: true
+  rq3_rerun: true
+  cr47_execution: true
+  stage: true
+  commit: true
+  push: true
+  eos_synchronization: true
+required_terminal_state:
+  cr46_result: PASS
+  state_reconciliation_complete: true
+  last_completed_item: CR46
+  current_item: CR47
+  roadmap_validation: PASS
+  cr47_executed: false
+stop_after: CR46_PARTIAL_COMPLETION_FINALIZATION
+next: FINALIZE_EXISTING_CR46_COMPLETION_RECORDS_ONLY

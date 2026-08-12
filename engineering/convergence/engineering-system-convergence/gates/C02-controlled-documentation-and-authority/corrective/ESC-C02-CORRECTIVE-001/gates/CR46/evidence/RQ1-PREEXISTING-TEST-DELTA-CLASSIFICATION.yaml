@@ -1,0 +1,31 @@
+schema_version: 1
+gate_id: CR46
+classification: RQ1_PREEXISTING_TEST_DELTA_CLASSIFICATION
+classified_at: '2026-08-11T22:12:34.377156+00:00'
+rq1_corrective:
+  path: scripts/tests/test-authority-publication.py
+  precorrective_sha256: 0390df86a9c3f89840dd3bcaaa54a7711cf2e7d60e793a9e7df779ff957c4859
+  postcorrective_sha256: 6d8d16dad72b60f087bf294bb6c44dc3b339b3859bf6001511fa4e9d0d7d3b10
+  mutation_executed: true
+  semantic_verification: PASS
+preexisting_other_test_delta:
+  path: scripts/tests/test-convergence-roadmap.py
+  head_sha256: 983f02842baceeb4655ca96b952b81b527e862383139fd3d3cdf608788290961
+  worktree_sha256: 4ed9ca065ff55dfc88a070a1a20b2bc7bb43425e03ae100cddc2390aeab58de7
+  present: true
+  mutation_attributed_to_7m3l: false
+  mutation_authority_in_this_block: false
+original_7m3l_boundary_failure: VERIFIER_ASSUMED_NO_PREEXISTING_TEST_DELTA
+rq1_retry_execution: SKIPPED
+rq1_retry_return_code: 90
+rq1_corrective_defect_established: false
+production_source_defect_established: false
+other_test_revert_authorized: false
+other_test_mutation_authorized: false
+rq1_retry_authority_recovery_required: true
+stage_authorized: false
+commit_authorized: false
+push_authorized: false
+cr47_execution_authorized: false
+result: PASS
+next_action: DERIVE_RQ1_RETRY_AUTHORITY_PRESERVING_PREEXISTING_TEST_DELTA

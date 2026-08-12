@@ -1,0 +1,43 @@
+schema_version: "1.0"
+record_type: POST_CR47_PUBLICATION_REQUALIFICATION_AUTHORITY
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  disposition: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-FOREIGN-EENS-PLANNING-PATH-DISPOSITION.yaml"
+  disposition_sha256: "dd41c2af0bdf43143830e0eb1fed5e0979481d4837312903b269e3cf8fb128ac"
+  exclusion_boundary: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-PUBLICATION-EXCLUSION-BOUNDARY.yaml"
+  exclusion_boundary_sha256: "bf66f7a15683bf004793669bfe08205cfcf88207a4b7d643d67207761139f28b"
+
+excluded_path:
+  path: "engineering/planning/2026-08-12-eens-architecture-resolution-options.md"
+  disposition: PRESERVE_BUT_EXCLUDE_FROM_CR47_PUBLICATION
+  preserve_unchanged: true
+
+authorized:
+  rederive_complete_cr47_publication_candidate: true
+  verify_exact_exclusion: true
+  determine_publication_requirement_before_cr48: true
+  derive_publication_execution_authority_if_all_checks_pass: true
+
+required:
+  excluded_path_must_remain_present_and_unchanged: true
+  excluded_path_must_not_be_staged: true
+  no_other_unbound_paths: true
+  roadmap_validation_must_pass: true
+  emm_drift_must_remain_zero: true
+  cr48_must_remain_unexecuted: true
+
+prohibited:
+  modify_excluded_path: true
+  delete_excluded_path: true
+  move_excluded_path: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+  execute_cr48: true
+
+next_authorized_action:
+  REQUALIFY_EXACT_POST_CR47_PUBLICATION_CANDIDATE_WITH_ONE_PATH_EXCLUDED_ONLY

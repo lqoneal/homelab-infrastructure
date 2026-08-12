@@ -1,0 +1,157 @@
+schema_version: 1
+gate_id: C02
+baseline: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+entries:
+  - overlap_id: C02-D-001
+    fact: Current program, mission, phase, and next action
+    records:
+      - engineering/convergence/engineering-system-convergence/roadmap.yaml
+      - docs/project/PROJ-0001-PROJECT_STATE.md
+      - docs/project/PHASE-0001-ZEUS-OPERATIONAL-ALPHA-AUTHORITY.md
+      - engineering/registry/work-registry.yaml
+      - engineering/missions/operation-beta-current.yaml
+      - engineering/authority/operational-authority-state.yaml
+      - engineering/operations/zeus-operational-alpha-progress.md
+      - /data/engineering/eos/state/EOS-STATE.md
+      - /data/engineering/eos/runtime/operational-state.json
+    intended_boundary: ESC roadmap owns queue/current gate; Project State binds project context; registry and EOS are subordinate views.
+    observed_overlap: Multiple generations make current/active claims with incompatible values.
+    consumer_impact: engctl, EOS, EMP, and Zeus expose different current contexts.
+    classification: CONFLICTING_DUPLICATE_AUTHORITY
+    resolution_owner: Engineering Governance
+    recommendation: Establish one canonical fact owner and generated projections in C03-C08.
+
+  - overlap_id: C02-D-002
+    fact: Controlled-record index metadata
+    records:
+      - docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md
+      - 133 source frontmatters under docs/
+    intended_boundary: Sources own title/lifecycle facts; DOC-0001 owns discovery.
+    observed_overlap: Thirteen duplicated title/status values disagree.
+    consumer_impact: Discovery can report a different lifecycle/title from the opened source.
+    classification: CONFLICTING_DUPLICATE_METADATA
+    resolution_owner: Engineering Governance / document owners
+    recommendation: Generate or validate index projections from source-owned fields.
+
+  - overlap_id: C02-D-003
+    fact: Controlled asset indexing
+    records:
+      - docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md#Controlled-Documents
+      - docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md#Controlled-Asset-Records
+    intended_boundary: DOC-0001 provides one deterministic discovery surface.
+    observed_overlap: AST-000009/10 are in the main table while AST-000001 through AST-000008 are in a second legacy-format table; metadata semantics differ.
+    consumer_impact: Consumers must merge two tables and may omit eight assets.
+    classification: OVERLAPPING_PARTIAL_INDEX
+    resolution_owner: Document Registrar / Hardware owner
+    recommendation: Define one indexed projection or a machine-readable sub-index boundary.
+
+  - overlap_id: C02-D-004
+    fact: Controlled-document lifecycle representation
+    records:
+      - docs/standards/STD-0001-ENGINEERING_DOCUMENT_LIFECYCLE_STANDARD.md
+      - docs/specifications/SPEC-0001-CONTROLLED_DOCUMENT_MODEL.md
+      - docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md
+      - domain result/asset/procurement records
+    intended_boundary: STD-0001 owns transitions, SPEC-0001 represents, index discovers, domains own non-lifecycle operational status.
+    observed_overlap: Common lifecycle, approval, completion/result, asset condition, and procurement status are stored in the same status-shaped fields/tables.
+    consumer_impact: Validators/readers can conflate operational state with lifecycle authority.
+    classification: AMBIGUOUS_OVERLAP
+    resolution_owner: Engineering Governance
+    recommendation: Separate lifecycle from domain status in a later model revision.
+
+  - overlap_id: C02-D-005
+    fact: Work execution authority and procedure
+    records:
+      - docs/standards/STD-0003-ENGINEERING_WORK_ORDER_STANDARD.md
+      - docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md
+      - engineering/execution/execution-interface.yaml
+      - legacy mission contracts and GH-ZEUS-OA work-order records
+    intended_boundary: Standard owns work-authority requirements; PROC-0001 owns procedure; execution interface projects one valid active contract.
+    observed_overlap: Current submitted-WOP semantics coexist with legacy mission-contract activation and an invalid active digest binding.
+    consumer_impact: Different controller paths return different validity/exit semantics.
+    classification: CONFLICTING_PROCEDURE_AND_RUNTIME_OVERLAP
+    resolution_owner: Engineering Governance / execution owner
+    recommendation: Reconcile in C06 without deleting historical evidence.
+
+  - overlap_id: C02-D-006
+    fact: Operation Beta authority model and roadmap
+    records:
+      - engineering/docs/architecture/OPERATION-BETA-AUTHORITY-MODEL.md
+      - engineering/docs/architecture/OPERATION-BETA-ROADMAP.md
+      - engineering/docs/operations/OPERATION-BETA-CHARTER.md
+      - engineering/missions/operation-beta-current.yaml
+      - engineering/authority/operation-beta-beta04-activation.yaml
+      - engineering/registry/work-registry.yaml
+    intended_boundary: Governance authority should be controlled; implementation-facing documents should explain mechanics.
+    observed_overlap: Non-controlled documents self-claim normative/published/canonical meaning and are linked by live authority records.
+    consumer_impact: Runtime derives authority through unindexed records with no controlled lifecycle.
+    classification: DUPLICATE_UNCONTROLLED_AUTHORITY
+    resolution_owner: Engineering Governance / Zeus owner
+    recommendation: Classify each record and replace authority claims with references to one owner.
+
+  - overlap_id: C02-D-007
+    fact: Zeus Operational Alpha progress/current gate
+    records:
+      - docs/project/PHASE-0001-ZEUS-OPERATIONAL-ALPHA-AUTHORITY.md
+      - engineering/metadata/operational-alpha-emm.yaml
+      - engineering/authority/operational-authority-state.yaml
+      - engineering/operations/zeus-operational-alpha-progress.md
+      - engineering/work-orders/GH-ZEUS-OA-PROGRESSIVE-001
+      - engineering/registry/work-registry.yaml
+    intended_boundary: Controlled phase and verified execution receipts should own facts; other records should project them.
+    observed_overlap: OA-01, OA-04, and OA-08 current/completed claims coexist.
+    consumer_impact: Zeus eligibility, EMP context, and human resume instructions cannot infer one current gate safely.
+    classification: CONFLICTING_DUPLICATE_PROGRESS
+    resolution_owner: Zeus owner / Engineering Governance
+    recommendation: Generate one progress view from verified receipts during C08.
+
+  - overlap_id: C02-D-008
+    fact: EOS repository and operational state
+    records:
+      - engineering/eos/repository-eos-authority.yaml
+      - /data/engineering/eos/state/EOS-STATE.md
+      - /data/engineering/eos/state/EOS-MANIFEST.md
+      - /data/engineering/eos/runtime/operational-state.json
+      - /data/engineering/eos/runtime/repositories.tsv
+      - /data/engineering/eos/checkpoints
+    intended_boundary: Repository sources own facts; EOS outputs are deterministic projections or recovery points.
+    observed_overlap: Several derived snapshots carry authority/current language and independent timestamps/baselines.
+    consumer_impact: Structural/checkpoint validation can pass while source synchronization is drifted.
+    classification: OVERLAPPING_DERIVED_STATE
+    resolution_owner: EOS Program
+    recommendation: Make provenance/currency mandatory and expose one projection boundary in C03.
+
+  - overlap_id: C02-D-009
+    fact: engctl resume state reconstruction
+    records:
+      - scripts/lib/eos/context.sh
+      - scripts/lib/eos/convergence_roadmap.py
+      - scripts/lib/eos/state_sync.py
+      - scripts/lib/emp/registry.py
+      - EOS projections and execution snapshot
+    intended_boundary: Resume derives read-only context from canonical sources and reports conflicts.
+    observed_overlap: Convergence resume is read-only, legacy resume auto-synchronizes/refreshes, and registry supplies independently selected current labels.
+    consumer_impact: Behavior changes by argument/path and can mutate derived state unexpectedly.
+    classification: CONFLICTING_IMPLEMENTATION_OVERLAP
+    resolution_owner: engctl / EOS / EMP owners
+    recommendation: Consolidate source selection and make mutation explicit in C04.
+
+  - overlap_id: C02-D-010
+    fact: Zeus/EMP implementation-facing documentation
+    records:
+      - engineering/docs/architecture
+      - engineering/docs/operations
+      - engineering/docs/cli
+      - controlled EMP, work-order, procedure, and specification records under docs/
+    intended_boundary: Controlled records own governance/requirements; engineering/docs explains implementation.
+    observed_overlap: Fifty-one unindexed files include canonical/normative/current claims, while the Zeus documentation architecture says the directory is non-controlled and proposed controlled records belong under docs/zeus.
+    consumer_impact: Code/tests/operators cite non-controlled text as contract authority.
+    classification: AMBIGUOUS_DOCUMENT_FAMILY_OVERLAP
+    resolution_owner: Engineering Governance / subsystem owners
+    recommendation: Assign explicit class, owner, and authority boundary to each file.
+
+summary:
+  entries: 10
+  conflicting: 7
+  ambiguous_or_nonconflicting_overlap: 3
+  correction_performed: false

@@ -1371,3 +1371,153 @@ def _legacy_reconcile(root: Path, runtime: Path, *, approve: bool) -> dict[str, 
 def inventory(repository: Path | str, *, runtime_root: Path | str | None = None) -> dict[str, Any]:
     value = reconcile(repository, runtime_root=runtime_root, approve=False)
     return value
+
+# --- CR46 ZO-061: validation applicability classification ---
+VALIDATOR_CLASSES = {
+    "PARENT_ROADMAP": {
+        "phases": {"PARENT_LIFECYCLE"},
+        "topologies": {"LIVE_REPOSITORY"},
+    },
+
+    "DETACHED_ROADMAP": {
+        "phases": {"DETACHED_CANDIDATE"},
+        "topologies": {"DETACHED_TREE"},
+    },
+
+    "IMMUTABLE_COMMIT": {
+        "phases": {"PREPUBLICATION", "PUBLICATION"},
+        "topologies": {"IMMUTABLE_COMMIT"},
+    },
+
+    "LIVE_REPOSITORY": {
+        "phases": {
+            "PREPUBLICATION",
+            "POSTPUBLICATION",
+            "EXECUTION",
+        },
+        "topologies": {"LIVE_REPOSITORY"},
+    },
+
+    "PUBLICATION": {
+        "phases": {
+            "PREPUBLICATION",
+            "POSTPUBLICATION",
+        },
+        "topologies": {
+            "LIVE_REPOSITORY",
+            "IMMUTABLE_COMMIT",
+        },
+    },
+
+    "EOS_SYNCHRONIZATION": {
+        "phases": {
+            "POSTPUBLICATION",
+            "CLOSEOUT",
+        },
+        "topologies": {"LIVE_REPOSITORY"},
+    },
+
+    "TEST_HARNESS": {
+        "phases": {"TEST"},
+        "topologies": {
+            "TEST_HARNESS",
+            "DETACHED_TREE",
+            "LIVE_REPOSITORY",
+        },
+    },
+}
+
+
+def classify_validation_applicability(
+    validator_class: str,
+    *,
+    lifecycle_phase: str,
+    repository_topology: str,
+    publication_state: str = "UNKNOWN",
+    eos_state: str = "UNKNOWN",
+    harness_context: str = "PRODUCTION",
+) -> dict[str, Any]:
+    """Determine validator applicability before defect classification."""
+    validator = (
+        str(validator_class or "")
+        .strip()
+        .upper()
+        .replace("-", "_")
+    )
+
+    phase = (
+        str(lifecycle_phase or "")
+        .strip()
+        .upper()
+        .replace("-", "_")
+    )
+
+    topology = (
+        str(repository_topology or "")
+        .strip()
+        .upper()
+        .replace("-", "_")
+    )
+
+    rule = VALIDATOR_CLASSES.get(validator)
+
+    if rule is None or not phase or not topology:
+        return {
+            "result": "FAIL",
+            "read_only": True,
+            "validator_class": validator or None,
+            "applicability": "AMBIGUOUS",
+            "candidate_semantic_defect": "NOT_CLASSIFIED",
+            "justification":
+                "validator class, lifecycle phase, or repository topology "
+                "is unsupported or absent",
+            "next_authorized_action":
+                "RESOLVE_VALIDATION_APPLICABILITY",
+        }
+
+    phase_match = phase in rule["phases"]
+    topology_match = topology in rule["topologies"]
+
+    applicable = phase_match and topology_match
+
+    return {
+        "result": "PASS",
+        "read_only": True,
+
+        "validator_class": validator,
+        "lifecycle_phase": phase,
+        "repository_topology": topology,
+        "publication_state": str(publication_state).upper(),
+        "eos_state": str(eos_state).upper(),
+        "harness_context": str(harness_context).upper(),
+
+        "applicability":
+            "APPLICABLE"
+            if applicable
+            else "NOT_APPLICABLE",
+
+        "candidate_semantic_defect": (
+            "ELIGIBLE_FOR_CLASSIFICATION"
+            if applicable
+            else "NO"
+        ),
+
+        "justification": (
+            "validator class matches lifecycle phase and repository topology"
+            if applicable
+            else
+            "validator class does not apply to the supplied "
+            "lifecycle/repository context"
+        ),
+
+        "applicability_checks": {
+            "lifecycle_phase": phase_match,
+            "repository_topology": topology_match,
+        },
+
+        "next_authorized_action": (
+            "RUN_VALIDATOR"
+            if applicable
+            else "RECORD_NOT_APPLICABLE_WITH_JUSTIFICATION"
+        ),
+    }

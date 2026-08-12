@@ -1,0 +1,77 @@
+schema_version: 1
+gate_id: C02
+result: COMPLETE_WITH_FINDINGS
+completed_at: '2026-08-10T03:08:30Z'
+starting_state:
+  repository: /data/engineering/repositories/homelab
+  branch: main
+  head: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+  origin_main: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+  worktree: clean
+  roadmap: ESC-ROADMAP-001@2.0.0
+  current_gate: C02
+  gate_contract_sha256: 96885178a7f0c13714b9f60fc9f1486a3cf6b1306d114ee4d2089d30bd8837fc
+findings:
+  - 133 controlled records across 25 families were inventoried; 131 are indexed and two controlled records are absent from DOC-0001.
+  - Thirteen DOC-0001 title/status values disagree with source metadata, including two Draft sources indexed Active.
+  - Fifty-one engineering/docs files have no controlled identity but include material canonical, normative, published, current, or authority-bearing claims.
+  - Project State/ESC C02 conflicts with active Operation Beta, Zeus Operational Alpha, Work Registry, EOS, and legacy mission-contract generations.
+  - Work Registry documentation preserves a management-only boundary, but runtime context selection promotes stale management-active objects into current context.
+  - EOS projections and active checkpoint are integrity-readable but stale and synchronization validation reports drift.
+  - engctl convergence resume is read-only, while fallback resume can synchronize/refresh and resume --help enters that legacy path.
+  - Active execution context is invalid with wop.digest mismatch and inconsistent command exit semantics.
+  - Zeus imports a missing repository_projection module and its command contract is only partially conformant.
+  - EMP progress/deviation traceability is partially assured; EENS authority boundaries are consistent but its synchronization fingerprints are out of sync.
+  - Base controlled-document and implementation-coverage validation pass, while semantic, synchronization, conformance, and assurance modes expose pre-existing failures.
+issues:
+  - Current controlled-document discovery is incomplete and some duplicated lifecycle/title facts disagree.
+  - Multiple runtime-consumed historical authority generations remain active or current.
+  - Derived and management projections are not consistently distinguished from canonical current authority.
+  - The frozen C02 contract requires this result before operator review, but roadmap validation rejects any result for a gate still classified CURRENT; C02 state was not advanced.
+authority_conflicts:
+  - ESC C02 versus PHASE-0001 Zeus Operational Alpha authority.
+  - ESC C02 versus Operation Beta BETA-04 active publications.
+  - Project State versus Work Registry management-current missions and phase.
+  - Repository/Git/Project State versus stale EOS state, operational projection, and checkpoint.
+  - Current WOP model versus selected invalid legacy mission contract.
+  - Controlled governance ownership versus non-controlled engineering/docs authority claims.
+redundancies:
+  - Current mission/phase/next-action facts appear in roadmap, Project State, phase, registry, Beta/OA authority, progress, EOS, and execution records.
+  - DOC-0001 duplicates source-owned title/status fields and splits controlled assets across two partial tables.
+  - Operation Beta and Zeus OA authority/progress facts are repeated across controlled and non-controlled records and runtime projections.
+  - Resume/context reconstruction selects from overlapping roadmap, Project State, Registry, EOS, and execution sources.
+simplification_candidates:
+  - One canonical current-state owner with deterministic, provenance-bearing Registry/EOS/Zeus projections.
+  - Generated/validated index projection for source-owned controlled-document metadata.
+  - Explicit read-only resume separated from synchronization and refresh commands.
+  - One WOP/execution authority generation and one verified Zeus progress projection.
+  - Explicit classification of every engineering/docs record as explanatory, historical, generated, or controlled candidate.
+artifacts:
+  - {path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/CONTROLLED-DOCUMENT-INVENTORY.yaml, purpose: Complete deterministic controlled-record and engineering/docs candidate inventory.}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/AUTHORITY-CLAIM-MATRIX.yaml, purpose: Material authority claims, owners, consumers, classifications, and dispositions.}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/STALE-DOCUMENT-REGISTER.yaml, purpose: Stale and obsolete authority-bearing records.}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/DUPLICATE-OVERLAP-REGISTER.yaml, purpose: Duplicate and overlapping authority surfaces.}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/IMPLEMENTATION-CONSUMER-MAP.yaml, purpose: Authority-to-code and command consumer mapping.}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/DOCUMENT-RUNTIME-DIVERGENCE.yaml, purpose: Documentation/implementation/observed behavior divergence report.}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/FINDINGS.yaml, purpose: Source-linked findings, gaps, resolution owners, and later-gate recommendations.}
+evidence:
+  - {path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/EVIDENCE-MANIFEST.yaml, purpose: Byte-level integrity manifest for all C02 evidence artifacts.}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/ASSESSMENT-COMMANDS.md, purpose: Reproducible commands and captured assessment outcomes.}
+  - {path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/VALIDATION.yaml, purpose: Final scope, integrity, mutation-boundary, and roadmap checks.}
+acceptance_criteria_results:
+  - criterion: Every controlled-document family and material authority claim has a disposition or explicit investigation gap.
+    result: PASS
+    evidence: CONTROLLED-DOCUMENT-INVENTORY.yaml accounts for 25 families and 133 records; AUTHORITY-CLAIM-MATRIX.yaml classifies 32 material claims; FINDINGS.yaml records three explicit gaps.
+  - criterion: Every material conflict identifies competing sources, consumer impact, and resolution owner.
+    result: PASS
+    evidence: AUTHORITY-CLAIM-MATRIX.yaml, IMPLEMENTATION-CONSUMER-MAP.yaml, DOCUMENT-RUNTIME-DIVERGENCE.yaml, and FINDINGS.yaml.
+  - criterion: Required outputs are complete, linked by RESULT.yaml, and evidence-backed.
+    result: PASS
+    evidence: Seven required artifacts plus deterministic script, command record, validation, and evidence manifest are linked here.
+  - criterion: No document correction, lifecycle transition, or later-gate work was performed.
+    result: PASS
+    evidence: VALIDATION.yaml confirms only C02 evidence and RESULT.yaml differ; C00/C01/C02 gate contracts and controlled/runtime sources are unchanged.
+blockers:
+  - "Operator review/state-transition tooling must resolve the frozen-contract publication edge: RESULT.yaml is required before review, while current roadmap validation rejects a result until C02 is marked completed. C02 was intentionally not advanced."
+disposition: HOLD_AT_OPERATOR_REVIEW_WITH_FINDINGS
+next_authorized_action: OPERATOR_REVIEW_C02_ASSESSMENT

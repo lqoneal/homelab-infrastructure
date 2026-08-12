@@ -1,0 +1,36 @@
+schema_version: "1.0"
+record_type: CR47_BLOCK33_PUBLICATION_SURFACE_SELF_EXPANSION_CLASSIFICATION
+cr_id: CR47
+result: PASS
+
+block33:
+  result: FAIL_CLOSED
+  failure_stage: LIVE_PUBLICATION_CANDIDATE_REQUALIFICATION
+  expected_candidate_count: 300
+  actual_candidate_count: 302
+
+failure:
+  class: PUBLICATION_CONTROL_SURFACE_SELF_EXPANSION
+  substantive_publication_surface_drift: false
+  foreign_path_change: false
+  roadmap_defect_established: false
+  emm_drift_established: false
+
+self_expansion:
+  path_count: 2
+  paths:
+    - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-PUBLICATION-EXCLUSION-BOUNDARY.yaml"
+    - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-PUBLICATION-REQUALIFICATION-AUTHORITY.yaml"
+
+cause:
+  block32_candidate_inventory_occurred_before_final_block32_control_artifacts_existed: true
+
+recovery:
+  method: PRECREATE_ALL_FINAL_PUBLICATION_CONTROL_PATHS_BEFORE_STABLE_FREEZE
+  stable_candidate_count: 305
+  stable_candidate_sha256: "013c0e1842bc49d027b817dadb568abdfbfe450142faabb0db32a46c35e3e35a"
+
+preserved:
+  excluded_foreign_path: "engineering/planning/2026-08-12-eens-architecture-resolution-options.md"
+  publication_executed: false
+  cr48_executed: false

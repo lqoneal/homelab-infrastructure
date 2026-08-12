@@ -1,0 +1,18 @@
+schema_version: 1
+gate_id: CR45
+classification: POST_QUALIFICATION_ZO_RECONCILIATION_DURABILITY_CLASSIFICATION
+classified_at: '2026-08-11T16:52:09.752130+00:00'
+previous_qualified_commit: 5d80dffba7ac1363fb9f36ff9097ee7d67bc5f50
+origin_main: f2e85d857dc73210c428d42ef9530ce9ffc4933b
+authoritative_post_qualification_paths:
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/EXECUTION-PROCEDURE.md
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+authoritative_path_count: 2
+classification_result: PUBLICATION_CANDIDATE_INCOMPLETE
+reason: Canonical Zeus opportunity assignments, procedure semantics, and prospective CR secondary-mission bindings
+  must be durable in the repository baseline that will execute CR46-CR55.
+old_candidate_push_authorized: false
+additional_commit_or_amend_authority: false
+push_performed: false
+cr46_executed: false
+next_action: DERIVE_BOUNDED_CR45_DURABILITY_COMMIT_AUTHORITY
