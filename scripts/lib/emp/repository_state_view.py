@@ -17,6 +17,10 @@ from scripts.lib.emp.repository_identity import (
 from scripts.lib.eos.canonical_baseline import (
     resolve as resolve_canonical_baseline,
 )
+from scripts.lib.eos.maturity_recognition import (
+    MaturityRecognitionError,
+    resolve as resolve_maturity,
+)
 
 
 def _git(
@@ -99,6 +103,16 @@ def project(
         errors.extend(baseline_errors)
     elif baseline_errors:
         errors.append(baseline_errors)
+
+    try:
+        maturity = resolve_maturity(root)
+    except MaturityRecognitionError as exc:
+        maturity = {
+            "result": "FAIL",
+            "projection": "CANONICAL_WOP_EENS_MATURITY_RECOGNITION",
+            "blockers": [str(exc)],
+            "read_only": True,
+        }
 
     head_result = _git(
         root,
@@ -194,6 +208,7 @@ def project(
 
     return {
         "branch": branch,
+        "canonical_maturity": maturity,
         "eos_baseline": baseline.get("eos_baseline"),
         "eos_parity": baseline.get("eos_parity"),
         "errors": errors,

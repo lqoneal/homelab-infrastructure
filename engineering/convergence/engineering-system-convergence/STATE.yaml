@@ -30,7 +30,7 @@ pending_gates:
 last_completed_gate: C01
 last_result: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml
 last_evidence: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence/EVIDENCE-MANIFEST.yaml
-next_authorized_action: REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY
+next_authorized_action: REVIEW_C18_INTEGRATION_AUTHORITY_BOUNDARY
 executable_qualification:
   result: PASS
   executable: true

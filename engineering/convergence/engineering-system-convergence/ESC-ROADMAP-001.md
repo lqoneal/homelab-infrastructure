@@ -11,7 +11,7 @@ generated_at: '2026-08-10T13:10:06Z'
 parent_roadmap_version: '2.3.0'
 corrective_roadmap_version: '1.1.1'
 remaining_gate_maturity: HARDENED_QUALIFIED_EXECUTABLE
-persistence_status: Pending
+persistence_status: Active
 maturity_reconciled_at: '2026-08-10T13:13:18Z'
 ---
 
@@ -42,7 +42,7 @@ execution. This document does not create independent execution authority.
 
 - Parent roadmap: `ESC-ROADMAP-001@2.2.0`
 - Parent current gate: `C02`
-- Parent next authorized action: `EXECUTE_CR23_IMPLEMENT_LIFECYCLE_PROVENANCE`
+- Parent next authorized action: `REVIEW_C18_INTEGRATION_AUTHORITY_BOUNDARY`
 - Corrective roadmap: `ESC-C02-CORRECTIVE-001@1.1.1`
 - Corrective current item: `CR21`
 - Corrective next authorized action: `EXECUTE_CR23_IMPLEMENT_LIFECYCLE_PROVENANCE`

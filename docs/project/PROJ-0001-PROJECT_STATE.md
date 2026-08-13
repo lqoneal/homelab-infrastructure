@@ -24,7 +24,7 @@ convergence_program:
   roadmap_path: engineering/convergence/engineering-system-convergence/roadmap.yaml
   state_path: engineering/convergence/engineering-system-convergence/STATE.yaml
   current_gate: C02
-  next_authorized_action: REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY
+  next_authorized_action: REVIEW_C18_INTEGRATION_AUTHORITY_BOUNDARY
   executable_qualification: PASS
   evaluation_standard: STD-0006@1.0
   evaluation_procedure: PROC-0009@1.0
@@ -629,7 +629,7 @@ Authority source:
 Current gate: C02
 Last completed corrective item: CR47
 Current corrective item: CR48
-Next authorized action: VERIFY_CR48_PRECONDITIONS
+Next authorized action: REVIEW_C18_INTEGRATION_AUTHORITY_BOUNDARY
 
 This section is a synchronized Project State projection. It does not itself
 authorize CR48 execution and does not supersede the authoritative roadmap or
