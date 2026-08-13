@@ -19,6 +19,8 @@ sources:
   sha256: 3137f0b871767db49442e3bc33fcf14ea25c1c8873e0ac1d51f06048c86a6f83
 - path: engineering/convergence/engineering-system-convergence/gates/C06-wop-and-execution-contract/evidence/REBASED-C06-WOP-EENS-FOUNDATIONAL-DEVELOPMENT-BOUNDARY-REVIEW.yaml
   sha256: 4f3f546c766fe4dfe4faa6930ba6a67d90032a8d71329cb4d9a27768a32cd5c6
+- path: engineering/convergence/engineering-system-convergence/gates/C06-wop-and-execution-contract/evidence/C06-BOUNDED-IMPLEMENTATION-TRANSACTION-001.yaml
+  sha256: c35bfa26d93df69c3383eaa03d54bf1969639c729a10ea4b5b2e47c0544a5572
 - path: engineering/convergence/engineering-system-convergence/roadmap.yaml
   sha256: 2003bc5d4468534afa5f8e30bb765b2d5049b41cd8b0d18e4e960eff9208a20b
 - path: engineering/convergence/engineering-system-convergence/ESC-ROADMAP-001.md
@@ -42,7 +44,7 @@ sources:
 - path: engineering/convergence/engineering-system-convergence/gates/C05-roadmap-project-state-registry/GATE.yaml
   sha256: 140e074c280d75f2cf2769a5f48a5c8670f4382a9dd7eaed218049ac8334bdf1
 - path: engineering/convergence/engineering-system-convergence/gates/C06-wop-and-execution-contract/GATE.yaml
-  sha256: 133b2890595e3f283f13b8102a126d5f0c3603797a323de38b9ad029eb406d90
+  sha256: e2c63b6047186cb1b87f623a81348a295c00b40a0e0c6f88f310519564e82e14
 - path: engineering/convergence/engineering-system-convergence/gates/C07-emp/GATE.yaml
   sha256: 00724d0b97a68cb364a2b5a29578b0ae1629ea79514c7b9438bac0c3b80561aa
 - path: engineering/convergence/engineering-system-convergence/gates/C08-zeus/GATE.yaml
@@ -76,11 +78,13 @@ sources:
 - path: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml
   sha256: d592a8d161b0f619950be7bfc7e2860dfcef11750c761d38678f04e580bb622f
 - path: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
-  sha256: 2cd46f05058f9c79dcb6c1157cc73c0221076cb6dbd9af15311d70d8ddaec537
+  sha256: dca061ae933b9aba31f45ae730cddf3b7c93db8cb8527d98df3285e872d2ddde
 - path: engineering/convergence/engineering-system-convergence/schemas/roadmap.schema.yaml
   sha256: 1bd4807eee3c82b0f54a1fe6756b71723fafc3350cae5a5339d52b5b5bfbd5a3
 - path: engineering/convergence/engineering-system-convergence/schemas/gate.schema.yaml
-  sha256: 7729520db60057c3adbb4e051105c6861cc78a06aa931a06f490b6c907bd1be9
+  sha256: bd10e2a04dbf35a389e02b02b51122aab42ba0cd62f920d1624db0faadc7aa54
+- path: engineering/convergence/engineering-system-convergence/schemas/bounded-implementation-transaction.schema.yaml
+  sha256: a169c5e4ce9cc9f79b5e9d84a4d3682fcb9fb7eaf030b742d1f988157bd9b2f2
 - path: engineering/convergence/engineering-system-convergence/schemas/state.schema.yaml
   sha256: 2e0ec7a3a8dcf2c2d13de05b19bcfdede1f7a5e46bb1641da02a64b64dd777cc
 - path: engineering/convergence/engineering-system-convergence/schemas/result.schema.yaml
@@ -96,11 +100,13 @@ sources:
 - path: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md
   sha256: 678647e6086dd4355df3ce66a6f1f51766327c9585257923d67ea7faaa6eac4e
 - path: docs/standards/STD-0006-ENGINEERING_EXECUTABLE_ROADMAP_STANDARD.md
-  sha256: f4c9dd70c7d95806565933f138c6c7853849639aa9d9770f634d9640259da0c1
+  sha256: fc9f3a686b4b6321de7d7f1ed0c88482694e979588e78aa064cefac4bcc2b938
+- path: docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md
+  sha256: aad12b694a7f1045d16620c1e89dc15003971f6493faef91de4adacd3821351a
 - path: docs/procedures/PROC-0009-EXECUTABLE_ROADMAP_EVALUATION_PROCEDURE.md
   sha256: c9abf94dc454ff61b8a3efdeba5a455a83570ab2e2d29e728461042e4cf625dc
 - path: scripts/lib/eos/convergence_roadmap.py
-  sha256: dcb24421c55f72058ba8c6d4c94f31d602541897119148f2ba0ff67ebaf56f43
+  sha256: d6615cdd4def29a37f94318d50e0844266669db04aa7bf2332897d01b54555a0
 - path: scripts/engctl
   sha256: 543ecd440311a09cbe07d512b2195a727dd4c477a168ffb5e3616549d2d73a54
 - path: engineering/validation/controlled-document-semantic-profiles.yaml

@@ -1,0 +1,36 @@
+schema_version: 1
+transaction_id: C06-WOP-01-ROADMAP-AUTHORITY-001
+gate_id: C06
+roadmap_id: ESC-ROADMAP-001
+roadmap_version: "2.3.0"
+state: AUTHORIZED_FOR_IMPLEMENTATION
+scope:
+  - Produce the WOP-01 machine-readable roadmap traceability and dependency manifest.
+authorized_scope:
+  - Produce the WOP-01 machine-readable roadmap traceability and dependency manifest.
+  - Record one owner, lifecycle mapping, evidence locator, and qualification test for each WOP requirement.
+prerequisites:
+  canonical_roadmap_executable: true
+  c05_dependency_satisfied: true
+  c06_bounded_authority_corrective_qualified: true
+  c18_integration_accepted: true
+  cr48_remains_held: true
+  wop_01_is_non_runtime_and_bounded: true
+qualification:
+  required: true
+  criteria:
+    - Every WOP requirement maps to exactly one owner and later work item.
+    - All 21 WOP lifecycle stages map to an evidence and qualification boundary.
+    - The dependency graph is acyclic and no runtime authority is inferred.
+    - Replay of identical inputs produces identical manifest bytes and digest.
+  evidence_reference: C06-WOP-01-QUALIFICATION-REQUIREMENTS-001
+blockers: []
+authority:
+  kind: OPERATOR_DIRECTIVE
+  provenance_reference: C06-BOUNDED-IMPLEMENTATION-CONTROLLED-AUTHORITY-AND-FIRST-INCREMENT-001
+  bounded_implementation: true
+  publication_owner: ZEUS
+  codex_publication_authority: false
+successor_gate_execution_requested: false
+publication_requested: false
+transaction_digest: c25dcdb95a386a30c91cadac2eb29529ea3f35da37960b9f7914d81fdf134985

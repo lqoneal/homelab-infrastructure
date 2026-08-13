@@ -106,6 +106,22 @@ authority remain with their existing controlled owners. An executable
 qualification is evidence that the roadmap is sufficiently deterministic; it
 is not evidence that its current gate has been authorized or executed.
 
+### Incremental bounded implementation principle
+
+An executable roadmap is not a plan for one monolithic implementation
+transaction. Where the current gate and its dependencies permit implementation,
+engineering work shall proceed through independently scoped, authorized,
+executable, testable, qualifiable, reconcilable, publishable, and resumable
+increments. Roadmap-wide completion is not a prerequisite unless a specific
+controlled contract requires it.
+
+Each increment requires its own persisted transaction authority and explicit
+scope. A transaction-specific `IMPLEMENTATION_AUTHORIZED=NO` or
+`SUCCESSOR_GATE_EXECUTION_AUTHORIZED=NO` applies only within that transaction's
+authority domain. Completing one increment never authorizes another increment
+or a successor gate. Qualification is required before publication readiness;
+Zeus retains privileged Git, publication, and EOS synchronization authority.
+
 ## Roadmap Classes
 
 Every roadmap shall declare exactly one class or a repository-controlled

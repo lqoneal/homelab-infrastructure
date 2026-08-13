@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import sys
 from pathlib import Path
 try:
@@ -88,6 +89,187 @@ def _canonical_next_authorized_action(
         if isinstance(action, str) and action.strip():
             return action.strip()
     return state_action
+
+
+def project_bounded_implementation_authority(
+    repository_root: Path | str,
+    transaction: dict[str, Any],
+    *,
+    policy: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Resolve one explicit bounded implementation transaction generically.
+
+    Gate-specific requirements are supplied by ``policy``.  The generic
+    resolver never assumes a particular gate or roadmap successor.
+    """
+    repository_root = Path(repository_root).resolve()
+    resolver = ConvergenceRoadmap(repository_root)
+    resolved = resolver.validate()
+    blockers: list[str] = []
+    if not isinstance(transaction, dict):
+        transaction = {}
+    policy = policy or {}
+
+    required = {
+        "transaction_id", "gate_id", "scope", "authorized_scope",
+        "prerequisites", "qualification", "blockers", "authority",
+        "successor_gate_execution_requested", "publication_requested",
+    }
+    missing = sorted(required - set(transaction))
+    if missing:
+        blockers.append("MISSING_TRANSACTION_FIELDS:" + ",".join(missing))
+
+    gate_id = transaction.get("gate_id")
+    required_gate_id = policy.get("required_gate_id")
+    if required_gate_id is not None and gate_id != required_gate_id:
+        blockers.append("GATE_POLICY_MISMATCH")
+
+    transaction_id = transaction.get("transaction_id")
+    if not isinstance(transaction_id, str) or not transaction_id.strip():
+        blockers.append("TRANSACTION_ID_REQUIRED")
+
+    if transaction.get("state") is not None and transaction.get("state") != "AUTHORIZED_FOR_IMPLEMENTATION":
+        blockers.append("TRANSACTION_NOT_CURRENTLY_AUTHORIZED")
+    if transaction.get("roadmap_id") is not None and transaction.get("roadmap_id") != resolved["roadmap"]["roadmap_id"]:
+        blockers.append("ROADMAP_ID_MISMATCH")
+    if transaction.get("roadmap_version") is not None and str(transaction.get("roadmap_version")) != str(resolved["roadmap"]["roadmap_version"]):
+        blockers.append("ROADMAP_VERSION_MISMATCH")
+    authority = transaction.get("authority")
+    provenance = policy.get("provenance_reference")
+    if provenance is not None and (
+        not isinstance(authority, dict) or authority.get("provenance_reference") != provenance
+    ):
+        blockers.append("AUTHORITY_PROVENANCE_INVALID")
+
+    scope = transaction.get("scope")
+    authorized_scope = transaction.get("authorized_scope")
+    if not isinstance(scope, list) or not scope or not all(isinstance(item, str) and item.strip() for item in scope):
+        blockers.append("IMPLEMENTATION_SCOPE_REQUIRED")
+        scope = []
+    if not isinstance(authorized_scope, list) or not authorized_scope or not all(
+        isinstance(item, str) and item.strip() for item in authorized_scope
+    ):
+        blockers.append("AUTHORIZED_SCOPE_REQUIRED")
+        authorized_scope = []
+    if not set(scope).issubset(set(authorized_scope)):
+        blockers.append("IMPLEMENTATION_SCOPE_EXCEEDS_TRANSACTION_BOUNDARY")
+
+    prerequisites = transaction.get("prerequisites")
+    if not isinstance(prerequisites, dict) or not prerequisites or not all(
+        value is True for value in prerequisites.values()
+    ):
+        blockers.append("PREREQUISITES_NOT_SATISFIED")
+
+    qualification = transaction.get("qualification")
+    if not isinstance(qualification, dict) or not (
+        qualification.get("valid") is True or qualification.get("required") is True
+    ):
+        blockers.append("QUALIFICATION_ARTIFACT_INVALID_OR_MISSING")
+
+    declared_blockers = transaction.get("blockers")
+    if not isinstance(declared_blockers, list):
+        blockers.append("BLOCKER_LIST_INVALID")
+    elif declared_blockers:
+        blockers.extend("EXPLICIT_BLOCKER:" + str(item) for item in declared_blockers)
+
+    authority = transaction.get("authority")
+    if not isinstance(authority, dict) or authority.get("bounded_implementation") is not True:
+        blockers.append("BOUNDED_IMPLEMENTATION_AUTHORITY_ABSENT")
+    if isinstance(authority, dict) and authority.get("publication_owner") != "ZEUS":
+        blockers.append("PUBLICATION_AUTHORITY_MUST_BE_ZEUS")
+
+    if transaction.get("successor_gate_execution_requested") is not False:
+        blockers.append("SUCCESSOR_GATE_EXECUTION_NOT_AUTHORIZED")
+    if transaction.get("publication_requested") is not False:
+        blockers.append("PUBLICATION_NOT_AUTHORIZED_IN_IMPLEMENTATION_TRANSACTION")
+
+    roadmap_executable = (
+        resolved["state"].get("executable_qualification", {}).get("executable") is True
+    )
+    if not roadmap_executable:
+        blockers.append("CANONICAL_ROADMAP_NOT_EXECUTABLE")
+
+    authorized = not blockers
+    return {
+        "result": "PASS",
+        "projection": "ZEUS_BOUNDED_IMPLEMENTATION_AUTHORITY",
+        "transaction_recognized": not any(
+            item.startswith(("MISSING_TRANSACTION_FIELDS", "TRANSACTION_ID_REQUIRED"))
+            for item in blockers
+        ),
+        "transaction_id": transaction_id,
+        "gate_id": gate_id,
+        "roadmap_executable": roadmap_executable,
+        "bounded_implementation_authorized": authorized,
+        "authorized_scope": list(authorized_scope),
+        "resolved_scope": list(scope),
+        "qualification_required": True,
+        "publication_authority_owner": "ZEUS",
+        "codex_publication_authority": False,
+        "successor_gate_execution_authorized": False,
+        "blockers": blockers,
+        "next_authorized_action": (
+            "EXECUTE_BOUNDED_IMPLEMENTATION_INCREMENT"
+            if authorized else "RESOLVE_BOUNDED_IMPLEMENTATION_SCOPE"
+        ),
+        "read_only": True,
+    }
+
+
+def project_c06_bounded_implementation_authority(
+    repository_root: Path | str,
+    transaction: dict[str, Any] | None = None,
+    *,
+    transaction_id: str = "C06-WOP-01-ROADMAP-AUTHORITY-001",
+) -> dict[str, Any]:
+    """Resolve the C06 transaction through the generic resolver and C06 policy."""
+    repository_root = Path(repository_root).resolve()
+    if transaction is None:
+        transaction = _load_bounded_implementation_transaction(
+            repository_root, transaction_id
+        )
+    result = project_bounded_implementation_authority(
+        repository_root,
+        transaction=transaction,
+        policy={
+            "required_gate_id": "C06",
+            "provenance_reference": (
+                "C06-BOUNDED-IMPLEMENTATION-CONTROLLED-AUTHORITY-AND-FIRST-INCREMENT-001"
+            ),
+        },
+    )
+    result["projection"] = "ZEUS_C06_BOUNDED_IMPLEMENTATION_AUTHORITY"
+    return result
+
+
+def _load_bounded_implementation_transaction(
+    repository_root: Path,
+    transaction_id: str,
+) -> dict[str, Any]:
+    """Load and integrity-check the single C06 persisted transaction record."""
+    path = repository_root / ROADMAP_RELATIVE_ROOT / (
+        "gates/C06-wop-and-execution-contract/evidence/"
+        "C06-BOUNDED-IMPLEMENTATION-TRANSACTION-001.yaml"
+    )
+    value = _load_yaml(path, "C06 bounded implementation transaction")
+    schema_path = repository_root / ROADMAP_RELATIVE_ROOT / (
+        "schemas/bounded-implementation-transaction.schema.yaml"
+    )
+    _schema_validate(value, schema_path, "C06 bounded implementation transaction")
+    if value.get("transaction_id") != transaction_id:
+        raise RoadmapError("bounded implementation transaction is unknown")
+    expected = _sha256_canonical_mapping(
+        {key: item for key, item in value.items() if key != "transaction_digest"}
+    )
+    if value.get("transaction_digest") != expected:
+        raise RoadmapError("bounded implementation transaction digest mismatch")
+    return value
+
+
+def _sha256_canonical_mapping(value: dict[str, Any]) -> str:
+    return hashlib.sha256(
+        json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    ).hexdigest()
 
 
 class RoadmapError(ValueError):

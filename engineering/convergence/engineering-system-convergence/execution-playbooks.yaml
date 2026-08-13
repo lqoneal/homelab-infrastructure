@@ -172,8 +172,8 @@ playbooks:
       - {location: engineering/execution, kind: PATH, existence: REQUIRED, purpose: Trace execution and handoff interfaces.}
       - {location: scripts/lib/emp, kind: PATH, existence: REQUIRED, purpose: Inventory packaging admission execution and evidence consumers.}
     inventory_method: [Enumerate every WOP representation schema identity revision store validator and controller., Trace source through packaging validation submission admission handoff execution evidence and closeout with inputs outputs authority and transformations.]
-    safe_operations: [Static source schema and package inspection, Existing validators against copied isolated fixtures]
-    prohibited_operations: [Create revise submit admit activate dispatch or execute a package, Mutate mission WOP admission or execution state]
+    safe_operations: [Static source schema and package inspection, Existing validators against copied isolated fixtures, Resolve one explicitly scoped implementation transaction through the C06 bounded-authority resolver]
+    prohibited_operations: [Roadmap-wide or unscoped implementation, Submit admit activate dispatch or execute a successor package, Mutate mission WOP admission or execution state, Publish or synchronize EOS]
     coverage_rules:
       - {rule_id: C06-COV-001, requirement: Every WOP form schema validator and transition is represented with owner input output and consumer., evidence: Artifact/schema filesystem reconciliation and dataflow endpoint checks.}
       - {rule_id: C06-COV-002, requirement: Every identity transformation and authority edge is deterministic or explicitly unresolved., evidence: Contract map identity and authority null checks.}

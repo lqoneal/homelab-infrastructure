@@ -11,8 +11,11 @@ scope_in:
   - WOP authoring, packaging, validation, admission, lifecycle, execution interface, handoff, revision, and evidence contracts.
   - Foundational WOP/EENS identity, envelope, integrity, correlation, submission, admission-observation, and replay-isolation contracts.
   - A bounded prospective development package for the foundational WOP substrate and minimum EENS execution-lifecycle contract.
+  - Resolution of one explicitly scoped implementation increment when the canonical bounded-authority resolver reports eligibility.
 scope_out:
-  - Execute WOP/EENS development, submit work, admit missions, dispatch providers, or execute packages.
+  - Roadmap-wide or unscoped WOP/EENS implementation.
+  - Submit work, admit missions, activate packages, dispatch providers, or execute successor-gate work.
+  - Privileged publication or EOS synchronization; those remain Zeus-owned boundaries.
 dependencies: [C05]
 entry_conditions:
   - C05 ownership findings are complete and C06 is explicitly selected.
@@ -27,7 +30,7 @@ assessment_or_execution_procedure:
   - Trace authoring through packaging, validation, submission, admission, handoff, execution, evidence, and closeout.
   - Identify ownership, transformations, duplicate validators, state copies, and authority gaps.
   - Record compatibility and simplification candidates without altering contracts.
-  - Define the C06 foundational WOP/EENS contract and a separately authorized implementation package without executing it.
+  - Define the C06 foundational WOP/EENS contract and resolve only an explicitly bounded implementation package through the canonical authority resolver.
 required_outputs:
   - WOP artifact and schema inventory.
   - End-to-end contract/dataflow map.
@@ -47,8 +50,9 @@ acceptance_criteria:
   - Downstream C07-C14 consumers have explicit WOP/EENS entry contracts; no downstream gate depends on unestablished capability.
 fail_closed_conditions:
   - A WOP identity or authority transition cannot be traced deterministically.
-  - Inspection would create, revise, admit, or execute a package.
-stop_boundary: Stop after assessment and bounded development-package design; do not execute WOP/EENS development or begin EMP assessment automatically.
+  - The requested scope is absent, expanded, blocked, unqualified, or outside the current transaction.
+  - Inspection would submit, admit, activate, dispatch, publish, synchronize, or execute a successor package.
+stop_boundary: Stop at the current bounded transaction after implementation and qualification; do not infer successor authority or privileged publication authority.
 result_location: engineering/convergence/engineering-system-convergence/gates/C06-wop-and-execution-contract/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C06-wop-and-execution-contract/evidence
 next_gate: C07
@@ -61,3 +65,18 @@ resume_instructions:
   validate_first: engctl roadmap validate
   next_authorized_action: BEGIN_C06_WOP_AND_EXECUTION_CONTRACT_ASSESSMENT
   execution_authority: SEPARATE_AUTHORITY_REQUIRED
+bounded_implementation_authority:
+  resolver: scripts.lib.eos.convergence_roadmap.project_c06_bounded_implementation_authority
+  model: C06_POLICY_OVER_GENERIC_INCREMENTAL_RESOLVER
+  eligible_when:
+    - canonical roadmap is executable
+    - prerequisites are satisfied
+    - requested scope is explicitly resolved within authorized_scope
+    - required qualification artifact is valid
+    - no explicit blocker is present
+    - publication_requested is false
+    - successor_gate_execution_requested is false
+  qualification_required_before_publication: true
+  publication_authority_owner: ZEUS
+  codex_publication_authority: false
+  roadmap_wide_completion_required: false

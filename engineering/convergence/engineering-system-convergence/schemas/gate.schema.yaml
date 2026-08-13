@@ -88,6 +88,25 @@ properties:
       validate_first: {type: string, minLength: 1}
       next_authorized_action: {type: string, minLength: 1}
       execution_authority: {enum: [AUTHORIZED_BY_PROGRAM_DIRECTIVE, SEPARATE_AUTHORITY_REQUIRED, NOT_AUTHORIZED]}
+  bounded_implementation_authority:
+    type: object
+    additionalProperties: false
+    required:
+      - resolver
+      - model
+      - eligible_when
+      - qualification_required_before_publication
+      - publication_authority_owner
+      - codex_publication_authority
+      - roadmap_wide_completion_required
+    properties:
+      resolver: {type: string, minLength: 1}
+      model: {type: string, minLength: 1}
+      eligible_when: {$ref: '#/$defs/nonemptyStrings'}
+      qualification_required_before_publication: {type: boolean}
+      publication_authority_owner: {type: string, minLength: 1}
+      codex_publication_authority: {type: boolean}
+      roadmap_wide_completion_required: {type: boolean}
 $defs:
   nonemptyStrings:
     type: array

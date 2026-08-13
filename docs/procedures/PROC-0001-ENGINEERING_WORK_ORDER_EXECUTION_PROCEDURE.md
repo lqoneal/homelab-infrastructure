@@ -216,6 +216,18 @@ Execution shall conform to:
 
 ## Execution Principles
 
+Implementation is incremental, not roadmap-wide by default. A current
+executable gate may authorize one independently scoped transaction when its
+persisted authority record resolves the gate, prerequisites, scope, blockers,
+qualification requirements, and provenance. The transaction is independently
+testable, qualifiable, reconcilable, publishable, and resumable where
+applicable. Roadmap-wide completion is required only when a specific controlled
+contract says so. A transaction-specific negative implementation or successor
+authority flag does not prohibit unrelated eligible increments, and completion
+of one increment does not authorize another. Qualification precedes
+publication readiness; Zeus retains privileged Git, publication, and EOS
+synchronization authority.
+
 Operational Alpha implementation WOPs shall be executed:
 
 * deterministically;
