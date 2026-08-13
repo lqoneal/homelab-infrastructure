@@ -359,6 +359,16 @@ workspace and repository scope, sandbox and approval policies, work-contract
 capabilities, and provider/session/execution bindings. Operators are not
 required to discover or supply provider-specific Codex options.
 
+The canonical machine-execution path is `ZEUS -> codex exec` with an explicit
+prompt/work contract and authorized worktree. Zeus owns the provider process,
+execution identity, output capture, interruption detection, post-execution
+diff and scope verification. Codex is only a bounded implementation provider:
+provider completion is not engineering qualification, and Zeus independently
+qualifies the result before any protected next action. Codex has no Git
+staging, commit, push, publication, EOS, successor, or qualification
+authority. Missing, interrupted, non-zero, or out-of-scope provider results
+fail closed and preserve execution evidence.
+
 `scripts/zeus codex start --mode ZEUS_MANAGED --work-contract <path>
 --preflight --dry-run` is the canonical read-only managed provider preflight.
 It shall expose the effective invocation plan, shall not create a provider

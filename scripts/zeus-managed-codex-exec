@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+"""Bounded Zeus launcher for one non-interactive Codex execution."""
+import argparse, json, sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from scripts.lib.emp.managed_provider import execute, ManagedProviderError
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--repository", default=".")
+parser.add_argument("--prompt", required=True)
+parser.add_argument("--authorized-path", action="append", default=[])
+parser.add_argument("--execution-id")
+parser.add_argument("--codex-bin", default="codex")
+parser.add_argument("--timeout", type=float, default=300.0)
+parser.add_argument("--output", type=Path)
+args = parser.parse_args()
+try:
+    value = execute(repository=args.repository, prompt=args.prompt, authorized_paths=args.authorized_path,
+                    execution_id=args.execution_id, codex_bin=args.codex_bin,
+                    timeout_seconds=args.timeout, output_path=args.output,
+                    timing_root=Path("/data/engineering/logs/codex-session-timed"))
+except ManagedProviderError as error:
+    value = {"result": "FAIL", "blocker": error.code, "message": str(error), **error.details}
+print(json.dumps(value, sort_keys=True))
+raise SystemExit(0 if value.get("result") == "PASS" else 78)

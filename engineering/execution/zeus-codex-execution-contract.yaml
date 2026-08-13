@@ -1,0 +1,18 @@
+schema_version: 1
+contract_id: ZEUS-CODEX-EXECUTION-CONTRACT
+control_plane: ZEUS
+implementation_provider: CODEX
+execution_mode: ZEUS_MANAGED_NON_INTERACTIVE
+non_interactive_entrypoint: codex exec
+prompt_transport: argv_or_stdin_explicit
+worktree_write_authority: BOUNDED
+privileged_git_authority: ZEUS_ONLY
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+provider_completion_is_qualification: false
+scope_verification_required: true
+interruption_policy: FAIL_CLOSED
+provider_session_identifier: UNAVAILABLE_IN_EXEC_MODE
+zeus_execution_identity: ALWAYS_REQUIRED
+wop_submission_provider_details_required: false

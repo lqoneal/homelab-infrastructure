@@ -62,7 +62,7 @@ semantic_bindings:
     revision: '2.0'
   repository_context:
     owner: SPEC-0004
-    revision: '1.5'
+    revision: '1.6'
   command_control:
     owner: SPEC-0005
     revision: '2.2'
