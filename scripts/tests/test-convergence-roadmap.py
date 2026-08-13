@@ -12,6 +12,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import pytest
 import yaml
 
 
@@ -26,13 +27,80 @@ from scripts.lib.eos.convergence_roadmap import (  # noqa: E402
 )
 
 
+def _make_test_tree_removable(root: Path) -> None:
+    """Restore write/search bits on test-owned immutable-style artifacts."""
+    if not root.exists():
+        return
+    for path in sorted(root.rglob("*"), key=lambda item: len(item.parts), reverse=True):
+        try:
+            path.chmod(path.stat().st_mode | 0o700)
+        except FileNotFoundError:
+            pass
+    try:
+        root.chmod(root.stat().st_mode | 0o700)
+    except FileNotFoundError:
+        pass
+
+
+_original_copytree = shutil.copytree
+
+
+def _ignore_repository_evidence(path, names):
+    """Keep bound top-level evidence, omit unrelated historical bulk."""
+    ignored = {".git", "__pycache__", "runtime", "tmp", "*.pyc"}
+    path_text = str(Path(path))
+    if Path(path).name == "evidence":
+        if Path(path).parent.name == "engineering-system-convergence":
+            return [name for name in names if name.endswith(".pyc")]
+        if "/gates/C00-" in path_text or "/gates/C01-" in path_text:
+            return [name for name in names if name.endswith(".pyc")]
+        return [
+            name for name in names
+            if name != "EVIDENCE-MANIFEST.yaml"
+            and not name.endswith(".pyc")
+        ]
+    keep_evidence = (
+        Path(path).name == "engineering-system-convergence"
+        or "/gates/C00-" in path_text
+        or "/gates/C01-" in path_text
+    )
+    if not keep_evidence and "evidence" not in names:
+        ignored.add("evidence")
+    return [name for name in names if name in ignored or name.endswith(".pyc")]
+
+
+def _copytree_for_tests(src, dst, *args, **kwargs):
+    if Path(src).resolve() == ROOT:
+        kwargs["ignore"] = _ignore_repository_evidence
+    return _original_copytree(src, dst, *args, **kwargs)
+
+
+# The historical CR23 tests intentionally copy the repository. Bound inputs
+# remain available, while unrelated evidence is excluded to keep qualification
+# within the repository-local temporary-storage budget.
+shutil.copytree = _copytree_for_tests
+
+
+@pytest.fixture(autouse=True)
+def _remove_test_tree_immutability(tmp_path):
+    yield
+    _make_test_tree_removable(tmp_path)
+
+
 class ConvergenceRoadmapTests(unittest.TestCase):
     def setUp(self) -> None:
         self.resolver = ConvergenceRoadmap(ROOT)
 
     def fixture(self) -> Path:
-        temporary = tempfile.TemporaryDirectory()
-        self.addCleanup(temporary.cleanup)
+        temporary = tempfile.TemporaryDirectory(
+            ignore_cleanup_errors=False,
+        )
+        self.addCleanup(
+            lambda: (
+                _make_test_tree_removable(Path(temporary.name)),
+                temporary.cleanup(),
+            )[-1]
+        )
         fixture_root = Path(temporary.name) / "repository"
         roadmap_source = ROOT / ROADMAP_RELATIVE_ROOT
         roadmap_target = fixture_root / ROADMAP_RELATIVE_ROOT
@@ -238,7 +306,7 @@ class ConvergenceRoadmapTests(unittest.TestCase):
         )
         self.assertTrue(Path(value["gate_definition"]).is_file())
         self.assertTrue(Path(value["last_result"]).is_file())
-        self.assertEqual(value["roadmap_version"], "2.0.2")
+        self.assertEqual(value["roadmap_version"], "2.3.0")
         self.assertEqual(value["execution_sufficiency"], "PASS")
         self.assertTrue(value["executable"])
 
@@ -482,7 +550,7 @@ def test_cr18_evaluate_pending_review_is_not_corruption():
     assert value["lifecycle_state"] == "AWAITING_OPERATOR_REVIEW"
     assert value["blockers"] == []
     assert value["next_authorized_action"] == (
-        "EXECUTE_CR23_IMPLEMENT_LIFECYCLE_PROVENANCE"
+        "REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY"
     )
 
 
@@ -572,7 +640,7 @@ def test_cr19_resume_projection_exposes_pending_review_read_only():
     assert value["operator_decision"] == "NONE"
     assert value["completion_state"] == "INCOMPLETE"
     assert value["next_authorized_action"] == (
-        "EXECUTE_CR23_IMPLEMENT_LIFECYCLE_PROVENANCE"
+        "REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY"
     )
     assert value["read_only"] is True
 
@@ -3940,6 +4008,45 @@ def _zo009_fixture_rebind(repo):
             sort_keys=False,
         )
     )
+
+    # ZO-007/008/013 are historical CR23 contracts.  A copy of the current
+    # repository is not that historical state: the corrective has since
+    # progressed to CR48.  Project only the historical facts these read-only
+    # qualifications require, leaving the live repository and production
+    # semantics untouched.
+    corrective_root = (
+        Path(repo)
+        / "engineering/convergence/engineering-system-convergence/"
+          "gates/C02-controlled-documentation-and-authority/"
+          "corrective/ESC-C02-CORRECTIVE-001"
+    )
+    state_path = corrective_root / "STATE.yaml"
+    state = yaml.safe_load(state_path.read_text())
+    completed_items = state.get("completed_items", [])
+    if state.get("current_item") == "CR48":
+        state["completed_items"] = completed_items[:completed_items.index("CR23")]
+        state["current_item"] = "CR23"
+        state["blockers"] = []
+        state["last_completed_item"] = "CR22"
+        state["next_authorized_action"] = (
+            "EXECUTE_CR23_IMPLEMENT_LIFECYCLE_PROVENANCE"
+        )
+    state_path.write_text(yaml.safe_dump(state, sort_keys=False))
+
+    historical_result = corrective_root / "gates/CR23/RESULT.yaml"
+    if historical_result.exists():
+        historical_result.unlink()
+
+    # Rebind after the explicit projection so the copied fixture remains a
+    # coherent repository for the resolver's digest checks.
+    manifest = yaml.safe_load(manifest_path.read_text())
+    for item in manifest.get("sources", []):
+        if not isinstance(item, dict) or not item.get("path"):
+            continue
+        path = Path(repo) / item["path"]
+        if path.is_file():
+            item["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+    manifest_path.write_text(yaml.safe_dump(manifest, sort_keys=False))
 
 
 def _zo009_gate_path(repo, gate_id):
