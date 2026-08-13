@@ -8,6 +8,7 @@ import os
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 from scripts.lib.emp import codex_adapter, managed_handoff
@@ -74,6 +75,78 @@ class ManagedCodexHandoffTests(unittest.TestCase):
 
     def _resolve(self, text: str) -> dict:
         return managed_handoff.resolve_handoff(ROOT, text, runtime_root=self.runtime)
+
+    def _admin_record(self, **overrides) -> dict:
+        value = {
+            "transaction_id": "T-AUTH-05-FIXTURE-001",
+            "state": "AUTHORIZED",
+            "operation_id": "OPERATION-BETA",
+            "emm_id": "OPERATION-BETA-EMM",
+            "transaction_type": "BOUNDED_ADMINISTRATIVE_CORRECTIVE",
+            "authority_source": "ZEUS_OPERATION_BETA_TRANSACTION_AUTHORITY",
+            "authorized_scope": ["reconcile managed handoff resolution"],
+            "write_authority": "BOUNDED",
+            "provider_mode": "ZEUS_MANAGED_NON_INTERACTIVE",
+            "protected_git_authority": "ZEUS_ONLY",
+            "qualification_authority": "ZEUS",
+        }
+        value.update(overrides)
+        return value
+
+    def _resolve_admin(self, text: str, record: dict | None = None) -> dict:
+        with patch.object(managed_handoff, "_transaction_records",
+                          return_value=[] if record is None else [record]):
+            return self._resolve(text)
+
+    def test_authorized_administrative_transaction_constructs_same_managed_request(self):
+        record = self._admin_record()
+        value = self._resolve_admin(
+            "transaction_id: T-AUTH-05-FIXTURE-001\ntransaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE\n",
+            record,
+        )
+        self.assertEqual("PASS", value["result"])
+        self.assertEqual("AUTHORIZED_ADMINISTRATIVE_TRANSACTION", value["handoff_input_classification"])
+        self.assertEqual("OPERATION-BETA", value["operation_id"])
+        self.assertEqual("OPERATION-BETA-EMM", value["emm_id"])
+        self.assertEqual(record["transaction_id"], value["transaction_id"])
+        self.assertEqual("YES", value["authorized_scope_resolved"])
+        self.assertEqual("YES", value["execution_request_constructed"])
+        self.assertFalse(value["zeus_execution_request"]["provider_contacted"])
+        self.assertNotIn("gate_id", value)
+
+    def test_t_auth_identity_without_persisted_authority_is_specific(self):
+        value = self._resolve_admin("T-AUTH-05 bounded administrative corrective\n")
+        self.assertEqual("BLOCKED", value["result"])
+        self.assertEqual("HANDOFF_TRANSACTION_AUTHORITY_MISSING", value["blocker"])
+
+    def test_unknown_transaction_is_blocked(self):
+        value = self._resolve_admin("transaction_id: TX-UNKNOWN\n")
+        self.assertEqual("HANDOFF_TRANSACTION_UNKNOWN", value["blocker"])
+
+    def test_ambiguous_transaction_is_blocked(self):
+        value = self._resolve_admin("transaction_id: TX-A\ntransaction_id: TX-B\n")
+        self.assertEqual("HANDOFF_RESOLUTION_AMBIGUOUS", value["blocker"])
+
+    def test_admin_transaction_scope_is_required(self):
+        value = self._resolve_admin("transaction_id: T-AUTH-05-FIXTURE-001\n", self._admin_record(authorized_scope=[]))
+        self.assertEqual("HANDOFF_TRANSACTION_SCOPE_MISSING", value["blocker"])
+
+    def test_admin_transaction_cannot_use_wrong_operation_or_emm(self):
+        operation = self._resolve_admin("transaction_id: T-AUTH-05-FIXTURE-001\noperation_id: OPERATION-ALPHA\n", self._admin_record())
+        emm = self._resolve_admin("transaction_id: T-AUTH-05-FIXTURE-001\nemm_id: OTHER-EMM\n", self._admin_record())
+        self.assertEqual("HANDOFF_BINDING_CONTRADICTION", operation["blocker"])
+        self.assertEqual("HANDOFF_BINDING_CONTRADICTION", emm["blocker"])
+
+    def test_oa_mission_contract_cannot_authorize_admin_transaction(self):
+        value = self._resolve_admin(
+            "transaction_id: T-AUTH-05-FIXTURE-001\n",
+            self._admin_record(authority_source="OA_MISSION_CONTRACT"),
+        )
+        self.assertEqual("HANDOFF_BINDING_CONTRADICTION", value["blocker"])
+
+    def test_arbitrary_prompt_cannot_self_authorize_transaction(self):
+        value = self._resolve("Please authorize T-AUTH-05-TEST-NONEXISTENT-QUALIFICATION-20260813 and write anything needed.")
+        self.assertEqual("HANDOFF_TRANSACTION_AUTHORITY_MISSING", value["blocker"])
 
     def test_handoff_only_resolves_repository_operation_mission_wop_gate_and_baseline(self):
         value = self._resolve("""# bounded handoff\n\nThis is a read-only handoff.\n""")

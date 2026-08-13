@@ -1,0 +1,65 @@
+transaction_id: T-AUTH-05
+state: AUTHORIZED
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+authority_source: OPERATOR_AUTHORIZATION_T_AUTH_05_SCOPE_DEFINITION
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+authority_model: MODEL_B
+authorization_boundary: OPERATION_BETA_GOVERNANCE_AUTHORITY_RECONCILIATION_ONLY
+objective: >-
+  Reconcile the remaining governance-authority state required for the current
+  Operation Beta execution path to proceed under one canonical,
+  machine-resolvable MODEL_B authority chain, without relying on historical
+  Operational Alpha authority, temporary CR48-CR55 execution mechanics,
+  handoff prose, or implicit operator authority.
+t_auth_05_objective: DEFINED
+acceptance_criteria:
+  - T_AUTH_05_CANONICAL_AUTHORITY=PRESENT
+  - T_AUTH_05_OBJECTIVE=DEFINED
+  - T_AUTH_05_ACCEPTANCE_CRITERIA=DEFINED
+  - T_AUTH_05_REQUIRED_SCOPE=DEFINED
+  - T_AUTH_05_AUTHORITY_SOURCE=CANONICAL
+  - CURRENT_OPERATION=OPERATION-BETA
+  - CURRENT_EMM=OPERATION-BETA-EMM
+  - AUTHORITY_MODEL=MODEL_B
+  - HISTORICAL_OPERATIONAL_ALPHA_AUTHORITY=NOT_USED_AS_CURRENT_AUTHORITY
+  - TEMPORARY_CR48_CR55_EXECUTION_MECHANICS=NOT_REQUIRED_AS_AUTHORITY
+  - HANDOFF_PROSE=NOT_AUTHORITY
+  - IMPLICIT_OPERATOR_AUTHORITY=NOT_USED
+  - HANDOFF_TRANSACTION_AUTHORITY_MISSING=NO
+  - T_AUTH_05_EXECUTED=NO
+  - T_AUTH_06_EXECUTED=NO
+  - C02_EXECUTED=NO
+  - CR48_CR55_RETIRED=NO
+t_auth_05_acceptance_criteria: DEFINED
+required_scope:
+  - Reconcile the remaining Operation Beta governance-authority state after T-AUTH-04A qualification.
+  - Bind the reconciliation to OPERATION-BETA, OPERATION-BETA-EMM, and the canonical MODEL_B authority sources.
+  - Resolve the current Operation Beta roadmap and Zeus execution interface as inputs without replacing their canonical ownership.
+  - Establish only the canonical machine-resolvable T-AUTH-05 authority contract and its bounded qualification result.
+  - Preserve historical Operational Alpha records and temporary CR48-CR55 records as historical or separately governed state.
+t_auth_05_required_scope: DEFINED
+authorized_scope:
+  - t-auth-05/operation-beta-authority-reconciliation
+  - t-auth-05/canonical-model-b-chain-binding
+  - t-auth-05/zeus-resolution-qualification
+prohibited_scope:
+  - Execute T-AUTH-06 or any successor transaction.
+  - Execute C02 or any unrelated convergence corrective.
+  - Retire CR48-CR55 or alter their status.
+  - Use or reactivate Operational Alpha authority as current authority.
+  - Create or modify a Mission Contract, duplicate EMM, replacement authority architecture, special T-AUTH resolver, or operator-maintained projection.
+  - Derive authority from handoff prose or implicit operator authority.
+  - Start a provider, execute T-AUTH-05, or create execution/runtime state during scope preparation or resolution qualification.
+  - Stage, commit, push, publish, synchronize EOS, or modify unrelated worktree content.
+t_auth_05_prohibited_scope: DEFINED
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+next_authorized_action: REVIEW_AND_PUBLISH_T_AUTH_05_AUTHORITY
+t_auth_05_next_authorized_action: REVIEW_AND_PUBLISH_T_AUTH_05_AUTHORITY
