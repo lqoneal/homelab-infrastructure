@@ -60,10 +60,15 @@ class ExecutionInterface:
         return result.stdout.strip()
 
     def convergence(self) -> ConvergenceRuntime:
-        """Return the SPEC-0014 runtime; it is independent of legacy projections."""
+        """Return SPEC-0014 bound to the current Model-B EMM."""
         if self.manifest.get("schema_version") != 3:
             raise ExecutionInterfaceError("convergence runtime requires interface schema 3")
-        return ConvergenceRuntime(self.root)
+        return ConvergenceRuntime(self.root, emm_id="OPERATION-BETA-EMM")
+
+    def current_authority(self) -> dict[str, Any]:
+        """Resolve current execution authority without Mission Contract fallback."""
+        from scripts.lib.eos.model_b_authority import resolve
+        return resolve(self.root)
 
     def resolve_implementation_wop(
         self, *, wop_id: str, revision: str | int, action: str,

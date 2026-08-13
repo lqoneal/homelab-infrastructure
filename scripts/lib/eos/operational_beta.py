@@ -35,6 +35,8 @@ def authority(root: Path | str) -> dict[str, Any]:
     the Beta execution path.
     """
     root = Path(root).resolve()
+    from scripts.lib.eos.model_b_authority import resolve as resolve_model_b
+    model_b = resolve_model_b(root)
     current = _current_mission(root)
     activation_path = (root / str(current.get("authority_record", ""))).resolve()
     if root not in activation_path.parents or not activation_path.is_file():
@@ -78,6 +80,11 @@ def authority(root: Path | str) -> dict[str, Any]:
         "authority_record": str(activation_path),
         "oa_authority": "SUPERSEDED",
         "authoritative_sources": operation_data["authoritative_sources"] + [str(current["authority_record"])],
+        "authority_model": "MODEL_B",
+        "current_emm": model_b["emm_id"],
+        "current_wop": model_b["wop_id"],
+        "current_roadmap": model_b["roadmap"],
+        "model_b_authority": model_b,
         "next_authorized_action": next_data["next_authorized_action"],
     }
 
