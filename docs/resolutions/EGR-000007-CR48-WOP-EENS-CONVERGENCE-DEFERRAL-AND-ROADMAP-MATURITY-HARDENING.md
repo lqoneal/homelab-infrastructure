@@ -4,13 +4,34 @@ version: 1.0
 status: Active
 document_type: Engineering Governance Resolution
 title: CR48 WOP/EENS Convergence Deferral and Roadmap Maturity Hardening
+owner: Engineering Governance
+created: 2026-08-12
+last_updated: 2026-08-13
+classification: Engineering Governance Resolution
+predecessor_revision: null
+successor_revision: null
 approval_status: Approved
 approval_authority: Engineering Governance
 approval_reference: POST-CR47-CR48-WOP-EENS-GOVERNANCE-DECISION
 approval_date: 2026-08-12
-persistence_status: Published
+persistence_status: Persisted
 subject_disposition: Deferred
 subject_identifier: CR48
+declared_deferrals: []
+source_of_truth: true
+relationships:
+  - type: governed_by
+    target: CHAR-0001
+  - type: governed_by
+    target: POL-0001
+  - type: conforms_to
+    target: PROC-0002
+  - type: conforms_to
+    target: PROC-0005
+  - type: indexed_by
+    target: DOC-0001
+  - type: related_to
+    target: EGR-000008
 ---
 
 # EGR-000007 — CR48 WOP/EENS Convergence Deferral and Roadmap Maturity Hardening
