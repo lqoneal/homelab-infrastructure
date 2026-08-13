@@ -53,9 +53,56 @@ class ConvergenceRuntime:
 
     VERSION = "zeus-convergence-runtime/1"
 
-    def __init__(self, root: Path | str):
+    @staticmethod
+    def derive_emm_id(program_id: str) -> str:
+        """Derive the one controlled EMM identity for a lifecycle program."""
+        normalized = str(program_id).strip().upper()
+        if not normalized or any(not (char.isalnum() or char == "-") for char in normalized):
+            raise ConvergenceRuntimeError("invalid lifecycle program identity")
+        return f"{normalized}-EMM"
+
+    def __init__(self, root: Path | str, *, emm_id: str | None = None):
         self.root = Path(root).resolve()
-        self.emm_path = self.root / "engineering/metadata/operational-alpha-emm.yaml"
+        self.emm_id = emm_id
+        self.emm_path = self._resolve_emm_path(emm_id)
+
+    def _resolve_emm_path(self, emm_id: str | None) -> Path:
+        metadata = self.root / "engineering/metadata"
+        candidates = []
+        for path in sorted(metadata.glob("*.yaml")):
+            try:
+                value = load_mapping(path)
+            except ConvergenceRuntimeError:
+                continue
+            if value.get("schema_version") == 1 and value.get("emm_id"):
+                if emm_id is None or value.get("emm_id") == emm_id:
+                    candidates.append(path)
+        if not candidates:
+            raise ConvergenceRuntimeError(
+                f"EMM identity not found: {emm_id or '<default>'}"
+            )
+        if emm_id is None and len(candidates) > 1:
+            # Preserve legacy callers while making explicit multi-program
+            # callers select the canonical lifecycle identity.
+            alpha = [p for p in candidates if p.name == "operational-alpha-emm.yaml"]
+            if len(alpha) == 1:
+                return alpha[0]
+            raise ConvergenceRuntimeError("EMM identity is ambiguous")
+        if len(candidates) != 1:
+            raise ConvergenceRuntimeError(f"EMM identity is ambiguous: {emm_id}")
+        return candidates[0]
+
+    def resolve_emm(self, program_id: str) -> dict[str, Any]:
+        """Resolve the EMM selected by a canonical lifecycle/program identity."""
+        return self._load_emm(self._resolve_emm_path(self.derive_emm_id(program_id)))
+
+    def _load_emm(self, path: Path) -> dict[str, Any]:
+        value = load_mapping(path)
+        if value.get("schema_version") != 1 or not value.get("emm_id"):
+            raise ConvergenceRuntimeError("unsupported or incomplete EMM schema")
+        if not isinstance(value.get("entities"), list):
+            raise ConvergenceRuntimeError("EMM entities are missing")
+        return value
 
     def _path(self, relative: str) -> Path:
         path = (self.root / relative).resolve()
@@ -64,11 +111,9 @@ class ConvergenceRuntime:
         return path
 
     def emm(self) -> dict[str, Any]:
-        value = load_mapping(self.emm_path)
-        if value.get("schema_version") != 1:
-            raise ConvergenceRuntimeError("unsupported EMM schema")
-        if value.get("baseline_id") != "OA-IMPLEMENTATION-BASELINE-1.0":
-            raise ConvergenceRuntimeError("EMM baseline binding is invalid")
+        value = self._load_emm(self.emm_path)
+        if not value.get("baseline_id"):
+            raise ConvergenceRuntimeError("EMM baseline binding is missing")
         if not isinstance(value.get("entities"), list):
             raise ConvergenceRuntimeError("EMM entities are missing")
         return value

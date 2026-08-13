@@ -30,6 +30,10 @@ ownership without creating a second authority.
 
 Operation Beta preserves the Operational Alpha source ownership model. Beta adds generators and execution services as consumers or projections; it does not create a second mission, capability, lifecycle, or governance authority.
 
+For each canonical lifecycle/program identity, the EMM identity is deterministic:
+`<PROGRAM_ID>-EMM`. Thus `OPERATION-BETA` resolves to `OPERATION-BETA-EMM` and
+the historical `OPERATIONAL-ALPHA-EMM` remains bound only to Alpha history.
+
 | Fact or artifact | Canonical owner | Beta consumers/projections |
 | --- | --- | --- |
 | Mission objectives, order, dependencies, readiness inputs | Mission Knowledge Model | Beta roadmap and controllers |

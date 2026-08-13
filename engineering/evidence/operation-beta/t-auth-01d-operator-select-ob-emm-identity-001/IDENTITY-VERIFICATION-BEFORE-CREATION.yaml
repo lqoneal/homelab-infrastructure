@@ -1,0 +1,24 @@
+transaction_id: T-AUTH-01D-OPERATOR-SELECT-OB-EMM-IDENTITY-001
+selection_authority: OPERATOR_DECISION_T_AUTH_01D
+selected_emm_id: OPERATION-BETA-EMM
+selected_emm_path: engineering/metadata/operation-beta-emm.yaml
+schema_version: 1
+program_id: OPERATION-BETA
+authority_model: MODEL_B
+predecessor_context: OPERATIONAL_ALPHA_HISTORICAL
+checks:
+  schema_valid: true
+  program_match: true
+  collision: false
+  historical_conflict: false
+  resolver_compatible: true
+  storage_unambiguous: true
+  canonically_registerable: true
+evidence:
+  existing_ids: [OPERATIONAL-ALPHA-EMM]
+  selected_rule: '<program_id>-EMM'
+  selected_id_derivation: OPERATION-BETA -> OPERATION-BETA-EMM
+  oa_path_preserved: engineering/metadata/operational-alpha-emm.yaml
+  wop_source_digest: 460a4baeca153b05ee2cb0ade4a70a03b8ff2b8ca9e17a9074d0e44137d392d9
+verification_digest: d45356a5fa690cc5e9f181d0f09bc7b0d7bca6bbb4d367bf88405fae5c4b20ef
+emm_identity_verified_before_creation: true
