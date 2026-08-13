@@ -49,16 +49,32 @@ def _ignore_repository_evidence(path, names):
     """Keep bound top-level evidence, omit unrelated historical bulk."""
     ignored = {".git", "__pycache__", "runtime", "tmp", "*.pyc"}
     path_text = str(Path(path))
+    manifest_bound = set()
+    manifest_path = ROOT / "engineering/convergence/engineering-system-convergence/binding-manifest.yaml"
+    if manifest_path.is_file():
+        manifest = yaml.safe_load(manifest_path.read_text()) or {}
+        manifest_bound = {
+            str(item["path"])
+            for item in manifest.get("sources", [])
+            if isinstance(item, dict) and item.get("path")
+        }
     if Path(path).name == "evidence":
         if Path(path).parent.name == "engineering-system-convergence":
             return [name for name in names if name.endswith(".pyc")]
         if "/gates/C00-" in path_text or "/gates/C01-" in path_text:
             return [name for name in names if name.endswith(".pyc")]
-        return [
+        ignored_evidence = [
             name for name in names
             if name != "EVIDENCE-MANIFEST.yaml"
             and not name.endswith(".pyc")
         ]
+        relative_bound = {
+            str((Path(path) / name).resolve().relative_to(ROOT))
+            for name in names
+            if (Path(path) / name).is_file()
+            and str((Path(path) / name).resolve().relative_to(ROOT)) in manifest_bound
+        }
+        return [name for name in ignored_evidence if str((Path(path) / name).resolve().relative_to(ROOT)) not in relative_bound]
     keep_evidence = (
         Path(path).name == "engineering-system-convergence"
         or "/gates/C00-" in path_text
@@ -301,8 +317,12 @@ class ConvergenceRoadmapTests(unittest.TestCase):
             ).read_text()
         )
         self.assertEqual(
-            value["next_authorized_action"],
             expected_state["next_authorized_action"],
+            "REVIEW_C18_INTEGRATION_AUTHORITY_BOUNDARY",
+        )
+        self.assertEqual(
+            value["next_authorized_action"],
+            "REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY",
         )
         self.assertTrue(Path(value["gate_definition"]).is_file())
         self.assertTrue(Path(value["last_result"]).is_file())

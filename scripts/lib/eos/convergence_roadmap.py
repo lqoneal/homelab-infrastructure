@@ -66,6 +66,30 @@ EVALUATION_CRITERIA = (
 )
 
 
+def _canonical_next_authorized_action(
+    repository_root: Path,
+    state_action: str,
+) -> str:
+    """Consume a satisfied C18 review boundary without mutating EOS state."""
+    if state_action != "REVIEW_C18_INTEGRATION_AUTHORITY_BOUNDARY":
+        return state_action
+    try:
+        try:
+            from scripts.lib.eos.maturity_recognition import resolve as resolve_maturity
+        except ModuleNotFoundError as error:
+            if error.name != "scripts":
+                raise
+            from maturity_recognition import resolve as resolve_maturity
+        maturity = resolve_maturity(repository_root)
+    except Exception:
+        return state_action
+    if maturity.get("result") == "PASS" and maturity.get("integration", {}).get("accepted") is True:
+        action = maturity.get("next_authorized_action")
+        if isinstance(action, str) and action.strip():
+            return action.strip()
+    return state_action
+
+
 class RoadmapError(ValueError):
     """Raised when authoritative roadmap inputs cannot be resolved uniquely."""
 
@@ -692,7 +716,10 @@ class ConvergenceRoadmap:
             "evaluated_at": evaluated_at,
             "structural_result": "PASS",
             "lifecycle_state": lifecycle_state,
-            "next_authorized_action": resolved["state"]["next_authorized_action"],
+            "next_authorized_action": _canonical_next_authorized_action(
+                self.repository_root,
+                resolved["state"]["next_authorized_action"],
+            ),
             **dimension_results,
             "gate_results": gate_results,
             "warnings": all_warnings,
@@ -888,7 +915,10 @@ class ConvergenceRoadmap:
             "completed_gates": state["completed_gates"],
             "blocked_gates": state["blocked_gates"],
             "pending_gates": state["pending_gates"],
-            "next_authorized_action": state["next_authorized_action"],
+            "next_authorized_action": _canonical_next_authorized_action(
+                self.repository_root,
+                state["next_authorized_action"],
+            ),
             "execution_sufficiency": state["executable_qualification"]["result"],
             "executable": state["executable_qualification"]["executable"],
             "gate_definition": str(_safe_repository_path(

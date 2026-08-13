@@ -15,6 +15,8 @@ sources:
   sha256: e4e2164d20386c0643f307f39161db81263e714cd0ff75578516ce4f318119ed
 - path: engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/evidence/QUALIFIED-WOP-EENS-CANONICAL-QUALIFICATION-002.yaml
   sha256: a1eac110e2a2affd09edad5568b8c7bb6937ce0180e282eb28d386ad00ad3d90
+- path: engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/evidence/C18-OPERATOR-APPROVAL-RECEIPT.json
+  sha256: 3137f0b871767db49442e3bc33fcf14ea25c1c8873e0ac1d51f06048c86a6f83
 - path: engineering/convergence/engineering-system-convergence/gates/C06-wop-and-execution-contract/evidence/REBASED-C06-WOP-EENS-FOUNDATIONAL-DEVELOPMENT-BOUNDARY-REVIEW.yaml
   sha256: 4f3f546c766fe4dfe4faa6930ba6a67d90032a8d71329cb4d9a27768a32cd5c6
 - path: engineering/convergence/engineering-system-convergence/roadmap.yaml
@@ -98,7 +100,7 @@ sources:
 - path: docs/procedures/PROC-0009-EXECUTABLE_ROADMAP_EVALUATION_PROCEDURE.md
   sha256: c9abf94dc454ff61b8a3efdeba5a455a83570ab2e2d29e728461042e4cf625dc
 - path: scripts/lib/eos/convergence_roadmap.py
-  sha256: 205f95746fdcb7933905aed3308e46f992767ddfb58d1f3877670c70b39d30b4
+  sha256: dcb24421c55f72058ba8c6d4c94f31d602541897119148f2ba0ff67ebaf56f43
 - path: scripts/engctl
   sha256: 543ecd440311a09cbe07d512b2195a727dd4c477a168ffb5e3616549d2d73a54
 - path: engineering/validation/controlled-document-semantic-profiles.yaml

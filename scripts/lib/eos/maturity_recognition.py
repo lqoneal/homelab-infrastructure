@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 from typing import Any, Mapping
 import yaml
@@ -19,6 +20,7 @@ ROADMAP_REFERENCE = "engineering/convergence/engineering-system-convergence/ESC-
 STATE = "engineering/convergence/engineering-system-convergence/STATE.yaml"
 PROJECT_STATE = "docs/project/PROJ-0001-PROJECT_STATE.md"
 BINDING_MANIFEST = "engineering/convergence/engineering-system-convergence/binding-manifest.yaml"
+APPROVAL_RECEIPT = "engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/evidence/C18-OPERATOR-APPROVAL-RECEIPT.json"
 
 def _load(root: Path, relative: str) -> tuple[dict[str, Any], str]:
     path = (root / relative).resolve()
@@ -35,6 +37,49 @@ def _load(root: Path, relative: str) -> tuple[dict[str, Any], str]:
         raise MaturityRecognitionError(f"maturity source must be a mapping: {relative}")
     return dict(value), hashlib.sha256(path.read_bytes()).hexdigest()
 
+
+def _load_approval_receipt(root: Path, integration_digest: str) -> tuple[dict[str, Any], str]:
+    path = (root / APPROVAL_RECEIPT).resolve()
+    if root not in path.parents or not path.is_file() or path.is_symlink():
+        raise MaturityRecognitionError(f"C18 operator approval receipt unavailable: {APPROVAL_RECEIPT}")
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise MaturityRecognitionError("C18 operator approval receipt is malformed") from error
+    if not isinstance(value, Mapping):
+        raise MaturityRecognitionError("C18 operator approval receipt must be an object")
+    unsigned = {key: item for key, item in value.items() if key != "receipt_digest"}
+    expected = hashlib.sha256(
+        json.dumps(unsigned, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    ).hexdigest()
+    if value.get("receipt_digest") != expected:
+        raise MaturityRecognitionError("C18 operator approval receipt digest is invalid")
+    required = {
+        "schema_version", "receipt_type", "approval_id", "decision", "approved_object",
+        "object_path", "object_sha256", "roadmap_id", "roadmap_version", "authority",
+        "authority_boundary", "implementation_authorized", "publication_authorized",
+        "eos_synchronization_authorized", "successor_gate_execution_authorized",
+        "integration_accepted", "receipt_digest",
+    }
+    if not required.issubset(value):
+        raise MaturityRecognitionError("C18 operator approval receipt is incomplete")
+    if value["receipt_type"] != "C18_OPERATOR_APPROVAL" or value["decision"] != "APPROVE":
+        raise MaturityRecognitionError("C18 operator approval receipt is not an approval")
+    if value["approved_object"] != "QUALIFIED-WOP-EENS-CANONICAL-INTEGRATION-001":
+        raise MaturityRecognitionError("C18 approval targets an unexpected object")
+    if value["object_path"] != INTEGRATION or value["object_sha256"] != integration_digest:
+        raise MaturityRecognitionError("C18 approval is not bound to the qualified integration evidence")
+    if value["roadmap_id"] != "ESC-ROADMAP-001" or str(value["roadmap_version"]) != "2.3.0":
+        raise MaturityRecognitionError("C18 approval roadmap binding is invalid")
+    if value["authority_boundary"] != "C18_INTEGRATION_AUTHORITY_BOUNDARY":
+        raise MaturityRecognitionError("C18 approval authority boundary is invalid")
+    if any(value[key] is not False for key in (
+        "implementation_authorized", "publication_authorized",
+        "eos_synchronization_authorized", "successor_gate_execution_authorized",
+    )) or value["integration_accepted"] is not True:
+        raise MaturityRecognitionError("C18 approval exceeds its bounded authority")
+    return dict(value), hashlib.sha256(path.read_bytes()).hexdigest()
+
 def resolve(repository_root: Path | str) -> dict[str, Any]:
     """Resolve maturity provenance without promoting downstream authority."""
     root = Path(repository_root).resolve()
@@ -43,6 +88,7 @@ def resolve(repository_root: Path | str) -> dict[str, Any]:
     integration, integration_digest = _load(root, INTEGRATION)
     qualification, qualification_digest = _load(root, QUALIFICATION)
     review, review_digest = _load(root, C06_REVIEW)
+    approval, approval_digest = _load_approval_receipt(root, integration_digest)
     roadmap, roadmap_digest = _load(root, ROADMAP)
     roadmap_reference, roadmap_reference_digest = _load(root, ROADMAP_REFERENCE)
     state, state_digest = _load(root, STATE)
@@ -67,8 +113,8 @@ def resolve(repository_root: Path | str) -> dict[str, Any]:
         raise MaturityRecognitionError("canonical roadmap reference is not active")
     if state.get("roadmap_id") != roadmap_id or not isinstance(state.get("next_authorized_action"), str) or not state["next_authorized_action"].strip():
         raise MaturityRecognitionError("canonical roadmap state is conflicting or stale")
-    approval = str(project_state.get("approval_status", "")).upper()
-    if approval != "APPROVED":
+    roadmap_approval = str(project_state.get("approval_status", "")).upper()
+    if roadmap_approval != "APPROVED":
         raise MaturityRecognitionError("canonical roadmap approval is not approved")
     adoption = str(roadmap_reference.get("status", "")).upper()
     executable = (
@@ -100,18 +146,36 @@ def resolve(repository_root: Path | str) -> dict[str, Any]:
         raise MaturityRecognitionError("accepted C06 boundary review is not resolvable")
     status = str(integration.get("status", "")).upper()
     authority = str(integration.get("execution_authority", "")).upper()
-    accepted = status in {"ACCEPTED", "PUBLISHED"} and authority != "SEPARATE_AUTHORITY_REQUIRED"
+    accepted = approval["integration_accepted"] is True
     blockers = [] if accepted else ["C18_INTEGRATION_REMAINS_DRAFT_OR_SEPARATE_AUTHORITY_REQUIRED"]
+    post_convergence = integration.get("post_convergence")
+    if accepted:
+        if not isinstance(post_convergence, Mapping) or not isinstance(
+            post_convergence.get("next_authorized_action"), str
+        ) or not post_convergence["next_authorized_action"].strip():
+            raise MaturityRecognitionError(
+                "accepted C18 integration has no canonical post-convergence action"
+            )
+        next_authorized_action = post_convergence["next_authorized_action"]
+    else:
+        next_authorized_action = state["next_authorized_action"]
     return {
         "result": "PASS", "projection": "CANONICAL_WOP_EENS_MATURITY_RECOGNITION",
-        "roadmap": {"id": roadmap_id, "role": "CURRENT_CANONICAL_ENGINEERING_ROADMAP", "approval": approval, "adoption": adoption, "executable": executable,
+        "roadmap": {"id": roadmap_id, "role": "CURRENT_CANONICAL_ENGINEERING_ROADMAP", "approval": roadmap_approval, "adoption": adoption, "executable": executable,
                     "path": ROADMAP, "sha256": roadmap_digest, "state_sha256": state_digest,
                     "reference_sha256": roadmap_reference_digest, "project_state_sha256": project_state_digest},
         "wop": {"path": WOP, "sha256": wop_digest, "qualification": by_id["SPEC-0015"]["qualification"], "recognized": True},
         "eens": {"path": EENS, "sha256": eens_digest, "qualification": by_id["SPEC-0016"]["qualification"], "recognized": True},
         "integration": {"path": INTEGRATION, "sha256": integration_digest, "status": status, "recognized": True, "accepted": accepted},
+        "approval": {"path": APPROVAL_RECEIPT, "sha256": approval_digest, "approval_id": approval["approval_id"], "decision": approval["decision"], "authority": approval["authority"], "recognized": True},
         "qualification": {"path": QUALIFICATION, "sha256": qualification_digest, "status": "PASS", "recognized": True},
         "c06_review": {"path": C06_REVIEW, "sha256": review_digest, "consumed": True},
-        "blockers": blockers, "next_authorized_action": state["next_authorized_action"],
+        "blockers": blockers, "next_authorized_action": next_authorized_action,
+        "c18_state": {
+            "before": "DRAFT_FOR_OPERATOR_REVIEW",
+            "after": "ACCEPTED_FOR_CANONICAL_INTEGRATION_ADOPTION",
+            "lifecycle_advanced": False,
+            "implementation_authorized": False,
+        },
         "authority": {"c18_separate_authority_required": not accepted, "cr48_execution_authorized": False, "c06_advancement_performed": False}, "read_only": True,
     }

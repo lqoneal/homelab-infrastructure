@@ -1,0 +1,20 @@
+{
+  "approval_id": "C18-OPERATOR-APPROVAL-PERSISTENCE-001",
+  "approved_at": "2026-08-13",
+  "approved_object": "QUALIFIED-WOP-EENS-CANONICAL-INTEGRATION-001",
+  "authority": "OPERATOR",
+  "authority_boundary": "C18_INTEGRATION_AUTHORITY_BOUNDARY",
+  "decision": "APPROVE",
+  "eos_synchronization_authorized": false,
+  "implementation_authorized": false,
+  "integration_accepted": true,
+  "object_path": "engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/evidence/QUALIFIED-WOP-EENS-CANONICAL-INTEGRATION-001.yaml",
+  "object_sha256": "e4e2164d20386c0643f307f39161db81263e714cd0ff75578516ce4f318119ed",
+  "publication_authorized": false,
+  "receipt_digest": "6c9cfd9ae2adfe3c8f8a6a4e0fb487da4d7ebe6c8c532db07ec89cfb020f57fa",
+  "receipt_type": "C18_OPERATOR_APPROVAL",
+  "roadmap_id": "ESC-ROADMAP-001",
+  "roadmap_version": "2.3.0",
+  "schema_version": 1,
+  "successor_gate_execution_authorized": false
+}
