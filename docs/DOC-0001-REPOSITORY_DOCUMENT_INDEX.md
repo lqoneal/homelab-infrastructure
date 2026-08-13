@@ -422,6 +422,7 @@ Project infrastructure may reference Homelab infrastructure documents but shall 
 | EGR-000005 | PROC-0006 Approval and Activation | Active | Engineering Governance | `docs/resolutions/EGR-000005-PROC-0006-APPROVAL-AND-ACTIVATION.md` |
 | EGR-000006 | PROC-0007 Approval and Activation | Active | Engineering Governance | `docs/resolutions/EGR-000006-PROC-0007-APPROVAL-AND-ACTIVATION.md` |
 | EGR-000007 | CR48 WOP/EENS Convergence Deferral and Roadmap Maturity Hardening | Active | Engineering Governance | `docs/resolutions/EGR-000007-CR48-WOP-EENS-CONVERGENCE-DEFERRAL-AND-ROADMAP-MATURITY-HARDENING.md` |
+| EGR-000008 | T-AUTH-00 Operator Authorization | Active | Engineering Governance | `docs/resolutions/EGR-000008-T-AUTH-00-OPERATOR-AUTHORIZATION.md` |
 | EWO-000010 | Governance Baseline 1.0 Qualification | Active | Engineering Governance | `docs/work-orders/EWO-000010-GOVERNANCE_BASELINE_1.0_QUALIFICATION.md` |
 | EWO-000010-EVIDENCE | EWO-000010 Qualification Evidence Package | Draft | Engineering Governance | `docs/work-orders/EWO-000010-QUALIFICATION-EVIDENCE-PACKAGE.md` |
 | EWO-000010-COMPLETION | EWO-000010 Qualification Completion Report | Draft | Engineering Governance | `docs/work-orders/EWO-000010-QUALIFICATION-COMPLETION-REPORT.md` |
@@ -913,3 +914,4 @@ The Engineering Management Platform manages portfolio coordination and engineeri
 | 2.78 | 2026-07-31 | Reconciled Operational Alpha initiation to the published WOP and convergence-authority model; historical EWOs no longer gate repository-governed Operational Alpha execution. |
 | 2.79 | 2026-08-09 | Registered STD-0006 and PROC-0009 as the reusable executable-roadmap construction and evaluation authorities, with ESC-ROADMAP-001 as the first bound executable qualification. |
 | 2.80 | 2026-08-12 | Registered Draft SPEC-0015 and SPEC-0016 as planning-only WOP and EENS maturity roadmaps; both remain in development, non-executable, unapproved, and unauthorized for implementation, with EENS architecture selection and WOP/EENS contract freeze pending. |
+| 2.81 | 2026-08-13 | Registered EGR-000008 as the canonical persisted T-AUTH-00 operator authorization under MODEL_B; no execution gate advanced. |
