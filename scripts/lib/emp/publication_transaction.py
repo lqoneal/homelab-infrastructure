@@ -25,6 +25,7 @@ import yaml
 
 from scripts.lib.emp.mission_verification_controller import verify as verify_mission
 from scripts.lib.emp import publication_candidate_authority
+from scripts.lib.emp import publication_closure
 from scripts.lib.emp import publication_cohort
 from scripts.lib.emp.production_execution import atomic_write, digest, identifier, load_json
 from scripts.lib.emp.repository_state_view import project as project_repository
@@ -678,6 +679,12 @@ def verify(root: Path | str, publication_or_mission: str, *, runtime_root: Path 
     if projection.get("repository_id") != record.get("repository_id"):
         blockers.append({"code": "REPOSITORY_IDENTITY_MISMATCH", "reason": "publication is bound to another repository"})
     if not postpublication:
+        closure = publication_closure.preflight_current_publication(root, list(record.get("candidate_paths") or []))
+        if closure.get("publication_closure") != "PASS":
+            blockers.append({
+                "code": "PUBLICATION_CLOSURE_FAILURE",
+                "reason": "; ".join(closure.get("blockers") or closure.get("unresolved_dependents") or ["reverse dependency closure failed"]),
+            })
         authority_revalidation = _revalidate_authority(root, record, runtime)
         if authority_revalidation.get("result") != "PASS":
             blockers.append({"code": "STALE_CLASSIFICATION", "reason": authority_revalidation.get("drift_inputs") or authority_revalidation.get("blocked")})
