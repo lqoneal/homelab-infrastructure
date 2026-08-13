@@ -22,7 +22,7 @@ MARKDOWN = markdown_template(template_metadata(
 
 CANONICAL_BOUNDARY_SUFFIX = """
 Approval Authorized Lifecycle State: Active
-Authoritative References: PROC-0001@1.11, TPL-0001@1.7, STD-0000, STD-0001, STD-0002, STD-0003, STD-0004
+Authoritative References: PROC-0001@2.11, TPL-0001@1.7, STD-0000, STD-0001, STD-0002, STD-0003, STD-0004
 Execution Package Authority Node Id: work-package
 Execution Package Authorization Decision Record: ADR-BOUNDARY-FIXTURE
 Sections Completion Report Requirement: completion evidence

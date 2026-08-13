@@ -369,7 +369,7 @@ def _canonical_stage1_metadata(package_value: Mapping[str, Any], canonical_diges
         "qualification_requirements": [str(item.get("acceptance", item["requirement_id"])) for item in requirements],
         "completion_requirements": ["canonical package provenance preserved", "Stage 1 package validation passes", "operator review before submission"],
         "approval": {},
-        "authoritative_references": ["PROC-0001@1.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004"],
+        "authoritative_references": ["PROC-0001@2.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004"],
         "execution_package_references": {"immutable_wop": str(identity["wop_id"])},
         "sections": {
             "completion_report_requirement": "Record canonical and Stage 1 identities, validation evidence, and the next governed lifecycle action.",
@@ -490,7 +490,7 @@ def template_metadata(wop_id: str, mission_id: str, repository_identity: str) ->
         "qualification_requirements": ["package validation evidence"],
         "completion_requirements": ["reviewable completion report"],
         "approval_authorized_lifecycle_state": "Active",
-        "authoritative_references": ["PROC-0001@1.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004"],
+        "authoritative_references": ["PROC-0001@2.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004"],
         "execution_package_authority_node_id": "work-package",
         "execution_package_authorization_decision_record": "ADR-REVIEW-REQUIRED",
     }

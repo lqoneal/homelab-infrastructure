@@ -28,7 +28,7 @@ class AuthoringError(ValueError):
 
 TEMPLATE = "docs/templates/TPL-0001-ENGINEERING_WORK_ORDER_TEMPLATE.md"
 CONTEXT = "engineering/docs/architecture/OPERATION-BETA-AUTHORITY-MODEL.md"
-REFERENCES = ["PROC-0001@1.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004"]
+REFERENCES = ["PROC-0001@2.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004"]
 SECTION_NAMES = [
     "purpose_and_expected_outcome", "mission_classification", "governing_references", "scope",
     "explicit_authority", "prohibited_activities", "dependencies_and_entry_criteria", "deliverables",

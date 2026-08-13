@@ -9,6 +9,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parents[2]))
 
 from scripts.lib.eos.execution_interface import ExecutionInterface
+from scripts.lib.eos.controlled_document_binding import ControlledDocumentBindingError, resolve_exact
 from scripts.lib.eos.model_b_authority import EMM_ID, WOP_DIGEST, WOP_ID, resolve
 
 
@@ -35,6 +36,12 @@ class ModelBAuthorityTests(unittest.TestCase):
     def test_wop_digest_is_exact(self):
         path = self.root / "engineering/work-orders/WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001/source-wop.md"
         self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), WOP_DIGEST)
+
+    def test_controlled_document_binding_fails_closed(self):
+        with self.assertRaises(ControlledDocumentBindingError):
+            resolve_exact(self.root, "PROC-0001", "2.7")
+        with self.assertRaises(ControlledDocumentBindingError):
+            resolve_exact(self.root, "PROC-0001", "9.99")
 
 
 if __name__ == "__main__":

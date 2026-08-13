@@ -152,7 +152,7 @@ def _derived_admission(record: Mapping[str, Any], admission_id: str) -> dict[str
             "immutable_wop": package_refs.get("immutable_wop", str(metadata_path)),
         },
         "authoritative_references": metadata.get("authoritative_references", [
-            "PROC-0001@1.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004"]),
+            "PROC-0001@2.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004"]),
         "sections": sections or {"purpose_and_expected_outcome": metadata.get("objective", "")},
     }
     submission["submission_digest"] = _digest(submission)

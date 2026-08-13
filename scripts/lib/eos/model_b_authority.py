@@ -10,6 +10,7 @@ from typing import Any
 import yaml
 
 from scripts.lib.eos.convergence_runtime import ConvergenceRuntime, ConvergenceRuntimeError
+from scripts.lib.eos.controlled_document_binding import resolve_exact
 
 
 ROADMAP = "engineering/docs/architecture/OPERATION-BETA-ROADMAP.md"
@@ -60,10 +61,10 @@ def resolve(root: Path | str) -> dict[str, Any]:
     interface = yaml.safe_load(_read(root, "engineering/execution/execution-interface.yaml"))
     semantic = interface.get("semantic_bindings", {}) if isinstance(interface, dict) else {}
     controlled_owner = semantic.get("execution_lifecycle", {})
-    controlled_valid = not (
-        str(controlled_owner.get("owner")) == "PROC-0001"
-        and str(controlled_owner.get("revision")) == "2.7"
+    controlled_binding = resolve_exact(
+        root, str(controlled_owner.get("owner")), str(controlled_owner.get("revision"))
     )
+    controlled_valid = True
     return {
         "result": "PASS",
         "operation": "OPERATION-BETA",
@@ -93,4 +94,5 @@ def resolve(root: Path | str) -> dict[str, Any]:
             }
         ],
         "historical_oa_lookup": "PRESERVED",
+        "controlled_document_binding": controlled_binding,
     }

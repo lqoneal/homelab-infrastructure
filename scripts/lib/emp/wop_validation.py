@@ -46,7 +46,7 @@ def validate_metadata(metadata: Mapping[str, Any], *, source: Path | str = "<sou
     if metadata.get("approval_authorized_lifecycle_state") not in (None, "Active"):
         errors.append("approval_authorized_lifecycle_state must be Active")
     references = metadata.get("authoritative_references")
-    required_references = ("PROC-0001@1.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004")
+    required_references = ("PROC-0001@2.11", "TPL-0001@1.7", "STD-0000", "STD-0001", "STD-0002", "STD-0003", "STD-0004")
     if references is not None and any(item not in references for item in required_references):
         errors.append("authoritative_references must contain the published procedure, template, and standards")
     return ValidationResult(str(source), metadata, missing=missing, errors=tuple(errors))
