@@ -18,6 +18,7 @@ entry_conditions:
   - C01-C19 are evidence-backed complete with no blockers.
   - C17 architecture, C18 implementation roadmap, and C19 cold resume are approved and current.
   - The first implementation gate has explicit separate authority and rollback evidence.
+  - The first separately authorized implementation gate identifies whether it is the C06 WOP foundation package, C09 EENS package, or a later dependent package; no implementation is inferred from assessment completion.
 authoritative_inputs:
   - Approved C17 target architecture, C18 implementation roadmap, C19 qualification, and first-gate authority package.
 execution_playbook:

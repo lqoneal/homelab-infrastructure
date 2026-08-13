@@ -14,6 +14,7 @@ scope_out:
 dependencies: [C13]
 entry_conditions:
   - C13 recovery boundaries are documented and C14 is selected.
+  - C06/C09 WOP/EENS contract and capability evidence are available for validation and observability assessment.
 authoritative_inputs:
   - Test suites, validators, health commands, PMCT, telemetry/log contracts, qualification procedures, evidence, and prior findings.
 execution_playbook:

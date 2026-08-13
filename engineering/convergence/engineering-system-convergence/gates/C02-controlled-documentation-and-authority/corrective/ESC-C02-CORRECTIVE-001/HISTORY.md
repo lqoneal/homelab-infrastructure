@@ -1063,3 +1063,41 @@ Control has advanced to CR46.
 - Force push: `false`
 - EOS synchronization: `false`
 - CR46 executed: `false`
+
+## Post-CR47 CR48 WOP/EENS Convergence Deferral
+
+**Decision:** APPROVED / DEFERRED
+
+**Subject:** CR48
+
+**Disposition:** `DEFERRED_PENDING_WOP_EENS_DEVELOPMENT`
+
+**Condition precedent:** `WOP_EENS_EXECUTION_ARCHITECTURE_CONVERGENCE`
+
+CR47 remains completed and CR48 remains the current corrective item, but CR48
+execution is held because systemic execution readiness is not established.
+
+Engineering Governance additionally requires the WOP and EENS maturity
+roadmaps to be maturity-hardened independently before they are converged into
+the canonical engineering roadmap.
+
+Required ordering:
+
+1. maturity-harden the WOP maturity roadmap;
+2. maturity-harden the EENS maturity roadmap;
+3. independently qualify both hardened subsystem roadmaps;
+4. converge the hardened WOP/EENS roadmap content into the canonical roadmap;
+5. maturity-harden the entire canonical roadmap after convergence;
+6. independently qualify the re-hardened canonical roadmap;
+7. obtain separate implementation authority;
+8. complete joint WOP/EENS/Zeus implementation and integrated qualification;
+9. perform a fresh CR48 readiness assessment.
+
+This decision does not execute CR48, satisfy its condition precedent, authorize
+C06/C08/C09 execution, authorize implementation, or authorize publication.
+
+Governance decision:
+engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-WOP-EENS-GOVERNANCE-DECISION.yaml
+
+Supplemental roadmap maturity-hardening direction:
+engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-ROADMAP-MATURITY-HARDENING-GOVERNANCE-DIRECTION.yaml

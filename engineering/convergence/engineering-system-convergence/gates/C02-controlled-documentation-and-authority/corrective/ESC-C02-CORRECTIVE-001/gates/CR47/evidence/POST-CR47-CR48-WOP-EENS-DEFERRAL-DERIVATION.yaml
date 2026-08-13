@@ -1,0 +1,28 @@
+schema_version: '1.0'
+record_type: POST_CR47_CR48_WOP_EENS_DEFERRAL_DERIVATION
+result: PASS
+classification: REQUIRES_CONTROLLED_DECISION
+current_authority:
+  current_item: CR48
+  next_authorized_action: VERIFY_CR48_PRECONDITIONS
+  cr48_execution_authorized: false
+derived_disposition:
+  value: DEFERRED_PENDING_WOP_EENS_DEVELOPMENT
+  status: PROPOSED_NOT_PERSISTED
+  basis:
+  - WOP_EENS_SHARED_INTERFACE_NOT_CONTROLLED
+  - ADMITTED_WOP_DIGEST_CONTRACT_NOT_CONTROLLED
+  - ZEUS_PROVIDER_CONTRACT_DERIVATION_NOT_CONTROLLED
+  - CANONICAL_EENS_ARCHITECTURE_NOT_CONTROLLED
+  - INTEGRATED_QUALIFICATION_INCOMPLETE
+required_controlled_decision:
+  determine_state_representation: true
+  determine_roadmap_dependency_representation: true
+  determine_CR48_deferral_transition: true
+  determine_C06_entry_authority: true
+prohibited_by_this_derivation:
+  mutate_corrective_state: true
+  mutate_roadmap: true
+  execute_cr48: true
+  begin_c06: true
+  publish: true

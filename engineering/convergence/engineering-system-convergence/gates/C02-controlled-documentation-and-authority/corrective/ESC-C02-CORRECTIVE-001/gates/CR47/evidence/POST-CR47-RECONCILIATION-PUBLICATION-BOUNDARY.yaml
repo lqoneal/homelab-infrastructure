@@ -1,0 +1,38 @@
+schema_version: "1.0"
+record_type: POST_CR47_RECONCILIATION_PUBLICATION_BOUNDARY
+result: PASS
+authority_state: DERIVED_NOT_EXECUTED
+
+required_in_scope:
+  - "docs/project/PROJ-0001-PROJECT_STATE.md"
+  - "engineering/convergence/engineering-system-convergence/binding-manifest.yaml"
+  - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-PROJECT-STATE-RECONCILIATION-RESULT.yaml"
+  - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-PRECONDITION-ASSESSMENT.yaml"
+  - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-WOP-EENS-DEFERRAL-DERIVATION.yaml"
+
+required_transaction_records:
+  - "engineering/convergence/engineering-system-convergence/runtime/emm-rebind-transactions/tx-post-cr47-project-state-reconciliation-001.json"
+
+additional_cr47_evidence:
+  include_only_if_bound_to_post_cr47_reconciliation: true
+
+excluded_or_separately_dispositioned:
+  - engineering/planning/2026-08-12-eens-architecture-resolution-options.md
+
+publication_preconditions:
+  roadmap_validation_pass: true
+  zero_unexplained_emm_drift: true
+  project_state_projection_reconciled: true
+  cr48_not_executed: true
+  c06_not_started: true
+  exact_publication_surface_must_be_frozen_after_all_control_paths_exist: true
+
+publication:
+  executed: false
+
+successor:
+  cr48_execution_authorized: false
+  c06_entry_authorized: false
+
+next:
+  derive_exact_state_deferral_or_dependency_mutation_authority: true

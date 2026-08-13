@@ -1,0 +1,42 @@
+schema_version: "1.0"
+record_type: POST_CR47_EGR_000007_PARTIAL_AUTHORING_CORRECTIVE_RESULT
+result: PASS
+
+defects_corrected:
+  false_DOC_0001_revision_history_registration:
+    corrected: true
+
+  premature_EGR_Active_lifecycle:
+    corrected: true
+
+  canonical_EGR_registration:
+    corrected: true
+
+egr:
+  id: EGR-000007
+  path: "docs/resolutions/EGR-000007-CR48-WOP-EENS-CONVERGENCE-DEFERRAL-AND-ROADMAP-MATURITY-HARDENING.md"
+  sha256: "90746fb79cb454f65729b260cf5c7c82f5624c4814b7ebde4d28b04ac76ead1f"
+  lifecycle_state: Approved
+  approval_status: Approved
+  subject_disposition: Deferred
+  persistence_status: Pending
+
+DOC_0001:
+  path: "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md"
+  sha256: "a8ecf916f8dea796e63b0e8f298207f15976f12f5bf0eab1330399e5ace5d9b9"
+  canonical_registration_count: 1
+  false_registration_count: 0
+
+emm:
+  path: "engineering/convergence/engineering-system-convergence/binding-manifest.yaml"
+  sha256: "54d9619c29f5127113ed3a08ba035de8a5523c882f1b2390f29dd909ba8f3073"
+  final_drift_count: 0
+
+qualification:
+  roadmap_validation: PASS
+  publication_executed: false
+  roadmap_hardening_started: false
+  CR48_executed: false
+
+next:
+  action: DERIVE_STABLE_CLOSED_POST_DEFERRAL_PUBLICATION_CANDIDATE_ONLY

@@ -1,0 +1,23 @@
+schema_version: "1.0"
+record_type: POST_CR47_PUBLICATION_CANDIDATE_SUPERSESSION
+result: PASS
+
+superseded:
+  frozen_candidate: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-STABLE-CLOSED-PUBLICATION-CANDIDATE.yaml"
+  publication_execution_authority: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-STABLE-CLOSED-PUBLICATION-EXECUTION-AUTHORITY.yaml"
+
+reason:
+  controlled_projection_schema_corrective_added: true
+  schema_diagnostic_added: true
+  continuation_authority_added: true
+  EGR_000007_activation_added: true
+  DOC_0001_activation_projection_added: true
+  EMM_reconciliation_transaction_added: true
+  publication_surface_changed: true
+
+replacement:
+  frozen_candidate: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-STABLE-CLOSED-PUBLICATION-CANDIDATE-V2.yaml"
+  publication_execution_authority: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-STABLE-CLOSED-PUBLICATION-EXECUTION-AUTHORITY-V2.yaml"
+
+prior_publication_executed: false
+prior_authority_may_not_be_used: true

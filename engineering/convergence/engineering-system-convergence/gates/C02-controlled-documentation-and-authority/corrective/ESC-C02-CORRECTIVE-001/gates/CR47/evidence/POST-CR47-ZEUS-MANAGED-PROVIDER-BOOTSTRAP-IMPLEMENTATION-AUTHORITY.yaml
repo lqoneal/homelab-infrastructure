@@ -1,0 +1,79 @@
+schema_version: "1.0"
+record_type: ZEUS_MANAGED_PROVIDER_BOOTSTRAP_IMPLEMENTATION_AUTHORITY
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  diagnostic: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-ZEUS-MANAGED-PROVIDER-BOOTSTRAP-DEADLOCK-DIAGNOSTIC.yaml"
+  managed_preflight_authority: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-ZEUS-MANAGED-CODEX-PREFLIGHT-CORRECTIVE-AUTHORITY.yaml"
+  work_contract: "/data/engineering/tmp/zeus-work-contracts/ZEUS-CODEX-PROVIDER-CORRECTIVE-001.yaml"
+
+purpose:
+  statement: >-
+    Permit exactly one bounded engineering implementation path outside the
+    defective Zeus-managed provider lifecycle so the provider lifecycle can
+    be repaired and immediately requalified.
+
+authorized:
+  local_repository_mutation: true
+  modify_Zeus_provider_code: true
+  modify_Zeus_CLI_managed_preflight_routing: true
+  modify_Codex_provider_preflight_contract: true
+  add_focused_tests: true
+  run_focused_tests: true
+  run_relevant_regression_tests: true
+  bounded_document_reconciliation: true
+
+required_scope:
+  - scripts/zeus
+  - scripts/lib/emp/codex_interactive.py
+  - scripts/lib/emp/codex_adapter.py
+  - scripts/lib/emp/codex_app_server_broker.py
+  - directly_related_tests
+  - directly_affected_controlled_documentation
+
+required_outcome:
+  managed_preflight_supported: true
+  provider_option_resolution_owned_by_Zeus: true
+  provider_incompatibility_detected_before_dispatch: true
+  no_DIRECT_INTERACTIVE_fallback: true
+  Zeus_managed_acceptance_requalification_required: true
+
+bootstrap_constraints:
+  temporary_exception: true
+  provider_bypass_not_authorized: true
+  lifecycle_bypass_not_authorized: true
+  subject_work_execution_not_authorized: true
+  unrestricted_shell_authority_not_authorized: true
+  arbitrary_repository_scope_not_authorized: true
+  exception_closes_after_successful_Zeus_managed_provider_qualification: true
+
+prohibited:
+  execute_CR48: true
+  create_CR48_mission: true
+  generate_CR48_WOP: true
+  dispatch_CR48: true
+  begin_WOP_EENS_implementation: true
+  canonical_roadmap_hardening: true
+  stage: true
+  commit: true
+  push: true
+  EOS_sync: true
+  publication: true
+
+acceptance:
+  command: >-
+    scripts/zeus codex start --mode ZEUS_MANAGED
+    --work-contract "/data/engineering/tmp/zeus-work-contracts/ZEUS-CODEX-PROVIDER-CORRECTIVE-001.yaml"
+    --preflight --dry-run
+
+  required:
+    result_PASS: true
+    DIRECT_PREFLIGHT_ONLY_absent: true
+    PROVIDER_INVOCATION_FAILURE_absent: true
+    provider_started: false
+    provider_options_resolved: true
+    work_contract_capabilities_resolved: true
+
+next_authorized_action:
+  EXECUTE_BOUNDED_LOCAL_ZEUS_PROVIDER_BOOTSTRAP_CORRECTIVE_ONLY

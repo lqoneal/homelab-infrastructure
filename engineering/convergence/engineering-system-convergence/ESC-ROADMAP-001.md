@@ -8,7 +8,7 @@ machine_readable_authority: engineering/convergence/engineering-system-convergen
 state_authority: engineering/convergence/engineering-system-convergence/STATE.yaml
 active_corrective: ESC-C02-CORRECTIVE-001
 generated_at: '2026-08-10T13:10:06Z'
-parent_roadmap_version: '2.0.2'
+parent_roadmap_version: '2.3.0'
 corrective_roadmap_version: '1.1.1'
 remaining_gate_maturity: HARDENED_QUALIFIED_EXECUTABLE
 persistence_status: Pending
@@ -40,7 +40,7 @@ execution. This document does not create independent execution authority.
 
 ## Current Position
 
-- Parent roadmap: `ESC-ROADMAP-001@2.0.2`
+- Parent roadmap: `ESC-ROADMAP-001@2.2.0`
 - Parent current gate: `C02`
 - Parent next authorized action: `EXECUTE_CR23_IMPLEMENT_LIFECYCLE_PROVENANCE`
 - Corrective roadmap: `ESC-C02-CORRECTIVE-001@1.1.1`
@@ -164,8 +164,8 @@ the machine-readable corrective roadmap.
 
 ## Source Integrity
 
-- `roadmap.yaml` SHA-256: `47fc1ec0116a65d422a4b41537f1de097a45738cfacdd8e675e745a28d588ce4`
-- parent `STATE.yaml` SHA-256: `4001db48e455ee9aa9e6e2338e24b7b86949b654e2305388c66645458ca190bc`
+- `roadmap.yaml` SHA-256: `2003bc5d4468534afa5f8e30bb765b2d5049b41cd8b0d18e4e960eff9208a20b`
+- parent `STATE.yaml` SHA-256: `35fc7378f1b34da5057a5accc37d363c45a657e97c3911f2e513ee16e375d1ed`
 - corrective `ROADMAP.yaml` SHA-256: `51f995777b33f7d7cd718387172d227ea0a6f11d9085843a18440604de965d02`
 - corrective `STATE.yaml` SHA-256: `94caee8b762d8757cc8ba838917144e4c70afecd2d7f6e96029f243dc13d56ff`
 

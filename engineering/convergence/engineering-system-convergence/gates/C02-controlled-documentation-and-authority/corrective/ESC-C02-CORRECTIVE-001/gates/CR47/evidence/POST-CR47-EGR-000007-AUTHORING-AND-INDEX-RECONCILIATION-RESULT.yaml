@@ -1,0 +1,36 @@
+schema_version: "1.0"
+record_type: POST_CR47_EGR_AUTHORING_AND_INDEX_RECONCILIATION_RESULT
+result: PASS
+
+egr:
+  id: EGR-000007
+  path: "docs/resolutions/EGR-000007-CR48-WOP-EENS-CONVERGENCE-DEFERRAL-AND-ROADMAP-MATURITY-HARDENING.md"
+  lifecycle_state: Approved
+  approval_status: Approved
+  subject_disposition: Deferred
+  persistence_status: Pending
+
+DOC_0001:
+  registration: PASS
+  canonical_path_match: true
+
+emm:
+  final_drift_count: 0
+
+roadmap_validation: PASS
+
+roadmap_hardening_sequence:
+  WOP_before_convergence: REQUIRED
+  EENS_before_convergence: REQUIRED
+  both_subsystem_roadmaps_qualified_before_convergence: REQUIRED
+  canonical_convergence_after_subsystem_qualification: REQUIRED
+  whole_canonical_roadmap_rehardening_after_convergence: REQUIRED
+  whole_canonical_roadmap_requalification: REQUIRED
+
+execution:
+  publication_executed: false
+  roadmap_hardening_started: false
+  CR48_executed: false
+
+next:
+  action: DERIVE_STABLE_CLOSED_POST_DEFERRAL_PUBLICATION_CANDIDATE_ONLY

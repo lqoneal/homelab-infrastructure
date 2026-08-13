@@ -38,10 +38,15 @@ class MissionVerificationControllerTests(unittest.TestCase):
         self.assertEqual(value["result"], "PASS")
         self.assertTrue(value["read_only"])
         self.assertEqual(value["replay"], {"submission": "IDEMPOTENT", "admission": "IDEMPOTENT", "bootstrap": "IDEMPOTENT", "provider_session": "IDEMPOTENT", "provider_invocation": "IDEMPOTENT", "execution_start": "IDEMPOTENT"})
-        # This fixture is the historical Beta execution chain.  Its current
-        # canonical projection stops at the explicit legacy reconciliation
-        # boundary rather than exposing the obsolete work selector.
-        self.assertEqual(value["next_authorized_action"], "OPERATOR_REVIEW_LEGACY_LIFECYCLE_RECONCILIATION")
+        # This fixture is the accepted historical Beta execution chain.  Its
+        # preserved provenance defects do not create a repeated operator
+        # decision after the identity-bound P5-G6 acceptance is qualified.
+        self.assertEqual(value["next_authorized_action"], "FOLLOW_CURRENT_OPERATION_BETA_AUTHORITY")
+        self.assertFalse(value["codex"]["history_reconciliation"]["reconciliation_required"])
+        self.assertTrue(value["codex"]["history_reconciliation"]["reconciliation_already_applied"])
+        self.assertEqual(value["codex"]["state"], "RECONCILED_HISTORICAL")
+        self.assertEqual(value["codex"]["session_liveness"], "STOPPED")
+        self.assertEqual(value["codex"]["provider_liveness"], "STOPPED")
         self.assertEqual(value["checks"]["provider_session"], "PASS")
         self.assertEqual(value["replay"]["provider_session"], "IDEMPOTENT")
         self.assertTrue(value["lifecycle"]["provider_session_created"])

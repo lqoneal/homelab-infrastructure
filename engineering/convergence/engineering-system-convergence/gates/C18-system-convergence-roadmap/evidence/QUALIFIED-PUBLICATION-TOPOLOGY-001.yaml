@@ -1,0 +1,67 @@
+schema_version: 1
+qualification_id: QUALIFIED-PUBLICATION-TOPOLOGY-001
+status: PASS
+qualified_roadmap:
+  roadmap_id: ESC-ROADMAP-001
+  roadmap_version: 2.3.0
+  roadmap_digest: 2003bc5d4468534afa5f8e30bb765b2d5049b41cd8b0d18e4e960eff9208a20b
+  state_before:
+    current_phase: ASSESSMENT
+    current_gate: C02
+    last_completed_gate: C01
+    next_gate: C02
+    next_authorized_action: REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY
+  state_after:
+    current_phase: ASSESSMENT
+    current_gate: C02
+    last_completed_gate: C01
+    next_gate: C02
+    next_authorized_action: REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY
+publication_policy:
+  model: CAPABILITY_BOUNDARY_DRIVEN
+  gate_completion_implies_publication: false
+  publication_decision_separate: true
+  previous_gate_authority_propagates: false
+classification_counts:
+  total_gates: 21
+  required_boundaries: 8
+  conditional_boundaries: 3
+  non_publication_gates: 10
+  max_gates_between_required_publications: 5
+required_publication_gate_ids: [C00, C06, C09, C15, C17, C18, C19, C20]
+conditional_publication_gate_ids: [C02, C05, C11]
+publication_classification_gaps: 0
+publication_condition_gaps: 0
+publication_dependency_errors: 0
+publication_authority_leaks: 0
+next_gate_authority_leaks: 0
+publication_required_before_c06: false
+publication_topology_checks:
+  every_gate_has_exactly_one_class: PASS
+  required_boundaries_have_reason_prerequisites_output: PASS
+  conditional_boundaries_have_objective_conditions: PASS
+  downstream_baseline_dependencies_explicit: PASS
+  no_implicit_per_gate_publication: PASS
+  publication_separate_from_next_gate_authority: PASS
+  no_circular_publication_dependency: PASS
+  no_downstream_publication_prerequisite: PASS
+  recovery_baseline_analysis_complete: PASS
+  machine_human_representation_agree: PASS
+  c02_to_c06_topology_explicit: PASS
+  live_progress_unchanged: PASS
+  no_gate_execution: PASS
+  no_publication: PASS
+  no_eos_synchronization: PASS
+transaction_model:
+  sequence: [CAPABILITY_COMPLETE, QUALIFY, RECONCILE, RESOLVE_PUBLICATION_AUTHORITY, PUBLISH, VERIFY_PUBLISHED_BASELINE, RESOLVE_NEXT_GATE_AUTHORITY]
+  publication_authority_is_separate: true
+  next_gate_authority_is_separate: true
+  eos_synchronization: ONLY_WHEN_PUBLISHED_CAPABILITY_CHANGES_EOS_OWNED_PROJECTION_OR_BASELINE
+  stage_performed: false
+  commit_performed: false
+  push_performed: false
+  publication_performed: false
+  eos_synchronization_performed: false
+independent_method: Fresh read-only parse and assertions over roadmap.yaml, ROADMAP.md, every C00-C20 GATE.yaml dependency, STATE.yaml, Project State, and binding authority; no gate executor or publication command invoked.
+decision: PASS
+next_authorized_action: RETURN_TO_CURRENT_AUTHORITATIVE_CONVERGENCE_GATE

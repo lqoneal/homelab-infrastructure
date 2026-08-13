@@ -15,6 +15,7 @@ scope_out:
 dependencies: [C06]
 entry_conditions:
   - C06 contract findings are complete and C07 is explicitly selected.
+  - C06 foundational WOP execution-contract and minimum EENS lifecycle-contract outputs are reviewed and available as inputs.
 authoritative_inputs:
   - EMP specifications, Work Registry/schema, scripts/lib/emp, engctl routing, evidence, and prior gate results.
 execution_playbook:

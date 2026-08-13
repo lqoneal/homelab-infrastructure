@@ -1,0 +1,110 @@
+schema_version: "1.0"
+record_type: ZEUS_DEVELOPMENT_REQUIREMENT
+requirement_id: ZEUS_PROVIDER_INVOCATION_OPTION_RESOLUTION
+result: PASS
+
+subject:
+  system: Zeus
+  capability: provider_invocation_option_resolution
+  provider_subject: Codex
+
+finding:
+  classification: ZEUS_PROVIDER_INVOCATION_CONTRACT_GAP
+  statement: >-
+    Zeus must determine the execution capabilities and provider-specific
+    invocation options required by the authorized work before invoking Codex.
+    A provider session must not be started with an execution mode or option
+    set that cannot satisfy the authorized operation.
+
+required_architecture:
+  sequence:
+    - RESOLVE_AUTHORITATIVE_WORK
+    - DERIVE_REQUIRED_EXECUTION_CAPABILITIES
+    - DERIVE_PROVIDER_SPECIFIC_INVOCATION_OPTIONS
+    - VALIDATE_OPTIONS_AGAINST_GOVERNING_AUTHORITY
+    - FAIL_CLOSED_IF_REQUIRED_AND_PROVIDED_CAPABILITIES_DIFFER
+    - INVOKE_CODEX_WITH_RESOLVED_OPTIONS
+    - VERIFY_RECEIVED_EXECUTION_CONTEXT
+    - BEGIN_AUTHORIZED_WORK
+
+  capability_classes:
+    assessment:
+      repository_write: false
+      mutation_authority: false
+
+    implementation:
+      repository_write: true
+      command_execution: true
+      test_execution: true
+      bounded_document_mutation: true
+
+    controlled_work_execution:
+      separate_subject_execution_authority_required: true
+
+mandatory_separation:
+  engineering_implementation_authority_must_not_imply_subject_execution_authority: true
+  provider_capability_authorization_must_not_imply_lifecycle_authority: true
+
+cr48_invariant:
+  work_type: CONTROLLED_WORK
+  mission_id: null
+  execution_authorized: false
+  advancement_authorized: false
+  requirement_effect: >-
+    Zeus may receive bounded authority to modify and test Zeus itself while
+    CR48 remains held and non-executable.
+
+provider_contract:
+  zeus_responsibility:
+    - derive_required_capabilities
+    - derive_provider_specific_options
+    - validate_requested_options
+    - expose_resolved_invocation_contract
+    - pass_resolved_options_to_provider
+    - preserve_auditable_dispatch_record
+
+  fail_closed_example:
+    required_capability: repository_write
+    provided_capability: read_only
+    result: PROVIDER_INVOCATION_NOT_COMPATIBLE
+    provider_start_permitted: false
+
+wop_integration_requirement:
+  statement: >-
+    The canonical WOP execution contract must express the capabilities required
+    by each authorized execution unit. Zeus must resolve those provider-neutral
+    requirements into provider-specific invocation options.
+
+eens_integration_requirement:
+  statement: >-
+    EENS must be capable of recording the resolved dispatch contract and the
+    execution context actually established so that WOP requirement, Zeus
+    authorization, provider invocation, and execution evidence are traceable.
+
+required_traceability_chain:
+  - WOP_EXECUTION_REQUIREMENT
+  - ZEUS_CAPABILITY_RESOLUTION
+  - ZEUS_AUTHORITY_VALIDATION
+  - CODEX_INVOCATION_OPTIONS
+  - PROVIDER_EXECUTION_CONTEXT
+  - EENS_EXECUTION_EVIDENCE
+
+development_requirements:
+  - provider option resolution must be deterministic
+  - provider option resolution must be authority bounded
+  - provider-specific CLI knowledge should be owned by Zeus provider integration
+  - operators should not normally need to manually derive Codex invocation flags
+  - incompatible invocation contracts must fail before provider startup
+  - actual provider execution context must be independently verifiable
+  - read-only and implementation sessions must remain semantically distinct
+  - subject lifecycle authority must remain independent of provider capability authority
+  - provider invocation resolution must be incorporated into WOP/EENS convergence design
+  - final canonical roadmap maturity hardening must include this capability
+
+persistence:
+  status: DEVELOPMENT_REQUIREMENT_RECORDED
+  canonical_controlled_document_reconciliation_required: true
+  final_target_must_be_derived_from_controlled_document_inventory: true
+  implementation_authorized: false
+  cr48_execution_authorized: false
+  wop_eens_development_authorized_by_this_record: false

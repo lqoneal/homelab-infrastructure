@@ -1,0 +1,44 @@
+schema_version: "1.0"
+record_type: POST_CR47_PUBLICATION_SURFACE_CLOSURE_PROCEDURAL_REQUIREMENT
+cr_id: CR47
+result: PASS
+requirement_class: SYSTEMIC_PROCEDURAL_CORRECTIVE
+
+originating_evidence:
+  - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-PUBLICATION-BOUNDARY.yaml"
+  - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-PUBLICATION-EXCLUSION-BOUNDARY.yaml"
+  - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/CR47-BLOCK33-PUBLICATION-SURFACE-SELF-EXPANSION-CLASSIFICATION.yaml"
+  - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-STABLE-CLOSED-PUBLICATION-CANDIDATE.yaml"
+  - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-STABLE-CLOSED-PUBLICATION-RESULT.yaml"
+  - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-PUBLICATION-REPOSITORY-EOS-VERIFICATION.yaml"
+
+canonical_rule_name:
+  PUBLICATION_SURFACE_CLOSURE_CONTRACT
+
+requirements:
+  precreate_all_prepublication_control_paths_before_final_freeze: true
+  freeze_exact_candidate_path_count: true
+  freeze_exact_candidate_path_set_digest: true
+  freeze_exact_exclusion_set: true
+  require_zero_unbound_candidate_paths: true
+  fail_closed_on_unexpected_path_set_growth: true
+  prohibit_unrelated_work_laundering: true
+  require_provenance_before_exclusion: true
+  require_exact_staged_set_equals_frozen_candidate: true
+  require_commit_content_verification_before_push: true
+  require_eos_sync_only_after_push: true
+  require_repository_eos_parity_after_sync: true
+  require_explicit_post_publication_receipt_lifecycle: true
+  prohibit_recursive_publication_receipt_loop: true
+  require_bounded_followup_for_durable_post_publication_receipts: true
+  block_successor_until_required_publication_reconciliation_complete: true
+
+controlled_document:
+  owner: NOT_YET_DERIVED
+  amendment_required: true
+  whole_document_revision_required: true
+
+execution:
+  controlled_document_modified: false
+  publication_executed_again: false
+  cr48_executed: false

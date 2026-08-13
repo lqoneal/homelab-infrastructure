@@ -1,0 +1,20 @@
+schema_version: '1.0'
+record_type: PREEXISTING_CODEX_APP_SERVER_OWNERSHIP_INVENTORY
+result: INVESTIGATION_COMPLETE
+process_count: 0
+processes: []
+classification_rule:
+  statement: Do not terminate any app-server solely because it predates the host qualification.
+    Establish Zeus/session/operator ownership first.
+required_dispositions:
+- ACTIVE_OWNED
+- ACTIVE_OPERATOR_INTERACTIVE
+- ACTIVE_REMOTE_INTERACTIVE
+- STALE_ZEUS_MANAGED
+- STALE_REMOTE_INTERACTIVE
+- HISTORICAL_WITH_LIVE_PROCESS_DEFECT
+- UNKNOWN_REQUIRES_OPERATOR_REVIEW
+safety:
+  process_termination_performed: false
+  provider_mutation_performed: false
+  CR48_executed: false

@@ -1,0 +1,50 @@
+schema_version: "1.0"
+record_type: ZEUS_CONTROLLED_WORK_BINDING_IMPLEMENTATION_AUTHORITY
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  boundary: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-ZEUS-CONTROLLED-WORK-BINDING-IMPLEMENTATION-BOUNDARY.yaml"
+  projection: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-ZEUS-CR48-CONTROLLED-WORK-PROJECTION.yaml"
+
+authorized:
+  inspect_Zeus_CLI_architecture: true
+  implement_controlled_work_command_group: true
+  implement_read_only_projection_resolver: true
+  implement_show: true
+  implement_state: true
+  implement_blockers: true
+  implement_authority: true
+  implement_next: true
+  implement_verify: true
+  add_focused_tests: true
+  run_focused_tests: true
+  run_Zeus_read_only_validation: true
+
+required:
+  exact_projection_id_support: "CWP-ESC-C02-CORRECTIVE-001-CR48"
+  source_of_truth_remains_repository_controlled_state: true
+  no_default_mission_fallback: true
+  unknown_projection_fails_closed: true
+  CR48_remains_held: true
+  CR48_result_remains_absent: true
+  no_lifecycle_mutation: true
+
+prohibited:
+  synthetic_mission: true
+  mission_contract_creation: true
+  mission_admission: true
+  dispatch: true
+  execution: true
+  CR48_execution: true
+  WOP_roadmap_hardening: true
+  EENS_roadmap_hardening: true
+  canonical_roadmap_hardening: true
+  stage: true
+  commit: true
+  push: true
+  EOS_sync: true
+  publication: true
+
+next_authorized_action:
+  IMPLEMENT_ZEUS_CONTROLLED_WORK_PROJECTION_BINDING_ONLY

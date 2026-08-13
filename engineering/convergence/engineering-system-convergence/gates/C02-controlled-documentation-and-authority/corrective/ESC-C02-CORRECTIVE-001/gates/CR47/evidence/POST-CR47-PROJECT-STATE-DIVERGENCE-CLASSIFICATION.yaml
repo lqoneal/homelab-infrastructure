@@ -1,0 +1,17 @@
+schema_version: '1.0'
+record_type: POST_CR47_PROJECT_STATE_DIVERGENCE_CLASSIFICATION
+result: PASS
+authority:
+  executable_state_owner: engineering/convergence/engineering-system-convergence/STATE.yaml
+  corrective_state_owner: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml
+  project_state_role: PROJECT_STATE_PROJECTION_AND_RESUME_RECORD
+observed_project_state:
+  contains_cr16: true
+  contains_cr47: true
+  contains_cr48: false
+classification:
+  authority_conflict_established: false
+  stale_projection_established: true
+  reconciliation_required: true
+successor:
+  cr48_execution_authorized_by_this_record: false

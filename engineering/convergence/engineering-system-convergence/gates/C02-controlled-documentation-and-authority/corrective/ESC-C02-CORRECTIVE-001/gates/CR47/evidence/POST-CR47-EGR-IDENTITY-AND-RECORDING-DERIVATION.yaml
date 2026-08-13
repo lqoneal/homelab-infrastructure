@@ -1,0 +1,67 @@
+schema_version: "1.0"
+record_type: POST_CR47_EGR_IDENTITY_AND_RECORDING_DERIVATION
+result: PASS
+authority_state: DERIVED_NOT_AUTHORED
+
+egr:
+  identifier: "EGR-000007"
+  canonical_path: "docs/resolutions/EGR-000007-CR48-WOP-EENS-CONVERGENCE-DEFERRAL-AND-ROADMAP-MATURITY-HARDENING.md"
+  classification: Engineering Governance Resolution
+  version: "1.0"
+
+subject:
+  corrective_sequence: ESC-C02-CORRECTIVE-001
+  corrective_item: CR48
+
+subject_disposition:
+  value: Deferred
+  exact_disposition: DEFERRED_PENDING_WOP_EENS_DEVELOPMENT
+
+condition_precedent:
+  id: WOP_EENS_EXECUTION_ARCHITECTURE_CONVERGENCE
+
+governance_decisions_to_record:
+  - CR48 remains current but unexecuted
+  - CR48 execution is held
+  - WOP maturity roadmap must be maturity-hardened before convergence
+  - EENS maturity roadmap must be maturity-hardened before convergence
+  - both subsystem roadmaps must independently qualify before convergence
+  - hardened subsystem roadmaps must converge into the canonical roadmap
+  - the entire canonical roadmap must then be maturity-hardened again
+  - the re-hardened canonical roadmap must independently qualify
+  - implementation requires separate execution authority
+  - CR48 requires a fresh readiness assessment after integrated qualification
+
+lifecycle_derivation:
+  subject_disposition: Deferred
+  egr_approval_status: Approved
+  egr_target_lifecycle: Active
+  lifecycle_effect_requires_PROC_0002_validation: true
+  activation_must_not_be_inferred_from_file_creation: true
+  active_egr_does_not_authorize_engineering_execution: true
+
+approval_reference:
+  source: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-WOP-EENS-GOVERNANCE-DECISION.yaml"
+
+supplemental_governance_reference:
+  source: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-ROADMAP-MATURITY-HARDENING-GOVERNANCE-DIRECTION.yaml"
+
+required_traceability:
+  DOC_0001_registration: true
+  indexed_by_relationship: true
+  affected_record_matrix: true
+  exact_deferral_record_dependency_reason_impact_followup_authority: true
+
+publication:
+  owner: PROC-0005
+  publication_not_authorized_by_egr_authoring: true
+  commit_push_eos_require_separate_authority: true
+
+prohibited:
+  author_EGR_in_this_derivation: true
+  activate_EGR_in_this_derivation: true
+  mutate_DOC_0001: true
+  mutate_EMM: true
+  publish: true
+  execute_CR48: true
+  begin_roadmap_hardening: true

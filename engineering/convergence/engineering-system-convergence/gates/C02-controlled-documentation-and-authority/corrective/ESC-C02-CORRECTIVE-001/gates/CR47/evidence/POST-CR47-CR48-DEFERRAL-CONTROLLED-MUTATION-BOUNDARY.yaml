@@ -1,0 +1,111 @@
+schema_version: "1.0"
+record_type: POST_CR47_CR48_DEFERRAL_CONTROLLED_MUTATION_BOUNDARY
+result: PASS
+authority_state: DERIVED_NOT_EXECUTED
+
+basis:
+  precondition_assessment: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-PRECONDITION-ASSESSMENT.yaml"
+  deferral_derivation: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-WOP-EENS-DEFERRAL-DERIVATION.yaml"
+  control_ownership_classification: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-DEFERRAL-CONTROL-OWNERSHIP-CLASSIFICATION.yaml"
+  dependency_contract: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-DEPENDENCY-CONTRACT.yaml"
+
+required_mutation_candidates:
+
+  corrective_state:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml"
+    required: true
+
+    semantic_effect:
+      last_completed_item: CR47
+      current_item: CR48
+      next_authorized_action: HOLD_CR48_PENDING_WOP_EENS_CONVERGENCE
+
+      blockers:
+        add:
+          - code: CR48_WOP_EENS_CONVERGENCE_REQUIRED
+            classification: CONDITION_PRECEDENT
+            subject: CR48
+            dependency_contract: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-DEPENDENCY-CONTRACT.yaml"
+
+    constraints:
+      do_not_advance_current_item: true
+      do_not_mark_cr48_complete: true
+
+  corrective_roadmap:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ROADMAP.yaml"
+    required: true
+
+    semantic_effect:
+      record_explicit_bounded_deferral: true
+      deferred_item: CR48
+      disposition: DEFERRED_PENDING_WOP_EENS_DEVELOPMENT
+      condition_precedent: WOP_EENS_EXECUTION_ARCHITECTURE_CONVERGENCE
+      resume_requires_explicit_requalification: true
+
+    constraints:
+      do_not_delete_cr48: true
+      do_not_reorder_cr48_cr49: true
+      do_not_activate_successor: true
+
+  corrective_history:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/HISTORY.md"
+    required: true
+
+    semantic_effect:
+      append_human_readable_deferral_decision_record: true
+
+  project_state:
+    path: "docs/project/PROJ-0001-PROJECT_STATE.md"
+    required: true
+
+    semantic_effect:
+      project_current_cr48_hold: true
+      project_named_wop_eens_condition_precedent: true
+      preserve_c02_current_gate: true
+
+  binding_manifest:
+    path: "engineering/convergence/engineering-system-convergence/binding-manifest.yaml"
+    required_if_bound_sources_change: true
+
+governance_decision:
+  required_before_execution: true
+
+  decision_subject:
+    - CR48 deferral
+    - WOP/EENS condition precedent
+    - controlled entry path to C06/C08/C09 assessment
+
+  acceptable_mechanism:
+    - existing corrective governance authority if explicitly sufficient
+    - Engineering Governance Resolution / equivalent explicit decision
+    - another repository-established bounded authority mechanism
+
+  must_not_be_inferred_from:
+    - assessment report alone
+    - EENS event
+    - Project State projection
+    - WOP planning draft
+    - operator convenience
+
+publication:
+  required_after_controlled_mutation: true
+  exact_surface_must_be_frozen_after_all_control_paths_exist: true
+
+prohibited_in_mutation_transaction:
+  - execute CR48
+  - write CR48 RESULT.yaml
+  - invoke CR48 acceptance interface
+  - execute CR49
+  - begin C06
+  - begin C08
+  - begin C09
+  - implement WOP
+  - implement EENS
+  - implement Zeus
+  - synchronize EOS
+  - stage
+  - commit
+  - push
+
+next_after_successful_mutation:
+  DERIVE_POST_DEFERRAL_PUBLICATION_AND_C06_ASSESSMENT_ENTRY_AUTHORITY

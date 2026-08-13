@@ -1,0 +1,67 @@
+schema_version: "1.0"
+record_type: POST_CR47_CR48_DEFERRAL_PERSISTENCE_RESULT
+result: PASS
+
+subject:
+  corrective_item: CR48
+
+disposition:
+  value: DEFERRED_PENDING_WOP_EENS_DEVELOPMENT
+  persisted: true
+
+condition_precedent:
+  id: WOP_EENS_EXECUTION_ARCHITECTURE_CONVERGENCE
+  persisted: true
+
+roadmap_maturity_hardening:
+  WOP_roadmap_before_convergence: REQUIRED
+  EENS_roadmap_before_convergence: REQUIRED
+  both_subsystem_roadmaps_qualified_before_convergence: REQUIRED
+  canonical_roadmap_convergence_after_subsystem_hardening: REQUIRED
+  entire_canonical_roadmap_maturity_hardening_after_convergence: REQUIRED
+  canonical_roadmap_requalification_after_rehardening: REQUIRED
+
+controlled_state:
+  last_completed_item: CR47
+  current_item: CR48
+  next_authorized_action: HOLD_CR48_PENDING_WOP_EENS_CONVERGENCE
+
+mutated:
+  corrective_state:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml"
+    sha256: "2b6404c35dc17ac70016a038fd9a5c4ac1bd1c7b566069c1b3d026a806ee4f23"
+
+  corrective_roadmap:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ROADMAP.yaml"
+    sha256: "69ac833ad052dd7abb8a4ffe2ddc2d704254eb2002285861fc40d42885bb751c"
+
+  corrective_history:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/HISTORY.md"
+    sha256: "3f4729e7171c8dc5d3190e3a5a229026b15551b3ddf2a1bc418e8ca9c7f49286"
+
+  project_state:
+    path: "docs/project/PROJ-0001-PROJECT_STATE.md"
+    sha256: "c1d47f982624cb4ad7d5afe91ae475cea5a0f11dd365713141b5a06bb9132bce"
+
+  binding_manifest:
+    path: "engineering/convergence/engineering-system-convergence/binding-manifest.yaml"
+    sha256: "77479031e7a5eed867f22540f0b1f8fd5c3acf330e383c6c2a15e4c4e73072fa"
+
+qualification:
+  roadmap_validation: PASS
+  emm_reconciliation: PASS
+  cr48_executed: false
+  cr48_result_written: false
+  C06_started: false
+  C08_started: false
+  C09_started: false
+  roadmap_hardening_started: false
+  implementation_started: false
+  publication_executed: false
+  eos_synchronized: false
+
+governance:
+  durable_EGR_recording_required: true
+
+next:
+  action: DERIVE_POST_DEFERRAL_EGR_PUBLICATION_AND_WOP_EENS_ROADMAP_MATURITY_HARDENING_BOUNDARY

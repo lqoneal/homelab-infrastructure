@@ -35,12 +35,28 @@ completed_items:
 - CR27
 - CR28
 current_item: CR48
-blockers: []
+blockers:
+- code: CR48_WOP_EENS_CONVERGENCE_REQUIRED
+  classification: CONDITION_PRECEDENT
+  subject: CR48
+  disposition: DEFERRED_PENDING_WOP_EENS_DEVELOPMENT
+  dependency_contract: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-DEPENDENCY-CONTRACT.yaml
+  maturity_hardening_direction: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-ROADMAP-MATURITY-HARDENING-GOVERNANCE-DIRECTION.yaml
+  required_sequence:
+  - MATURITY_HARDEN_WOP_MATURITY_ROADMAP
+  - MATURITY_HARDEN_EENS_MATURITY_ROADMAP
+  - QUALIFY_BOTH_SUBSYSTEM_ROADMAPS
+  - CONVERGE_INTO_CANONICAL_ROADMAP
+  - MATURITY_HARDEN_ENTIRE_CANONICAL_ROADMAP
+  - QUALIFY_REHARDENED_CANONICAL_ROADMAP
+  - AUTHORIZE_AND_COMPLETE_JOINT_IMPLEMENTATION
+  - COMPLETE_INTEGRATED_QUALIFICATION
+  - REASSESS_CR48_READINESS
 c02:
   result: COMPLETE_WITH_FINDINGS
   operator_assessment_disposition: ACCEPTED
   roadmap_state_advanced: false
-next_authorized_action: VERIFY_CR48_PRECONDITIONS
+next_authorized_action: HOLD_CR48_PENDING_WOP_EENS_CONVERGENCE
 roadmap_version: 1.0.7
 completed_maturity_items:
 - CR12M1

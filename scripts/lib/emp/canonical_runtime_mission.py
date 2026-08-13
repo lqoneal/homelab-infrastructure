@@ -136,6 +136,8 @@ def discover(repository: Path | str, mission_id: str) -> dict[str, Any]:
     codex_stage = codex_adapter.status(root, mission_id, runtime_root=runtime) if execution_stage.get("result") == "PASS" else {}
     if codex_stage.get("state") == "NOT_STARTED":
         codex_stage = {}
+    elif codex_stage.get("state") == "RECONCILED_HISTORICAL":
+        next_action = codex_stage.get("next_authorized_action", "FOLLOW_CURRENT_OPERATION_BETA_AUTHORITY")
     mission_work_started = bool(codex_stage.get("mission_work_started", execution_stage.get("mission_work_started", False)))
     repository_work_started = bool(codex_stage.get("repository_work_started", execution_stage.get("repository_work_started", False)))
     execution_monitoring_active = codex_stage.get("execution_monitoring") == "ACTIVE"

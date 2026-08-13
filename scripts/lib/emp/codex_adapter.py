@@ -15,6 +15,10 @@ import socket
 import subprocess
 import time
 import hashlib
+import shutil
+import stat
+import tomllib
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
@@ -39,6 +43,15 @@ ACTIVE_TRANSITION_DIR = "execution-active-transitions"
 MONITORING_DIR = "execution-monitoring"
 ACTIVE_STATES = {"ACTIVE", "RESUMED"}
 STOPPED_STATES = {"INTERRUPTED", "STOPPED", "FAILED"}
+MANAGED_PROVIDER_MODE = "APP_SERVER_MANAGED"
+MANAGED_PROVIDER_TRANSPORT = "STDIO"
+MANAGED_APPROVAL_POLICY = "never"
+MANAGED_SANDBOX = "workspace-write"
+SUPPORTED_CODEX_VERSION = (0, 147)
+ZEUS_OWNED_PROHIBITED_OPERATIONS = (
+    "git_fetch", "git_stage", "git_commit", "git_push", "publication", "eos_synchronization",
+    "mission_lifecycle_advance", "qualification_acceptance", "closeout",
+)
 
 
 class CodexAdapterError(ValueError):
@@ -47,6 +60,223 @@ class CodexAdapterError(ValueError):
         self.code, self.message, self.next_action = code, message, next_action
         self.details = dict(details or {})
         super().__init__(message)
+
+
+def resolve_provider_invocation_contract(
+        repository: Path | str, *, work_contract: Path | str | None = None,
+        codex_bin: str = "codex", requested_options: list[str] | tuple[str, ...] = (),
+        runtime_root: Path | str | None = None,
+        lifecycle_binding: Mapping[str, Any] | None = None,
+        mission_id: str | None = None, transaction_id: str | None = None) -> dict[str, Any]:
+    """Resolve the Zeus-owned managed Codex contract without starting Codex.
+
+    Capability discovery is intentionally limited to executable metadata and
+    help output.  The provider process, broker, session, and mission-work
+    lifecycle are not created by this operation.
+    """
+    root = Path(repository).resolve()
+    executable = shutil.which(codex_bin) if not Path(codex_bin).is_absolute() else codex_bin
+    if not executable or not Path(executable).is_file():
+        raise CodexAdapterError("CODEX_INCOMPATIBILITY", "Codex executable is unavailable",
+                                details={"incompatibility": "CODEX_EXECUTABLE_UNAVAILABLE"})
+
+    def inspect(arguments: list[str], capability: str) -> str:
+        try:
+            completed = subprocess.run([executable, *arguments], cwd=root, capture_output=True,
+                                       text=True, check=False, timeout=10)
+        except (OSError, subprocess.TimeoutExpired) as error:
+            raise CodexAdapterError("CODEX_INCOMPATIBILITY", f"Codex {capability} discovery failed: {error}",
+                                    details={"incompatibility": f"{capability.upper()}_DISCOVERY_FAILED"}) from error
+        output = (completed.stdout + "\n" + completed.stderr).strip()
+        if completed.returncode:
+            raise CodexAdapterError("CODEX_INCOMPATIBILITY", f"Codex {capability} discovery failed",
+                                    details={"incompatibility": f"{capability.upper()}_DISCOVERY_FAILED",
+                                             "return_code": completed.returncode})
+        return output
+
+    if work_contract is None:
+        raise CodexAdapterError("WORK_CONTRACT_REQUIRED", "ZEUS_MANAGED execution requires a work contract",
+                                next_action="PROVIDE_WORK_CONTRACT")
+    version_output = inspect(["--version"], "version")
+    version = next((line.strip() for line in version_output.splitlines()
+                    if line.strip().startswith("codex-cli ")), version_output.splitlines()[0])
+    version_match = re.fullmatch(r"codex-cli (\d+)\.(\d+)\.(\d+)(?:[-+].*)?", version)
+    if not version_match or tuple(map(int, version_match.groups()[:2])) != SUPPORTED_CODEX_VERSION:
+        raise CodexAdapterError("CODEX_INCOMPATIBILITY", "installed Codex version is outside the qualified policy",
+                                details={"incompatibility": "UNSUPPORTED_CODEX_VERSION", "installed_version": version,
+                                         "supported_policy": "codex-cli 0.147.x"})
+    app_help = inspect(["app-server", "--help"], "app_server")
+    exec_help = inspect(["exec", "--help"], "exec")
+    resume_help = inspect(["exec", "resume", "--help"], "resume")
+    required_syntax = {"app-server": "app-server", "--strict-config": "--strict-config",
+                       "--listen": "--listen", "stdio://": "stdio://"}
+    missing = [option for option, marker in required_syntax.items() if marker not in app_help]
+    capability_missing = []
+    if not ("--json" in exec_help and "--output-last-message" in exec_help and "--sandbox" in exec_help):
+        capability_missing.append("EXEC_RESULT_OUTPUT")
+    if not ("SESSION_ID" in resume_help and "--last" in resume_help and "--strict-config" in resume_help):
+        capability_missing.append("EXEC_RESUME")
+    unsupported = [option for option in requested_options if option not in app_help]
+    prohibited = [option for option in requested_options
+                  if option == "--dangerously-bypass-approvals-and-sandbox"]
+    if missing or unsupported or prohibited or capability_missing:
+        raise CodexAdapterError(
+            "CODEX_INCOMPATIBILITY", "managed Codex invocation options are incompatible",
+            details={"incompatibility": "UNSUPPORTED_PROVIDER_OPTIONS",
+                     "missing_required_options": missing,
+                     "missing_capabilities": capability_missing,
+                     "unsupported_options": sorted(set(unsupported + prohibited))},
+        )
+
+    contract_path = Path(work_contract).resolve()
+    try:
+        loaded = __import__("yaml").safe_load(contract_path.read_text(encoding="utf-8"))
+    except (__import__("yaml").YAMLError, OSError, UnicodeError) as error:
+        raise CodexAdapterError("WORK_CONTRACT_INCOMPATIBLE", "work contract cannot be loaded",
+                                details={"incompatibility": "MALFORMED_WORK_CONTRACT"}) from error
+    if not isinstance(loaded, Mapping):
+        raise CodexAdapterError("WORK_CONTRACT_INCOMPATIBLE", "work contract root must be a mapping",
+                                details={"incompatibility": "INVALID_WORK_CONTRACT_ROOT"})
+    contract_value = dict(loaded)
+    contract_id = contract_value.get("work_contract_id")
+    declared_mission = contract_value.get("mission_id")
+    declared_transaction = contract_value.get("transaction_id") or contract_value.get("execution_id")
+    repository_value = contract_value.get("repository")
+    authority = contract_value.get("authority")
+    lifecycle = contract_value.get("subject_lifecycle_authority", {})
+    if not isinstance(contract_id, str) or not contract_id.strip():
+        raise CodexAdapterError("WORK_CONTRACT_INCOMPATIBLE", "work contract identity is required",
+                                details={"incompatibility": "WORK_CONTRACT_ID_MISSING"})
+    if mission_id is not None and declared_mission != mission_id:
+        raise CodexAdapterError("WORK_CONTRACT_INCOMPATIBLE", "work contract mission identity differs from Zeus request",
+                                details={"incompatibility": "MISSION_CONTEXT_MISMATCH"})
+    if transaction_id is not None and declared_transaction != transaction_id:
+        raise CodexAdapterError("WORK_CONTRACT_INCOMPATIBLE", "work contract transaction identity differs from Zeus binding",
+                                details={"incompatibility": "TRANSACTION_CONTEXT_MISMATCH"})
+    if not isinstance(repository_value, Mapping) or not isinstance(repository_value.get("path"), str) or not repository_value["path"].strip():
+        raise CodexAdapterError("WORK_CONTRACT_INCOMPATIBLE", "work contract repository path is required",
+                                details={"incompatibility": "REPOSITORY_BINDING_MISSING"})
+    if not isinstance(authority, Mapping) or not isinstance(lifecycle, Mapping):
+        raise CodexAdapterError("WORK_CONTRACT_INCOMPATIBLE", "work contract authority structures must be mappings",
+                                details={"incompatibility": "MALFORMED_AUTHORITY"})
+    declared_repository = Path(repository_value["path"]).resolve()
+    if not declared_repository.is_dir() or declared_repository != root:
+        raise CodexAdapterError("WORK_CONTRACT_INCOMPATIBLE", "work contract repository differs from the Zeus workspace",
+                                details={"incompatibility": "REPOSITORY_BINDING_MISMATCH",
+                                         "declared_repository": str(declared_repository), "workspace": str(root)})
+    def authorized(name: str) -> bool:
+        value = authority.get(name)
+        return value is True or (isinstance(value, Mapping) and value.get("authorized") is True)
+    if contract_value.get("work_type") != "ENGINEERING_IMPLEMENTATION" or not all(
+            authorized(name) for name in ("engineering_implementation", "command_execution")):
+        raise CodexAdapterError("WORK_CONTRACT_INCOMPATIBLE", "work contract lacks managed execution capabilities",
+                                details={"incompatibility": "CAPABILITY_AUTHORITY_MISSING",
+                                         "required_work_type": "ENGINEERING_IMPLEMENTATION",
+                                         "required_capabilities": ["engineering_implementation", "command_execution"]})
+    requested_operations = contract_value.get("requested_operations", [])
+    if not isinstance(requested_operations, list) or any(not isinstance(item, str) for item in requested_operations):
+        raise CodexAdapterError("WORK_CONTRACT_INCOMPATIBLE", "requested_operations must be a list of strings",
+                                details={"incompatibility": "MALFORMED_REQUESTED_OPERATIONS"})
+    qualification_authority = authorized("qualification_execution")
+    if "qualification" in requested_operations and not qualification_authority:
+        raise CodexAdapterError("WORK_CONTRACT_INCOMPATIBLE", "qualification execution was requested without Zeus qualification authority",
+                                details={"incompatibility": "QUALIFICATION_AUTHORITY_MISSING"})
+    prohibited_operations = contract_value.get("prohibited_operations", [])
+    if not isinstance(prohibited_operations, list) or any(not isinstance(item, str) for item in prohibited_operations):
+        raise CodexAdapterError("WORK_CONTRACT_INCOMPATIBLE", "prohibited_operations must be a list of strings",
+                                details={"incompatibility": "MALFORMED_PROHIBITED_OPERATIONS"})
+    missing_prohibitions = sorted(set(ZEUS_OWNED_PROHIBITED_OPERATIONS) - set(prohibited_operations))
+    if missing_prohibitions:
+        raise CodexAdapterError("WORK_CONTRACT_INCOMPATIBLE", "work contract does not preserve Zeus-owned operation boundaries",
+                                details={"incompatibility": "PRIVILEGE_BOUNDARY_INCOMPLETE",
+                                         "missing_prohibitions": missing_prohibitions})
+
+    source_home = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex"))).resolve()
+    auth_path = source_home / "auth.json"
+    config_path = source_home / "config.toml"
+    if not auth_path.is_file():
+        raise CodexAdapterError("CODEX_INCOMPATIBILITY", "Codex authentication is unavailable",
+                                details={"incompatibility": "UNAUTHENTICATED", "auth_path": str(auth_path)})
+    if config_path.is_file():
+        try:
+            tomllib.loads(config_path.read_text(encoding="utf-8"))
+        except (OSError, tomllib.TOMLDecodeError) as error:
+            raise CodexAdapterError("CODEX_INCOMPATIBILITY", f"Codex configuration is invalid: {error}",
+                                    details={"incompatibility": "MISCONFIGURED", "config_path": str(config_path)}) from error
+        config = tomllib.loads(config_path.read_text(encoding="utf-8"))
+        conflicts = sorted(key for key in ("approval_policy", "sandbox_mode") if key in config)
+        if conflicts:
+            raise CodexAdapterError("CODEX_INCOMPATIBILITY", "Codex configuration conflicts with Zeus-managed policy",
+                                    details={"incompatibility": "CONFIGURATION_CONFLICT", "conflicting_keys": conflicts})
+
+    runtime = _runtime(root, runtime_root)
+    writable_anchor = runtime
+    missing_hierarchy = []
+    while not writable_anchor.exists():
+        missing_hierarchy.append(writable_anchor.name)
+        if writable_anchor.parent == writable_anchor:
+            break
+        writable_anchor = writable_anchor.parent
+    try:
+        anchor_stat = writable_anchor.stat()
+        groups = set(os.getgroups()) | {os.getegid()}
+        owner_writable = (anchor_stat.st_uid == os.geteuid()
+                          and bool(anchor_stat.st_mode & stat.S_IWUSR)
+                          and bool(anchor_stat.st_mode & stat.S_IXUSR))
+        group_writable = anchor_stat.st_gid in groups and bool(anchor_stat.st_mode & stat.S_IWGRP) and bool(anchor_stat.st_mode & stat.S_IXGRP)
+        other_writable = bool(anchor_stat.st_mode & stat.S_IWOTH) and bool(anchor_stat.st_mode & stat.S_IXOTH)
+    except OSError:
+        owner_writable = group_writable = other_writable = False
+    if not (owner_writable or group_writable or other_writable):
+        raise CodexAdapterError("CODEX_INCOMPATIBILITY", "per-session CODEX_HOME cannot be materialized",
+                                details={"incompatibility": "CODEX_HOME_NOT_WRITABLE",
+                                         "runtime_root": str(runtime)})
+    planned_codex_home = runtime / CODEX_HOME_DIR / "<managed-session-id>"
+
+    command = [str(Path(executable).resolve()), "app-server", "--strict-config", "--listen", "stdio://"]
+    contract_digest = digest(contract_value)
+    binding = dict(lifecycle_binding or {})
+    if binding and (binding.get("provider_id") != PROVIDER_ID or not binding.get("provider_session_id")
+                    or not binding.get("provider_invocation_id") or not binding.get("execution_id")):
+        raise CodexAdapterError("PROVIDER_BINDING_INCOMPATIBLE", "authoritative lifecycle provider binding is incomplete or incompatible")
+    execution_authorized = any(
+        value is True or (isinstance(value, Mapping) and value.get("authorized") is True)
+        for key, value in lifecycle.items() if key in {"mission_execution", "mission_dispatch"}
+    )
+    plan = {
+        "result": "PASS", "preflight_status": "AVAILABLE", "provider_id": PROVIDER_ID,
+        "execution_mode": "ZEUS_MANAGED", "session_mode": "ZEUS_MANAGED",
+        "provider_mode": MANAGED_PROVIDER_MODE, "provider_transport": MANAGED_PROVIDER_TRANSPORT,
+        "codex_binary": command[0], "codex_version": version, "supported_version_policy": "codex-cli 0.147.x", "command": command,
+        "required_codex_invocation_arguments": command[1:], "supported_options": sorted(required_syntax),
+        "unsupported_options": [], "approval_policy": MANAGED_APPROVAL_POLICY,
+        "interaction": "NON_INTERACTIVE", "sandbox": MANAGED_SANDBOX,
+        "workspace": str(root), "repository_binding": "PASS", "session_binding_required": True,
+        "provider_session_binding_required": True, "execution_binding_required": True,
+        "app_server_protocol": "JSON-RPC", "strict_config": True,
+        "config_path": str(config_path), "config_present": config_path.is_file(),
+        "authentication": "PRESENT", "auth_path": str(auth_path),
+        "codex_home": str(planned_codex_home), "codex_home_isolation": "PER_SESSION",
+        "codex_home_writable": True, "runtime_materialization_anchor": str(writable_anchor),
+        "runtime_missing_components": list(reversed(missing_hierarchy)),
+        "work_contract": str(contract_path) if contract_path else None,
+        "work_contract_id": contract_id, "work_contract_digest": contract_digest,
+        "work_contract_capabilities": "PASS", "lifecycle_execution_authorized": execution_authorized,
+        "mission_context": "BOUND" if mission_id else "DECLARED_BY_WORK_CONTRACT" if declared_mission else "NOT_BOUND",
+        "transaction_context": "BOUND" if transaction_id else "DECLARED_BY_WORK_CONTRACT" if declared_transaction else "NOT_BOUND",
+        "qualification_authority": "AVAILABLE" if qualification_authority else "NOT_GRANTED",
+        "requested_operations": sorted(requested_operations),
+        "prohibited_operations": sorted(set(prohibited_operations)),
+        "authoritative_provider_binding": binding or None,
+        "provider_binding": "PASS" if binding else "NOT_APPLICABLE_BOOTSTRAP_PREFLIGHT",
+        "normal_completion_semantics": "BROKER_EXIT_ZERO_AND_PROVIDER_EXIT_ZERO",
+        "abnormal_completion_semantics": "NONZERO_OR_SIGNAL_RECORDED_FAILED_AND_RECONCILED",
+        "configuration_precedence": "ZEUS_THREAD_PARAMETERS_OVERRIDE_PROVIDER_DEFAULTS",
+        "provider_started": False, "mission_work_started": False, "repository_work_started": False,
+        "read_only": True, "next_authorized_action": "START_CODEX_SESSION" if execution_authorized else "RETURN_TO_AUTHORIZED_OPERATOR_BOUNDARY",
+    }
+    plan["plan_digest"] = digest({key: value for key, value in plan.items() if key != "plan_digest"})
+    return plan
 
 
 def _execution_verification_error(execution: Mapping[str, Any]) -> CodexAdapterError:
@@ -188,8 +418,10 @@ def _existing(runtime: Path, mission_id: str) -> dict[str, Any] | None:
         value = _load(path)
         if value.get("mission_id") == mission_id:
             matches.append(value)
-    current = [value for value in matches if value.get("session_disposition") != "SUPERSEDED"
-               and value.get("state") != "SUPERSEDED"]
+    historical_states = {"SUPERSEDED", "RECONCILED_HISTORICAL", "STOPPED", "FAILED", "INTERRUPTED", "COMPLETED"}
+    historical_dispositions = {"SUPERSEDED", "HISTORICAL", "RECONCILED_HISTORICAL"}
+    current = [value for value in matches if value.get("session_disposition") not in historical_dispositions
+               and value.get("state") not in historical_states]
     if len(current) > 1:
         raise CodexAdapterError("SESSION_CARDINALITY_CONFLICT", "more than one current Codex session belongs to the mission")
     if current:
@@ -201,6 +433,58 @@ def _all_sessions(runtime: Path, mission_id: str | None = None) -> list[dict[str
     directory = runtime / STAGE_DIR
     values = [_load(path) for path in sorted(directory.glob("*.json"))] if directory.is_dir() else []
     return [value for value in values if mission_id is None or value.get("mission_id") == mission_id]
+
+
+def select_session(repository: Path | str, mission_id: str | None = None, *,
+                   session_id: str | None = None, latest: bool = False,
+                   active: bool = False, runtime_root: Path | str | None = None) -> dict[str, Any]:
+    """Resolve one Zeus-managed execution session, read-only and fail-closed."""
+    if sum(bool(value) for value in (session_id, latest, active)) > 1:
+        raise CodexAdapterError("SESSION_SELECTOR_CONFLICT", "select exactly one of --session, --latest, or --active")
+    runtime = _runtime(Path(repository).resolve(), runtime_root)
+    mission = str(mission_id).upper() if mission_id else None
+    values = [value for value in _all_sessions(runtime, mission)
+              if value.get("execution_mode", "ZEUS_MANAGED") == "ZEUS_MANAGED"
+              and value.get("managed") is not False]
+    if session_id:
+        values = [value for value in values if value.get("session_id") == session_id]
+        if len(values) != 1:
+            raise CodexAdapterError("SESSION_NOT_FOUND", "the requested managed session is not uniquely discoverable")
+        selected = values[0]
+    else:
+        live = [value for value in values if value.get("state") not in STOPPED_STATES
+                and value.get("state") not in {"SUPERSEDED", "RECONCILED_HISTORICAL", "COMPLETED"}
+                and runtime_liveness(value).get("session_live")]
+        if active:
+            if len(live) > 1:
+                raise CodexAdapterError("SESSION_SELECTION_AMBIGUOUS", "multiple live managed sessions match; use --session")
+            if not live:
+                raise CodexAdapterError("SESSION_NOT_FOUND", "no live authoritative managed session matches --active")
+            selected = live[0]
+        else:
+            candidates = [value for value in values
+                          if value.get("state") not in {"SUPERSEDED", "RECONCILED_HISTORICAL"}] if latest else values
+            if not candidates:
+                raise CodexAdapterError("SESSION_NOT_FOUND", "no compatible managed session matches the selector")
+            timestamps = [value.get("start_timestamp", 0) for value in candidates]
+            if latest and timestamps.count(max(timestamps)) > 1:
+                raise CodexAdapterError("SESSION_SELECTION_AMBIGUOUS", "multiple managed sessions have equal latest authority; use --session")
+            selected = max(candidates, key=lambda value: (value.get("start_timestamp", 0), value.get("session_id", "")))
+    return {"result": "PASS", "session": selected,
+            "session_id": selected.get("session_id"), "mission_id": selected.get("mission_id"),
+            "selector": "session" if session_id else "active" if active else "latest" if latest else "current",
+            "read_only": True}
+
+
+def selected_status(repository: Path | str, mission_id: str | None = None, *,
+                    session_id: str | None = None, latest: bool = False,
+                    active: bool = False, runtime_root: Path | str | None = None) -> dict[str, Any]:
+    selected = select_session(repository, mission_id, session_id=session_id, latest=latest,
+                              active=active, runtime_root=runtime_root)
+    value = status(repository, str(selected["session"].get("mission_id")), runtime_root=runtime_root)
+    value.update({"selector": selected["selector"], "resolved_session_id": selected["session_id"],
+                  "read_only": True})
+    return value
 
 
 def current_session(repository: Path | str, mission_id: str, *, runtime_root: Path | str | None = None) -> dict[str, Any] | None:
@@ -640,7 +924,7 @@ def _marker_provider_pid(session: Mapping[str, Any]) -> int | None:
 
 def _prepare_codex_home(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
-    source_home = Path.home() / ".codex"
+    source_home = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
     for name in ("auth.json", "config.toml"):
         target = path / name
         source = source_home / name
@@ -652,7 +936,7 @@ def _prepare_codex_home(path: Path) -> None:
 
 
 def _launch_handshake(root: Path, runtime: Path, session_id: str, log_path: Path,
-                      codex_bin: str) -> tuple[subprocess.Popen[bytes], dict[str, Any]]:
+                      codex_bin: str, invocation: Mapping[str, Any] | None = None) -> tuple[subprocess.Popen[bytes], dict[str, Any]]:
     paths = _startup_paths(runtime, session_id)
     _prepare_codex_home(paths["codex_home"])
     for marker in (paths["ready"], paths["exited"], paths["control"]):
@@ -662,6 +946,9 @@ def _launch_handshake(root: Path, runtime: Path, session_id: str, log_path: Path
                "--root", str(root), "--codex-home", str(paths["codex_home"]),
                "--log", str(log_path), "--ready", str(paths["ready"]),
                "--exited", str(paths["exited"]), "--codex-bin", codex_bin]
+    if invocation:
+        for item in invocation["required_codex_invocation_arguments"]:
+            command.append(f"--provider-argument={item}")
     command.extend(["--control", str(paths["control"])])
     broker = subprocess.Popen(command, cwd=root, stdin=subprocess.DEVNULL,
                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
@@ -679,11 +966,11 @@ def _launch_handshake(root: Path, runtime: Path, session_id: str, log_path: Path
     raise CodexAdapterError("APP_SERVER_HANDSHAKE_TIMEOUT", "Codex app-server handshake timed out")
 
 
-def session_identifier(package: Mapping[str, Any]) -> str:
+def session_identifier(package: Mapping[str, Any], *, succession: int = 0) -> str:
     """Derive the stable Codex identity from immutable execution bindings."""
     return identifier("CODEX-SESSION", {"execution_id": package["execution_id"],
         "provider_id": package["provider_id"], "repository_identity": package["repository_identity"],
-        "contract": [CONTRACT, VERSION]})
+        "contract": [CONTRACT, VERSION], "succession": succession})
 
 
 def _result(session: Mapping[str, Any], *, read_only: bool = True) -> dict[str, Any]:
@@ -696,6 +983,8 @@ def _result(session: Mapping[str, Any], *, read_only: bool = True) -> dict[str, 
     return {"result": "PASS", "mission_id": session["mission_id"], "session_id": session["session_id"],
             "codex_session_id": session["session_id"], "execution_session_id": session.get("execution_session_id"),
             "provider_session_id": session.get("provider_session_id"),
+            "provider_invocation_id": session.get("managed_provider_invocation_id", session.get("provider_invocation_id")),
+            "lifecycle_provider_invocation_id": session.get("provider_invocation_id"),
             "execution_id": session["execution_id"], "provider_id": session["provider_id"],
             "state": state, "process_alive": alive, "pid": session.get("pid"),
             "provider_pid": provider_pid,
@@ -722,6 +1011,8 @@ def _result(session: Mapping[str, Any], *, read_only: bool = True) -> dict[str, 
             "mission_work_started": bool(session.get("mission_work_started")),
             "repository_work_started": bool(session.get("repository_work_started")),
             "replay": "IDEMPOTENT", "package_digest": session.get("package_digest"),
+            "plan_digest": session.get("plan_digest"), "work_contract_id": session.get("work_contract_id"),
+            "work_contract_digest": session.get("work_contract_digest"),
             "logs": session.get("log_path"), "artifacts": {"session": session.get("path"),
             "events": session.get("event_directory")}, "blockers": [], "read_only": read_only,
             "next_authorized_action": "CONTINUE_CONTROLLED_MISSION_WORK" if alive else
@@ -745,14 +1036,23 @@ def status(repository: Path | str, mission_id: str, *, runtime_root: Path | str 
                                             "read_only": True}
     try:
         from scripts.lib.emp import execution_monitoring
-        from scripts.lib.emp.legacy_lifecycle_reconciliation import inspect as inspect_legacy
+        from scripts.lib.emp.legacy_lifecycle_reconciliation import (
+            inspect as inspect_legacy, overlay as overlay_legacy,
+            qualify_history as qualify_legacy_history,
+        )
         transaction_path, transaction = execution_monitoring._find_transaction(runtime, session["execution_id"])
         monitoring = execution_monitoring._monitoring_record(runtime, str(transaction["execution_id"]))
         legacy = inspect_legacy(repository, runtime, transaction=transaction, monitoring=monitoring)
-        value.update({"state": "RECONCILED_HISTORICAL", "execution_monitoring": "INACTIVE",
-                      "mission_work_started": True, "repository_work_started": False,
-                      "next_authorized_action": "OPERATOR_REVIEW_LEGACY_LIFECYCLE_RECONCILIATION",
-                      "legacy_reconciliation": legacy})
+        value["history_reconciliation"] = qualify_legacy_history(value["history_reconciliation"], legacy)
+        if value["history_reconciliation"].get("lifecycle_reconciliation") == "QUALIFIED_BY_P5_G6_ACCEPTANCE":
+            value = overlay_legacy(value, legacy)
+            value.update({"state": "RECONCILED_HISTORICAL", "execution_monitoring": "INACTIVE",
+                          "mission_work_started": True, "repository_work_started": False})
+        else:
+            value.update({"state": "RECONCILED_HISTORICAL", "execution_monitoring": "INACTIVE",
+                          "mission_work_started": True, "repository_work_started": False,
+                          "next_authorized_action": "OPERATOR_REVIEW_LEGACY_LIFECYCLE_RECONCILIATION",
+                          "legacy_reconciliation": legacy})
     except Exception:
         pass
     return value
@@ -897,10 +1197,20 @@ def begin_controlled_mission_work(repository: Path | str, mission_id: str, *, ap
     if session.get("mission_work_started"):
         raise CodexAdapterError("MISSION_WORK_STATE_CONFLICT", "provider session already claims mission work")
     request_id = f"zeus-controlled-work-{execution_id}"
-    instruction = prompt or "Begin the bounded Zeus-controlled mission-work turn. Do not publish, synchronize EOS, or perform unrelated work; stop at the operator acceptance boundary and report progress."
+    authority = session.get("managed_authority") or {}
+    authority_instruction = (
+        f"Zeus authority binding: mission={mission}; transaction={execution_id}; "
+        f"mission_context={authority.get('mission_context', 'BOUND')}; "
+        f"transaction_context={authority.get('transaction_context', 'BOUND')}; "
+        f"qualification_execution={authority.get('qualification_authority', 'NOT_GRANTED')}. "
+        "Qualification execution is permitted only when explicitly AVAILABLE; qualification acceptance and closeout remain Zeus-owned. "
+        "Prohibited operations: git fetch/stage/commit/push, publication, EOS synchronization, mission lifecycle advancement, and closeout."
+    )
+    instruction = prompt or "Begin the bounded Zeus-controlled mission-work turn. Stop at the operator acceptance boundary and report a machine-readable result."
+    instruction = authority_instruction + " " + instruction
     thread_response = _control_request(session.get("control_socket"), {
         "jsonrpc": "2.0", "id": request_id, "method": "thread/start",
-        "params": {"cwd": str(root), "approvalPolicy": "on-request", "sandbox": "workspace-write",
+        "params": {"cwd": str(root), "approvalPolicy": MANAGED_APPROVAL_POLICY, "sandbox": MANAGED_SANDBOX,
                     "instructions": instruction},
     })
     thread_result = thread_response.get("result") or {}
@@ -955,20 +1265,31 @@ def begin_controlled_mission_work(repository: Path | str, mission_id: str, *, ap
 
 def start(repository: Path | str, mission_id: str, *, approval: bool = False,
            prompt: str | None = None, runtime_root: Path | str | None = None,
-           codex_bin: str = "codex", launch: bool = True, _resume: bool = False) -> dict[str, Any]:
+           codex_bin: str = "codex", launch: bool = True, _resume: bool = False,
+           work_contract: Path | str | None = None) -> dict[str, Any]:
     root = Path(repository).resolve(); runtime = _runtime(root, runtime_root); mission_id = str(mission_id).upper()
     package = _package(root, mission_id, runtime)
+    invocation = resolve_provider_invocation_contract(root, work_contract=work_contract, codex_bin=codex_bin,
+                                                       lifecycle_binding=package, mission_id=mission_id,
+                                                       transaction_id=package["execution_id"])
     existing = _existing(runtime, mission_id)
-    session_id = existing.get("session_id") if existing and existing.get("session_disposition") == "CURRENT" else session_identifier(package)
+    all_mission_sessions = _all_sessions(runtime, mission_id)
+    session_id = (existing.get("session_id") if existing and existing.get("session_disposition") == "CURRENT"
+                  else session_identifier(package, succession=len(all_mission_sessions)))
     if existing:
         if existing.get("session_id") != session_id or existing.get("package_digest") != package["package_digest"]:
-            raise CodexAdapterError("SESSION_INPUT_MISMATCH", "existing Codex session has a different immutable binding")
+            raise CodexAdapterError("ACTIVE_SESSION_PROTECTION", "an active managed session owns a different immutable lifecycle binding",
+                                    details={"active_session_id": existing.get("session_id")})
+        if (existing.get("work_contract_digest") != invocation["work_contract_digest"]
+                or existing.get("plan_digest") != invocation["plan_digest"]):
+            raise CodexAdapterError("ACTIVE_SESSION_PROTECTION", "an active managed session owns a different immutable contract or plan",
+                                    details={"active_session_id": existing.get("session_id")})
         if _provider_control_ready(existing):
             return _result(existing, read_only=False) | {"duplicate_codex_session": "IDEMPOTENT"}
         if not _resume:
             raise CodexAdapterError("SESSION_INTERRUPTED", "existing Codex session is not live; use Zeus resume")
         log_path = Path(existing["log_path"])
-        process, diagnostics = _launch_handshake(root, runtime, session_id, log_path, codex_bin)
+        process, diagnostics = _launch_handshake(root, runtime, session_id, log_path, invocation["codex_binary"], invocation)
         resumed = dict(existing, state="READY", pid=process.pid, provider_pid=diagnostics["provider_pid"],
                        command=diagnostics["command"], app_server_handshake="PASS",
                        startup_diagnostics=diagnostics["environment"],
@@ -987,20 +1308,29 @@ def start(repository: Path | str, mission_id: str, *, approval: bool = False,
         raise CodexAdapterError("PROVIDER_SUBSTITUTION", "unsupported provider identity")
     log_path = runtime / LOG_DIR / f"{session_id}.jsonl"; log_path.parent.mkdir(parents=True, exist_ok=True)
     event_directory = runtime / EVENT_DIR / session_id
-    command = [codex_bin, "app-server", "--stdio"]
+    command = invocation["command"]
     session = {"schema_version": 1, "contract": {"id": CONTRACT, "version": VERSION},
                **package, "session_id": session_id, "state": "CREATED", "pid": None,
-               "command": command, "log_path": str(log_path), "event_directory": str(event_directory),
+               "command": command, "resolved_invocation_plan": invocation,
+               "plan_digest": invocation["plan_digest"], "work_contract": invocation["work_contract"],
+               "work_contract_id": invocation["work_contract_id"],
+               "work_contract_digest": invocation["work_contract_digest"],
+               "managed_provider_invocation_id": identifier("MANAGED-PROVIDER-INVOCATION", {
+                   "session_id": session_id, "plan_digest": invocation["plan_digest"]}),
+               "log_path": str(log_path), "event_directory": str(event_directory),
                "mission_work_started": False, "repository_work_started": False,
                "started_by": "zeus", "operator_approval": False, "path": str(_session_path(runtime, session_id)),
                "app_server_handshake": "NOT_RUN", "startup_diagnostics": None,
                "execution_mode": "ZEUS_MANAGED", "session_mode": "ZEUS_MANAGED",
                "provider_mode": "APP_SERVER_MANAGED", "provider_transport": "STDIO",
-               "remote_capable": False, "readiness_result": "NOT_RUN"}
+               "remote_capable": False, "readiness_result": "NOT_RUN",
+               "managed_authority": {key: invocation.get(key) for key in (
+                   "mission_context", "transaction_context", "qualification_authority",
+                   "requested_operations", "prohibited_operations")}}
     _append_event(runtime, session_id, "CODEX_SESSION_CREATED", {"pid": None, "authority": package["authority"]})
     _save(runtime, session)
     try:
-        process, diagnostics = _launch_handshake(root, runtime, session_id, log_path, codex_bin)
+        process, diagnostics = _launch_handshake(root, runtime, session_id, log_path, invocation["codex_binary"], invocation)
     except CodexAdapterError as error:
         session["state"] = "FAILED"; session["failure"] = error.message
         _append_event(runtime, session_id, "CODEX_SESSION_FAILED", {"code": error.code, "message": error.message})
@@ -1025,13 +1355,15 @@ def start(repository: Path | str, mission_id: str, *, approval: bool = False,
 
 
 def resume(repository: Path | str, mission_id: str, *, approval: bool = False,
-           runtime_root: Path | str | None = None, codex_bin: str = "codex") -> dict[str, Any]:
+           runtime_root: Path | str | None = None, codex_bin: str = "codex",
+           work_contract: Path | str | None = None) -> dict[str, Any]:
     runtime = _runtime(Path(repository).resolve(), runtime_root); mission_id = str(mission_id).upper(); session = _existing(runtime, mission_id)
     if not session:
         raise CodexAdapterError("SESSION_NOT_FOUND", "no Codex session belongs to mission")
     if _provider_control_ready(session):
         return _result(session, read_only=False) | {"duplicate_codex_session": "IDEMPOTENT"}
     return start(repository, mission_id, approval=approval, runtime_root=runtime, codex_bin=codex_bin,
+                 work_contract=work_contract,
                  prompt="Resume the Zeus-bound controlled mission-work session. Reconcile prior state before any work; stop at the operator boundary.", _resume=True)
 
 
@@ -1045,7 +1377,8 @@ def stop(repository: Path | str, mission_id: str, *, approval: bool = False,
             os.killpg(session["pid"], signal.SIGTERM)
         except OSError as error:
             raise CodexAdapterError("SESSION_STOP_FAILED", str(error)) from error
-    session = dict(session); session["state"] = "STOPPED"; session["stopped_by"] = "zeus"
+    session = dict(session); session["state"] = "RECONCILED_HISTORICAL"; session["stopped_by"] = "zeus"
+    session["session_disposition"] = "HISTORICAL"
     _append_event(runtime, session["session_id"], "CODEX_SESSION_STOPPED", {"pid": session.get("pid")})
     saved = _save(runtime, session)
     return _result(saved, read_only=False)

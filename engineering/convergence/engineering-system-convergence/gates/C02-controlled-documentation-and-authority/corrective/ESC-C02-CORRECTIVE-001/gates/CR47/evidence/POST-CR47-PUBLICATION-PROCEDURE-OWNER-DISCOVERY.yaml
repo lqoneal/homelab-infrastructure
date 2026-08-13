@@ -1,0 +1,491 @@
+schema_version: '1.0'
+record_type: POST_CR47_PUBLICATION_PROCEDURE_OWNER_DISCOVERY
+cr_id: CR47
+result: PASS
+candidate_count: 776
+candidates:
+- path: docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md
+  score: 35
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - staging
+  - commit
+  - push
+  - eos
+  - evidence
+  - worktree
+  - controlled document
+  - authoritative
+  - PROC_ID
+- path: docs/procedures/PROC-0009-EXECUTABLE_ROADMAP_EVALUATION_PROCEDURE.md
+  score: 31
+  signals:
+  - publication
+  - procedure
+  - staging
+  - commit
+  - push
+  - eos
+  - evidence
+  - worktree
+  - controlled document
+  - authoritative
+  - PROC_ID
+- path: docs/procedures/PROC-0004-ENGINEERING_HANDOFF_CONSTRUCTION_PROCEDURE.md
+  score: 30
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - commit
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+  - PROC_ID
+- path: docs/procedures/PROC-0005-CONTROLLED_DOCUMENT_PUBLICATION_PROCEDURE.md
+  score: 30
+  signals:
+  - publication
+  - procedure
+  - staging
+  - commit
+  - push
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+  - PROC_ID
+- path: docs/procedures/PROC-0007-GOVERNANCE-STABILIZATION-PROCEDURE.md
+  score: 28
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - commit
+  - evidence
+  - controlled document
+  - authoritative
+  - PROC_ID
+- path: docs/procedures/PROC-0006-GOVERNANCE-QUALIFICATION-PROCEDURE.md
+  score: 26
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - evidence
+  - controlled document
+  - authoritative
+  - PROC_ID
+- path: docs/procedures/PROC-0008-ENGINEERING_GOVERNANCE_DECISION_PROCEDURE.md
+  score: 26
+  signals:
+  - publication
+  - procedure
+  - commit
+  - push
+  - evidence
+  - controlled document
+  - authoritative
+  - PROC_ID
+- path: docs/standards/STD-0006-ENGINEERING_EXECUTABLE_ROADMAP_STANDARD.md
+  score: 26
+  signals:
+  - publication
+  - procedure
+  - staging
+  - commit
+  - push
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+  - STD_ID
+- path: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
+  score: 25
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - staging
+  - commit
+  - push
+  - eos
+  - evidence
+  - worktree
+  - controlled document
+  - authoritative
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/HISTORY.md
+  score: 25
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - staging
+  - commit
+  - push
+  - eos
+  - evidence
+  - worktree
+  - controlled document
+  - authoritative
+- path: docs/standards/STD-0000-ENGINEERING_GOVERNANCE_DOCUMENTATION_ARCHITECTURE.md
+  score: 24
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+  - STD_ID
+- path: engineering/evidence/2026-07-29-zh-working-tree-reconciliation-001.md
+  score: 24
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - staging
+  - commit
+  - push
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ZEUS-CAPABILITY-OPPORTUNITIES.yaml
+  score: 23
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - staging
+  - commit
+  - push
+  - eos
+  - evidence
+  - worktree
+  - authoritative
+- path: engineering/evidence/2026-07-28-validation-and-zeus-candidate-publication-001-completion-report.md
+  score: 23
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - staging
+  - commit
+  - push
+  - eos
+  - evidence
+  - worktree
+  - authoritative
+- path: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - commit
+  - push
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+- path: docs/architecture/AQR-0001-ARCHITECTURE-QUALIFICATION-REPORT.md
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - staging
+  - commit
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+- path: docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md
+  score: 22
+  signals:
+  - publication
+  - procedure
+  - evidence
+  - controlled document
+  - authoritative
+  - PROC_ID
+- path: docs/procedures/PROC-0003-ENGINEERING_RECOVERY_RUNBOOK.md
+  score: 22
+  signals:
+  - closeout
+  - procedure
+  - evidence
+  - controlled document
+  - authoritative
+  - PROC_ID
+- path: docs/project/PROJ-0001-PROJECT_STATE.md
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - staging
+  - commit
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+- path: docs/standards/STD-0001-ENGINEERING_DOCUMENT_LIFECYCLE_STANDARD.md
+  score: 22
+  signals:
+  - publication
+  - procedure
+  - commit
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+  - STD_ID
+- path: docs/standards/STD-0002-ENGINEERING_DOCUMENT_PERSISTENCE_STANDARD.md
+  score: 22
+  signals:
+  - publication
+  - procedure
+  - commit
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+  - STD_ID
+- path: docs/standards/STD-0004-ENGINEERING_STATE_FRESHNESS_STANDARD.md
+  score: 22
+  signals:
+  - publication
+  - procedure
+  - commit
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+  - STD_ID
+- path: docs/work-orders/EWO-000023-PHASE-3-REPOSITORY-IMPACT-ANALYSIS.md
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - commit
+  - push
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+- path: engineering/convergence/engineering-system-convergence/ESC-ROADMAP-001.md
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - commit
+  - push
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/CONTROLLED-DOCUMENT-INVENTORY.yaml
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - commit
+  - push
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+- path: engineering/convergence/engineering-system-convergence/gates/C12-git-publication-synchronization/GATE.yaml
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - staging
+  - commit
+  - push
+  - eos
+  - evidence
+  - authoritative
+- path: engineering/docs/architecture/INTEGRATED-ENGINEERING-PORTFOLIO-ROADMAP.md
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - commit
+  - push
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+- path: engineering/docs/cli/ZEUS-USER-GUIDE.md
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - staging
+  - commit
+  - push
+  - eos
+  - evidence
+  - authoritative
+- path: engineering/evidence/2026-07-29-zh-authorization-bundle-contract-001.md
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - staging
+  - commit
+  - push
+  - eos
+  - evidence
+  - controlled document
+- path: engineering/evidence/2026-07-29-zh-zeus-controlled-document-architecture-001.md
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - staging
+  - commit
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+- path: engineering/evidence/operation-beta/managed-handoff-execution-provider-authorization-convergence-assessment.md
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - commit
+  - push
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+- path: engineering/registry/work-registry.yaml
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - staging
+  - commit
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+- path: engineering/work-orders/WOP-ZEUS-STOPQ01-CANONICAL-MISSION-PUBLICATION-001/cc4aee344a30d2a16db807a3/mission.yaml
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - commit
+  - push
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+- path: engineering/work-orders/WOP-ZEUS-STOPQ01-CANONICAL-MISSION-PUBLICATION-001/cc4aee344a30d2a16db807a3/source-wop.md
+  score: 22
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - commit
+  - push
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR44M1/GATE.yaml
+  score: 21
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - commit
+  - push
+  - eos
+  - evidence
+  - worktree
+  - authoritative
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR45M1/GATE.yaml
+  score: 21
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - commit
+  - push
+  - eos
+  - evidence
+  - worktree
+  - authoritative
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-PUBLICATION-BOUNDARY.yaml
+  score: 21
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - commit
+  - push
+  - eos
+  - evidence
+  - worktree
+  - authoritative
+- path: engineering/operations/zeus-operational-runtime.md
+  score: 21
+  signals:
+  - publication
+  - closeout
+  - procedure
+  - staging
+  - commit
+  - eos
+  - evidence
+  - worktree
+  - authoritative
+- path: engineering/planning/2026-07-15-repository-commit-reconstruction-plan.md
+  score: 21
+  signals:
+  - publication
+  - procedure
+  - staging
+  - commit
+  - push
+  - eos
+  - evidence
+  - worktree
+  - controlled document
+  - authoritative
+- path: engineering/work-orders/WOP-ZDCL-02-ZEUS-PROVIDER-NEUTRAL-EXECUTION-CONTROL-001/ebeec97412e405e26b721c09/source-wop.md
+  score: 21
+  signals:
+  - publication
+  - closeout
+  - staging
+  - commit
+  - push
+  - eos
+  - evidence
+  - controlled document
+  - authoritative
+selection:
+  authoritative_owner: null
+  selection_state: NOT_YET_DERIVED
+  ambiguity_requires_fail_closed: true

@@ -1,0 +1,59 @@
+schema_version: "1.0"
+record_type: ZEUS_MANAGED_CODEX_PREFLIGHT_CORRECTIVE_AUTHORITY
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  diagnostic: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-ZEUS-MANAGED-CODEX-PREFLIGHT-GAP-DIAGNOSTIC.yaml"
+  work_contract: "/data/engineering/tmp/zeus-work-contracts/ZEUS-CODEX-PROVIDER-CORRECTIVE-001.yaml"
+
+authorized:
+  inspect_Zeus_codex_mode_routing: true
+  inspect_existing_direct_preflight: true
+  factor_reusable_provider_preflight: true
+  enable_preflight_for_ZEUS_MANAGED: true
+  implement_provider_capability_resolution: true
+  implement_installed_Codex_compatibility_validation: true
+  implement_work_contract_capability_validation: true
+  add_machine_readable_incompatibility_results: true
+  add_focused_tests: true
+  run_focused_tests: true
+  run_provider_boundary_tests: true
+  reconcile_directly_affected_documentation: true
+
+required:
+  preflight_before_provider_start: true
+  no_silent_DIRECT_INTERACTIVE_fallback: true
+  no_provider_start_when_incompatible: true
+  engineering_implementation_authority_distinct_from_CR48_authority: true
+  work_contract_requirements_drive_provider_options: true
+  provider_specific_options_owned_by_Zeus: true
+
+prohibited:
+  execute_CR48: true
+  create_CR48_mission: true
+  generate_CR48_WOP: true
+  dispatch_CR48: true
+  WOP_EENS_implementation: true
+  canonical_roadmap_hardening: true
+  publication: true
+  stage: true
+  commit: true
+  push: true
+  EOS_sync: true
+  bypass_provider_safety: true
+
+acceptance:
+  dry_run_command: >-
+    scripts/zeus codex start --mode ZEUS_MANAGED
+    --work-contract "/data/engineering/tmp/zeus-work-contracts/ZEUS-CODEX-PROVIDER-CORRECTIVE-001.yaml" --preflight --dry-run
+
+  required_result:
+    blocker_DIRECT_PREFLIGHT_ONLY_absent: true
+    managed_preflight_executed: true
+    provider_not_started_during_dry_run: true
+    work_contract_capabilities_resolved: true
+    Codex_compatibility_resolved: true
+
+next_authorized_action:
+  IMPLEMENT_ZEUS_MANAGED_PROVIDER_PREFLIGHT_CORRECTIVE_ONLY

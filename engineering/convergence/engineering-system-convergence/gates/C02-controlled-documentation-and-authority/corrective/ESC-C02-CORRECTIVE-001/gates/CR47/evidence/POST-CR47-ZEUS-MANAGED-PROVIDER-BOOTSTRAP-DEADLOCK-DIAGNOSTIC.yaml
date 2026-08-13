@@ -1,0 +1,31 @@
+schema_version: "1.0"
+record_type: ZEUS_MANAGED_PROVIDER_BOOTSTRAP_DEADLOCK_DIAGNOSTIC
+result: PASS
+
+subject:
+  work_contract: "/data/engineering/tmp/zeus-work-contracts/ZEUS-CODEX-PROVIDER-CORRECTIVE-001.yaml"
+  corrective: ZEUS_MANAGED_PROVIDER_PREFLIGHT_CORRECTIVE
+
+observed:
+  ZEUS_MANAGED_provider_start_result: FAIL
+  blocker: PROVIDER_INVOCATION_FAILURE
+  provider_corrective_reachable_through_ZEUS_MANAGED: false
+
+classification:
+  defect: MANAGED_PROVIDER_SELF_REPAIR_BOOTSTRAP_DEADLOCK
+  provider_fails_before_corrective_agent_start: true
+  Zeus_fail_closed_behavior_preserved: true
+  CR48_related: false
+
+required_recovery:
+  bounded_bootstrap_implementation_path: true
+  bootstrap_must_not_become_general_execution_path: true
+  bootstrap_must_not_create_subject_execution_authority: true
+  immediate_Zeus_native_requalification_required: true
+  bootstrap_exception_must_close_after_provider_qualification: true
+
+safety:
+  CR48_execution_authorized: false
+  CR48_executed: false
+  WOP_EENS_implementation_authorized: false
+  publication_authorized: false

@@ -1,6 +1,6 @@
 schema_version: 1
 roadmap_id: ESC-ROADMAP-001
-roadmap_version: 2.0.2
+roadmap_version: 2.3.0
 evaluation_standard:
   standard: STD-0006@1.0
   procedure: PROC-0009@1.0

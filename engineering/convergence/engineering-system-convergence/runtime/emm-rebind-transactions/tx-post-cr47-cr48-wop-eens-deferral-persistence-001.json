@@ -1,0 +1,19 @@
+{
+  "authorized_mutations": {
+    "docs/project/PROJ-0001-PROJECT_STATE.md": "37f97850b44f95360a1fd702b4b6673d4285b79a2be6b3878169b3522524fbaa"
+  },
+  "post_manifest_sha256": "77479031e7a5eed867f22540f0b1f8fd5c3acf330e383c6c2a15e4c4e73072fa",
+  "pre_manifest_sha256": "9babd774927724fc68d4070bf5e600f6408ce54d62c9e5d8f74b261302be86fe",
+  "recorded_at": "2026-08-12T12:14:47Z",
+  "schema_version": 1,
+  "sources": [
+    {
+      "new_sha256": "c1d47f982624cb4ad7d5afe91ae475cea5a0f11dd365713141b5a06bb9132bce",
+      "old_sha256": "37f97850b44f95360a1fd702b4b6673d4285b79a2be6b3878169b3522524fbaa",
+      "path": "docs/project/PROJ-0001-PROJECT_STATE.md"
+    }
+  ],
+  "status": "RECONCILIATION_COMPLETE",
+  "transaction_id": "tx-post-cr47-cr48-wop-eens-deferral-persistence-001",
+  "transaction_type": "EMM_REBIND"
+}

@@ -15,6 +15,7 @@ scope_out:
 dependencies: [C09]
 entry_conditions:
   - C08-C09 execution/event interactions are mapped and C10 is selected.
+  - C06 WOP foundation and C09 EENS primary implementation package define the provider/runtime observation inputs.
 authoritative_inputs:
   - Provider/Codex/runtime modules, schemas, controlled docs, WOP execution contracts, runtime evidence, and prior findings.
 execution_playbook:

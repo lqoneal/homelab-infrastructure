@@ -1,0 +1,58 @@
+schema_version: "1.0"
+record_type: POST_CR47_EGR_AND_DEFERRAL_PUBLICATION_DERIVATION
+result: PASS
+authority_state: DERIVED_NOT_EXECUTED
+
+publication_owner: PROC-0005
+
+ordering:
+
+  step_1:
+    action: AUTHOR_DURABLE_EGR
+    target: "docs/resolutions/EGR-000007-CR48-WOP-EENS-CONVERGENCE-DEFERRAL-AND-ROADMAP-MATURITY-HARDENING.md"
+
+  step_2:
+    action: RECONCILE_DOC_0001_FOR_NEW_EGR
+    target: "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md"
+
+  step_3:
+    action: RECONCILE_EMM_IF_ANY_BOUND_SOURCE_DRIFTS
+    target: "engineering/convergence/engineering-system-convergence/binding-manifest.yaml"
+
+  step_4:
+    action: VALIDATE_COMPLETE_CONTROLLED_DOCUMENT_SET
+
+  step_5:
+    action: PRECREATE_ALL_PUBLICATION_CONTROL_OUTPUT_PATHS
+
+  step_6:
+    action: INVENTORY_AND_CLASSIFY_COMPLETE_PUBLICATION_SURFACE
+
+  step_7:
+    action: DISPOSITION_UNRELATED_PATHS_EXPLICITLY
+
+  step_8:
+    action: FREEZE_EXACT_PUBLICATION_INPUT_PATH_SET_AND_DIGEST
+
+  step_9:
+    action: DERIVE_SEPARATE_PUBLICATION_EXECUTION_AUTHORITY
+
+publication_freeze_now:
+  authorized: false
+  reason: >
+    The durable EGR and its DOC-0001/EMM consequences do not yet exist.
+    Freezing the publication candidate before those controlled paths exist
+    would recreate the self-expanding publication-surface defect previously
+    observed during CR47.
+
+known_preserved_exclusion:
+  path: engineering/planning/2026-08-12-eens-architecture-resolution-options.md
+  disposition: PRESERVE_BUT_EXCLUDE_UNLESS_SEPARATELY_AUTHORIZED
+
+not_authorized:
+  - stage
+  - commit
+  - push
+  - EOS synchronization
+  - roadmap hardening execution
+  - CR48 execution

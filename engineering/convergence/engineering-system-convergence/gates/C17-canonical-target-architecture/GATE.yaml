@@ -15,6 +15,7 @@ dependencies: [C16]
 entry_conditions:
   - C01-C16 are evidence-backed complete and simplification dispositions are reviewed.
   - All blocking authority conflicts are resolved or explicitly prevent architecture approval.
+  - C06 foundational WOP and C09 primary EENS development results are included in the target architecture inputs.
 authoritative_inputs:
   - C15 cross-system model, C16 dispositions, every prior result, and governing constraints.
 execution_playbook:

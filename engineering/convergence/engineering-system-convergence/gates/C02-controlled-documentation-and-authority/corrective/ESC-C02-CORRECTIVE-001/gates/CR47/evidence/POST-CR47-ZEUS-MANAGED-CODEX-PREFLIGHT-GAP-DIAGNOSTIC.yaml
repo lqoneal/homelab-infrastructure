@@ -1,0 +1,48 @@
+schema_version: "1.0"
+record_type: ZEUS_MANAGED_CODEX_PREFLIGHT_GAP_DIAGNOSTIC
+result: PASS
+
+work_contract:
+  path: "/data/engineering/tmp/zeus-work-contracts/ZEUS-CODEX-PROVIDER-CORRECTIVE-001.yaml"
+  work_type: ENGINEERING_IMPLEMENTATION
+
+observed:
+  requested_mode: ZEUS_MANAGED
+  requested_preflight: true
+  dry_run: true
+  return_code: 78
+  blocker: DIRECT_PREFLIGHT_ONLY
+  next_projected_action: SELECT_DIRECT_INTERACTIVE
+
+classification:
+  gap: ZEUS_MANAGED_PROVIDER_PREFLIGHT_UNAVAILABLE
+  direct_interactive_preflight_exists: true
+  managed_preflight_exists: false
+  switching_to_direct_interactive_is_corrective_solution: false
+
+architectural_requirement:
+  Zeus_managed_mode_must_support_pre_dispatch_provider_preflight: true
+  preflight_must_not_require_provider_start: true
+  preflight_must_validate_work_contract_capabilities: true
+  preflight_must_validate_installed_Codex_contract: true
+  preflight_must_fail_before_dispatch_on_incompatibility: true
+
+required_checks:
+  - CODEX_EXECUTABLE
+  - CODEX_VERSION
+  - PROVIDER_MODE_CAPABILITY
+  - APP_SERVER_PROTOCOL
+  - EXEC_PROTOCOL
+  - SANDBOX_CONTRACT
+  - APPROVAL_CONTRACT
+  - CODEX_HOME
+  - AUTHENTICATION
+  - CONFIG_PRECEDENCE
+  - REQUIRED_WORK_CAPABILITIES
+  - PROVIDER_OPTION_COMPATIBILITY
+
+safety:
+  provider_started: false
+  CR48_executed: false
+  CR48_execution_authorized: false
+  direct_interactive_fallback_authorized: false

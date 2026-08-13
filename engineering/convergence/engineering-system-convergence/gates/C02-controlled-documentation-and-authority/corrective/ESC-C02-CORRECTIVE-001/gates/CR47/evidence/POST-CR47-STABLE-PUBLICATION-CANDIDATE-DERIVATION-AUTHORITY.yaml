@@ -1,0 +1,39 @@
+schema_version: "1.0"
+record_type: POST_CR47_STABLE_PUBLICATION_CANDIDATE_DERIVATION_AUTHORITY
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+authorized:
+  inventory_complete_live_unpublished_surface: true
+  classify_all_unexplained_paths: true
+  preserve_explicit_exclusions: true
+  precreate_additional_publication_control_paths_before_final_freeze: true
+  derive_stable_closed_publication_candidate: true
+  verify_candidate_path_count: true
+  verify_candidate_pathset_digest: true
+  verify_zero_unbound_candidate_paths: true
+  verify_zero_EMM_drift: true
+  verify_roadmap_validation: true
+  derive_publication_execution_authority: true
+
+prohibited:
+  stage: true
+  commit: true
+  amend: true
+  push: true
+  EOS_sync: true
+  WOP_roadmap_hardening: true
+  EENS_roadmap_hardening: true
+  canonical_roadmap_mutation: true
+  CR48_execution: true
+  C06_execution: true
+  C08_execution: true
+  C09_execution: true
+
+closure:
+  publication_control_paths_must_exist_before_freeze: true
+  fail_if_candidate_changes_after_freeze: true
+  fail_if_unexplained_surface_exists: true
+
+next_authorized_action:
+  DERIVE_STABLE_CLOSED_POST_DEFERRAL_PUBLICATION_CANDIDATE_ONLY

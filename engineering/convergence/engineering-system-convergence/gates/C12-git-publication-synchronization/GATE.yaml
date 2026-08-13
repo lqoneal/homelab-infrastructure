@@ -14,6 +14,7 @@ scope_out:
 dependencies: [C11]
 entry_conditions:
   - C11 proof/acceptance boundaries are documented and C12 is selected.
+  - C06/C09 source and evidence identities are available; publication cadence remains a later strategic planning decision.
 authoritative_inputs:
   - Git repository, PROC-0005, publication/synchronization docs and modules, baseline records, historical Operation Beta evidence, and prior findings.
 execution_playbook:

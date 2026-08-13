@@ -1,0 +1,41 @@
+schema_version: "1.0"
+record_type: POST_CR47_PROJECT_STATE_RECONCILIATION_EXECUTION_AUTHORITY
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  divergence_classification: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-PROJECT-STATE-DIVERGENCE-CLASSIFICATION.yaml"
+  divergence_classification_sha256: "3e667962c954f72fc5e228b83f762eb47e19f665b29292042d69a5f2150e4e89"
+  reconciliation_boundary: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-PROJECT-STATE-RECONCILIATION-BOUNDARY.yaml"
+  reconciliation_boundary_sha256: "810967604565707becd1a29996e968067a12f6c0ec6e2cf08b8fba6f892fa04b"
+
+authorized:
+  reconcile_project_state_projection: true
+  preserve_historical_state: true
+  derive_post_write_project_state_digest: true
+  derive_complete_emm_drift_set: true
+  reconcile_project_state_emm_binding_if_exactly_required: true
+  validate_roadmap_after_reconciliation: true
+  write_reconciliation_result: true
+
+required:
+  current_gate_remains_c02: true
+  last_completed_item_remains_cr47: true
+  current_item_remains_cr48: true
+  next_authorized_action_remains_VERIFY_CR48_PRECONDITIONS: true
+  cr48_execution_remains_false: true
+  whole_document_edit_semantics_preserved: true
+  no_unrelated_project_state_change: true
+
+prohibited:
+  execute_cr48: true
+  advance_cr48: true
+  begin_c06: true
+  complete_c02: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+
+next_authorized_action:
+  EXECUTE_EXACT_PROJECT_STATE_PROJECTION_RECONCILIATION_ONLY

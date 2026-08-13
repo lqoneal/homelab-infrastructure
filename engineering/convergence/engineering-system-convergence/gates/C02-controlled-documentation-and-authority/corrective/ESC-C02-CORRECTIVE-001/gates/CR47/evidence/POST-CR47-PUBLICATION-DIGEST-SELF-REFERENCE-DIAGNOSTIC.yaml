@@ -1,0 +1,16 @@
+schema_version: 1
+record_type: PUBLICATION_DIGEST_SELF_REFERENCE_DIAGNOSTIC
+result: PASS
+failure_class: CONTROL_ARTIFACT_SELF_DIGEST_RECURSION
+pathset_changed: false
+candidate_path_count_preserved: 50
+affected_control_artifacts:
+  - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-STABLE-CLOSED-PUBLICATION-CANDIDATE-V2.yaml"
+  - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-STABLE-CLOSED-PUBLICATION-EXECUTION-AUTHORITY-V2.yaml"
+publication_executed: false
+CR48_executed: false
+corrective_rule:
+  control_artifacts_are_members_of_path_set: true
+  control_artifacts_must_not_require_recursive_self_digest_equality: true
+  ordinary_candidate_files_require_exact_digest_match: true
+  final_control_artifacts_are_qualified_by_path_identity_and_post-write_sha256: true

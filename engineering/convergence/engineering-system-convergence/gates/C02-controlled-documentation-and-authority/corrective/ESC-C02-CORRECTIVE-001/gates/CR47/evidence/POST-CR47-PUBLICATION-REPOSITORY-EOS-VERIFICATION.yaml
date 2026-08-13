@@ -1,0 +1,28 @@
+schema_version: "1.0"
+record_type: POST_CR47_PUBLICATION_REPOSITORY_EOS_VERIFICATION
+cr_id: CR47
+result: PASS
+
+repository:
+  head: "f89db1ffd3b7eb9e05811db6586d53e22eed7148"
+  origin_main: "f89db1ffd3b7eb9e05811db6586d53e22eed7148"
+  parity: true
+
+publication:
+  prior_head: "fe824c714da35d987cc7454366aa3abaf046cc31"
+  published_head: "f89db1ffd3b7eb9e05811db6586d53e22eed7148"
+  exact_candidate_path_count: 305
+  excluded_path_count: 1
+
+eos:
+  synchronized: true
+  validation: PASS
+
+excluded_path:
+  path: "engineering/planning/2026-08-12-eens-architecture-resolution-options.md"
+  preserved: true
+  tracked: false
+  staged: false
+
+cr48:
+  executed: false

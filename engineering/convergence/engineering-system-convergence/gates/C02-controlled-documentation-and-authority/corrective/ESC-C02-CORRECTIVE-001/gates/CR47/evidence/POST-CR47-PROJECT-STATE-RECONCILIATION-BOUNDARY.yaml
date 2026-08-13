@@ -1,0 +1,41 @@
+schema_version: "1.0"
+record_type: POST_CR47_PROJECT_STATE_RECONCILIATION_BOUNDARY
+result: PASS
+
+source_authority:
+  roadmap_state: "engineering/convergence/engineering-system-convergence/STATE.yaml"
+  corrective_state: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml"
+
+projection_target:
+  path: "docs/project/PROJ-0001-PROJECT_STATE.md"
+  sha256_before: "7f464acde3d88a92e200eac037c478bb013ccd275828d07b1c99bbdab2d8470c"
+
+required_projection:
+  current_gate: C02
+  last_completed_corrective_item: CR47
+  current_corrective_item: CR48
+  next_authorized_action: VERIFY_CR48_PRECONDITIONS
+
+semantic_constraints:
+  preserve_historical_project_state: true
+  do_not_rewrite_corrective_history: true
+  do_not_mark_cr48_executed: true
+  do_not_authorize_cr48_execution: true
+  record_projection_as_reconciled_to_authoritative_state: true
+  preserve_unrelated_project_state_content: true
+
+consequential:
+  doc_index_update_required: false
+  emm_rebind_if_project_state_is_bound: true
+  roadmap_validation_after_reconciliation: true
+  publication_required_if_controlled_bytes_change: true
+
+prohibited:
+  execute_cr48: true
+  advance_corrective_state: true
+  complete_c02: true
+  begin_c06: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true

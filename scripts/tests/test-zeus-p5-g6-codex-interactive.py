@@ -35,6 +35,27 @@ class InteractiveCodexTests(unittest.TestCase):
         returncode = 0
         def wait(self): return 0
 
+    def _record(self, runtime, session_id, *, state="AWAITING_OPERATOR_INPUT", start=1,
+                pid=None, mission="MISSION-SELECTOR"):
+        value = {
+            "schema_version": 1, "record_type": "AUTHORITATIVE_INTERACTIVE_SESSION",
+            "contract": {"id": codex_interactive.CONTRACT, "version": codex_interactive.VERSION},
+            "session_id": session_id, "mission_id": mission, "execution_id": None,
+            "immutable_binding_class": "DIRECT_INTERACTIVE", "provider_id": "zeus-test",
+            "repository": str(ROOT), "repository_id": "repo", "repository_identity": "identity",
+            "execution_mode": codex_interactive.DIRECT_INTERACTIVE, "mode": "OPERATOR_INTERACTIVE",
+            "session_mode": "OPERATOR_INTERACTIVE", "interactive": True, "managed": False,
+            "state": state, "pid": os.getpid() if pid is None else pid,
+            "listener_pid": None, "provider_mode": "CODEX_CLI", "provider_transport": "DIRECT_TERMINAL",
+            "start_timestamp": start, "approval_state": "NOT_REQUIRED", "authority": "PASS",
+            "mission_work_started": False, "repository_work_started": False,
+            "thread_id": "THREAD-" + session_id, "attached": True,
+            "remote_endpoint": None, "path": str(runtime / codex_interactive.STAGE_DIR / f"{session_id}.json"),
+            "event_directory": str(runtime / "codex-interactive-events" / session_id),
+            "log_path": str(runtime / "codex-interactive-logs" / f"{session_id}.log"),
+        }
+        return codex_interactive._save(runtime, value)
+
     def _remote_patches(self, temporary):
         ready = {"result": "PASS", "provider_pid": 43211, "remote_endpoint": "unix:///tmp/zeus-test.sock"}
         original_run = subprocess.run
@@ -111,6 +132,77 @@ class InteractiveCodexTests(unittest.TestCase):
         with self.assertRaises(codex_interactive.InteractiveCodexError) as context:
             codex_interactive.shell(ROOT, "MISSION-BETA-562F443E16C69401", _allow_non_tty=True)
         self.assertEqual(context.exception.code, "OPERATOR_APPROVAL_REQUIRED")
+
+    def test_write_requires_invocation_specific_approval_before_launch(self):
+        with self.assertRaises(codex_interactive.InteractiveCodexError) as context:
+            codex_interactive.shell(ROOT, write_requested=True, _allow_non_tty=True)
+        self.assertEqual(context.exception.code, "OPERATOR_APPROVAL_REQUIRED")
+
+    def test_approved_write_preflight_resolves_bounded_operator_policy(self):
+        with patch.object(codex_interactive.shutil, "which", return_value="/usr/bin/codex"):
+            value = codex_interactive.direct_launcher_preflight(ROOT, approval=True, write_requested=True)
+        self.assertEqual(value["binding_class"], "REPOSITORY_OPERATOR")
+        self.assertEqual(value["mission_binding"], "NOT_APPLICABLE")
+        self.assertEqual(value["execution_binding"], "NOT_APPLICABLE")
+        self.assertEqual(value["sandbox"], "workspace-write")
+        self.assertEqual(value["write_requested"], "YES")
+        self.assertEqual(value["write_approved"], "YES")
+        self.assertEqual(value["approval_policy"], "on-request")
+        self.assertEqual(value["codex_not_launched"], "YES")
+
+    def test_approved_write_direct_command_and_session_are_observable(self):
+        with tempfile.TemporaryDirectory(prefix="zeus-write-") as temporary:
+            runtime = Path(temporary) / "runtime"
+            commands = []
+            original_popen = codex_interactive.subprocess.Popen
+            def popen(*args, **kwargs):
+                command = args[0] if args else kwargs.get("args", [])
+                if command and (command[0] == "codex" or
+                                 (str(command[0]).endswith("codex-direct-launch.sh") and
+                                  len(command) > 1 and command[1] == "codex")):
+                    commands.append(command)
+                    return self.Client()
+                return original_popen(*args, **kwargs)
+            with patch.object(codex_interactive.subprocess, "Popen", side_effect=popen):
+                value = codex_interactive.shell(ROOT, approval=True, write_requested=True,
+                                                 runtime_root=runtime, codex_bin="codex", _allow_non_tty=True)
+            command = commands[0]
+            self.assertEqual(command[command.index("-C") + 1], str(ROOT))
+            self.assertEqual(command[command.index("-s") + 1], "workspace-write")
+            self.assertEqual(command[command.index("-a") + 1], "on-request")
+            self.assertEqual(value["immutable_binding_class"], "REPOSITORY_OPERATOR")
+            self.assertEqual(value["authority_mode"], "REPOSITORY_OPERATOR_WRITE")
+            self.assertEqual(value["mission_id"], None)
+            self.assertEqual(value["execution_id"], None)
+            self.assertEqual(value["sandbox"], "workspace-write")
+            self.assertEqual(value["mission_bound"], False)
+            self.assertEqual(value["execution_bound"], False)
+            events = list((runtime / "codex-interactive-events" / value["session_id"]).glob("*.json"))
+            self.assertTrue(any(json.loads(path.read_text())["event"] == "WRITE_MODE_RESOLVED" for path in events))
+
+    def test_default_non_mission_operator_remains_read_only(self):
+        with tempfile.TemporaryDirectory(prefix="zeus-read-only-") as temporary:
+            runtime = Path(temporary) / "runtime"
+            commands = []
+            original_popen = codex_interactive.subprocess.Popen
+            def popen(*args, **kwargs):
+                command = args[0] if args else kwargs.get("args", [])
+                if command and str(command[0]).endswith("codex-direct-launch.sh"):
+                    commands.append(command)
+                    return self.Client()
+                return original_popen(*args, **kwargs)
+            with patch.object(codex_interactive.subprocess, "Popen", side_effect=popen):
+                value = codex_interactive.shell(ROOT, runtime_root=runtime, codex_bin="codex", _allow_non_tty=True)
+            self.assertEqual(commands[0][commands[0].index("-s") + 1], "read-only")
+            self.assertEqual(value["write_requested"], "NO")
+            self.assertEqual(value["mission_bound"], False)
+            self.assertEqual(value["execution_bound"], False)
+
+    def test_write_is_rejected_for_noninteractive_actions(self):
+        result = subprocess.run([str(ROOT / "scripts/zeus"), "codex", "status", "--write", "--json"],
+                                cwd=ROOT, capture_output=True, text=True, check=False)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("FAIL_UNSUPPORTED_OPTION_FOR_ACTION", result.stdout)
 
     def test_request_decisions_are_append_only_and_classified(self):
         with tempfile.TemporaryDirectory(prefix="zeus-pty-") as temporary:
@@ -191,6 +283,39 @@ class InteractiveCodexTests(unittest.TestCase):
             self.assertEqual(selected["mode"], "OPERATOR_INTERACTIVE")
             self.assertEqual(selected["execution_mode"], "DIRECT_INTERACTIVE")
             self.assertFalse(selected["remote_client"])
+
+    def test_selector_lifecycle_and_attach_are_read_only(self):
+        with tempfile.TemporaryDirectory(prefix="zeus-selector-") as temporary:
+            runtime = Path(temporary) / "runtime"
+            first = self._record(runtime, "SESSION-1", start=1)
+            before = sorted(path.read_bytes() for path in (runtime / codex_interactive.STAGE_DIR).glob("*.json"))
+            active = codex_interactive.status(ROOT, session_id=first["session_id"], runtime_root=runtime)
+            self.assertEqual(active["session_id"], "SESSION-1")
+            self.assertEqual(codex_interactive.status(ROOT, active=True, runtime_root=runtime)["session_id"], "SESSION-1")
+            self.assertEqual(codex_interactive.status(ROOT, latest=True, runtime_root=runtime)["session_id"], "SESSION-1")
+            attached = codex_interactive.attach(ROOT, active=True, runtime_root=runtime)
+            self.assertEqual(attached["session_id"], "SESSION-1")
+            self.assertFalse(attached["provider_created"])
+            self.assertFalse(attached["thread_created"])
+            self.assertFalse(attached["session_created"])
+            after = sorted(path.read_bytes() for path in (runtime / codex_interactive.STAGE_DIR).glob("*.json"))
+            self.assertEqual(before, after)
+
+    def test_selector_excludes_stopped_stale_and_ambiguous_sessions(self):
+        with tempfile.TemporaryDirectory(prefix="zeus-selector-") as temporary:
+            runtime = Path(temporary) / "runtime"
+            self._record(runtime, "STOPPED", state="STOPPED", pid=os.getpid())
+            with self.assertRaisesRegex(codex_interactive.InteractiveCodexError, "no compatible"):
+                codex_interactive.status(ROOT, active=True, runtime_root=runtime)
+            self._record(runtime, "STALE", state="AWAITING_OPERATOR_INPUT", pid=999999999)
+            with self.assertRaisesRegex(codex_interactive.InteractiveCodexError, "no compatible"):
+                codex_interactive.status(ROOT, active=True, runtime_root=runtime)
+            self._record(runtime, "LIVE-1", start=3)
+            self._record(runtime, "LIVE-2", start=4)
+            with self.assertRaisesRegex(codex_interactive.InteractiveCodexError, "multiple live"):
+                codex_interactive.status(ROOT, active=True, runtime_root=runtime)
+            with self.assertRaises(codex_interactive.InteractiveCodexError):
+                codex_interactive.status(ROOT, session_id="MISSING", runtime_root=runtime)
 
     def test_remote_requires_explicit_selection_and_never_uses_stdio_provider(self):
         with tempfile.TemporaryDirectory(prefix="zeus-remote-") as temporary:

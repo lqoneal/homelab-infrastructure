@@ -1,0 +1,45 @@
+schema_version: "1.0"
+record_type: POST_CR47_CONTROLLED_WORK_PROJECTION_CONTINUATION_AUTHORITY
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  schema_diagnostic: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-ROADMAP-SCHEMA-PROJECTION-DIAGNOSTIC.yaml"
+  controlled_projection: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-ZEUS-CR48-CONTROLLED-WORK-PROJECTION.yaml"
+  projection_id: CWP-ESC-C02-CORRECTIVE-001-CR48
+
+finding:
+  prior_publication_failure:
+    class: ROADMAP_SCHEMA_ASSUMPTION_INVALID
+    implementation_defect: false
+    governance_defect: false
+    controlled_state_defect: false
+
+authorized:
+  resume_post_CR47_controlled_projection_publication: true
+  activate_EGR_000007: true
+  reconcile_DOC_0001: true
+  reconcile_EMM: true
+  supersede_prior_frozen_candidate: true
+  derive_new_closed_candidate: true
+  derive_publication_execution_authority: true
+  execute_exact_publication: true
+  push_main: true
+  EOS_sync_after_push: true
+
+required:
+  include_schema_diagnostic_in_publication_surface: true
+  include_controlled_projection_in_publication_surface: true
+  preserve_CR48_hold: true
+  exclude_unrelated_EENS_planning_path: true
+  freeze_after_all_control_paths_exist: true
+
+prohibited:
+  create_CR48_mission_id: true
+  execute_CR48: true
+  execute_WOP_roadmap_hardening: true
+  execute_EENS_roadmap_hardening: true
+  mutate_canonical_roadmap_for_hardening: true
+
+next_authorized_action:
+  RESUME_EXACT_CONTROLLED_PROJECTION_PUBLICATION_AFTER_SCHEMA_CORRECTIVE

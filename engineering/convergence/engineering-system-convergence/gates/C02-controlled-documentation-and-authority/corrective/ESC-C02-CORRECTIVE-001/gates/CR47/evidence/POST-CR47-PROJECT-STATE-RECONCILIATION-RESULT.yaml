@@ -1,0 +1,33 @@
+schema_version: "1.0"
+record_type: POST_CR47_PROJECT_STATE_RECONCILIATION_RESULT
+result: PASS
+
+authority:
+  executable_roadmap_state: "engineering/convergence/engineering-system-convergence/STATE.yaml"
+  corrective_state: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml"
+  projection: "docs/project/PROJ-0001-PROJECT_STATE.md"
+
+before:
+  project_state_sha256: "7f464acde3d88a92e200eac037c478bb013ccd275828d07b1c99bbdab2d8470c"
+
+after:
+  project_state_sha256: "37f97850b44f95360a1fd702b4b6673d4285b79a2be6b3878169b3522524fbaa"
+  current_gate: C02
+  last_completed_corrective_item: CR47
+  current_corrective_item: CR48
+  next_authorized_action: VERIFY_CR48_PRECONDITIONS
+
+qualification:
+  roadmap_validation: PASS
+  emm_reconciliation: PASS
+  cr48_executed: false
+  cr48_execution_authorized_by_this_transaction: false
+  c06_started: false
+
+repository:
+  head: "f89db1ffd3b7eb9e05811db6586d53e22eed7148"
+  origin_main: "f89db1ffd3b7eb9e05811db6586d53e22eed7148"
+  publication_executed: false
+
+next:
+  action: DERIVE_POST_CR47_RECONCILIATION_PUBLICATION_BOUNDARY_AND_CR48_DEFERRAL_PERSISTENCE

@@ -1,0 +1,26 @@
+schema_version: '1.0'
+record_type: P5_G4_PROVIDER_INVOCATION_CURRENT_LINEAGE_DIAGNOSTIC
+result: DIAGNOSTIC_COMPLETE
+p5_g4_test_rc: 1
+provider_invocation_verify_rc: 78
+required_root_cause_classification:
+- PROVIDER_INVOCATION_CARDINALITY_CONFLICT
+- CURRENT_EXECUTION_CARDINALITY_CONFLICT
+- CURRENT_INVOCATION_SELECTION_DEFECT
+- PROVIDER_SESSION_BINDING_MISMATCH
+- EXECUTION_BINDING_MISMATCH
+- PROVENANCE_BASELINE_MISMATCH
+- DIGEST_FAILURE
+- OTHER_EXACTLY_DEMONSTRATED
+required_corrective_policy:
+  historical_records_preserved: true
+  delete_old_invocations: false
+  create_parallel_invocation_lifecycle: false
+  canonical_current_selection_required: true
+  fail_closed_on_multiple_current_matches: true
+safety:
+  provider_started: false
+  CR48_executed: false
+  publication_executed: false
+  EOS_synchronization_executed: false
+next_action: CORRECT_EXACT_P5_G4_VERIFIER_PREDICATE_ONLY

@@ -164,6 +164,12 @@ class SessionSupersessionTests(unittest.TestCase):
         diagnostics = {"provider_pid": os.getpid(), "command": ["disposable"], "environment": {},
                        "control_socket": "/tmp/disposable.sock", "remote_endpoint": None}
         with patch.object(codex_adapter, "_package", return_value=package), \
+             patch.object(codex_adapter, "resolve_provider_invocation_contract", return_value={
+                 "codex_binary": "codex", "command": ["codex", "app-server", "--strict-config", "--listen", "stdio://"],
+                 "required_codex_invocation_arguments": ["app-server", "--strict-config", "--listen", "stdio://"],
+                 "plan_digest": replacement.get("plan_digest"), "work_contract_digest": replacement.get("work_contract_digest"),
+                 "work_contract": replacement.get("work_contract"), "work_contract_id": replacement.get("work_contract_id"),
+             }), \
              patch.object(codex_adapter, "_launch_handshake", return_value=(type("P", (), {"pid": os.getpid()})(), diagnostics)), \
              patch.object(codex_adapter, "_process_alive", return_value=False), \
              patch.object(codex_adapter, "_append_event"):

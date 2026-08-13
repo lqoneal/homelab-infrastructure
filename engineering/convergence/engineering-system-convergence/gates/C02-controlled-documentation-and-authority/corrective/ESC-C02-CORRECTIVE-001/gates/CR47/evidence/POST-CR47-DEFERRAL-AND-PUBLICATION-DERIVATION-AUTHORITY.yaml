@@ -1,0 +1,41 @@
+schema_version: "1.0"
+record_type: POST_CR47_DEFERRAL_AND_PUBLICATION_DERIVATION_AUTHORITY
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  cr48_precondition_assessment: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-PRECONDITION-ASSESSMENT.yaml"
+  cr48_precondition_assessment_sha256: "9a7e6f633f231863651dfe3998662d93f27ac6da8805509837cc37809b0521f5"
+  deferral_derivation: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-WOP-EENS-DEFERRAL-DERIVATION.yaml"
+  deferral_derivation_sha256: "de358a3b794f6e1478be86269738570bfb7d888bbd72f84ebe87faf28d567b35"
+  publication_boundary: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-RECONCILIATION-PUBLICATION-BOUNDARY.yaml"
+  publication_boundary_sha256: "e558f83df5561b5e6d483973d3407b231ab2b013a78f60c43a635aa5f5e1b258"
+
+authorized:
+  determine_exact_CR48_deferral_state_representation: true
+  determine_exact_WOP_EENS_dependency_representation: true
+  determine_whether_roadmap_amendment_is_required: true
+  determine_whether_corrective_state_amendment_is_required: true
+  determine_C06_entry_authority_after_deferral: true
+  derive_closed_publication_candidate_after_state_decision: true
+
+required:
+  preserve_CR47_completion: true
+  preserve_CR48_unexecuted: true
+  preserve_C02_current_until_controlled_transition: true
+  preserve_existing_published_CR47_baseline: true
+  preserve_unrelated_EENS_planning_file: true
+  fail_closed_if_deferral_authority_is_ambiguous: true
+
+prohibited:
+  mutate_corrective_state: true
+  mutate_roadmap: true
+  execute_CR48: true
+  begin_C06: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+
+next_authorized_action:
+  DERIVE_EXACT_CR48_DEFERRAL_AND_WOP_EENS_DEPENDENCY_CONTROLLED_MUTATION_ONLY

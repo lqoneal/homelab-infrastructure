@@ -1,0 +1,59 @@
+schema_version: "1.0"
+record_type: POST_CR47_EGR_AUTHORING_AND_PUBLICATION_PREPARATION_AUTHORITY
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  EGR_derivation:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-EGR-IDENTITY-AND-RECORDING-DERIVATION.yaml"
+    sha256: "5946630865cb17b5016c4edae488f5139ae24218a95918dc6acfe4b1877b9123"
+
+  roadmap_hardening_boundary:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-ROADMAP-MATURITY-HARDENING-BOUNDARY.yaml"
+    sha256: "baa4a0f69f2d27b0277bca0c733f22707a747554ccb4ba158c1a4938c2235a64"
+
+  publication_derivation:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-EGR-AND-DEFERRAL-PUBLICATION-DERIVATION.yaml"
+    sha256: "b87e2fa540835f9b29820bb113aead5a4416f64e732b48a02dde17d42ec34789"
+
+authorized_next_transaction:
+
+  author_exact_EGR:
+    authorized: true
+    identifier: "EGR-000007"
+    path: "docs/resolutions/EGR-000007-CR48-WOP-EENS-CONVERGENCE-DEFERRAL-AND-ROADMAP-MATURITY-HARDENING.md"
+    template: "docs/templates/TPL-0004-ENGINEERING_GOVERNANCE_RESOLUTION_TEMPLATE.md"
+    procedure: "docs/procedures/PROC-0002-ENGINEERING_GOVERNANCE_RESOLUTION_PROCEDURE.md"
+
+  reconcile_DOC_0001:
+    authorized: true
+    reason: register newly authored EGR
+
+  derive_required_EMM_rebinding:
+    authorized: true
+
+  validate_controlled_documents:
+    authorized: true
+
+  derive_complete_publication_surface:
+    authorized: true
+
+  derive_publication_execution_authority:
+    authorized: true
+
+not_authorized:
+  activate_roadmap_hardening: true
+  mutate_SPEC_0015: true
+  mutate_SPEC_0016: true
+  mutate_canonical_roadmap: true
+  execute_C06: true
+  execute_C08: true
+  execute_C09: true
+  execute_CR48: true
+  stage: true
+  commit: true
+  push: true
+  EOS_sync: true
+
+next_authorized_action:
+  AUTHOR_EXACT_EGR_AND_RECONCILE_CONTROLLED_INDEX_AND_PUBLICATION_INPUTS_ONLY

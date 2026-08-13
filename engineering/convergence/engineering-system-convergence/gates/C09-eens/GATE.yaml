@@ -1,17 +1,19 @@
 schema_version: 2
 gate_id: C09
-title: EENS Assessment
+title: EENS Assessment and Primary Implementation Package
 status: PENDING
 gate_type: ASSESSMENT
-purpose: Separate qualified EENS operational capability from speculative or deferred notification architecture.
+purpose: Separate qualified EENS operational capability from speculative architecture and define the primary bounded EENS implementation/integration package against the C06 execution-lifecycle contract.
 problem_statement: EENS Operational Alpha exists, while advanced HNS concepts are deferred and documentation/runtime boundaries can obscure that distinction.
-objective: Inventory EENS code, deployment, runtime, event contracts, persistence, producer/consumer interfaces, notification authority, and deferred HNS concepts.
+objective: Inventory EENS code, deployment, runtime, event contracts, persistence, producer/consumer interfaces, notification authority, and deferred HNS concepts, then define the primary EENS capability-development and integration package without executing it.
 rationale: Convergence must preserve qualified operational capability and avoid rebuilding deferred architecture as if it were current.
 scope_in:
   - EENS sources, deployment, service state, events, persistence, interfaces, documentation, tests, and HNS deferrals.
+  - C06 WOP lifecycle event, identity, correlation, durability, replay, and notification-observation requirements.
 scope_out:
   - Modify, deploy, restart, or requalify EENS.
   - Implement HNS or speculative notification features.
+  - Execute the primary EENS implementation package; implementation remains separately authorized through C20 and successor work.
 dependencies: [C08]
 entry_conditions:
   - C08 Zeus interactions are mapped and C09 is explicitly selected.
@@ -25,21 +27,25 @@ assessment_or_execution_procedure:
   - Trace notification authority and delivery/persistence semantics.
   - Compare qualified Operational Alpha behavior with documentation and deferred HNS concepts.
   - Classify retained capability, divergence, overlap, and simplification candidates.
+  - Define the primary EENS implementation/integration package, dependencies, qualification vectors, rollback, and downstream C10-C14 contracts.
 required_outputs:
   - EENS component and deployment inventory.
   - Event and persistence contract map.
   - Producer/consumer and authority matrix.
   - Operational-versus-deferred capability register.
   - Divergence and simplification findings with RESULT.yaml.
+  - Primary EENS implementation package and capability-to-downstream-gate contract.
 required_evidence:
   - Source/service/configuration observations gathered without service mutation.
 acceptance_criteria:
   - EENS Operational Alpha is represented as existing qualified capability.
   - Deferred HNS concepts are clearly separated from current behavior.
+  - The primary EENS package explicitly covers transactional durability, append-only persistence, replay, checkpoints, consumer registration and acknowledgement semantics, notification delivery, service operation, failure recovery, observability, Zeus lifecycle correlation, and independent qualification readiness, consuming the C06 foundation without duplicating its minimum contract.
+  - Primary EENS implementation scope is explicit and no C10-C14 gate depends on undefined EENS capability.
 fail_closed_conditions:
   - Service inspection would change state or send production notifications.
   - Deferred concepts are represented as implemented capability.
-stop_boundary: Stop after assessment; do not modify EENS or implement HNS.
+stop_boundary: Stop after assessment and primary implementation-package design; do not modify EENS, implement HNS, or execute the package.
 result_location: engineering/convergence/engineering-system-convergence/gates/C09-eens/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C09-eens/evidence
 next_gate: C10

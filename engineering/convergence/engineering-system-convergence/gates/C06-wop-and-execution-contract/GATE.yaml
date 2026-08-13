@@ -1,19 +1,22 @@
 schema_version: 2
 gate_id: C06
-title: WOP and Execution Contract Assessment
+title: WOP and Foundational Execution Contract Assessment
 status: PENDING
 gate_type: ASSESSMENT
-purpose: Establish the real contract and authority flow from work source through package, admission, execution, handoff, and evidence.
+purpose: Establish the canonical WOP execution contract and define the minimum EENS contract and bounded development package required by downstream convergence.
 problem_statement: Multiple WOP forms, schemas, canonical packages, lifecycle records, and controllers can duplicate identity, state, and evidence semantics.
-objective: Inventory and reconcile WOP source formats, canonical packages, schemas, packaging, admission, authority, execution contracts, handoffs, revisions, evidence contracts, and lifecycle records.
+objective: Inventory and reconcile WOP source formats, canonical packages, schemas, packaging, admission, authority, execution contracts, handoffs, revisions, evidence contracts, lifecycle records, and the minimum EENS event/correlation contract required by that lifecycle.
 rationale: Later simplification requires knowing which WOP representation is authoritative at every boundary.
 scope_in:
   - WOP authoring, packaging, validation, admission, lifecycle, execution interface, handoff, revision, and evidence contracts.
+  - Foundational WOP/EENS identity, envelope, integrity, correlation, submission, admission-observation, and replay-isolation contracts.
+  - A bounded prospective development package for the foundational WOP substrate and minimum EENS execution-lifecycle contract.
 scope_out:
-  - Redesign WOP, submit work, admit missions, dispatch providers, or execute packages.
+  - Execute WOP/EENS development, submit work, admit missions, dispatch providers, or execute packages.
 dependencies: [C05]
 entry_conditions:
   - C05 ownership findings are complete and C06 is explicitly selected.
+  - Qualified SPEC-0015 and SPEC-0016 remain intact and their provenance is available.
 authoritative_inputs:
   - STD-0003, PROC-0001, WOP schemas and packages, admission/execution interfaces, controllers, and prior findings.
 execution_playbook:
@@ -24,22 +27,28 @@ assessment_or_execution_procedure:
   - Trace authoring through packaging, validation, submission, admission, handoff, execution, evidence, and closeout.
   - Identify ownership, transformations, duplicate validators, state copies, and authority gaps.
   - Record compatibility and simplification candidates without altering contracts.
+  - Define the C06 foundational WOP/EENS contract and a separately authorized implementation package without executing it.
 required_outputs:
   - WOP artifact and schema inventory.
   - End-to-end contract/dataflow map.
   - Authority and lifecycle matrix.
   - Duplicate representation/validator register.
   - Handoff, revision, and evidence-contract assessment.
+  - Canonical WOP foundational contract and minimum EENS execution-lifecycle contract.
+  - Bounded foundational development package with authority, prerequisites, evidence, rollback, and C20 implementation-entry routing.
   - Findings and RESULT.yaml.
 required_evidence:
   - Representative package traces, schema references, controller call paths, and read-only validation results.
 acceptance_criteria:
   - Every WOP form and transition has a recorded owner, identity rule, input, output, and consumer.
   - Gaps and redundancies are source-linked and no work is submitted or executed.
+  - The bounded foundation explicitly covers canonical package structure and identity, integrity verification, authoritative bootstrap and deterministic order, gate representation and idempotency, authority/binding, evidence locations, interruption/recovery, completion/closeout, machine-readable Zeus state, and pre-participation validation.
+  - The minimum EENS boundary explicitly covers canonical event identity and envelope, append/persistence, idempotency, required ordering, mission/WOP/gate correlation, replay isolation, minimum consumer/checkpoint semantics, and event observability without claiming complete EENS maturity.
+  - Downstream C07-C14 consumers have explicit WOP/EENS entry contracts; no downstream gate depends on unestablished capability.
 fail_closed_conditions:
   - A WOP identity or authority transition cannot be traced deterministically.
   - Inspection would create, revise, admit, or execute a package.
-stop_boundary: Stop after assessment; do not redesign WOP or begin EMP assessment automatically.
+stop_boundary: Stop after assessment and bounded development-package design; do not execute WOP/EENS development or begin EMP assessment automatically.
 result_location: engineering/convergence/engineering-system-convergence/gates/C06-wop-and-execution-contract/RESULT.yaml
 evidence_location: engineering/convergence/engineering-system-convergence/gates/C06-wop-and-execution-contract/evidence
 next_gate: C07
@@ -48,7 +57,7 @@ terminal:
   continuation_authority: null
   continuation_action: null
 resume_instructions:
-  start_here: Use C05 ownership boundaries to trace WOP contracts read-only from source to closeout.
+  start_here: Use C05 ownership boundaries to trace WOP contracts read-only from source to closeout, then resolve the foundational WOP/EENS contract and bounded development package.
   validate_first: engctl roadmap validate
   next_authorized_action: BEGIN_C06_WOP_AND_EXECUTION_CONTRACT_ASSESSMENT
   execution_authority: SEPARATE_AUTHORITY_REQUIRED

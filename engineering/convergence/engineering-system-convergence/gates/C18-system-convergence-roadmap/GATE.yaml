@@ -3,9 +3,9 @@ gate_id: C18
 title: System Convergence Roadmap
 status: PENDING
 gate_type: PLANNING
-purpose: Convert the approved target architecture into a safe, executable migration sequence.
+purpose: Convert the approved target architecture and already-developed or explicitly scheduled subsystem capabilities into a safe, executable system-level migration sequence.
 problem_statement: An architecture alone does not define dependency order, acceptance gates, compatibility periods, rollback boundaries, or authorization packages.
-objective: Convert the approved target architecture into an executable implementation roadmap with dependency-ordered migration gates and safe rollback boundaries.
+objective: Reconcile the approved target architecture, C06 WOP foundation, C09 EENS package, and downstream subsystem results into an executable implementation roadmap with dependency-ordered migration gates and safe rollback boundaries.
 rationale: Controlled implementation requires bounded work units that preserve service, history, authority, and recoverability.
 scope_in:
   - Migration gates, dependencies, prerequisites, outputs, evidence, acceptance, compatibility, rollback, deprecation, and authorization needs.
@@ -17,6 +17,7 @@ entry_conditions:
   - C18 is explicitly selected and unresolved architecture blockers are absent.
 authoritative_inputs:
   - Approved C17 architecture, C16 dispositions, subsystem evidence, governing lifecycle/publication/recovery contracts.
+  - engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/evidence/QUALIFIED-WOP-EENS-CANONICAL-QUALIFICATION-002.yaml
 execution_playbook:
   catalog: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
   playbook_id: ESC-C18
@@ -27,6 +28,7 @@ assessment_or_execution_procedure:
   - Validate end-to-end ordering, no orphan consumers, service continuity, and recovery at every boundary.
 required_outputs:
   - Approved implementation/migration roadmap.
+  - System-level convergence roadmap consuming WOP/EENS capabilities developed or scheduled at their earlier capability boundaries.
   - Dependency and critical-path model.
   - Gate evidence and acceptance contracts.
   - Compatibility/deprecation/removal plan.
@@ -37,6 +39,7 @@ required_evidence:
 acceptance_criteria:
   - Every target change is assigned to a bounded dependency-ordered gate.
   - Every gate has safe rollback, evidence, acceptance, and separate authorization boundaries.
+  - C18 does not introduce WOP/EENS development for the first time; the retained INT catalog is provenance and traceability evidence only.
 fail_closed_conditions:
   - Migration order can strand a consumer, split authority, lose history, or prevent rollback.
   - A gate implies authorization beyond its explicit package.

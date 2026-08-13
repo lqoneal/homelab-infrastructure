@@ -240,7 +240,7 @@ def _inventory(root: Path, baseline: dict[str, Any]) -> tuple[str, list[dict[str
 
 
 def _authority(root: Path) -> dict[str, Any]:
-    value = operational_beta.authority(root, include_current_execution=False)
+    value = operational_beta.authority(root)
     if any(value.get(key) != expected for key, expected in {
         "authority_framework": "OPERATION_BETA", "active_operation": "BETA",
         "authority_integrity": "PASS", "authority_resolution": "PASS",

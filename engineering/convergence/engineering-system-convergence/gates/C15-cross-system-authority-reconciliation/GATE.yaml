@@ -15,6 +15,7 @@ dependencies: [C02, C03, C04, C05, C06, C07, C08, C09, C10, C11, C12, C13, C14]
 entry_conditions:
   - C02 through C14 are evidence-backed complete and all unresolved conflicts are available.
   - C15 is explicitly selected after operator review.
+  - WOP foundational and EENS primary capability packages are represented as upstream inputs; no capability is introduced for the first time at C15.
 authoritative_inputs:
   - All prior gate results, evidence, controlled sources, implementation maps, and observed state.
 execution_playbook:

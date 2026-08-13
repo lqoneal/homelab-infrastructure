@@ -1,0 +1,44 @@
+schema_version: "1.0"
+record_type: ZEUS_CONTROLLED_WORK_PROJECTION_DISPOSITION
+result: PASS
+decision_state: APPROVED
+
+subject:
+  corrective_sequence: ESC-C02-CORRECTIVE-001
+  controlled_item: CR48
+
+binding_gap:
+  canonical_Zeus_mission_binding: NOT_ESTABLISHED
+  synthetic_mission_creation_required_now: false
+  OA_30_usable_as_CR48_projection: false
+
+interim_resolution:
+  projection_type: CONTROLLED_WORK_PROJECTION
+  projection_id: CWP-ESC-C02-CORRECTIVE-001-CR48
+  authoritative_source: REPOSITORY_CONTROLLED_STATE
+  creates_Zeus_mission_identity: false
+  grants_execution_authority: false
+  grants_CR48_execution_authority: false
+
+projection_requirements:
+  expose_subject_identity: true
+  expose_current_state: true
+  expose_blockers: true
+  expose_next_authorized_action: true
+  expose_condition_precedent: true
+  preserve_source_provenance: true
+  fail_if_source_state_changes_without_refresh: true
+
+publication_policy:
+  Zeus_mission_native_CR48_verification_required_for_this_publication: false
+  controlled_projection_verification_required: true
+
+future_hardening:
+  integrate_controlled_work_projection_into_Zeus_CLI: REQUIRED
+  reconcile_with_WOP_EENS_execution_architecture: REQUIRED
+  determine_permanent_mission_workitem_gate_identity_model: REQUIRED
+
+CR48:
+  remains_current: true
+  remains_held: true
+  execution_authorized: false

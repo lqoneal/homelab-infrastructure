@@ -1,0 +1,110 @@
+schema_version: "1.0"
+record_type: ENGINEERING_GOVERNANCE_DECISION
+decision_id: EG-DECISION-CR48-WOP-EENS-DEFERRAL-001
+
+decision:
+  status: APPROVED
+  subject_disposition: DEFERRED
+  decision_at: "2026-08-12T12:09:50Z"
+
+decision_maker:
+  role: Engineering Governance
+  authority_basis:
+    - CHAR-0001
+    - POL-0001
+    - STD-0000
+    - STD-0001
+    - PROC-0008
+    - PROC-0002
+
+subject:
+  corrective_sequence: ESC-C02-CORRECTIVE-001
+  corrective_item: CR48
+  current_parent_gate: C02
+
+approved_disposition:
+  value: DEFERRED_PENDING_WOP_EENS_DEVELOPMENT
+
+approved_condition_precedent:
+  id: WOP_EENS_EXECUTION_ARCHITECTURE_CONVERGENCE
+
+  requirements:
+    - C06 WOP and Execution Contract Assessment
+    - C08 Zeus Assessment
+    - C09 EENS Assessment
+    - shared WOP / Zeus / EENS interface freeze
+    - directly affected controlled-document reconciliation
+    - separately authorized joint implementation
+    - integrated WOP -> Zeus -> Codex -> EENS -> evidence ->
+      qualification -> publication/reconciliation qualification
+    - fresh CR48 readiness assessment
+
+effects:
+  cr47_remains_completed: true
+  cr48_remains_current: true
+  cr48_remains_unexecuted: true
+  cr48_result_remains_absent: true
+  c02_remains_current_parent_gate: true
+  cr48_execution_is_blocked_by_condition_precedent: true
+
+approved_followup_execution:
+  exact_bounded_controlled_mutation_authorized: true
+
+  authorized_targets:
+    - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml"
+    - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ROADMAP.yaml"
+    - "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/HISTORY.md"
+    - docs/project/PROJ-0001-PROJECT_STATE.md
+    - "engineering/convergence/engineering-system-convergence/binding-manifest.yaml"
+
+  permitted_effect:
+    - persist the approved CR48 deferral
+    - persist the named WOP/EENS condition precedent
+    - project the approved hold into Project State
+    - perform only directly required EMM reconciliation
+    - validate roadmap/state consistency
+    - write bounded mutation evidence
+
+  not_authorized:
+    - execute CR48
+    - write CR48 RESULT.yaml
+    - execute CR49
+    - begin C06
+    - begin C08
+    - begin C09
+    - implement WOP
+    - implement EENS
+    - implement Zeus
+    - stage
+    - commit
+    - push
+    - synchronize EOS
+    - publish the mutation
+
+decision_basis:
+  control_ownership:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-DEFERRAL-CONTROL-OWNERSHIP-CLASSIFICATION.yaml"
+    sha256: "a314f2aac6e36b50379f9a26f62f25d1c3002f57c60a1809391a37b6308cffbe"
+
+  dependency_contract:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-DEPENDENCY-CONTRACT.yaml"
+    sha256: "af8c4a3b24e67a2fbdd86ba98cd17b576adb8d08351151e89e40212fa52cc59c"
+
+  mutation_boundary:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-DEFERRAL-CONTROLLED-MUTATION-BOUNDARY.yaml"
+    sha256: "ab4bbf14147e74831c7dff0a36b6c200ec9be4af647922e65afb9557a2267b34"
+
+  derived_authority:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-DEFERRAL-CONTROLLED-MUTATION-AUTHORITY.yaml"
+    sha256: "344a27a6c9d447739bcdfe10930c0e0886494665ee2583b93435c0617757a7fd"
+
+governance_semantics:
+  approval_does_not_itself_mutate_controlled_records: true
+  approval_does_not_satisfy_condition_precedent: true
+  approval_does_not_authorize_deferred_work: true
+  downstream_mutation_must_remain_within_exact_approved_boundary: true
+  durable_EGR_recording_required: true
+  EGR_recording_does_not_replace_separate_execution_boundary: true
+
+next_authorized_action:
+  EXECUTE_EXACT_CR48_DEFERRAL_AND_WOP_EENS_CONDITION_PRECEDENT_CONTROLLED_MUTATION_ONLY

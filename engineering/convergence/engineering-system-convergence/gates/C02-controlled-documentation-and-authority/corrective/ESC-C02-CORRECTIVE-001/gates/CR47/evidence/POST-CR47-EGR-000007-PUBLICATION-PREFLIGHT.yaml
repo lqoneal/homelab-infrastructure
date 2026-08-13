@@ -1,0 +1,27 @@
+schema_version: "1.0"
+record_type: POST_CR47_EGR_000007_PUBLICATION_PREFLIGHT
+result: PASS
+
+EGR_000007:
+  authored: true
+  lifecycle_state: Approved
+  subject_disposition: Deferred
+  persistence_status: Pending
+
+DOC_0001_reconciled: true
+EMM_zero_drift: true
+roadmap_validation: PASS
+
+publication_control_paths_precreated: true
+publication_candidate_frozen: false
+publication_execution_authorized: false
+
+requirements:
+  inventory_complete_unpublished_surface_next: true
+  classify_every_unexplained_path: true
+  preserve_explicit_exclusions: true
+  precreate_additional_control_paths_before_freeze: true
+  fail_if_candidate_changes_after_freeze: true
+
+next:
+  action: DERIVE_STABLE_CLOSED_POST_DEFERRAL_PUBLICATION_CANDIDATE_ONLY

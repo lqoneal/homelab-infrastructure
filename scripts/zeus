@@ -757,7 +757,7 @@ def main(argv=None):
     provider_session_parser=sub.add_parser("provider-session", help="Create or verify the canonical provider session; never invokes a provider or starts execution."); provider_session_parser.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization")); provider_session_parser.add_argument("mission_id", nargs="?"); provider_session_parser.add_argument("--json", action="store_true")
     provider_invocation_parser=sub.add_parser("provider-invocation", help="Create or verify one bounded provider acknowledgement; never starts execution or mission work."); provider_invocation_parser.add_argument("action", choices=("create", "verify", "status", "artifacts", "authorization", "package", "acknowledgement")); provider_invocation_parser.add_argument("mission_id", nargs="?"); provider_invocation_parser.add_argument("--json", action="store_true")
     execution_start_parser=sub.add_parser("execution-start", help="Create, verify, or begin one bound execution-start lifecycle."); execution_start_parser.add_argument("action", choices=("create", "verify", "begin", "status", "authorization", "package", "session", "artifacts")); execution_start_parser.add_argument("mission_id", nargs="?"); execution_start_parser.add_argument("--approve", action="store_true", help="required for BEGIN_CONTROLLED_MISSION_WORK"); execution_start_parser.add_argument("--prompt"); execution_start_parser.add_argument("--codex-bin", default="codex", help=argparse.SUPPRESS); execution_start_parser.add_argument("--json", action="store_true")
-    codex_parser=sub.add_parser("codex", help="Operate the Zeus-owned Codex session (managed or operator-interactive).", add_help=False); codex_parser.add_argument("action", choices=("handoff", "shell", "interactive", "attach", "reconcile", "accept-reconciliation", "supersede", "start", "resume", "stop", "status", "logs", "artifacts", "timed", "timing")); codex_parser.add_argument("mission_id", nargs="?", help="mission identity or HANDOFF.md for `codex handoff`"); codex_parser.add_argument("--approve", action="store_true", help="required for mission-bound shell, start, resume, stop, or reconciliation mutation"); codex_parser.add_argument("--work-contract", type=Path, help="structured Zeus managed-work continuation contract for resume"); codex_parser.add_argument("--dry-run", action="store_true", help="force read-only reconciliation"); codex_parser.add_argument("--reject", action="store_true", help="record an explicit rejection of a safe non-authoritative history"); codex_parser.add_argument("--plan-digest", help="require this reviewed reconciliation plan digest before mutation"); codex_parser.add_argument("--diagnose", action="store_true", help="probe a remote endpoint without opening Codex"); codex_parser.add_argument("--preflight", action="store_true", help="validate direct launch without opening Codex"); codex_parser.add_argument("--remote", action="store_true", help="explicitly select REMOTE_INTERACTIVE; shell defaults to DIRECT_INTERACTIVE"); codex_parser.add_argument("--prompt", help="bounded initial prompt for managed start"); codex_parser.add_argument("--reason", default="NON_AUTHORITATIVE_RECONCILED_HISTORY", help=argparse.SUPPRESS); codex_parser.add_argument("--codex-bin", default="codex", help=argparse.SUPPRESS); codex_parser.add_argument("--session"); codex_parser.add_argument("--mode", choices=("DIRECT_INTERACTIVE", "REMOTE_INTERACTIVE", "OPERATOR_INTERACTIVE", "ZEUS_MANAGED")); codex_parser.add_argument("--latest", action="store_true"); codex_parser.add_argument("--active", action="store_true"); codex_parser.add_argument("--json", action="store_true"); codex_parser.add_argument("--help", action="store_true", dest="codex_help", help="show help for this Codex command")
+    codex_parser=sub.add_parser("codex", help="Operate the Zeus-owned Codex session (managed or operator-interactive).", add_help=False); codex_parser.add_argument("action", choices=("handoff", "shell", "interactive", "attach", "reconcile", "accept-reconciliation", "supersede", "start", "resume", "stop", "status", "logs", "artifacts", "timed", "timing")); codex_parser.add_argument("mission_id", nargs="?", help="mission identity or HANDOFF.md for `codex handoff`"); codex_parser.add_argument("--approve", action="store_true", help="required for mission-bound shell, start, resume, stop, or reconciliation mutation"); codex_parser.add_argument("--write", action="store_true", help="request bounded repository-operator workspace write (requires --approve)"); codex_parser.add_argument("--work-contract", type=Path, help="structured Zeus managed-work continuation contract for resume"); codex_parser.add_argument("--dry-run", action="store_true", help="force read-only reconciliation"); codex_parser.add_argument("--reject", action="store_true", help="record an explicit rejection of a safe non-authoritative history"); codex_parser.add_argument("--plan-digest", help="require this reviewed reconciliation plan digest before mutation"); codex_parser.add_argument("--diagnose", action="store_true", help="probe a remote endpoint without opening Codex"); codex_parser.add_argument("--preflight", action="store_true", help="validate direct launch without opening Codex"); codex_parser.add_argument("--remote", action="store_true", help="explicitly select REMOTE_INTERACTIVE; shell defaults to DIRECT_INTERACTIVE"); codex_parser.add_argument("--prompt", help="bounded initial prompt for managed start"); codex_parser.add_argument("--reason", default="NON_AUTHORITATIVE_RECONCILED_HISTORY", help=argparse.SUPPRESS); codex_parser.add_argument("--codex-bin", default="codex", help=argparse.SUPPRESS); codex_parser.add_argument("--session"); codex_parser.add_argument("--mode", choices=("DIRECT_INTERACTIVE", "REMOTE_INTERACTIVE", "OPERATOR_INTERACTIVE", "ZEUS_MANAGED")); codex_parser.add_argument("--latest", action="store_true"); codex_parser.add_argument("--active", action="store_true"); codex_parser.add_argument("--json", action="store_true"); codex_parser.add_argument("--help", action="store_true", dest="codex_help", help="show help for this Codex command")
     orchestrate=sub.add_parser("orchestrate"); orchestrate.add_argument("action", choices=("status", "verify")); orchestrate.add_argument("--json", action="store_true")
     agent=sub.add_parser("agent"); agent.add_argument("action", choices=("list","registry","status","qualify","revoke","select")); agent.add_argument("agent_id", nargs="?"); agent.add_argument("--mission-class", default="engineering"); agent.add_argument("--tool", action="append", default=["zeus-cli", "bounded-artifact-handler"]); agent.add_argument("--profile", action="append", default=["controlled-wop-only", "exact-repository-baseline", "no-unreviewed-external-effects"]); agent.add_argument("--json", action="store_true")
     provider=sub.add_parser("provider", help="Select or verify the canonical provider for one Beta mission without dispatch."); provider.add_argument("action", choices=("select", "verify", "candidates", "status", "qualification", "artifacts")); provider.add_argument("mission_id"); provider.add_argument("--json", action="store_true")
@@ -1763,7 +1763,14 @@ def main(argv=None):
                 if a.diagnose and not a.remote:
                     raise codex_interactive.InteractiveCodexError("REMOTE_MODE_REQUIRED",
                         "--diagnose is only valid with explicit --remote", next_action="SELECT_REMOTE_INTERACTIVE")
-                if a.preflight and (a.action not in {"shell", "interactive"} or a.remote):
+                if a.write and a.action not in {"shell", "interactive"}:
+                    raise codex_interactive.InteractiveCodexError(
+                        "FAIL_UNSUPPORTED_OPTION_FOR_ACTION",
+                        "--write is only valid for codex shell or codex interactive",
+                        next_action="SELECT_INTERACTIVE_LAUNCH",
+                    )
+                managed_preflight = bool(a.preflight and a.dry_run and a.action == "start" and a.mode == "ZEUS_MANAGED")
+                if a.preflight and not managed_preflight and (a.action not in {"shell", "interactive"} or a.remote):
                     raise codex_interactive.InteractiveCodexError("DIRECT_PREFLIGHT_ONLY",
                         "--preflight is only valid for direct interactive shell", next_action="SELECT_DIRECT_INTERACTIVE")
                 # Keep this table explicit.  In particular, read-only actions
@@ -1773,21 +1780,22 @@ def main(argv=None):
                 if a.action not in CODEX_CONTROLLER_ROUTING:
                     raise RuntimeError(f"unmapped codex action: {a.action}")
                 interactive_read = bool(a.session or a.mode in {"DIRECT_INTERACTIVE", "REMOTE_INTERACTIVE", "OPERATOR_INTERACTIVE"})
+                interactive_selector = interactive_read and bool(a.session or a.active or a.latest)
                 if a.action == "status":
-                    value = (codex_adapter.status_selector(ROOT, mission_id=mission_id,
-                             selector="active" if a.active else "latest", runtime_root=a.runtime_root)
-                             if (a.active or a.latest) and not interactive_read else codex_interactive.status(ROOT, mission_id, session_id=a.session, latest=a.latest, active=a.active, runtime_root=a.runtime_root)
-                             if interactive_read else codex_adapter.status(ROOT, managed_id, runtime_root=a.runtime_root))
+                    value = (codex_interactive.status(ROOT, mission_id, session_id=a.session, latest=a.latest, active=a.active, runtime_root=a.runtime_root)
+                             if interactive_selector else codex_interactive.status(ROOT, mission_id, runtime_root=a.runtime_root)
+                             if interactive_read else (codex_adapter.selected_status(ROOT, mission_id, session_id=a.session, latest=a.latest, active=a.active, runtime_root=a.runtime_root)
+                             if (a.session or a.active or a.latest) else codex_adapter.status(ROOT, managed_id, runtime_root=a.runtime_root)))
                 elif a.action == "logs":
-                    value = (codex_adapter.status_selector(ROOT, mission_id=mission_id,
-                             selector="active" if a.active else "latest", runtime_root=a.runtime_root)
-                             if (a.active or a.latest) and not interactive_read else codex_interactive.logs(ROOT, mission_id, session_id=a.session, latest=a.latest, active=a.active, runtime_root=a.runtime_root)
-                             if interactive_read else codex_adapter.logs(ROOT, managed_id, runtime_root=a.runtime_root))
+                    value = (codex_interactive.logs(ROOT, mission_id, session_id=a.session, latest=a.latest, active=a.active, runtime_root=a.runtime_root)
+                             if interactive_selector else codex_interactive.logs(ROOT, mission_id, runtime_root=a.runtime_root)
+                             if interactive_read else (codex_adapter.selected_status(ROOT, mission_id, session_id=a.session, latest=a.latest, active=a.active, runtime_root=a.runtime_root)
+                             if (a.session or a.active or a.latest) else codex_adapter.logs(ROOT, managed_id, runtime_root=a.runtime_root)))
                 elif a.action == "artifacts":
-                    value = (codex_adapter.status_selector(ROOT, mission_id=mission_id,
-                             selector="active" if a.active else "latest", runtime_root=a.runtime_root)
-                             if (a.active or a.latest) and not interactive_read else codex_interactive.artifacts(ROOT, mission_id, session_id=a.session, latest=a.latest, active=a.active, runtime_root=a.runtime_root)
-                             if interactive_read else codex_adapter.artifacts(ROOT, managed_id, runtime_root=a.runtime_root))
+                    value = (codex_interactive.artifacts(ROOT, mission_id, session_id=a.session, latest=a.latest, active=a.active, runtime_root=a.runtime_root)
+                             if interactive_selector else codex_interactive.artifacts(ROOT, mission_id, runtime_root=a.runtime_root)
+                             if interactive_read else (codex_adapter.selected_status(ROOT, mission_id, session_id=a.session, latest=a.latest, active=a.active, runtime_root=a.runtime_root)
+                             if (a.session or a.active or a.latest) else codex_adapter.artifacts(ROOT, managed_id, runtime_root=a.runtime_root)))
                 elif a.action == "reconcile":
                     value = codex_reconciliation.reconcile(ROOT, runtime_root=a.runtime_root, approve=a.approve,
                                                             mode=a.mode, dry_run=True if a.dry_run else None,
@@ -1820,19 +1828,25 @@ def main(argv=None):
                         raise codex_adapter.CodexAdapterError("OLD_SESSION_REQUIRED", "--session is required for session supersession", next_action="SELECT_STALE_SESSION")
                     value = codex_adapter.supersede_session(ROOT, managed_id, a.session, reason=a.reason, runtime_root=a.runtime_root)
                 elif a.action == "shell":
-                    value = (codex_interactive.direct_launcher_preflight(ROOT, mission_id, approval=a.approve, codex_bin=a.codex_bin)
+                    value = (codex_interactive.direct_launcher_preflight(ROOT, mission_id, approval=a.approve, write_requested=a.write, codex_bin=a.codex_bin)
                              if a.preflight else (codex_interactive.diagnose(ROOT, mission_id, approval=a.approve, codex_bin=a.codex_bin, runtime_root=a.runtime_root)
                              if a.diagnose and a.remote else codex_interactive.shell(ROOT, mission_id, approval=a.approve,
-                             codex_bin=a.codex_bin, remote=a.remote, runtime_root=a.runtime_root)))
+                             codex_bin=a.codex_bin, remote=a.remote, write_requested=a.write, runtime_root=a.runtime_root)))
                 elif a.action == "interactive":
-                    value = (codex_interactive.direct_launcher_preflight(ROOT, mission_id, approval=a.approve, codex_bin=a.codex_bin)
+                    value = (codex_interactive.direct_launcher_preflight(ROOT, mission_id, approval=a.approve, write_requested=a.write, codex_bin=a.codex_bin)
                              if a.preflight else (codex_interactive.diagnose(ROOT, mission_id, approval=a.approve, codex_bin=a.codex_bin, runtime_root=a.runtime_root)
                              if a.diagnose and a.remote else codex_interactive.shell(ROOT, mission_id, approval=a.approve,
-                             codex_bin=a.codex_bin, remote=a.remote, runtime_root=a.runtime_root)))
+                             codex_bin=a.codex_bin, remote=a.remote, write_requested=a.write, runtime_root=a.runtime_root)))
                 elif a.action == "attach":
-                    value = codex_interactive.attach(ROOT, mission_id, session_id=a.session, runtime_root=a.runtime_root)
+                    value = codex_interactive.attach(ROOT, mission_id, session_id=a.session, latest=a.latest, active=a.active, runtime_root=a.runtime_root)
                 elif a.action == "start":
-                    value = codex_adapter.start(ROOT, managed_id, approval=a.approve, prompt=a.prompt, codex_bin=a.codex_bin, runtime_root=a.runtime_root)
+                    value = (codex_adapter.resolve_provider_invocation_contract(
+                                ROOT, work_contract=a.work_contract, codex_bin=a.codex_bin,
+                                runtime_root=a.runtime_root)
+                             if managed_preflight else codex_adapter.start(
+                                ROOT, managed_id, approval=a.approve, prompt=a.prompt,
+                                codex_bin=a.codex_bin, runtime_root=a.runtime_root,
+                                work_contract=a.work_contract))
                 elif a.action == "resume":
                     value = codex_adapter.resume(ROOT, managed_id, approval=a.approve, codex_bin=a.codex_bin, runtime_root=a.runtime_root,
                                                   work_contract=a.work_contract)
@@ -1845,12 +1859,13 @@ def main(argv=None):
                 value = {"result": "FAIL", "mission_id": mission_id,
                          "blockers": [{"code": error.code, "message": error.message, **getattr(error, "details", {})}],
                          "next_authorized_action": error.next_action,
-                         "read_only": a.action in {"status", "logs", "artifacts"}}
+                         "codex_launched": "NO", "repository_mutation_authorized": "NO",
+                         "read_only": a.action in {"status", "logs", "artifacts"} or managed_preflight}
             if a.json:
                 emit(value)
             else:
                 print("Zeus Codex Session\n-------------------")
-                for key in ("result", "mission_id", "session_id", "execution_id", "provider_id", "repository_id", "execution_mode", "session_mode", "provider_mode", "transport", "mode", "state", "process_alive", "direct_launcher", "launcher", "launcher_present", "launcher_regular_file", "launcher_executable", "launcher_within_repository", "codex_binary", "codex_executable", "auth_config", "repository_binding", "mission_binding", "authority_context", "pty_required_for_launch", "codex_not_launched", "remote_endpoint", "endpoint_uri", "listener_pid", "listener_exit_code", "failure_phase", "process_alive", "pty_binding", "terminal_io", "mission_bound", "execution_bound", "repository_bound", "mission_work_started", "repository_work_started", "execution_monitoring", "replay", "replay_result", "plan_digest", "required_action_count", "executable_action_count", "blocked_action_count", "actions_attempted", "actions_completed", "actions_failed", "preserved_target_count", "reconciliation_applied", "reconciliation_applied_this_invocation", "reconciliation_already_applied", "reconciliation_required", "reconciliation_fully_converged", "terminal_state", "cardinality_result", "notices", "blockers", "next_authorized_action"):
+                for key in ("result", "preflight_status", "mission_id", "session_id", "execution_id", "provider_id", "repository_id", "execution_mode", "session_mode", "provider_mode", "provider_transport", "transport", "mode", "binding_class", "authority_mode", "write_requested", "write_approved", "protected_lifecycle_authority", "state", "process_alive", "provider_started", "direct_launcher", "launcher", "launcher_present", "launcher_regular_file", "launcher_executable", "launcher_within_repository", "codex_binary", "codex_version", "codex_executable", "command", "required_codex_invocation_arguments", "approval_policy", "interaction", "sandbox", "app_server_protocol", "strict_config", "authentication", "codex_home", "codex_home_isolation", "codex_home_writable", "auth_config", "work_contract", "work_contract_id", "work_contract_capabilities", "workspace", "repository_binding", "mission_binding", "execution_binding", "authority_context", "pty_required_for_launch", "codex_not_launched", "remote_endpoint", "endpoint_uri", "listener_pid", "listener_exit_code", "failure_phase", "process_alive", "pty_binding", "terminal_io", "mission_bound", "execution_bound", "repository_bound", "mission_work_started", "repository_work_started", "execution_monitoring", "replay", "replay_result", "plan_digest", "required_action_count", "executable_action_count", "blocked_action_count", "actions_attempted", "actions_completed", "actions_failed", "preserved_target_count", "reconciliation_applied", "reconciliation_applied_this_invocation", "reconciliation_already_applied", "reconciliation_required", "reconciliation_fully_converged", "terminal_state", "cardinality_result", "notices", "blockers", "next_authorized_action"):
                     if key in value:
                         print(f"{key.replace('_', ' ').title():24}: {value[key]}")
                 blockers = value.get("blockers", [])

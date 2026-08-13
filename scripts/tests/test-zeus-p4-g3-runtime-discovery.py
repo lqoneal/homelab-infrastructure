@@ -26,10 +26,11 @@ class P4G3RuntimeDiscoveryTests(unittest.TestCase):
             self.assertTrue(value["provider_ready"])
             self.assertTrue(value["provider_selected"])
             # This historical Beta runtime has a completed downstream chain;
-            # current canonical status deliberately stops at the legacy
-            # reconciliation boundary rather than exposing a stale work
-            # action as current authority.
-            self.assertEqual(value["next_action"], "OPERATOR_REVIEW_LEGACY_LIFECYCLE_RECONCILIATION")
+            # current canonical status neither repeats the accepted legacy
+            # decision nor exposes a stale work action as current authority.
+            self.assertEqual(value["next_action"], "FOLLOW_CURRENT_OPERATION_BETA_AUTHORITY")
+            self.assertEqual(value["codex_session_state"], "RECONCILED_HISTORICAL")
+            self.assertFalse(value["codex_process_alive"])
         after = {p: p.read_bytes() for p in Path("/home/loneal/.local/state/zeus-runtime/homelab-6bd83f9079d6fc57").rglob("*.json")}
         self.assertEqual(before, after)
 

@@ -1,0 +1,124 @@
+schema_version: '1.0'
+record_type: POST_CR47_CR48_ROADMAP_SCHEMA_PROJECTION_DIAGNOSTIC
+result: PASS
+failure_classification: ROADMAP_SCHEMA_ASSUMPTION_INVALID
+invalid_assumption: ROADMAP.yaml contains root items[] entries with item == CR48
+controlled_state:
+  last_completed_item: CR47
+  current_item: CR48
+  next_authorized_action: HOLD_CR48_PENDING_WOP_EENS_CONVERGENCE
+  blockers: &id001
+  - &id002
+    code: CR48_WOP_EENS_CONVERGENCE_REQUIRED
+    classification: CONDITION_PRECEDENT
+    subject: CR48
+    disposition: DEFERRED_PENDING_WOP_EENS_DEVELOPMENT
+    dependency_contract: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-DEPENDENCY-CONTRACT.yaml
+    maturity_hardening_direction: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-ROADMAP-MATURITY-HARDENING-GOVERNANCE-DIRECTION.yaml
+    required_sequence:
+    - MATURITY_HARDEN_WOP_MATURITY_ROADMAP
+    - MATURITY_HARDEN_EENS_MATURITY_ROADMAP
+    - QUALIFY_BOTH_SUBSYSTEM_ROADMAPS
+    - CONVERGE_INTO_CANONICAL_ROADMAP
+    - MATURITY_HARDEN_ENTIRE_CANONICAL_ROADMAP
+    - QUALIFY_REHARDENED_CANONICAL_ROADMAP
+    - AUTHORIZE_AND_COMPLETE_JOINT_IMPLEMENTATION
+    - COMPLETE_INTEGRATED_QUALIFICATION
+    - REASSESS_CR48_READINESS
+discovery:
+  state_CR48_matches:
+  - path: $
+    value:
+      schema_version: 1
+      roadmap_id: ESC-C02-CORRECTIVE-001
+      parent_roadmap: ESC-ROADMAP-001
+      parent_gate: C02
+      trigger_finding: C02-F-027
+      state: ACTIVE
+      completed_items:
+      - CR00
+      - CR01
+      - CR02
+      - CR03
+      - CR04
+      - CR05
+      - CR06
+      - CR07
+      - CR08
+      - CR09
+      - CR10
+      - CR11
+      - CR12
+      - CR13
+      - CR14
+      - CR15
+      - CR16
+      - CR17
+      - CR18
+      - CR19
+      - CR20
+      - CR21
+      - CR22
+      - CR23
+      - CR24
+      - CR25
+      - CR26
+      - CR27
+      - CR28
+      current_item: CR48
+      blockers: *id001
+      c02:
+        result: COMPLETE_WITH_FINDINGS
+        operator_assessment_disposition: ACCEPTED
+        roadmap_state_advanced: false
+      next_authorized_action: HOLD_CR48_PENDING_WOP_EENS_CONVERGENCE
+      roadmap_version: 1.0.7
+      completed_maturity_items:
+      - CR12M1
+      - CR16M1
+      - CR16M2M1
+      - CR16M2
+      last_completed_item: CR47
+      updated_at: '2026-08-11T19:16:16.608476+00:00'
+  - path: $.blockers[0]
+    value: *id002
+  roadmap_CR48_matches:
+  - path: $.current_executable_horizon.deferred_items[0]
+    value:
+      item: CR48
+      disposition: DEFERRED_PENDING_WOP_EENS_DEVELOPMENT
+      condition_precedent: WOP_EENS_EXECUTION_ARCHITECTURE_CONVERGENCE
+      dependency_contract: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-DEPENDENCY-CONTRACT.yaml
+      maturity_hardening_direction: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-ROADMAP-MATURITY-HARDENING-GOVERNANCE-DIRECTION.yaml
+      reason: CR48 structural predecessor dependency is satisfied, but systemic execution
+        readiness fails because the WOP/Zeus/EENS architecture and execution contract
+        are not yet controlled and integrated.
+      required_before_canonical_roadmap_convergence:
+      - MATURITY_HARDEN_WOP_MATURITY_ROADMAP
+      - MATURITY_HARDEN_EENS_MATURITY_ROADMAP
+      - INDEPENDENTLY_QUALIFY_BOTH_HARDENED_ROADMAPS
+      canonical_roadmap_convergence:
+        required: true
+        source_roadmaps_must_be_hardened_first: true
+      required_after_canonical_roadmap_convergence:
+      - MATURITY_HARDEN_ENTIRE_CANONICAL_ROADMAP
+      - INDEPENDENTLY_QUALIFY_REHARDENED_CANONICAL_ROADMAP
+      remaining_condition_precedent:
+      - CONTROLLED_WOP_ZEUS_EENS_INTERFACE_FREEZE
+      - CONTROLLED_DOCUMENT_RECONCILIATION
+      - SEPARATELY_AUTHORIZED_JOINT_IMPLEMENTATION
+      - INTEGRATED_WOP_ZEUS_CODEX_EENS_QUALIFICATION
+      - FRESH_CR48_READINESS_ASSESSMENT
+      resume_rule: CR48 may return to precondition verification only after every named
+        condition-precedent requirement has independently qualified.
+      execution_authorized: false
+projection_rule:
+  source_identity: ESC-C02-CORRECTIVE-001/CR48
+  derive_from_controlled_state: true
+  include_roadmap_context_when_discovered: true
+  require_root_items_schema: false
+  create_synthetic_mission: false
+publication:
+  executed: false
+CR48:
+  executed: false

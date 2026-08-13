@@ -1,6 +1,6 @@
 schema_version: 2
 roadmap_id: ESC-ROADMAP-001
-roadmap_version: 2.0.2
+roadmap_version: 2.3.0
 program_id: ENGINEERING-SYSTEM-CONVERGENCE
 program_title: Engineering System Convergence
 classification: AUTHORITATIVE_EXECUTABLE_ROADMAP
@@ -41,6 +41,301 @@ evaluation_contract:
   playbook_schema: engineering/convergence/engineering-system-convergence/schemas/execution-playbook.schema.yaml
   evaluation_schema: engineering/convergence/engineering-system-convergence/schemas/roadmap-evaluation.schema.yaml
   persisted_evaluation: engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml
+publication_topology:
+  model: CAPABILITY_BOUNDARY_DRIVEN
+  gate_completion_implies_publication: false
+  decision_separate_from_gate_completion: true
+  previous_gate_authority_propagates: false
+  publication_transaction_contract:
+    sequence:
+      - CAPABILITY_COMPLETE
+      - QUALIFY
+      - RECONCILE_ROADMAP_STATE_AND_CONTROLLED_AUTHORITY
+      - RESOLVE_PUBLICATION_AUTHORITY
+      - PUBLISH
+      - VERIFY_PUBLISHED_BASELINE
+      - RESOLVE_NEXT_GATE_AUTHORITY
+    common_prerequisites:
+      - Gate/capability qualification is PASS.
+      - Repository identity, integrity, provenance, and scope are verified.
+      - Evidence and roadmap/state reconciliation are complete.
+      - Publication authority is separately resolved; qualification and publication do not grant next-gate authority.
+      - Commit, push, remote parity, and published-baseline recording are performed only by the separately authorized publication transaction.
+    eos_synchronization_rule: EOS synchronization is required only when the published capability changes an EOS-owned projection or baseline; it is never implied by gate completion or publication alone.
+  boundaries:
+    - gate_id: C00
+      publication_class: REQUIRED_BOUNDARY
+      capability_established: Preserved repository and rollback baseline
+      capability_maturity_change: Establishes the initial recoverable authority baseline for the convergence program.
+      dependency_closure: C00 preservation and rollback evidence is complete.
+      downstream_baseline_required: true
+      publication_condition: Required after C00 qualification and before the convergence assessment lineage is consumed as the current recoverable baseline.
+      publication_reason: The baseline has high rollback and audit value and must be independently recoverable.
+      publication_prerequisites: [C00 qualification PASS, preservation reference and selected baseline verified, repository identity and parity verified, separate publication authority]
+      publication_output: Published convergence starting-baseline record with preservation provenance.
+      next_dependent_capability: C01 repository and infrastructure assessment
+      recovery_baseline_value: HIGH
+      downstream_baseline_dependencies: [C01, all later gates]
+    - gate_id: C01
+      publication_class: NOT_A_PUBLICATION_BOUNDARY
+      capability_established: Repository and infrastructure observations
+      capability_maturity_change: Adds assessment findings without changing the authoritative implementation baseline.
+      dependency_closure: C01 evidence and result are complete, but findings remain inputs to C02.
+      downstream_baseline_required: false
+      publication_condition: Never solely because C01 completes; only a separately classified authority change can trigger the C02 conditional boundary.
+      publication_reason: Findings are intermediate and immediately consumed by controlled-document authority assessment.
+      publication_prerequisites: [C01 qualification PASS, evidence preserved]
+      publication_output: None; C01 result/evidence remains the assessment input.
+      next_dependent_capability: C02 controlled documentation and authority assessment
+      recovery_baseline_value: LOW
+      downstream_baseline_dependencies: []
+    - gate_id: C02
+      publication_class: CONDITIONAL_BOUNDARY
+      capability_established: Controlled-document and authority disposition
+      capability_maturity_change: May change canonical controlled authority, lifecycle, or project-state ownership.
+      dependency_closure: Condition is closed only when the accepted C02 result is compared with the pre-C02 authority digest.
+      downstream_baseline_required: true
+      publication_condition: Required if accepted C02 disposition changes a controlled authority, lifecycle, project-state owner, or canonical binding consumed by C03-C06; otherwise no publication transaction is required.
+      publication_reason: Authority changes require a recoverable controlled-document baseline, while read-only findings do not.
+      publication_prerequisites: [C02 qualification PASS, accepted disposition, before/after authority digest comparison, controlled-document reconciliation, separate publication authority]
+      publication_output: Published controlled-authority baseline or explicit no-change disposition.
+      next_dependent_capability: C03 EOS and engineering state assessment
+      recovery_baseline_value: MEDIUM
+      downstream_baseline_dependencies: [C03, C04, C05, C06 when authority changes]
+    - gate_id: C03
+      publication_class: NOT_A_PUBLICATION_BOUNDARY
+      capability_established: EOS and engineering-state assessment
+      capability_maturity_change: Characterizes projections and drift without synchronizing or adopting a new EOS baseline.
+      dependency_closure: C03 observations and evidence are complete.
+      downstream_baseline_required: false
+      publication_condition: Never solely because C03 completes; EOS synchronization remains separately governed.
+      publication_reason: This is an assessment input to command/resume and ownership analysis, not a stable adopted state.
+      publication_prerequisites: [C03 qualification PASS, EOS inspected read-only]
+      publication_output: None; assessment evidence only.
+      next_dependent_capability: C04 engctl and resume assessment
+      recovery_baseline_value: LOW
+      downstream_baseline_dependencies: []
+    - gate_id: C04
+      publication_class: NOT_A_PUBLICATION_BOUNDARY
+      capability_established: engctl and resume assessment
+      capability_maturity_change: Defines command and resume findings without adopting a new runtime contract.
+      dependency_closure: C04 evidence and result are complete.
+      downstream_baseline_required: false
+      publication_condition: Never solely because C04 completes.
+      publication_reason: The assessment is an intermediate contract input to C05 ownership analysis.
+      publication_prerequisites: [C04 qualification PASS, read-only command behavior captured]
+      publication_output: None; assessment evidence only.
+      next_dependent_capability: C05 roadmap, project-state, and registry assessment
+      recovery_baseline_value: LOW
+      downstream_baseline_dependencies: []
+    - gate_id: C05
+      publication_class: CONDITIONAL_BOUNDARY
+      capability_established: Roadmap, project-state, and registry ownership model
+      capability_maturity_change: May change the canonical owner or binding of current convergence state.
+      dependency_closure: Condition is closed only after accepted C05 ownership changes are compared with the pre-C05 state/binding digest.
+      downstream_baseline_required: true
+      publication_condition: Required if accepted C05 disposition changes canonical roadmap/state/registry ownership or bindings consumed by C06; otherwise no publication transaction is required.
+      publication_reason: A changed state owner must be published before WOP/EENS foundations depend on it; unchanged findings do not need publication.
+      publication_prerequisites: [C05 qualification PASS, accepted ownership disposition, state/binding reconciliation, separate publication authority]
+      publication_output: Published state-ownership baseline or explicit no-change disposition.
+      next_dependent_capability: C06 foundational WOP and minimum-EENS contract
+      recovery_baseline_value: MEDIUM
+      downstream_baseline_dependencies: [C06, C07, C08, C09 when ownership changes]
+    - gate_id: C06
+      publication_class: REQUIRED_BOUNDARY
+      capability_established: Foundational WOP and minimum-EENS interface
+      capability_maturity_change: Establishes the first executable package/event identity, integrity, ordering, correlation, recovery, and machine-readable foundation.
+      dependency_closure: C06 WOP/EENS foundation is qualified and its reciprocal interface is complete.
+      downstream_baseline_required: true
+      publication_condition: Required after C06 qualification and before downstream EMP, Zeus, or primary-EENS work consumes the foundation as canonical.
+      publication_reason: This is an independently recoverable capability generation with high downstream and rollback value.
+      publication_prerequisites: [C06 qualification PASS, WOP/EENS evidence complete, repository and authority reconciliation, separate publication authority]
+      publication_output: Published foundational WOP/EENS contract and baseline provenance.
+      next_dependent_capability: C07 EMP assessment and later C08/C09 consumers
+      recovery_baseline_value: HIGH
+      downstream_baseline_dependencies: [C07, C08, C09, C10, C13, C18]
+    - gate_id: C07
+      publication_class: NOT_A_PUBLICATION_BOUNDARY
+      capability_established: EMP assessment
+      capability_maturity_change: Assesses orchestration and registry interactions against the C06 foundation.
+      dependency_closure: C07 findings and evidence are complete.
+      downstream_baseline_required: false
+      publication_condition: Never solely because C07 completes.
+      publication_reason: Assessment findings are consumed by Zeus and cross-system reconciliation.
+      publication_prerequisites: [C07 qualification PASS, C06 published baseline available]
+      publication_output: None; assessment evidence only.
+      next_dependent_capability: C08 Zeus assessment
+      recovery_baseline_value: LOW
+      downstream_baseline_dependencies: []
+    - gate_id: C08
+      publication_class: NOT_A_PUBLICATION_BOUNDARY
+      capability_established: Zeus assessment
+      capability_maturity_change: Assesses lifecycle consumption without repairing or activating runtime.
+      dependency_closure: C08 findings and evidence are complete.
+      downstream_baseline_required: false
+      publication_condition: Never solely because C08 completes.
+      publication_reason: Assessment findings are consumed by C09 and provider/runtime boundaries.
+      publication_prerequisites: [C08 qualification PASS, C06 published foundation available]
+      publication_output: None; assessment evidence only.
+      next_dependent_capability: C09 primary EENS capability
+      recovery_baseline_value: LOW
+      downstream_baseline_dependencies: []
+    - gate_id: C09
+      publication_class: REQUIRED_BOUNDARY
+      capability_established: Primary EENS durability, replay, checkpoint, consumer, notification, service, recovery, and observability capability
+      capability_maturity_change: Advances EENS from minimum foundation to operational primary capability.
+      dependency_closure: C09 qualification closes the EENS primary capability and its C06 interface dependency.
+      downstream_baseline_required: true
+      publication_condition: Required after C09 qualification and before provider/runtime, recovery, or system-level consumers use primary EENS as canonical.
+      publication_reason: This is a major operational capability generation requiring a stable recoverable baseline.
+      publication_prerequisites: [C09 qualification PASS, C06 foundation consumed, EENS evidence complete, separate publication authority]
+      publication_output: Published primary-EENS capability baseline and provenance.
+      next_dependent_capability: C10 provider/Codex runtime assessment and C13-C20 consumers
+      recovery_baseline_value: HIGH
+      downstream_baseline_dependencies: [C10, C11, C13, C14, C15, C17, C18, C20]
+    - gate_id: C10
+      publication_class: NOT_A_PUBLICATION_BOUNDARY
+      capability_established: Provider/Codex execution-runtime assessment
+      capability_maturity_change: Documents deferred lifecycle constraints without repairing or activating providers.
+      dependency_closure: C10 findings and evidence are complete.
+      downstream_baseline_required: false
+      publication_condition: Never solely because C10 completes.
+      publication_reason: Provider lifecycle remains deferred and the assessment is consumed by qualification and recovery design.
+      publication_prerequisites: [C10 qualification PASS, C09 baseline available]
+      publication_output: None; assessment evidence only.
+      next_dependent_capability: C11 evidence and qualification assessment
+      recovery_baseline_value: LOW
+      downstream_baseline_dependencies: []
+    - gate_id: C11
+      publication_class: CONDITIONAL_BOUNDARY
+      capability_established: Evidence, qualification, and acceptance authority model
+      capability_maturity_change: May change the canonical qualification/evidence authority consumed by publication and recovery.
+      dependency_closure: Condition is closed only after accepted C11 disposition is compared with the prior qualification authority contract.
+      downstream_baseline_required: true
+      publication_condition: Required if accepted C11 disposition changes evidence authority, qualification contract, or acceptance state consumed by C12-C19; otherwise no publication transaction is required.
+      publication_reason: Qualification-authority changes need a stable baseline before publication and recovery decisions rely on them.
+      publication_prerequisites: [C11 qualification PASS, accepted authority disposition, evidence-contract reconciliation, separate publication authority]
+      publication_output: Published qualification/evidence authority baseline or explicit no-change disposition.
+      next_dependent_capability: C12 publication/synchronization assessment
+      recovery_baseline_value: MEDIUM
+      downstream_baseline_dependencies: [C12, C13, C14, C17, C18, C19 when authority changes]
+    - gate_id: C12
+      publication_class: NOT_A_PUBLICATION_BOUNDARY
+      capability_established: Git, publication, and synchronization transaction assessment
+      capability_maturity_change: Defines transaction controls without performing a publication transaction.
+      dependency_closure: C12 transaction and authority findings are complete.
+      downstream_baseline_required: false
+      publication_condition: Never solely because C12 completes; its findings define later transaction prerequisites.
+      publication_reason: Publishing the assessment would not create the transaction contract it assesses.
+      publication_prerequisites: [C12 qualification PASS, publication paths inspected read-only]
+      publication_output: None; assessment evidence only.
+      next_dependent_capability: C13 recovery and interruption assessment
+      recovery_baseline_value: LOW
+      downstream_baseline_dependencies: []
+    - gate_id: C13
+      publication_class: NOT_A_PUBLICATION_BOUNDARY
+      capability_established: Recovery, interruption, and resume assessment
+      capability_maturity_change: Defines recovery semantics without restoring or resuming runtime state.
+      dependency_closure: C13 recovery findings and evidence are complete.
+      downstream_baseline_required: false
+      publication_condition: Never solely because C13 completes.
+      publication_reason: Recovery findings are consumed by validation and architecture design.
+      publication_prerequisites: [C13 qualification PASS, C06/C09 baselines available]
+      publication_output: None; assessment evidence only.
+      next_dependent_capability: C14 validation and observability assessment
+      recovery_baseline_value: LOW
+      downstream_baseline_dependencies: []
+    - gate_id: C14
+      publication_class: NOT_A_PUBLICATION_BOUNDARY
+      capability_established: Validation, tests, and observability assessment
+      capability_maturity_change: Identifies qualification coverage without declaring final platform qualification.
+      dependency_closure: C14 findings and evidence are complete.
+      downstream_baseline_required: false
+      publication_condition: Never solely because C14 completes.
+      publication_reason: Assessment recommendations are inputs to cross-system reconciliation.
+      publication_prerequisites: [C14 qualification PASS, test and observability inventory complete]
+      publication_output: None; assessment evidence only.
+      next_dependent_capability: C15 cross-system authority reconciliation
+      recovery_baseline_value: LOW
+      downstream_baseline_dependencies: []
+    - gate_id: C15
+      publication_class: REQUIRED_BOUNDARY
+      capability_established: Cross-system dependency and authority reconciliation
+      capability_maturity_change: Establishes a coherent cross-system authority and dependency baseline.
+      dependency_closure: C15 closes all assessed cross-system ownership conflicts or records explicit blockers.
+      downstream_baseline_required: true
+      publication_condition: Required after C15 qualification and before simplification or target architecture consumes the reconciled authority model.
+      publication_reason: Authority reconciliation has high audit, rollback, and downstream architecture value.
+      publication_prerequisites: [C15 qualification PASS, C01-C14 evidence reconciled, controlled authority review, separate publication authority]
+      publication_output: Published cross-system authority/dependency baseline.
+      next_dependent_capability: C16 simplification and C17 target architecture
+      recovery_baseline_value: HIGH
+      downstream_baseline_dependencies: [C16, C17, C18, C19, C20]
+    - gate_id: C16
+      publication_class: NOT_A_PUBLICATION_BOUNDARY
+      capability_established: Redundancy and simplification dispositions
+      capability_maturity_change: Produces design dispositions without applying removals, migrations, or final ownership changes.
+      dependency_closure: C16 dispositions are complete and reviewed.
+      downstream_baseline_required: false
+      publication_condition: Never solely because C16 completes; applied authority changes belong to a later boundary.
+      publication_reason: Dispositions are immediately consumed by target architecture and are not independently adopted capability.
+      publication_prerequisites: [C16 qualification PASS, C15 baseline available]
+      publication_output: None; analysis evidence only.
+      next_dependent_capability: C17 canonical target architecture
+      recovery_baseline_value: LOW
+      downstream_baseline_dependencies: []
+    - gate_id: C17
+      publication_class: REQUIRED_BOUNDARY
+      capability_established: Canonical target architecture and ownership model
+      capability_maturity_change: Establishes the controlled target architecture that governs implementation planning.
+      dependency_closure: C17 architecture is approved, traceable, and free of unresolved execution-significant ownership ambiguity.
+      downstream_baseline_required: true
+      publication_condition: Required after architecture qualification/approval and before C18 roadmap and C20 implementation-entry planning consume it as canonical.
+      publication_reason: Architecture approval changes controlled design authority and has high downstream and rollback value.
+      publication_prerequisites: [C17 qualification PASS, C15/C16 evidence complete, architecture approval, separate publication authority]
+      publication_output: Published canonical target-architecture baseline.
+      next_dependent_capability: C18 system-convergence roadmap
+      recovery_baseline_value: HIGH
+      downstream_baseline_dependencies: [C18, C19, C20]
+    - gate_id: C18
+      publication_class: REQUIRED_BOUNDARY
+      capability_established: System-level convergence planning authority
+      capability_maturity_change: Establishes the complete ordered implementation roadmap and strategic capability boundaries.
+      dependency_closure: C18 roadmap is qualified with WOP/EENS traceability and publication topology complete.
+      downstream_baseline_required: true
+      publication_condition: Required after C18 qualification and before C19/C20 consume the system-level implementation plan.
+      publication_reason: The planning authority materially changes the controlled roadmap and is the baseline for bounded implementation decisions.
+      publication_prerequisites: [C18 qualification PASS, C17 baseline available, complete traceability, publication topology qualification, separate publication authority]
+      publication_output: Published canonical convergence roadmap baseline.
+      next_dependent_capability: C19 cold-resume qualification and C20 implementation entry
+      recovery_baseline_value: HIGH
+      downstream_baseline_dependencies: [C19, C20, separately authorized implementation gates]
+    - gate_id: C19
+      publication_class: REQUIRED_BOUNDARY
+      capability_established: Cold-resume and deterministic roadmap-consumption qualification
+      capability_maturity_change: Establishes a qualified resumable execution-planning baseline without authorizing implementation.
+      dependency_closure: C19 cold-resume qualification passes against the published C18 baseline.
+      downstream_baseline_required: true
+      publication_condition: Required after C19 qualification and before C20 implementation-entry authority is resolved.
+      publication_reason: Resume qualification provides high recovery and audit value for controlled implementation entry.
+      publication_prerequisites: [C19 qualification PASS, published C18 baseline verified, no state drift, separate publication authority]
+      publication_output: Published cold-resume qualification baseline.
+      next_dependent_capability: C20 controlled convergence implementation entry
+      recovery_baseline_value: HIGH
+      downstream_baseline_dependencies: [C20]
+    - gate_id: C20
+      publication_class: REQUIRED_BOUNDARY
+      capability_established: Qualified controlled system-level convergence implementation result
+      capability_maturity_change: Produces a material system capability generation after one separately authorized bounded implementation gate or migration.
+      dependency_closure: C20 and the selected implementation gate are qualified with rollback and evidence complete.
+      downstream_baseline_required: true
+      publication_condition: Required after each separately authorized C20 implementation tranche reaches its defined qualified capability boundary; never merely on C20 entry.
+      publication_reason: A completed implementation tranche changes runtime capability and requires a recoverable authoritative baseline.
+      publication_prerequisites: [selected implementation gate qualification PASS, evidence and rollback complete, repository integrity and state reconciliation, separate publication authority]
+      publication_output: Published qualified implementation-tranche baseline and provenance.
+      next_dependent_capability: Next separately authorized implementation tranche or governance review
+      recovery_baseline_value: HIGH
+      downstream_baseline_dependencies: [next authorized implementation tranche, recovery and rollback consumers]
 gates:
   - {gate_id: C00, gate_identity: ESC-GATE-C00, roadmap_order: 0, definition: engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/GATE.yaml, result: engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/RESULT.yaml, contract_provenance: {contract_generation: HISTORICAL_FROZEN, lifecycle: COMPLETE, validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate-historical-v1.schema.yaml, standard_applicability: NOT_APPLICABLE}}
   - {gate_id: C01, gate_identity: ESC-GATE-C01, roadmap_order: 10, definition: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/GATE.yaml, result: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml, contract_provenance: {contract_generation: HISTORICAL_FROZEN, lifecycle: COMPLETE, validation_schema: engineering/convergence/engineering-system-convergence/schemas/gate-historical-v1.schema.yaml, standard_applicability: NOT_APPLICABLE}}

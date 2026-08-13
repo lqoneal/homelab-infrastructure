@@ -115,9 +115,47 @@ def overlay(value: Mapping[str, Any], disposition: Mapping[str, Any]) -> dict[st
         "mission_work_state": "STARTED", "repository_work_state": "NOT_STARTED",
         "active_work_units": [], "remaining_work_units": [],
         "completed_work_units": ["P5-G6:CONTROLLED_MISSION_WORK"],
-        "next_authorized_action": "OPERATOR_REVIEW_LEGACY_LIFECYCLE_RECONCILIATION",
+        "next_authorized_action": "FOLLOW_CURRENT_OPERATION_BETA_AUTHORITY",
         "legacy_reconciliation": dict(disposition),
     })
+    return result
+
+
+def qualify_history(history: Mapping[str, Any], disposition: Mapping[str, Any]) -> dict[str, Any]:
+    """Close only the exact corroborated history covered by P5-G6 acceptance.
+
+    Legacy journal defects remain visible.  This reduction does not upgrade the
+    original events to current provenance; it records that independent,
+    identity-bound acceptance is sufficient to close their historical
+    lifecycle consequence.
+    """
+    result = dict(history)
+    qualified = (
+        disposition.get("result") == "PASS"
+        and disposition.get("disposition") == "RECONCILED_HISTORICAL"
+        and disposition.get("historical_acceptance") == "ACCEPTED"
+        and disposition.get("historical_publication") == "VERIFIED"
+        and disposition.get("repository_work_pending") is False
+        and disposition.get("new_operator_decision") is False
+        and result.get("result") == "PASS"
+        and result.get("history_disposition") == "HISTORICAL_WORK_CONFIRMED"
+        and result.get("mission_work_actually_occurred") == "YES"
+        and result.get("repository_work_actually_occurred") == "NO"
+        and all(result.get(key) == disposition.get(key)
+                for key in ("mission_id", "execution_id"))
+    )
+    result.update({
+        "lifecycle_reconciliation": (
+            "QUALIFIED_BY_P5_G6_ACCEPTANCE" if qualified else "UNQUALIFIED_FAIL_CLOSED"
+        ),
+        "historical_provenance_defects_preserved": bool(
+            result.get("chain_errors") or result.get("missing_provenance")
+        ),
+    })
+    if qualified:
+        result["reconciliation_required"] = False
+        result["reconciliation_already_applied"] = True
+        result["reconciliation_basis"] = disposition.get("acceptance_record")
     return result
 
 

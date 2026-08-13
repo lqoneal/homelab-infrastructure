@@ -1,0 +1,43 @@
+schema_version: "1.0"
+record_type: POST_CR47_CONTROLLED_PROCEDURE_AMENDMENT_DERIVATION_AUTHORITY
+cr_id: CR47
+result: PASS
+authority_state: AUTHORIZED_NOT_EXECUTED
+
+basis:
+  procedure_owner_discovery: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-PUBLICATION-PROCEDURE-OWNER-DISCOVERY.yaml"
+  procedure_owner_discovery_sha256: "462f0e257f3dff3a0a6c7168a51ede671a3104d1dee2d476431d5e3ef235a023"
+  procedural_requirement: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-PUBLICATION-SURFACE-CLOSURE-PROCEDURAL-REQUIREMENT.yaml"
+  procedural_requirement_sha256: "f4e64b7d21cb51e715ac7aa7029670461264082e9adbc162a56174ae0be6e3d7"
+
+authorized:
+  inspect_top_procedure_owner_candidates: true
+  resolve_single_authoritative_procedure_owner: true
+  inspect_controlled_document_revision_contract: true
+  derive_whole_document_amendment_boundary: true
+  derive_required_document_index_updates: true
+  derive_required_emm_rebind_if_owner_is_bound: true
+  derive_post_amendment_validation_boundary: true
+  derive_bounded_publication_for_procedure_and_post_publication_receipts: true
+
+required:
+  fail_closed_if_multiple_authoritative_owners_remain: true
+  preserve_existing_document_semantics_except_required_amendment: true
+  use_whole_document_revision_if_controlled_contract_requires_it: true
+  persist_publication_surface_closure_contract: true
+  explicitly_define_post_publication_receipt_lifecycle: true
+  preserve_published_cr47_commit: true
+  keep_cr48_unexecuted: true
+
+prohibited:
+  modify_controlled_document: true
+  modify_document_index: true
+  modify_emm: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+  execute_cr48: true
+
+next_authorized_action:
+  RESOLVE_CANONICAL_CONTROLLED_PROCEDURE_OWNER_AND_DERIVE_WHOLE_DOCUMENT_AMENDMENT_ONLY

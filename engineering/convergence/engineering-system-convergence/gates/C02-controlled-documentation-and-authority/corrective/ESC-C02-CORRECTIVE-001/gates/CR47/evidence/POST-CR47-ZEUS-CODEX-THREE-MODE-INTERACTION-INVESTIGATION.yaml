@@ -1,0 +1,31 @@
+schema_version: '1.1'
+record_type: ZEUS_CODEX_INTERACTION_MODE_INVESTIGATION
+result: IMPLEMENTATION_EVIDENCE_COLLECTED
+declared_cli_modes:
+- DIRECT_INTERACTIVE
+- REMOTE_INTERACTIVE
+- OPERATOR_INTERACTIVE
+- ZEUS_MANAGED
+important_distinction:
+  CLI_enum_count: 4
+  architectural_interaction_class_count: TO_BE_DERIVED_FROM_IMPLEMENTATION
+candidate_three_class_model:
+  DIRECT_INTERACTIVE:
+    description: Operator directly owns Codex interaction.
+  MEDIATED_OPERATOR_INTERACTIVE:
+    candidate_members:
+    - REMOTE_INTERACTIVE
+    - OPERATOR_INTERACTIVE
+    description: Operator-driven interaction mediated through Zeus/session infrastructure.
+  ZEUS_MANAGED:
+    description: Zeus owns provider/session invocation and managed execution integration.
+classification_question:
+  subject: REMOTE_INTERACTIVE versus OPERATOR_INTERACTIVE
+  required_finding: Determine whether they have distinct provider/session/authority
+    architectures or are variants of one mediated operator-interactive architecture.
+safety:
+  Codex_invoked: false
+  provider_started: false
+  repository_execution_mutation: false
+  CR48_executed: false
+  CR48_execution_authorized: false

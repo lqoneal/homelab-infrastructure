@@ -33,12 +33,22 @@ class CodexAdapterTests(unittest.TestCase):
     def tearDown(self):
         self.runtime_directory.cleanup()
 
+    def _resolved_plan(self):
+        return {
+            "codex_binary": "codex", "command": ["codex", "app-server", "--strict-config", "--listen", "stdio://"],
+            "required_codex_invocation_arguments": ["app-server", "--strict-config", "--listen", "stdio://"],
+            "plan_digest": "plan-digest", "work_contract": "/tmp/test-contract.yaml",
+            "work_contract_id": "TEST-CONTRACT", "work_contract_digest": "contract-digest",
+        }
+
     def test_every_codex_action_has_one_explicit_controller(self):
         self.assertEqual(zeus.CODEX_CONTROLLER_ROUTING, {
             "status": "managed.status", "logs": "managed.logs", "artifacts": "managed.artifacts",
             "start": "managed.start", "resume": "managed.resume", "stop": "managed.stop",
             "shell": "interactive.shell", "interactive": "interactive.shell", "attach": "interactive.attach",
-            "reconcile": "reconciliation.reconcile", "supersede": "managed.supersede",
+            "reconcile": "reconciliation.reconcile",
+            "accept-reconciliation": "managed.accept-reconciliation",
+            "supersede": "managed.supersede",
         })
 
     def test_status_is_read_only_and_not_started_before_operator_action(self):
@@ -211,6 +221,7 @@ for line in sys.stdin:
     def test_start_rematerializes_runtime_when_pids_exist_but_control_socket_is_missing(self):
         package = dict(self._package_execution_fixture(), package_digest="package-digest")
         session = dict(self._session_fixture(), session_disposition="CURRENT", package_digest="package-digest",
+                       plan_digest="plan-digest", work_contract_digest="contract-digest",
                        log_path=str(self.runtime / "codex.log"))
         Path(session["control_socket"]).unlink()
         diagnostics = {
@@ -221,6 +232,7 @@ for line in sys.stdin:
         }
         Path(diagnostics["control_socket"]).touch()
         with patch.object(codex_adapter, "_package", return_value=package), \
+             patch.object(codex_adapter, "resolve_provider_invocation_contract", return_value=self._resolved_plan()), \
              patch.object(codex_adapter, "_existing", return_value=session), \
              patch.object(codex_adapter, "_launch_handshake", return_value=(type("P", (), {"pid": os.getpid()})(), diagnostics)), \
              patch.object(codex_adapter, "_append_event"), \
@@ -275,6 +287,7 @@ for line in sys.stdin:
                  "repository_identity": "homelab", "repository_id": "homelab", "repository_fingerprint": "fingerprint",
              }), \
              patch.object(codex_adapter, "_existing", return_value=None), \
+             patch.object(codex_adapter, "resolve_provider_invocation_contract", return_value=self._resolved_plan()), \
              patch.object(codex_adapter, "_launch_handshake", return_value=(SimpleNamespace(pid=os.getpid()), diagnostics)), \
              patch.object(codex_adapter, "_append_event"), \
              patch.object(codex_adapter, "_save", side_effect=lambda _runtime, value: dict(value)), \

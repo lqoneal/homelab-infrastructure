@@ -1,0 +1,28 @@
+schema_version: '1.0'
+record_type: ZEUS_WRAPPER_DISPATCH_PROVIDER_INVOCATION_DIAGNOSTIC
+result: DIAGNOSTIC_EVIDENCE_COLLECTED
+subject: ZEUS-CODEX-WRAPPER-CONVERGENCE-CORRECTIVE-001
+observed:
+  managed_preflight: PASS
+  dispatch: FAIL
+  dispatch_blocker: PROVIDER_INVOCATION_FAILURE
+  preflight_plan_digest: 8fbb62b197556344441d79cfb8a1fb76a73005ee8d8c70eccd29f20c4e875782
+  work_contract_digest: c4805555400ff437d14ca5830c1a7a82852b3d8af5e59c29facac609e7a17399
+  provider_id: zeus-local-loneal-01
+  provider_mode: APP_SERVER_MANAGED
+  transport: STDIO
+  authoritative_provider_binding: null
+  preflight_lifecycle_execution_authorized: false
+  provider_process_count_after_failed_dispatch: 0
+required_classification:
+- BINDING_TRANSITION_FAILURE
+- PREFLIGHT_DISPATCH_PLAN_DIVERGENCE
+- PROVIDER_INVOCATION_VERIFIER_DEFECT
+- PARTIAL_DISPATCH_RECONCILIATION_REQUIRED
+- OTHER_EXPLICITLY_EVIDENCED
+safety:
+  diagnostic_started_provider: false
+  CR48_executed: false
+  publication_executed: false
+  EOS_synchronization_executed: false
+next_action: CLASSIFY_EXACT_PROVIDER_INVOCATION_FAILURE_FROM_DIAGNOSTIC_OUTPUT

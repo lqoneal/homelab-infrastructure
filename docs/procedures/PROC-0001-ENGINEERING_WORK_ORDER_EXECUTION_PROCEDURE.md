@@ -1,11 +1,11 @@
 ---
 document_id: PROC-0001
 title: Operational Alpha Work Initiation and Execution Procedure
-version: 2.7
+version: 2.11
 status: Active
 owner: Engineering Governance
 created: 2026-07-09
-last_updated: 2026-07-31
+last_updated: 2026-08-12
 phase: Engineering Execution Interface Standardization
 domain: Engineering Governance
 classification: Engineering Procedure
@@ -338,6 +338,75 @@ the applicable WOP execution contract. An EWO identifier is neither required
 nor sufficient for Operational Alpha execution. Wrapper start,
 completion, failure, timeout, and interruption events are operational metadata
 only and do not grant authority.
+
+For `ZEUS_MANAGED` execution, Zeus owns provider selection and the effective
+Codex invocation contract. Before provider dispatch Zeus shall resolve and
+validate the installed Codex executable and version, provider mode and
+transport, supported invocation syntax, strict configuration, authentication,
+workspace and repository scope, sandbox and approval policies, work-contract
+capabilities, and provider/session/execution bindings. Operators are not
+required to discover or supply provider-specific Codex options.
+
+`scripts/zeus codex start --mode ZEUS_MANAGED --work-contract <path>
+--preflight --dry-run` is the canonical read-only managed provider preflight.
+It shall expose the effective invocation plan, shall not create a provider
+process or session, and shall not begin mission or repository work. Unsupported
+syntax, conflicting configuration, missing capabilities, or incompatible
+work-contract bindings fail closed as an explicit Codex or work-contract
+incompatibility. Zeus shall not remove an unsupported option, change execution
+mode, fall back to `DIRECT_INTERACTIVE`, or invoke the provider to test whether
+an unverified plan might work. Normal managed dispatch shall consume the same
+canonical provider-option resolver used by preflight.
+
+For direct or remote interactive repository work, `scripts/zeus codex shell` is
+read-only by default. `scripts/zeus codex shell --write --approve` grants only
+bounded repository file mutation capability and resolves Codex to
+`workspace-write` with `on-request` approval. `--write` is not mission or
+execution authority and does not grant Git staging, commit, push, publication,
+EOS synchronization, qualification, or closeout authority. The session remains
+classified as `REPOSITORY_OPERATOR`; mission-bound launches continue through
+their independent execution-package verification.
+
+The qualified managed baseline is `codex-cli 0.147.x`. Preflight requires a
+mapping-root work contract with a non-empty identity, an existing exact
+repository binding, structured engineering-implementation and command-execution
+authority, authentication presence, parseable non-conflicting configuration,
+app-server strict-config/stdio support, and the exec result/resume surfaces Zeus
+relies upon. A mission-bound contract must also carry the exact `mission_id` and
+`transaction_id` (the execution identity); a mismatch fails closed. Qualification
+execution is an explicit capability (`authority.qualification_execution`) and
+must be listed in `requested_operations` when requested. Qualification acceptance,
+closeout, Git staging/commit/push, publication, EOS synchronization, and mission
+lifecycle advancement remain Zeus-owned prohibited operations and must be listed
+in `prohibited_operations`. The resolved executable, argument vector, environment
+requirements, work-contract digest, lifecycle provider/session/execution binding,
+bounded authority projection, and plan digest form one immutable invocation plan;
+the broker shall consume that plan without reconstruction. Provider readiness is
+compatibility evidence only and shall return to the contract's operator boundary
+when subject lifecycle execution is not authorized.
+
+Managed ownership is held only by a current live provider/session record. Normal
+stop transitions the record to preserved historical state. Completed, failed,
+dead, stopped, superseded, and `RECONCILED_HISTORICAL` records remain auditable
+but do not retain the active-provider lock. A conflicting current owner fails
+closed; after canonical termination or dead-owner reconciliation a successor
+must receive a new managed-session and managed-provider-invocation identity.
+
+Historical managed-session reconciliation shall preserve the original session,
+events, and provenance defects without rewriting them to a newer schema. A
+digest-verified reconciliation or acceptance record may close a historical
+lifecycle only when it is bound to the exact mission, WOP, execution, and
+published evidence; independently corroborates any historical work claim;
+proves no repository work is pending; and neither grants new authority nor
+requires a new operator decision. The read model shall retain the defects and
+identify the qualifying record while reporting reconciliation complete.
+Indeterminate history, identity conflict, uncorroborated work, pending
+repository work, or invalid reconciliation evidence remains fail closed and
+requires operator review. Reconciliation never makes a historical session
+current or resumable, and replay of the same qualified record is idempotent.
+Current-vs-historical authority remains derived solely from Operation Beta;
+development or qualification metadata for a successor WOP cannot promote a
+historical execution or create parallel lifecycle authority.
 
 ---
 
@@ -1244,6 +1313,8 @@ This procedure is complete when every implementation agent can execute an Active
 | 2.7 | 2026-07-31 | Established the EMM-bound Mission Knowledge Model as the sole Operational Alpha mission-reasoning source and required recommendation/readiness/autonomy reporting at closeout. |
 | 2.8 | 2026-07-31 | Reconciled roadmap governance: EMM owns roadmap binding and drift reconciliation, PROC-0006 owns qualification determination, and Work Initiation consumes both without duplicate validation. |
 | 2.9 | 2026-07-31 | Standardized Zeus controller presentation: operator-readable default, explicit deterministic verification, explicit structured output, and one shared presentation layer. |
+| 2.10 | 2026-08-12 | Established Zeus-owned managed Codex capability and option resolution, read-only pre-dispatch managed preflight, explicit incompatibility behavior, and prohibition of direct-interactive fallback. |
+| 2.11 | 2026-08-12 | Defined identity-bound historical managed-session reconciliation, preservation of legacy provenance defects, fail-closed qualification, idempotent replay, and current-versus-historical authority projection. |
 | 1.5 | 2026-07-15 | Established Commit Reconstruction Planning, approved reconstruction methods, execution gates, persistent planning artifacts, and proportional planning governance. |
 | 1.6 | 2026-07-17 | Added the Mission Classification Gate, risk-proportional Category A/B/C initiation, exact Completion Report standard, and mandatory Governance Conformance Review under EGR-000002 and EWO-000018. |
 | 1.7 | 2026-07-17 | Required repository-governed Codex missions to launch through `engctl codex`, added initiation-time bypass detection and exception controls, and defined the mandatory notification lifecycle under EWO-000019. |

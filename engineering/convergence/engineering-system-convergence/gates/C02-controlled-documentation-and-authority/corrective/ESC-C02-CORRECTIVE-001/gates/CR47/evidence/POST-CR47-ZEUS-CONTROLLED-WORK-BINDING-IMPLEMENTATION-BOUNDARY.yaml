@@ -1,0 +1,69 @@
+schema_version: "1.0"
+record_type: ZEUS_CONTROLLED_WORK_BINDING_IMPLEMENTATION_BOUNDARY
+result: PASS
+
+subject:
+  projection_id: "CWP-ESC-C02-CORRECTIVE-001-CR48"
+  controlled_sequence: ESC-C02-CORRECTIVE-001
+  controlled_item: CR48
+
+problem:
+  controlled_projection_durable: true
+  Zeus_native_resolution_available: false
+  OA30_fallback_prohibited: true
+
+required_capability:
+  command_group: controlled-work
+
+  commands:
+    - show
+    - state
+    - blockers
+    - authority
+    - next
+    - verify
+
+  identifier:
+    exact: "CWP-ESC-C02-CORRECTIVE-001-CR48"
+
+  source_of_truth:
+    state: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml"
+    roadmap: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/ROADMAP.yaml"
+    projection: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-ZEUS-CR48-CONTROLLED-WORK-PROJECTION.yaml"
+
+behavior:
+  read_only: true
+  fail_closed_on_unknown_projection: true
+  default_mission_fallback: prohibited
+  synthetic_mission_creation: prohibited
+  mission_contract_creation: prohibited
+  lifecycle_mutation: prohibited
+  CR48_execution: prohibited
+
+verification:
+  identity_required: true
+  provenance_required: true
+  lifecycle_required: true
+  blockers_required: true
+  next_action_required: true
+  authority_required: true
+  source_projection_consistency_required: true
+
+scope:
+  Zeus_binding_only: true
+  WOP_hardening: prohibited
+  EENS_hardening: prohibited
+  canonical_roadmap_hardening: prohibited
+  CR48_execution: prohibited
+  publication: prohibited_during_implementation
+
+acceptance:
+  command:
+    "scripts/zeus controlled-work verify CWP-ESC-C02-CORRECTIVE-001-CR48"
+
+  expected:
+    result: PASS
+    projection_type: CONTROLLED_WORK_PROJECTION
+    controlled_item: CR48
+    lifecycle: HELD
+    execution_authorized: false

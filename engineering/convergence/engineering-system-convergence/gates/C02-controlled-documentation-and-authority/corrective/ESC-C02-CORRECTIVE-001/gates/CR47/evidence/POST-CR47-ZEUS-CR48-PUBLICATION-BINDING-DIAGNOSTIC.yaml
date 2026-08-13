@@ -1,0 +1,37 @@
+schema_version: "1.0"
+record_type: POST_CR47_ZEUS_CR48_PUBLICATION_BINDING_DIAGNOSTIC
+result: PASS
+
+controlled_subject:
+  corrective_sequence: ESC-C02-CORRECTIVE-001
+  item: CR48
+  state: HELD_PENDING_WOP_EENS_CONVERGENCE
+
+default_zeus_projection:
+  mission_id: "OA-30"
+  applicable_to_CR48_publication_verification: false
+
+binding:
+  classification: "NOT_ESTABLISHED"
+  mission_id: "NONE"
+
+explicit_zeus_verification:
+  result: "NOT_APPLICABLE_NO_BINDING"
+
+publication_implication:
+  OA_30_must_not_be_used_as_CR48_authority_basis: true
+
+  zeus_native_CR48_verification_required_if_binding_exists: true
+
+  absence_of_CR48_zeus_binding_is_architectural_capability_gap: true
+
+  absence_of_binding_does_not_invalidate_repository_controlled_CR48_hold: true
+
+preserved:
+  frozen_publication_candidate: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-STABLE-CLOSED-PUBLICATION-CANDIDATE.yaml"
+  publication_execution_authority: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-STABLE-CLOSED-PUBLICATION-EXECUTION-AUTHORITY.yaml"
+
+execution:
+  publication_executed: false
+  roadmap_hardening_executed: false
+  CR48_executed: false

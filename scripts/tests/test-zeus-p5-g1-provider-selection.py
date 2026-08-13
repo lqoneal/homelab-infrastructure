@@ -46,12 +46,17 @@ class ProviderSelectionQualification(unittest.TestCase):
                 if json.loads(path.read_text()).get("mission_id") == MISSION
             ]
             self.assertEqual(len(mission_records), 1)
-        # Historical Beta downstream records are preserved.  The current
-        # lifecycle mission remains before dispatch and must not be counted
-        # against this historical fixture's boundary.
-        for directory in ("dispatch", "executions", "execution-sessions"):
-            paths = RUNTIME / directory
-            self.assertFalse(any(json.loads(path.read_text()).get("mission_id") == CURRENT_LIFECYCLE_MISSION for path in paths.glob("*.json")) if paths.is_dir() else False)
+        # Historical Beta downstream records are preserved.  Operation Beta's
+        # current lifecycle has independently advanced to one receipt-backed,
+        # idle execution session; it has not crossed the mission-work boundary.
+        sessions = [
+            json.loads(path.read_text())
+            for path in (RUNTIME / "execution-sessions").glob("*.json")
+            if json.loads(path.read_text()).get("mission_id") == CURRENT_LIFECYCLE_MISSION
+        ]
+        self.assertEqual(len(sessions), 1)
+        self.assertFalse(sessions[0]["mission_work_started"])
+        self.assertFalse(sessions[0]["repository_work_started"])
 
     def test_mission_projection_and_read_only_verification(self) -> None:
         before = {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in RUNTIME.rglob("*") if path.is_file()}
@@ -62,7 +67,7 @@ class ProviderSelectionQualification(unittest.TestCase):
         self.assertTrue(value["read_only"])
         self.assertEqual(mission["result"], "PASS")
         self.assertEqual(mission["lifecycle"]["provider_selected"], True)
-        self.assertEqual(mission["next_authorized_action"], "START_EXECUTION")
+        self.assertEqual(mission["next_authorized_action"], "FOLLOW_CURRENT_OPERATION_BETA_AUTHORITY")
         self.assertEqual(before, after)
 
 

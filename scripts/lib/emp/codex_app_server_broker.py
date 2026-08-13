@@ -163,7 +163,7 @@ def _run_stdio(args: argparse.Namespace) -> int:
     control_path.parent.mkdir(parents=True, exist_ok=True)
     codex_home.mkdir(parents=True, exist_ok=True)
     environment = dict(os.environ); environment["CODEX_HOME"] = str(codex_home)
-    command = [args.codex_bin, "app-server", "--stdio"]
+    command = [args.codex_bin, *(args.provider_argument or ["app-server", "--stdio"])]
     provider: subprocess.Popen[bytes] | None = None
     server: socket.socket | None = None
     try:
@@ -213,7 +213,9 @@ def _run_stdio(args: argparse.Namespace) -> int:
                         try: client.sendall(data)
                         except OSError: clients.remove(client); client.close()
             for client in clients: client.close()
-            code = provider.wait(); _write(exit_path, {"result":"PASS", "provider_pid":provider.pid, "exit_code":code})
+            code = provider.wait(); _write(exit_path, {"result":"PASS" if code == 0 else "FAIL",
+                                                       "completion":"NORMAL" if code == 0 else "ABNORMAL",
+                                                       "provider_pid":provider.pid, "exit_code":code})
             return code
     except Exception as error:
         _write(ready_path, {"result":"FAIL", "command":command, "error_type":type(error).__name__, "error":str(error),
@@ -256,7 +258,8 @@ def run(args: argparse.Namespace) -> int:
                                 "environment": _environment(root, codex_home)})
             _write(ready_path, diagnostics)
             code = provider.wait()
-            _write(exit_path, {"result": "PASS", "provider_pid": provider.pid,
+            _write(exit_path, {"result": "PASS" if code == 0 else "FAIL",
+                               "completion": "NORMAL" if code == 0 else "ABNORMAL", "provider_pid": provider.pid,
                                "exit_code": code, "endpoint_uri": endpoint})
             return code
     except Exception as error:
@@ -277,6 +280,7 @@ def main() -> int:
     parser.add_argument("--log", required=True); parser.add_argument("--ready", required=True)
     parser.add_argument("--exited", required=True); parser.add_argument("--listen")
     parser.add_argument("--control"); parser.add_argument("--codex-bin", default="codex")
+    parser.add_argument("--provider-argument", action="append")
     parser.add_argument("--timeout", type=float, default=15.0)
     return run(parser.parse_args())
 

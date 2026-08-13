@@ -1,0 +1,60 @@
+schema_version: "1.0"
+record_type: POST_CR47_CR48_DEFERRAL_CONTROLLED_MUTATION_AUTHORITY
+result: PASS
+authority_state: REQUIRES_OPERATOR_CONTROLLED_DECISION
+
+basis:
+  control_ownership_classification:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-DEFERRAL-CONTROL-OWNERSHIP-CLASSIFICATION.yaml"
+    sha256: "a314f2aac6e36b50379f9a26f62f25d1c3002f57c60a1809391a37b6308cffbe"
+
+  dependency_contract:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-DEPENDENCY-CONTRACT.yaml"
+    sha256: "af8c4a3b24e67a2fbdd86ba98cd17b576adb8d08351151e89e40212fa52cc59c"
+
+  mutation_boundary:
+    path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-DEFERRAL-CONTROLLED-MUTATION-BOUNDARY.yaml"
+    sha256: "ab4bbf14147e74831c7dff0a36b6c200ec9be4af647922e65afb9557a2267b34"
+
+derived_mutation:
+  corrective_state_required: true
+  corrective_roadmap_required: true
+  corrective_history_required: true
+  project_state_projection_required: true
+  emm_rebind_if_needed: true
+
+derived_disposition:
+  subject: CR48
+  value: DEFERRED_PENDING_WOP_EENS_DEVELOPMENT
+
+derived_condition_precedent:
+  id: WOP_EENS_EXECUTION_ARCHITECTURE_CONVERGENCE
+
+authority:
+  mutation_execution_authorized: false
+  operator_controlled_decision_required: true
+
+required_operator_decision:
+  approve_exact_bounded_CR48_deferral: true
+  approve_named_WOP_EENS_condition_precedent: true
+  approve_preservation_of_CR48_as_unexecuted_current_corrective_item: true
+  approve_future_entry_to_C06_C08_C09_assessment_sequence: true
+
+prohibited_before_operator_decision:
+  mutate_corrective_state: true
+  mutate_corrective_roadmap: true
+  mutate_project_state: true
+  mutate_history: true
+  rebind_emm: true
+  execute_CR48: true
+  write_CR48_result: true
+  begin_C06: true
+  begin_C08: true
+  begin_C09: true
+  stage: true
+  commit: true
+  push: true
+  eos_sync: true
+
+next_authorized_action:
+  REQUEST_OPERATOR_CONTROLLED_DECISION_FOR_EXACT_CR48_DEFERRAL_AND_WOP_EENS_CONDITION_PRECEDENT

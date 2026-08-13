@@ -52,7 +52,7 @@ class LegacyLifecycleReconciliationTests(unittest.TestCase):
         value = legacy.inspect(self.root, self.root / "runtime", transaction=self.transaction, monitoring=self.monitoring)
         projected = legacy.overlay({"next_authorized_action": "CONTINUE_CONTROLLED_MISSION_WORK"}, value)
         self.assertEqual(value["disposition"], "RECONCILED_HISTORICAL")
-        self.assertEqual(projected["next_authorized_action"], "OPERATOR_REVIEW_LEGACY_LIFECYCLE_RECONCILIATION")
+        self.assertEqual(projected["next_authorized_action"], "FOLLOW_CURRENT_OPERATION_BETA_AUTHORITY")
         self.assertEqual(projected["execution_state"], "RECONCILED_HISTORICAL")
         self.assertFalse(projected["execution_monitoring_active"])
 
@@ -96,6 +96,50 @@ class LegacyLifecycleReconciliationTests(unittest.TestCase):
         (self.root / legacy.ACCEPTANCE).write_text("{}", encoding="utf-8")
         with self.assertRaisesRegex(Exception, "DIGEST"):
             legacy.inspect(self.root, self.root / "runtime", transaction=self.transaction, monitoring=self.monitoring)
+
+    def test_reconciled_history_does_not_repeat_operator_review(self):
+        disposition = {
+            "result": "PASS", "disposition": "RECONCILED_HISTORICAL",
+            "mission_id": legacy.MISSION, "execution_id": legacy.EXECUTION,
+            "historical_acceptance": "ACCEPTED", "historical_publication": "VERIFIED",
+            "repository_work_pending": False, "new_operator_decision": False,
+            "acceptance_record": "accepted.json",
+        }
+        history = {
+            "result": "PASS", "history_disposition": "HISTORICAL_WORK_CONFIRMED",
+            "mission_id": legacy.MISSION, "execution_id": legacy.EXECUTION,
+            "mission_work_actually_occurred": "YES", "repository_work_actually_occurred": "NO",
+            "chain_errors": ["SEQUENCE_GAP:2:3"],
+            "missing_provenance": ["MISSION_WORK_STARTED:source_digest"],
+            "reconciliation_required": True,
+        }
+        qualified = legacy.qualify_history(history, disposition)
+        self.assertFalse(qualified["reconciliation_required"])
+        self.assertTrue(qualified["reconciliation_already_applied"])
+        self.assertTrue(qualified["historical_provenance_defects_preserved"])
+        self.assertEqual(qualified["chain_errors"], history["chain_errors"])
+
+    def test_unreconciled_or_corrupt_history_remains_fail_closed(self):
+        disposition = {
+            "result": "PASS", "disposition": "RECONCILED_HISTORICAL",
+            "mission_id": legacy.MISSION, "execution_id": legacy.EXECUTION,
+            "historical_acceptance": "ACCEPTED", "historical_publication": "VERIFIED",
+            "repository_work_pending": False, "new_operator_decision": False,
+        }
+        base = {
+            "result": "PASS", "history_disposition": "HISTORICAL_WORK_CONFIRMED",
+            "mission_id": legacy.MISSION, "execution_id": legacy.EXECUTION,
+            "mission_work_actually_occurred": "YES", "repository_work_actually_occurred": "NO",
+            "reconciliation_required": True,
+        }
+        for defect in (
+            {"history_disposition": "INDETERMINATE", "result": "FAIL"},
+            {"execution_id": "EXECUTION-OTHER"},
+            {"repository_work_actually_occurred": "YES"},
+        ):
+            qualified = legacy.qualify_history({**base, **defect}, disposition)
+            self.assertTrue(qualified["reconciliation_required"])
+            self.assertEqual(qualified["lifecycle_reconciliation"], "UNQUALIFIED_FAIL_CLOSED")
 
 
 if __name__ == "__main__":

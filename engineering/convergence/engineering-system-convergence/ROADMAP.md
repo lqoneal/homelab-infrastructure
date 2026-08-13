@@ -36,3 +36,40 @@ Current gate: `C02`. Next authorized action:
 
 C20 marks entry into one separately authorized migration gate. It never grants
 automatic authority to execute the complete convergence roadmap.
+
+## Strategic publication topology
+
+Publication is capability-boundary driven. Gate completion never implies
+publication, and publication authority never grants the next gate.
+
+| Gate | Capability boundary | Publication class | Downstream baseline effect |
+| --- | --- | --- | --- |
+| C00 | Preserved repository and rollback baseline | REQUIRED_BOUNDARY | Baseline for C01 and all later recovery |
+| C01 | Repository/infrastructure observations | NOT_A_PUBLICATION_BOUNDARY | Findings feed C02 |
+| C02 | Controlled authority disposition | CONDITIONAL_BOUNDARY | Publish only if canonical authority/state changes before C03-C06 |
+| C03 | EOS/state assessment | NOT_A_PUBLICATION_BOUNDARY | Findings feed C04 |
+| C04 | engctl/resume assessment | NOT_A_PUBLICATION_BOUNDARY | Findings feed C05 |
+| C05 | State/registry ownership disposition | CONDITIONAL_BOUNDARY | Publish only if canonical ownership/bindings change before C06 |
+| C06 | Foundational WOP + minimum EENS | REQUIRED_BOUNDARY | Baseline required by C07-C09 and later lifecycle consumers |
+| C07 | EMP assessment | NOT_A_PUBLICATION_BOUNDARY | Findings feed C08 and C15 |
+| C08 | Zeus assessment | NOT_A_PUBLICATION_BOUNDARY | Findings feed C09 and C10 |
+| C09 | Primary EENS capability | REQUIRED_BOUNDARY | Baseline required by C10-C20 consumers |
+| C10 | Provider/runtime assessment | NOT_A_PUBLICATION_BOUNDARY | Findings feed C11 and C13 |
+| C11 | Qualification/evidence authority disposition | CONDITIONAL_BOUNDARY | Publish only if qualification authority changes before C12-C19 |
+| C12 | Publication transaction assessment | NOT_A_PUBLICATION_BOUNDARY | Findings define later transaction controls |
+| C13 | Recovery/resume assessment | NOT_A_PUBLICATION_BOUNDARY | Findings feed C14-C17 |
+| C14 | Validation/observability assessment | NOT_A_PUBLICATION_BOUNDARY | Findings feed C15 |
+| C15 | Cross-system authority reconciliation | REQUIRED_BOUNDARY | Baseline required by C16-C20 architecture/planning |
+| C16 | Simplification dispositions | NOT_A_PUBLICATION_BOUNDARY | Dispositions feed C17 |
+| C17 | Canonical target architecture | REQUIRED_BOUNDARY | Baseline required by C18-C20 |
+| C18 | System-level convergence planning | REQUIRED_BOUNDARY | Published plan required by C19/C20 |
+| C19 | Cold-resume qualification | REQUIRED_BOUNDARY | Qualified baseline required before C20 entry |
+| C20 | Qualified implementation tranche | REQUIRED_BOUNDARY | Baseline required before the next separately authorized tranche |
+
+For a required boundary the controlled sequence is:
+`CAPABILITY_COMPLETE -> QUALIFY -> RECONCILE -> RESOLVE_PUBLICATION_AUTHORITY -> PUBLISH -> VERIFY_PUBLISHED_BASELINE -> RESOLVE_NEXT_GATE_AUTHORITY`.
+Conditional boundaries publish only when their machine-readable authority or
+baseline-change condition is true. No publication is required before C06 in
+the current state unless C02 or C05 changes the canonical authority/state
+baseline. EOS synchronization is required only when an affected published
+capability changes an EOS-owned projection or baseline.

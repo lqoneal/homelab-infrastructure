@@ -1,0 +1,19 @@
+{
+  "authorized_mutations": {
+    "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md": "53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58"
+  },
+  "post_manifest_sha256": "54d9619c29f5127113ed3a08ba035de8a5523c882f1b2390f29dd909ba8f3073",
+  "pre_manifest_sha256": "77479031e7a5eed867f22540f0b1f8fd5c3acf330e383c6c2a15e4c4e73072fa",
+  "recorded_at": "2026-08-12T12:27:57Z",
+  "schema_version": 1,
+  "sources": [
+    {
+      "new_sha256": "a8ecf916f8dea796e63b0e8f298207f15976f12f5bf0eab1330399e5ace5d9b9",
+      "old_sha256": "53b97a178741fcccff80bc9331cee906151714a9a771e536e0814b14fca76f58",
+      "path": "docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md"
+    }
+  ],
+  "status": "RECONCILIATION_COMPLETE",
+  "transaction_id": "tx-post-cr47-egr-000007-index-reconciliation-001",
+  "transaction_type": "EMM_REBIND"
+}

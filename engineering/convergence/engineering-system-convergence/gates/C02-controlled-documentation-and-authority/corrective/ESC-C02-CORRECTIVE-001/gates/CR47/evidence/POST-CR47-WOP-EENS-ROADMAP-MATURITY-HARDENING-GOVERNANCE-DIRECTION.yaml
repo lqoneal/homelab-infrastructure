@@ -1,0 +1,97 @@
+schema_version: "1.0"
+record_type: ENGINEERING_GOVERNANCE_DIRECTION
+decision_id: EG-DIRECTION-WOP-EENS-ROADMAP-MATURITY-HARDENING-001
+
+decision:
+  status: APPROVED
+  decision_at: "2026-08-12T12:14:47Z"
+
+decision_maker:
+  role: Engineering Governance
+
+authority_basis:
+  - CHAR-0001
+  - POL-0001
+  - STD-0000
+  - STD-0001
+  - STD-0006
+  - PROC-0008
+  - PROC-0009
+  - prior_CR48_deferral_decision
+
+prior_decision:
+  path: "engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-WOP-EENS-GOVERNANCE-DECISION.yaml"
+  sha256: "574d21c4f91fcef315bb869109157370ab9de78a5de82017702e1e2b9c2544ef"
+
+subject:
+  condition_precedent: WOP_EENS_EXECUTION_ARCHITECTURE_CONVERGENCE
+
+approved_sequence:
+
+  step_1:
+    action: MATURITY_HARDEN_WOP_MATURITY_ROADMAP
+    target: SPEC-0015
+    completion_required_before_step_3: true
+
+  step_2:
+    action: MATURITY_HARDEN_EENS_MATURITY_ROADMAP
+    target: SPEC-0016
+    completion_required_before_step_3: true
+
+  step_3:
+    action: INDEPENDENTLY_QUALIFY_BOTH_HARDENED_SUBSYSTEM_ROADMAPS
+    required: true
+
+  step_4:
+    action: CONVERGE_HARDENED_WOP_AND_EENS_ROADMAPS_INTO_CANONICAL_ROADMAP
+    target: "engineering/convergence/engineering-system-convergence/roadmap.yaml"
+    prerequisite_steps:
+      - step_1
+      - step_2
+      - step_3
+
+  step_5:
+    action: MATURITY_HARDEN_COMPLETE_CANONICAL_ROADMAP_AFTER_CONVERGENCE
+    target: "engineering/convergence/engineering-system-convergence/roadmap.yaml"
+    scope: ENTIRE_CANONICAL_ROADMAP
+    required: true
+
+  step_6:
+    action: INDEPENDENTLY_QUALIFY_REHARDENED_CANONICAL_ROADMAP
+    required: true
+
+  step_7:
+    action: AUTHORIZE_JOINT_WOP_EENS_ZEUS_IMPLEMENTATION
+    separate_execution_authority_required: true
+
+  step_8:
+    action: COMPLETE_INTEGRATED_LIFECYCLE_QUALIFICATION
+    required: true
+
+  step_9:
+    action: REASSESS_CR48_READINESS
+    required: true
+
+ordering_invariants:
+  WOP_roadmap_harden_before_canonical_convergence: true
+  EENS_roadmap_harden_before_canonical_convergence: true
+  both_subsystem_roadmaps_qualified_before_canonical_convergence: true
+  canonical_roadmap_rehardened_after_integration: true
+  whole_canonical_roadmap_scope_required: true
+  canonical_roadmap_requalified_after_rehardening: true
+  implementation_before_required_roadmap_hardening_prohibited: true
+  CR48_before_condition_precedent_completion_prohibited: true
+
+not_authorized_by_this_direction:
+  - roadmap maturity-hardening execution
+  - WOP implementation
+  - EENS implementation
+  - Zeus implementation
+  - C06 execution
+  - C08 execution
+  - C09 execution
+  - CR48 execution
+  - publication
+  - EOS synchronization
+
+durable_EGR_recording_required: true

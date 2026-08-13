@@ -1,0 +1,23 @@
+
+=== ZEUS mission show ===
+Mission show
+------------
+Result                      : PASS
+Mission Id                  : OA-30
+Classification              : COMPLETED
+Lifecycle                   : COMPLETED
+Blockers                    : none
+Missing capabilities        : none
+
+=== ZEUS mission state ===
+Mission state
+-------------
+Result                      : PASS
+Mission Id                  : OA-30
+Classification              : COMPLETED
+Lifecycle                   : COMPLETED
+Blockers                    : none
+Missing capabilities        : none
+
+=== ZEUS mission readiness ===
+FAIL: mission identifier is required

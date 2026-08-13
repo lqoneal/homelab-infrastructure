@@ -1,0 +1,33 @@
+schema_version: '1.0'
+record_type: EOS_PROJECTION_MANIFEST_INCONSISTENCY_DIAGNOSTIC
+result: DIAGNOSTIC_COMPLETE
+canonical_baseline_resolver_rc: 0
+render_validate_rc: 0
+engctl_sync_validate_rc: 1
+zeus_synchronize_rc: 0
+established_before_diagnostic:
+  repository_head_origin_parity: PASS
+  eos_recorded_commit_parity: PASS
+  provider_invocation_provenance_ancestry: PASS
+  provider_invocation_cardinality: PASS
+  current_execution_binding: PASS
+required_classification:
+- EOS_STATE_STALE
+- EOS_MANIFEST_STALE
+- EOS_IDENTITY_STALE
+- REPOSITORY_EOS_AUTHORITY_STALE
+- RENDERER_SCHEMA_DRIFT
+- VALIDATOR_SCHEMA_DRIFT
+- EOS_CONTROL_DUPLICATION
+- SYNCHRONIZATION_READINESS_FALSE_POSITIVE
+- CANONICAL_BASELINE_FALSE_NEGATIVE
+- OTHER_EXACTLY_DEMONSTRATED
+safety:
+  EOS_mutated: false
+  provider_runtime_mutated: false
+  provider_started: false
+  CR48_executed: false
+  publication_executed: false
+  commit_created: false
+  push_performed: false
+next_action: CLASSIFY_EXACT_EOS_PROJECTION_MANIFEST_DELTA_BEFORE_RECONCILIATION

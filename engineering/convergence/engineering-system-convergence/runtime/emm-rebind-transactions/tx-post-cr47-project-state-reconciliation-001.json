@@ -1,0 +1,19 @@
+{
+  "authorized_mutations": {
+    "docs/project/PROJ-0001-PROJECT_STATE.md": "7f464acde3d88a92e200eac037c478bb013ccd275828d07b1c99bbdab2d8470c"
+  },
+  "post_manifest_sha256": "9babd774927724fc68d4070bf5e600f6408ce54d62c9e5d8f74b261302be86fe",
+  "pre_manifest_sha256": "003744aae8f690bcb94819e940272d77683533560ed2433d9f96f010383c2a12",
+  "recorded_at": "2026-08-12T11:44:53Z",
+  "schema_version": 1,
+  "sources": [
+    {
+      "new_sha256": "37f97850b44f95360a1fd702b4b6673d4285b79a2be6b3878169b3522524fbaa",
+      "old_sha256": "7f464acde3d88a92e200eac037c478bb013ccd275828d07b1c99bbdab2d8470c",
+      "path": "docs/project/PROJ-0001-PROJECT_STATE.md"
+    }
+  ],
+  "status": "RECONCILIATION_COMPLETE",
+  "transaction_id": "tx-post-cr47-project-state-reconciliation-001",
+  "transaction_type": "EMM_REBIND"
+}

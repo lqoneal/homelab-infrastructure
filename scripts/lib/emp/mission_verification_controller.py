@@ -113,7 +113,7 @@ def _repository(root: Path, runtime: Path) -> tuple[dict[str, Any], dict[str, An
 
 
 def _authority(root: Path) -> dict[str, Any]:
-    value = operational_beta.authority(root, include_current_execution=False)
+    value = operational_beta.authority(root)
     required = {
         "authority_framework": "OPERATION_BETA", "active_operation": "BETA",
         "authority_integrity": "PASS", "authority_resolution": "PASS",

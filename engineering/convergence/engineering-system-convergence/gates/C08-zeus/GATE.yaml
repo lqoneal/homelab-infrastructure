@@ -15,6 +15,7 @@ scope_out:
 dependencies: [C07]
 entry_conditions:
   - C07 management-boundary findings are complete and C08 is explicitly selected.
+  - C06 WOP execution-contract foundation is available; C08 assesses Zeus against it rather than recreating it.
 authoritative_inputs:
   - scripts/zeus, scripts/lib/emp and eos Zeus consumers, Zeus controlled documentation, evidence, schemas, runtime observations, and preservation reference.
 execution_playbook:

@@ -1,0 +1,122 @@
+schema_version: "1.0"
+record_type: ZEUS_MANAGED_PROVIDER_BOOTSTRAP_CORRECTIVE_002_QUALIFICATION
+date: 2026-08-12
+result: PASS_WITH_ENVIRONMENTAL_LIMITATION
+scope: ZEUS-MANAGED-PROVIDER-BOOTSTRAP-CORRECTIVE-002
+
+root_causes:
+  qualification_findings:
+    - managed start re-resolved the provider without its preflight work contract
+    - the adapter and broker independently reconstructed provider commands
+    - fixed adapter identity was reported without validating lifecycle bindings
+    - capability/version/config/auth/completion checks were incomplete
+    - contract parsing defaulted absent structures and could resolve an empty repository path as cwd
+    - provider readiness returned START_CODEX_SESSION despite negative subject lifecycle authority
+    - runtime qualification inspected only the immediate parent
+    - tests exercised resolver calls but not the real CLI and succession boundary
+    - PROC-0001 described more than the original tests established
+  managed_session_succession: >-
+    current-session discovery treated terminal records as current ownership and
+    the managed session identifier had no succession component. A stopped,
+    failed, interrupted, completed, or reconciled historical record could
+    therefore remain the single current record and block a new start forever.
+
+files_modified:
+  - scripts/zeus
+  - scripts/lib/emp/codex_adapter.py
+  - scripts/lib/emp/codex_app_server_broker.py
+  - scripts/tests/test-zeus-managed-provider-preflight.py
+  - scripts/tests/test-zeus-p5-g6-codex-adapter.py
+  - scripts/tests/test-zeus-p5-g6-session-supersession.py
+  - docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-ZEUS-MANAGED-PROVIDER-BOOTSTRAP-CORRECTIVE-002-QUALIFICATION.yaml
+
+canonical_plan:
+  result: PASS
+  invariant: AUTHORIZED_WORK_REQUIREMENTS_TO_RESOLVER_TO_IMMUTABLE_PLAN_TO_PREFLIGHT_OR_DISPATCH_TO_BROKER_TO_CODEX
+  proof:
+    - work contract identity and canonical content digest are stored in the plan and session
+    - executable is resolved once to an absolute identity
+    - exact app-server strict-config stdio argument vector is stored and forwarded item-for-item
+    - broker consumes provider-argument values and does not reinterpret a supplied plan
+    - plan digest and work-contract digest must match on resume or active replay
+    - lifecycle provider, provider-session, provider-invocation, and execution identities are validated separately from provider compatibility
+
+preflight:
+  result: PASS
+  real_cli_route: PASS
+  command: scripts/zeus --runtime-root <nested-temp-runtime> codex start --mode ZEUS_MANAGED --work-contract <test-contract> --preflight --dry-run --json
+  provider_app_server_started: false
+  provider_session_created: false
+  execution_created: false
+  runtime_created: false
+  repository_or_lifecycle_mutation: false
+  next_authorized_action_for_bootstrap_contract: RETURN_TO_AUTHORIZED_OPERATOR_BOUNDARY
+  installed_version_observed: codex-cli 0.147.0
+  supported_policy: codex-cli 0.147.x
+
+succession:
+  deterministic_qualification: PASS
+  normal_A_to_B:
+    result: PASS
+    session_B_new: true
+    provider_invocation_B_new: true
+    A_preserved_historical: true
+    B_current: true
+  abnormal_dead_A_to_B:
+    result: PASS
+    failed_A_preserved_historical: true
+    B_started: true
+  reconciled_historical_A_to_B:
+    result: PASS
+    historical_record_excluded_from_active_ownership: true
+  active_collision:
+    result: PASS
+    blocker: ACTIVE_SESSION_PROTECTION
+  repeated_A_to_B_to_C:
+    result: PASS
+    qualification_exercised_four_distinct_successive_session_identities: true
+  deletion_of_history: false
+
+focused_tests:
+  command: PYTHONPATH=. python3 scripts/tests/test-zeus-managed-provider-preflight.py
+  total: 17
+  passed: 16
+  failed: 0
+  skipped: 1
+  skip_attribution: ENVIRONMENTAL_UNIX_CONTROL_SOCKET_PERMISSION
+
+broader_regression:
+  clean_suites:
+    - test-zeus-p5-g6-codex-interactive.py: 21 run, 18 pass, 3 skip
+    - test-zeus-p5-g6-session-supersession.py: 17 pass
+    - test-zeus-oa24-resume-continuation.py: 3 pass
+    - test-legacy-lifecycle-reconciliation.py: 6 pass
+    - test-runtime-reconciliation.py: 8 pass
+  attributed_noncorrective:
+    PRE_EXISTING_UNRELATED:
+      - stale CODEX_CONTROLLER_ROUTING exact-table assertion omits accept-reconciliation
+      - reconciliation termination-receipt fixture depends on external runtime state
+    ENVIRONMENTAL:
+      - sandbox denies Unix-domain control-socket bind for live broker completion test
+      - provider-session tamper test targets read-only external runtime
+    BASELINE_STATE:
+      - EOS_BASELINE_MISMATCH blocks provider-invocation and execution-start baseline suites
+      - dirty publication projection is outside accepted candidate scope
+      - provider-selection live tests terminate against external baseline/runtime state
+  corrective_regressions: 0
+
+documentation:
+  PROC_0001: reconciled to qualified version, plan, contract, authority, and succession semantics
+  SPEC_0002: no change; existing three-mode and Zeus authority architecture remains unchanged
+  INF_0001: no change; no consequential infrastructure requirement was established
+
+limitations:
+  - live broker/provider completion qualification was not executable because the sandbox denies Unix-domain control socket creation
+  - broader baseline/EOS and dirty-publication failures remain unresolved and were not modified under this authority
+  - no CR48, publication, push, or EOS synchronization action was performed
+
+next_action: >-
+  Re-run the focused broker boundary test in an environment permitting the
+  Zeus Unix control socket, then review this evidence for bootstrap exception
+  closeout without authorizing CR48.

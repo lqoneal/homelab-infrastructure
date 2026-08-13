@@ -192,7 +192,7 @@ def _existing(runtime: Path, mission_id: str | None, session_id: str | None = No
             continue
         if session_id and value.get("session_id") != session_id:
             continue
-        if session_id is None and value.get("mission_id") != mission_id:
+        if session_id is None and mission_id is not None and value.get("mission_id") != mission_id:
             continue
         if execution_mode is not None and value.get("execution_mode") != execution_mode:
             continue
@@ -202,10 +202,53 @@ def _existing(runtime: Path, mission_id: str | None, session_id: str | None = No
             continue
         matches.append(value)
     if latest:
+        timestamps = [value.get("start_timestamp", 0) for value in matches]
+        if timestamps and timestamps.count(max(timestamps)) > 1:
+            raise InteractiveCodexError("SESSION_SELECTION_AMBIGUOUS", "multiple interactive sessions have equal latest authority; use --session")
         return max(matches, key=lambda value: value.get("start_timestamp", 0), default=None)
     if len(matches) > 1:
         raise InteractiveCodexError("SESSION_CARDINALITY_CONFLICT", "more than one interactive session matches; use --session or --latest")
     return matches[0] if matches else None
+
+
+def select_session(repository: Path | str, mission_id: str | None = None, *,
+                   session_id: str | None = None, latest: bool = False,
+                   active: bool = False, runtime_root: Path | str | None = None) -> dict[str, Any]:
+    """Resolve one authoritative Zeus interactive session without mutation.
+
+    This is the selector owner for operator-interactive sessions.  A process
+    discovered outside an authoritative Zeus record is never a candidate.
+    """
+    if sum(bool(value) for value in (session_id, latest, active)) > 1:
+        raise InteractiveCodexError("SESSION_SELECTOR_CONFLICT", "select exactly one of --session, --latest, or --active")
+    root = Path(repository).resolve()
+    runtime = _runtime(root, runtime_root)
+    mission = str(mission_id).upper() if mission_id else None
+    if session_id:
+        session = _existing(runtime, mission, session_id=session_id)
+        if session is None:
+            raise InteractiveCodexError("SESSION_NOT_FOUND", "the requested interactive session is not authoritative or does not exist")
+    else:
+        values = [value for value in _sessions(runtime)
+                  if (mission is None or value.get("mission_id") == mission)
+                  and value.get("execution_mode") in {DIRECT_INTERACTIVE, REMOTE_INTERACTIVE}
+                  and value.get("repository") == str(root)]
+        if active:
+            values = [value for value in values
+                      if value.get("state") in ACTIVE_STATES
+                      and (_alive(value.get("pid")) or _alive(value.get("listener_pid")))]
+            if len(values) > 1:
+                raise InteractiveCodexError("SESSION_SELECTION_AMBIGUOUS", "multiple live compatible interactive sessions match; use --session")
+            session = values[0] if values else None
+        elif latest:
+            session = _existing(runtime, mission, latest=True)
+        else:
+            session = _existing(runtime, mission)
+    if session is None:
+        raise InteractiveCodexError("SESSION_NOT_FOUND", "no compatible Zeus interactive session matches the selector")
+    return {"result": "PASS", "session": session, "session_id": session.get("session_id"),
+            "mission_id": session.get("mission_id"), "selector": "session" if session_id else "active" if active else "latest" if latest else "current",
+            "read_only": True}
 
 
 def _alive(pid: Any) -> bool:
@@ -336,12 +379,16 @@ def _set_terminal_size(fd: int, size: tuple[int, int] | None) -> None:
         pass
 
 
-def _context(package: Mapping[str, Any] | None, repository: Mapping[str, Any]) -> str:
+def _context(package: Mapping[str, Any] | None, repository: Mapping[str, Any], *, write_approved: bool = False) -> str:
     if package is None:
+        scope = ("Repository file mutation is explicitly authorized within the bounded "
+                 "repository operator scope. This is not mission or execution authority. "
+                 if write_approved else "")
         return ("This is a Zeus operator-interactive, non-mission session. It has no WOP, "
                 "Mission Contract, or execution authority. Do not perform protected "
-                "lifecycle actions, publication, push, EOS synchronization, or work "
-                "outside explicit operator direction.")
+                "lifecycle actions, publication, push, EOS synchronization, qualification, "
+                "or closeout. " + scope + "Operator instructions bound the work scope; do not "
+                "work outside explicit operator direction.")
     return ("You are in a Zeus-controlled operator-interactive session. Mission and "
             f"repository bindings are authoritative: mission={package['mission_id']}, "
             f"execution={package['execution_id']}, repository={repository['repository_id']}. "
@@ -362,7 +409,8 @@ def session_identifier(repository: Mapping[str, Any], mission_id: str | None, ex
 
 
 def direct_launcher_preflight(repository: Path | str, mission_id: str | None = None, *,
-                              approval: bool = False, codex_bin: str = "codex",
+                              approval: bool = False, write_requested: bool = False,
+                              codex_bin: str = "codex",
                               argv: list[str] | None = None) -> dict[str, Any]:
     """Validate the direct launcher without opening a provider or TUI.
 
@@ -370,6 +418,10 @@ def direct_launcher_preflight(repository: Path | str, mission_id: str | None = N
     responsibility of ``shell`` and must run with inherited terminal streams.
     """
     root = Path(repository).resolve()
+    if write_requested and not approval:
+        raise InteractiveCodexError("OPERATOR_APPROVAL_REQUIRED", "--approve is required for --write",
+                                    next_action="APPROVE_REPOSITORY_OPERATOR_WRITE")
+    sandbox = "workspace-write" if mission_id or write_requested else "read-only"
     launcher = None
     launcher_error = None
     try:
@@ -392,6 +444,12 @@ def direct_launcher_preflight(repository: Path | str, mission_id: str | None = N
         "auth_config": auth_available,
         "environment_resolution": bool(os.environ.get("PATH")),
         "mission_binding": "PASS" if mission_id and approval else ("NOT_APPLICABLE" if not mission_id else "FAIL"),
+        "execution_binding": "NOT_APPLICABLE",
+        "binding_class": "MISSION_EXECUTION" if mission_id else "REPOSITORY_OPERATOR",
+        "write_requested": "YES" if write_requested else "NO",
+        "write_approved": "YES" if write_requested and approval else ("NO" if write_requested else "NOT_REQUESTED"),
+        "sandbox": sandbox,
+        "approval_policy": "on-request",
         "authority_context": "PASS" if mission_id and approval else "NOT_APPLICABLE",
         "argv": list(argv or []),
         "pty_required_for_launch": True,
@@ -475,16 +533,24 @@ def _result(session: Mapping[str, Any], *, read_only: bool) -> dict[str, Any]:
             "attached": bool(alive and state in ACTIVE_STATES), "session_mode": "OPERATOR_INTERACTIVE",
             "mission_bound": bool(session.get("mission_id")), "execution_bound": bool(session.get("execution_id")),
             "repository_bound": True, "authority_mode": session.get("authority_mode"),
+            "write_requested": "YES" if session.get("write_requested") else "NO",
+            "write_approved": "YES" if session.get("write_approved") else "NO",
+            "sandbox": session.get("sandbox", "read-only"),
+            "protected_lifecycle_authority": "NO" if not session.get("mission_id") else "MISSION_BOUND_POLICY",
+            "provider_lifecycle_authority": "NO" if not session.get("mission_id") else "MISSION_BOUND_POLICY",
             "failure": session.get("failure"), "next_authorized_action": session.get("session_next_authorized_action") or ("RECONCILE_PROVIDER_SESSION" if state == "FAILED" else ("CONTINUE_INTERACTIVE_SESSION" if alive else "START_INTERACTIVE_SESSION"))}
 
 
 def _make_session(root: Path, runtime: Path, mission_id: str | None, approval: bool,
-                  execution_mode: str = DIRECT_INTERACTIVE) -> tuple[dict[str, Any], Path]:
+                  execution_mode: str = DIRECT_INTERACTIVE, *, write_requested: bool = False) -> tuple[dict[str, Any], Path]:
     repository = resolve_repository(root)
     package = _package(root, mission_id, runtime)
     if mission_id is not None and not approval:
         raise InteractiveCodexError("OPERATOR_APPROVAL_REQUIRED", "--approve is required for a mission-bound shell",
                                     next_action="APPROVE_AND_START_INTERACTIVE_SESSION")
+    if write_requested and not approval:
+        raise InteractiveCodexError("OPERATOR_APPROVAL_REQUIRED", "--approve is required for --write",
+                                    next_action="APPROVE_REPOSITORY_OPERATOR_WRITE")
     execution_id = package.get("execution_id") if package else None
     binding_class = "MISSION_EXECUTION" if mission_id or execution_id else "REPOSITORY_OPERATOR"
     session_id = session_identifier(repository, mission_id, execution_id, execution_mode,
@@ -519,7 +585,12 @@ def _make_session(root: Path, runtime: Path, mission_id: str | None, approval: b
         "mode": "OPERATOR_INTERACTIVE", "execution_mode": execution_mode,
         "session_mode": "OPERATOR_INTERACTIVE", "interactive": True, "managed": False,
         "mission_bound": bool(mission_id), "execution_bound": bool(package), "repository_bound": True,
-        "authority_mode": "NON_MISSION_OPERATOR_SESSION" if package is None else "ZEUS_MISSION_BOUND_OPERATOR_SESSION",
+        "authority_mode": ("REPOSITORY_OPERATOR_WRITE" if package is None and write_requested else
+                           "NON_MISSION_OPERATOR_SESSION" if package is None else "ZEUS_MISSION_BOUND_OPERATOR_SESSION"),
+        "write_requested": bool(write_requested), "write_approved": bool(write_requested and approval),
+        "sandbox": "workspace-write" if mission_id or write_requested else "read-only",
+        "protected_lifecycle_authority": "NO" if package is None else "MISSION_BOUND_POLICY",
+        "provider_lifecycle_authority": "NO" if package is None else "MISSION_BOUND_POLICY",
         "state": "CREATED", "pid": None,
         "process_group": None, "operator_identity": os.environ.get("USER", "unknown"),
         "terminal_identity": os.environ.get("TTY", "operator-terminal"), "terminal_size": _terminal_size(sys.stdin.fileno()) if sys.stdin.isatty() else None,
@@ -539,7 +610,13 @@ def _make_session(root: Path, runtime: Path, mission_id: str | None, approval: b
         codex_home = runtime / "codex-home" / session_id
         codex_adapter._prepare_codex_home(codex_home)
         session["codex_home"] = str(codex_home)
-    _append_event(runtime, session_id, "SHELL_REQUEST_ACCEPTED", {"mission_id": mission_id, "phase": "SHELL_REQUEST_ACCEPTED"})
+    _append_event(runtime, session_id, "SHELL_REQUEST_ACCEPTED", {"mission_id": mission_id, "phase": "SHELL_REQUEST_ACCEPTED",
+        "write_requested": "YES" if write_requested else "NO", "write_approved": "YES" if write_requested and approval else "NO"})
+    _append_event(runtime, session_id, "WRITE_MODE_RESOLVED", {"write_requested": "YES" if write_requested else "NO",
+        "write_approved": "YES" if write_requested and approval else "NO",
+        "sandbox": "workspace-write" if mission_id or write_requested else "read-only",
+        "binding_class": binding_class, "mission_bound": bool(mission_id), "execution_bound": bool(package),
+        "protected_lifecycle_authority": "NO" if package is None else "MISSION_BOUND_POLICY"})
     _append_event(runtime, session_id, "SESSION_RECORD_CREATED", {"mission_id": mission_id,
         "execution_id": session.get("execution_id"), "authority": session["authority"], "mode": session["mode"]})
     return _save(runtime, session), Path(session["log_path"])
@@ -883,12 +960,13 @@ def _remote_broker(root: Path, runtime: Path, session_id: str, codex_home: Path,
 
 
 def _direct_shell(root: Path, runtime: Path, session: dict[str, Any], log_path: Path,
-                  *, mission: str | None, codex_bin: str, argv: list[str] | None) -> dict[str, Any]:
+                  *, mission: str | None, codex_bin: str, argv: list[str] | None,
+                  write_requested: bool) -> dict[str, Any]:
     """Launch native Codex in the current terminal; no PTY or app-server is inserted."""
     package = _package(root, mission, runtime)
     repository = resolve_repository(root)
-    context = _context(package, repository)
-    sandbox = "workspace-write" if mission else "read-only"
+    context = _context(package, repository, write_approved=write_requested and package is None)
+    sandbox = "workspace-write" if mission or write_requested else "read-only"
     launcher = direct_launcher_path(root)
     command = [str(launcher), codex_bin, "-C", str(root), "-s", sandbox, "-a", "on-request",
                "-c", f"developer_instructions={json.dumps(context)}"] + list(argv or [])
@@ -904,7 +982,9 @@ def _direct_shell(root: Path, runtime: Path, session: dict[str, Any], log_path: 
                    remote_capable=False, remote_endpoint=None, app_server_endpoint=None,
                    zeus_provider_control=True, command=command)
     _append_event(runtime, session["session_id"], "DIRECT_CLIENT_LAUNCH_REQUESTED",
-                  {"command": command, "terminal_inherited": True, "remote_endpoint_created": False})
+                  {"command": command, "terminal_inherited": True, "remote_endpoint_created": False,
+                   "sandbox": sandbox, "write_requested": "YES" if write_requested else "NO",
+                   "write_approved": "YES" if write_requested else "NO"})
     _append_event(runtime, session["session_id"], "SHELL_EVENT_LOOP_ENTERED",
                   {"client": "CODEX_CLI", "execution_mode": DIRECT_INTERACTIVE})
     _save(runtime, session)
@@ -945,7 +1025,8 @@ def _direct_shell(root: Path, runtime: Path, session: dict[str, Any], log_path: 
 
 def shell(repository: Path | str, mission_id: str | None = None, *, approval: bool = False,
           runtime_root: Path | str | None = None, codex_bin: str = "codex", argv: list[str] | None = None,
-          remote: bool = False, _allow_non_tty: bool = False, _session_id: str | None = None) -> dict[str, Any]:
+          remote: bool = False, write_requested: bool = False, _allow_non_tty: bool = False,
+          _session_id: str | None = None) -> dict[str, Any]:
     """Launch direct native Codex by default, or remote Codex when explicitly requested.
 
     Direct mode inherits the operator terminal.  Remote mode is separately
@@ -953,15 +1034,20 @@ def shell(repository: Path | str, mission_id: str | None = None, *, approval: bo
     """
     root = Path(repository).resolve()
     mission = str(mission_id).upper() if mission_id else None
-    if not _allow_non_tty and not (sys.stdin.isatty() and sys.stdout.isatty()):
-        raise InteractiveCodexError("PTY_REQUIRED", "codex shell requires an interactive terminal")
     if mission and not approval:
         raise InteractiveCodexError("OPERATOR_APPROVAL_REQUIRED", "--approve is required for a mission-bound shell",
                                     next_action="APPROVE_AND_START_INTERACTIVE_SESSION")
+    if write_requested and not approval:
+        raise InteractiveCodexError("OPERATOR_APPROVAL_REQUIRED", "--approve is required for --write",
+                                    next_action="APPROVE_REPOSITORY_OPERATOR_WRITE")
+    if not _allow_non_tty and not (sys.stdin.isatty() and sys.stdout.isatty()):
+        raise InteractiveCodexError("PTY_REQUIRED", "codex shell requires an interactive terminal")
     runtime = _runtime(root, runtime_root)
     if not remote:
-        session, log_path = _make_session(root, runtime, mission, approval, DIRECT_INTERACTIVE)
-        return _direct_shell(root, runtime, session, log_path, mission=mission, codex_bin=codex_bin, argv=argv)
+        session, log_path = _make_session(root, runtime, mission, approval, DIRECT_INTERACTIVE,
+                                          write_requested=write_requested)
+        return _direct_shell(root, runtime, session, log_path, mission=mission, codex_bin=codex_bin,
+                             argv=argv, write_requested=write_requested)
     managed = codex_adapter._existing(runtime, mission) if mission else None
     if _session_id:
         session = _existing(runtime, mission, _session_id, active=False)
@@ -969,7 +1055,8 @@ def shell(repository: Path | str, mission_id: str | None = None, *, approval: bo
             raise InteractiveCodexError("SESSION_NOT_ATTACHABLE", "requested interactive session is not live")
         log_path = Path(session["log_path"])
     else:
-        session, log_path = _make_session(root, runtime, mission, approval, REMOTE_INTERACTIVE)
+        session, log_path = _make_session(root, runtime, mission, approval, REMOTE_INTERACTIVE,
+                                          write_requested=write_requested)
     log_path.parent.mkdir(parents=True, exist_ok=True)
     endpoint = None
     broker = None
@@ -1049,9 +1136,11 @@ def shell(repository: Path | str, mission_id: str | None = None, *, approval: bo
         "official_cli": True, "provider_reused": not owns_broker})
     _append_event(runtime, session["session_id"], "SHELL_EVENT_LOOP_ENTERED", {"client": "OFFICIAL_CODEX_REMOTE"})
     _save(runtime, session)
-    sandbox = "workspace-write" if mission else "read-only"
+    sandbox = "workspace-write" if mission or write_requested else "read-only"
+    context = _context(_package(root, mission, runtime), resolve_repository(root),
+                       write_approved=write_requested and not mission)
     command = [codex_bin, "--remote", endpoint, "-C", str(root), "-s", sandbox,
-               "-a", "on-request"] + list(argv or [])
+               "-a", "on-request", "-c", f"developer_instructions={json.dumps(context)}"] + list(argv or [])
     environment = dict(os.environ)
     if session.get("codex_home"):
         environment["CODEX_HOME"] = str(session["codex_home"])
@@ -1059,7 +1148,9 @@ def shell(repository: Path | str, mission_id: str | None = None, *, approval: bo
     failure: dict[str, Any] | None = None
     try:
         _append_event(runtime, session["session_id"], "REMOTE_CLIENT_LAUNCH_REQUESTED",
-                      {"command": command, "endpoint_uri": endpoint})
+                      {"command": command, "endpoint_uri": endpoint, "sandbox": sandbox,
+                       "write_requested": "YES" if write_requested else "NO",
+                       "write_approved": "YES" if write_requested else "NO"})
         client = subprocess.Popen(command, cwd=root, env=environment, start_new_session=False)
         current = dict(_load(_path(runtime, session["session_id"])), remote_client_pid=client.pid,
                        remote_client_state="RUNNING")
@@ -1137,8 +1228,9 @@ def diagnose(repository: Path | str, mission_id: str | None = None, *, approval:
 def status(repository: Path | str, mission_id: str | None = None, *, session_id: str | None = None,
            latest: bool = False, active: bool = False, runtime_root: Path | str | None = None) -> dict[str, Any]:
     root = Path(repository).resolve(); runtime = _runtime(root, runtime_root)
-    session = _existing(runtime, str(mission_id).upper() if mission_id else None, session_id,
-                        latest=latest, active=active)
+    selected = select_session(root, mission_id, session_id=session_id, latest=latest, active=active,
+                              runtime_root=runtime) if (session_id or latest or active) else None
+    session = selected["session"] if selected else _existing(runtime, str(mission_id).upper() if mission_id else None)
     if not session:
         return {"result": "PASS", "session_id": session_id, "mission_id": str(mission_id).upper() if mission_id else None,
                 "state": "NOT_STARTED", "mode": "OPERATOR_INTERACTIVE", "session_mode": "OPERATOR_INTERACTIVE",
@@ -1227,20 +1319,26 @@ def stop(repository: Path | str, mission_id: str | None = None, *, session_id: s
 
 
 def attach(repository: Path | str, mission_id: str | None = None, *, session_id: str | None = None,
+           latest: bool = False, active: bool = False,
            runtime_root: Path | str | None = None) -> dict[str, Any]:
-    session = status(repository, mission_id, session_id=session_id, active=False, runtime_root=runtime_root)
-    if session.get("state") == "NOT_STARTED" and mission_id:
-        managed = codex_adapter._existing(_runtime(Path(repository).resolve(), runtime_root), str(mission_id).upper())
-        if managed and managed.get("state") == "READY" and _alive(managed.get("provider_pid")) and managed.get("control_socket"):
-            return shell(repository, str(mission_id).upper(), approval=True, runtime_root=runtime_root)
-    if not session.get("process_alive"):
-        raise InteractiveCodexError("SESSION_NOT_ATTACHABLE", "no live interactive session is attachable",
-                                    next_action="START_INTERACTIVE_SESSION")
-    if not session.get("provider_id"):
-        raise InteractiveCodexError("ATTACH_TRANSPORT_UNAVAILABLE", "the live interactive session has no broker attachment identity",
-                                    next_action="USE_THE_OWNER_TERMINAL_OR_STOP_AND_RECONCILE")
-    return shell(repository, mission_id, approval=bool(session.get("approval_state") == "APPROVED"),
-                 runtime_root=runtime_root, _session_id=session["session_id"])
+    """Qualify attachment to an existing session without creating lifecycle state.
+
+    Terminal ownership remains with the process that created a direct session;
+    a later Zeus invocation must not manufacture a provider or thread to mimic
+    attachment.  Remote transports can use the returned endpoint/session
+    identity through their already-established owner.
+    """
+    selected = select_session(repository, mission_id, session_id=session_id, latest=latest,
+                              active=active, runtime_root=runtime_root)
+    session = selected["session"]
+    if not (_alive(session.get("pid")) or _alive(session.get("listener_pid"))):
+        raise InteractiveCodexError("SESSION_NOT_ATTACHABLE", "selected interactive session is stale or stopped",
+                                    next_action="RECONCILE_PROVIDER_SESSION")
+    if session.get("execution_mode") == REMOTE_INTERACTIVE and not session.get("remote_endpoint"):
+        raise InteractiveCodexError("ATTACH_TRANSPORT_UNAVAILABLE", "selected remote session has no authoritative endpoint")
+    return {**_result(session, read_only=True), "selector": selected["selector"],
+            "attachment": "EXISTING_SESSION", "provider_created": False,
+            "thread_created": False, "session_created": False, "read_only": True}
 
 
 def logs(repository: Path | str, mission_id: str | None = None, *, session_id: str | None = None,

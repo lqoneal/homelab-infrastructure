@@ -20,11 +20,11 @@ source_of_truth: true
 convergence_program:
   program_id: ENGINEERING-SYSTEM-CONVERGENCE
   roadmap_id: ESC-ROADMAP-001
-  roadmap_version: 2.0.2
+  roadmap_version: 2.3.0
   roadmap_path: engineering/convergence/engineering-system-convergence/roadmap.yaml
   state_path: engineering/convergence/engineering-system-convergence/STATE.yaml
   current_gate: C02
-  next_authorized_action: Read corrective STATE.yaml. If current_item is CR47, verify CR47 dependencies and execute only CR47.
+  next_authorized_action: REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY
   executable_qualification: PASS
   evaluation_standard: STD-0006@1.0
   evaluation_procedure: PROC-0009@1.0
@@ -617,3 +617,57 @@ When resuming this project:
 - Execution-agent dispatch: deferred to Stage 2
 - Completion evidence:
   `engineering/evidence/2026-07-28-zeus-operational-alpha-stage1-completion-report.md`
+
+## Corrective State Projection Reconciliation
+
+Reconciled at: 2026-08-12T11:44:53+00:00
+
+Authority source:
+- engineering/convergence/engineering-system-convergence/STATE.yaml
+- engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml
+
+Current gate: C02
+Last completed corrective item: CR47
+Current corrective item: CR48
+Next authorized action: VERIFY_CR48_PRECONDITIONS
+
+This section is a synchronized Project State projection. It does not itself
+authorize CR48 execution and does not supersede the authoritative roadmap or
+corrective state.
+
+## CR48 WOP/EENS Convergence Hold
+
+Current parent gate: C02
+
+Last completed corrective item: CR47
+
+Current corrective item: CR48
+
+Current corrective disposition:
+DEFERRED_PENDING_WOP_EENS_DEVELOPMENT
+
+Next authoritative corrective action:
+HOLD_CR48_PENDING_WOP_EENS_CONVERGENCE
+
+Condition precedent:
+WOP_EENS_EXECUTION_ARCHITECTURE_CONVERGENCE
+
+Required roadmap ordering:
+
+1. Maturity-harden WOP maturity roadmap.
+2. Maturity-harden EENS maturity roadmap.
+3. Independently qualify both hardened subsystem roadmaps.
+4. Converge the hardened WOP/EENS roadmap content into the canonical roadmap.
+5. Maturity-harden the entire canonical roadmap after convergence.
+6. Independently qualify the re-hardened canonical roadmap.
+7. Obtain separate implementation authority and complete joint implementation.
+8. Complete integrated lifecycle qualification.
+9. Reassess CR48 readiness.
+
+Supplemental governance direction:
+engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-ROADMAP-MATURITY-HARDENING-GOVERNANCE-DIRECTION.yaml
+
+This section is a synchronized Project State projection. It does not itself
+originate Governance Authority, satisfy the condition precedent, authorize
+roadmap maturity-hardening, authorize implementation, or authorize CR48
+execution.

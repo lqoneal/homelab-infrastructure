@@ -15,6 +15,7 @@ scope_out:
 dependencies: [C10]
 entry_conditions:
   - C10 runtime evidence producers are mapped and C11 is explicitly selected.
+  - WOP completion/evidence contracts from C06 and EENS observation contracts from C09 are available.
 authoritative_inputs:
   - PROC-0006, evidence/qualification/authorization schemas and records, completion reports, receipts, validators, and prior results.
 execution_playbook:
