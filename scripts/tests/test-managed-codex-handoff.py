@@ -93,6 +93,20 @@ class ManagedCodexHandoffTests(unittest.TestCase):
         value.update(overrides)
         return value
 
+    def _canonical_admin_record(self, **overrides) -> dict:
+        value = self._admin_record(
+            transaction_id="GENERIC-CANONICAL-ADMIN-001",
+            canonical_authority=True,
+            authority_source="OPERATOR_AUTHORIZATION_GENERIC_ADMIN",
+            authority_source_class="CANONICAL_OPERATOR_AUTHORIZATION",
+            authority_model="MODEL_B",
+            acceptance_criteria=["HANDOFF_PROSE=NOT_AUTHORITY"],
+            publication_authority="ZEUS_ONLY",
+            eos_authority="ZEUS_ONLY",
+        )
+        value.update(overrides)
+        return value
+
     def _resolve_admin(self, text: str, record: dict | None = None) -> dict:
         with patch.object(managed_handoff, "_transaction_records",
                           return_value=[] if record is None else [record]):
@@ -113,6 +127,60 @@ class ManagedCodexHandoffTests(unittest.TestCase):
         self.assertEqual("YES", value["execution_request_constructed"])
         self.assertFalse(value["zeus_execution_request"]["provider_contacted"])
         self.assertNotIn("gate_id", value)
+
+    def test_existing_t_auth_05_resolves_with_supplemental_contract(self):
+        value = self._resolve("transaction_id: T-AUTH-05\n")
+        self.assertEqual("PASS", value["result"])
+
+    def test_corrective_transaction_resolves_without_canonical_supplements(self):
+        value = self._resolve("transaction_id: C02-ADMINISTRATIVE-AUTHORITY-RESOLVER-RECONCILIATION\n")
+        self.assertEqual("PASS", value["result"])
+
+    def test_generic_canonical_transaction_resolves_without_t_auth_05_fields(self):
+        value = self._resolve_admin(
+            "transaction_id: GENERIC-CANONICAL-ADMIN-001\n",
+            self._canonical_admin_record(),
+        )
+        self.assertEqual("PASS", value["result"])
+
+    def test_generic_canonical_authority_requires_common_fields(self):
+        cases = (
+            ({"authority_source_class": None}, "HANDOFF_BINDING_CONTRADICTION"),
+            ({"authority_source_class": "HANDOFF_PROSE"}, "HANDOFF_BINDING_CONTRADICTION"),
+            ({"authority_model": None}, "HANDOFF_BINDING_CONTRADICTION"),
+            ({"operation_id": "OPERATION-ALPHA"}, "HANDOFF_BINDING_CONTRADICTION"),
+            ({"emm_id": "OTHER-EMM"}, "HANDOFF_BINDING_CONTRADICTION"),
+            ({"authorized_scope": []}, "HANDOFF_TRANSACTION_SCOPE_MISSING"),
+        )
+        for overrides, blocker in cases:
+            with self.subTest(overrides=overrides):
+                value = self._resolve_admin(
+                    "transaction_id: GENERIC-CANONICAL-ADMIN-001\n",
+                    self._canonical_admin_record(**overrides),
+                )
+                self.assertEqual("BLOCKED", value["result"])
+                self.assertEqual(blocker, value["blocker"])
+
+    def test_duplicate_current_transaction_authority_fails_closed(self):
+        first = self._canonical_admin_record()
+        second = self._canonical_admin_record(source="duplicate-authority.yaml")
+        value = self._resolve_admin(
+            "transaction_id: GENERIC-CANONICAL-ADMIN-001\n",
+            first,
+        )
+        self.assertEqual("PASS", value["result"])
+        with patch.object(managed_handoff, "_transaction_records", return_value=[first, second]):
+            value = self._resolve("transaction_id: GENERIC-CANONICAL-ADMIN-001\n")
+        self.assertEqual("BLOCKED", value["result"])
+        self.assertEqual("HANDOFF_RESOLUTION_AMBIGUOUS", value["blocker"])
+
+    def test_t_auth_05_supplemental_requirement_remains_required(self):
+        record = next(item for item in managed_handoff._transaction_records(ROOT)
+                      if item.get("transaction_id") == "T-AUTH-05")
+        record["t_auth_05_required_scope"] = None
+        value = self._resolve_admin("transaction_id: T-AUTH-05\n", record)
+        self.assertEqual("BLOCKED", value["result"])
+        self.assertEqual("HANDOFF_BINDING_CONTRADICTION", value["blocker"])
 
     def test_t_auth_identity_without_persisted_authority_is_specific(self):
         value = self._resolve_admin("T-AUTH-05 bounded administrative corrective\n")

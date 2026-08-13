@@ -191,6 +191,81 @@ def _transaction_records(root: Path) -> list[dict[str, Any]]:
     return records
 
 
+_CANONICAL_ADMINISTRATIVE_AUTHORITY = {
+    "authority_source_class": "CANONICAL_OPERATOR_AUTHORIZATION",
+    "authority_model": "MODEL_B",
+    "write_authority": "BOUNDED",
+    "provider_mode": "ZEUS_MANAGED_NON_INTERACTIVE",
+    "protected_git_authority": "ZEUS_ONLY",
+    "qualification_authority": "ZEUS",
+    "publication_authority": "ZEUS_ONLY",
+    "eos_authority": "ZEUS_ONLY",
+}
+
+_T_AUTH_05_SUPPLEMENTAL_FIELDS = {
+    "authorization_boundary": "OPERATION_BETA_GOVERNANCE_AUTHORITY_RECONCILIATION_ONLY",
+    "t_auth_05_objective": "DEFINED",
+    "t_auth_05_acceptance_criteria": "DEFINED",
+    "t_auth_05_required_scope": "DEFINED",
+    "t_auth_05_prohibited_scope": "DEFINED",
+}
+
+_T_AUTH_05_SUPPLEMENTAL_CRITERIA = {
+    "T_AUTH_05_CANONICAL_AUTHORITY=PRESENT",
+    "T_AUTH_05_OBJECTIVE=DEFINED",
+    "T_AUTH_05_ACCEPTANCE_CRITERIA=DEFINED",
+    "T_AUTH_05_REQUIRED_SCOPE=DEFINED",
+    "T_AUTH_05_AUTHORITY_SOURCE=CANONICAL",
+    "CURRENT_OPERATION=OPERATION-BETA",
+    "CURRENT_EMM=OPERATION-BETA-EMM",
+    "AUTHORITY_MODEL=MODEL_B",
+    "HISTORICAL_OPERATIONAL_ALPHA_AUTHORITY=NOT_USED_AS_CURRENT_AUTHORITY",
+    "TEMPORARY_CR48_CR55_EXECUTION_MECHANICS=NOT_REQUIRED_AS_AUTHORITY",
+    "HANDOFF_PROSE=NOT_AUTHORITY",
+    "IMPLICIT_OPERATOR_AUTHORITY=NOT_USED",
+    "HANDOFF_TRANSACTION_AUTHORITY_MISSING=NO",
+    "T_AUTH_05_EXECUTED=NO",
+    "T_AUTH_06_EXECUTED=NO",
+    "C02_EXECUTED=NO",
+    "CR48_CR55_RETIRED=NO",
+}
+
+
+def _validate_canonical_administrative_authority(
+        record: Mapping[str, Any], transaction_id: str, hints: dict[str, list[str]]) -> dict[str, Any] | None:
+    """Validate common canonical authority, then transaction supplements."""
+    state = str(record.get("state", "")).upper()
+    if state not in {"CURRENT", "AUTHORIZED", "AUTHORIZED_FOR_IMPLEMENTATION", "ACTIVE"}:
+        return _blocked("HANDOFF_BINDING_CONTRADICTION",
+                        "canonical transaction authority has invalid state",
+                        candidates=[state], hints=hints)
+    for field, wanted in _CANONICAL_ADMINISTRATIVE_AUTHORITY.items():
+        if str(record.get(field, "")).upper() != wanted:
+            return _blocked("HANDOFF_BINDING_CONTRADICTION",
+                            f"canonical transaction authority has invalid {field}",
+                            candidates=[str(record.get(field, ""))], hints=hints)
+    criteria = record.get("acceptance_criteria")
+    if not isinstance(criteria, list) or not any(isinstance(item, str) and item.strip() for item in criteria):
+        return _blocked("HANDOFF_BINDING_CONTRADICTION",
+                        "canonical transaction authority acceptance criteria are incomplete",
+                        candidates=[transaction_id], hints=hints)
+
+    # Supplemental requirements are selected by transaction identity.  A
+    # generic canonical transaction must never be made to impersonate T-AUTH-05.
+    if transaction_id == "T-AUTH-05":
+        for field, wanted in _T_AUTH_05_SUPPLEMENTAL_FIELDS.items():
+            if str(record.get(field, "")).upper() != wanted.upper():
+                return _blocked("HANDOFF_BINDING_CONTRADICTION",
+                                f"T-AUTH-05 authority has invalid {field}",
+                                candidates=[str(record.get(field, ""))], hints=hints)
+        actual_criteria = {str(item).upper() for item in criteria if isinstance(item, str)}
+        if not _T_AUTH_05_SUPPLEMENTAL_CRITERIA.issubset(actual_criteria):
+            return _blocked("HANDOFF_BINDING_CONTRADICTION",
+                            "T-AUTH-05 authority acceptance criteria are incomplete",
+                            candidates=sorted(_T_AUTH_05_SUPPLEMENTAL_CRITERIA - actual_criteria), hints=hints)
+    return None
+
+
 def _resolve_administrative_transaction(root: Path, hints: dict[str, list[str]]) -> dict[str, Any] | None:
     """Resolve an explicit bounded administrative transaction.
 
@@ -233,50 +308,20 @@ def _resolve_administrative_transaction(root: Path, hints: dict[str, list[str]])
         if actual != wanted:
             return _blocked("HANDOFF_BINDING_CONTRADICTION", f"transaction authority has invalid {field}",
                             candidates=[actual], hints=hints)
-    if not record.get("authorized_scope") or not isinstance(record.get("authorized_scope"), list):
+    authorized_scope = record.get("authorized_scope")
+    if (not isinstance(authorized_scope, list) or
+            not authorized_scope or
+            any(not isinstance(item, str) or not item.strip() for item in authorized_scope)):
         return _blocked("HANDOFF_TRANSACTION_SCOPE_MISSING", "transaction authority has no authorized scope",
                         candidates=[transaction_id], hints=hints)
+    if "canonical_authority" in record and not isinstance(record.get("canonical_authority"), bool):
+        return _blocked("HANDOFF_BINDING_CONTRADICTION",
+                        "transaction authority has invalid canonical_authority flag",
+                        candidates=[str(record.get("canonical_authority"))], hints=hints)
     if record.get("canonical_authority") is True:
-        required = {
-            "state": "AUTHORIZED",
-            "authority_source_class": "CANONICAL_OPERATOR_AUTHORIZATION",
-            "authority_model": "MODEL_B",
-            "authorization_boundary": "OPERATION_BETA_GOVERNANCE_AUTHORITY_RECONCILIATION_ONLY",
-            "t_auth_05_objective": "DEFINED",
-            "t_auth_05_acceptance_criteria": "DEFINED",
-            "t_auth_05_required_scope": "DEFINED",
-            "t_auth_05_prohibited_scope": "DEFINED",
-        }
-        for field, wanted in required.items():
-            if str(record.get(field, "")).upper() != wanted.upper():
-                return _blocked("HANDOFF_BINDING_CONTRADICTION",
-                                f"canonical transaction authority has invalid {field}",
-                                candidates=[str(record.get(field, ""))], hints=hints)
-        criteria = {str(item).upper() for item in record.get("acceptance_criteria", [])
-                    if isinstance(item, str)}
-        required_criteria = {
-            "T_AUTH_05_CANONICAL_AUTHORITY=PRESENT",
-            "T_AUTH_05_OBJECTIVE=DEFINED",
-            "T_AUTH_05_ACCEPTANCE_CRITERIA=DEFINED",
-            "T_AUTH_05_REQUIRED_SCOPE=DEFINED",
-            "T_AUTH_05_AUTHORITY_SOURCE=CANONICAL",
-            "CURRENT_OPERATION=OPERATION-BETA",
-            "CURRENT_EMM=OPERATION-BETA-EMM",
-            "AUTHORITY_MODEL=MODEL_B",
-            "HISTORICAL_OPERATIONAL_ALPHA_AUTHORITY=NOT_USED_AS_CURRENT_AUTHORITY",
-            "TEMPORARY_CR48_CR55_EXECUTION_MECHANICS=NOT_REQUIRED_AS_AUTHORITY",
-            "HANDOFF_PROSE=NOT_AUTHORITY",
-            "IMPLICIT_OPERATOR_AUTHORITY=NOT_USED",
-            "HANDOFF_TRANSACTION_AUTHORITY_MISSING=NO",
-            "T_AUTH_05_EXECUTED=NO",
-            "T_AUTH_06_EXECUTED=NO",
-            "C02_EXECUTED=NO",
-            "CR48_CR55_RETIRED=NO",
-        }
-        if not required_criteria.issubset(criteria):
-            return _blocked("HANDOFF_BINDING_CONTRADICTION",
-                            "canonical transaction authority acceptance criteria are incomplete",
-                            candidates=sorted(required_criteria - criteria), hints=hints)
+        blocked = _validate_canonical_administrative_authority(record, transaction_id, hints)
+        if blocked:
+            return blocked
     if record.get("authority_source") in {"OPERATIONAL_ALPHA", "OA_MISSION_CONTRACT"} or \
             str(record.get("mission_contract", "")).upper().startswith("OA"):
         return _blocked("HANDOFF_BINDING_CONTRADICTION", "Operational Alpha mission authority cannot authorize Beta transaction",
