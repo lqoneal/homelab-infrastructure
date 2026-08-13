@@ -236,6 +236,47 @@ def _resolve_administrative_transaction(root: Path, hints: dict[str, list[str]])
     if not record.get("authorized_scope") or not isinstance(record.get("authorized_scope"), list):
         return _blocked("HANDOFF_TRANSACTION_SCOPE_MISSING", "transaction authority has no authorized scope",
                         candidates=[transaction_id], hints=hints)
+    if record.get("canonical_authority") is True:
+        required = {
+            "state": "AUTHORIZED",
+            "authority_source_class": "CANONICAL_OPERATOR_AUTHORIZATION",
+            "authority_model": "MODEL_B",
+            "authorization_boundary": "OPERATION_BETA_GOVERNANCE_AUTHORITY_RECONCILIATION_ONLY",
+            "t_auth_05_objective": "DEFINED",
+            "t_auth_05_acceptance_criteria": "DEFINED",
+            "t_auth_05_required_scope": "DEFINED",
+            "t_auth_05_prohibited_scope": "DEFINED",
+        }
+        for field, wanted in required.items():
+            if str(record.get(field, "")).upper() != wanted.upper():
+                return _blocked("HANDOFF_BINDING_CONTRADICTION",
+                                f"canonical transaction authority has invalid {field}",
+                                candidates=[str(record.get(field, ""))], hints=hints)
+        criteria = {str(item).upper() for item in record.get("acceptance_criteria", [])
+                    if isinstance(item, str)}
+        required_criteria = {
+            "T_AUTH_05_CANONICAL_AUTHORITY=PRESENT",
+            "T_AUTH_05_OBJECTIVE=DEFINED",
+            "T_AUTH_05_ACCEPTANCE_CRITERIA=DEFINED",
+            "T_AUTH_05_REQUIRED_SCOPE=DEFINED",
+            "T_AUTH_05_AUTHORITY_SOURCE=CANONICAL",
+            "CURRENT_OPERATION=OPERATION-BETA",
+            "CURRENT_EMM=OPERATION-BETA-EMM",
+            "AUTHORITY_MODEL=MODEL_B",
+            "HISTORICAL_OPERATIONAL_ALPHA_AUTHORITY=NOT_USED_AS_CURRENT_AUTHORITY",
+            "TEMPORARY_CR48_CR55_EXECUTION_MECHANICS=NOT_REQUIRED_AS_AUTHORITY",
+            "HANDOFF_PROSE=NOT_AUTHORITY",
+            "IMPLICIT_OPERATOR_AUTHORITY=NOT_USED",
+            "HANDOFF_TRANSACTION_AUTHORITY_MISSING=NO",
+            "T_AUTH_05_EXECUTED=NO",
+            "T_AUTH_06_EXECUTED=NO",
+            "C02_EXECUTED=NO",
+            "CR48_CR55_RETIRED=NO",
+        }
+        if not required_criteria.issubset(criteria):
+            return _blocked("HANDOFF_BINDING_CONTRADICTION",
+                            "canonical transaction authority acceptance criteria are incomplete",
+                            candidates=sorted(required_criteria - criteria), hints=hints)
     if record.get("authority_source") in {"OPERATIONAL_ALPHA", "OA_MISSION_CONTRACT"} or \
             str(record.get("mission_contract", "")).upper().startswith("OA"):
         return _blocked("HANDOFF_BINDING_CONTRADICTION", "Operational Alpha mission authority cannot authorize Beta transaction",
@@ -365,8 +406,23 @@ def resolve_handoff(repository: Path | str, text: str, *, runtime_root: Path | s
         # this function only constructs it and never starts a provider.
         try:
             authority = _resolve_authority(root)
+            from scripts.lib.eos.operational_beta import authority as resolve_beta_authority
+            beta_authority = resolve_beta_authority(root)
         except Exception as error:
             return _blocked("HANDOFF_AUTHORITY_UNRESOLVED", f"authoritative Operation Beta authority cannot be resolved: {error}", hints=hints)
+        authority_validity = {
+            "model_b_authority": beta_authority.get("authority_model") == "MODEL_B"
+            and beta_authority.get("current_emm") == "OPERATION-BETA-EMM"
+            and bool(beta_authority.get("current_wop")),
+            "operation_beta_authority": beta_authority.get("authority_framework") == "OPERATION_BETA"
+            and beta_authority.get("active_operation") == "BETA"
+            and beta_authority.get("authority_integrity") == "PASS"
+            and beta_authority.get("authority_resolution") == "PASS"
+            and beta_authority.get("authority_digest_validation") == "PASS",
+        }
+        if not all(authority_validity.values()):
+            return _blocked("HANDOFF_AUTHORITY_UNRESOLVED",
+                            "canonical Operation Beta MODEL_B authority qualification failed", hints=hints)
         transaction_id = str(administrative["transaction_id"]).upper()
         execution_id = str(administrative.get("execution_id") or f"ZEUS-EXECUTION-REQUEST-{transaction_id}").upper()
         return {
@@ -382,6 +438,8 @@ def resolve_handoff(repository: Path | str, text: str, *, runtime_root: Path | s
             "protected_git_authority": administrative.get("protected_git_authority", "ZEUS_ONLY"),
             "qualification_authority": administrative.get("qualification_authority", "ZEUS"),
             "authority": authority,
+            "model_b_authority_validity": "PASS",
+            "operation_beta_authority_validity": "PASS",
             "execution": {"execution_id": execution_id, "execution_authority": "PRESERVED",
                            "execution_available": True, "transaction_id": transaction_id},
             "zeus_execution_request": {"execution_id": execution_id, "transaction_id": transaction_id,
