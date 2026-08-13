@@ -28,6 +28,16 @@ subject to reconciliation before the next transition is accepted.
 
 `submit`, `execute-mission start`, `status`, `session`, `resume`, `suspend`, `cancel`, qualification, publication preparation, synchronization, and closeout resolve the exact requested transaction through the shared reconciliation transaction before consuming derived runtime state. No command resubmits a WOP or creates authority.
 
+An explicitly authorized current administrative or reconciliation transaction
+may enter the same Zeus-managed provider lifecycle without a fabricated
+mission contract, WOP, or gate. Its operation, EMM, transaction identity,
+transaction type, scope, write authority, provider mode, protected-Git
+authority, and qualification authority must resolve from a canonical authority
+record. Handoff prose can identify a transaction but cannot create or broaden
+that authority. Normal WOP/gate execution retains the mission-to-WOP-to-gate
+chain; both classes converge on a Zeus execution identity and Zeus-managed
+bounded provider execution.
+
 ## Recovery and closeout
 
 Reconciliation acquires a transaction-scoped lock, discovers projections, classifies missing/partial/stale/duplicate/divergent/corrupt state, prepares and validates all writes, atomically promotes them, verifies the result, and emits a sealed reconciliation receipt. Interrupted work is resumed from the durable Stage 1 checkpoint or rolled back. Qualification, publication, EOS synchronization, and closeout remain gated by their receipts and parity checks.

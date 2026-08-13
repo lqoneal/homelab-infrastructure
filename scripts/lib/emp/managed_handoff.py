@@ -26,6 +26,9 @@ BLOCKERS = {
     "HANDOFF_BINDING_CONTRADICTION",
     "HANDOFF_AUTHORITY_UNRESOLVED",
     "HANDOFF_EXECUTION_UNAVAILABLE",
+    "HANDOFF_TRANSACTION_AUTHORITY_MISSING",
+    "HANDOFF_TRANSACTION_UNKNOWN",
+    "HANDOFF_TRANSACTION_SCOPE_MISSING",
 }
 
 _LABELS = {
@@ -36,6 +39,9 @@ _LABELS = {
     "session_id": ("session_id", "session", "codex_session_id"),
     "provider_id": ("provider_id", "provider"),
     "operation_id": ("operation_id", "operation"),
+    "emm_id": ("emm_id", "emm", "execution_management_model"),
+    "transaction_id": ("transaction_id", "transaction", "transaction_identity"),
+    "transaction_type": ("transaction_type", "transaction_class", "transaction_kind"),
     "repository": ("repository", "repository_id", "repository_path", "repository_identity"),
     "baseline": ("baseline", "baseline_commit", "published_baseline"),
 }
@@ -111,6 +117,13 @@ def extract_semantic_references(text: str) -> dict[str, list[str]]:
             cleaned = _clean(value)
             if cleaned and cleaned not in result[field]:
                 result[field].append(cleaned)
+    # Transaction identity is an identity assertion, not authority.  Accept a
+    # bare T-AUTH/transaction token so the resolver can report missing or
+    # contradictory authority precisely instead of treating it as prose.
+    for value in re.findall(r"\bT-AUTH-[0-9A-Z-]+\b", text, re.IGNORECASE):
+        cleaned = value.upper()
+        if cleaned not in result["transaction_id"]:
+            result["transaction_id"].append(cleaned)
     return result
 
 
@@ -152,6 +165,82 @@ def _records(runtime: Path, root: Path) -> list[dict[str, Any]]:
                 if value:
                     records.append({"source": str(path), "authority_class": "REPOSITORY_ARTIFACT", **value})
     return records
+
+
+def _transaction_records(root: Path) -> list[dict[str, Any]]:
+    """Load explicit administrative authority records only.
+
+    This is deliberately a repository source, never handoff prose or runtime
+    state.  The directory is initially empty on installations without a
+    persisted administrative transaction, which is a meaningful fail-closed
+    result rather than permission to synthesize authority.
+    """
+    records: list[dict[str, Any]] = []
+    for relative in ("engineering/authority/transactions",
+                     "engineering/authority/records",
+                     "engineering/execution/transactions"):
+        directory = root / relative
+        if not directory.is_dir():
+            continue
+        for path in sorted(directory.glob("*")):
+            if path.suffix.lower() not in {".yaml", ".yml", ".json"}:
+                continue
+            value = _load_json(path) if path.suffix.lower() == ".json" else _load_yaml(path)
+            if isinstance(value, dict) and value.get("transaction_id"):
+                records.append({"source": str(path), "authority_class": "TRANSACTION_AUTHORITY", **value})
+    return records
+
+
+def _resolve_administrative_transaction(root: Path, hints: dict[str, list[str]]) -> dict[str, Any] | None:
+    """Resolve an explicit bounded administrative transaction.
+
+    Returning ``None`` means this is a normal WOP/gate handoff.  Once a
+    transaction identity is present, no mission or gate is inferred.
+    """
+    transaction_values = hints.get("transaction_id", [])
+    if not transaction_values:
+        return None
+    if len(transaction_values) > 1:
+        return _blocked("HANDOFF_RESOLUTION_AMBIGUOUS", "handoff contains multiple transaction assertions",
+                        candidates=transaction_values, hints=hints)
+    transaction_id = transaction_values[0].upper()
+    records = _transaction_records(root)
+    matches = _matching(records, "transaction_id", transaction_id)
+    if not matches:
+        return _blocked("HANDOFF_TRANSACTION_AUTHORITY_MISSING" if transaction_id.startswith("T-AUTH-")
+                        else "HANDOFF_TRANSACTION_UNKNOWN",
+                        "transaction identity is not backed by a current canonical authority record",
+                        candidates=[transaction_id], hints=hints)
+    current = [item for item in matches if str(item.get("state", "CURRENT")).upper()
+               in {"CURRENT", "AUTHORIZED", "AUTHORIZED_FOR_IMPLEMENTATION", "ACTIVE"}]
+    if len(current) != 1:
+        return _blocked("HANDOFF_RESOLUTION_AMBIGUOUS", "transaction identity has no unique current authority record",
+                        candidates=[str(item.get("source")) for item in matches], hints=hints)
+    record = current[0]
+    expected = {
+        "operation_id": "OPERATION-BETA", "emm_id": "OPERATION-BETA-EMM",
+        "transaction_type": "BOUNDED_ADMINISTRATIVE_CORRECTIVE",
+    }
+    for field, wanted in expected.items():
+        asserted = hints.get(field, [])
+        if len(asserted) > 1:
+            return _blocked("HANDOFF_RESOLUTION_AMBIGUOUS", f"handoff contains multiple {field} assertions",
+                            candidates=asserted, hints=hints)
+        actual = str(record.get(field, "")).upper()
+        if asserted and asserted[0].upper() != actual:
+            return _blocked("HANDOFF_BINDING_CONTRADICTION", f"handoff {field} differs from transaction authority",
+                            candidates=[asserted[0], actual], hints=hints)
+        if actual != wanted:
+            return _blocked("HANDOFF_BINDING_CONTRADICTION", f"transaction authority has invalid {field}",
+                            candidates=[actual], hints=hints)
+    if not record.get("authorized_scope") or not isinstance(record.get("authorized_scope"), list):
+        return _blocked("HANDOFF_TRANSACTION_SCOPE_MISSING", "transaction authority has no authorized scope",
+                        candidates=[transaction_id], hints=hints)
+    if record.get("authority_source") in {"OPERATIONAL_ALPHA", "OA_MISSION_CONTRACT"} or \
+            str(record.get("mission_contract", "")).upper().startswith("OA"):
+        return _blocked("HANDOFF_BINDING_CONTRADICTION", "Operational Alpha mission authority cannot authorize Beta transaction",
+                        candidates=[transaction_id], hints=hints)
+    return record
 
 
 def _distinct(records: list[dict[str, Any]], field: str) -> list[str]:
@@ -265,6 +354,47 @@ def resolve_handoff(repository: Path | str, text: str, *, runtime_root: Path | s
     if operation_id not in {"BETA", "OPERATION-BETA"}:
         return _blocked("HANDOFF_BINDING_CONTRADICTION", "handoff operation is not the registered Operation Beta context", candidates=[operation_id], hints=hints)
     operation_id = "OPERATION-BETA"
+
+    administrative = _resolve_administrative_transaction(root, hints)
+    if isinstance(administrative, dict) and administrative.get("result") == "BLOCKED":
+        return administrative
+    if administrative is not None:
+        # Administrative work has explicit transaction authority and therefore
+        # deliberately has no mission/WOP/gate/admission projection.  The
+        # resulting request is still the same Zeus-managed provider contract;
+        # this function only constructs it and never starts a provider.
+        try:
+            authority = _resolve_authority(root)
+        except Exception as error:
+            return _blocked("HANDOFF_AUTHORITY_UNRESOLVED", f"authoritative Operation Beta authority cannot be resolved: {error}", hints=hints)
+        transaction_id = str(administrative["transaction_id"]).upper()
+        execution_id = str(administrative.get("execution_id") or f"ZEUS-EXECUTION-REQUEST-{transaction_id}").upper()
+        return {
+            "result": "PASS", "handoff_resolution": "PASS", "handoff_input_classification": "AUTHORIZED_ADMINISTRATIVE_TRANSACTION",
+            "source": source, "semantic_references": hints, "repository": identity,
+            "operation_id": "OPERATION-BETA", "emm_id": "OPERATION-BETA-EMM",
+            "transaction_id": transaction_id, "transaction_type": administrative["transaction_type"],
+            "authority_source": administrative["authority_source"],
+            "authorized_scope": list(administrative["authorized_scope"]),
+            "cleanup_paths": list(administrative.get("cleanup_paths", [])),
+            "write_authority": administrative.get("write_authority", "BOUNDED"),
+            "provider_mode": administrative.get("provider_mode", "ZEUS_MANAGED_NON_INTERACTIVE"),
+            "protected_git_authority": administrative.get("protected_git_authority", "ZEUS_ONLY"),
+            "qualification_authority": administrative.get("qualification_authority", "ZEUS"),
+            "authority": authority,
+            "execution": {"execution_id": execution_id, "execution_authority": "PRESERVED",
+                           "execution_available": True, "transaction_id": transaction_id},
+            "zeus_execution_request": {"execution_id": execution_id, "transaction_id": transaction_id,
+                                        "provider_mode": administrative.get("provider_mode", "ZEUS_MANAGED_NON_INTERACTIVE"),
+                                        "provider": "CODEX_BOUNDED_IMPLEMENTATION_PROVIDER",
+                                        "managed_lifecycle": "ZEUS_MANAGED", "constructed": True,
+                                        "provider_contacted": False},
+            "authorized_scope_resolved": "YES", "execution_request_constructed": "YES",
+            "handoff_authority_source": "YES", "read_only": True, "mutation_applied": False,
+            "delivery": {"result": "READY", "provider_contacted": False, "execution_started": False,
+                          "next_authorized_action": "DELIVER_TO_ZEUS_MANAGED_PROVIDER"},
+            "next_authorized_action": "DELIVER_TO_ZEUS_MANAGED_PROVIDER",
+        }
 
     mission_id, blocked = _one_or_block("mission_id", hints, records)
     if blocked:
@@ -396,6 +526,38 @@ def resolve_source(repository: Path | str, source: str, *, runtime_root: Path | 
     if not text.strip():
         return _blocked("HANDOFF_BINDING_CONTRADICTION", "handoff source is empty")
     return resolve_handoff(repository, text, runtime_root=runtime_root, source=source)
+
+
+def execute_administrative_handoff(repository: Path | str, resolved: Mapping[str, Any], *,
+                                   prompt: str, output_path: Path | str,
+                                   codex_bin: str = "codex", timeout_seconds: float = 300.0) -> dict[str, Any]:
+    """Execute one already-resolved administrative handoff through Zeus."""
+    if resolved.get("result") != "PASS" or resolved.get("handoff_input_classification") != "AUTHORIZED_ADMINISTRATIVE_TRANSACTION":
+        raise ManagedHandoffError("HANDOFF_NOT_EXECUTABLE", "only an authorized administrative handoff may execute")
+    from scripts.lib.emp.managed_provider import execute
+    result = execute(repository=repository, prompt=prompt,
+                     authorized_paths=resolved["authorized_scope"],
+                     execution_id=resolved["execution"]["execution_id"],
+                     codex_bin=codex_bin, timeout_seconds=timeout_seconds,
+                     output_path=output_path,
+                     timing_root="/data/engineering/logs/codex-session-timed")
+    cleanup = resolved.get("cleanup_paths", [])
+    root = Path(repository).resolve()
+    removed = []
+    for relative in cleanup:
+        candidate = (root / str(relative)).resolve()
+        try:
+            candidate.relative_to(root)
+        except ValueError as error:
+            raise ManagedHandoffError("CLEANUP_SCOPE_ESCAPE", str(relative)) from error
+        if candidate.is_file():
+            candidate.unlink()
+            removed.append(str(relative))
+    result["cleanup_paths"] = cleanup
+    result["cleanup_removed"] = removed
+    result["next_authorized_action"] = "OPERATOR_REVIEW_REAL_MANAGED_SESSION"
+    Path(output_path).write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return result
 
 
 def render(value: Mapping[str, Any]) -> str:

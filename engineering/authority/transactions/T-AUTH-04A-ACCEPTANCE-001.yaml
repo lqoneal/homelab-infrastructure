@@ -1,0 +1,26 @@
+transaction_id: T-AUTH-04A-ACCEPTANCE-001
+state: AUTHORIZED
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+authority_source: OPERATOR_AUTHORIZATION_T_AUTH_04A
+authorization_boundary: REAL_ZEUS_MANAGED_SESSION_ACCEPTANCE_ONLY
+authorized_scope:
+  - tmp/t-auth-04a-probe
+cleanup_paths:
+  - tmp/t-auth-04a-probe/PROBE.txt
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+prohibited_operations:
+  - T_AUTH_05
+  - CR48_CR55_RETIREMENT
+  - C02
+  - git_stage
+  - git_commit
+  - git_push
+  - publication
+  - eos_synchronization
