@@ -3,7 +3,7 @@ roadmap_id: ESC-C02-CORRECTIVE-001
 parent_roadmap: ESC-ROADMAP-001
 parent_gate: C02
 trigger_finding: C02-F-027
-state: ACTIVE
+state: COMPLETE
 completed_items:
 - CR00
 - CR01
@@ -34,29 +34,21 @@ completed_items:
 - CR26
 - CR27
 - CR28
-current_item: CR48
-blockers:
-- code: CR48_WOP_EENS_CONVERGENCE_REQUIRED
-  classification: CONDITION_PRECEDENT
-  subject: CR48
-  disposition: DEFERRED_PENDING_WOP_EENS_DEVELOPMENT
-  dependency_contract: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-DEPENDENCY-CONTRACT.yaml
-  maturity_hardening_direction: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-ROADMAP-MATURITY-HARDENING-GOVERNANCE-DIRECTION.yaml
-  required_sequence:
-  - MATURITY_HARDEN_WOP_MATURITY_ROADMAP
-  - MATURITY_HARDEN_EENS_MATURITY_ROADMAP
-  - QUALIFY_BOTH_SUBSYSTEM_ROADMAPS
-  - CONVERGE_INTO_CANONICAL_ROADMAP
-  - MATURITY_HARDEN_ENTIRE_CANONICAL_ROADMAP
-  - QUALIFY_REHARDENED_CANONICAL_ROADMAP
-  - AUTHORIZE_AND_COMPLETE_JOINT_IMPLEMENTATION
-  - COMPLETE_INTEGRATED_QUALIFICATION
-  - REASSESS_CR48_READINESS
+current_item: null
+blockers: []
+retirement:
+  disposition: RETIRED_SUPERSEDED
+  assessment: evidence/CR48-CR55-RETIREMENT-SUPERSESSION-ASSESSMENT-001.yaml
+  items: [CR48, CR49, CR50, CR51, CR52, CR53, CR54, CR55]
+  executed: false
+  pass_results_created: false
+  historical_definitions_and_evidence_preserved: true
+  transition_performed: true
 c02:
   result: COMPLETE_WITH_FINDINGS
   operator_assessment_disposition: ACCEPTED
   roadmap_state_advanced: false
-next_authorized_action: HOLD_CR48_PENDING_WOP_EENS_CONVERGENCE
+next_authorized_action: C02_CORRECTIVE_TERMINAL_RECONCILED
 roadmap_version: 1.0.7
 completed_maturity_items:
 - CR12M1

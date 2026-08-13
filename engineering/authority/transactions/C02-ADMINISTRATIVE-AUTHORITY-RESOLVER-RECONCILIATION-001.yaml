@@ -1,0 +1,63 @@
+schema_version: 1
+
+transaction_id: C02-ADMINISTRATIVE-AUTHORITY-RESOLVER-RECONCILIATION
+state: AUTHORIZED
+
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+
+authority_model: MODEL_B
+authority_source: OPERATOR_AUTHORIZATION_2026-08-13_C02_RESOLVER_RECONCILIATION
+canonical_authority: false
+
+objective: >-
+  Correct the Zeus administrative-transaction resolver so generic canonical
+  Operation Beta administrative authority is not required to impersonate the
+  T-AUTH-05-specific authority contract, while preserving all existing
+  fail-closed Model-B, Operation Beta, protected Git, provider, and
+  qualification boundaries.
+
+acceptance_criteria:
+  - T-AUTH-05 continues to resolve PASS under its existing canonical authority.
+  - Generic authorized Operation Beta administrative transactions are validated against an appropriate generic administrative authority contract.
+  - T-AUTH-05-specific fields and acceptance criteria remain specific to T-AUTH-05.
+  - C02 reconciliation authority does not inherit fabricated T-AUTH-05 fields.
+  - Missing, contradictory, duplicate, or unauthorized transaction authority continues to fail closed.
+  - Operation Beta and OPERATION-BETA-EMM bindings remain mandatory.
+  - MODEL_B authority remains mandatory for canonical Model-B administrative authority.
+  - Zeus remains the execution control plane.
+  - Codex remains a bounded implementation provider.
+  - Codex receives no stage, commit, push, publication, or EOS authority.
+  - Existing unrelated worktree state is preserved.
+  - C02 itself is not executed by this transaction.
+  - CR48 through CR55 are not executed by this transaction.
+  - C03 is not executed.
+
+authorized_scope:
+  - scripts/lib/emp/managed_handoff.py
+  - scripts/tests/test-managed-codex-handoff.py
+  - scripts/tests/test_managed_codex_handoff.py
+
+prohibited_scope:
+  - Execute C02.
+  - Execute CR48 through CR55.
+  - Execute C03 or any later convergence gate.
+  - Fabricate T-AUTH-05 fields in C02 authority.
+  - Weaken fail-closed administrative transaction resolution.
+  - Infer authority from handoff prose.
+  - Reactivate Operational Alpha authority.
+  - Create or modify a Mission Contract.
+  - Create a duplicate EMM.
+  - Create another WOP submission mechanism.
+  - Grant Codex protected Git authority.
+  - Stage, commit, push, publish, or synchronize EOS from Codex.
+
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+
+next_authorized_action: EXECUTE_C02_ADMINISTRATIVE_AUTHORITY_RESOLVER_RECONCILIATION

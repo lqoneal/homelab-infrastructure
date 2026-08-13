@@ -1,0 +1,37 @@
+schema_version: 1
+transaction_id: C02-PROTECTED-RETIREMENT-STATE-RECONCILIATION
+result: RETIRED_SUPERSEDED_AND_C02_CORRECTIVE_TERMINAL
+authority:
+  authority_model: MODEL_B
+  operation_id: OPERATION-BETA
+  emm_id: OPERATION-BETA-EMM
+  transaction_authority: PASS
+  retirement_assessment: evidence/CR48-CR55-RETIREMENT-SUPERSESSION-ASSESSMENT-001.yaml
+  assessment_sha256_before_transition: 5132b21d672ce173f483f2709778daa2977ba52f1a55b88f5bb8508706a90fd2
+retirement:
+  items: [CR48, CR49, CR50, CR51, CR52, CR53, CR54, CR55]
+  disposition: RETIRED_SUPERSEDED
+  executed: false
+  pass_results_created: false
+  receipts_created: false
+  definitions_and_evidence_preserved: true
+reconciliation:
+  c02_corrective_previous_state: ACTIVE
+  c02_corrective_new_state: COMPLETE
+  c02_previous_state: ASSESSMENT
+  c02_new_state: ASSESSMENT
+  c02_result: COMPLETE_WITH_FINDINGS
+  stale_hold_removed: true
+  independent_eos_projection_defect_preserved: true
+  c03_activated: false
+  c03_executed: false
+provenance:
+  cr01_cr47_preserved: true
+  cr48_cr55_historically_discoverable: true
+control_plane:
+  staged: false
+  committed: false
+  pushed: false
+  publication: false
+  eos_synchronization: false
+next_authorized_action: OPERATOR_REVIEW_C02_ASSESSMENT

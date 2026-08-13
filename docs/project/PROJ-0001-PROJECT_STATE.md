@@ -1,11 +1,11 @@
 ---
 document_id: PROJ-0001
 title: Project State
-version: '11.1'
+version: '11.2'
 status: Active
 owner: Homelab Infrastructure
 created: 2026-07-06
-last_updated: 2026-08-09
+last_updated: 2026-08-13
 mission: Engineering System Convergence
 phase: C02 Controlled Documentation and Authority Assessment
 classification: Project State
@@ -24,7 +24,7 @@ convergence_program:
   roadmap_path: engineering/convergence/engineering-system-convergence/roadmap.yaml
   state_path: engineering/convergence/engineering-system-convergence/STATE.yaml
   current_gate: C02
-  next_authorized_action: REVIEW_C18_INTEGRATION_AUTHORITY_BOUNDARY
+  next_authorized_action: OPERATOR_REVIEW_C02_ASSESSMENT
   executable_qualification: PASS
   evaluation_standard: STD-0006@1.0
   evaluation_procedure: PROC-0009@1.0
@@ -115,12 +115,11 @@ The authoritative convergence program remains
 gate C02 current and C00/C01 complete.
 
 C02 assessment execution is complete and its result is preserved for operator
-review. The active bounded corrective is currently CR16 — Implement Validation
-Semantics under `ESC-C02-CORRECTIVE-001`.
+review. The bounded corrective `ESC-C02-CORRECTIVE-001` is terminal after the
+historical CR48–CR55 tail was retired as `RETIRED_SUPERSEDED`.
 
 The parent ESC state therefore projects
-`EXECUTE_CR16_IMPLEMENT_VALIDATION_SEMANTICS` as the current authorized
-corrective action.
+`OPERATOR_REVIEW_C02_ASSESSMENT` as the current authorized parent action.
 
 This projection does not accept or complete C02 and does not activate or
 execute C03.
@@ -627,45 +626,31 @@ Authority source:
 - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml
 
 Current gate: C02
-Last completed corrective item: CR47
-Current corrective item: CR48
-Next authorized action: REVIEW_C18_INTEGRATION_AUTHORITY_BOUNDARY
+Last completed corrective item: CR47; CR48–CR55 retired as superseded
+Current corrective item: none
+Next authorized action: OPERATOR_REVIEW_C02_ASSESSMENT
 
 This section is a synchronized Project State projection. It does not itself
-authorize CR48 execution and does not supersede the authoritative roadmap or
-corrective state.
+authorize historical-tail execution and does not supersede the authoritative
+roadmap or corrective state.
 
-## CR48 WOP/EENS Convergence Hold
+## CR48–CR55 Historical Tail Retirement
 
 Current parent gate: C02
 
 Last completed corrective item: CR47
 
-Current corrective item: CR48
+Current corrective item: none; CR48–CR55 are historically discoverable and retired.
 
 Current corrective disposition:
-DEFERRED_PENDING_WOP_EENS_DEVELOPMENT
+RETIRED_SUPERSEDED
 
-Next authoritative corrective action:
-HOLD_CR48_PENDING_WOP_EENS_CONVERGENCE
+Next authoritative parent action:
+OPERATOR_REVIEW_C02_ASSESSMENT
 
-Condition precedent:
-WOP_EENS_EXECUTION_ARCHITECTURE_CONVERGENCE
-
-Required roadmap ordering:
-
-1. Maturity-harden WOP maturity roadmap.
-2. Maturity-harden EENS maturity roadmap.
-3. Independently qualify both hardened subsystem roadmaps.
-4. Converge the hardened WOP/EENS roadmap content into the canonical roadmap.
-5. Maturity-harden the entire canonical roadmap after convergence.
-6. Independently qualify the re-hardened canonical roadmap.
-7. Obtain separate implementation authority and complete joint implementation.
-8. Complete integrated lifecycle qualification.
-9. Reassess CR48 readiness.
-
-Supplemental governance direction:
-engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-ROADMAP-MATURITY-HARDENING-GOVERNANCE-DIRECTION.yaml
+The former WOP/EENS condition precedent is retained only in historical
+corrective evidence; it is no longer current authority because the tail was
+retired as superseded.
 
 This section is a synchronized Project State projection. It does not itself
 originate Governance Authority, satisfy the condition precedent, authorize

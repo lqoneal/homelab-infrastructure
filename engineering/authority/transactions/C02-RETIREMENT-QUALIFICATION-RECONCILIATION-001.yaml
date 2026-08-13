@@ -1,0 +1,54 @@
+schema_version: 1
+
+transaction_id: C02-RETIREMENT-QUALIFICATION-RECONCILIATION
+state: AUTHORIZED
+
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+
+authority_model: MODEL_B
+authority_source: OPERATOR_AUTHORIZATION_2026-08-13_C02_RETIREMENT_QUALIFICATION
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+
+objective: >-
+  Reconcile only the stale convergence-roadmap test expectations made obsolete
+  by the qualified CR48-CR55 RETIRED_SUPERSEDED transition, then independently
+  requalify the resulting C02 retirement state without changing the retirement
+  decision or executing any historical corrective procedure.
+
+acceptance_criteria:
+  - Current CR48-CR55 retirement state remains RETIRED_SUPERSEDED.
+  - No CR48-CR55 historical RESULT.yaml is created.
+  - C02 corrective remains terminal.
+  - C03 remains unexecuted.
+  - Tests assert current canonical retirement semantics rather than the obsolete CR48 hold.
+  - Historical lifecycle expectations remain preserved where they are actually historical.
+  - Full convergence-roadmap qualification passes.
+  - Controlled-document validation passes.
+  - Model-B and Operation-Beta authority remain valid.
+  - Unrelated worktree changes remain preserved.
+  - No publication or EOS synchronization occurs.
+
+authorized_scope:
+  - scripts/tests/test-convergence-roadmap.py
+
+prohibited_scope:
+  - Change CR48-CR55 retirement disposition.
+  - Execute CR48-CR55.
+  - Create CR48-CR55 RESULT.yaml files.
+  - Change C02 lifecycle merely to satisfy a test.
+  - Execute or activate C03.
+  - Modify runtime behavior merely to preserve an obsolete test expectation.
+  - Modify unrelated tests.
+  - Stage, commit, push, publish, or synchronize EOS from Codex.
+
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+
+next_authorized_action: EXECUTE_C02_RETIREMENT_QUALIFICATION_RECONCILIATION

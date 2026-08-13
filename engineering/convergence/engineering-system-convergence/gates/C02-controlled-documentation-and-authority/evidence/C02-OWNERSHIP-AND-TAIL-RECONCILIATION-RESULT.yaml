@@ -1,0 +1,60 @@
+schema_version: 1
+transaction_id: C02-OWNERSHIP-AND-TAIL-RECONCILIATION
+result: RECONCILED_WITH_CR48_CR55_HELD
+resolved_at: '2026-08-13T00:00:00Z'
+authority:
+  operation_id: OPERATION-BETA
+  emm_id: OPERATION-BETA-EMM
+  authority_model: MODEL_B
+  transaction_authority: PASS
+  model_b_authority_validity: PASS
+  operation_beta_authority_validity: PASS
+canonical_current_owner: Engineering Governance
+canonical_current_mission: BETA-04
+canonical_current_wop: WOP-ZEUS-EXECUTION-LIFECYCLE-COMPLETION-001
+stale_projections_reconciled:
+  - docs/project/PROJ-0001-PROJECT_STATE.md
+  - engineering/convergence/engineering-system-convergence/STATE.yaml
+disposition:
+  c02_parent: CURRENT
+  esc_c02_corrective: ACTIVE
+  current_item: CR48
+  next_authorized_action: HOLD_CR48_PENDING_WOP_EENS_CONVERGENCE
+tail:
+  cr48_cr55_previous_state: CR48_CURRENT_AND_CR49_CR55_PENDING
+  cr48_cr55_new_state: CR48_CURRENT_HELD; CR49_CR55_PENDING
+  cr48_cr55_executed: NO
+  retirement: NOT_AUTHORIZED
+  reason: >-
+    Canonical evidence proves qualified subsystem contracts and planning
+    integration, but the integrated WOP/EENS artifact remains draft for
+    operator review and retains unimplemented or deployment-dependent
+    integration and whole-roadmap qualification work.
+  unmet_requirement: >-
+    Complete and independently qualify the named WOP/EENS convergence,
+    controlled interface, joint implementation, integrated lifecycle, and
+    fresh CR48 readiness requirements before any tail retirement decision.
+  historical_provenance: PRESERVED
+  substitute_execution: NO
+parent:
+  c02_result: COMPLETE_WITH_FINDINGS
+  c02_result_changed: NO
+  c03_executed: NO
+control_plane:
+  zeus_control_plane_validity: PASS
+  codex_provider_boundary_validity: PASS
+  wop_submission_simplicity_validity: PASS
+  staged: NO
+  committed: NO
+  pushed: NO
+  publication: NO
+  eos_synchronization: NO
+evidence:
+  - engineering/metadata/operation-beta-emm.yaml
+  - engineering/authority/operation-beta-beta04-activation.yaml
+  - engineering/missions/operation-beta-current.yaml
+  - engineering/docs/architecture/OPERATION-BETA-ROADMAP.md
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-CONVERGENCE-RESUME-QUALIFICATION.yaml
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-CR48-PRECONDITION-ASSESSMENT.yaml
+  - engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/evidence/QUALIFIED-WOP-EENS-CANONICAL-INTEGRATION-001.yaml
+  - engineering/convergence/engineering-system-convergence/gates/C18-system-convergence-roadmap/evidence/QUALIFIED-WOP-EENS-CANONICAL-QUALIFICATION-002.yaml

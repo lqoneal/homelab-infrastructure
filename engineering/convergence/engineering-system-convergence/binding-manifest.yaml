@@ -22,15 +22,15 @@ sources:
 - path: engineering/convergence/engineering-system-convergence/gates/C06-wop-and-execution-contract/evidence/C06-BOUNDED-IMPLEMENTATION-TRANSACTION-001.yaml
   sha256: c35bfa26d93df69c3383eaa03d54bf1969639c729a10ea4b5b2e47c0544a5572
 - path: engineering/convergence/engineering-system-convergence/roadmap.yaml
-  sha256: 2003bc5d4468534afa5f8e30bb765b2d5049b41cd8b0d18e4e960eff9208a20b
+  sha256: 88b114d632978014c90e4d7cc4a6375699080ca276b22b9658597f6fb8987313
 - path: engineering/convergence/engineering-system-convergence/ESC-ROADMAP-001.md
   sha256: 490e89bed5130037921f874e4415d864506ef5417415307000bb0d6e520eb6dd
 - path: engineering/convergence/engineering-system-convergence/ROADMAP.md
   sha256: a1e0071a31ab20a2fcd09592f66d8db1bcd79c40b4e90162598f042ce8991c08
 - path: engineering/convergence/engineering-system-convergence/STATE.yaml
-  sha256: b500cc6e3c7930c93d40ec09263716ae63a749d49f828e89939a3f2f61e99857
+  sha256: 6257179eb8eab9407f1040b8c9833f809e3840ccf00c47123a6bd7c233118702
 - path: docs/project/PROJ-0001-PROJECT_STATE.md
-  sha256: 3a7c39c6a51876dff8db75201812c69dd646594955baf244b98dbd2d10ede7c8
+  sha256: d2e6ef8d4c75a42935b64ed704564604202bff68a6c5627c1684a58bce477bc9
 - path: engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/GATE.yaml
   sha256: 1cde92b85a6ddee4520d56e3d020450da29c367226ffabe9b53c739372fc4902
 - path: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/GATE.yaml
@@ -98,11 +98,11 @@ sources:
 - path: engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml
   sha256: aad3decaf21956247827063647fbbbed2f53d10badb864a65624a7921531c0d1
 - path: docs/DOC-0001-REPOSITORY_DOCUMENT_INDEX.md
-  sha256: 678647e6086dd4355df3ce66a6f1f51766327c9585257923d67ea7faaa6eac4e
+  sha256: 6bf19d619f8e483be46a35d8ae8e6a605007546037d40f3fe8a6a22791caef63
 - path: docs/standards/STD-0006-ENGINEERING_EXECUTABLE_ROADMAP_STANDARD.md
   sha256: fc9f3a686b4b6321de7d7f1ed0c88482694e979588e78aa064cefac4bcc2b938
 - path: docs/procedures/PROC-0001-ENGINEERING_WORK_ORDER_EXECUTION_PROCEDURE.md
-  sha256: aad12b694a7f1045d16620c1e89dc15003971f6493faef91de4adacd3821351a
+  sha256: cd0d26c095bf73368b8017e795eab4838af8d451ff618af927b46293c7a26251
 - path: docs/procedures/PROC-0009-EXECUTABLE_ROADMAP_EVALUATION_PROCEDURE.md
   sha256: c9abf94dc454ff61b8a3efdeba5a455a83570ab2e2d29e728461042e4cf625dc
 - path: scripts/lib/eos/convergence_roadmap.py

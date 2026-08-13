@@ -132,7 +132,7 @@ current_executable_horizon:
   result: EXECUTABLE
   deferred_items:
   - item: CR48
-    disposition: DEFERRED_PENDING_WOP_EENS_DEVELOPMENT
+    disposition: RETIRED_SUPERSEDED
     condition_precedent: WOP_EENS_EXECUTION_ARCHITECTURE_CONVERGENCE
     dependency_contract: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-DEPENDENCY-CONTRACT.yaml
     maturity_hardening_direction: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/gates/CR47/evidence/POST-CR47-WOP-EENS-ROADMAP-MATURITY-HARDENING-GOVERNANCE-DIRECTION.yaml
@@ -158,6 +158,10 @@ current_executable_horizon:
     resume_rule: CR48 may return to precondition verification only after every named
       condition-precedent requirement has independently qualified.
     execution_authorized: false
+    retirement_authorized: true
+    retirement_transition: RETIRED_SUPERSEDED
+    retirement_assessment: evidence/CR48-CR55-RETIREMENT-SUPERSESSION-ASSESSMENT-001.yaml
+    retired_tail: [CR48, CR49, CR50, CR51, CR52, CR53, CR54, CR55]
   deferred_rule: CR21-CR55 manual-execution contracts have been maturity-hardened.
     The expanded horizon is not EXECUTABLE until binding reconciliation and complete
     STD-0006 / PROC-0009 qualification pass.

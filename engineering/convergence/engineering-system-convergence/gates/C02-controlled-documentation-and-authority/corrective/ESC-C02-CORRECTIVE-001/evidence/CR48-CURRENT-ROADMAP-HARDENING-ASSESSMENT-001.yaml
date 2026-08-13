@@ -1,0 +1,32 @@
+schema_version: '1.0'
+record_type: CR48_CURRENT_CANONICAL_ROADMAP_HARDENING_ASSESSMENT
+result: PASS
+assessment_at: '2026-08-13T00:00:00Z'
+roadmap:
+  id: ESC-ROADMAP-001
+  version: 2.3.0
+  path: engineering/convergence/engineering-system-convergence/roadmap.yaml
+  sha256: 88b114d632978014c90e4d7cc4a6375699080ca276b22b9658597f6fb8987313
+  state_path: engineering/convergence/engineering-system-convergence/STATE.yaml
+  repository_baseline: 506e48dfb3a6a1179b4545519cb20d0d3adcdafd
+hardening_assessment:
+  structural_validity: PASS
+  execution_sufficiency: PASS
+  authority_boundaries: PASS
+  fail_closed_behavior: PASS
+  review_boundary: PASS
+  state_transition_determinism: PASS
+  persistence: PASS
+  cold_resume: PASS
+  baseline_integrity: PASS
+  canonical_validation: PASS
+  canonical_evaluation: PASS
+qualification_distinction:
+  this_record: Current-authority hardening assessment bound to roadmap 2.3.0 and its digest.
+  independent_requalification: Separate record CR48-CURRENT-ROADMAP-REQUALIFICATION-001.
+  historical_record_not_reused: true
+scope_boundary:
+  runtime_wop_eens_implementation: NOT_PERFORMED
+  publication: NOT_PERFORMED
+  eos_synchronization: NOT_PERFORMED
+  cr48_execution: NOT_PERFORMED

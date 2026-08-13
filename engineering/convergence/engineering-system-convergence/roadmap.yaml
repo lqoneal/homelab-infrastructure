@@ -26,7 +26,7 @@ authority_model:
 repository:
   identity: homelab
   root: /data/engineering/repositories/homelab
-  baseline: 6a26d2ea378248a4a9e9fe0d58b5df1c45a8c882
+  baseline: 506e48dfb3a6a1179b4545519cb20d0d3adcdafd
   preservation:
     reference: preservation/ob-lifecycle-pre-rebuild-20260809T235039Z
     commit: 4f5626d39f0924d3551cdabfcb61788153706774

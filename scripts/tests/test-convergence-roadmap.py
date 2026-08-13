@@ -318,12 +318,44 @@ class ConvergenceRoadmapTests(unittest.TestCase):
         )
         self.assertEqual(
             expected_state["next_authorized_action"],
-            "REVIEW_C18_INTEGRATION_AUTHORITY_BOUNDARY",
+            "OPERATOR_REVIEW_C02_ASSESSMENT",
         )
         self.assertEqual(
             value["next_authorized_action"],
-            "REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY",
+            "OPERATOR_REVIEW_C02_ASSESSMENT",
         )
+        state = self.load(ROOT / ROADMAP_RELATIVE_ROOT / "STATE.yaml")
+        corrective_state = self.load(
+            ROOT
+            / "engineering/convergence/engineering-system-convergence/gates/"
+            / "C02-controlled-documentation-and-authority/corrective/"
+            / "ESC-C02-CORRECTIVE-001/STATE.yaml"
+        )
+        retirement = self.load(
+            ROOT
+            / "engineering/convergence/engineering-system-convergence/gates/"
+            / "C02-controlled-documentation-and-authority/corrective/"
+            / "ESC-C02-CORRECTIVE-001/evidence/"
+            / "CR48-CR55-RETIREMENT-SUPERSESSION-ASSESSMENT-001.yaml"
+        )
+        c03 = self.load(
+            ROOT
+            / "engineering/convergence/engineering-system-convergence/gates/"
+            / "C03-eos-and-engineering-state/GATE.yaml"
+        )
+        self.assertEqual(state["current_gate"], "C02")
+        self.assertEqual(state["next_authorized_action"], "OPERATOR_REVIEW_C02_ASSESSMENT")
+        self.assertEqual(corrective_state["state"], "COMPLETE")
+        self.assertTrue(retirement["retirement_transition_performed"])
+        self.assertFalse(retirement["execution_performed"])
+        self.assertTrue(
+            all(
+                item["determination"] == "RETIRED_SUPERSEDED"
+                for item in retirement["independent_retirement_test"].values()
+            )
+        )
+        self.assertEqual(c03["status"], "PENDING")
+        self.assertFalse((ROOT / c03["result_location"]).exists())
         self.assertTrue(Path(value["gate_definition"]).is_file())
         self.assertTrue(Path(value["last_result"]).is_file())
         self.assertEqual(value["roadmap_version"], "2.3.0")

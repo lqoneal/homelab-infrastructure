@@ -1,0 +1,68 @@
+schema_version: 1
+
+transaction_id: C02-PROTECTED-RETIREMENT-STATE-RECONCILIATION
+state: AUTHORIZED
+
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+
+authority_model: MODEL_B
+authority_source: OPERATOR_AUTHORIZATION_2026-08-13_C02_PROTECTED_RETIREMENT
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+
+objective: >-
+  Apply the independently qualified retirement/supersession disposition of
+  the obsolete C02 corrective tail, preserve its complete historical
+  provenance without executing its historical procedures, reconcile the
+  C02 corrective and parent C02 state, and derive the next current-authority
+  action.
+
+acceptance_criteria:
+  - The existing retirement supersession assessment is verified before mutation.
+  - Every historical tail item covered by that assessment is represented as RETIRED_SUPERSEDED rather than COMPLETE.
+  - No historical tail execution receipt or PASS result is fabricated.
+  - Historical gate definitions and evidence remain preserved.
+  - Historical CR01 through CR47 provenance remains unchanged.
+  - The obsolete hold projection is removed only as a consequence of retirement.
+  - The C02 corrective state is reconciled according to current roadmap semantics.
+  - Parent C02 state is reconciled according to current roadmap semantics.
+  - No subsequent parent gate is executed by this transaction.
+  - Independent current-system defects remain independent and are not used to reactivate the retired tail.
+  - MODEL_B remains authoritative.
+  - OPERATION-BETA-EMM remains authoritative.
+  - Zeus remains the execution control plane.
+  - Codex remains a bounded implementation provider.
+  - Protected Git, publication, and EOS authority remain Zeus-only.
+
+authorized_scope:
+  - engineering/convergence/engineering-system-convergence/STATE.yaml
+  - engineering/convergence/engineering-system-convergence/roadmap.yaml
+  - engineering/convergence/engineering-system-convergence/binding-manifest.yaml
+  - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority
+  - docs/project/PROJ-0001-PROJECT_STATE.md
+
+prohibited_scope:
+  - Execute historical corrective-tail procedures.
+  - Fabricate historical completion or execution evidence.
+  - Delete historical corrective definitions or evidence.
+  - Execute a subsequent parent convergence gate.
+  - Reactivate Operational Alpha authority.
+  - Create another Mission Contract.
+  - Create another EMM.
+  - Create another WOP submission mechanism.
+  - Grant Codex stage authority.
+  - Grant Codex commit authority.
+  - Grant Codex push authority.
+  - Grant Codex publication authority.
+  - Grant Codex EOS synchronization authority.
+
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+
+next_authorized_action: EXECUTE_C02_PROTECTED_RETIREMENT_STATE_RECONCILIATION

@@ -1,0 +1,54 @@
+schema_version: 1
+transaction_id: C02-OWNERSHIP-AND-TAIL-RECONCILIATION
+state: AUTHORIZED
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+authority_model: MODEL_B
+authority_source: OPERATOR_AUTHORIZATION_2026-08-13_C02_RECONCILIATION
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+objective: Reconcile stale mission/WOP ownership projections and the obsolete deferred tail of the active C02 corrective using
+  current qualified Operation Beta evidence, preserve historical provenance, and restore truthful canonical C02 execution
+  state without fabricating execution of retired corrective items.
+acceptance_criteria:
+- C02 ownership resolves deterministically under current Operation Beta authority.
+- Non-owning historical or runtime projections do not independently compete for C02 execution authority.
+- Current Operation Beta EMM and Model-B bindings remain authoritative.
+- Completed WOP/EENS/convergence/Zeus lifecycle capability is reconciled against the stale corrective prerequisite projection.
+- CR48 through CR55 are never represented as executed unless independent historical evidence proves execution.
+- Obsolete deferred corrective-tail authority may be retired or superseded only if current qualified evidence closes its prerequisite
+  purpose.
+- Historical corrective definitions and evidence remain preserved.
+- C02 remains the highest parent-gate boundary for this transaction.
+- C03 is not executed.
+- Zeus remains the execution control plane.
+- Codex remains a bounded implementation provider.
+- Normal WOP submission remains a single canonical Zeus operation.
+authorized_scope:
+- c02/current-mission-ownership-reconciliation
+- c02/current-wop-binding-reconciliation
+- c02/corrective-tail-authority-reconciliation
+- c02/cr48-cr55-retirement-or-supersession-if-qualified
+- c02/parent-corrective-state-reconciliation
+- c02/parent-gate-state-reconciliation
+- c02/next-authorized-action-resolution
+prohibited_scope:
+- Execute CR48 through CR55 as substitute completion work.
+- Fabricate CR48 through CR55 PASS results, receipts, or execution evidence.
+- Delete historical CR48 through CR55 definitions or evidence.
+- Execute C03 or any later parent convergence gate.
+- Create T-AUTH-06 or another replacement authority chain.
+- Reactivate Operational Alpha authority.
+- Create or modify a Mission Contract merely to resolve C02.
+- Create a duplicate EMM.
+- Create another WOP submission mechanism.
+- Broaden Codex protected Git authority.
+- Stage, commit, push, publish, or synchronize EOS from Codex.
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+next_authorized_action: EXECUTE_C02_OWNERSHIP_AND_TAIL_RECONCILIATION
