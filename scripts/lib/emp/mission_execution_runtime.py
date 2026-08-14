@@ -224,6 +224,8 @@ class MissionExecutionRuntime:
         session_store: NativeSessionStore | None = None,
         stage1_admission_resolver=None,
         admission_supersession_resolver=None,
+        successor_resolver=None,
+        operator_approval_resolver=None,
     ):
         self.root = Path(repository_root).resolve()
         self.store = store
@@ -250,6 +252,42 @@ class MissionExecutionRuntime:
         self.session_store = session_store or NativeSessionStore(store.directory.parent / "native-sessions")
         self.stage1_admission_resolver = stage1_admission_resolver
         self.admission_supersession_resolver = admission_supersession_resolver
+        # These hooks extend the existing Zeus controller loop.  They are
+        # deliberately controller-owned: a provider never selects a
+        # successor or decides whether an operator boundary applies.
+        self.successor_resolver = successor_resolver or self._default_successor
+        self.operator_approval_resolver = (
+            operator_approval_resolver or self._default_operator_approval
+        )
+
+    @staticmethod
+    def _default_successor(*, state, admission, completed_gate):
+        """Resolve the next runtime gate from the canonical gate contract."""
+        try:
+            index = next(
+                index for index, gate in enumerate(GATES)
+                if gate["gate_id"] == completed_gate
+            )
+        except StopIteration as error:
+            raise MissionExecutionError(
+                f"completed gate is not in the canonical runtime graph: {completed_gate}"
+            ) from error
+        next_gate = GATES[index + 1]["gate_id"] if index + 1 < len(GATES) else None
+        return {
+            "result": "PASS",
+            "next_gate": next_gate,
+            "successor_authority": "ZEUS_CONTROLLER_CANONICAL_GATE_GRAPH",
+        }
+
+    @staticmethod
+    def _default_operator_approval(*, state, admission, completed_gate, next_gate):
+        """No approval is required unless canonical policy resolves one."""
+        return {
+            "result": "PASS",
+            "approval_required": False,
+            "operator_acceptance": "NOT_APPLICABLE",
+            "approval_authority": "CANONICAL_OPERATOR_APPROVAL_POLICY",
+        }
 
     def start(
         self,
@@ -415,8 +453,60 @@ class MissionExecutionRuntime:
                 {"gate_id": gate["gate_id"], "result": result, "checkpoint": checkpoint},
                 at,
             )
-            index = GATES.index(gate) + 1
-            state["current_gate"] = GATES[index]["gate_id"] if index < len(GATES) else None
+
+            # Every completed transition re-resolves successor authority from
+            # the current controller state.  The provider result cannot
+            # supply, skip, or execute the successor.
+            successor = self.successor_resolver(
+                state=deepcopy(state),
+                admission=deepcopy(admission),
+                completed_gate=gate["gate_id"],
+            )
+            if not isinstance(successor, Mapping) or successor.get("result") != "PASS":
+                raise MissionExecutionError("successor authority resolution failed")
+            next_gate = successor.get("next_gate")
+            if next_gate is not None and not any(
+                item["gate_id"] == next_gate for item in GATES
+            ):
+                raise MissionExecutionError("successor authority names an unknown gate")
+
+            approval = self.operator_approval_resolver(
+                state=deepcopy(state),
+                admission=deepcopy(admission),
+                completed_gate=gate["gate_id"],
+                next_gate=next_gate,
+            )
+            if not isinstance(approval, Mapping) or approval.get("result") != "PASS":
+                raise MissionExecutionError("operator approval policy resolution failed")
+
+            state["current_gate"] = next_gate
+            state["successor_resolution"] = {
+                "completed_gate": gate["gate_id"],
+                "next_gate": next_gate,
+                "authority": successor.get("successor_authority"),
+            }
+            state["operator_approval"] = {
+                "required": bool(approval.get("approval_required")),
+                "acceptance": approval.get(
+                    "operator_acceptance",
+                    "PENDING" if approval.get("approval_required") else "NOT_APPLICABLE",
+                ),
+                "authority": approval.get("approval_authority"),
+            }
+            if approval.get("approval_required"):
+                state["state"] = "Waiting"
+                state["wait_reason"] = {
+                    "category": "OPERATOR_APPROVAL_REQUIRED",
+                    "completed_gate": gate["gate_id"],
+                    "next_gate": next_gate,
+                    "requirement_id": approval.get("requirement_id"),
+                }
+                self._append_evidence(
+                    state, "OPERATOR_APPROVAL_REQUIRED", state["wait_reason"], at
+                )
+                state["updated_at"] = self._time(at)
+                self.store.save(state)
+                return self.store.load(execution_id)
             state["updated_at"] = self._time(at)
             self.store.save(state)
             executed += 1

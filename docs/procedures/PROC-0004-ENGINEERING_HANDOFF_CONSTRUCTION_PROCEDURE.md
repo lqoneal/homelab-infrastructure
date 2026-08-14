@@ -94,6 +94,16 @@ PROC-0001 and the Mission Snapshot supply that knowledge. Transaction-specific
 authority and constraints must reside in the repository Mission Contract or
 WOP before execution; conversation text is not a substitute authority record.
 
+The handoff identifies bounded authorized work; it does not mean one gate, one
+lifecycle transaction, or one provider session. Under resolved repository
+authority, Zeus may continue through deterministic successor gates without a
+new handoff. Zeus re-resolves authority, entry conditions, qualification,
+approval policy, and the next action after every transition. Continuation stops
+only at a genuine policy, authority, qualification, execution,
+protected-operation, explicit-ceiling, or terminal boundary. The handoff does
+not manufacture successor authority, operator acceptance, or publication
+authority.
+
 `engctl execution validate-handoff <file>` validates this concise form and
 proves that the repository supplies the remaining execution context.
 

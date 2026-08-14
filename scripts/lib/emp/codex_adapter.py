@@ -1206,7 +1206,13 @@ def begin_controlled_mission_work(repository: Path | str, mission_id: str, *, ap
         "Qualification execution is permitted only when explicitly AVAILABLE; qualification acceptance and closeout remain Zeus-owned. "
         "Prohibited operations: git fetch/stage/commit/push, publication, EOS synchronization, mission lifecycle advancement, and closeout."
     )
-    instruction = prompt or "Begin the bounded Zeus-controlled mission-work turn. Stop at the operator acceptance boundary and report a machine-readable result."
+    instruction = prompt or (
+        "Begin the bounded Zeus-controlled mission-work turn. Continue through "
+        "deterministic successor work while the canonical controller resolves "
+        "authority and no policy-required stop condition applies. Report a "
+        "machine-readable result; do not approve, qualify, publish, stage, "
+        "commit, push, synchronize EOS, or advance lifecycle state yourself."
+    )
     instruction = authority_instruction + " " + instruction
     thread_response = _control_request(session.get("control_socket"), {
         "jsonrpc": "2.0", "id": request_id, "method": "thread/start",
@@ -1364,7 +1370,13 @@ def resume(repository: Path | str, mission_id: str, *, approval: bool = False,
         return _result(session, read_only=False) | {"duplicate_codex_session": "IDEMPOTENT"}
     return start(repository, mission_id, approval=approval, runtime_root=runtime, codex_bin=codex_bin,
                  work_contract=work_contract,
-                 prompt="Resume the Zeus-bound controlled mission-work session. Reconcile prior state before any work; stop at the operator boundary.", _resume=True)
+                 prompt=(
+                     "Resume the Zeus-bound controlled mission-work session. "
+                     "Reconcile prior state before any work and continue from "
+                     "the first incomplete canonical transition. Stop only "
+                     "when Zeus resolves a genuine policy, authority, "
+                     "qualification, execution, or protected-operation boundary."
+                 ), _resume=True)
 
 
 def stop(repository: Path | str, mission_id: str, *, approval: bool = False,

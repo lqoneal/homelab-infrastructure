@@ -24,6 +24,23 @@ repository and baseline bindings, and the applicable downstream authority
 state. Each lifecycle transition emits evidence-backed receipts and remains
 subject to reconciliation before the next transition is accepted.
 
+## Continuation across gates and transactions
+
+The submitted WOP and its resolved Zeus authority define a bounded execution
+envelope; they do not impose a one-gate-per-handoff or one-gate-per-provider
+session rule. When a transition qualifies and no active approval policy or
+superior authority requires intervention, Zeus resolves the next authorized
+action and continues automatically. The successor is resolved again from
+canonical state after the preceding receipt is persisted; historical sequence
+alone never authorizes execution.
+
+Handoff, authority, WOP, roadmap gate, lifecycle transaction, provider
+session, qualification, and publication are separate identities. A handoff
+can authorize bounded continuation, but cannot manufacture successor
+authority. Resume reconstructs the current transaction, completed gates,
+qualification and approval state, and next action; completed gates and
+completed external effects are not replayed.
+
 ## Canonical command path
 
 `submit`, `execute-mission start`, `status`, `session`, `resume`, `suspend`, `cancel`, qualification, publication preparation, synchronization, and closeout resolve the exact requested transaction through the shared reconciliation transaction before consuming derived runtime state. No command resubmits a WOP or creates authority.

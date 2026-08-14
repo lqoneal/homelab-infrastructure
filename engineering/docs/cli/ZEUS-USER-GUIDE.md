@@ -670,7 +670,11 @@ A provider/session startup or acknowledgement failure is fail-closed before
 active projection commit, and repository work remains false until repository
 evidence exists. Repeating `begin` against the same active transition returns
 `REPLAY=IDEMPOTENT`; it does not start another execution, provider process,
-session, or turn.
+session, or duplicate turn. The initial thread/turn is one provider
+transaction, not a one-gate execution ceiling. Once active, Zeus may request
+further bounded turns or successor work while canonical authority permits;
+the controller—not Codex—re-resolves the next action and policy stop after
+each completed transition.
 
 ### P5-G6 controlled Codex sessions
 

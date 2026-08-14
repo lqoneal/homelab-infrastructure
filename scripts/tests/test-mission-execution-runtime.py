@@ -85,6 +85,14 @@ class MissionExecutionRuntimeTests(unittest.TestCase):
         state = self.runtime().start(self.admission["admission_id"], at=AT)
         self.assertEqual(state["state"], "Completed")
         self.assertEqual(state["completed_gates"], [gate["gate_id"] for gate in GATES])
+        self.assertEqual(
+            state["operator_approval"],
+            {
+                "required": False,
+                "acceptance": "NOT_APPLICABLE",
+                "authority": "CANONICAL_OPERATOR_APPROVAL_POLICY",
+            },
+        )
         self.assertEqual(len(state["checkpoints"]), len(GATES))
         self.assertEqual(state["evidence"][-1]["event"], "EXECUTION_COMPLETED")
         self.assertFalse(
@@ -177,6 +185,75 @@ class MissionExecutionRuntimeTests(unittest.TestCase):
         replay = self.runtime(event_sink=sink).run(state["execution_id"], at=AT)
         self.assertEqual(replay, state)
         self.assertEqual(sink.store.count(), len(state["evidence"]))
+
+    def test_successor_is_re_resolved_after_each_gate(self):
+        calls = []
+
+        def resolve_successor(*, state, admission, completed_gate):
+            calls.append((completed_gate, tuple(state["completed_gates"])))
+            index = next(
+                index for index, gate in enumerate(GATES)
+                if gate["gate_id"] == completed_gate
+            )
+            return {
+                "result": "PASS",
+                "next_gate": GATES[index + 1]["gate_id"] if index + 1 < len(GATES) else None,
+                "successor_authority": "TEST_CANONICAL_RESOLVER",
+            }
+
+        state = self.runtime(successor_resolver=resolve_successor).start(
+            self.admission["admission_id"], at=AT
+        )
+        self.assertEqual(state["state"], "Completed")
+        self.assertEqual(
+            [item[0] for item in calls],
+            [gate["gate_id"] for gate in GATES],
+        )
+        self.assertEqual(calls[1][1], ("VALIDATE_WOP", "PREPARE_EXECUTION"))
+        self.assertEqual(
+            state["successor_resolution"]["authority"],
+            "TEST_CANONICAL_RESOLVER",
+        )
+
+    def test_operator_boundary_is_policy_driven_and_not_reused(self):
+        accepted = set()
+
+        def approval_policy(*, state, admission, completed_gate, next_gate):
+            requires = completed_gate in {"VALIDATE_WOP", "EXECUTE_WORK"}
+            if requires and completed_gate not in accepted:
+                return {
+                    "result": "PASS",
+                    "approval_required": True,
+                    "requirement_id": f"APPROVE-{completed_gate}",
+                    "approval_authority": "TEST_POLICY",
+                }
+            return {
+                "result": "PASS",
+                "approval_required": False,
+                "operator_acceptance": "NOT_APPLICABLE",
+                "approval_authority": "TEST_POLICY",
+            }
+
+        runtime = self.runtime(operator_approval_resolver=approval_policy)
+        first = runtime.start(self.admission["admission_id"], at=AT)
+        self.assertEqual(first["state"], "Waiting")
+        self.assertEqual(first["wait_reason"]["requirement_id"], "APPROVE-VALIDATE_WOP")
+        self.assertEqual(first["operator_approval"]["acceptance"], "PENDING")
+        self.assertEqual(first["completed_gates"], ["VALIDATE_WOP"])
+
+        accepted.add("VALIDATE_WOP")
+        second = runtime.resume(first["execution_id"], at=AT)
+        self.assertEqual(second["state"], "Waiting")
+        self.assertEqual(second["wait_reason"]["requirement_id"], "APPROVE-EXECUTE_WORK")
+        self.assertEqual(
+            second["completed_gates"],
+            ["VALIDATE_WOP", "PREPARE_EXECUTION", "EXECUTE_WORK"],
+        )
+
+        accepted.add("EXECUTE_WORK")
+        final = runtime.resume(second["execution_id"], at=AT)
+        self.assertEqual(final["state"], "Completed")
+        self.assertEqual(final["completed_gates"], [gate["gate_id"] for gate in GATES])
 
     def test_state_and_published_evidence_tampering_fail_closed(self):
         state = self.runtime().start(

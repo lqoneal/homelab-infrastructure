@@ -101,6 +101,12 @@ verification-first trace, result verification, artifact references, and
 side-effect declaration. Skips, retries, waits, failures, recovery, and
 completion remain in the Mission Execution evidence chain and EENS projection.
 
+The handler is not the continuation controller. One provider session may
+serve multiple bounded gates when the Zeus execution envelope permits it, but
+the controller owns successor resolution, approval-policy evaluation,
+qualification, resume, and stop decisions. A gate boundary by itself does not
+terminate the envelope; provider completion does not qualify the work.
+
 ## Controlled-document disposition
 
 This guide documents the qualified extension framework and bounded Development

@@ -74,6 +74,16 @@ uses the current gate and completed checkpoints to retry only incomplete work.
 A handler must use the supplied idempotency key when it can create external
 effects.
 
+`MissionExecutionRuntime` is the Zeus controller loop for this execution
+envelope. Its bounded run may complete more than one gate; `max_gates` is an
+explicit interruption limit, not a mandatory handoff boundary. At every gate
+completion it persists the checkpoint, re-resolves the canonical successor,
+then evaluates the active operator-approval policy. With no matching policy,
+the result is `OPERATOR_APPROVAL_REQUIRED=NO` and
+`OPERATOR_ACCEPTANCE=NOT_APPLICABLE`, and the loop continues. A matching
+policy produces a durable wait boundary for that specific requirement. A later
+gate is evaluated independently and cannot inherit an earlier acceptance.
+
 Handler discovery, registration, capability negotiation, compatibility,
 verification-first lifecycle, isolation, and extension rules are defined in
 `engineering/operations/zeus-operational-gate-handler-framework.md`.
