@@ -1,0 +1,53 @@
+schema_version: 1
+artifact_id: C03-VALIDATION
+gate_id: C03
+assessment_mode: READ_ONLY
+repository:
+  head: 5e4f5f5fb32660f950d84c85d8584bd8a3a02e1e
+  origin_main: 5e4f5f5fb32660f950d84c85d8584bd8a3a02e1e
+  branch: main
+  tracked_diff: none
+  preexisting_untracked_preserved: true
+roadmap:
+  current_gate: C03
+  last_completed_gate: C02
+  c03_result_before_assessment: ABSENT
+  next_authorized_action_before_assessment: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
+  post_result_lifecycle_state: AWAITING_OPERATOR_REVIEW
+  post_result_execution_result_state: VALID_FINAL
+  post_result_resolver_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
+  result_declared_review_action: OPERATOR_REVIEW_C03_ASSESSMENT
+  resolver_discrepancy: "The live roadmap resolver retains the pre-result action until Zeus records the operator review/state transition; no transition was performed by Codex."
+commands:
+  - command: scripts/engctl eos sync-validate
+    result: PASS
+  - command: scripts/engctl eos validate
+    result: PASS
+  - command: scripts/engctl eos persistence
+    result: PASS
+  - command: TMPDIR=repo/tmp python3 scripts/tests/test-eos-synchronization.py
+    result: PASS
+    tests: 4
+  - command: TMPDIR=repo/tmp bash scripts/tests/test-eos-runtime.sh
+    result: PASS
+  - command: scripts/engctl roadmap validate
+    result: PASS
+  - command: scripts/engctl roadmap evaluate
+    result: PASS
+  - command: platform_sync_verification.verify(/data/engineering)
+    result: PASS
+    checkpoint_result: HISTORICAL
+  - command: platform_sync_verification.verify(/home/loneal/.local/state/zeus/eos-workspace)
+    result: FAIL
+    reason: stale EOS baseline and projection mismatch
+mutation_boundary:
+  eos_files_before_hashes:
+    EOS-ID.md: de83f4342eef9c9c8f4515afe0e1ca23ac45e74a5cd09d6e457da81e16a2a016
+    EOS-STATE.md: 2769d17a427bd0d30f09f0b46e8edc80c5714a89bcdda3a4ab34ff5bfb289d30
+    EOS-MANIFEST.md: 3fdc666d35c3fec847daf721a3e284945898dfca2df360752db4f800fec19470
+    ACTIVE-CHECKPOINT: d29fd2b0b481f0e4fa778e7287fa9f0aedfb3debff919c0bcd053f9be95b234c
+    operational-state.json: 4ab4107b649dd06124904bde30f5afed7d48176981ef24042fc4a660977ac0e5
+  eos_mutation_performed: false
+  prohibited_operations_performed: []
+  prohibited_operations_not_performed: [synchronize, refresh, restore, select_checkpoint, create_checkpoint]
+  evidence_artifacts_only_written: true

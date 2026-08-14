@@ -1,0 +1,17 @@
+{
+  "decided_at": "2026-08-14T10:04:21.010853+00:00",
+  "decision": "ACCEPT",
+  "gate_definition_digest": "49cfc0d695c159abff2f5b36a2e035c9b889a77b35fd2e9a092676eec401f6e3",
+  "gate_id": "C03",
+  "lifecycle_state": "ACCEPTED",
+  "next_authorized_action": "EXECUTE_CR21_IMPLEMENT_ATOMIC_ADVANCEMENT",
+  "operator_identity": "CURRENT_OPERATOR_SESSION",
+  "receipt_id": "ORR-9FE4A3BEA1DD0EBF1DE8AFE7",
+  "receipt_type": "OPERATOR_REVIEW_DECISION",
+  "result_class": "VALID_FINAL",
+  "result_digest": "6c4a31e044a6203f4661b585349f9cbd7c72e806ed0afa3ece0f643d4824aa62",
+  "result_path": "/data/engineering/repositories/homelab/engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/RESULT.yaml",
+  "roadmap_id": "ESC-ROADMAP-001",
+  "roadmap_version": "2.3.0",
+  "transaction_id": "C03-OPERATOR-ACCEPTANCE"
+}

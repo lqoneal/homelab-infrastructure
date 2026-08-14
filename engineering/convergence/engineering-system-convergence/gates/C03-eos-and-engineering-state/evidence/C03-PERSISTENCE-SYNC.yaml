@@ -1,0 +1,59 @@
+schema_version: 1
+artifact_id: C03-PERSISTENCE-SYNC
+gate_id: C03
+assessment_mode: READ_ONLY
+edges:
+  - edge_id: repository_to_projection
+    source: repository authoritative records
+    destination: EOS-ID/EOS-STATE/EOS-MANIFEST
+    trigger: explicit engctl eos synchronize
+    direction: repository_to_EOS
+    integrity_check: deterministic render, exact byte validation, source/projection SHA256 manifest
+    failure_mode: fail closed before mutation on invalid source or projection drift
+    recovery_precedence: repository source, then authorized projection rebuild
+    evidence: [scripts/lib/eos/state_sync.py, engineering/operations/repository-eos-synchronization.md, scripts/tests/test-eos-synchronization.py]
+  - edge_id: repository_to_operational_cache
+    source: repository status and EOS projection
+    destination: operational-state.json and repositories.tsv
+    trigger: refresh or synchronize
+    direction: repository_and_EOS_to_runtime_cache
+    integrity_check: operational and inventory validation
+    failure_mode: runtime-state failure; cache can be regenerated
+    recovery_precedence: repository and authoritative EOS records
+    evidence: [scripts/lib/eos/operations.sh, /data/engineering/eos/runtime/operational-state.json]
+  - edge_id: repository_to_checkpoint
+    source: repository identity, commit, branch, working tree
+    destination: append-only checkpoint record
+    trigger: explicit checkpoint create
+    direction: repository_to_EOS_evidence
+    integrity_check: project/root/commit identity and commit resolvability
+    failure_mode: invalid or not-applicable checkpoint
+    recovery_precedence: current repository and Project State; checkpoint is evidence only
+    evidence: [scripts/lib/eos/checkpoint.sh, docs/eos/EOS-0003-OPERATIONAL_PERSISTENCE_PROFILE.md]
+  - edge_id: checkpoint_to_active_pointer
+    source: resolved checkpoint
+    destination: ACTIVE-CHECKPOINT
+    trigger: explicit checkpoint restore/select
+    direction: checkpoint_to_pointer
+    integrity_check: path resolves inside checkpoint directory and identity validates
+    failure_mode: invalid pointer; current source state remains authoritative
+    recovery_precedence: repository/Project State, then selected checkpoint for resume context
+    evidence: [scripts/lib/eos/checkpoint.sh, /data/engineering/eos/state/ACTIVE-CHECKPOINT]
+  - edge_id: checkpoint_to_sync_status
+    source: active checkpoint Commit field
+    destination: engctl eos sync-status result
+    trigger: read-only command invocation
+    direction: checkpoint_to_status
+    integrity_check: recorded commit resolves and is compared to live HEAD
+    failure_mode: drifted or invalid
+    recovery_precedence: none; status is diagnostic, not state authority
+    evidence: [scripts/lib/eos/checkpoint.sh, scripts/engctl, scripts/tests/test-eos-runtime.sh]
+  - edge_id: projection_and_checkpoint_to_platform_verifier
+    source: repository/EOS projection plus active checkpoint
+    destination: platform_sync_verification result
+    trigger: explicit read-only verification
+    direction: multi-source_to_assessment
+    integrity_check: baseline parity, projection manifest consistency, checkpoint classification
+    failure_mode: FAIL for baseline/projection defects; HISTORICAL checkpoint is reported separately
+    recovery_precedence: repository and current EOS projection; checkpoint remains recovery evidence
+    evidence: [scripts/lib/eos/platform_sync_verification.py, read-only verify output]

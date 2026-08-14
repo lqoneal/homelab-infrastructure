@@ -1,0 +1,59 @@
+schema_version: 1
+artifact_id: C03-DIVERGENCE
+gate_id: C03
+assessment_mode: READ_ONLY
+findings:
+  - finding_id: C03-GAP-001
+    subject: EOS workspace authority and selector
+    classification: IMPLEMENTATION_DOCUMENTATION_DIVERGENCE
+    severity: HIGH
+    current_claims: Documentation names /home/loneal/.local/state/zeus/eos-workspace canonical; repository.sh and engctl default to /data/engineering.
+    impact: Identical commands can read or mutate different EOS projections; state authority is not deterministically selected.
+    candidate_disposition: Later bounded EOS path-authority corrective; explicitly select one canonical workspace and preserve legacy projection read-only.
+    correction_scope: LATER_ROADMAP_TRANSACTION
+    evidence: [engineering/operations/repository-eos-synchronization.md, scripts/lib/eos/repository.sh, scripts/engctl, two workspace EOS-STATE files]
+  - finding_id: C03-GAP-002
+    subject: Duplicate stale EOS projections
+    classification: DUPLICATE_STATE_SURFACE
+    severity: HIGH
+    current_claims: /data/engineering/eos/state is current at 5e4f; /home/loneal/.local/state/zeus/eos-workspace is at 0462022 and PROJ-0001@10.3; nested /data/engineering/eos/eos/state is also stale.
+    impact: Platform verification and runtime commands may disagree while each remains internally coherent.
+    candidate_disposition: Inventory and disposition duplicate projections under a separate migration/retirement authority; do not overwrite in C03.
+    correction_scope: LATER_ROADMAP_TRANSACTION
+    evidence: [read-only file inspection, platform verify output for both workspaces]
+  - finding_id: C03-GAP-003
+    subject: sync-status naming and semantics
+    classification: MISLEADING_INTERFACE
+    severity: MEDIUM
+    current_claims: engctl eos sync-status compares active checkpoint Commit to repository HEAD; platform verifier assesses current EOS projection and reports checkpoint HISTORICAL separately.
+    impact: A user can interpret historical recovery drift as EOS-state synchronization failure or assume projection parity from checkpoint alignment.
+    candidate_disposition: Later API/documentation corrective separating checkpoint status from repository-EOS projection status.
+    correction_scope: LATER_ROADMAP_TRANSACTION
+    evidence: [scripts/lib/eos/checkpoint.sh, scripts/lib/eos/platform_sync_verification.py, engineering/operations/repository-eos-synchronization.md, command outputs]
+  - finding_id: C03-GAP-004
+    subject: persistence maturity
+    classification: INCOMPLETE_CONTROLLED_MATURITY
+    severity: MEDIUM
+    current_claims: EOS-0003 and STD-0004 declare persistence_status Pending while implementation provides deterministic projection, cache, checkpoint, and validation services.
+    impact: Operational capabilities exist, but the controlled persistence contract is not fully promoted to an unambiguous authoritative standard.
+    candidate_disposition: Later governance decision to qualify/update persistence profile after path and synchronization semantics converge.
+    correction_scope: LATER_ROADMAP_TRANSACTION
+    evidence: [docs/eos/EOS-0003-OPERATIONAL_PERSISTENCE_PROFILE.md, docs/standards/STD-0004-ENGINEERING_STATE_FRESHNESS_STANDARD.md, read-only validation outputs]
+  - finding_id: C03-GAP-005
+    subject: historical checkpoint classification
+    classification: EXPECTED_RECOVERY_DRIFT
+    severity: LOW
+    current_claims: Active checkpoint is valid for homelab but records 64394a57015f; current repository and EOS projection are 5e4f5f5fb326.
+    impact: Resume context must not treat the checkpoint as current state; legacy command wording obscures this.
+    candidate_disposition: Preserve append-only checkpoint and classify historical; do not create or restore a checkpoint in C03.
+    correction_scope: C03_ASSESSMENT_ONLY
+    evidence: [active checkpoint file, /data/engineering/eos/state/EOS-STATE.md, platform verifier checkpoint HISTORICAL result, controlled synchronization procedure]
+  - finding_id: C03-GAP-006
+    subject: result and roadmap next-action projection
+    classification: LIFECYCLE_PROJECTION_GAP
+    severity: MEDIUM
+    current_claims: C03 RESULT.yaml declares operator review as its next action, while the unadvanced authoritative STATE.yaml and roadmap resolver still expose BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT.
+    impact: A subsequent operator must record the review/state transition before any next gate or corrective action is considered authorized; repeating C03 from the stale action would be unsafe.
+    candidate_disposition: Zeus operator review and explicit roadmap state transition; Codex performed no lifecycle mutation.
+    correction_scope: OPERATOR_REVIEW_REQUIRED
+    evidence: [engineering/convergence/engineering-system-convergence/STATE.yaml, scripts/engctl roadmap status, scripts/engctl roadmap results, C03-VALIDATION.yaml]

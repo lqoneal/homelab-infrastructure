@@ -1,0 +1,71 @@
+schema_version: 1
+artifact_id: C03-STATE-OWNERSHIP
+gate_id: C03
+assessment_mode: READ_ONLY
+facts:
+  - fact_id: current_repository_baseline
+    claimant: git_repository
+    writer: authorized_repository_lifecycle
+    reader: git, baseline resolver, EOS projector
+    durable_store: .git
+    cache: operational-state.json
+    projection: EOS-STATE.repository_commit
+    freshness: HEAD and origin/main equal 5e4f5f5fb32660f950d84c85d8584bd8a3a02e1e
+    recovery: repository and origin/main are authoritative; checkpoint cannot replace them
+    conflict: none observed
+    evidence: [git rev-parse HEAD, git rev-parse origin/main, /data/engineering/eos/state/EOS-STATE.md]
+  - fact_id: engineering_project_state
+    claimant: docs/project/PROJ-0001-PROJECT_STATE.md
+    writer: authorized repository state transition
+    reader: roadmap, state_sync.py, context reconstruction
+    durable_store: repository
+    cache: EOS-STATE and operational-state
+    projection: /data/engineering/eos/state/EOS-STATE.md
+    freshness: source revision 11.2, phase C03, next action BEGIN_C03...
+    recovery: restore repository source, then regenerate projection at authorized boundary
+    conflict: alternate workspace retains PROJ-0001@10.3
+    evidence: [docs/project/PROJ-0001-PROJECT_STATE.md, /home/loneal/.local/state/zeus/eos-workspace/eos/state/EOS-STATE.md]
+  - fact_id: roadmap_lifecycle
+    claimant: engineering/convergence/engineering-system-convergence/STATE.yaml
+    writer: Zeus roadmap authority
+    reader: engctl roadmap commands and gate evaluators
+    durable_store: repository
+    cache: Project State and EOS projection
+    projection: none; EOS is derived
+    freshness: current gate C03, last completed C02, result absent
+    recovery: reviewed append-only roadmap state transition
+    conflict: none observed in live roadmap state
+    evidence: [engineering/convergence/engineering-system-convergence/STATE.yaml]
+  - fact_id: eos_projection
+    claimant: repository source model
+    writer: state_sync.py through authorized synchronize
+    reader: platform verifier, validation, resume
+    durable_store: EOS state projection
+    cache: operational-state
+    projection: EOS-ID, EOS-STATE, EOS-MANIFEST
+    freshness: default workspace exact-match; documented workspace stale
+    recovery: render from repository and synchronize only with separate authority
+    conflict: workspace selector defaults to legacy path contrary to controlled documentation
+    evidence: [scripts/lib/eos/repository.sh, scripts/engctl, engineering/operations/repository-eos-synchronization.md]
+  - fact_id: active_recovery_checkpoint
+    claimant: active pointer plus resolved checkpoint record
+    writer: operator checkpoint selection
+    reader: checkpoint and resume services
+    durable_store: append-only checkpoint file and ACTIVE-CHECKPOINT pointer
+    cache: operational-state checkpoint fields
+    projection: resume context
+    freshness: valid identity, historical commit 64394a57015f versus current 5e4f5f5fb326
+    recovery: resume aid only; Project State and repository baseline prevail
+    conflict: legacy sync-status labels this as drift without saying historical
+    evidence: [/data/engineering/eos/state/ACTIVE-CHECKPOINT, active checkpoint file, scripts/lib/eos/checkpoint.sh]
+  - fact_id: operational_runtime_state
+    claimant: runtime observation
+    writer: operations.sh refresh/synchronize
+    reader: persistence validation and resume
+    durable_store: operational-state.json and repositories.tsv
+    cache: none beyond runtime records
+    projection: EOS operational summary
+    freshness: generated 2026-08-14; repository binding current; checkpoint historical
+    recovery: regenerate from repository and EOS records; does not supersede sources
+    conflict: cache says drifted using checkpoint semantics while projection validation passes
+    evidence: [/data/engineering/eos/runtime/operational-state.json, scripts/lib/eos/operations.sh]

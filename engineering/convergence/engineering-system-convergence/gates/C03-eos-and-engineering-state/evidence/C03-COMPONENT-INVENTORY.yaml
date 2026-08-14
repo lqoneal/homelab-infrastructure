@@ -1,0 +1,113 @@
+schema_version: 1
+artifact_id: C03-COMPONENT-INVENTORY
+gate_id: C03
+assessment_mode: READ_ONLY
+components:
+  - component_id: repository-authority
+    path: engineering/eos/repository-eos-authority.yaml
+    type: authority_matrix
+    owner: repository
+    reads: [repository sources]
+    writes: [none at runtime]
+    store: repository
+    consumers: [state_sync.py, platform_sync_verification.py, controlled procedures]
+    evidence: [engineering/eos/repository-eos-authority.yaml, docs/operations/repository-eos-synchronization.md]
+  - component_id: project-state
+    path: docs/project/PROJ-0001-PROJECT_STATE.md
+    type: authoritative_record
+    owner: repository
+    reads: [roadmap state, state_sync.py, resume/context services]
+    writes: [authorized repository lifecycle operation]
+    store: repository
+    consumers: [EOS projection, roadmap, context reconstruction]
+    evidence: [docs/project/PROJ-0001-PROJECT_STATE.md]
+  - component_id: eos-projection-generator
+    path: scripts/lib/eos/state_sync.py
+    type: deterministic_projection
+    owner: EOS_CONTROLLER
+    reads: [Project State, authority matrix, registry, execution interface, EMM, progress]
+    writes: [EOS-ID.md, EOS-STATE.md, EOS-MANIFEST.md only on synchronize]
+    store: selected EOS workspace
+    consumers: [engctl eos sync-validate, platform baseline verifier]
+    evidence: [scripts/lib/eos/state_sync.py, engineering/operations/repository-eos-synchronization.md]
+  - component_id: eos-workspace-selector
+    path: scripts/lib/eos/repository.sh
+    type: runtime_path_selector
+    owner: implementation_default
+    reads: [EOS_WORKSPACE environment variable]
+    writes: [none]
+    store: process environment
+    consumers: [all sourced EOS shell services, engctl]
+    evidence: [scripts/lib/eos/repository.sh, scripts/engctl]
+  - component_id: eos-state-projection-default
+    path: /data/engineering/eos/state/EOS-STATE.md
+    type: derived_projection
+    owner: repository_projection
+    reads: [current repository baseline]
+    writes: [synchronize operation only]
+    store: /data/engineering/eos
+    consumers: [default engctl validation and platform verifier]
+    evidence: [/data/engineering/eos/state/EOS-STATE.md, /data/engineering/eos/state/EOS-MANIFEST.md]
+  - component_id: eos-runtime-cache
+    path: /data/engineering/eos/runtime/operational-state.json
+    type: derived_runtime_cache
+    owner: EOS_CONTROLLER
+    reads: [repository status, EOS state, active checkpoint, inventory]
+    writes: [refresh or synchronize operation]
+    store: EOS runtime
+    consumers: [operational and persistence validation, resume]
+    evidence: [scripts/lib/eos/operations.sh, /data/engineering/eos/runtime/operational-state.json]
+  - component_id: repository-inventory-cache
+    path: /data/engineering/eos/runtime/repositories.tsv
+    type: derived_runtime_cache
+    owner: EOS_CONTROLLER
+    reads: [repository discovery and status]
+    writes: [refresh or synchronize operation]
+    store: EOS runtime
+    consumers: [platform and persistence validation]
+    evidence: [scripts/lib/eos/operations.sh, /data/engineering/eos/runtime/repositories.tsv]
+  - component_id: checkpoint-records
+    path: /data/engineering/eos/checkpoints/*.md
+    type: append_only_recovery_evidence
+    owner: EOS checkpoint service
+    reads: [repository identity, branch, commit, working-tree state]
+    writes: [checkpoint create only]
+    store: EOS checkpoint directory
+    consumers: [checkpoint validation, resume, platform checkpoint classification]
+    evidence: [scripts/lib/eos/checkpoint.sh, docs/eos/EOS-0003-OPERATIONAL_PERSISTENCE_PROFILE.md]
+  - component_id: active-checkpoint-pointer
+    path: /data/engineering/eos/state/ACTIVE-CHECKPOINT
+    type: runtime_pointer
+    owner: operator_checkpoint_selection
+    reads: [checkpoint path]
+    writes: [checkpoint restore/select]
+    store: EOS state
+    consumers: [checkpoint resolution, operational validation, resume]
+    evidence: [scripts/lib/eos/checkpoint.sh, /data/engineering/eos/state/ACTIVE-CHECKPOINT]
+  - component_id: checkpoint-status-api
+    path: scripts/lib/eos/checkpoint.sh:eos_checkpoint_sync_status
+    type: status_interface
+    owner: EOS_CONTROLLER
+    reads: [active checkpoint commit, live repository HEAD]
+    writes: [none]
+    store: none
+    consumers: [engctl eos sync-status, resume/context output]
+    evidence: [scripts/lib/eos/checkpoint.sh, scripts/tests/test-eos-runtime.sh]
+  - component_id: platform-sync-verifier
+    path: scripts/lib/eos/platform_sync_verification.py
+    type: integrated_read_only_verifier
+    owner: EOS_CONTROLLER
+    reads: [repository identity, origin/main, EOS projection, checkpoint]
+    writes: [none]
+    store: none
+    consumers: [platform qualification and assessment]
+    evidence: [scripts/lib/eos/platform_sync_verification.py]
+  - component_id: roadmap-execution-state
+    path: engineering/convergence/engineering-system-convergence/STATE.yaml
+    type: authoritative_lifecycle_record
+    owner: Zeus_roadmap_authority
+    reads: [roadmap tools, Project State]
+    writes: [reviewed state transition only]
+    store: repository
+    consumers: [engctl roadmap status/gate/results/validate/evaluate]
+    evidence: [engineering/convergence/engineering-system-convergence/STATE.yaml, engineering/convergence/engineering-system-convergence/roadmap.yaml]

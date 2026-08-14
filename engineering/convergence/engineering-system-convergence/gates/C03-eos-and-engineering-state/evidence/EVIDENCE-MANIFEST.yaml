@@ -1,0 +1,10 @@
+schema_version: 1
+gate_id: C03
+canonical_location: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/evidence
+manifest_policy: SHA256_OF_ALL_C03_EVIDENCE_FILES_EXCLUDING_THIS_MANIFEST_AND_RESULT
+files:
+  - {path: C03-COMPONENT-INVENTORY.yaml, sha256: 99b69b6815d082edf98953bb9c2e2117f9b5cca6d2f3759e1947ee258588802e}
+  - {path: C03-DIVERGENCE-REGISTER.yaml, sha256: 0117994fe9e1a8155950ae7796b1b4ca53d3cd13257ce51efc0176a606b2be53}
+  - {path: C03-PERSISTENCE-SYNC.yaml, sha256: 788b9906907887ad16fec752d234e42fb855188c647a17fc6f01c2f6a7655354}
+  - {path: C03-STATE-OWNERSHIP-MATRIX.yaml, sha256: d354e8d264c5450bb47ab7eb4ecea95e778858755e510ee41a96ba98d22f7f7d}
+  - {path: C03-VALIDATION.yaml, sha256: cfa257f57719f7ce8dcf459d90b167cd804b420ff4920aa6a685ba70be12b5b4}
