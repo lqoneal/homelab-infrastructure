@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import hashlib
+import fnmatch
 import os
 import shutil
 import subprocess
@@ -43,11 +44,24 @@ def _make_test_tree_removable(root: Path) -> None:
 
 
 _original_copytree = shutil.copytree
+_active_test_tmp: Path | None = None
 
 
 def _ignore_repository_evidence(path, names):
     """Keep bound top-level evidence, omit unrelated historical bulk."""
-    ignored = {".git", "__pycache__", "runtime", "tmp", "*.pyc"}
+    # Repository-root pytest state is generated runtime data. If it is copied
+    # into a fixture repository, the next root-to-fixture copy sees that
+    # fixture's pytest tree and recursively amplifies it.
+    ignored = {
+        ".git",
+        "__pycache__",
+        ".pytest_cache",
+        "runtime",
+        "tmp",
+        "pytest-current",
+        "pytest-of-*",
+        "*.pyc",
+    }
     path_text = str(Path(path))
     manifest_bound = set()
     manifest_path = ROOT / "engineering/convergence/engineering-system-convergence/binding-manifest.yaml"
@@ -63,6 +77,15 @@ def _ignore_repository_evidence(path, names):
             return [name for name in names if name.endswith(".pyc")]
         if "/gates/C00-" in path_text or "/gates/C01-" in path_text:
             return [name for name in names if name.endswith(".pyc")]
+        local_manifest = Path(path) / "EVIDENCE-MANIFEST.yaml"
+        local_manifest_bound = set()
+        if local_manifest.is_file():
+            local_value = yaml.safe_load(local_manifest.read_text()) or {}
+            local_manifest_bound = {
+                str(item["path"])
+                for item in local_value.get("files", [])
+                if isinstance(item, dict) and item.get("path")
+            }
         ignored_evidence = [
             name for name in names
             if name != "EVIDENCE-MANIFEST.yaml"
@@ -72,23 +95,68 @@ def _ignore_repository_evidence(path, names):
             str((Path(path) / name).resolve().relative_to(ROOT))
             for name in names
             if (Path(path) / name).is_file()
-            and str((Path(path) / name).resolve().relative_to(ROOT)) in manifest_bound
+            and (
+                name in local_manifest_bound
+                or str((Path(path) / name).resolve().relative_to(ROOT))
+                in manifest_bound
+            )
         }
         return [name for name in ignored_evidence if str((Path(path) / name).resolve().relative_to(ROOT)) not in relative_bound]
-    keep_evidence = (
-        Path(path).name == "engineering-system-convergence"
-        or "/gates/C00-" in path_text
-        or "/gates/C01-" in path_text
-    )
+    if Path(path).name == "engineering":
+        ignored.update({"work-orders", "planning"})
+    if Path(path).resolve() == ROOT:
+        ignored.add("docs")
+    if Path(path).name == "scripts":
+        ignored.add("tests")
+    if Path(path).name == "lib" and Path(path).parent.name == "scripts":
+        ignored.add("emp")
+    keep_evidence = "/gates/C00-" in path_text or "/gates/C01-" in path_text
     if not keep_evidence and "evidence" not in names:
         ignored.add("evidence")
-    return [name for name in names if name in ignored or name.endswith(".pyc")]
+    return [
+        name
+        for name in names
+        if any(fnmatch.fnmatch(name, pattern) for pattern in ignored)
+        or name.endswith(".pyc")
+    ]
 
 
 def _copytree_for_tests(src, dst, *args, **kwargs):
     if Path(src).resolve() == ROOT:
         kwargs["ignore"] = _ignore_repository_evidence
-    return _original_copytree(src, dst, *args, **kwargs)
+    result = _original_copytree(src, dst, *args, **kwargs)
+    if Path(src).resolve() == ROOT:
+        # C12 requires the Git surface to exist for read-only discovery, but
+        # copying live Git metadata would create nested repositories.
+        (Path(dst) / ".git").mkdir(exist_ok=True)
+        manifest_path = ROOT / ROADMAP_RELATIVE_ROOT / "binding-manifest.yaml"
+        manifest = yaml.safe_load(manifest_path.read_text()) or {}
+        for item in manifest.get("sources", []):
+            relative = item.get("path") if isinstance(item, dict) else None
+            source_path = ROOT / relative if relative else None
+            target_path = Path(dst) / relative if relative else None
+            if source_path is not None and target_path is not None and source_path.is_file() and not target_path.exists():
+                target_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source_path, target_path)
+        catalog_path = ROOT / ROADMAP_RELATIVE_ROOT / "execution-playbooks.yaml"
+        catalog = yaml.safe_load(catalog_path.read_text()) or {}
+        for playbook in catalog.get("playbooks", {}).values():
+            for surface in playbook.get("discovery_surfaces", []):
+                if surface.get("existence") != "REQUIRED" or surface.get("kind") != "PATH":
+                    continue
+                relative = surface.get("location")
+                if not relative:
+                    continue
+                source_path = ROOT / relative
+                target_path = Path(dst) / relative
+                if target_path.exists():
+                    continue
+                if source_path.is_file():
+                    target_path.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(source_path, target_path)
+                else:
+                    target_path.mkdir(parents=True, exist_ok=True)
+    return result
 
 
 # The historical CR23 tests intentionally copy the repository. Bound inputs
@@ -99,8 +167,12 @@ shutil.copytree = _copytree_for_tests
 
 @pytest.fixture(autouse=True)
 def _remove_test_tree_immutability(tmp_path):
+    global _active_test_tmp
+    previous = _active_test_tmp
+    _active_test_tmp = tmp_path
     yield
     _make_test_tree_removable(tmp_path)
+    _active_test_tmp = previous
 
 
 class ConvergenceRoadmapTests(unittest.TestCase):
@@ -108,16 +180,16 @@ class ConvergenceRoadmapTests(unittest.TestCase):
         self.resolver = ConvergenceRoadmap(ROOT)
 
     def fixture(self) -> Path:
-        temporary = tempfile.TemporaryDirectory(
-            ignore_cleanup_errors=False,
-        )
+        if _active_test_tmp is None:
+            raise RuntimeError("pytest-local test temp root was not initialized")
+        temporary = Path(tempfile.mkdtemp(prefix="unittest-fixture-", dir=_active_test_tmp))
         self.addCleanup(
             lambda: (
-                _make_test_tree_removable(Path(temporary.name)),
-                temporary.cleanup(),
+                _make_test_tree_removable(temporary),
+                shutil.rmtree(temporary, ignore_errors=False),
             )[-1]
         )
-        fixture_root = Path(temporary.name) / "repository"
+        fixture_root = temporary / "repository"
         roadmap_source = ROOT / ROADMAP_RELATIVE_ROOT
         roadmap_target = fixture_root / ROADMAP_RELATIVE_ROOT
         roadmap_target.parent.mkdir(parents=True)
@@ -193,8 +265,8 @@ class ConvergenceRoadmapTests(unittest.TestCase):
 
     def test_current_gate_and_completed_dependency_order_are_valid(self):
         value = self.resolver.validate()
-        self.assertEqual(value["state"]["current_gate"], "C02")
-        self.assertEqual(value["state"]["completed_gates"], ["C00", "C01"])
+        self.assertEqual(value["state"]["current_gate"], "C03")
+        self.assertEqual(value["state"]["completed_gates"], ["C00", "C01", "C02"])
         self.assertTrue(set(value["gates"]["C02"]["dependencies"]).issubset(value["state"]["completed_gates"]))
 
     def test_mixed_generation_provenance_keeps_frozen_gates_out_of_new_standard(self):
@@ -302,13 +374,13 @@ class ConvergenceRoadmapTests(unittest.TestCase):
         project_text = project_text.replace("BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT", "BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT")
         project_path.write_text(project_text, encoding="utf-8")
         self.rebind(fixture_root)
-        with self.assertRaisesRegex(RoadmapError, "incomplete dependencies"):
+        with self.assertRaisesRegex(RoadmapError, "roadmap provenance lifecycle disagrees with state"):
             ConvergenceRoadmap(fixture_root).validate()
 
     def test_resume_projection_exposes_program_gate_and_next_action(self):
         value = self.resolver.projection()
         self.assertEqual(value["program"], "Engineering System Convergence")
-        self.assertEqual(value["current_gate"], "C02")
+        self.assertEqual(value["current_gate"], "C03")
         expected_state = __import__("yaml").safe_load(
             (
                 ROOT
@@ -318,11 +390,11 @@ class ConvergenceRoadmapTests(unittest.TestCase):
         )
         self.assertEqual(
             expected_state["next_authorized_action"],
-            "OPERATOR_REVIEW_C02_ASSESSMENT",
+            "BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT",
         )
         self.assertEqual(
             value["next_authorized_action"],
-            "OPERATOR_REVIEW_C02_ASSESSMENT",
+            "BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT",
         )
         state = self.load(ROOT / ROADMAP_RELATIVE_ROOT / "STATE.yaml")
         corrective_state = self.load(
@@ -343,8 +415,8 @@ class ConvergenceRoadmapTests(unittest.TestCase):
             / "engineering/convergence/engineering-system-convergence/gates/"
             / "C03-eos-and-engineering-state/GATE.yaml"
         )
-        self.assertEqual(state["current_gate"], "C02")
-        self.assertEqual(state["next_authorized_action"], "OPERATOR_REVIEW_C02_ASSESSMENT")
+        self.assertEqual(state["current_gate"], "C03")
+        self.assertEqual(state["next_authorized_action"], "BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT")
         self.assertEqual(corrective_state["state"], "COMPLETE")
         self.assertTrue(retirement["retirement_transition_performed"])
         self.assertFalse(retirement["execution_performed"])
@@ -354,7 +426,7 @@ class ConvergenceRoadmapTests(unittest.TestCase):
                 for item in retirement["independent_retirement_test"].values()
             )
         )
-        self.assertEqual(c03["status"], "PENDING")
+        self.assertEqual(c03["status"], "CURRENT")
         self.assertFalse((ROOT / c03["result_location"]).exists())
         self.assertTrue(Path(value["gate_definition"]).is_file())
         self.assertTrue(Path(value["last_result"]).is_file())
@@ -448,7 +520,7 @@ class ConvergenceRoadmapTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("Program: Engineering System Convergence", result.stdout)
-        self.assertIn("Current Gate: C02", result.stdout)
+        self.assertIn("Current Gate: C03", result.stdout)
 
     def test_preservation_branch_is_reference_only(self):
         value = self.resolver.validate()
@@ -494,11 +566,155 @@ class ConvergenceRoadmapTests(unittest.TestCase):
 
 
 
-def test_cr17_status_projection_awaiting_operator_review():
+def _historical_c02_repository(tmp_path):
+    """Build a deterministic pre-acceptance C02 repository fixture.
+
+    The live repository is intentionally C03/current.  CR17-CR47 qualify the
+    historical C02 review and transaction lifecycle, so they must use an
+    explicit C02 fixture rather than reinterpret the live state.
+    """
+    import hashlib
+    import yaml
+
+    repo = _build_test_repository(tmp_path)
+    root = repo / ROADMAP_RELATIVE_ROOT
+
+    state_path = root / "STATE.yaml"
+    state = yaml.safe_load(state_path.read_text())
+    state.update({
+        "current_gate": "C02",
+        "completed_gates": ["C00", "C01"],
+        "last_completed_gate": "C01",
+        "pending_gates": [f"C{number:02d}" for number in range(2, 21)],
+        "last_result": "engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml",
+        "last_evidence": "engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence/EVIDENCE-MANIFEST.yaml",
+        "next_authorized_action": "REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY",
+    })
+    state_path.write_text(yaml.safe_dump(state, sort_keys=False))
+
+    roadmap_path = root / "roadmap.yaml"
+    roadmap = yaml.safe_load(roadmap_path.read_text())
+    for item in roadmap["gates"]:
+        if item["gate_id"] == "C02":
+            item["contract_provenance"]["lifecycle"] = "CURRENT"
+        elif item["gate_id"] == "C03":
+            item["contract_provenance"]["lifecycle"] = "PENDING"
+    roadmap_path.write_text(yaml.safe_dump(roadmap, sort_keys=False))
+
+    c02 = yaml.safe_load((root / "gates/C02-controlled-documentation-and-authority/GATE.yaml").read_text())
+    c03_path = root / "gates/C03-eos-and-engineering-state/GATE.yaml"
+    c03 = yaml.safe_load(c03_path.read_text())
+    c02["status"] = "CURRENT"
+    c03["status"] = "PENDING"
+    (root / "gates/C02-controlled-documentation-and-authority/GATE.yaml").write_text(
+        yaml.safe_dump(c02, sort_keys=False)
+    )
+    c03_path.write_text(yaml.safe_dump(c03, sort_keys=False))
+
+    # The historical CR47 projections require a valid historical C02 result
+    # whose authority digest matches the historical C02 gate definition.  The
+    # live result predates the fixture's explicit C02 state projection, so
+    # reconcile that evidence in the fixture rather than weakening validation.
+    c02_result_path = (
+        root / "gates/C02-controlled-documentation-and-authority/RESULT.yaml"
+    )
+    c02_path = root / "gates/C02-controlled-documentation-and-authority/GATE.yaml"
+    c02_result = yaml.safe_load(c02_result_path.read_text())
+    c02_result.setdefault("starting_state", {})["gate_contract_sha256"] = (
+        hashlib.sha256(c02_path.read_bytes()).hexdigest()
+    )
+    c02_result["starting_state"]["current_gate"] = "C02"
+    c02_result_path.write_text(yaml.safe_dump(c02_result, sort_keys=False))
+
+    project_path = repo / "docs/project/PROJ-0001-PROJECT_STATE.md"
+    parts = project_path.read_text().split("---", 2)
+    front = yaml.safe_load(parts[1])
+    front["convergence_program"]["current_gate"] = "C02"
+    front["convergence_program"]["next_authorized_action"] = "REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY"
+    front["phase"] = "C02 Controlled Documentation and Authority Assessment"
+    project_path.write_text(
+        "---\n" + yaml.safe_dump(front, sort_keys=False, width=110)
+        + "---" + parts[2]
+    )
+
+    manifest_path = root / "binding-manifest.yaml"
+    manifest = yaml.safe_load(manifest_path.read_text())
+    for item in manifest.get("sources", []):
+        path = repo / item.get("path", "")
+        if path.is_file():
+            item["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+    manifest_path.write_text(yaml.safe_dump(manifest, sort_keys=False))
+    for receipt in (root / "receipts/operator-review").glob("*.json"):
+        receipt.unlink()
+    return repo
+
+
+def _historicalize_c02_repository(repo):
+    """Project the same historical C02 boundary into an existing copy."""
+    import hashlib
+    import yaml
+
+    root = Path(repo) / ROADMAP_RELATIVE_ROOT
+    state_path = root / "STATE.yaml"
+    state = yaml.safe_load(state_path.read_text())
+    state.update({
+        "current_gate": "C02",
+        "completed_gates": ["C00", "C01"],
+        "last_completed_gate": "C01",
+        "pending_gates": [f"C{number:02d}" for number in range(2, 21)],
+        "last_result": "engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml",
+        "last_evidence": "engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence/EVIDENCE-MANIFEST.yaml",
+        "next_authorized_action": "REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY",
+    })
+    state_path.write_text(yaml.safe_dump(state, sort_keys=False))
+
+    roadmap_path = root / "roadmap.yaml"
+    roadmap = yaml.safe_load(roadmap_path.read_text())
+    for item in roadmap["gates"]:
+        item["contract_provenance"]["lifecycle"] = (
+            "CURRENT" if item["gate_id"] == "C02"
+            else "PENDING" if item["gate_id"] == "C03"
+            else item["contract_provenance"]["lifecycle"]
+        )
+    roadmap_path.write_text(yaml.safe_dump(roadmap, sort_keys=False))
+
+    c02_path = root / "gates/C02-controlled-documentation-and-authority/GATE.yaml"
+    c03_path = root / "gates/C03-eos-and-engineering-state/GATE.yaml"
+    c02 = yaml.safe_load(c02_path.read_text())
+    c03 = yaml.safe_load(c03_path.read_text())
+    c02["status"], c03["status"] = "CURRENT", "PENDING"
+    c02_path.write_text(yaml.safe_dump(c02, sort_keys=False))
+    c03_path.write_text(yaml.safe_dump(c03, sort_keys=False))
+
+    project_path = Path(repo) / "docs/project/PROJ-0001-PROJECT_STATE.md"
+    parts = project_path.read_text().split("---", 2)
+    front = yaml.safe_load(parts[1])
+    front["convergence_program"].update({
+        "current_gate": "C02",
+        "next_authorized_action": "REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY",
+    })
+    front["phase"] = "C02 Controlled Documentation and Authority Assessment"
+    project_path.write_text(
+        "---\n" + yaml.safe_dump(front, sort_keys=False, width=110)
+        + "---" + parts[2]
+    )
+
+    manifest_path = root / "binding-manifest.yaml"
+    manifest = yaml.safe_load(manifest_path.read_text())
+    for item in manifest.get("sources", []):
+        path = Path(repo) / item.get("path", "")
+        if path.is_file():
+            item["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+    manifest_path.write_text(yaml.safe_dump(manifest, sort_keys=False))
+    for receipt in (root / "receipts/operator-review").glob("*.json"):
+        receipt.unlink()
+
+
+def test_cr17_status_projection_awaiting_operator_review(tmp_path):
     from pathlib import Path
     from scripts.lib.eos.convergence_roadmap import ConvergenceRoadmap
 
-    v = ConvergenceRoadmap(Path.cwd()).projection()
+    v = ConvergenceRoadmap(_historical_c02_repository(tmp_path)).projection()
 
     assert v["lifecycle_state"] == "AWAITING_OPERATOR_REVIEW"
     assert v["execution_result_state"] == "VALID_FINAL"
@@ -589,11 +805,11 @@ def test_cr17_status_projection_current_without_result(tmp_path):
     assert v["read_only"] is True
 
 
-def test_cr18_evaluate_pending_review_is_not_corruption():
+def test_cr18_evaluate_pending_review_is_not_corruption(tmp_path):
     from pathlib import Path
     from scripts.lib.eos.convergence_roadmap import ConvergenceRoadmap
 
-    value = ConvergenceRoadmap(Path.cwd()).evaluate(
+    value = ConvergenceRoadmap(_historical_c02_repository(tmp_path)).evaluate(
         compare_persisted=False
     )
 
@@ -676,11 +892,11 @@ def test_cr18_evaluation_is_read_only():
     assert first == second
 
 
-def test_cr19_resume_projection_exposes_pending_review_read_only():
+def test_cr19_resume_projection_exposes_pending_review_read_only(tmp_path):
     from pathlib import Path
     from scripts.lib.eos.convergence_roadmap import ConvergenceRoadmap
 
-    resolver = ConvergenceRoadmap(Path.cwd())
+    resolver = ConvergenceRoadmap(_historical_c02_repository(tmp_path))
     value = resolver.projection()
 
     assert value["result"] == "PASS"
@@ -702,6 +918,8 @@ def test_cr19_resume_projection_exposes_pending_review_read_only():
 def _cr20_fixture_emm_rebind(repo):
     import hashlib
     import yaml
+
+    _historicalize_c02_repository(repo)
 
     manifest_path = (
         repo
@@ -748,6 +966,7 @@ def _cr20_review_inputs(repo):
     import hashlib
     from scripts.lib.eos.convergence_roadmap import ConvergenceRoadmap
 
+    _historicalize_c02_repository(repo)
     _cr20_fixture_emm_rebind(repo)
 
     value = ConvergenceRoadmap(repo).projection()
@@ -954,6 +1173,7 @@ def test_cr20_review_receipt_does_not_advance_live_roadmap(tmp_path):
     )
 
     root = repo / "engineering/convergence/engineering-system-convergence"
+    _historicalize_c02_repository(repo)
     before = yaml.safe_load((root / "STATE.yaml").read_text())
 
     inputs = _cr20_review_inputs(repo)
@@ -976,9 +1196,41 @@ def test_cr20_review_receipt_does_not_advance_live_roadmap(tmp_path):
 
 
 
+def test_cr20_operator_review_fixture_copy_excludes_generated_roots(tmp_path):
+    """CR20 fixture copies must not re-ingest pytest-generated repositories."""
+    generated_roots = [ROOT / "pytest-of-loneal", ROOT / "pytest-current"]
+    assert all(not path.exists() for path in generated_roots)
+
+    try:
+        for path in generated_roots:
+            path.mkdir()
+            (path / "nested-marker").write_text("generated\n")
+
+        repo = tmp_path / "repo"
+        shutil.copytree(ROOT, repo)
+
+        cr20_result = (
+            repo
+            / "engineering/convergence/engineering-system-convergence"
+            / "gates/C02-controlled-documentation-and-authority"
+            / "corrective/ESC-C02-CORRECTIVE-001/gates/CR20/RESULT.yaml"
+        )
+        assert cr20_result.is_file()
+        assert not (repo / "pytest-of-loneal").exists()
+        assert not (repo / "pytest-current").exists()
+        assert not (repo / "tmp").exists()
+        assert not (repo / ".pytest_cache").exists()
+    finally:
+        for path in generated_roots:
+            if path.exists():
+                shutil.rmtree(path)
+
+
 def _cr21_fixture_emm_rebind(repo):
     import hashlib
     import yaml
+
+    _historicalize_c02_repository(repo)
 
     manifest_path = (
         repo
@@ -1018,6 +1270,7 @@ def _cr21_fixture(repo):
     from pathlib import Path
     import hashlib
 
+    _historicalize_c02_repository(repo)
     _cr21_fixture_emm_rebind(repo)
 
     from scripts.lib.eos.convergence_roadmap import (
@@ -2914,13 +3167,12 @@ def _build_test_repository(tmp_path):
     destination = tmp_path / "repository"
 
     def ignore(directory, names):
-        ignored = set()
-
-        for name in (".git", "__pycache__", ".pytest_cache"):
-            if name in names:
-                ignored.add(name)
-
-        return ignored
+        ignored = {".git", "__pycache__", ".pytest_cache", "tmp", "runtime"}
+        return [
+            name for name in names
+            if any(fnmatch.fnmatch(name, pattern) for pattern in ignored)
+            or name.endswith(".pyc")
+        ]
 
     shutil.copytree(
         source,
@@ -2928,7 +3180,6 @@ def _build_test_repository(tmp_path):
         ignore=ignore,
         symlinks=True,
     )
-
     return destination
 
 def test_current_gate_valid_result_derives_pending_review(tmp_path):
@@ -2944,11 +3195,7 @@ def test_current_gate_valid_result_derives_pending_review(tmp_path):
         / "STATE.yaml"
     )
 
-    result_path = (
-        repo
-        / "engineering/convergence/engineering-system-convergence"
-        / "gates/C02-test/RESULT.yaml"
-    )
+    result_path = repo / "engineering/convergence/engineering-system-convergence/gates/C03-test/RESULT.yaml"
 
     result_path.parent.mkdir(
         parents=True,
@@ -2958,10 +3205,10 @@ def test_current_gate_valid_result_derives_pending_review(tmp_path):
     result_path.write_text(
         """
 schema_version: 1
-gate_id: C02
+gate_id: C03
 result: PASS
 evidence:
-  - path: engineering/convergence/engineering-system-convergence/gates/C02-test/evidence/EVIDENCE-MANIFEST.yaml
+  - path: engineering/convergence/engineering-system-convergence/gates/C03-test/evidence/EVIDENCE-MANIFEST.yaml
 """.lstrip()
     )
 
@@ -2973,7 +3220,7 @@ evidence:
     evidence.write_text(
         """
 schema_version: 1
-gate_id: C02
+gate_id: C03
 evidence: []
 """.lstrip()
     )
@@ -2987,8 +3234,8 @@ evidence: []
         state_path.read_text()
     )
 
-    assert state["current_gate"] == "C02"
-    assert "C02" not in state["completed_gates"]
+    assert state["current_gate"] == "C03"
+    assert "C03" not in state["completed_gates"]
 
 
 def test_current_gate_result_does_not_imply_acceptance_or_completion(tmp_path):
@@ -2998,11 +3245,7 @@ def test_current_gate_result_does_not_imply_acceptance_or_completion(tmp_path):
 
     repo = _build_test_repository(tmp_path)
 
-    result_path = (
-        repo
-        / "engineering/convergence/engineering-system-convergence"
-        / "gates/C02-test/RESULT.yaml"
-    )
+    result_path = repo / "engineering/convergence/engineering-system-convergence/gates/C03-test/RESULT.yaml"
 
     result_path.parent.mkdir(
         parents=True,
@@ -3012,10 +3255,10 @@ def test_current_gate_result_does_not_imply_acceptance_or_completion(tmp_path):
     result_path.write_text(
         """
 schema_version: 1
-gate_id: C02
+gate_id: C03
 result: PASS
 evidence:
-  - path: engineering/convergence/engineering-system-convergence/gates/C02-test/evidence/EVIDENCE-MANIFEST.yaml
+  - path: engineering/convergence/engineering-system-convergence/gates/C03-test/evidence/EVIDENCE-MANIFEST.yaml
 """.lstrip()
     )
 
@@ -3027,7 +3270,7 @@ evidence:
     evidence.write_text(
         """
 schema_version: 1
-gate_id: C02
+gate_id: C03
 evidence: []
 """.lstrip()
     )
@@ -3045,8 +3288,8 @@ evidence: []
         state_path.read_text()
     )
 
-    assert "C02" not in state["completed_gates"]
-    assert state["current_gate"] == "C02"
+    assert "C03" not in state["completed_gates"]
+    assert state["current_gate"] == "C03"
 
 
 def _cr23_emm_fixture(tmp_path):
@@ -4026,6 +4269,8 @@ def _zo009_fixture_rebind(repo):
     import hashlib
     import yaml
 
+    _historicalize_c02_repository(repo)
+
     root = (
         Path(repo)
         / "engineering/convergence/"
@@ -4075,14 +4320,19 @@ def _zo009_fixture_rebind(repo):
     state_path = corrective_root / "STATE.yaml"
     state = yaml.safe_load(state_path.read_text())
     completed_items = state.get("completed_items", [])
-    if state.get("current_item") == "CR48":
-        state["completed_items"] = completed_items[:completed_items.index("CR23")]
-        state["current_item"] = "CR23"
-        state["blockers"] = []
-        state["last_completed_item"] = "CR22"
-        state["next_authorized_action"] = (
-            "EXECUTE_CR23_IMPLEMENT_LIFECYCLE_PROVENANCE"
-        )
+    # Construct the historical CR23 boundary explicitly.  The live corrective
+    # is terminal (current_item is null), so deriving this from its current
+    # item silently leaves the fixture inconsistent with CR21/CR22 evidence.
+    state["completed_items"] = [
+        item for item in completed_items
+        if item.startswith("CR") and item not in {"CR23", "CR24", "CR25", "CR26", "CR27", "CR28"}
+    ]
+    state["current_item"] = "CR23"
+    state["blockers"] = []
+    state["last_completed_item"] = "CR22"
+    state["next_authorized_action"] = (
+        "EXECUTE_CR23_IMPLEMENT_LIFECYCLE_PROVENANCE"
+    )
     state_path.write_text(yaml.safe_dump(state, sort_keys=False))
 
     historical_result = corrective_root / "gates/CR23/RESULT.yaml"
@@ -5039,20 +5289,14 @@ def test_cr23_zo007_wrong_current_item_blocks(tmp_path):
 
     state_path = corr / "STATE.yaml"
 
-    state = yaml.safe_load(
-        state_path.read_text()
-    )
-
-    state["current_item"] = "CR22"
-
-    state_path.write_text(
-        yaml.safe_dump(
-            state,
-            sort_keys=False,
-        )
-    )
-
     _zo009_fixture_rebind(repo)
+
+    # Rebinding is the final normalization step.  Apply the deliberately
+    # invalid historical state after it so the projection under test observes
+    # the negative fixture rather than a repaired CR23 state.
+    state = yaml.safe_load(state_path.read_text())
+    state["current_item"] = "CR22"
+    state_path.write_text(yaml.safe_dump(state, sort_keys=False))
 
     result = project_manual_gate_execution_preflight(
         repo,
@@ -5595,20 +5839,12 @@ def test_cr23_zo008_nested_current_item_mismatch_blocks(tmp_path):
 
     state_path = corr / "STATE.yaml"
 
-    state = yaml.safe_load(
-        state_path.read_text()
-    )
-
-    state["current_item"] = "CR22"
-
-    state_path.write_text(
-        yaml.safe_dump(
-            state,
-            sort_keys=False,
-        )
-    )
-
     _zo009_fixture_rebind(repo)
+
+    # Keep the negative mutation after all fixture rebinding/normalization.
+    state = yaml.safe_load(state_path.read_text())
+    state["current_item"] = "CR22"
+    state_path.write_text(yaml.safe_dump(state, sort_keys=False))
 
     result = project_nested_corrective_reconciliation(
         repo,
@@ -6479,7 +6715,7 @@ def test_cr23_zo013_never_executes_or_reconciles(
 
 
 def _cr47_repository(tmp_path):
-    return _build_test_repository(tmp_path)
+    return _historical_c02_repository(tmp_path)
 
 
 def _cr47_result_path(repo):

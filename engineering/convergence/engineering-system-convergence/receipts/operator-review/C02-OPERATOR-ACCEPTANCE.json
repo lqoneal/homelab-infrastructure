@@ -1,0 +1,17 @@
+{
+  "decided_at": "2026-08-13T22:43:08.929286+00:00",
+  "decision": "ACCEPT",
+  "gate_definition_digest": "96885178a7f0c13714b9f60fc9f1486a3cf6b1306d114ee4d2089d30bd8837fc",
+  "gate_id": "C02",
+  "lifecycle_state": "ACCEPTED",
+  "next_authorized_action": "EXECUTE_CR21_IMPLEMENT_ATOMIC_ADVANCEMENT",
+  "operator_identity": "CURRENT_OPERATOR_SESSION",
+  "receipt_id": "ORR-7577F64F3423B586C9677608",
+  "receipt_type": "OPERATOR_REVIEW_DECISION",
+  "result_class": "VALID_FINAL",
+  "result_digest": "2c19e69389f3094d874fbaf6c929d23b4d41541953cf04d47a21d1099bc5a195",
+  "result_path": "/data/engineering/repositories/homelab/engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/RESULT.yaml",
+  "roadmap_id": "ESC-ROADMAP-001",
+  "roadmap_version": "2.3.0",
+  "transaction_id": "C02-OPERATOR-ACCEPTANCE"
+}

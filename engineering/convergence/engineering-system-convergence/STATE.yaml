@@ -2,13 +2,13 @@ schema_version: 2
 roadmap_id: ESC-ROADMAP-001
 roadmap_version: 2.3.0
 program_state: ASSESSMENT
-current_gate: C02
+current_gate: C03
 completed_gates:
 - C00
 - C01
+- C02
 blocked_gates: []
 pending_gates:
-- C02
 - C03
 - C04
 - C05
@@ -27,10 +27,10 @@ pending_gates:
 - C18
 - C19
 - C20
-last_completed_gate: C01
-last_result: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml
-last_evidence: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/evidence/EVIDENCE-MANIFEST.yaml
-next_authorized_action: OPERATOR_REVIEW_C02_ASSESSMENT
+last_completed_gate: C02
+last_result: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/RESULT.yaml
+last_evidence: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/evidence/EVIDENCE-MANIFEST.yaml
+next_authorized_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
 executable_qualification:
   result: PASS
   executable: true
@@ -38,7 +38,7 @@ executable_qualification:
   procedure: PROC-0009@1.0
   evaluation_result: engineering/convergence/engineering-system-convergence/evidence/roadmap-execution-hardening/ROADMAP-EVALUATION.yaml
 repository_baseline: 506e48dfb3a6a1179b4545519cb20d0d3adcdafd
-updated_at: '2026-08-13T00:00:00Z'
+updated_at: '2026-08-13T22:43:12Z'
 state_provenance:
   authority: Operator directive establishing ENGINEERING-SYSTEM-CONVERGENCE
   established_by: Engineering System Convergence Roadmap Foundation

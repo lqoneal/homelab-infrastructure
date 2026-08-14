@@ -1774,8 +1774,8 @@ def main(argv=None):
                     if a.execute and value.get("result") == "PASS":
                         value = managed_handoff.execute_administrative_handoff(
                             ROOT, value,
-                            prompt=a.prompt or "Perform the harmless Zeus-managed acceptance probe. Create the exact authorized probe artifact, verify it, and report completion. Do not modify any other file and do not perform Git, publication, EOS, lifecycle, or qualification actions.",
-                            output_path=a.output or Path("/tmp/zeus-t-auth-04a-execution.json"),
+                            prompt=a.prompt,
+                            output_path=a.output or (ROOT / "tmp/zeus-administrative-execution.json"),
                             codex_bin=a.codex_bin, timeout_seconds=a.timeout,
                         )
                     if a.json:

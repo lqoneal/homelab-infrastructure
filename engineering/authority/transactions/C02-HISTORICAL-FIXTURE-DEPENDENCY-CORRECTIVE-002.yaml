@@ -1,0 +1,32 @@
+schema_version: 1
+transaction_id: C02-HISTORICAL-FIXTURE-DEPENDENCY-CORRECTIVE-002
+state: AUTHORIZED
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+authority_model: MODEL_B
+authority_source: OPERATION_BETA_CANONICAL_BOUNDED_CORRECTIVE_AUTHORITY
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+objective: >-
+  Correct deterministic historical CR23 and CR47 fixture dependencies without
+  changing production lifecycle semantics or the live C03 baseline.
+authorized_scope:
+  - scripts/tests/test-convergence-roadmap.py
+  - repository-local temporary test artifacts beneath tmp/
+  - this transaction authority and retained qualification evidence
+prohibited_scope:
+  - Execute C03.
+  - Advance the convergence roadmap.
+  - Execute or reopen CR48 through CR55.
+  - Stage, commit, push, publish, or synchronize EOS from Codex.
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+acceptance_criteria:
+  - The exact fourteen historical tests pass with zero failures and errors.
+  - Fixtures explicitly construct historical CR23 and self-consistent CR47 state.
+  - No complete repository copy, nested repository, or system /tmp fixture is created.
+  - Unrelated worktree changes remain preserved.
+next_authorized_action: RUN_EXACT_HISTORICAL_FIXTURE_TESTS

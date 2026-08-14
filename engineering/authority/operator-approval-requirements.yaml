@@ -1,0 +1,36 @@
+schema_version: 1
+policy_id: ZEUS-OPERATOR-APPROVAL-REQUIREMENTS
+owner: Engineering Governance
+authority_source: ENGINEERING_GOVERNANCE_CONTROLLED_POLICY
+description: Canonical living set of exceptional Zeus operator decision boundaries.
+requirements:
+  - requirement_id: OAR-MISSION-EXPLICIT-APPROVAL-001
+    lifecycle_situation: explicit_mission_operator_approval
+    applicability:
+      all:
+        - field: lifecycle_class
+          equals: MISSION
+        - field: explicit_operator_approval_required
+          equals: true
+    required_operator_action: OPERATOR_REVIEW_EXPLICIT_MISSION_GATE
+    authority_source: MISSION_OR_WOP_CANONICAL_APPROVAL_GATE
+    active: true
+    rationale: Preserve an approval boundary explicitly declared by a mission or WOP authority artifact.
+    resulting_transition:
+      approval: QUALIFICATION_ELIGIBLE
+      rejection: CORRECTIVE_RECONCILIATION_REQUIRED
+  - requirement_id: OAR-ADMINISTRATIVE-REAL-SESSION-LEGACY-001
+    lifecycle_situation: real_managed_administrative_session
+    applicability:
+      all:
+        - field: lifecycle_class
+          equals: ADMINISTRATIVE
+        - field: legacy_real_managed_session_review_required
+          equals: true
+    required_operator_action: OPERATOR_REVIEW_REAL_MANAGED_SESSION
+    authority_source: ENGINEERING_GOVERNANCE_CONTROLLED_POLICY
+    active: false
+    rationale: Retired unconditional review behavior; retained for controlled reactivation.
+    resulting_transition:
+      approval: QUALIFICATION_ELIGIBLE
+      rejection: CORRECTIVE_RECONCILIATION_REQUIRED

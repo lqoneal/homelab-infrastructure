@@ -1,0 +1,71 @@
+schema_version: 1
+
+transaction_id: CODEX-SANDBOX-QUALIFICATION-CONTRACT-ACCEPTANCE
+state: AUTHORIZED
+
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+
+authority_model: MODEL_B
+authority_source: OPERATOR_ACCEPTANCE_2026-08-13_CODEX_SANDBOX_QUALIFICATION_CONTRACT
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+
+objective: >-
+  Reconcile the completed CODEX-SANDBOX-QUALIFICATION-CONTRACT-CORRECTIVE
+  managed session through automatic Zeus qualification when no canonical
+  approval requirement applies,
+  and return control to the deferred C02 post-acceptance test reconciliation.
+
+acceptance_criteria:
+  - Completed managed corrective session is independently verified PASS.
+  - Provider was launched and owned by Zeus.
+  - Provider exited zero.
+  - Scope verification passed.
+  - Terminal reconciliation passed.
+  - No out-of-scope changes occurred.
+  - No protected actions occurred.
+  - Host /tmp/.git prelaunch collision is absent.
+  - Provider-synthetic /tmp/.git is accepted as sandbox behavior when non-failing.
+  - Repository-local temporary environment propagation is qualified.
+  - Codex patch mechanism is qualified.
+  - No bubblewrap ENOSPC occurred.
+  - No synthetic mount failure occurred.
+  - No runtime implementation defect remains.
+  - C03 remains unexecuted.
+  - Next authorized action is C02_POST_ACCEPTANCE_TEST_RECONCILIATION.
+
+authorized_scope:
+  - engineering/authority/transactions/CODEX-SANDBOX-QUALIFICATION-CONTRACT-CORRECTIVE-001.yaml
+  - engineering/authority/transactions/CODEX-SANDBOX-TEMP-ENVIRONMENT-REQUALIFICATION-001.yaml
+  - engineering/authority/transactions/CODEX-SANDBOX-QUALIFICATION-CONTRACT-ACCEPTANCE-001.yaml
+  - codex-sandbox/operator-acceptance
+  - codex-sandbox/terminal-qualification
+
+prohibited_scope:
+  - Invent or bind a mission identity.
+  - Re-execute the sandbox probe.
+  - Re-execute the contract corrective.
+  - Execute C02-POST-ACCEPTANCE-TEST-RECONCILIATION.
+  - Execute C03.
+  - Advance the convergence roadmap.
+  - Stage, commit, push, publish, or synchronize EOS from Codex.
+
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+
+# Zeus controller projection produced by the generic administrative
+# qualification contract.  The authority record remains canonical; these
+# fields record the terminal lifecycle result and do not authorize its
+# deferred successor.
+qualification: PASS
+transaction_state: QUALIFIED_OR_ACCEPTED_TERMINAL
+operator_acceptance:
+  status: NOT_APPLICABLE
+  reason: No active canonical operator approval requirement matched.
+next_authorized_action: C02_POST_ACCEPTANCE_TEST_RECONCILIATION

@@ -1,0 +1,61 @@
+schema_version: 1
+
+transaction_id: C02-POST-ACCEPTANCE-TEST-RECONCILIATION
+state: AUTHORIZED
+
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+
+authority_model: MODEL_B
+authority_source: OPERATOR_AUTHORIZATION_2026-08-13_C02_POST_ACCEPTANCE_TEST_RECONCILIATION
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+
+objective: >-
+  Reconcile the convergence-roadmap test harness with the qualified post-C02
+  C03 live baseline while preserving historical C02 lifecycle semantics,
+  eliminating fixture/evidence defects, and preventing recursive temporary
+  repository-copy amplification.
+
+acceptance_criteria:
+  - Current live state remains C03 with C02 last completed.
+  - C03 remains unexecuted.
+  - Live-state tests reflect the current C03 baseline.
+  - Historical C02 review, acceptance, rejection, advancement, replay,
+    recovery, CR17-CR23, and CR47 semantics remain independently testable.
+  - Historical fixture tests do not depend incorrectly on mutable live state.
+  - Manifested evidence validation remains fail-closed.
+  - Fixture repositories contain all evidence required by their manifests.
+  - Repository-local tmp is excluded from recursive fixture copies.
+  - Test-generated temporary data remains under the repository-local tmp root.
+  - Temporary test artifacts are cleaned after qualification.
+  - The complete convergence-roadmap test suite passes.
+  - Roadmap validation and evaluation pass.
+  - Model-B and Operation-Beta authority remain valid.
+  - CR48 through CR55 remain RETIRED_SUPERSEDED and unexecuted.
+  - No lifecycle advancement occurs.
+  - Unrelated worktree changes remain preserved.
+
+authorized_scope:
+  - scripts/tests/test-convergence-roadmap.py
+  - scripts/lib/eos/convergence_roadmap.py
+
+prohibited_scope:
+  - Execute C03.
+  - Advance the convergence roadmap.
+  - Reopen C02.
+  - Reopen or execute CR48 through CR55.
+  - Weaken evidence-manifest validation.
+  - Replace historical C02 semantics with C03 semantics.
+  - Use system /tmp for test-generated temporary state where repository-local tmp is required.
+  - Stage, commit, push, publish, or synchronize EOS from Codex.
+
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+
+next_authorized_action: EXECUTE_C02_POST_ACCEPTANCE_TEST_RECONCILIATION

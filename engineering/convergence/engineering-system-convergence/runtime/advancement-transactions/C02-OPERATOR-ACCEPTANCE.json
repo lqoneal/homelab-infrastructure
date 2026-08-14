@@ -1,0 +1,19 @@
+{
+  "acceptance_receipt_digest": "649e64b48d0894d4db5a6e6c76c5efb19381232b225ff25bfe92758b3d06228d",
+  "acceptance_receipt_id": "ORR-7577F64F3423B586C9677608",
+  "gate_definition_digest": "96885178a7f0c13714b9f60fc9f1486a3cf6b1306d114ee4d2089d30bd8837fc",
+  "gate_id": "C02",
+  "lifecycle_state": "COMPLETED",
+  "next_authorized_action": "BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT",
+  "post_state_digest": "9638aa24ffae2bad195e3d978a3ad830f8e14ad2f03e86bdb816bdf826b271fa",
+  "pre_state_digest": "6257179eb8eab9407f1040b8c9833f809e3840ccf00c47123a6bd7c233118702",
+  "result_digest": "2c19e69389f3094d874fbaf6c929d23b4d41541953cf04d47a21d1099bc5a195",
+  "roadmap_id": "ESC-ROADMAP-001",
+  "roadmap_version": "2.3.0",
+  "schema_version": 1,
+  "status": "ADVANCEMENT_COMPLETE",
+  "successor_gate": "C03",
+  "terminal_state": false,
+  "transaction_id": "C02-OPERATOR-ACCEPTANCE",
+  "transaction_type": "GATE_ADVANCEMENT"
+}

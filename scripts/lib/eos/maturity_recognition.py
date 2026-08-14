@@ -149,7 +149,9 @@ def resolve(repository_root: Path | str) -> dict[str, Any]:
     accepted = approval["integration_accepted"] is True
     blockers = [] if accepted else ["C18_INTEGRATION_REMAINS_DRAFT_OR_SEPARATE_AUTHORITY_REQUIRED"]
     post_convergence = integration.get("post_convergence")
-    if accepted:
+    if state["next_authorized_action"] == "HOLD_CR48_PENDING_WOP_EENS_CONVERGENCE":
+        next_authorized_action = state["next_authorized_action"]
+    elif accepted:
         if not isinstance(post_convergence, Mapping) or not isinstance(
             post_convergence.get("next_authorized_action"), str
         ) or not post_convergence["next_authorized_action"].strip():

@@ -1,0 +1,98 @@
+schema_version: 1
+
+transaction_id: ZEUS-POST-PROVIDER-QUALIFICATION-ROUTING-CORRECTIVE-001
+state: AUTHORIZED
+
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+
+authority_model: MODEL_B
+authority_source: OPERATION_BETA_CANONICAL_BOUNDED_CORRECTIVE_AUTHORITY
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+
+objective: >-
+  Correct Zeus orchestration so Zeus-owned post-provider qualification is
+  executed by the Zeus controller rather than dispatched to Codex as another
+  provider task.
+
+authorized_scope:
+  - scripts/zeus
+  - scripts/lib/emp/managed_handoff.py
+  - scripts/lib/emp/qualification_contract.py
+  - scripts/lib/emp/managed_provider.py
+  - scripts/tests/test-managed-codex-handoff.py
+  - scripts/tests/test-zeus-managed-noninteractive-provider.py
+  - scripts/tests/test-operator-approval-policy.py
+  - engineering/docs/operations/ZEUS-EXECUTION-LIFECYCLE-PROCEDURE.md
+  - engineering/authority/transactions/ZEUS-POST-PROVIDER-QUALIFICATION-ROUTING-CORRECTIVE-001.yaml
+
+prohibited_scope:
+  - Execute C02-POST-ACCEPTANCE-TEST-RECONCILIATION.
+  - Execute C03.
+  - Reopen or execute CR48 through CR55.
+  - Stage, commit, push, publish, or synchronize EOS from Codex.
+  - Permit Codex to qualify itself.
+  - Permit Codex to create authoritative Zeus qualification receipts.
+
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+
+lifecycle_boundary:
+  current_gate: C03
+  last_completed_gate: C02
+  c03_executed: 'NO'
+  protected_lifecycle_actions:
+    - Execute C02-POST-ACCEPTANCE-TEST-RECONCILIATION.
+    - Execute C03.
+    - Reopen or execute CR48 through CR55.
+    - Stage, commit, push, publish, or synchronize EOS from Codex.
+    - Permit Codex to qualify itself.
+    - Permit Codex to create authoritative Zeus qualification receipts.
+
+protected_operations:
+  - GIT
+  - PUBLICATION
+  - EOS
+  - ROADMAP_ADVANCEMENT
+
+required_verification:
+  - TRANSACTION_ID_MATCH
+  - OBJECTIVE_EXECUTED
+  - ACCEPTANCE_CRITERIA_EVALUATED
+  - REQUIRED_EVIDENCE_RETAINED
+  - PROVIDER_SCOPE_COMPLIANCE
+  - PROTECTED_ACTIONS_ABSENT
+
+stop_conditions:
+  - STOP_ON_MISSING_TRANSACTION_SEMANTICS
+  - STOP_ON_ACCEPTANCE_CRITERIA_FAILURE
+  - STOP_ON_PROVIDER_SCOPE_FAILURE
+  - STOP_BEFORE_PROTECTED_OPERATIONS
+
+provider_self_qualification: PROHIBITED
+
+acceptance_criteria:
+  - QUALIFICATION actions route to Zeus controller authority and are not dispatched to Codex.
+  - Provider implementation completion can automatically invoke Zeus independent qualification.
+  - Provider self-qualification remains prohibited.
+  - Zeus alone can persist authoritative qualification receipts.
+  - Provider exit zero without transaction-specific evidence does not qualify.
+  - Transaction-specific acceptance evidence is required for qualification PASS.
+  - Operator Approval Requirements policy remains authoritative.
+  - No operator acceptance is inserted when approval is NOT_REQUIRED.
+  - Qualification PASS with approval NOT_REQUIRED resolves the canonical successor automatically.
+  - Qualification failure prevents successor execution.
+  - The administrative execution-semantics corrective is independently qualifiable without routing qualification into Codex.
+  - C02 and C03 remain unexecuted during this corrective.
+
+required_evidence:
+  - provider terminal record
+  - actor-aware mutation attribution
+
+next_authorized_action: DELIVER_TO_ZEUS_MANAGED_PROVIDER

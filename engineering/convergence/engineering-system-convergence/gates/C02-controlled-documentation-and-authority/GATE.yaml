@@ -1,7 +1,7 @@
 schema_version: 1
 gate_id: C02
 title: Controlled Documentation and Authority Assessment
-status: CURRENT
+status: COMPLETE_WITH_FINDINGS
 purpose: Determine which controlled records claim authority and where their claims conflict with implementation or observed reality.
 problem_statement: Current documentation contains stale infrastructure facts, overlapping procedures, conflicting mission/phase claims, and uncertain consumer relationships.
 objective: Inventory every controlled-document family, lifecycle/version, claimed authority, implementation consumer, cross-reference, obsolete record, conflict, stale infrastructure fact, duplicate procedure, and document/runtime divergence.

@@ -1,0 +1,20 @@
+{
+  "receipt_type": "ZEUS_INDEPENDENT_QUALIFICATION_RECEIPT",
+  "receipt_id": "ZEUS-QUALIFICATION-53b32cdc2752f4fc12e885a1",
+  "transaction_id": "C02-POST-ACCEPTANCE-TEST-RECONCILIATION",
+  "qualification": "PASS",
+  "qualification_actor": "ZEUS_CONTROLLER",
+  "qualification_authority": "ZEUS",
+  "provider_completion_is_qualification": false,
+  "provider_self_qualification": "PROHIBITED",
+  "provider_mutation": "NO",
+  "zeus_controller_mutation": "YES",
+  "operator_approval_policy_resolved": "YES",
+  "operator_approval_required": "NO",
+  "operator_acceptance": "NOT_APPLICABLE",
+  "provider_launched": false,
+  "next_authorized_action": "BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT",
+  "next_authorized_action_executed": "NO",
+  "c02_executed": "NO",
+  "c03_executed": "NO"
+}

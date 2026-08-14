@@ -32,7 +32,7 @@ def test_complete_maturity_chain_is_recognized_without_authority_promotion():
     assert value["c18_state"]["after"] == "ACCEPTED_FOR_CANONICAL_INTEGRATION_ADOPTION"
     assert value["authority"]["c18_separate_authority_required"] is False
     assert value["authority"]["cr48_execution_authorized"] is False
-    assert value["next_authorized_action"] == "REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY"
+    assert value["next_authorized_action"] == "HOLD_CR48_PENDING_WOP_EENS_CONVERGENCE"
 
 
 def test_repository_projection_exposes_the_same_recognition():
@@ -40,7 +40,7 @@ def test_repository_projection_exposes_the_same_recognition():
     maturity = value["canonical_maturity"]
     assert maturity["result"] == "PASS"
     assert maturity["roadmap"]["id"] == "ESC-ROADMAP-001"
-    assert maturity["next_authorized_action"] == "REVIEW_REBASED_C06_WOP_EENS_FOUNDATIONAL_DEVELOPMENT_BOUNDARY"
+    assert maturity["next_authorized_action"] == "HOLD_CR48_PENDING_WOP_EENS_CONVERGENCE"
 
 
 def test_next_action_is_derived_from_canonical_state():

@@ -11,8 +11,8 @@ instructions.
 | --- | --- | --- |
 | C00 | Preservation and Rollback | COMPLETE |
 | C01 | Repository and Infrastructure Baseline Assessment | COMPLETE_WITH_FINDINGS |
-| C02 | Controlled Documentation and Authority Assessment | CURRENT |
-| C03 | EOS and Engineering State Assessment | PENDING |
+| C02 | Controlled Documentation and Authority Assessment | COMPLETE_WITH_FINDINGS |
+| C03 | EOS and Engineering State Assessment | CURRENT |
 | C04 | engctl and Resume Assessment | PENDING |
 | C05 | Roadmap / Project State / Registry Assessment | PENDING |
 | C06 | WOP and Execution Contract Assessment | PENDING |
@@ -31,8 +31,8 @@ instructions.
 | C19 | engctl Resume Contract and Cold-Resume Qualification | PENDING |
 | C20 | Begin Controlled Convergence Implementation | PENDING |
 
-Current gate: `C02`. Next authorized action:
-`BEGIN_C02_CONTROLLED_DOCUMENTATION_AND_AUTHORITY_ASSESSMENT`.
+Current gate: `C03`. Next authorized action:
+`BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT`.
 
 C20 marks entry into one separately authorized migration gate. It never grants
 automatic authority to execute the complete convergence roadmap.

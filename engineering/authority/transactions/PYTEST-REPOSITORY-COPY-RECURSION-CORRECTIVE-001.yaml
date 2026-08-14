@@ -1,0 +1,62 @@
+schema_version: 1
+
+transaction_id: PYTEST-REPOSITORY-COPY-RECURSION-CORRECTIVE
+state: AUTHORIZED
+
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+
+authority_model: MODEL_B
+authority_source: OPERATOR_AUTHORIZATION_2026-08-13_PYTEST_REPOSITORY_COPY_RECURSION
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+
+objective: >-
+  Correct recursive repository-copy amplification in the convergence-roadmap
+  pytest fixture harness, remove only test-generated recursive pytest artifacts,
+  and prove bounded repository-local temporary behavior without advancing C03
+  or broadening into general test-suite reconciliation.
+
+acceptance_criteria:
+  - The exact fixture/helper causing recursive repository copying is identified.
+  - Repository-local tmp is excluded from fixture repository copies.
+  - pytest-of-* and pytest-current generated recursion is not copied into fixtures.
+  - Historical fixture semantics remain unchanged.
+  - Evidence-manifest validation remains fail-closed.
+  - Only test-generated recursion artifacts are removed.
+  - Unrelated worktree changes are preserved.
+  - Focused affected tests pass.
+  - Repeated focused fixture execution shows bounded temporary growth.
+  - No nested pytest-of-loneal/repo/pytest-of-loneal recursion remains.
+  - Current convergence state remains C03 with C02 last completed.
+  - C03 remains unexecuted.
+  - CR48 through CR55 remain RETIRED_SUPERSEDED and unexecuted.
+  - No staging, commit, push, publication, or EOS synchronization occurs.
+
+authorized_scope:
+  - scripts/tests/test-convergence-roadmap.py
+  - scripts/lib/eos/convergence_roadmap.py
+  - pytest-of-loneal
+  - pytest-current
+  - tmp
+
+prohibited_scope:
+  - Execute C03.
+  - Advance the convergence roadmap.
+  - Reopen C02.
+  - Reopen or execute CR48 through CR55.
+  - Rewrite historical lifecycle expectations merely to make tests pass.
+  - Weaken evidence-manifest validation.
+  - Delete unrelated untracked files.
+  - Delete non-test repository content.
+  - Stage, commit, push, publish, or synchronize EOS from Codex.
+
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+
+next_authorized_action: EXECUTE_PYTEST_REPOSITORY_COPY_RECURSION_CORRECTIVE

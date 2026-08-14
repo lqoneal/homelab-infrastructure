@@ -1,7 +1,7 @@
 schema_version: 2
 gate_id: C03
 title: EOS and Engineering State Assessment
-status: PENDING
+status: CURRENT
 gate_type: ASSESSMENT
 purpose: Establish the actual ownership and persistence model for engineering state and EOS projections.
 problem_statement: Checkpoints, operational state, project records, synchronization, caches, and recovery surfaces make overlapping or stale state claims.

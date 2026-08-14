@@ -7,7 +7,7 @@ owner: Homelab Infrastructure
 created: 2026-07-06
 last_updated: 2026-08-13
 mission: Engineering System Convergence
-phase: C02 Controlled Documentation and Authority Assessment
+phase: C03 EOS and Engineering State Assessment
 classification: Project State
 predecessor_revision: PROJ-0001@10.4
 successor_revision: null
@@ -23,8 +23,8 @@ convergence_program:
   roadmap_version: 2.3.0
   roadmap_path: engineering/convergence/engineering-system-convergence/roadmap.yaml
   state_path: engineering/convergence/engineering-system-convergence/STATE.yaml
-  current_gate: C02
-  next_authorized_action: OPERATOR_REVIEW_C02_ASSESSMENT
+  current_gate: C03
+  next_authorized_action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
   executable_qualification: PASS
   evaluation_standard: STD-0006@1.0
   evaluation_procedure: PROC-0009@1.0
@@ -112,17 +112,19 @@ It summarizes the current project state and identifies the next approved enginee
 
 The authoritative convergence program remains
 `ENGINEERING-SYSTEM-CONVERGENCE`, roadmap `ESC-ROADMAP-001`, with parent
-gate C02 current and C00/C01 complete.
+gate C03 current and C00/C01/C02 complete.
 
-C02 assessment execution is complete and its result is preserved for operator
-review. The bounded corrective `ESC-C02-CORRECTIVE-001` is terminal after the
-historical CR48–CR55 tail was retired as `RETIRED_SUPERSEDED`.
+C02 assessment execution is complete with findings and was accepted through
+the canonical operator decision transaction. The bounded corrective
+`ESC-C02-CORRECTIVE-001` is terminal after the historical CR48–CR55 tail was
+retired as `RETIRED_SUPERSEDED`.
 
 The parent ESC state therefore projects
-`OPERATOR_REVIEW_C02_ASSESSMENT` as the current authorized parent action.
+`BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT` as the current authorized
+parent action.
 
-This projection does not accept or complete C02 and does not activate or
-execute C03.
+This projection records the accepted C02 completion and selects C03 as the
+next current gate; it does not execute C03 or begin C03 assessment work.
 ## Completed
 
 - Verified Phase 0.1 backup.
@@ -272,9 +274,9 @@ controlled predecessor-acceptance evidence for that successor projection.
 
 **Next Immediate Step:**
 
-Run `engctl roadmap validate`, review the C01 result/evidence, and begin only
-the read-only C02 Controlled Documentation and Authority Assessment. Do not
-correct the identified records or begin C03 automatically.
+Run `engctl roadmap validate`, review the accepted C02 result/evidence, and
+begin only the separately authorized read-only C03 EOS and Engineering State
+Assessment. Do not execute C03 in the C02 acceptance transaction.
 
 EWO-000017 completed value-blind local configuration qualification, controlled
 live delivery, end-to-end `engctl codex` qualification, regression validation,
@@ -625,10 +627,10 @@ Authority source:
 - engineering/convergence/engineering-system-convergence/STATE.yaml
 - engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/corrective/ESC-C02-CORRECTIVE-001/STATE.yaml
 
-Current gate: C02
+Current gate: C03
 Last completed corrective item: CR47; CR48–CR55 retired as superseded
 Current corrective item: none
-Next authorized action: OPERATOR_REVIEW_C02_ASSESSMENT
+Next authorized action: BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
 
 This section is a synchronized Project State projection. It does not itself
 authorize historical-tail execution and does not supersede the authoritative
@@ -636,7 +638,7 @@ roadmap or corrective state.
 
 ## CR48–CR55 Historical Tail Retirement
 
-Current parent gate: C02
+Current parent gate: C03
 
 Last completed corrective item: CR47
 
@@ -646,7 +648,7 @@ Current corrective disposition:
 RETIRED_SUPERSEDED
 
 Next authoritative parent action:
-OPERATOR_REVIEW_C02_ASSESSMENT
+BEGIN_C03_EOS_AND_ENGINEERING_STATE_ASSESSMENT
 
 The former WOP/EENS condition precedent is retained only in historical
 corrective evidence; it is no longer current authority because the tail was

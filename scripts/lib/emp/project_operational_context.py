@@ -12,6 +12,7 @@ import yaml
 from scripts.lib.emp import progressive_oa
 from scripts.lib.emp.controlled_mission_authority import ControlledMissionAuthority
 from scripts.lib.emp.mission_resolution import resolve as resolve_mission
+from scripts.lib.eos.maturity_recognition import resolve as resolve_maturity
 
 
 class ContextReconstructionError(ValueError):
@@ -100,6 +101,7 @@ def reconstruct(root: Path | str, *,
         registry = _load(paths["registry"])
         state = _load(paths["runtime_state"])
         agent_registry = _load(paths["agent_registry"])
+        maturity = resolve_maturity(repository)
     except ValueError as error:
         return fail(str(error))
 
@@ -190,6 +192,7 @@ def reconstruct(root: Path | str, *,
                                 "registered_agents": len(agents), "qualified_agents": len(qualified)},
         "eens_integration": {"state": "CONFIGURED_NOT_EXERCISED_BY_OA-04",
                              **source_records["eens_policy"]},
+        "canonical_maturity": maturity,
         "approval_requirements": authority["required_approvals"], "blockers": blockers,
         "next_authorized_action": "OPERATOR_VERIFY_AND_DECIDE_OA-04",
         "reconciliation": {"repository_eos": "SYNCHRONIZED",

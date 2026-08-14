@@ -1,0 +1,55 @@
+schema_version: 1
+
+transaction_id: CODEX-SANDBOX-TEMP-ENVIRONMENT-REQUALIFICATION
+state: AUTHORIZED
+
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+
+authority_model: MODEL_B
+authority_source: OPERATOR_AUTHORIZATION_2026-08-13_CODEX_SANDBOX_TEMP_REQUALIFICATION
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+
+objective: >-
+  Requalify the Zeus-managed Codex sandbox after removal of the stale /tmp/.git
+  collision by proving repository-local temporary-environment propagation and
+  successful disposable patch-tool operation without changing engineering
+  lifecycle state.
+
+acceptance_criteria:
+  - /tmp/.git is absent before provider launch.
+  - TMPDIR, TMP, and TEMP resolve to the repository-local sandbox runtime.
+  - The Zeus-managed Codex provider observes those same values.
+  - Python tempfile resolution inside the provider uses the repository-local root.
+  - A disposable repository-local probe file can be created with the Codex patch mechanism.
+  - The probe can be verified and safely removed.
+  - /tmp/.git does not reappear.
+  - No bubblewrap ENOSPC or synthetic-mount failure occurs.
+  - Zeus owns the provider process and terminal reconciliation passes.
+  - C03 remains unexecuted.
+  - No staging, commit, push, publication, or EOS synchronization occurs.
+
+authorized_scope:
+  - tmp/codex-sandbox-runtime
+
+cleanup_paths:
+  - tmp/codex-sandbox-runtime/sandbox-patch-probe.txt
+
+prohibited_scope:
+  - Modify production or test source.
+  - Execute C02-POST-ACCEPTANCE-TEST-RECONCILIATION.
+  - Execute C03.
+  - Advance the convergence roadmap.
+  - Reopen C02.
+  - Stage, commit, push, publish, or synchronize EOS.
+
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+
+next_authorized_action: EXECUTE_CODEX_SANDBOX_TEMP_ENVIRONMENT_REQUALIFICATION

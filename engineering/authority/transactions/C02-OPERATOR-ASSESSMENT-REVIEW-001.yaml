@@ -1,0 +1,58 @@
+schema_version: 1
+
+transaction_id: C02-OPERATOR-ASSESSMENT-REVIEW
+state: AUTHORIZED
+
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+
+authority_model: MODEL_B
+authority_source: OPERATOR_AUTHORIZATION_2026-08-13_C02_ASSESSMENT_REVIEW
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+
+objective: >-
+  Review the completed C02 assessment and completed corrective record against
+  current canonical acceptance requirements and determine the exact next
+  lifecycle action without executing or advancing any parent gate.
+
+acceptance_criteria:
+  - Repository and publication identity are verified.
+  - MODEL_B and Operation Beta authority remain valid.
+  - C02 is the current parent gate.
+  - The completed C02 assessment and evidence are reviewed.
+  - ESC-C02-CORRECTIVE-001 is verified terminal.
+  - CR48 through CR55 remain RETIRED_SUPERSEDED and unexecuted.
+  - Current findings are classified as resolved, superseded, independent, or true C02 blockers.
+  - C02 acceptance requirements are evaluated individually.
+  - C03 is not executed.
+  - No new corrective tail is created without a verified current C02 defect.
+  - The result identifies one deterministic next authorized action.
+  - Zeus remains the execution control plane.
+  - Protected Git, publication, and EOS authority remain Zeus-only.
+
+authorized_scope:
+  - c02/operator-assessment-review
+  - c02/acceptance-criteria-evaluation
+  - c02/current-finding-classification
+  - c02/next-authorized-action-determination
+
+prohibited_scope:
+  - Execute C03.
+  - Activate C03.
+  - Reopen CR48 through CR55.
+  - Execute CR48 through CR55.
+  - Create CR56 or another corrective item without a verified current C02 defect.
+  - Change C02 lifecycle state during this review.
+  - Fabricate acceptance evidence.
+  - Stage, commit, push, publish, or synchronize EOS from Codex.
+
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+
+next_authorized_action: EXECUTE_C02_OPERATOR_ASSESSMENT_REVIEW

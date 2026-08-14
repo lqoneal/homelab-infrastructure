@@ -1,0 +1,70 @@
+schema_version: 1
+
+transaction_id: ZEUS-ADMINISTRATIVE-TRANSACTION-QUALIFICATION-BRIDGE
+state: AUTHORIZED
+
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+
+authority_model: MODEL_B
+authority_source: OPERATOR_AUTHORIZATION_2026-08-13_ADMIN_TRANSACTION_QUALIFICATION_BRIDGE
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+
+objective: >-
+  Correct the Zeus-managed administrative-transaction lifecycle so that a
+  successfully completed real managed session with policy-resolved operator
+  disposition when required
+  can be terminally qualified by Zeus without entering an infinite
+  OPERATOR_REVIEW_REAL_MANAGED_SESSION loop or requiring a mission identity.
+
+acceptance_criteria:
+  - Administrative transactions remain distinct from mission-history reconciliation.
+  - No mission identity is invented or required for administrative qualification.
+  - Provider completion alone does not constitute qualification.
+  - Operator disposition is required only when the canonical approval-requirements policy matches.
+  - Zeus consumes authoritative operator disposition rather than trusting provider prose alone.
+  - A managed administrative transaction can transition from qualification REQUIRED
+    to terminal qualified state after all controller-side predicates pass.
+  - Qualification requires provider exit zero.
+  - Qualification requires scope verification PASS.
+  - Qualification requires terminal reconciliation PASS.
+  - Qualification requires no protected actions.
+  - Qualification requires no out-of-scope changes.
+  - Repeated acceptance is idempotent.
+  - Accepted administrative transactions do not loop back to
+    OPERATOR_REVIEW_REAL_MANAGED_SESSION.
+  - The sandbox qualification acceptance can be reconciled using the corrected path.
+  - Its successor becomes C02_POST_ACCEPTANCE_TEST_RECONCILIATION.
+  - C03 remains unexecuted.
+  - Existing mission qualification and accept-reconciliation semantics remain unchanged.
+
+authorized_scope:
+  - scripts/zeus
+  - scripts/lib/emp/managed_handoff.py
+  - scripts/lib/emp/qualification_contract.py
+  - scripts/tests/test-managed-codex-handoff.py
+  - scripts/tests/test_managed_codex_handoff.py
+  - scripts/tests/test-evidence-qualification.py
+  - engineering/docs/operations/ZEUS-EXECUTION-LIFECYCLE-PROCEDURE.md
+  - engineering/authority/transactions/CODEX-SANDBOX-QUALIFICATION-CONTRACT-ACCEPTANCE-001.yaml
+
+prohibited_scope:
+  - Treat provider completion itself as qualification.
+  - Permit Codex to self-qualify.
+  - Give Codex protected Git authority.
+  - Change mission-history reconciliation semantics.
+  - Invent a mission identity for administrative transactions.
+  - Execute C02_POST_ACCEPTANCE_TEST_RECONCILIATION.
+  - Execute C03.
+  - Stage, commit, push, publish, or synchronize EOS from Codex.
+
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+
+next_authorized_action: EXECUTE_ZEUS_ADMINISTRATIVE_TRANSACTION_QUALIFICATION_BRIDGE

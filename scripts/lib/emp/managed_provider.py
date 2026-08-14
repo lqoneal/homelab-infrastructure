@@ -2,12 +2,79 @@
 from __future__ import annotations
 import json, os, signal, subprocess, time, uuid
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Mapping
 
 class ManagedProviderError(RuntimeError):
     def __init__(self, code: str, message: str, *, details: dict[str, Any] | None = None):
         self.code, self.details = code, details or {}
         super().__init__(message)
+
+
+ZEUS_QUALIFICATION_RECEIPT_MARKER = "/receipts/qualification/"
+
+
+def attribute_mutations(
+    *,
+    provider_diff: Iterable[str],
+    controller_diff: Iterable[str] = (),
+    provider_authorized_scope: Iterable[str] = (),
+    controller_authority: str = "ZEUS",
+) -> dict[str, Any]:
+    """Separate provider worktree changes from Zeus lifecycle changes.
+
+    A qualification receipt is controller-owned only when it appears in the
+    controller diff under Zeus authority.  If it appears in the provider
+    diff, it is an attempted provider mutation of Zeus-owned evidence and is
+    always out of scope, even if a caller accidentally lists that path in the
+    provider scope.
+    """
+    provider_paths = sorted(set(provider_diff))
+    controller_paths = sorted(set(controller_diff))
+    allowed = set(provider_authorized_scope)
+    provider_out = [
+        path for path in provider_paths
+        if path in {p for p in provider_paths if ZEUS_QUALIFICATION_RECEIPT_MARKER in f"/{p}"}
+        or not any(path == item or path.startswith(item.rstrip("/") + "/") for item in allowed)
+    ]
+    controller_receipts = [
+        path for path in controller_paths
+        if ZEUS_QUALIFICATION_RECEIPT_MARKER in f"/{path}"
+    ]
+    unauthorized_controller = [] if str(controller_authority).upper() == "ZEUS" else controller_paths
+    return {
+        "provider_post_execution_diff": provider_paths,
+        "zeus_controller_diff": controller_paths,
+        "out_of_scope_provider_changes": sorted(provider_out),
+        "unauthorized_controller_changes": sorted(unauthorized_controller),
+        "zeus_receipt_attribution": "ZEUS_CONTROLLER_MUTATION" if controller_receipts else "NONE",
+        "provider_mutation": "YES" if provider_paths else "NO",
+        "zeus_controller_mutation": "YES" if controller_paths else "NO",
+        "provider_scope_compliance": "PASS" if not provider_out else "FAIL",
+        "controller_scope_compliance": "PASS" if not unauthorized_controller else "FAIL",
+        "scope_verification": "PASS" if not provider_out and not unauthorized_controller else "FAIL",
+        "terminal_reconciliation": "PASS" if not provider_out and not unauthorized_controller else "FAIL",
+    }
+
+
+def reconcile_controller_mutations(
+    managed_session: Mapping[str, Any],
+    controller_diff: Iterable[str],
+    *,
+    controller_authority: str = "ZEUS",
+) -> dict[str, Any]:
+    """Reconcile Zeus lifecycle mutations without relabeling provider work."""
+    value = dict(managed_session)
+    attribution = attribute_mutations(
+        provider_diff=value.get("provider_post_execution_diff", value.get("post_execution_diff", [])),
+        controller_diff=controller_diff,
+        provider_authorized_scope=value.get("authorized_scope", []),
+        controller_authority=controller_authority,
+    )
+    value.update(attribution)
+    value["post_execution_diff"] = attribution["provider_post_execution_diff"]
+    value["out_of_scope_changes"] = attribution["out_of_scope_provider_changes"]
+    value["authorized_scope_compliance"] = attribution["provider_scope_compliance"]
+    return value
 
 def _paths(root: Path) -> set[str]:
     result = subprocess.run(["git", "-C", str(root), "status", "--porcelain=v1", "--untracked-files=all"], capture_output=True, text=True, check=False)
@@ -42,7 +109,11 @@ def execute(*, repository: Path | str, prompt: str, authorized_paths: Iterable[s
         interrupted = True; os.killpg(process.pid, signal.SIGTERM); stdout, stderr = process.communicate()
     ended_at = time.time(); after = _paths(root)
     changed = sorted(after - before)
-    out_of_scope = sorted(path for path in changed if not any(path == item or path.startswith(item.rstrip("/") + "/") for item in allowed))
+    attribution = attribute_mutations(
+        provider_diff=changed,
+        provider_authorized_scope=allowed,
+    )
+    out_of_scope = attribution["out_of_scope_provider_changes"]
     provider_session_id = None
     for line in stdout.splitlines():
         try:
@@ -62,7 +133,17 @@ def execute(*, repository: Path | str, prompt: str, authorized_paths: Iterable[s
               "qualification":"REQUIRED", "publication_authority":"ZEUS_ONLY", "eos_authority":"ZEUS_ONLY", "provider_process_owned_by":"ZEUS",
               "provider_started": "YES" if provider_started else "NO", "provider_process_state": "INTERRUPTED" if interrupted else "COMPLETED" if process.returncode == 0 else "FAILED",
               "zeus_managed_session_created": "YES" if provider_started else "NO", "execution_monitoring": "ACTIVE_THEN_TERMINAL", "terminal_reconciliation": "PASS" if result == "PASS" else "FAIL",
-              "protected_actions_performed": [], "provider_completion_is_qualification": False}
+              "protected_actions_performed": [], "provider_completion_is_qualification": False,
+              # These are terminal facts retained by the Zeus controller for
+              # the later qualification decision.  They are not a provider
+              # qualification result and must not be inferred from exit zero.
+              "provider_terminal_record": "RETAINED",
+              "actor_aware_mutation_attribution": "PASS",
+              "execution_session_integrity": "PASS" if result == "PASS" else "FAIL",
+              "authorized_scope_compliance": "PASS" if not out_of_scope else "FAIL",
+              "required_evidence_completeness": "PASS" if result == "PASS" else "FAIL",
+              "acceptance_criteria_verification": "PASS" if result == "PASS" else "FAIL",
+              **attribution}
     if output_path:
         path = Path(output_path).resolve(); path.parent.mkdir(parents=True, exist_ok=True); path.write_text(json.dumps(record, indent=2, sort_keys=True)+"\n", encoding="utf-8")
     if timing_root:

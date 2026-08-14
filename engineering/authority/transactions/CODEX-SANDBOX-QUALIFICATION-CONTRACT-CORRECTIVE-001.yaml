@@ -1,0 +1,65 @@
+schema_version: 1
+
+transaction_id: CODEX-SANDBOX-QUALIFICATION-CONTRACT-CORRECTIVE
+state: AUTHORIZED
+
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+
+authority_model: MODEL_B
+authority_source: OPERATOR_AUTHORIZATION_2026-08-14_CODEX_SANDBOX_QUALIFICATION_CONTRACT_CORRECTIVE
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+
+objective: >-
+  Correct the Zeus-managed Codex sandbox qualification contract so that host
+  /tmp collision state is distinguished from provider-sandbox synthetic mount
+  state, terminally qualify the already-proven sandbox behavior, and return
+  execution authority to the deferred C02 post-acceptance test reconciliation.
+
+acceptance_criteria:
+  - Host /tmp/.git is absent before Zeus-managed provider launch.
+  - Repository-local TMPDIR, TMP, and TEMP propagation is recognized as qualified.
+  - Python tempfile resolution to repository-local runtime is recognized as qualified.
+  - Provider-visible /tmp/.git is classified as a sandbox synthetic artifact when it
+    appears only inside the provider namespace and causes no runtime failure.
+  - Provider-visible synthetic /tmp/.git is not treated as host collision recurrence.
+  - The successful Codex patch probe is recognized as qualified evidence.
+  - The patch probe was created, content-verified, and removed.
+  - No bubblewrap ENOSPC occurred.
+  - No synthetic-mount failure occurred.
+  - Zeus managed the provider lifecycle successfully.
+  - Provider exit status was zero.
+  - Scope verification passed.
+  - Terminal reconciliation passed.
+  - No out-of-scope or protected actions occurred.
+  - The prior sandbox qualification is terminally classified as QUALIFIED_WITH_CONTRACT_CORRECTION.
+  - No additional sandbox probe is executed.
+  - C03 remains unexecuted.
+  - The next authorized engineering action is C02_POST_ACCEPTANCE_TEST_RECONCILIATION.
+
+authorized_scope:
+  - engineering/authority/transactions/CODEX-SANDBOX-TEMP-ENVIRONMENT-REQUALIFICATION-001.yaml
+  - engineering/authority/transactions/CODEX-SANDBOX-QUALIFICATION-CONTRACT-CORRECTIVE-001.yaml
+  - tmp/codex-sandbox-runtime
+  - codex-sandbox/qualification-contract-reconciliation
+  - codex-sandbox/terminal-qualification
+
+prohibited_scope:
+  - Re-execute the sandbox patch probe.
+  - Execute C02-POST-ACCEPTANCE-TEST-RECONCILIATION.
+  - Execute C03.
+  - Advance the convergence roadmap.
+  - Reopen C02.
+  - Modify unrelated production or test code.
+  - Stage, commit, push, publish, or synchronize EOS from Codex.
+
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+
+next_authorized_action: EXECUTE_CODEX_SANDBOX_QUALIFICATION_CONTRACT_CORRECTIVE

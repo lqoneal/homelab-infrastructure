@@ -22,23 +22,23 @@ sources:
 - path: engineering/convergence/engineering-system-convergence/gates/C06-wop-and-execution-contract/evidence/C06-BOUNDED-IMPLEMENTATION-TRANSACTION-001.yaml
   sha256: c35bfa26d93df69c3383eaa03d54bf1969639c729a10ea4b5b2e47c0544a5572
 - path: engineering/convergence/engineering-system-convergence/roadmap.yaml
-  sha256: 88b114d632978014c90e4d7cc4a6375699080ca276b22b9658597f6fb8987313
+  sha256: da504f239f12c7f69e64c3c5f3161558dfbd432ff14223c9ed377bc84c578058
 - path: engineering/convergence/engineering-system-convergence/ESC-ROADMAP-001.md
   sha256: 490e89bed5130037921f874e4415d864506ef5417415307000bb0d6e520eb6dd
 - path: engineering/convergence/engineering-system-convergence/ROADMAP.md
-  sha256: a1e0071a31ab20a2fcd09592f66d8db1bcd79c40b4e90162598f042ce8991c08
+  sha256: 7c1f17b39dc2acce02df100ed3bc36c8d8eba544319acbde119ea20b73ae157c
 - path: engineering/convergence/engineering-system-convergence/STATE.yaml
-  sha256: 6257179eb8eab9407f1040b8c9833f809e3840ccf00c47123a6bd7c233118702
+  sha256: 9638aa24ffae2bad195e3d978a3ad830f8e14ad2f03e86bdb816bdf826b271fa
 - path: docs/project/PROJ-0001-PROJECT_STATE.md
-  sha256: d2e6ef8d4c75a42935b64ed704564604202bff68a6c5627c1684a58bce477bc9
+  sha256: a214d14294bf169f6c20e5b2935d1137b79b977db7e167fb513d525a15d83b42
 - path: engineering/convergence/engineering-system-convergence/gates/C00-preservation-and-rollback/GATE.yaml
   sha256: 1cde92b85a6ddee4520d56e3d020450da29c367226ffabe9b53c739372fc4902
 - path: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/GATE.yaml
   sha256: 807157e630584f325bc0412af424f630b8c202ec89bb83d1939388074b4e4272
 - path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/GATE.yaml
-  sha256: 96885178a7f0c13714b9f60fc9f1486a3cf6b1306d114ee4d2089d30bd8837fc
+  sha256: e5e6c9605ef2aced9f1f77d1fc368739c4b2db0c95758fe21e7ef687d1bc8951
 - path: engineering/convergence/engineering-system-convergence/gates/C03-eos-and-engineering-state/GATE.yaml
-  sha256: 3979883fc1a62c9cc718df07e53bd3ad619bbcc17df9b4fc7ba33ef24cfa7590
+  sha256: 49cfc0d695c159abff2f5b36a2e035c9b889a77b35fd2e9a092676eec401f6e3
 - path: engineering/convergence/engineering-system-convergence/gates/C04-engctl-and-resume/GATE.yaml
   sha256: 0aebc914e3e19d5c7bf847f9bd404af887e19f39da32bbb7d5d9b1133fea8081
 - path: engineering/convergence/engineering-system-convergence/gates/C05-roadmap-project-state-registry/GATE.yaml
@@ -77,6 +77,8 @@ sources:
   sha256: 9933656a90f54c6c9541df2f1ad393b2512c628b3475e390ab6a5078acb5795c
 - path: engineering/convergence/engineering-system-convergence/gates/C01-repository-and-infrastructure-baseline/RESULT.yaml
   sha256: d592a8d161b0f619950be7bfc7e2860dfcef11750c761d38678f04e580bb622f
+- path: engineering/convergence/engineering-system-convergence/gates/C02-controlled-documentation-and-authority/RESULT.yaml
+  sha256: 2c19e69389f3094d874fbaf6c929d23b4d41541953cf04d47a21d1099bc5a195
 - path: engineering/convergence/engineering-system-convergence/execution-playbooks.yaml
   sha256: dca061ae933b9aba31f45ae730cddf3b7c93db8cb8527d98df3285e872d2ddde
 - path: engineering/convergence/engineering-system-convergence/schemas/roadmap.schema.yaml

@@ -1,0 +1,62 @@
+{
+  "receipt_type": "ZEUS_INDEPENDENT_QUALIFICATION_RECEIPT",
+  "receipt_id": "ZEUS-QUALIFICATION-C02-HISTORICAL-FIXTURE-DEPENDENCY-QUALIFICATION-001",
+  "transaction_id": "C02-HISTORICAL-FIXTURE-DEPENDENCY-QUALIFICATION-001",
+  "transaction_resolution": "PASS",
+  "authority_resolution": "PASS",
+  "qualification_authority": "ZEUS",
+  "provider_self_qualification": "PROHIBITED",
+  "operator_approval_required": "NO",
+  "operator_acceptance": "NOT_APPLICABLE",
+  "qualification_base_temp": "tmp/C02-HISTORICAL-FIXTURE-DEPENDENCY-QUALIFICATION-001-20260814T055516Z-2",
+  "complete_suite_execution_count": 1,
+  "complete_suite": "PYTHONPATH=. pytest -q scripts/tests/test-convergence-roadmap.py --basetemp=<fresh_repository_local_basetemp>",
+  "complete_suite_exit_code": 1,
+  "complete_suite_passed": 132,
+  "complete_suite_failures": 2,
+  "complete_suite_errors": 0,
+  "failures": [
+    {
+      "test": "test_cr23_zo007_wrong_current_item_blocks",
+      "expected": "WRONG_CURRENT_ITEM",
+      "actual": "READY_FOR_MANUAL_EXECUTION"
+    },
+    {
+      "test": "test_cr23_zo008_nested_current_item_mismatch_blocks",
+      "expected": "NESTED_CURRENT_ITEM_MISMATCH",
+      "actual": "NESTED_CORRECTIVE_CONSISTENT"
+    }
+  ],
+  "predicates": {
+    "TRANSACTION_AUTHORITY": "PASS",
+    "MANAGED_SESSION_INTEGRITY": "PASS",
+    "PROVIDER_TERMINAL_STATUS": "PASS_TERMINAL_FAILURE_OBSERVED",
+    "AUTHORIZED_SCOPE_COMPLIANCE": "PASS",
+    "FOCUSED_ACCEPTANCE_EVIDENCE": "PASS",
+    "COMPLETE_SUITE_RESULT": "FAIL",
+    "RESOURCE_GROWTH_BOUND": "PASS",
+    "ROADMAP_VALIDATION": "NOT_RUN_PER_FAILURE_RULE",
+    "ROADMAP_EVALUATION": "NOT_RUN_PER_FAILURE_RULE",
+    "MODEL_B_AUTHORITY": "PASS",
+    "OPERATION_BETA_AUTHORITY": "PASS",
+    "EVIDENCE_COMPLETENESS": "FAIL",
+    "PROTECTED_ACTION_COMPLIANCE": "PASS",
+    "OPERATOR_APPROVAL_REQUIREMENTS": "PASS_NO_MATCH"
+  },
+  "resource_metrics": {
+    "qualification_fixture_count": 134,
+    "max_single_fixture_size_bytes": 19639909,
+    "peak_qualification_temp_usage_bytes": 952253134,
+    "post_test_retained_fixture_count": 0,
+    "resource_growth_pattern": "FINITE_BOUNDED_PER_FIXTURE_GROWTH_WITH_NO_RECURSIVE_AMPLIFICATION",
+    "resource_growth_bounded": "PASS"
+  },
+  "nested_repository_recursion": "NO",
+  "system_tmp_fixtures": "NO",
+  "test_temp_cleanup": "PASS",
+  "protected_actions_performed": [],
+  "qualification": "FAIL",
+  "next_authorized_action": "RESOLVE_NEXT_BOUNDED_CORRECTIVE_TRANSACTION",
+  "next_authorized_action_executed": "NO",
+  "recorded_at": "2026-08-14T06:09:28Z"
+}

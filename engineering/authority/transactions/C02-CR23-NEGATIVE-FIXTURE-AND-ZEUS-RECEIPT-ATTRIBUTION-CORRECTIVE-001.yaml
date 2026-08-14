@@ -1,0 +1,48 @@
+schema_version: 1
+transaction_id: C02-CR23-NEGATIVE-FIXTURE-AND-ZEUS-RECEIPT-ATTRIBUTION-CORRECTIVE-001
+state: AUTHORIZED
+
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+
+authority_model: MODEL_B
+authority_source: OPERATION_BETA_CANONICAL_BOUNDED_CORRECTIVE_AUTHORITY
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+
+objective: >-
+  Correct CR23 negative-fixture ordering and actor-aware attribution of
+  Zeus-owned qualification evidence without executing C03 or the complete
+  convergence-roadmap suite.
+
+authorized_scope:
+  - scripts/tests/test-convergence-roadmap.py
+  - scripts/lib/emp/managed_provider.py
+  - scripts/lib/emp/qualification_contract.py
+  - scripts/tests/test-zeus-managed-noninteractive-provider.py
+  - scripts/tests/test-managed-codex-handoff.py
+  - engineering/docs/operations/ZEUS-EXECUTION-LIFECYCLE-PROCEDURE.md
+  - this transaction authority and retained corrective evidence
+
+prohibited_scope:
+  - Execute C03.
+  - Execute or reopen CR48 through CR55.
+  - Execute C02-HISTORICAL-FIXTURE-DEPENDENCY-QUALIFICATION-001.
+  - Stage, commit, push, publish, or synchronize EOS from Codex.
+  - Create authoritative Zeus qualification receipts from Codex.
+
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+
+acceptance_criteria:
+  - ZO-007 and ZO-008 preserve their deliberate negative current_item state.
+  - Positive CR23 historical fixtures remain valid.
+  - Zeus controller receipt mutations are distinct from provider mutations.
+  - Provider mutation of Zeus receipt paths fails closed.
+  - Provider scope and terminal reconciliation remain PASS for legitimate Zeus receipt creation.
+  - The qualification transaction is ready for one fresh authoritative rerun.

@@ -56,6 +56,71 @@ class ManagedHandoffError(ValueError):
         super().__init__(message)
 
 
+def build_administrative_execution_contract(
+    resolved: Mapping[str, Any], *, supplemental_prompt: str | None = None,
+) -> dict[str, Any]:
+    """Build the provider contract from the resolved transaction authority."""
+    if (resolved.get("result") != "PASS" or
+            resolved.get("handoff_input_classification") != "AUTHORIZED_ADMINISTRATIVE_TRANSACTION"):
+        raise ManagedHandoffError("HANDOFF_NOT_EXECUTABLE", "transaction authority is not executable")
+    required = ("transaction_id", "transaction_type", "objective", "authorized_scope",
+                "prohibited_scope", "acceptance_criteria", "qualification_authority")
+    missing = [field for field in required if not resolved.get(field)]
+    if missing:
+        raise ManagedHandoffError(
+            "HANDOFF_EXECUTION_CONTRACT_INCOMPLETE",
+            "authoritative transaction execution semantics are incomplete: " + ", ".join(missing),
+        )
+    if str(resolved.get("qualification_authority", "")).upper() != "ZEUS":
+        raise ManagedHandoffError("HANDOFF_QUALIFICATION_AUTHORITY_UNRESOLVED", "qualification authority is not ZEUS")
+    criteria = list(resolved["acceptance_criteria"])
+    prohibited = list(resolved["prohibited_scope"])
+    required_evidence = list(resolved.get("required_evidence") or
+                             criteria + ["provider terminal record", "actor-aware mutation attribution"])
+    verification = [
+        "TRANSACTION_ID_MATCH",
+        "OBJECTIVE_EXECUTED",
+        "ACCEPTANCE_CRITERIA_EVALUATED",
+        "REQUIRED_EVIDENCE_RETAINED",
+        "PROVIDER_SCOPE_COMPLIANCE",
+        "PROTECTED_ACTIONS_ABSENT",
+    ]
+    stop_conditions = [
+        "STOP_ON_MISSING_TRANSACTION_SEMANTICS",
+        "STOP_ON_ACCEPTANCE_CRITERIA_FAILURE",
+        "STOP_ON_PROVIDER_SCOPE_FAILURE",
+        "STOP_BEFORE_PROTECTED_OPERATIONS",
+    ]
+    contract = {
+        "transaction_id": resolved["transaction_id"],
+        "transaction_type": resolved["transaction_type"],
+        "objective": resolved["objective"],
+        "authorized_scope": list(resolved["authorized_scope"]),
+        "prohibited_scope": prohibited,
+        "lifecycle_boundary": {
+            "current_gate": resolved.get("current_gate", "C03"),
+            "last_completed_gate": resolved.get("last_completed_gate", "C02"),
+            "c03_executed": "NO",
+            "protected_lifecycle_actions": prohibited,
+        },
+        "protected_operations": ["GIT", "PUBLICATION", "EOS", "ROADMAP_ADVANCEMENT"],
+        "acceptance_criteria": criteria,
+        "required_verification": verification,
+        "required_evidence": required_evidence,
+        "stop_conditions": stop_conditions,
+        "qualification_authority": "ZEUS",
+        "provider_self_qualification": "PROHIBITED",
+        "operator_prompt": supplemental_prompt,
+    }
+    contract["provider_prompt"] = (
+        "Execute the following authoritative administrative transaction exactly.\n\n"
+        + yaml.safe_dump(contract, sort_keys=False)
+        + ("\nSupplemental operator instruction ( subordinate to the contract ):\n" + supplemental_prompt
+           if supplemental_prompt else "")
+    )
+    return contract
+
+
 def _clean(value: Any) -> str | None:
     if value is None:
         return None
@@ -294,7 +359,6 @@ def _resolve_administrative_transaction(root: Path, hints: dict[str, list[str]])
     record = current[0]
     expected = {
         "operation_id": "OPERATION-BETA", "emm_id": "OPERATION-BETA-EMM",
-        "transaction_type": "BOUNDED_ADMINISTRATIVE_CORRECTIVE",
     }
     for field, wanted in expected.items():
         asserted = hints.get(field, [])
@@ -308,6 +372,11 @@ def _resolve_administrative_transaction(root: Path, hints: dict[str, list[str]])
         if actual != wanted:
             return _blocked("HANDOFF_BINDING_CONTRADICTION", f"transaction authority has invalid {field}",
                             candidates=[actual], hints=hints)
+    if str(record.get("transaction_type", "")).upper() not in {
+            "BOUNDED_ADMINISTRATIVE_CORRECTIVE", "BOUNDED_QUALIFICATION_TRANSACTION"}:
+        return _blocked("HANDOFF_BINDING_CONTRADICTION",
+                        "transaction authority has unsupported administrative transaction type",
+                        candidates=[str(record.get("transaction_type", ""))], hints=hints)
     authorized_scope = record.get("authorized_scope")
     if (not isinstance(authorized_scope, list) or
             not authorized_scope or
@@ -470,6 +539,12 @@ def resolve_handoff(repository: Path | str, text: str, *, runtime_root: Path | s
                             "canonical Operation Beta MODEL_B authority qualification failed", hints=hints)
         transaction_id = str(administrative["transaction_id"]).upper()
         execution_id = str(administrative.get("execution_id") or f"ZEUS-EXECUTION-REQUEST-{transaction_id}").upper()
+        from scripts.lib.emp.qualification_contract import resolve_qualification_context
+        qualification_context = resolve_qualification_context(administrative)
+        if qualification_context["result"] != "PASS":
+            return _blocked("HANDOFF_QUALIFICATION_AUTHORITY_UNRESOLVED",
+                            "transaction qualification authority cannot be routed through Zeus",
+                            candidates=[transaction_id], hints=hints)
         return {
             "result": "PASS", "handoff_resolution": "PASS", "handoff_input_classification": "AUTHORIZED_ADMINISTRATIVE_TRANSACTION",
             "source": source, "semantic_references": hints, "repository": identity,
@@ -482,6 +557,21 @@ def resolve_handoff(repository: Path | str, text: str, *, runtime_root: Path | s
             "provider_mode": administrative.get("provider_mode", "ZEUS_MANAGED_NON_INTERACTIVE"),
             "protected_git_authority": administrative.get("protected_git_authority", "ZEUS_ONLY"),
             "qualification_authority": administrative.get("qualification_authority", "ZEUS"),
+            "objective": administrative.get("objective"),
+            "prohibited_scope": list(administrative.get("prohibited_scope", [])),
+            "acceptance_criteria": list(administrative.get("acceptance_criteria", [])),
+            "required_evidence": list(administrative.get("required_evidence") or
+                                       list(administrative.get("acceptance_criteria", [])) +
+                                       ["provider terminal record", "actor-aware mutation attribution"]),
+            "current_gate": administrative.get("current_gate", "C03"),
+            "last_completed_gate": administrative.get("last_completed_gate", "C02"),
+            "authority_context": {
+                "transaction_authority": "RESOLVED",
+                "provider_authority": "CODEX_BOUNDED_IMPLEMENTATION_PROVIDER",
+                "zeus_controller_authority": "PRESERVED",
+                "qualification_authority": administrative.get("qualification_authority", "ZEUS"),
+            },
+            "qualification_context": qualification_context,
             "authority": authority,
             "model_b_authority_validity": "PASS",
             "operation_beta_authority_validity": "PASS",
@@ -632,18 +722,27 @@ def resolve_source(repository: Path | str, source: str, *, runtime_root: Path | 
 
 
 def execute_administrative_handoff(repository: Path | str, resolved: Mapping[str, Any], *,
-                                   prompt: str, output_path: Path | str,
-                                   codex_bin: str = "codex", timeout_seconds: float = 300.0) -> dict[str, Any]:
+                                   prompt: str | None, output_path: Path | str,
+                                   codex_bin: str = "codex", timeout_seconds: float = 300.0,
+                                   retained_evidence: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Execute one already-resolved administrative handoff through Zeus."""
     if resolved.get("result") != "PASS" or resolved.get("handoff_input_classification") != "AUTHORIZED_ADMINISTRATIVE_TRANSACTION":
         raise ManagedHandoffError("HANDOFF_NOT_EXECUTABLE", "only an authorized administrative handoff may execute")
+    contract = build_administrative_execution_contract(resolved, supplemental_prompt=prompt)
     from scripts.lib.emp.managed_provider import execute
-    result = execute(repository=repository, prompt=prompt,
+    result = execute(repository=repository, prompt=contract["provider_prompt"],
                      authorized_paths=resolved["authorized_scope"],
                      execution_id=resolved["execution"]["execution_id"],
                      codex_bin=codex_bin, timeout_seconds=timeout_seconds,
                      output_path=output_path,
                      timing_root="/data/engineering/logs/codex-session-timed")
+    result["execution_contract"] = contract
+    result["authority_context"] = {
+        "provider_authority": "CODEX_BOUNDED_IMPLEMENTATION_PROVIDER",
+        "provider_self_qualification": "PROHIBITED",
+        "zeus_controller_authority": "PRESERVED",
+        "qualification_authority": resolved.get("qualification_authority", "ZEUS"),
+    }
     cleanup = resolved.get("cleanup_paths", [])
     root = Path(repository).resolve()
     removed = []
@@ -658,8 +757,104 @@ def execute_administrative_handoff(repository: Path | str, resolved: Mapping[str
             removed.append(str(relative))
     result["cleanup_paths"] = cleanup
     result["cleanup_removed"] = removed
-    result["next_authorized_action"] = "OPERATOR_REVIEW_REAL_MANAGED_SESSION"
-    Path(output_path).write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    # Completion is evidence only.  This explicit Zeus-controller route is the
+    # only post-provider qualification path; it never dispatches a second
+    # provider task and provider output cannot approve or qualify itself.
+    qualification = route_post_provider_qualification(resolved, result, None, retained_evidence=retained_evidence)
+    result["qualification"] = qualification
+    result["qualification_state"] = qualification.get("qualification", "REQUIRED")
+    result["transaction_state"] = qualification.get("transaction_state", "REQUIRED")
+    result["operator_acceptance"] = qualification.get("operator_acceptance", "NOT_APPLICABLE")
+    result["next_authorized_action"] = qualification["next_authorized_action"]
+    output = Path(output_path).resolve()
+    output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if qualification.get("qualification_receipt") is not None:
+        receipt_path = output.with_name(output.stem + ".qualification-receipt.json")
+        receipt_path.write_text(json.dumps(qualification["qualification_receipt"], indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        result["qualification_receipt_path"] = str(receipt_path)
+    output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return result
+
+
+def route_post_provider_qualification(
+        resolved: Mapping[str, Any], managed_session: Mapping[str, Any],
+        operator_acceptance: Mapping[str, Any] | None,
+        *, retained_evidence: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Route completed provider work to Zeus qualification authority.
+
+    Qualification is a controller action, not a provider handoff.  Keeping
+    this boundary explicit prevents a caller from satisfying
+    ``qualification_authority=ZEUS`` by launching Codex again.
+    """
+    if str(resolved.get("qualification_authority", "")).upper() != "ZEUS":
+        return {
+            "result": "BLOCKED", "qualification": "REQUIRED",
+            "transaction_state": "REQUIRED",
+            "blocker": "QUALIFICATION_AUTHORITY_NOT_ZEUS",
+            "qualification_actor": "ZEUS_CONTROLLER",
+            "qualification_provider_dispatch": "NO",
+            "next_authorized_action": "STOP_FAIL_CLOSED",
+            "provider_launched": False,
+        }
+    return qualify_administrative_handoff(
+        resolved, managed_session, operator_acceptance,
+        retained_evidence=retained_evidence,
+    )
+
+
+def qualify_administrative_handoff(
+        resolved: Mapping[str, Any], managed_session: Mapping[str, Any],
+        operator_acceptance: Mapping[str, Any] | None,
+        *, retained_evidence: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """Apply Zeus administrative qualification after provider completion.
+
+    This is intentionally separate from ``execute_administrative_handoff``:
+    invoking it never launches a provider and never interprets provider prose.
+    """
+    if (resolved.get("result") != "PASS" or
+            resolved.get("handoff_input_classification") != "AUTHORIZED_ADMINISTRATIVE_TRANSACTION"):
+        raise ManagedHandoffError("HANDOFF_NOT_QUALIFIABLE", "only an authorized administrative handoff may qualify")
+    from scripts.lib.emp.qualification_contract import (
+        finalize_administrative_transaction_evidence,
+        qualify_administrative_transaction,
+    )
+    session = dict(managed_session)
+    required_fields = (
+        "executed_transaction_id", "transaction_objective_executed",
+        "acceptance_criteria_evaluated", "acceptance_criteria_results",
+        "required_evidence_retained",
+    )
+    transaction = {
+        "transaction_id": resolved.get("transaction_id"),
+        "transaction_type": resolved.get("transaction_type"),
+        "transaction_state": resolved.get("transaction_state", "REQUIRED"),
+        "objective": resolved.get("objective"),
+        "authorized_scope": resolved.get("authorized_scope", []),
+        "prohibited_scope": resolved.get("prohibited_scope", []),
+        "acceptance_criteria": resolved.get("acceptance_criteria", []),
+        "qualification_authority": resolved.get("qualification_authority", "ZEUS"),
+    }
+    finalization = None
+    if not all(field in session for field in required_fields) or session.get("evidence_finalization_actor") != "ZEUS_CONTROLLER" or session.get("evidence_finalization") != "PASS":
+        contract = session.get("execution_contract")
+        evidence = retained_evidence or session.get("retained_evidence")
+        if not isinstance(contract, Mapping) or not isinstance(evidence, Mapping):
+            return {
+                "result": "BLOCKED", "qualification": "REQUIRED",
+                "transaction_id": transaction["transaction_id"],
+                "blocker": "ZEUS_EVIDENCE_FINALIZATION_INPUT_MISSING",
+                "qualification_actor": "ZEUS_CONTROLLER",
+                "qualification_provider_dispatch": "NO", "provider_launched": False,
+                "next_authorized_action": "RECONCILE_ADMINISTRATIVE_EVIDENCE",
+            }
+        finalization = finalize_administrative_transaction_evidence(
+            transaction, contract, session, evidence,
+        )
+        session.update(finalization)
+    result = qualify_administrative_transaction(transaction, session, operator_acceptance)
+    if finalization is not None:
+        result["evidence_finalization"] = finalization
     return result
 
 
@@ -674,6 +869,9 @@ def render(value: Mapping[str, Any]) -> str:
         f"Mission / WOP / Gate      : {value.get('mission_id', 'NONE')} / {value.get('wop_id', 'NONE')} / {value.get('gate_id', 'NONE')}",
         f"Execution                 : {(value.get('execution') or {}).get('execution_id', 'NONE')}",
         f"Session action            : {session.get('action', 'NONE')}",
+        f"Execution completion      : {session.get('result', value.get('result', 'NOT_RECORDED'))}",
+        f"Operator approval         : {(value.get('qualification') or {}).get('approval_requirement_id', 'NOT_REQUIRED')}",
+        f"Qualification             : {(value.get('qualification') or {}).get('qualification', 'NOT_RUN')}",
         f"Historical session reused : {session.get('historical_session_reused_for_new_handoff', 'NO')}",
         f"Blockers                  : {'NONE' if not blockers else ', '.join(item.get('code', 'UNKNOWN') for item in blockers)}",
         f"Next action               : {value.get('next_authorized_action')}",

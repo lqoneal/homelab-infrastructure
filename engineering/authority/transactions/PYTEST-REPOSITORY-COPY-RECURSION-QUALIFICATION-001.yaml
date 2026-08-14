@@ -1,0 +1,61 @@
+schema_version: 1
+
+transaction_id: PYTEST-REPOSITORY-COPY-RECURSION-QUALIFICATION
+state: AUTHORIZED
+
+operation_id: OPERATION-BETA
+emm_id: OPERATION-BETA-EMM
+transaction_type: BOUNDED_ADMINISTRATIVE_CORRECTIVE
+
+authority_model: MODEL_B
+authority_source: OPERATOR_AUTHORIZATION_2026-08-13_PYTEST_RECURSION_QUALIFICATION
+authority_source_class: CANONICAL_OPERATOR_AUTHORIZATION
+canonical_authority: true
+
+objective: >-
+  Independently qualify the completed pytest repository-copy recursion
+  corrective, reconcile its terminal result, and determine the next bounded
+  action without rerunning the corrective, advancing C03, or performing the
+  broader post-C02 stale-test reconciliation.
+
+acceptance_criteria:
+  - The recursion corrective candidate is present only in authorized test scope.
+  - The canonical fixture-copy helper excludes repository temporary/runtime roots.
+  - Glob exclusions are implemented as glob semantics rather than literal membership.
+  - Generated pytest repository roots do not recur in fixture copies.
+  - Three repeated focused regression runs pass.
+  - Temporary usage remains bounded and returns to baseline after cleanup.
+  - No residual repository-root pytest recursion tree exists.
+  - No nested fixture repository recursion exists under repository-local tmp.
+  - Production convergence-roadmap code was not modified by this corrective.
+  - Historical C02 semantics were not rewritten by this corrective.
+  - The separate stale C03/live-state test reconciliation remains deferred.
+  - C03 remains current and unexecuted.
+  - CR48 through CR55 remain retired and unexecuted.
+  - No protected Git, publication, or EOS operation is performed by Codex.
+  - The next authorized action is derived from current canonical authority.
+
+authorized_scope:
+  - scripts/tests/test-convergence-roadmap.py
+  - pytest-recursion-corrective/qualification
+  - pytest-recursion-corrective/terminal-reconciliation
+
+prohibited_scope:
+  - Re-execute PYTEST-REPOSITORY-COPY-RECURSION-CORRECTIVE.
+  - Execute C03.
+  - Advance the convergence roadmap.
+  - Perform the broader post-C02 stale-test reconciliation.
+  - Rewrite historical C02 fixture semantics.
+  - Reopen C02.
+  - Reopen or execute CR48 through CR55.
+  - Modify production code.
+  - Stage, commit, push, publish, or synchronize EOS from Codex.
+
+write_authority: BOUNDED
+provider_mode: ZEUS_MANAGED_NON_INTERACTIVE
+protected_git_authority: ZEUS_ONLY
+qualification_authority: ZEUS
+publication_authority: ZEUS_ONLY
+eos_authority: ZEUS_ONLY
+
+next_authorized_action: EXECUTE_PYTEST_REPOSITORY_COPY_RECURSION_QUALIFICATION

@@ -11,7 +11,7 @@ import unittest
 from unittest.mock import patch
 from pathlib import Path
 
-from scripts.lib.emp import codex_adapter, managed_handoff
+from scripts.lib.emp import codex_adapter, managed_handoff, qualification_contract
 from scripts.lib.emp.production_execution import digest
 
 
@@ -89,6 +89,9 @@ class ManagedCodexHandoffTests(unittest.TestCase):
             "provider_mode": "ZEUS_MANAGED_NON_INTERACTIVE",
             "protected_git_authority": "ZEUS_ONLY",
             "qualification_authority": "ZEUS",
+            "objective": "Reconcile the authorized administrative transaction.",
+            "prohibited_scope": ["Execute C03", "git commit"],
+            "acceptance_criteria": ["The transaction-specific reconciliation passes."],
         }
         value.update(overrides)
         return value
@@ -125,8 +128,37 @@ class ManagedCodexHandoffTests(unittest.TestCase):
         self.assertEqual(record["transaction_id"], value["transaction_id"])
         self.assertEqual("YES", value["authorized_scope_resolved"])
         self.assertEqual("YES", value["execution_request_constructed"])
+        self.assertEqual("PASS", value["qualification_context"]["qualification_transaction_resolution"])
+        self.assertEqual("YES", value["qualification_context"]["qualification_execution_available"])
+        self.assertEqual("PROHIBITED", value["qualification_context"]["provider_self_qualification"])
+        self.assertEqual("PRESERVED", value["qualification_context"]["zeus_qualification_authority"])
         self.assertFalse(value["zeus_execution_request"]["provider_contacted"])
         self.assertNotIn("gate_id", value)
+
+    def test_execution_contract_uses_authoritative_objective_not_generic_probe(self):
+        record = self._admin_record()
+        value = self._resolve_admin("transaction_id: T-AUTH-05-FIXTURE-001\n", record)
+        contract = managed_handoff.build_administrative_execution_contract(value)
+        self.assertIn(record["objective"], contract["provider_prompt"])
+        self.assertNotIn("harmless Zeus-managed acceptance probe", contract["provider_prompt"])
+        self.assertEqual(record["acceptance_criteria"], contract["acceptance_criteria"])
+
+    def test_incomplete_transaction_semantics_fail_before_provider_launch(self):
+        record = self._admin_record(objective=None)
+        value = self._resolve_admin("transaction_id: T-AUTH-05-FIXTURE-001\n", record)
+        with self.assertRaises(managed_handoff.ManagedHandoffError) as caught:
+            managed_handoff.build_administrative_execution_contract(value)
+        self.assertEqual("HANDOFF_EXECUTION_CONTRACT_INCOMPLETE", caught.exception.code)
+
+    def test_authorized_qualification_transaction_routes_to_zeus_context(self):
+        value = self._resolve(
+            "transaction_id: C02-HISTORICAL-FIXTURE-DEPENDENCY-QUALIFICATION-001\n"
+        )
+        self.assertEqual("PASS", value["result"])
+        self.assertEqual("BOUNDED_QUALIFICATION_TRANSACTION", value["transaction_type"])
+        self.assertEqual("ZEUS", value["qualification_authority"])
+        self.assertEqual("YES", value["qualification_context"]["qualification_execution_available"])
+        self.assertEqual("NOT_APPLICABLE", value["qualification_context"]["operator_acceptance"])
 
     def test_existing_t_auth_05_resolves_with_supplemental_contract(self):
         value = self._resolve("transaction_id: T-AUTH-05\n")
@@ -357,6 +389,231 @@ class ManagedCodexHandoffTests(unittest.TestCase):
         )
         self.assertEqual(78, result.returncode)
         self.assertEqual("HANDOFF_RESOLUTION_AMBIGUOUS", json.loads(result.stdout)["blocker"])
+
+
+class AdministrativeQualificationContractTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.transaction = {
+            "transaction_id": "ADMIN-QUALIFICATION-FIXTURE",
+            "transaction_type": "BOUNDED_ADMINISTRATIVE_CORRECTIVE",
+            "transaction_state": "REQUIRED",
+            "objective": "Reconcile the administrative fixture.",
+            "authorized_scope": ["scripts/tests"],
+            "prohibited_scope": ["C03", "git commit"],
+            "acceptance_criteria": ["Fixture reconciliation passes."],
+        }
+        self.session = {
+            "zeus_managed_session_created": "YES",
+            "provider_process_owned_by": "ZEUS",
+            "provider_process_state": "COMPLETED",
+            "provider_exit_status": 0,
+            "scope_verification": "PASS",
+            "terminal_reconciliation": "PASS",
+            "execution_session_integrity": "PASS",
+            "authorized_scope_compliance": "PASS",
+            "required_evidence_completeness": "PASS",
+            "acceptance_criteria_verification": "PASS",
+            "provider_terminal_record": "RETAINED",
+            "actor_aware_mutation_attribution": "PASS",
+            "out_of_scope_changes": [],
+            "protected_actions_performed": [],
+            # This is deliberately not inspected by the contract.
+            "stdout": "OPERATOR_DECISION=ACCEPT",
+            "execution_contract": {
+                "transaction_id": "ADMIN-QUALIFICATION-FIXTURE",
+                "transaction_type": "BOUNDED_ADMINISTRATIVE_CORRECTIVE",
+                "objective": "Reconcile the administrative fixture.",
+                "authorized_scope": ["scripts/tests"],
+                "prohibited_scope": ["C03", "git commit"],
+                "acceptance_criteria": ["Fixture reconciliation passes."],
+                "lifecycle_boundary": {"current_gate": "C03"},
+                "protected_operations": ["GIT", "EOS"],
+                "required_verification": ["ACCEPTANCE_CRITERIA_EVALUATED"],
+                "required_evidence": ["Fixture reconciliation passes."],
+                "stop_conditions": ["STOP_ON_ACCEPTANCE_CRITERIA_FAILURE"],
+            },
+            "executed_transaction_id": "ADMIN-QUALIFICATION-FIXTURE",
+            "transaction_objective_executed": "YES",
+            "acceptance_criteria_evaluated": "YES",
+            "acceptance_criteria_results": [{"criterion": "Fixture reconciliation passes.", "result": "PASS"}],
+            "required_evidence_retained": "YES",
+            "evidence_finalization_actor": "ZEUS_CONTROLLER",
+            "evidence_finalization": "PASS",
+        }
+        self.acceptance = {
+            "acceptance_record_id": "OPERATOR-ACCEPTANCE-ADMIN-001",
+            "transaction_id": self.transaction["transaction_id"],
+            "operator_decision": "ACCEPT",
+            "authority_source_class": "CANONICAL_OPERATOR_AUTHORIZATION",
+        }
+
+    def test_provider_cannot_self_qualify_but_zeus_authority_is_preserved(self):
+        value = qualification_contract.resolve_qualification_context(
+            {**self.transaction, "qualification_authority": "ZEUS"},
+            provider_authority={"provider_self_qualification": "PROHIBITED"},
+        )
+        self.assertEqual("PASS", value["qualification_transaction_resolution"])
+        self.assertEqual("PROHIBITED", value["provider_self_qualification"])
+        self.assertEqual("PRESERVED", value["zeus_qualification_authority"])
+        self.assertEqual("YES", value["qualification_execution_available"])
+
+    def test_non_zeus_qualification_authority_is_not_silently_routed(self):
+        value = qualification_contract.resolve_qualification_context(
+            {**self.transaction, "qualification_authority": "CODEX"}
+        )
+        self.assertEqual("FAIL", value["qualification_transaction_resolution"])
+        self.assertEqual("NO", value["qualification_execution_available"])
+        self.assertEqual("NOT_PRESERVED", value["zeus_qualification_authority"])
+
+    def qualify(self, **session_overrides):
+        session = dict(self.session)
+        session.update(session_overrides)
+        return qualification_contract.qualify_administrative_transaction(
+            self.transaction, session, self.acceptance
+        )
+
+    def test_successful_admin_acceptance_qualifies_without_mission_id(self):
+        value = self.qualify()
+        self.assertEqual("PASS", value["result"])
+        self.assertEqual("QUALIFIED_OR_ACCEPTED_TERMINAL", value["transaction_state"])
+        self.assertEqual("C02_POST_ACCEPTANCE_TEST_RECONCILIATION", value["next_authorized_action"])
+        self.assertNotIn("mission_id", value)
+
+    def test_execution_completion_invokes_automatic_zeus_qualification(self):
+        resolved = {"result": "PASS", "handoff_input_classification": "AUTHORIZED_ADMINISTRATIVE_TRANSACTION",
+                    "transaction_id": self.transaction["transaction_id"],
+                    "transaction_type": self.transaction["transaction_type"], "transaction_state": "REQUIRED",
+                    "objective": self.transaction["objective"], "prohibited_scope": self.transaction["prohibited_scope"],
+                    "acceptance_criteria": self.transaction["acceptance_criteria"], "qualification_authority": "ZEUS",
+                    "authorized_scope": ["scripts/tests"], "execution": {"execution_id": "EXECUTION-ADMIN-QUALIFICATION-FIXTURE"}}
+        session = dict(self.session, result="PASS")
+        output = Path(tempfile.mkstemp(prefix="zeus-managed-session-")[1])
+        self.addCleanup(lambda: output.unlink(missing_ok=True))
+        with patch("scripts.lib.emp.managed_provider.execute", return_value=session):
+            value = managed_handoff.execute_administrative_handoff(
+                ROOT, resolved, prompt="bounded test", output_path=output, codex_bin="unused"
+            )
+        self.assertEqual("PASS", value["qualification"]["result"])
+        self.assertEqual("C02_POST_ACCEPTANCE_TEST_RECONCILIATION", value["next_authorized_action"])
+        self.assertEqual("NOT_APPLICABLE", value["qualification"]["operator_acceptance"])
+        self.assertTrue(value["qualification"]["qualification_receipt"]["receipt_id"].startswith("ZEUS-QUALIFICATION-"))
+        receipt = Path(value["qualification_receipt_path"])
+        self.assertTrue(receipt.exists())
+        self.addCleanup(lambda: receipt.unlink(missing_ok=True))
+        self.assertEqual(value["qualification"]["qualification_receipt"], json.loads(receipt.read_text()))
+
+    def test_provider_completion_without_acceptance_qualifies_when_policy_has_no_match(self):
+        value = qualification_contract.qualify_administrative_transaction(
+            self.transaction, self.session, None
+        )
+        self.assertEqual("PASS", value["qualification"])
+        self.assertFalse(value["provider_completion_is_qualification"])
+
+    def test_negative_managed_session_predicates_cannot_qualify(self):
+        cases = (
+            {"provider_exit_status": 1},
+            {"scope_verification": "FAIL"},
+            {"terminal_reconciliation": "FAIL"},
+            {"out_of_scope_changes": ["unexpected.txt"]},
+            {"protected_actions_performed": ["git commit"]},
+        )
+        for overrides in cases:
+            with self.subTest(overrides=overrides):
+                value = self.qualify(**overrides)
+                self.assertEqual("BLOCKED", value["result"])
+                self.assertEqual("REQUIRED", value["qualification"])
+                self.assertEqual("RECONCILE_ADMINISTRATIVE_QUALIFICATION", value["next_authorized_action"])
+
+    def test_provider_failure_forbids_successor_execution(self):
+        value = self.qualify(provider_process_state="FAILED", provider_exit_status=1)
+        self.assertEqual("BLOCKED", value["result"])
+        self.assertEqual("RECONCILE_ADMINISTRATIVE_QUALIFICATION", value["next_authorized_action"])
+        self.assertFalse(value["provider_launched"])
+
+    def test_provider_receipt_forgery_fails_qualification_closed(self):
+        receipt = "engineering/convergence/engineering-system-convergence/receipts/qualification/tx.json"
+        value = self.qualify(
+            post_execution_diff=[receipt],
+            provider_post_execution_diff=[receipt],
+            scope_verification="PASS",
+            terminal_reconciliation="PASS",
+        )
+        self.assertEqual("BLOCKED", value["result"])
+        self.assertEqual("FAIL", value["provider_scope_compliance"])
+
+    def test_exit_zero_without_transaction_acceptance_evidence_does_not_qualify(self):
+        value = self.qualify(execution_contract=None, transaction_objective_executed="NO")
+        self.assertEqual("BLOCKED", value["result"])
+
+    def test_wrong_transaction_task_does_not_qualify(self):
+        value = self.qualify(executed_transaction_id="OTHER-TRANSACTION")
+        self.assertEqual("BLOCKED", value["result"])
+
+    def test_legitimate_zeus_receipt_does_not_fail_qualification_scope(self):
+        value = self.qualify(
+            provider_post_execution_diff=[],
+            post_execution_diff=[],
+            zeus_controller_diff=[
+                "engineering/convergence/engineering-system-convergence/receipts/qualification/tx.json"
+            ],
+            zeus_controller_mutation="YES",
+            zeus_receipt_attribution="ZEUS_CONTROLLER_MUTATION",
+            receipt_authority="ZEUS",
+            scope_verification="PASS",
+            terminal_reconciliation="PASS",
+        )
+        self.assertEqual("PASS", value["result"])
+        self.assertEqual("PRESERVED", value["zeus_qualification_authority"])
+
+    def test_qualification_failure_after_provider_success_forbids_successor(self):
+        value = self.qualify(acceptance_criteria_verification="FAIL")
+        self.assertEqual("BLOCKED", value["result"])
+        self.assertEqual("RECONCILE_ADMINISTRATIVE_QUALIFICATION", value["next_authorized_action"])
+
+    def test_repeated_acceptance_is_idempotent_and_does_not_launch_provider(self):
+        first = self.qualify()
+        terminal = dict(self.transaction, transaction_state=first["transaction_state"])
+        replay = qualification_contract.qualify_administrative_transaction(
+            terminal, self.session, None
+        )
+        self.assertEqual("PASS", replay["result"])
+        self.assertTrue(replay["idempotent_replay"])
+        self.assertFalse(replay["provider_launched"])
+        self.assertNotEqual("OPERATOR_REVIEW_REAL_MANAGED_SESSION", replay["next_authorized_action"])
+
+    def test_acceptance_must_be_authoritative_and_bound(self):
+        transaction = dict(self.transaction, lifecycle_class="MISSION", explicit_operator_approval_required=True)
+        for overrides in (
+            {"transaction_id": "OTHER"},
+            {"authority_source_class": "PROVIDER_REPORT"},
+            {"operator_decision": "REJECT"},
+        ):
+            with self.subTest(overrides=overrides):
+                value = qualification_contract.qualify_administrative_transaction(
+                    transaction, self.session, dict(self.acceptance, **overrides)
+                )
+                self.assertEqual("REQUIRED", value["qualification"])
+
+    def test_active_policy_is_the_only_operator_boundary(self):
+        requirement = {
+            "requirement_id": "TEST-APPROVAL-REQUIRED",
+            "lifecycle_situation": "test",
+            "applicability": {"all": [{"field": "transaction_id", "equals": self.transaction["transaction_id"]}]},
+            "required_operator_action": "OPERATOR_REVIEW_TEST",
+            "authority_source": "TEST-AUTHORITY",
+            "active": True,
+            "rationale": "explicit test boundary",
+            "resulting_transition": {"approval": "QUALIFICATION_ELIGIBLE", "rejection": "CORRECTIVE_RECONCILIATION_REQUIRED"},
+        }
+        handle = tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False)
+        self.addCleanup(lambda: Path(handle.name).unlink(missing_ok=True))
+        import yaml
+        yaml.safe_dump({"schema_version": 1, "policy_id": "TEST-POLICY", "requirements": [requirement]}, handle)
+        handle.close()
+        value = qualification_contract.resolve_qualification_context(self.transaction, policy_path=handle.name)
+        self.assertEqual("YES", value["operator_approval_policy_resolved"])
+        self.assertTrue(value["operator_approval_required"])
+        self.assertEqual("NO", value["qualification_execution_available"])
 
 
 if __name__ == "__main__":
